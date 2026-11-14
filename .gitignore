@@ -1,6 +1,9 @@
 # Generated on the server
 /data/
-/web/site/team-log/
+
+# Node
+node_modules/
+/web/dist/
 
 # Python
 __pycache__/

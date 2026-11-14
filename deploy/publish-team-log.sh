@@ -10,7 +10,7 @@ fi
 
 source_file=$(readlink -f "$1")
 root=$(cd "$(dirname "$0")/.." && pwd)
-output="$root/web/site/team-log"
+output="$root/data/team-log"
 
 mkdir -p "$output"
 exec docker run --rm --network none --read-only --user "$(id -u):$(id -g)" \

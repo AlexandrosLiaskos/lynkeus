@@ -12,3 +12,4 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The service that counts page visits and stores only their total.
 - The files that deploy Lynkeus in containers and publish the team log whenever its file changes.
 - The automatic checks of style, types and tests.
+- The page of the application, with the map and a choice between two background maps.

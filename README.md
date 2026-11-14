@@ -12,16 +12,16 @@ Space Administration (NASA).
 
 ## Status
 
-Lynkeus is under development. At present the repository holds the site of the project, the program
-that publishes the team log as a web page, and the service that counts page visits. The analysis
-tools are added as each one is finished.
+Lynkeus is under development. At present the repository holds the page of the application with its
+map, the program that publishes the team log as a web page, and the service that counts page visits.
+The analysis tools are added as each one is finished.
 
 ## Repository
 
 | Place | Contents |
 |---|---|
 | `api/` | The server: the Python package `lynkeus`, its tests and its container file |
-| `web/` | The site: its pages, styles and web-server configuration |
+| `web/` | The interface: the TypeScript code, the static files and the web-server configuration |
 | `deploy/` | The files that install and run Lynkeus on a server |
 | `compose.yaml` | The file that starts the containers |
 | `.github/workflows/` | The automatic checks |
@@ -38,6 +38,18 @@ uv run ruff format --check .
 uv run ruff check .
 uv run mypy
 uv run pytest
+```
+
+The TypeScript code is compiled in strict mode, formatted with Prettier and checked with ESLint. The
+checks need [Node.js](https://nodejs.org/) 22.
+
+```sh
+cd web
+npm ci
+npm run format
+npm run lint
+npm run types
+npm run build
 ```
 
 ## Deployment
@@ -63,10 +75,30 @@ changes.
 | [Python-Markdown](https://python-markdown.github.io/) | 3.11.3 | BSD-3-Clause | Renders the team log |
 | [tzdata](https://github.com/python/tzdata) | 2026.6 | Apache-2.0 | Time zones |
 | [nginx](https://nginx.org/) | 1.27 | BSD-2-Clause | Web server of the site |
+| [Node.js](https://nodejs.org/) | 22 | MIT | Builds the interface |
+| [React](https://react.dev/) | 19.3.1 | MIT | Interface |
+| [OpenLayers](https://openlayers.org/) | 10.11.0 | BSD-2-Clause | Map |
+| [U.S. Web Design System](https://designsystem.digital.gov/) | 3.14.0 | CC0-1.0 | Buttons |
+| [TypeScript](https://www.typescriptlang.org/) | 6.0.3 | Apache-2.0 | Language of the interface |
+| [Vite](https://vite.dev/) | 8.3.8 | MIT | Builds the interface |
+| [Sass](https://sass-lang.com/) | 1.108.2 | MIT | Compiles the styles |
 | [uv](https://docs.astral.sh/uv/) | 0.13.8 | MIT OR Apache-2.0 | Installs the exact versions |
 | [Ruff](https://docs.astral.sh/ruff/) | 0.17.5 | MIT | Style check |
 | [mypy](https://mypy-lang.org/) | 2.4.1 | MIT | Type check |
 | [pytest](https://pytest.org/) | 9.2.0 | MIT | Tests |
+| [Prettier](https://prettier.io/) | 3.10.1 | MIT | Style check |
+| [ESLint](https://eslint.org/) | 10.15.0 | MIT | Code check |
+| [typescript-eslint](https://typescript-eslint.io/) | 8.72.2 | MIT | Code check |
+| [eslint-plugin-react-hooks](https://react.dev/reference/eslint-plugin-react-hooks) | 7.1.1 | MIT | Code check |
+
+## Map data
+
+The background maps of the application come from two services.
+
+- Blue Marble: we acknowledge the use of imagery provided by services from NASA's Global Imagery
+  Browse Services (GIBS), part of NASA's Earth Science Data and Information System (ESDIS).
+- OpenStreetMap: © OpenStreetMap contributors, available under the
+  [Open Database License](https://www.openstreetmap.org/copyright).
 
 ## Team image
 

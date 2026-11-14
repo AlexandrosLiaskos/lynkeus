@@ -31,3 +31,25 @@ jobs:
         run: uv run mypy
       - name: Tests
         run: uv run pytest
+
+  web:
+    name: Interface (TypeScript)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install the packages
+        run: npm ci
+      - name: Style
+        run: |
+          npm run format
+          npm run lint
+      - name: Types
+        run: npm run types
+      - name: Build
+        run: npm run build
