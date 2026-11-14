@@ -1,6 +1,5 @@
 import OlMap from "ol/Map";
 import View from "ol/View";
-import { Attribution, ScaleLine } from "ol/control";
 import type { Extent } from "ol/extent";
 import TileLayer from "ol/layer/Tile";
 import { fromLonLat } from "ol/proj";
@@ -18,14 +17,18 @@ const MARGIN = 40;
 /** The angle by which one press of a key or of the Rotate button turns the map, in degrees. */
 export const ROTATION_STEP = 15;
 
-/** Create the map, with one layer for each background map. The background maps are drawn under every other layer. */
+/**
+ * Create the map, with one layer for each background map. The background maps are drawn under every other layer.
+ * The map carries no control of OpenLayers: the status bar shows the scale, and the element `Credits` writes the
+ * credits of the layers.
+ */
 export function createMap(): OlMap {
   return new OlMap({
     layers: BASE_MAPS.map(
       ({ id, createSource }) => new TileLayer({ source: createSource(), zIndex: 0, properties: { id } }),
     ),
     view: new View(WORLD),
-    controls: [new Attribution({ collapsible: false }), new ScaleLine()],
+    controls: [],
   });
 }
 

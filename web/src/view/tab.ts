@@ -34,12 +34,6 @@ export const VIEW_TAB = {
           icon: "info_outline",
           description: "Shows or hides the status bar under the map.",
         },
-        {
-          id: "view-scale-bar",
-          label: "Scale bar",
-          icon: "remove",
-          description: "Shows or hides the scale bar on the map.",
-        },
       ],
     },
   ],
