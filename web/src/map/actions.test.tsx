@@ -1,13 +1,19 @@
 import { act, renderHook } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { beforeEach, expect, test } from "vitest";
+import { selectedLayerStore } from "../contents/state";
 import { areaStore } from "../shared/area";
 import { dockStore, resetDock } from "../shared/dock/dock";
 import { MapContext } from "../shared/map";
+import { mapLayersStore } from "../shared/mapLayers";
+import { messagesStore } from "../shared/messages/messages";
 import { useMapActions } from "./actions";
 import { baseMapStore } from "./baseMaps";
 import { createMap } from "./map";
+import { NOTICES } from "./commands";
 import { graticuleStore, toolStore } from "./state";
+import { swipeStore } from "./swipe";
+import { testLayer } from "./testLayer";
 
 function start() {
   const map = createMap();
@@ -27,6 +33,10 @@ beforeEach(() => {
   graticuleStore.set(false);
   toolStore.set(null);
   areaStore.set(null);
+  mapLayersStore.set([]);
+  selectedLayerStore.set(null);
+  swipeStore.set({ on: false, line: "upright", share: 50 });
+  messagesStore.set([]);
   resetDock();
 });
 
@@ -46,6 +56,15 @@ test("a background map that another part of the interface sets is shown", () => 
   act(() => baseMapStore.set("openstreetmap"));
   expect(visible()).toEqual(["openstreetmap"]);
   expect(result.current.openstreetmap?.pressed).toBe(true);
+});
+
+test("without a background map no button of the group Basemap is pressed", () => {
+  const { result, visible } = start();
+  act(() => baseMapStore.set(null));
+  expect(visible()).toEqual([]);
+  expect(
+    (["blue-marble", "openstreetmap", "imagery-of-a-date"] as const).map((id) => result.current[id]?.pressed),
+  ).toEqual([false, false, false]);
 });
 
 test("the button Imagery of a date shows the image of the chosen day and opens its pane", () => {
@@ -78,6 +97,34 @@ test("a measure button starts its tool and opens its pane, and the other one tak
   act(() => result.current["measure-area"]?.run());
   expect(toolStore.get()).toBeNull();
   expect(dockStore.get().tools).toEqual(["measure-area"]);
+});
+
+test("the Identify button starts its tool and opens its pane", () => {
+  const { result } = start();
+  act(() => result.current.identify?.run());
+  expect(toolStore.get()).toBe("identify");
+  expect(result.current.identify?.pressed).toBe(true);
+  expect(dockStore.get().tools).toEqual(["identify"]);
+  act(() => result.current.identify?.run());
+  expect(toolStore.get()).toBeNull();
+});
+
+test("the Swipe button needs a selected layer, and then starts and ends the swipe with its pane", () => {
+  const { result } = start();
+  act(() => result.current.swipe?.run());
+  expect(swipeStore.get().on).toBe(false);
+  expect(messagesStore.get().map(({ text }) => text)).toEqual([NOTICES.noLayer]);
+  act(() => {
+    mapLayersStore.set([testLayer("october", "Backscatter HH, 21 Oct 2026")]);
+    selectedLayerStore.set("october");
+  });
+  act(() => result.current.swipe?.run());
+  expect(swipeStore.get().on).toBe(true);
+  expect(result.current.swipe?.pressed).toBe(true);
+  expect(dockStore.get().tools).toEqual(["swipe"]);
+  act(() => result.current.swipe?.run());
+  expect(swipeStore.get().on).toBe(false);
+  expect(dockStore.get().tools).toEqual([]);
 });
 
 test("the Graticule and Rectangle buttons switch on and off and are marked as pressed", () => {
