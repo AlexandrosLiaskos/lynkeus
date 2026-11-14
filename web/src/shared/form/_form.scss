@@ -20,8 +20,11 @@ $control-height: 1.75rem;
     margin-top: 0.5rem;
   }
 
+  // A field group takes the text size of the form, so that a hint inside it keeps its own line height.
   .usa-fieldset {
     margin-top: 0.75rem;
+    font-size: $text;
+    line-height: 1.4;
   }
 
   .usa-label,
