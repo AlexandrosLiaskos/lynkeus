@@ -81,10 +81,15 @@
   padding: 0 0.125rem;
 }
 
-// In a narrow window the list of formats shows its arrow alone, and the projection its code alone.
+// In a narrow window the list of formats stands beside the scale, on the first row, so that the format chosen
+// stays readable, and the projection shows its code alone.
 @media (max-width: 40em) {
-  .statusbar-select {
-    width: 1.5rem;
+  .statusbar-scale {
+    order: -2;
+  }
+
+  .statusbar-format {
+    order: -1;
   }
 
   .statusbar-projection-name {
