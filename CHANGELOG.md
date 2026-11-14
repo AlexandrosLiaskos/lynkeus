@@ -30,6 +30,9 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   tool, which shows the explanation in a bubble.
 - The sessions of the visitors of the web service, with the sign-in to Earthdata by a user token that the
   server keeps in its memory only.
+- The sign-in to Earthdata in the interface. The pane of the button Sign in takes a user token of Earthdata
+  Login, the button Sign out signs out, and the right end of the title bar shows who is signed in. The page
+  keeps no copy of the token.
 - The processes and the jobs of the web service, in the form of OGC API - Processes, Part 1 (classes Core,
   JSON, OGC Process Description, Job list and Dismiss). Each job runs in an operating-system process of its own.
 - The process `get-layer` of the web service, which receives one layer of a NISAR product through NASA
