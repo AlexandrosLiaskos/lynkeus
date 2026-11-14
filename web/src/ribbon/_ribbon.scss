@@ -30,9 +30,11 @@
   color: uswds.color("primary");
 }
 
+// In a narrow window the panel scrolls sideways, with a thin scroll bar.
 .ribbon-panel {
   display: flex;
   overflow-x: auto;
+  scrollbar-width: thin;
   margin: 0 0.25rem 0.25rem;
   padding: 0.125rem 0;
   border: 1px solid uswds.color("base-light");
@@ -58,6 +60,7 @@
 .ribbon-group-label {
   color: uswds.color("base-dark");
   font-size: 0.6875rem;
+  line-height: 0.875rem;
   text-align: center;
   white-space: nowrap;
 }
@@ -65,6 +68,7 @@
 // A tool is a button with its icon above its label. The label takes one line
 // for each word, so that the tools stay narrow. Every tool has room for a label
 // of two lines, so that the ribbon keeps its height from one tab to the next.
+// The heights are whole pixels, so that the lines under the ribbon stay sharp.
 .ribbon-tool {
   display: flex;
   flex-direction: column;
@@ -72,7 +76,7 @@
   gap: 0.125rem;
   width: min-content;
   min-width: 3.25rem;
-  min-height: calc(2rem + 2 * 1.2em + 0.625rem + 2px);
+  min-height: calc(2rem + 2 * 0.875rem + 0.625rem + 2px);
   padding: 0.25rem 0.375rem;
   border: 1px solid transparent;
   border-radius: 0.125rem;
@@ -80,7 +84,7 @@
   color: uswds.color("ink");
   font: inherit;
   font-size: 0.75rem;
-  line-height: 1.2;
+  line-height: 0.875rem;
   cursor: pointer;
 }
 
@@ -93,12 +97,15 @@
   background: uswds.color("base-lighter");
 }
 
+// The border of a pressed tool has a contrast of more than 3 to 1 with the panel, as criterion 1.4.11 of the
+// Web Content Accessibility Guidelines asks of the sign of a state.
 .ribbon-tool[aria-pressed="true"] {
-  border-color: uswds.color("primary-light");
+  border-color: uswds.color("primary");
   background: uswds.color("primary-lighter");
 }
 
+// The label of an unfinished tool stays readable, because its description can be read.
 .ribbon-tool[aria-disabled="true"] {
-  color: uswds.color("base-light");
+  color: uswds.color("disabled");
   cursor: default;
 }
