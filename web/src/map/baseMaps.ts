@@ -40,5 +40,8 @@ export const BASE_MAPS: readonly BaseMap[] = [
   },
 ];
 
-/** The background map that is shown. Any part of the interface may read it and set it. */
-export const baseMapStore = createStore<BaseMapId>("blue-marble");
+/**
+ * The background map that is shown, or null when none is shown. Any part of the interface may read it and set it,
+ * so that the buttons of the ribbon and the Contents pane always agree.
+ */
+export const baseMapStore = createStore<BaseMapId | null>("blue-marble");

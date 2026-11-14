@@ -116,7 +116,7 @@ export function MeasurePane({ kind }: { kind: MeasureKind }) {
       <p className="usa-hint">
         Measured on a sphere with a radius of {new Intl.NumberFormat("en-US").format(EARTH_RADIUS)} metres, the mean
         radius of the WGS 84 ellipsoid: each segment is the great circle between its two points. On the ellipsoid itself
-        a length or an area differs by up to about half of one percent.
+        a length differs by up to 0.6 percent and an area by up to 0.9 percent.
       </p>
     </ToolPane>
   );
