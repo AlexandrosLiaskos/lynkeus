@@ -1,1 +1,221 @@
+@use "sass:list";
+@use "uswds-core" as uswds;
+
 // The style of the elements of the Share tab.
+
+// A note under the fields of a form.
+.share-note {
+  margin: 0.5rem 0 0;
+}
+
+// The address of a link is one long word, so it breaks anywhere.
+.share-address {
+  overflow-wrap: anywhere;
+  word-break: break-all;
+}
+
+// The page of a layout. On the screen it stands outside the window, laid out in its true size, so that the room
+// of the map can be measured. In a print it is the only element of the document.
+$margin: 10mm;
+
+.share-sheet {
+  position: fixed;
+  top: 0;
+  left: -2000mm;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: $margin;
+  overflow: hidden;
+  visibility: hidden;
+  background: uswds.color("white");
+  color: uswds.color("ink");
+  font-size: 8pt;
+  line-height: 1.3;
+}
+
+// The sides of the paper sizes of ISO 216. Each page of the style sheet has the size of its paper and no margin
+// of its own; the margin is the padding of the sheet, so the browser has no room for its own header and footer.
+$papers: (
+  "a4-portrait": 210mm 297mm,
+  "a4-landscape": 297mm 210mm,
+  "a3-portrait": 297mm 420mm,
+  "a3-landscape": 420mm 297mm,
+);
+
+@each $name, $sides in $papers {
+  @page share-#{$name} {
+    size: $sides;
+    margin: 0;
+  }
+
+  .share-sheet--#{$name} {
+    width: list.nth($sides, 1);
+    height: list.nth($sides, 2);
+    page: share-#{$name};
+  }
+}
+
+.share-sheet-title {
+  flex: none;
+  margin: 0 0 3mm;
+  font-size: 16pt;
+  font-weight: bold;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+// The map and, around it, the room of the marks of the coordinate frame.
+.share-sheet-frame {
+  display: grid;
+  flex: 1;
+  grid-template: "map" minmax(0, 1fr) / minmax(0, 1fr);
+  min-height: 0;
+}
+
+.share-sheet-frame--marked {
+  grid-template:
+    ". top ." 5mm
+    "left map right" minmax(0, 1fr)
+    ". bottom ." 5mm
+    / 5mm minmax(0, 1fr) 5mm;
+}
+
+.share-sheet-map {
+  grid-area: map;
+  min-width: 0;
+  min-height: 0;
+  border: 0.3mm solid uswds.color("ink");
+
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.share-sheet-ticks {
+  position: relative;
+  font-size: 7pt;
+  line-height: 1;
+
+  @each $side in top, right, bottom, left {
+    &--#{$side} {
+      grid-area: $side;
+    }
+  }
+}
+
+// A mark: the angle of the line, centred on the place where the line meets the side, and a short stroke
+// between the text and the map.
+.share-sheet-tick {
+  position: absolute;
+  white-space: nowrap;
+
+  &::after {
+    position: absolute;
+    background: uswds.color("ink");
+    content: "";
+  }
+}
+
+.share-sheet-ticks--top .share-sheet-tick,
+.share-sheet-ticks--bottom .share-sheet-tick {
+  transform: translateX(-50%);
+
+  &::after {
+    left: 50%;
+    width: 0.3mm;
+    height: 1mm;
+  }
+}
+
+.share-sheet-ticks--top .share-sheet-tick {
+  bottom: 1.4mm;
+
+  &::after {
+    top: calc(100% + 0.4mm);
+  }
+}
+
+.share-sheet-ticks--bottom .share-sheet-tick {
+  top: 1.4mm;
+
+  &::after {
+    bottom: calc(100% + 0.4mm);
+  }
+}
+
+// On the left and the right the text runs along the side, from the bottom to the top.
+.share-sheet-ticks--left .share-sheet-tick,
+.share-sheet-ticks--right .share-sheet-tick {
+  transform: translateY(-50%) rotate(180deg);
+  writing-mode: vertical-rl;
+
+  &::after {
+    top: 50%;
+    width: 1mm;
+    height: 0.3mm;
+  }
+}
+
+// The text is turned by half a circle, so its sides are exchanged: the stroke stands on the side of the map.
+.share-sheet-ticks--left .share-sheet-tick {
+  right: 1.4mm;
+
+  &::after {
+    right: calc(100% + 0.4mm);
+  }
+}
+
+.share-sheet-ticks--right .share-sheet-tick {
+  left: 1.4mm;
+
+  &::after {
+    left: calc(100% + 0.4mm);
+  }
+}
+
+.share-sheet-foot {
+  display: flex;
+  flex: none;
+  gap: 2mm 8mm;
+  flex-wrap: wrap;
+  margin-top: 2mm;
+}
+
+.share-sheet-facts,
+.share-sheet-sources {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.share-sheet-facts {
+  flex: none;
+}
+
+.share-sheet-sources {
+  flex: 1;
+  min-width: 60mm;
+}
+
+@media print {
+  // While a layout is in the document, a print shows the layout alone.
+  body:has(> .share-sheet) > :not(.share-sheet) {
+    display: none;
+  }
+
+  html:has(.share-sheet),
+  body:has(> .share-sheet) {
+    height: auto;
+    margin: 0;
+  }
+
+  .share-sheet {
+    position: static;
+    visibility: visible;
+    // The colours of the legend are printed as they are, although browsers leave backgrounds out of a print.
+    print-color-adjust: exact;
+  }
+}
