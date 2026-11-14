@@ -99,3 +99,18 @@ test("the description shows after the pointer rests on a button and hides when i
   fireEvent.pointerLeave(later);
   expect(tip?.hidden).toBe(true);
 });
+
+test("the Escape key hides a description that the pointer opened, without keyboard focus on its button", () => {
+  vi.useFakeTimers();
+  render(<Ribbon tabs={TABS} actions={{}} />);
+  const later = screen.getByRole("button", { name: "Later" });
+  const tip = document.getElementById(later.getAttribute("aria-describedby") ?? "")?.parentElement;
+  fireEvent.pointerEnter(later);
+  act(() => {
+    vi.advanceTimersByTime(HOVER_DELAY);
+  });
+  expect(document.activeElement).toBe(document.body);
+  expect(tip?.hidden).toBe(false);
+  fireEvent.keyDown(document.body, { key: "Escape" });
+  expect(tip?.hidden).toBe(true);
+});

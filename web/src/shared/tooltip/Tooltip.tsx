@@ -44,6 +44,22 @@ export function Tooltip({ title, text, note, children }: TooltipProps) {
 
   useEffect(() => () => window.clearTimeout(timer.current), []);
 
+  // The Escape key hides the description wherever the keyboard focus is, so that a user of the pointer can
+  // also hide it without moving the pointer.
+  useEffect(() => {
+    if (!position) {
+      return;
+    }
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        window.clearTimeout(timer.current);
+        setPosition(null);
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [position]);
+
   return (
     <span
       ref={anchor}
@@ -66,11 +82,6 @@ export function Tooltip({ title, text, note, children }: TooltipProps) {
         }
       }}
       onBlur={hide}
-      onKeyDown={(event) => {
-        if (event.key === "Escape") {
-          hide();
-        }
-      }}
     >
       {children(id)}
       <span role="tooltip" className="tooltip" hidden={!position} style={position ?? undefined}>
