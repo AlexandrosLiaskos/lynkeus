@@ -4,6 +4,8 @@
 ``GET /api/products`` searches NASA's catalogue for NISAR products.
 ``GET /api/products/{id}`` returns everything that the catalogue states about one product.
 ``GET /api/products/{id}/browse`` returns the small browse image of one product.
+``GET /api/limits`` reports the version, the resources and the limits of the
+service; ``lynkeus.limits`` adds it.
 The addresses of the sessions, the processes, the jobs and the layers are added
 by ``lynkeus.routes``, with the processes that ``lynkeus.offered`` lists.
 """
@@ -19,6 +21,7 @@ from pydantic import Field, ValidationError, model_validator
 
 from lynkeus import __version__
 from lynkeus.layers import Format, ProductType
+from lynkeus.limits import install_limits
 from lynkeus.offered import processes
 from lynkeus.products import (
     MOST_NAMES,
@@ -266,6 +269,7 @@ def create_app() -> FastAPI:
         """Return the small browse image of one product, as a PNG file."""
         return Response(await _ask(lambda: image(product_id)), media_type="image/png")
 
+    install_limits(app)
     install(app, processes())
     return app
 

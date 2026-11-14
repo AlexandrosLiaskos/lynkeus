@@ -171,6 +171,15 @@ credit, in which the name of the provider may be a link to an address that start
 is visible. A part draws no credit of its own. A source whose terms ask for its credit on the map itself is
 named in the function `creditsOf` of `credits.ts`, and its credit is drawn in the lower right corner of the map.
 
+### Limits of the server
+
+A limit of the server is a named constant of the module that applies it. The address `GET /api/limits`
+(`api/src/lynkeus/limits.py`) reports the limits that a visitor can meet, with the version and the resources of
+the service, and the notice of the version in `web/src/header/notice/` is written from its answer. A new
+text of the interface about such a limit takes its number from this answer and does not type it. A new limit
+is added to the format `Limits` of `limits.py`, to `limits.ts`, and to a sentence of `sentences.ts` that
+gives its reason.
+
 ## Research and proof
 
 Nothing invented, assumed or left as a placeholder enters `main`. Before a function is built, its sources
