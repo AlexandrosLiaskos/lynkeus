@@ -1,1 +1,37 @@
+@use "uswds-core" as uswds;
+
 // The style of the elements of the Data tab.
+
+// The form of the search takes the width of its dialog.
+.search-form.usa-form,
+.search-form .usa-input,
+.search-form .usa-select {
+  max-width: none;
+}
+
+.search-form .usa-fieldset {
+  margin-top: 1.5rem;
+}
+
+// The fields of one group stand in a row, each as wide as the others. The four sides of the area take two
+// rows in a narrow window.
+.search-form-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 0.75rem;
+}
+
+.search-form-row--four {
+  @include uswds.at-media("mobile-lg") {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.search-form-row .usa-label {
+  margin-top: 0.5rem;
+}
+
+// The design system gives a button of a form a top margin, which the foot of a dialog already has.
+.search-form .usa-modal__footer .usa-button {
+  margin-top: 0;
+}

@@ -17,10 +17,13 @@ export function createMap(): OlMap {
   });
 }
 
-/** Show the chosen background map and hide the others. */
+/** Show the chosen background map and hide the other background maps. Every other layer stays as it is. */
 export function showBaseMap(map: OlMap, baseMap: BaseMapId): void {
   map.getLayers().forEach((layer) => {
-    layer.setVisible(layer.get("id") === baseMap);
+    const id: unknown = layer.get("id");
+    if (BASE_MAPS.some((background) => background.id === id)) {
+      layer.setVisible(id === baseMap);
+    }
   });
 }
 
