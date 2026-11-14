@@ -1,0 +1,21 @@
+@use "uswds-core" as uswds;
+
+// The style of the sign-in to Earthdata: the form in its pane.
+
+// A paragraph of the form. The pane gives the text its size.
+.sign-in-text {
+  max-width: none;
+  margin: 0.5rem 0 0;
+}
+
+// The button that shows the token stands under the right end of the field, as in the sign-in template of the
+// design system. It is 24 pixels high, the smallest target that criterion 2.5.8 of the Web Content Accessibility
+// Guidelines 2.2 accepts.
+.sign-in-show {
+  display: block;
+  float: none;
+  min-height: 1.5rem;
+  margin: 0.125rem 0 0 auto;
+  font-size: 0.75rem;
+  line-height: 1.5rem;
+}
