@@ -60,6 +60,7 @@ of a pane are in [data.md](data.md).
 | Limits | The date field is the one of the browser, which writes the date in the order of the user's language. |
 | Read on | 14 Nov 2026 |
 
+
 ## Review of the frame
 
 The elements of the frame were looked at in Chromium, through Playwright 1.65.1, in windows of 1920 by 1080, 1440
