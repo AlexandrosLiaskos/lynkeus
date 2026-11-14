@@ -110,11 +110,50 @@ and Shift with Escape closes the pane.
 
 ### Form elements
 
-A form uses the classes of the U.S. Web Design System: `usa-label`, `usa-hint`, `usa-input`, `usa-select`,
+A form uses the classes of the U.S. Web Design System: `usa-label`, `usa-input`, `usa-select`,
 `usa-textarea`, `usa-checkbox`, `usa-radio`, `usa-fieldset` with `usa-legend`, `usa-error-message` and
 `usa-button`. Inside a pane or a dialog these take one size, which `web/src/shared/form/_form.scss` sets:
 text of 13 pixels and controls 28 pixels high. A part does not set the size of the text or the height of a
 control.
+
+### Explanation of a title
+
+The explanation of a field, of a group of fields, of a section or of a tool never stands under its title.
+It goes into the element `Info` of `web/src/shared/info/Info.tsx`: a small circled "i" beside the title,
+which shows the explanation in a bubble while the pointer rests on it, while it has the keyboard focus, and
+after it is pressed. The class `usa-hint` is not used for a new explanation.
+
+```tsx
+import { Info } from "../shared/info/Info";
+
+<div className="info-title">
+  <label className="usa-label" htmlFor="buffer-distance">Distance</label>
+  <Info id="buffer-distance-info" about="Distance">
+    The width of the buffer in metres, as a number greater than zero, for example 250.
+  </Info>
+</div>
+<input className="usa-input" id="buffer-distance" aria-describedby="buffer-distance-info" />
+```
+
+| Property of `Info` | Meaning |
+|---|---|
+| `id` | The id of the element that holds the text. The field, the group or the list that the title names carries it in `aria-describedby`, so that a screen reader reads the explanation with it |
+| `about` | The title, as the page shows it. The button is named "Information about" and the title |
+| `children` | The explanation |
+
+The four places of an explanation:
+
+| Title | How it is written |
+|---|---|
+| Label of a field | The `label` and the `Info` stand in a `div` with the class `info-title`, and the field carries `aria-describedby`. The button never stands inside the `label`, whose whole text names the field |
+| Legend of a group of fields | The `legend` holds a `span` with the title and the `Info`. The `fieldset` carries `aria-labelledby` with the id of the `span`, and `aria-describedby` |
+| Heading of a section | The heading and the `Info` stand in a `div` with the class `info-title`, and the list or the region under the heading carries `aria-describedby` |
+| Title of a tool pane | The property `info` of `ToolPane` |
+
+An explanation is written in complete sentences. It says what the field takes, in which unit or format,
+and gives one example where a format is asked for. It does not repeat the title, and a title that needs
+no explanation has none. A statement of the state of a pane, such as "No view is saved.", is not an
+explanation and stays in its place.
 
 ### Keyboard focus
 

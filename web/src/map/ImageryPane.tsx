@@ -1,4 +1,5 @@
 import { useId, useState } from "react";
+import { Info } from "../shared/info/Info";
 import { useStore } from "../shared/store";
 import { ToolPane, type ToolPaneRun } from "../shared/toolpane/ToolPane";
 import { baseMapStore } from "./baseMaps";
@@ -43,12 +44,20 @@ export function ImageryPane() {
 
   return (
     <ToolPane id="imagery-of-a-date" title="Imagery of a date" runLabel="Show" onRun={() => show(date)} run={run}>
-      <label className="usa-label" htmlFor={`${id}-layer`}>
-        Instrument and satellite
-      </label>
+      <div className="info-title">
+        <label className="usa-label" htmlFor={`${id}-layer`}>
+          Instrument and satellite
+        </label>
+        <Info id={`${id}-layer-info`} about="Instrument and satellite">
+          The instrument and the satellite that took the image. The image shows corrected reflectance in true colour and
+          serves as supplementary data. The images reach zoom level 9, at which one pixel covers about 306 metres at the
+          equator.
+        </Info>
+      </div>
       <select
         className="usa-select"
         id={`${id}-layer`}
+        aria-describedby={`${id}-layer-info`}
         value={layer}
         onChange={(event) => setLayer(event.target.value as ImageryId)}
       >
@@ -58,12 +67,15 @@ export function ImageryPane() {
           </option>
         ))}
       </select>
-      <label className="usa-label" htmlFor={`${id}-date`}>
-        Day
-      </label>
-      <span className="usa-hint" id={`${id}-hint`}>
-        A day of Coordinated Universal Time, from {first} to {today}. The image of the present day is still incomplete.
-      </span>
+      <div className="info-title">
+        <label className="usa-label" htmlFor={`${id}-date`}>
+          Day
+        </label>
+        <Info id={`${id}-hint`} about="Day">
+          The day of the image in Coordinated Universal Time, from {first} to {today}. The image of the present day is
+          still incomplete.
+        </Info>
+      </div>
       <input
         className="usa-input"
         id={`${id}-date`}
@@ -81,10 +93,6 @@ export function ImageryPane() {
         <button type="button" className="usa-button usa-button--unstyled" onClick={() => step(1)}>
           Day after
         </button>
-      </p>
-      <p className="usa-hint">
-        Corrected reflectance in true colour, as supplementary data. The images reach zoom level 9, which is about 306
-        metres for each pixel at the equator.
       </p>
     </ToolPane>
   );
