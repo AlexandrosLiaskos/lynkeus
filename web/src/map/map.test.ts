@@ -68,3 +68,7 @@ test("the view of the whole world is centred on the meridian of Greenwich", () =
   expect(map.getView().getZoom()).toBe(2);
   expect(toLonLat(map.getView().getCenter() ?? [1, 1])[0]).toBeCloseTo(0, 9);
 });
+
+test("the map carries no control of OpenLayers, so it has no scale bar and no list of credits of its own", () => {
+  expect(start().getControls().getLength()).toBe(0);
+});

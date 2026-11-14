@@ -1,7 +1,5 @@
 import { act, renderHook, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Attribution, ScaleLine } from "ol/control";
-import type Control from "ol/control/Control";
 import OlMap from "ol/Map";
 import View from "ol/View";
 import type { ReactNode } from "react";
@@ -13,7 +11,6 @@ import { Pane } from "../shared/pane/Pane";
 import { PANE_WIDTH, panesStore, resetPanes, setPaneWidth, type PaneId } from "../shared/panes";
 import { statusBarStore } from "../statusbar/state";
 import { useViewActions } from "./actions";
-import { findScaleBar } from "./scaleBar";
 
 beforeEach(() => {
   resetDock();
@@ -36,20 +33,19 @@ function setFullScreen(enabled: boolean, element: Element | null = null): void {
 }
 
 interface SetUp {
-  controls?: Control[];
   /** The panes that have something to show, and so are drawn beside the map. */
   panes?: PaneId[];
 }
 
 /** Give the actions of the View tab for a map that stands in the frame of the page, between its panes. */
-function setUp({ controls = [new Attribution(), new ScaleLine()], panes = ["contents", "catalog"] }: SetUp = {}) {
+function setUp({ panes = ["contents", "catalog"] }: SetUp = {}) {
   const frame = document.createElement("div");
   frame.className = "workspace-map";
   const target = document.createElement("main");
   target.tabIndex = 0;
   frame.append(target);
   document.body.append(frame);
-  const map = new OlMap({ view: new View({ center: [0, 0], zoom: 2 }), controls, target });
+  const map = new OlMap({ view: new View({ center: [0, 0], zoom: 2 }), controls: [], target });
   const wrapper = ({ children }: { children: ReactNode }) => (
     <MapContext value={map}>
       {panes.includes("contents") && (
@@ -145,27 +141,6 @@ test("the Status bar button shows and hides the status bar", () => {
   expect(actions()["view-status-bar"]?.pressed).toBe(false);
   act(() => actions()["view-status-bar"]?.run());
   expect(statusBarStore.get()).toBe(true);
-});
-
-test("the Scale bar button takes the scale bar off the map and puts the same one back", () => {
-  setFullScreen(true);
-  const { map, actions } = setUp();
-  const bar = findScaleBar(map);
-  expect(bar).not.toBeNull();
-  expect(actions()["view-scale-bar"]?.pressed).toBe(true);
-  act(() => actions()["view-scale-bar"]?.run());
-  expect(findScaleBar(map)).toBeNull();
-  expect(map.getControls().getLength()).toBe(1);
-  expect(actions()["view-scale-bar"]?.pressed).toBe(false);
-  act(() => actions()["view-scale-bar"]?.run());
-  expect(findScaleBar(map)).toBe(bar);
-  expect(actions()["view-scale-bar"]?.pressed).toBe(true);
-});
-
-test("on a map without a scale bar the Scale bar button has no action", () => {
-  setFullScreen(true);
-  const { actions } = setUp({ controls: [new Attribution()] });
-  expect(actions()["view-scale-bar"]).toBeUndefined();
 });
 
 test("in a browser that cannot fill the screen the Full screen button has no action", () => {

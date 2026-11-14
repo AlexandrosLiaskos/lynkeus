@@ -55,7 +55,7 @@ export function imageryUrl({ layer, date }: ImageryChoice): string {
   return `${GIBS}/${layer}/default/${date}/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpeg`;
 }
 
-/** Return the line of the source of an image, shown in the corner of the map. */
+/** Return the credit of an image: its day, its instrument and satellite, and the service that gives it. */
 export function imageryAttribution({ layer, date }: ImageryChoice): string {
   const title = IMAGERY.find(({ id }) => id === layer)?.title ?? "";
   return `Image of ${date} (${title}): <a href="https://nasa-gibs.github.io/gibs-api-docs/">NASA GIBS</a>`;
