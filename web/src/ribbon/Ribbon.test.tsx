@@ -115,6 +115,20 @@ test("the Escape key hides a description that the pointer opened, without keyboa
   expect(tip?.hidden).toBe(true);
 });
 
+test("the description shows under the panel of the ribbon, with a clear strip from the button to it", async () => {
+  render(<Ribbon tabs={TABS} actions={{ ready: { run: vi.fn() } }} />);
+  const ready = screen.getByRole("button", { name: "Ready" });
+  vi.spyOn(ready, "getBoundingClientRect").mockReturnValue({ left: 10, bottom: 100 } as DOMRect);
+  vi.spyOn(screen.getByRole("tabpanel"), "getBoundingClientRect").mockReturnValue({ bottom: 120 } as DOMRect);
+  await userEvent.tab();
+  await userEvent.tab();
+  const tip = document.getElementById(ready.getAttribute("aria-describedby") ?? "")?.parentElement;
+  expect(tip?.hidden).toBe(false);
+  expect(tip?.style.left).toBe("10px");
+  expect(tip?.style.top).toBe("100px");
+  expect(tip?.style.borderTopWidth).toBe("24px");
+});
+
 // The tests of the keyboard use a first tab with two groups of buttons.
 const TWO_GROUPS: readonly RibbonTab[] = TABS.map((tab) =>
   tab.id === "first"

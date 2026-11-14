@@ -10,6 +10,37 @@
   overflow-y: auto;
 }
 
+// The modal of the design system is made for a web page. Here it takes the sizes of the frame of the page.
+.dialog.usa-modal {
+  border-radius: 0.25rem;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.dialog .usa-modal__main {
+  padding: 0 1rem 1rem;
+}
+
+.dialog .usa-modal__heading {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.dialog .usa-modal__footer {
+  margin-top: 1rem;
+}
+
+.dialog .usa-modal__close {
+  padding: 0;
+}
+
+.dialog .usa-modal__close .usa-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin: 0.25rem;
+}
+
 .dialog:not([open]) {
   display: none;
 }

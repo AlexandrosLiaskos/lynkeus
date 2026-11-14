@@ -1,0 +1,16 @@
+{
+  "https://schemas.stacspec.org/v1.1.0/item-spec/json-schema/item.json": "stac-item.json",
+  "https://stac-extensions.github.io/projection/v2.0.0/schema.json": "projection.json",
+  "https://stac-extensions.github.io/raster/v2.0.0/schema.json": "raster.json",
+  "https://stac-extensions.github.io/processing/v1.2.0/schema.json": "processing.json",
+  "https://geojson.org/schema/Feature.json": "geojson-feature.json",
+  "https://geojson.org/schema/Geometry.json": "geojson-geometry.json",
+  "https://schemas.stacspec.org/v1.1.0/item-spec/json-schema/common.json": "stac-common.json",
+  "https://schemas.stacspec.org/v1.1.0/item-spec/json-schema/bands.json": "stac-bands.json",
+  "https://schemas.stacspec.org/v1.1.0/item-spec/json-schema/basics.json": "stac-basics.json",
+  "https://schemas.stacspec.org/v1.1.0/item-spec/json-schema/datetime.json": "stac-datetime.json",
+  "https://schemas.stacspec.org/v1.1.0/item-spec/json-schema/data-values.json": "stac-data-values.json",
+  "https://schemas.stacspec.org/v1.1.0/item-spec/json-schema/instrument.json": "stac-instrument.json",
+  "https://schemas.stacspec.org/v1.1.0/item-spec/json-schema/licensing.json": "stac-licensing.json",
+  "https://schemas.stacspec.org/v1.1.0/item-spec/json-schema/provider.json": "stac-provider.json"
+}

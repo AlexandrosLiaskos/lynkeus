@@ -44,6 +44,11 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The keyboard focus is shown by a line of 2 pixels in the primary colour. The line shows when the
   keyboard moves the focus, and stays hidden on the element that receives the focus after a click.
 - A dialog gives its first focus to its heading.
+- The description of a ribbon button shows under the panel of the ribbon and leaves the names of the
+  groups in view.
+- The messages show over the foot of the map.
+- The dialog and the close button of a pane take the sizes of the frame, and the pressed and the
+  unfinished buttons of the ribbon have a stronger contrast.
 
 ### Removed
 
