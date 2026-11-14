@@ -3,7 +3,7 @@ import View from "ol/View";
 import TileLayer from "ol/layer/Tile";
 import { expect, test } from "vitest";
 import { BASE_MAPS } from "../map/baseMaps";
-import { leftOut, paperSize, pictureFault, showsTheScreen } from "./mapImage";
+import { leftOut, makePicture, paperSize, pictureFault, showsTheScreen, sidesFault } from "./mapImage";
 
 function createMap(shown: string): OlMap {
   const map = new OlMap({
@@ -25,6 +25,21 @@ test("a picture needs whole sides between 100 and 8000 pixels and a resolution b
   expect(pictureFault({ width: Number.NaN, height: 655, resolution: 96 })).toContain("width");
   expect(pictureFault({ width: 1052, height: 655, resolution: 71 })).toContain("resolution between 72 and 600");
   expect(pictureFault({ width: 1052, height: 655, resolution: Number.NaN })).toContain("resolution");
+});
+
+test("the sides alone are checked for a picture whose resolution follows from a page", () => {
+  expect(sidesFault({ width: 1152, height: 726 })).toBeNull();
+  expect(sidesFault({ width: 50, height: 726 })).toContain("width between 100 and 8000 pixels");
+});
+
+test("a picture in which only OpenStreetMap would be left out is refused before anything is drawn", async () => {
+  const choice = { resolution: 150, sources: true, scaleBar: true, northArrow: "rotated", legends: [] } as const;
+  await expect(makePicture(createMap("openstreetmap"), { ...choice, width: 1644, height: 1023 })).rejects.toThrow(
+    "OpenStreetMap is the only layer of the map",
+  );
+  await expect(makePicture(createMap("openstreetmap"), { ...choice, width: 50, height: 1023 })).rejects.toThrow(
+    "Enter a width between 100 and 8000 pixels",
+  );
 });
 
 test("the size on paper follows from the pixels and the dots per inch", () => {

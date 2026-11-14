@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
+import { Legend } from "../contents/Legend";
 import { useStore } from "../shared/store";
 import type { FrameSide, FrameTick } from "./frame";
 import { pageName } from "./layout";
@@ -13,7 +14,7 @@ function tickPlace({ side, at }: FrameTick): CSSProperties {
 }
 
 /**
- * The page of a layout: the title, the map inside its coordinate frame, the legend, the scale, the projection,
+ * The page of a layout: the title, the map inside its coordinate frame, the legends, the scale, the projection,
  * the date and the lines of sources. It is a direct child of the body of the document. The style sheet keeps it
  * off the screen and, in a print, shows it alone on a page of the chosen paper size. Assistive technology does
  * not read it, because it repeats what the page shows.
@@ -31,7 +32,7 @@ export function LayoutSheet() {
   if (!sheet) {
     return null;
   }
-  const { form, ticks, facts, credits } = sheet;
+  const { form, layers, ticks, facts, credits } = sheet;
   const title = form.title.trim();
 
   return createPortal(
@@ -54,6 +55,12 @@ export function LayoutSheet() {
         <div ref={map} className="share-sheet-map" />
       </div>
       <div className="share-sheet-foot">
+        {layers.map((layer) => (
+          <div key={layer.id} className="share-sheet-legend">
+            <p className="share-sheet-legend-title">{layer.title}</p>
+            <Legend layer={layer} />
+          </div>
+        ))}
         <ul className="share-sheet-facts">
           {facts.map((fact) => (
             <li key={fact}>{fact}</li>

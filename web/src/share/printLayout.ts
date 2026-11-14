@@ -1,6 +1,7 @@
 import type OlMap from "ol/Map";
 import { flushSync } from "react-dom";
 import { version } from "../../package.json";
+import type { LayerDescription } from "../shared/layer";
 import { frameTicks } from "./frame";
 import {
   dateText,
@@ -11,7 +12,7 @@ import {
   scaleText,
   type LayoutForm,
 } from "./layout";
-import { makePicture, pictureFault } from "./mapImage";
+import { makePicture, sidesFault } from "./mapImage";
 import { sheetStore } from "./sheet";
 
 /** The title of the document while a layout is printed, when the layout has no title of its own. */
@@ -19,14 +20,20 @@ const PLAIN_TITLE = "Lynkeus map";
 
 /**
  * Print the map on a page, through the print function of the browser, whose print window also saves the page
- * as a PDF file. The page is first laid out without the map, so that the room that the title and the foot leave
+ * as a PDF file. The legends of the given layers stand under the map; the legend of a layer is not drawn on the
+ * map itself. The page is first laid out without the map, so that the room that the title and the foot leave
  * to the map can be measured. The map is then drawn as a picture of that size, placed on the page with the
  * marks of its coordinate frame, and the print window is opened. The page leaves the document when the print
  * window closes. The notes returned name a background map that was left out, with the reason.
  */
-export async function printLayout(map: OlMap, form: LayoutForm): Promise<readonly string[]> {
+export async function printLayout(
+  map: OlMap,
+  form: LayoutForm,
+  layers: readonly LayerDescription[],
+): Promise<readonly string[]> {
   const [width = 0, height = 0] = map.getSize() ?? [];
-  flushSync(() => sheetStore.set({ form, picture: null, ticks: [], facts: [], credits: [] }));
+  const shown = form.legend ? layers : [];
+  flushSync(() => sheetStore.set({ form, layers: shown, picture: null, ticks: [], facts: [], credits: [] }));
   const frame = document.querySelector(".share-sheet-map")?.getBoundingClientRect();
   if (!frame || frame.width <= 0 || frame.height <= 0 || width <= 0 || height <= 0) {
     sheetStore.set(null);
@@ -38,8 +45,7 @@ export async function printLayout(map: OlMap, form: LayoutForm): Promise<readonl
 
   let notes: readonly string[];
   try {
-    const fault = pictureFault({ width: pictureWidth, height: pictureHeight, resolution: 96 });
-    if (fault !== null) {
+    if (sidesFault({ width: pictureWidth, height: pictureHeight }) !== null) {
       throw new Error("The map on the screen is too small for a page. Enlarge the window, then print again.");
     }
     const made = await makePicture(map, {
@@ -60,6 +66,7 @@ export async function printLayout(map: OlMap, form: LayoutForm): Promise<readonl
     flushSync(() =>
       sheetStore.set({
         form,
+        layers: shown,
         picture,
         ticks: form.frame ? frameTicks(picture.view) : [],
         facts: [

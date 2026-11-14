@@ -1,3 +1,4 @@
+import type { LayerDescription } from "../shared/layer";
 import { createStore } from "../shared/store";
 import type { FrameTick } from "./frame";
 import type { LayoutForm } from "./layout";
@@ -10,6 +11,8 @@ export interface Sheet {
   picture: Picture | null;
   /** The marks of the coordinate frame. */
   ticks: readonly FrameTick[];
+  /** The layers whose legends stand under the map. */
+  layers: readonly LayerDescription[];
   /** The lines under the map: the scale, the projection and the date. */
   facts: readonly string[];
   /** The lines of sources. */

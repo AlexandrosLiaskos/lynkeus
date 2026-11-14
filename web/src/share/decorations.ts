@@ -19,11 +19,15 @@ export interface PictureLegend {
   title: string;
   /** What the values are, with their unit. */
   caption: string;
-  /** The colours of the scale, from the lowest value to the highest. */
-  colours: readonly string[];
-  /** The lowest and the highest value, as written under the two ends of the scale. */
-  low: string;
-  high: string;
+  /**
+   * A continuous scale: its colours from the lowest value to the highest, and the values written beside it,
+   * each with its place from 0 at the lowest value to 1 at the highest. It is null for a scale of classes.
+   */
+  ramp: { colours: readonly string[]; marks: readonly { at: number; label: string }[] } | null;
+  /** A scale of classes: each value beside its colour. */
+  classes: readonly { colour: string; label: string }[];
+  /** A sentence under the legend, or null. */
+  note: string | null;
 }
 
 /** The elements drawn on a picture of the map. */
@@ -183,21 +187,29 @@ export function decorate(
     context.font = font();
   }
 
-  // The legends, at the top left, one under the other: the name of the layer, what its values are, the colour
-  // scale, and the lowest and the highest value under its two ends.
+  // The legends, at the top left, one under the other, in the form of the Contents pane: the name of the layer,
+  // what its values are, and the colour scale upright with the highest value at its top and its values on its
+  // right. A scale of classes is a list of colours with their values.
   let legendTop = margin;
-  const scaleWidth = 160 * unit;
-  for (const { title, caption, colours, low, high } of legends) {
-    const widest = Math.max(scaleWidth, canvas.width * 0.4 - 2 * padding);
+  const rampWidth = 16 * unit;
+  const rampHeight = 96 * unit;
+  const swatchHeight = 12 * unit;
+  const gap = 6 * unit;
+  for (const { title, caption, ramp, classes, note } of legends) {
+    const widest = Math.max(160 * unit, canvas.width * 0.4 - 2 * padding);
+    const measure = (text: string) => context.measureText(text).width;
     context.font = font("bold");
-    const titleLines = wrapText(title, widest, (text) => context.measureText(text).width);
-    const titleWidth = Math.max(...titleLines.map((line) => context.measureText(line).width));
+    const titleLines = wrapText(title, widest, measure);
+    const titleWidth = Math.max(0, ...titleLines.map(measure));
     context.font = font();
-    const captionLines = wrapText(caption, widest, (text) => context.measureText(text).width);
-    const captionWidth = Math.max(0, ...captionLines.map((line) => context.measureText(line).width));
-    const width = Math.max(scaleWidth, titleWidth, captionWidth) + 2 * padding;
-    const scaleHeight = 10 * unit;
-    const height = (titleLines.length + captionLines.length + 1) * lineHeight + scaleHeight + 2 * padding + 2 * unit;
+    const textLines = [...wrapText(caption, widest, measure)];
+    const noteLines = note === null ? [] : wrapText(note, widest, measure);
+    const labels = ramp ? ramp.marks.map(({ label }) => label) : classes.map(({ label }) => label);
+    const scaleWidth = rampWidth + gap + Math.max(0, ...labels.map(measure));
+    const scaleHeight = ramp ? rampHeight + lineHeight : classes.length * lineHeight;
+    const width = Math.max(titleWidth, scaleWidth, ...textLines.map(measure), ...noteLines.map(measure)) + 2 * padding;
+    const height =
+      (titleLines.length + textLines.length + noteLines.length) * lineHeight + scaleHeight + 2 * padding + gap;
     plate(margin, legendTop, width, height);
     const left = margin + padding;
     let baseline = legendTop + padding + lineHeight - 3 * unit;
@@ -208,24 +220,43 @@ export function decorate(
       baseline += lineHeight;
     }
     context.font = font();
-    for (const line of captionLines) {
+    for (const line of textLines) {
       context.fillText(line, left, baseline);
       baseline += lineHeight;
     }
-    const scaleTop = baseline - lineHeight + 5 * unit;
-    if (colours.length > 0) {
-      const gradient = context.createLinearGradient(left, 0, left + scaleWidth, 0);
-      colours.forEach((colour, index) =>
-        gradient.addColorStop(colours.length === 1 ? 0 : index / (colours.length - 1), colour),
-      );
+    let top = baseline - lineHeight + 3 * unit + gap;
+    context.textBaseline = "middle";
+    if (ramp) {
+      // Half a line stays free above and below the scale, for the values of its two ends.
+      top += lineHeight / 2;
+      const gradient = context.createLinearGradient(0, top + rampHeight, 0, top);
+      const last = Math.max(1, ramp.colours.length - 1);
+      ramp.colours.forEach((colour, index) => gradient.addColorStop(index / last, colour));
       context.fillStyle = gradient;
-      context.fillRect(left, scaleTop, scaleWidth, scaleHeight);
-      context.strokeRect(left + unit / 2, scaleTop + unit / 2, scaleWidth - unit, scaleHeight - unit);
+      context.fillRect(left, top, rampWidth, rampHeight);
+      context.strokeRect(left + unit / 2, top + unit / 2, rampWidth - unit, rampHeight - unit);
       context.fillStyle = INK;
+      for (const { at, label } of ramp.marks) {
+        context.fillText(label, left + rampWidth + gap, top + rampHeight * (1 - at));
+      }
+      top += rampHeight + lineHeight / 2;
+    } else {
+      for (const { colour, label } of classes) {
+        const swatchTop = top + (lineHeight - swatchHeight) / 2;
+        context.fillStyle = colour;
+        context.fillRect(left, swatchTop, rampWidth, swatchHeight);
+        context.strokeRect(left + unit / 2, swatchTop + unit / 2, rampWidth - unit, swatchHeight - unit);
+        context.fillStyle = INK;
+        context.fillText(label, left + rampWidth + gap, top + lineHeight / 2);
+        top += lineHeight;
+      }
     }
-    context.fillText(low, left, scaleTop + scaleHeight + lineHeight - 2 * unit);
-    context.textAlign = "right";
-    context.fillText(high, left + scaleWidth, scaleTop + scaleHeight + lineHeight - 2 * unit);
+    context.textBaseline = "alphabetic";
+    baseline = top + lineHeight - 3 * unit;
+    for (const line of noteLines) {
+      context.fillText(line, left, baseline);
+      baseline += lineHeight;
+    }
     legendTop += height + margin / 2;
   }
   context.textAlign = "start";

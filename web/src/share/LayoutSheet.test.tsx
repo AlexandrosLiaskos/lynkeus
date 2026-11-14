@@ -1,5 +1,6 @@
 import { act, render } from "@testing-library/react";
 import { beforeEach, expect, test } from "vitest";
+import type { LayerDescription } from "../shared/layer";
 import { FIRST_LAYOUT_FORM } from "./layout";
 import { LayoutSheet } from "./LayoutSheet";
 import type { Picture } from "./picture";
@@ -11,8 +12,25 @@ const PICTURE: Picture = {
   credits: [],
 };
 
+const BACKSCATTER: LayerDescription = {
+  id: "gcov-hhhh-20261021",
+  title: "Backscatter HH, 21 Oct 2026",
+  kind: "layer",
+  url: "/files/gcov-hhhh-20261021/gcov-hhhh-20261021.tif",
+  quantity: "Radar backscatter gamma nought, HH, linear power",
+  unit: "1",
+  range: [0, 0.5],
+  colours: "grey",
+  dates: ["2026-10-21"],
+  inputs: ["NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"],
+  program: "Lynkeus 0.1.0",
+  method: null,
+  record: "/files/gcov-hhhh-20261021/gcov-hhhh-20261021.json",
+};
+
 const SHEET: Sheet = {
   form: { ...FIRST_LAYOUT_FORM, title: "Lower Merrimack River" },
+  layers: [],
   picture: PICTURE,
   ticks: [
     { side: "top", at: 0.25, label: "71\u00b000\u2032W" },
@@ -87,4 +105,16 @@ test("while the page is measured it holds no picture", () => {
   render(<LayoutSheet />);
   act(() => sheetStore.set({ ...SHEET, picture: null }));
   expect(sheet()?.querySelector(".share-sheet-map")?.childElementCount).toBe(0);
+});
+
+test("the legend of each layer stands on the page under the name of the layer", () => {
+  render(<LayoutSheet />);
+  act(() => sheetStore.set({ ...SHEET, layers: [BACKSCATTER] }));
+  const legends = [...(sheet()?.querySelectorAll(".share-sheet-legend") ?? [])];
+  expect(legends).toHaveLength(1);
+  expect(legends[0]?.querySelector(".share-sheet-legend-title")?.textContent).toBe("Backscatter HH, 21 Oct 2026");
+  expect(legends[0]?.querySelector(".legend-quantity")?.textContent).toBe(
+    "Radar backscatter gamma nought, HH, linear power",
+  );
+  expect(legends[0]?.querySelector(".legend-ramp")).not.toBeNull();
 });

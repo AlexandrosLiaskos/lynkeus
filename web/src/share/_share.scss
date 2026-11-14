@@ -14,6 +14,18 @@
   word-break: break-all;
 }
 
+// The explanation of a choice stands under its label, in line with the text of the label.
+.share-note--choice {
+  margin: 0 0 0.25rem 1.625rem;
+}
+
+// A citation is read and copied as it is, so its lines break only where they are too long.
+.pane .share-citation {
+  height: auto;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
 // The page of a layout. On the screen it stands outside the window, laid out in its true size, so that the room
 // of the map can be measured. In a print it is the only element of the document.
 $margin: 10mm;
@@ -184,6 +196,22 @@ $papers: (
   margin-top: 2mm;
 }
 
+// The legend of a layer on the page: the name of the layer above the legend of the Contents pane.
+.share-sheet-legend {
+  flex: none;
+  max-width: 60mm;
+
+  .legend {
+    color: inherit;
+    font-size: inherit;
+  }
+}
+
+.share-sheet-legend-title {
+  margin: 0 0 1mm;
+  font-weight: bold;
+}
+
 .share-sheet-facts,
 .share-sheet-sources {
   margin: 0;
@@ -201,9 +229,10 @@ $papers: (
 }
 
 @media print {
-  // While a layout is in the document, a print shows the layout alone.
+  // While a layout is in the document, a print shows the layout alone. The rule is marked important, because
+  // the page gives its root element a display with a selector of an id, which is stronger than this one.
   body:has(> .share-sheet) > :not(.share-sheet) {
-    display: none;
+    display: none !important;
   }
 
   html:has(.share-sheet),
