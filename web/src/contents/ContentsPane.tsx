@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState, type DragEvent } from "react";
+import { useEffect, useId, useRef, useState, type DragEvent } from "react";
+import { Icon } from "../shared/icon/Icon";
 import { mapLayersStore } from "../shared/mapLayers";
 import { Pane } from "../shared/pane/Pane";
 import { useStore } from "../shared/store";
-import { BackgroundMaps } from "./BackgroundMaps";
+import { BasemapItem, MAP_ROW_ID } from "./BasemapItem";
 import { LayerItem, nameButtonId } from "./LayerItem";
 import { listedLayers, placeLayer, placeOf } from "./order";
 import { useLayerDrawing } from "./useLayerDrawing";
@@ -13,7 +14,10 @@ interface Drop {
   side: "above" | "below";
 }
 
-/** The layers of the map, the top layer first. A layer is moved by dragging it, by its menu or by the keyboard. */
+/**
+ * The layers of the map, the top layer first and the basemap last. A layer is moved by dragging it, by its menu or
+ * by the keyboard. The basemap stays at the bottom.
+ */
 function Layers() {
   const layers = listedLayers(useStore(mapLayersStore));
   const [dragged, setDragged] = useState<string | null>(null);
@@ -41,7 +45,7 @@ function Layers() {
 
   const onRemoved = (place: number) => {
     const next = layers.filter((_, index) => index !== place)[Math.min(place, layers.length - 2)];
-    focus.current = next ? nameButtonId(next.id) : "contents-empty";
+    focus.current = next ? nameButtonId(next.id) : MAP_ROW_ID;
     setSaid("The layer was removed.");
   };
 
@@ -76,34 +80,28 @@ function Layers() {
 
   return (
     <>
-      {layers.length === 0 ? (
-        <p className="contents-empty" id="contents-empty" tabIndex={-1}>
-          The map has no layers. A layer that you receive with Get layer on the Data tab, and the result of a tool of
-          the Analysis tab, are listed here.
-        </p>
-      ) : (
-        <ul className="contents-list" aria-label="Layers, the top layer first">
-          {layers.map((layer, place) => (
-            <LayerItem
-              key={layer.id}
-              layer={layer}
-              place={place}
-              count={layers.length}
-              drop={drop?.id === layer.id && dragged !== layer.id ? drop.side : null}
-              onDragStart={(event) => {
-                event.dataTransfer.setData("text/plain", layer.title);
-                event.dataTransfer.effectAllowed = "move";
-                setDragged(layer.id);
-              }}
-              onDragOver={onDragOver(layer.id)}
-              onDrop={onDrop}
-              onDragEnd={endDrag}
-              onMoved={onMoved}
-              onRemoved={onRemoved}
-            />
-          ))}
-        </ul>
-      )}
+      <ul className="contents-list" aria-label="Layers, the top layer first">
+        {layers.map((layer, place) => (
+          <LayerItem
+            key={layer.id}
+            layer={layer}
+            place={place}
+            count={layers.length}
+            drop={drop?.id === layer.id && dragged !== layer.id ? drop.side : null}
+            onDragStart={(event) => {
+              event.dataTransfer.setData("text/plain", layer.title);
+              event.dataTransfer.effectAllowed = "move";
+              setDragged(layer.id);
+            }}
+            onDragOver={onDragOver(layer.id)}
+            onDrop={onDrop}
+            onDragEnd={endDrag}
+            onMoved={onMoved}
+            onRemoved={onRemoved}
+          />
+        ))}
+        <BasemapItem />
+      </ul>
       <p className="usa-sr-only" role="status">
         {said}
       </p>
@@ -112,17 +110,31 @@ function Layers() {
 }
 
 /**
- * The Contents pane, on the left of the map: the layers of the map in drawing order, with the top layer first
- * and the background maps last. The layers are drawn on the map whether the pane is open or closed.
+ * The Contents pane, on the left of the map, as in ArcGIS Pro: the map and, under it, its layers in drawing order,
+ * with the top layer first and the basemap last. The row of the map folds and unfolds the list. The layers are
+ * drawn on the map whether the pane is open or closed.
  */
 export function ContentsPane() {
   useLayerDrawing();
+  const [folded, setFolded] = useState(false);
+  const layersId = useId();
   return (
     <Pane id="contents" title="Contents">
-      <h3 className="contents-heading">Drawing order</h3>
-      <Layers />
-      <h3 className="contents-heading">Background maps</h3>
-      <BackgroundMaps />
+      <button
+        type="button"
+        id={MAP_ROW_ID}
+        className="contents-map"
+        aria-expanded={!folded}
+        aria-controls={layersId}
+        onClick={() => setFolded(!folded)}
+      >
+        <Icon name={folded ? "navigate_next" : "expand_more"} />
+        <Icon name="map" />
+        <span>Map</span>
+      </button>
+      <div className="contents-map-layers" id={layersId} hidden={folded}>
+        <Layers />
+      </div>
     </Pane>
   );
 }
