@@ -1,37 +1,72 @@
 @use "uswds-core" as uswds;
 
-// The style of the elements of the Data tab.
+// The style of the elements of the Data tab. The sizes of the form elements come from the shared form style.
 
-// The form of the search takes the width of its dialog.
-.search-form.usa-form,
-.search-form .usa-input,
-.search-form .usa-select {
-  max-width: none;
+// The check boxes of one name stand in a row, and the radio buttons with long names one under the other.
+.search-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1rem;
 }
 
-.search-form .usa-fieldset {
-  margin-top: 1.5rem;
+.search-checks legend {
+  width: 100%;
 }
 
-// The fields of one group stand in a row, each as wide as the others. The four sides of the area take two
-// rows in a narrow window.
-.search-form-row {
+.search-checks--lines {
+  flex-direction: column;
+}
+
+// The fields of one line stand side by side, each as wide as the other.
+.search-row {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0 0.75rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 0.5rem;
 }
 
-.search-form-row--four {
-  @include uswds.at-media("mobile-lg") {
-    grid-template-columns: repeat(4, 1fr);
-  }
+// The day and the month of one end of a season.
+.search-season-day {
+  display: grid;
+  grid-template-columns: 4rem minmax(0, 1fr);
+  gap: 0 0.25rem;
 }
 
-.search-form-row .usa-label {
-  margin-top: 0.5rem;
+.search-season-day legend {
+  grid-column: 1 / -1;
 }
 
-// The design system gives a button of a form a top margin, which the foot of a dialog already has.
-.search-form .usa-modal__footer .usa-button {
-  margin-top: 0;
+// A sentence under the fields: what the area is, how to draw it, or what a file gave.
+.search-note {
+  margin: 0.375rem 0 0;
+  color: uswds.color("base-darker");
+}
+
+.search-note.usa-error-message {
+  color: uswds.color("error-dark");
+  font-weight: normal;
+}
+
+// The names of the products are easier to compare in letters of one width.
+.search-names.usa-textarea {
+  height: 8rem;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+}
+
+// The field that takes the file stays in the page for assistive technology, and the choice "A file" of the
+// list of areas opens it.
+.search-file {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.search-restore {
+  margin: 0.75rem 0 0;
+}
+
+// As in the Catalog pane, a button that is shown as a link has no side padding.
+.pane .search-restore .usa-button.usa-button--unstyled {
+  padding: 0;
 }

@@ -1,0 +1,581 @@
+{
+ "hits": 1,
+ "took": 0,
+ "items": [
+  {
+   "meta": {
+    "concept-type": "granule",
+    "concept-id": "G4382247556-ASF",
+    "revision-id": 1,
+    "native-id": "NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001",
+    "collection-concept-id": "C2854341702-ASF",
+    "provider-id": "ASF",
+    "format": "application/vnd.nasa.cmr.umm+json",
+    "revision-date": "2026-10-21T22:03:11.784Z"
+   },
+   "umm": {
+    "TemporalExtent": {
+     "RangeDateTime": {
+      "BeginningDateTime": "2026-10-08T05:00:40.000000Z",
+      "EndingDateTime": "2026-10-20T05:01:00.999342Z"
+     }
+    },
+    "OrbitCalculatedSpatialDomains": [
+     {
+      "OrbitNumber": 6269
+     }
+    ],
+    "GranuleUR": "NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001",
+    "AdditionalAttributes": [
+     {
+      "Name": "ASCENDING_DESCENDING",
+      "Values": [
+       "DESCENDING"
+      ]
+     },
+     {
+      "Name": "FRAME_NUMBER",
+      "Values": [
+       "127"
+      ]
+     },
+     {
+      "Name": "FREQUENCIES",
+      "Values": [
+       "A"
+      ]
+     },
+     {
+      "Name": "FREQUENCY_A_POLARIZATION",
+      "Values": [
+       "HH"
+      ]
+     },
+     {
+      "Name": "FREQUENCY_A_POLARIZATION_CONCAT",
+      "Values": [
+       "HH"
+      ]
+     },
+     {
+      "Name": "FREQUENCY_A_RANGE_BANDWIDTH",
+      "Values": [
+       "40"
+      ]
+     },
+     {
+      "Name": "FULL_FRAME",
+      "Values": [
+       "FALSE"
+      ]
+     },
+     {
+      "Name": "JOINT_OBSERVATION",
+      "Values": [
+       "TRUE"
+      ]
+     },
+     {
+      "Name": "ORBIT_TYPE",
+      "Values": [
+       "MOE"
+      ]
+     },
+     {
+      "Name": "PROCESSING_CENTER",
+      "Values": [
+       "JPL"
+      ]
+     },
+     {
+      "Name": "PROCESSING_LEVEL",
+      "Values": [
+       "L2"
+      ]
+     },
+     {
+      "Name": "PRODUCTION_PIPELINE",
+      "Values": [
+       "PR"
+      ]
+     },
+     {
+      "Name": "PRODUCT_TYPE",
+      "Values": [
+       "GOFF"
+      ]
+     },
+     {
+      "Name": "PRODUCT_TYPE_DESC",
+      "Values": [
+       "Geocoded Pixel Offsets"
+      ]
+     },
+     {
+      "Name": "PRODUCT_VERSION",
+      "Values": [
+       "1.0.11"
+      ]
+     },
+     {
+      "Name": "RANGE_BANDWIDTH_CONCAT",
+      "Values": [
+       "40"
+      ]
+     },
+     {
+      "Name": "REFERENCE_ZERO_DOPPLER_END_TIME",
+      "Values": [
+       "2026-10-08T05:01:06.999342Z"
+      ]
+     },
+     {
+      "Name": "REFERENCE_ZERO_DOPPLER_START_TIME",
+      "Values": [
+       "2026-10-08T05:00:40.000000Z"
+      ]
+     },
+     {
+      "Name": "SECONDARY_ZERO_DOPPLER_END_TIME",
+      "Values": [
+       "2026-10-20T05:01:00.999342Z"
+      ]
+     },
+     {
+      "Name": "SECONDARY_ZERO_DOPPLER_START_TIME",
+      "Values": [
+       "2026-10-20T05:00:48.000000Z"
+      ]
+     },
+     {
+      "Name": "STACK_ID",
+      "Values": [
+       "115_D_127"
+      ]
+     },
+     {
+      "Name": "TRACK_NUMBER",
+      "Values": [
+       "115"
+      ]
+     }
+    ],
+    "SpatialExtent": {
+     "GranuleLocalities": [
+      "Ocean"
+     ],
+     "HorizontalSpatialDomain": {
+      "Geometry": {
+       "GPolygons": [
+        {
+         "Boundary": {
+          "Points": [
+           {
+            "Latitude": -78.94175,
+            "Longitude": -180
+           },
+           {
+            "Latitude": -79.18695,
+            "Longitude": -175.10511
+           },
+           {
+            "Latitude": -77.62991,
+            "Longitude": -173.48571
+           },
+           {
+            "Latitude": -77.26727,
+            "Longitude": -180
+           },
+           {
+            "Latitude": -78.94175,
+            "Longitude": -180
+           }
+          ]
+         }
+        },
+        {
+         "Boundary": {
+          "Points": [
+           {
+            "Latitude": -77.26727,
+            "Longitude": 180
+           },
+           {
+            "Latitude": -76.99878,
+            "Longitude": 176.53395
+           },
+           {
+            "Latitude": -78.48522,
+            "Longitude": 173.67623
+           },
+           {
+            "Latitude": -78.94175,
+            "Longitude": 180
+           },
+           {
+            "Latitude": -77.26727,
+            "Longitude": 180
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    },
+    "ProviderDates": [
+     {
+      "Type": "Insert",
+      "Date": "2026-10-21T22:03:09.223135Z"
+     },
+     {
+      "Type": "Update",
+      "Date": "2026-10-21T22:03:09.223135Z"
+     }
+    ],
+    "CollectionReference": {
+     "ShortName": "NISAR_L2_GOFF_PROVISIONAL_V1",
+     "Version": "1"
+    },
+    "PGEVersionClass": {
+     "PGEName": "INSAR_L_PGE",
+     "PGEVersion": "R05.02.3"
+    },
+    "RelatedUrls": [
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.h5",
+      "Type": "GET DATA",
+      "Description": "Download NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.h5",
+      "Format": "HDF5"
+     },
+     {
+      "URL": "s3://sds-n-cumulus-prod-nisar-products/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.h5",
+      "Type": "GET DATA VIA DIRECT ACCESS",
+      "Description": "This link provides direct download access via S3 to NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.h5",
+      "Format": "HDF5"
+     },
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/BROWSE/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_LATLON.png",
+      "Type": "GET RELATED VISUALIZATION",
+      "Description": "Download NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_LATLON.png",
+      "Format": "PNG"
+     },
+     {
+      "URL": "s3://sds-n-cumulus-prod-nisar-browse/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_LATLON.png",
+      "Type": "GET RELATED VISUALIZATION",
+      "Description": "This link provides direct download access via S3 to NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_LATLON.png",
+      "Format": "PNG"
+     },
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/BROWSE/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_LATLON_thumbnail.png",
+      "Type": "GET RELATED VISUALIZATION",
+      "Description": "Download NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_LATLON_thumbnail.png",
+      "Format": "PNG"
+     },
+     {
+      "URL": "s3://sds-n-cumulus-prod-nisar-browse/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_LATLON_thumbnail.png",
+      "Type": "GET RELATED VISUALIZATION",
+      "Description": "This link provides direct download access via S3 to NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_LATLON_thumbnail.png",
+      "Format": "PNG"
+     },
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/BROWSE/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_NATIVE.png",
+      "Type": "GET RELATED VISUALIZATION",
+      "Description": "Download NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_NATIVE.png",
+      "Format": "PNG"
+     },
+     {
+      "URL": "s3://sds-n-cumulus-prod-nisar-browse/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_NATIVE.png",
+      "Type": "GET RELATED VISUALIZATION",
+      "Description": "This link provides direct download access via S3 to NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_NATIVE.png",
+      "Format": "PNG"
+     },
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.h5.iso.xml",
+      "Type": "EXTENDED METADATA",
+      "Description": "Download NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.h5.iso.xml",
+      "Format": "XML"
+     },
+     {
+      "URL": "s3://sds-n-cumulus-prod-nisar-products/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.h5.iso.xml",
+      "Type": "EXTENDED METADATA",
+      "Description": "This link provides direct download access via S3 to NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.h5.iso.xml",
+      "Format": "XML"
+     },
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.rc.yaml",
+      "Type": "EXTENDED METADATA",
+      "Description": "Download NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.rc.yaml",
+      "Format": "YAML"
+     },
+     {
+      "URL": "s3://sds-n-cumulus-prod-nisar-products/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.rc.yaml",
+      "Type": "EXTENDED METADATA",
+      "Description": "This link provides direct download access via S3 to NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.rc.yaml",
+      "Format": "YAML"
+     },
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_LATLON.kml",
+      "Type": "EXTENDED METADATA",
+      "Description": "Download NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_LATLON.kml",
+      "Format": "KML"
+     },
+     {
+      "URL": "s3://sds-n-cumulus-prod-nisar-products/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_LATLON.kml",
+      "Type": "EXTENDED METADATA",
+      "Description": "This link provides direct download access via S3 to NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_LATLON.kml",
+      "Format": "KML"
+     },
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_NATIVE.kml",
+      "Type": "EXTENDED METADATA",
+      "Description": "Download NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_NATIVE.kml",
+      "Format": "KML"
+     },
+     {
+      "URL": "s3://sds-n-cumulus-prod-nisar-products/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_NATIVE.kml",
+      "Type": "EXTENDED METADATA",
+      "Description": "This link provides direct download access via S3 to NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_NATIVE.kml",
+      "Format": "KML"
+     },
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_QA_REPORT.pdf",
+      "Type": "VIEW RELATED INFORMATION",
+      "Subtype": "PRODUCT QUALITY ASSESSMENT",
+      "Description": "Download NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_QA_REPORT.pdf",
+      "Format": "PDF"
+     },
+     {
+      "URL": "s3://sds-n-cumulus-prod-nisar-products/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_QA_REPORT.pdf",
+      "Type": "VIEW RELATED INFORMATION",
+      "Subtype": "PRODUCT QUALITY ASSESSMENT",
+      "Description": "This link provides direct download access via S3 to NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_QA_REPORT.pdf",
+      "Format": "PDF"
+     },
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_QA_STATS.h5",
+      "Type": "VIEW RELATED INFORMATION",
+      "Subtype": "PRODUCT QUALITY ASSESSMENT",
+      "Description": "Download NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_QA_STATS.h5",
+      "Format": "HDF5"
+     },
+     {
+      "URL": "s3://sds-n-cumulus-prod-nisar-products/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_QA_STATS.h5",
+      "Type": "VIEW RELATED INFORMATION",
+      "Subtype": "PRODUCT QUALITY ASSESSMENT",
+      "Description": "This link provides direct download access via S3 to NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_QA_STATS.h5",
+      "Format": "HDF5"
+     },
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_QA_SUMMARY.csv",
+      "Type": "VIEW RELATED INFORMATION",
+      "Subtype": "PRODUCT QUALITY ASSESSMENT",
+      "Description": "Download NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_QA_SUMMARY.csv",
+      "Format": "CSV"
+     },
+     {
+      "URL": "s3://sds-n-cumulus-prod-nisar-products/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_QA_SUMMARY.csv",
+      "Type": "VIEW RELATED INFORMATION",
+      "Subtype": "PRODUCT QUALITY ASSESSMENT",
+      "Description": "This link provides direct download access via S3 to NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_QA_SUMMARY.csv",
+      "Format": "CSV"
+     },
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR-JPL-PRIVATE-DATA/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.context.json",
+      "Type": "EXTENDED METADATA",
+      "Description": "Download NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.context.json Access to file is restricted",
+      "Format": "JSON"
+     },
+     {
+      "URL": "s3://sds-n-cumulus-prod-nisar-jpl-private-data/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.context.json",
+      "Type": "EXTENDED METADATA",
+      "Description": "This link provides direct download access via S3 to NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.context.json Access to file is restricted",
+      "Format": "JSON"
+     },
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR-JPL-PRIVATE-DATA/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.dataset.json",
+      "Type": "EXTENDED METADATA",
+      "Description": "Download NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.dataset.json Access to file is restricted",
+      "Format": "JSON"
+     },
+     {
+      "URL": "s3://sds-n-cumulus-prod-nisar-jpl-private-data/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.dataset.json",
+      "Type": "EXTENDED METADATA",
+      "Description": "This link provides direct download access via S3 to NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.dataset.json Access to file is restricted",
+      "Format": "JSON"
+     },
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR-JPL-PRIVATE-DATA/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.h5.log",
+      "Type": "EXTENDED METADATA",
+      "Description": "Download NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.h5.log Access to file is restricted",
+      "Format": "Text File"
+     },
+     {
+      "URL": "s3://sds-n-cumulus-prod-nisar-jpl-private-data/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.h5.log",
+      "Type": "EXTENDED METADATA",
+      "Description": "This link provides direct download access via S3 to NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.h5.log Access to file is restricted",
+      "Format": "Text File"
+     },
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR-JPL-PRIVATE-DATA/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.met.json",
+      "Type": "EXTENDED METADATA",
+      "Description": "Download NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.met.json Access to file is restricted",
+      "Format": "JSON"
+     },
+     {
+      "URL": "s3://sds-n-cumulus-prod-nisar-jpl-private-data/NISAR_L2_GOFF_PROVISIONAL_V1/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001/NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.met.json",
+      "Type": "EXTENDED METADATA",
+      "Description": "This link provides direct download access via S3 to NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.met.json Access to file is restricted",
+      "Format": "JSON"
+     },
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/s3credentials",
+      "Type": "VIEW RELATED INFORMATION",
+      "Description": "S3 credentials endpoint for direct in-region bucket access"
+     }
+    ],
+    "InputGranules": [
+     "NISAR_L1_PR_RSLC_032_115_D_127_4005_SHSH_A_20261008T050040_20261008T050106_P05023_N_P_J_001.h5",
+     "NISAR_L1_PR_RSLC_033_115_D_127_4005_SHSH_A_20261020T050048_20261020T050100_P05023_N_P_J_001.h5"
+    ],
+    "DataGranule": {
+     "DayNightFlag": "Unspecified",
+     "ProductionDateTime": "2026-10-21T21:36:00.000000Z",
+     "ArchiveAndDistributionInformation": [
+      {
+       "Name": "NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.h5",
+       "SizeInBytes": 742391808,
+       "Format": "HDF5",
+       "Checksum": {
+        "Value": "f49265ea070245326ec6d07405dd8143",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_LATLON.png",
+       "SizeInBytes": 258568,
+       "Format": "PNG",
+       "Checksum": {
+        "Value": "e68ce4908b297b945b9ac616677bcf1c",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_NATIVE.png",
+       "SizeInBytes": 310641,
+       "Format": "PNG",
+       "Checksum": {
+        "Value": "187329a1f418c75d2a742236e932a074",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.h5.iso.xml",
+       "SizeInBytes": 112807,
+       "Format": "XML",
+       "Checksum": {
+        "Value": "2980432576b882a5593c331a2dc39067",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_QA_REPORT.pdf",
+       "SizeInBytes": 502789,
+       "Format": "PDF",
+       "Checksum": {
+        "Value": "b89498327df92ebd0f339e7a36299076",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_QA_STATS.h5",
+       "SizeInBytes": 215462,
+       "Format": "HDF5",
+       "Checksum": {
+        "Value": "8dddc664583dfcfbf0f1e805aecc541a",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_QA_SUMMARY.csv",
+       "SizeInBytes": 4199,
+       "Format": "CSV",
+       "Checksum": {
+        "Value": "ece4bda89ba8bca09373f6819e064ac3",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_LATLON.kml",
+       "SizeInBytes": 605,
+       "Format": "KML",
+       "Checksum": {
+        "Value": "5601849e5a9f2cf72d3b9ad0f34e6d17",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001_NATIVE.kml",
+       "SizeInBytes": 607,
+       "Format": "KML",
+       "Checksum": {
+        "Value": "e6923481e62ac493f740fc93e4e129ea",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001.rc.yaml",
+       "SizeInBytes": 12258,
+       "Format": "YAML",
+       "Checksum": {
+        "Value": "1ad5ec5215c3bbfee6344595bf69fc1b",
+        "Algorithm": "MD5"
+       }
+      }
+     ],
+     "Identifiers": [
+      {
+       "IdentifierType": "ProducerGranuleId",
+       "Identifier": "NISAR_L2_PR_GOFF_032_115_D_127_033_4000_SH_20261008T050040_20261008T050106_20261020T050048_20261020T050100_P05023_N_P_J_001"
+      },
+      {
+       "IdentifierType": "Other",
+       "Identifier": "ISCE3 0.25.16",
+       "IdentifierName": "SASVersionId"
+      },
+      {
+       "IdentifierType": "CRID",
+       "Identifier": "P05023"
+      },
+      {
+       "IdentifierType": "Other",
+       "Identifier": "1",
+       "IdentifierName": "ProductCounter"
+      }
+     ]
+    },
+    "Platforms": [
+     {
+      "ShortName": "NISAR",
+      "Instruments": [
+       {
+        "ShortName": "L-SAR",
+        "Characteristics": [
+         {
+          "Name": "LookDirection",
+          "Value": "LEFT"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "MetadataSpecification": {
+     "URL": "https://cdn.earthdata.nasa.gov/umm/granule/v1.6.7",
+     "Name": "UMM-G",
+     "Version": "1.6.7"
+    }
+   }
+  }
+ ]
+}
