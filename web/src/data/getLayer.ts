@@ -1,6 +1,8 @@
 import { isArea, type Area } from "../shared/area";
 import type { LayerRequest, ProductType } from "../shared/layer";
 import { createStore } from "../shared/store";
+import type { SearchDraft } from "./search";
+import { rectangleAround } from "./searchArea";
 import { call } from "./service";
 
 /** A layer of a product that Lynkeus receives, as the server lists it with the product. */
@@ -68,25 +70,6 @@ const PROCESS = "/api/processes/get-layer";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-function isText(value: unknown): value is string {
-  return typeof value === "string" && value !== "";
-}
-
-/** Tell whether a value that the server sent is a layer of a product. */
-export function isLayerChoice(value: unknown): value is LayerChoice {
-  if (!isRecord(value)) {
-    return false;
-  }
-  const { spacing } = value;
-  return (
-    isText(value.name) &&
-    isText(value.title) &&
-    (spacing === undefined ||
-      spacing === null ||
-      (typeof spacing === "number" && Number.isFinite(spacing) && spacing > 0))
-  );
 }
 
 function radians(degrees: number): number {
@@ -181,26 +164,9 @@ export function coverage(area: Area, footprint: readonly Ring[]): Coverage {
   return overlaps ? "partly" : "outside";
 }
 
-/**
- * Return the smallest area that holds the outlines of the given products, with four decimals, or null when
- * there is none: without an outline, or for outlines that reach across more than half of the Earth, as the two
- * polygons of a product on the meridian of 180 degrees do.
- */
-export function outlineArea(footprints: readonly (readonly Ring[])[]): Area | null {
-  const points = footprints.flat(2);
-  if (points.length === 0) {
-    return null;
-  }
-  const longitudes = points.map(([longitude]) => longitude);
-  const latitudes = points.map(([, latitude]) => latitude);
-  const area = {
-    west: Math.max(-180, Math.floor(Math.min(...longitudes) * 1e4) / 1e4),
-    south: Math.max(-90, Math.floor(Math.min(...latitudes) * 1e4) / 1e4),
-    east: Math.min(180, Math.ceil(Math.max(...longitudes) * 1e4) / 1e4),
-    north: Math.min(90, Math.ceil(Math.max(...latitudes) * 1e4) / 1e4),
-  };
-  return isArea(area) && area.east - area.west <= 180 ? area : null;
-}
+const NO_NUMBERS = "Give the four sides of the area as numbers.";
+const CROSSES =
+  "A layer is not received for an area that crosses the meridian of 180 degrees. Choose an area on one side of it.";
 
 /** Return the area that the four fields hold, or null when they do not hold one. */
 export function areaOf(sides: Sides): Area | null {
@@ -214,7 +180,7 @@ export function sidesFault(sides: Sides): string | null {
   if (
     [sides.west, sides.south, sides.east, sides.north].some((text) => text.trim() === "" || Number.isNaN(Number(text)))
   ) {
-    return "Give the four sides of the area as numbers.";
+    return NO_NUMBERS;
   }
   if (!areaOf(sides)) {
     return "The area is not valid. West must be smaller than east and south smaller than north. Longitude runs from -180 to 180 degrees and latitude from -90 to 90.";
@@ -222,9 +188,41 @@ export function sidesFault(sides: Sides): string | null {
   return null;
 }
 
-/** Write the sides of an area as the text of the four fields. */
-export function sidesOf({ west, south, east, north }: Area): Sides {
-  return { west: String(west), south: String(south), east: String(east), north: String(north) };
+/** The area of a layer request, as it follows from the area of the search. */
+export interface RequestArea {
+  /** The rectangle to which the layers are clipped, or null when the area gives none. */
+  area: Area | null;
+  /** Why the area gives no rectangle, in plain words, or null. */
+  fault: string | null;
+  /** Whether the rectangle is the one around an area of polygons. */
+  around: boolean;
+}
+
+/**
+ * Return the rectangle to which a layer is clipped, from the area of the search. A layer request takes a
+ * rectangle that does not cross the meridian of 180 degrees: an area of polygons gives the rectangle around
+ * them, and the whole Earth gives none.
+ */
+export function requestArea({ limited, area }: Pick<SearchDraft, "limited" | "area">): RequestArea {
+  if (!limited) {
+    return { area: null, fault: "A layer is not received for the whole Earth. Choose an area.", around: false };
+  }
+  const around = area.kind === "polygons";
+  if (area.kind === "rectangle") {
+    const fault = sidesFault(area);
+    const sides = areaOf(area);
+    if (sides || fault === null) {
+      return { area: sides, fault: null, around };
+    }
+    const crosses =
+      fault !== NO_NUMBERS && Number(area.west) > Number(area.east) && Number(area.south) < Number(area.north);
+    return { area: null, fault: crosses ? CROSSES : fault, around };
+  }
+  if (area.rings.length === 0) {
+    return { area: null, fault: "The area has no polygon. Choose an area.", around };
+  }
+  const sides = rectangleAround(area.rings);
+  return isArea(sides) ? { area: sides, fault: null, around } : { area: null, fault: CROSSES, around };
 }
 
 /**

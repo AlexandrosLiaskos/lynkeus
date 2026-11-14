@@ -1,8 +1,5 @@
 import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import OlMap from "ol/Map";
-import View from "ol/View";
-import { fromLonLat } from "ol/proj";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { areaStore } from "../shared/area";
 import { dockStore, frontOf, openToolPane, panesOf, resetDock } from "../shared/dock/dock";
@@ -13,9 +10,12 @@ import { resetPanes, setPaneOpen } from "../shared/panes";
 import { useStore } from "../shared/store";
 import { addWhenReadyStore } from "./follow";
 import { cellLimitStore, type RequestProduct } from "./getLayer";
-import { GET_LAYER, GetLayerPane, productTitle, runOf } from "./GetLayerPane";
+import { ABOUT, GetLayerForm, GetLayerPane, productTitle, runOf } from "./GetLayerPane";
 import { jobsStore, loadJobs, resetJobs } from "./jobs";
 import { onSignInEnded } from "./service";
+import { resetSession, sessionStore, type Session } from "./session";
+import { clearProducts, GET_LAYER_PANE, productsStore, searchDraftStore, selectedProductStore } from "./state";
+import { realProduct, testMap } from "./testProducts";
 import { AREA, HH, product } from "./testRequest";
 import { job, standIn, type StandIn } from "./testSession";
 
@@ -25,6 +25,9 @@ beforeEach(() => {
   resetDock();
   resetPanes();
   resetJobs();
+  resetSession();
+  clearProducts();
+  searchDraftStore.set(null);
   areaStore.set(null);
   cellLimitStore.set(null);
   addWhenReadyStore.set(true);
@@ -40,20 +43,24 @@ afterEach(() => {
 
 interface Shown {
   products?: readonly RequestProduct[];
-  signedIn?: boolean | null;
+  session?: Session["state"];
 }
 
-function show({ products = [product()], signedIn = true }: Shown = {}) {
-  const map = new OlMap({ view: new View({ center: fromLonLat([-70.9, 42.8]), zoom: 10 }) });
-  map.setSize([800, 600]);
+function show({ products = [product()], session = "signed-in" }: Shown = {}) {
   const onSignIn = vi.fn();
   render(
-    <MapContext value={map}>
-      <GetLayerPane products={products} signedIn={signedIn} onSignIn={onSignIn} />
+    <MapContext value={testMap()}>
+      <GetLayerForm products={products} session={session} onSignIn={onSignIn} />
     </MapContext>,
   );
-  act(() => openToolPane(GET_LAYER));
+  act(() => openToolPane(GET_LAYER_PANE));
   return { onSignIn };
+}
+
+/** Put a product in the list of the search and select it. */
+function select(found = realProduct()) {
+  productsStore.set({ search: {} as never, found: 1, products: [found] });
+  selectedProductStore.set(found.id);
 }
 
 const side = (name: string) => screen.getByRole<HTMLInputElement>("textbox", { name });
@@ -61,6 +68,7 @@ const sides = () => ["West", "South", "East", "North"].map((name) => side(name).
 const runButton = (name = "Get layer") => screen.getByRole("button", { name });
 const isActive = (button: HTMLElement) => button.getAttribute("aria-disabled") !== "true";
 const layerBox = (name: string) => screen.getByRole<HTMLInputElement>("checkbox", { name });
+const areaChoice = () => screen.getByLabelText<HTMLSelectElement>("Area");
 
 /** Type the area of the tests into the four fields. */
 async function typeArea(area = AREA) {
@@ -76,8 +84,8 @@ async function typeArea(area = AREA) {
 }
 
 test("the pane is not drawn before the button opens it", () => {
-  render(<GetLayerPane products={[]} signedIn onSignIn={vi.fn()} />, {
-    wrapper: ({ children }) => <MapContext value={new OlMap({})}>{children}</MapContext>,
+  render(<GetLayerForm products={[]} session="signed-in" onSignIn={vi.fn()} />, {
+    wrapper: ({ children }) => <MapContext value={testMap()}>{children}</MapContext>,
   });
   expect(screen.queryByRole("complementary")).toBeNull();
 });
@@ -117,7 +125,7 @@ test("a product of which Lynkeus receives no layer says so", () => {
 });
 
 test("a visitor who is not signed in is told so and offered the form of Sign in", async () => {
-  const { onSignIn } = show({ signedIn: false });
+  const { onSignIn } = show({ session: "signed-out" });
   expect(screen.getByText(/You are not signed in to Earthdata\./)).toBeDefined();
   await userEvent.click(layerBox("Backscatter HH"));
   await typeArea();
@@ -129,53 +137,111 @@ test("a visitor who is not signed in is told so and offered the form of Sign in"
 });
 
 test("while the server has not said whether the visitor is signed in, the pane says that it is checking", () => {
-  show({ signedIn: null });
+  show({ session: "unknown" });
   expect(screen.getByText("Checking whether you are signed in to Earthdata.")).toBeDefined();
   expect(screen.queryByRole("button", { name: "Sign in" })).toBeNull();
   expect(isActive(runButton())).toBe(false);
 });
 
-test("the area starts empty and is taken from the view of the map", async () => {
-  show();
-  expect(sides()).toEqual(["", "", "", ""]);
-  expect(screen.queryByRole("alert")).toBeNull();
-  expect(screen.getByRole<HTMLButtonElement>("button", { name: "Drawn area" }).disabled).toBe(true);
-  await userEvent.click(screen.getByRole("button", { name: "Map view" }));
-  expect(Number(side("West").value)).toBeCloseTo(-71.4493, 3);
-  expect(Number(side("East").value)).toBeCloseTo(-70.3507, 3);
-  expect(screen.getByText(/^The area has a surface of [\d,]+ km²\.$/)).toBeDefined();
+test("the server that does not answer is named, and the pane of Sign in is offered", async () => {
+  const { onSignIn } = show({ session: "unreachable" });
+  expect(
+    screen.getByText(
+      "The server of Lynkeus did not answer, so it is not known whether you are signed in to Earthdata.",
+    ),
+  ).toBeDefined();
+  expect(isActive(runButton())).toBe(false);
+  await userEvent.click(screen.getByRole("button", { name: "Sign in" }));
+  expect(onSignIn).toHaveBeenCalledTimes(1);
 });
 
-test("the area follows the drawn area until the visitor changes it", async () => {
+test("each explanation stands behind the button beside its title, and none stands under a title", async () => {
+  show();
+  expect(document.querySelector(".usa-hint")).toBeNull();
+  const tool = screen.getByRole("button", { name: "Information about Get layer" });
+  expect(document.getElementById(tool.getAttribute("aria-describedby") ?? "")?.textContent).toBe(ABOUT.tool);
+  const title = "Layers of GCOV, 21 Oct 2026, track 141, frame 67";
+  const layers = screen.getByRole("group", { name: title });
+  expect(document.getElementById(layers.getAttribute("aria-describedby") ?? "")?.textContent).toBe(ABOUT.layers);
+  expect(screen.getByRole("button", { name: `Information about ${title}` })).toBeDefined();
+  expect(document.getElementById(areaChoice().getAttribute("aria-describedby") ?? "")?.textContent).toBe(ABOUT.area);
+  await userEvent.click(layerBox("Backscatter HH"));
+  await typeArea();
+  const estimate = screen.getByRole("group", { name: "Estimate" });
+  expect(document.getElementById(estimate.getAttribute("aria-describedby") ?? "")?.textContent).toBe(ABOUT.estimate);
+});
+
+test("the area starts as the area of the search starts: with the view of the map", () => {
+  show();
+  expect(Number(side("West").value)).toBeCloseTo(-71.4493, 3);
+  expect(Number(side("East").value)).toBeCloseTo(-70.3507, 3);
+  expect(areaChoice().value).toBe("rectangle");
+  expect(screen.getByText(/^The area has a surface of [\d,]+ km²\.$/)).toBeDefined();
+  expect(screen.queryByRole("alert")).toBeNull();
+});
+
+test("the area starts as the area of the Map tab when there is one", () => {
   areaStore.set(AREA);
   show();
   expect(sides()).toEqual(["-71.2", "42.6", "-70.75", "42.95"]);
   expect(screen.getByText("The area has a surface of 1,429 km².")).toBeDefined();
-  act(() => areaStore.set({ ...AREA, west: -71.3 }));
-  expect(side("West").value).toBe("-71.3");
-  await userEvent.clear(side("North"));
-  await userEvent.type(side("North"), "43");
-  act(() => areaStore.set(AREA));
-  expect(sides()).toEqual(["-71.3", "42.6", "-70.75", "43"]);
-  await userEvent.click(screen.getByRole("button", { name: "Drawn area" }));
-  expect(sides()).toEqual(["-71.2", "42.6", "-70.75", "42.95"]);
 });
 
-test("the area is taken from the outline of the product", async () => {
+test("the area is the one of the search, in both directions", async () => {
+  areaStore.set(AREA);
   show();
-  await userEvent.click(screen.getByRole("button", { name: "Outline of the product" }));
-  expect(sides()).toEqual(["-72.6341", "41.1647", "-68.7564", "43.9877"]);
+  await userEvent.clear(side("North"));
+  await userEvent.type(side("North"), "43");
+  expect(searchDraftStore.get()?.area).toEqual({
+    kind: "rectangle",
+    west: "-71.2",
+    south: "42.6",
+    east: "-70.75",
+    north: "43",
+  });
+  const draft = searchDraftStore.get();
+  act(() =>
+    searchDraftStore.set(
+      draft && { ...draft, area: { kind: "rectangle", west: "-71", south: "42", east: "-70", north: "43" } },
+    ),
+  );
+  expect(sides()).toEqual(["-71", "42", "-70", "43"]);
+});
+
+test("an area of polygons gives the rectangle around them", async () => {
+  select();
+  show();
+  await userEvent.selectOptions(areaChoice(), "product");
+  expect(searchDraftStore.get()?.area.kind).toBe("polygons");
+  expect(
+    screen.getByText(
+      "Each layer is clipped to the rectangle around this area: west -72.63407, south 41.16476, east -68.7564, north 43.98766. The rectangle has a surface of 99,654 km².",
+    ),
+  ).toBeDefined();
   expect(
     screen.getByText(/A part of the area lies outside the outline of the product GCOV, 21 Oct 2026/),
   ).toBeDefined();
+});
+
+test("no layer is received for the whole Earth", async () => {
+  show();
+  await userEvent.click(layerBox("Backscatter HH"));
+  await userEvent.selectOptions(areaChoice(), "earth");
+  expect(screen.getByRole("alert").textContent).toBe("A layer is not received for the whole Earth. Choose an area.");
+  expect(screen.getByText("1 layer is chosen. Give the area.")).toBeDefined();
+  expect(isActive(runButton())).toBe(false);
 });
 
 test("a wrong area is named and nothing is sent", async () => {
   show();
   await userEvent.click(layerBox("Backscatter HH"));
   await typeArea({ ...AREA, west: -70 });
-  expect(screen.getByRole("alert").textContent).toMatch(/West must be smaller than east/);
+  expect(screen.getByRole("alert").textContent).toBe(
+    "A layer is not received for an area that crosses the meridian of 180 degrees. Choose an area on one side of it.",
+  );
   expect(screen.getByText("1 layer is chosen. Give the area.")).toBeDefined();
+  await typeArea({ ...AREA, north: 91 });
+  expect(screen.getByRole("alert").textContent).toMatch(/^The area is not valid\./);
   await userEvent.clear(side("South"));
   expect(screen.getByRole("alert").textContent).toBe("Give the four sides of the area as numbers.");
   await userEvent.click(runButton());
@@ -210,7 +276,7 @@ test("the estimate states the cells and the size of each chosen layer that has a
 
 test("a layer above the limit of the server is refused in the form", async () => {
   server.process = {
-    id: GET_LAYER,
+    id: GET_LAYER_PANE,
     additionalParameters: { parameters: [{ name: "most-cells", value: [10_000_000] }] },
   };
   show();
@@ -267,7 +333,6 @@ test("each layer of each product is one job", async () => {
   show({ products: [product(), second] });
   const groups = screen.getAllByRole("group", { name: /^Layers of GCOV/ });
   expect(groups).toHaveLength(2);
-  expect(screen.getByRole("button", { name: "Outline of the products" })).toBeDefined();
   await userEvent.click(within(groups[0] as HTMLElement).getByRole("checkbox", { name: "Backscatter HH" }));
   await userEvent.click(layerBox("Backscatter HV"));
   await userEvent.click(within(groups[1] as HTMLElement).getByRole("checkbox", { name: "Backscatter HH" }));
@@ -310,8 +375,8 @@ test("the form stays in front when the Catalog pane appears with the first job",
   await typeArea();
   await userEvent.click(runButton());
   await screen.findByText("Waiting. The job waits for its turn. (0 %)");
-  expect(panesOf(dockStore.get(), "right").map(({ id }) => id)).toEqual([GET_LAYER, "catalog"]);
-  expect(frontOf(dockStore.get(), "right")).toBe(GET_LAYER);
+  expect(panesOf(dockStore.get(), "right").map(({ id }) => id)).toEqual([GET_LAYER_PANE, "catalog"]);
+  expect(frontOf(dockStore.get(), "right")).toBe(GET_LAYER_PANE);
 });
 
 test("a limit of the server is stated in its words", async () => {
@@ -431,4 +496,41 @@ test("the form is used with the keyboard alone", async () => {
   await userEvent.keyboard("{Enter}");
   expect(await screen.findByText("Waiting. The job waits for its turn. (0 %)")).toBeDefined();
   expect(server.sent("POST")).toHaveLength(1);
+});
+
+test("the pane offers the layers of the product that is selected in the list of the search", () => {
+  sessionStore.set({ state: "signed-in", user: "a_user" });
+  render(
+    <MapContext value={testMap()}>
+      <GetLayerPane />
+    </MapContext>,
+  );
+  act(() => openToolPane(GET_LAYER_PANE));
+  expect(screen.getByText(/^No product is selected\./)).toBeDefined();
+  act(() => select());
+  const group = screen.getByRole("group", { name: "Layers of GCOV, 21 Oct 2026, track 141, frame 67" });
+  expect(
+    within(group)
+      .getAllByRole("checkbox")
+      .map((box) => box.nextSibling?.textContent),
+  ).toEqual(realProduct().layers.map(({ title }) => title));
+  expect(screen.queryByText(/signed in to Earthdata/)).toBeNull();
+  act(() => selectedProductStore.set(null));
+  expect(screen.getByText(/^No product is selected\./)).toBeDefined();
+});
+
+test("the pane follows the sign-in, and its button Sign in opens the pane of the sign-in", async () => {
+  render(
+    <MapContext value={testMap()}>
+      <GetLayerPane />
+    </MapContext>,
+  );
+  act(() => openToolPane(GET_LAYER_PANE));
+  expect(screen.getByText("Checking whether you are signed in to Earthdata.")).toBeDefined();
+  act(() => sessionStore.set({ state: "signed-out" }));
+  await userEvent.click(screen.getByRole("button", { name: "Sign in" }));
+  expect(dockStore.get().tools).toEqual([GET_LAYER_PANE, "sign-in"]);
+  expect(dockStore.get().front.right).toBe("sign-in");
+  act(() => sessionStore.set({ state: "signed-in", user: "a_user" }));
+  expect(screen.queryByRole("button", { name: "Sign in" })).toBeNull();
 });

@@ -9,12 +9,10 @@ import {
   estimate,
   formatCells,
   formatSurface,
-  isLayerChoice,
   loadCellLimit,
-  outlineArea,
   plan,
+  requestArea,
   sidesFault,
-  sidesOf,
   surface,
   tooLarge,
   type RequestProduct,
@@ -40,16 +38,6 @@ const PRODUCT: RequestProduct = {
 afterEach(() => {
   vi.unstubAllGlobals();
   cellLimitStore.set(null);
-});
-
-test("a layer of a product has a name, a title and, when the server states it, a cell size", () => {
-  expect(isLayerChoice(HH)).toBe(true);
-  expect(isLayerChoice({ name: "mask", title: "Mask of valid samples" })).toBe(true);
-  expect(isLayerChoice({ name: "mask", title: "Mask of valid samples", spacing: null })).toBe(true);
-  expect(isLayerChoice({ name: "", title: "Mask" })).toBe(false);
-  expect(isLayerChoice({ name: "mask" })).toBe(false);
-  expect(isLayerChoice({ name: "mask", title: "Mask", spacing: 0 })).toBe(false);
-  expect(isLayerChoice({ name: "mask", title: "Mask", spacing: "10 m" })).toBe(false);
 });
 
 test("the surface of an area is its surface on a sphere of the mean radius of the Earth", () => {
@@ -110,36 +98,10 @@ test("an area inside one of the two polygons of an outline is inside the outline
   ];
   expect(coverage({ west: -179.5, south: 50.5, east: -178.5, north: 51.5 }, [east, west])).toBe("inside");
   expect(coverage({ west: 171, south: 50.5, east: 172, north: 51.5 }, [east, west])).toBe("inside");
-  expect(outlineArea([[east, west]])).toBeNull();
-});
-
-test("the area of an outline is its box, with four decimals, opened outwards", () => {
-  expect(outlineArea([OUTLINE])).toEqual({ west: -72.6341, south: 41.1647, east: -68.7564, north: 43.9877 });
-  expect(
-    outlineArea([
-      OUTLINE,
-      [
-        [
-          [-74, 40],
-          [-73, 40],
-          [-73, 41],
-          [-74, 40],
-        ] as Ring,
-      ],
-    ]),
-  ).toEqual({
-    west: -74,
-    south: 40,
-    east: -68.7564,
-    north: 43.9877,
-  });
-  expect(outlineArea([])).toBeNull();
-  expect(outlineArea([[]])).toBeNull();
 });
 
 test("the four fields of the area are checked and read", () => {
-  const sides = sidesOf(AREA);
-  expect(sides).toEqual({ west: "-71.2", south: "42.6", east: "-70.75", north: "42.95" });
+  const sides = { west: "-71.2", south: "42.6", east: "-70.75", north: "42.95" };
   expect(sidesFault(sides)).toBeNull();
   expect(areaOf(sides)).toEqual(AREA);
   expect(sidesFault({ ...sides, west: " " })).toBe("Give the four sides of the area as numbers.");
@@ -148,6 +110,45 @@ test("the four fields of the area are checked and read", () => {
   expect(sidesFault({ ...sides, north: "91" })).toMatch(/not valid/);
   expect(areaOf({ ...sides, west: "" })).toBeNull();
   expect(areaOf({ ...sides, west: "-70" })).toBeNull();
+});
+
+test("the area of a request follows from the area of the search", () => {
+  const rectangle = { kind: "rectangle", west: "-71.2", south: "42.6", east: "-70.75", north: "42.95" } as const;
+  expect(requestArea({ limited: true, area: rectangle })).toEqual({ area: AREA, fault: null, around: false });
+  expect(requestArea({ limited: false, area: rectangle })).toEqual({
+    area: null,
+    fault: "A layer is not received for the whole Earth. Choose an area.",
+    around: false,
+  });
+  expect(requestArea({ limited: true, area: { ...rectangle, south: "" } }).fault).toBe(
+    "Give the four sides of the area as numbers.",
+  );
+  expect(requestArea({ limited: true, area: { ...rectangle, north: "91" } }).fault).toMatch(/^The area is not valid\./);
+  // A west larger than the east is, in the search, a rectangle across the meridian of 180 degrees.
+  expect(requestArea({ limited: true, area: { ...rectangle, west: "170", east: "-170" } })).toEqual({
+    area: null,
+    fault:
+      "A layer is not received for an area that crosses the meridian of 180 degrees. Choose an area on one side of it.",
+    around: false,
+  });
+});
+
+test("an area of polygons gives the rectangle around them", () => {
+  expect(requestArea({ limited: true, area: { kind: "polygons", rings: OUTLINE } })).toEqual({
+    area: { west: -72.63407, south: 41.16476, east: -68.7564, north: 43.98766 },
+    fault: null,
+    around: true,
+  });
+  expect(requestArea({ limited: true, area: { kind: "polygons", rings: [] } })).toEqual({
+    area: null,
+    fault: "The area has no polygon. Choose an area.",
+    around: true,
+  });
+  const point: Ring = [
+    [10, 50],
+    [10, 50],
+  ];
+  expect(requestArea({ limited: true, area: { kind: "polygons", rings: [point] } }).area).toBeNull();
 });
 
 test("one request is planned for each chosen layer of each product, in their order", () => {

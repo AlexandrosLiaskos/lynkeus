@@ -1,50 +1,45 @@
 import { useEffect, useId, useState } from "react";
-import { areaStore, type Area } from "../shared/area";
-import { dockStore, showPane } from "../shared/dock/dock";
+import { areaStore } from "../shared/area";
+import { dockStore, openToolPane, showPane } from "../shared/dock/dock";
+import { Info } from "../shared/info/Info";
 import { useMap } from "../shared/map";
 import { report } from "../shared/messages/messages";
 import { useStore } from "../shared/store";
 import { ToolPane, ToolPaneGroup, type ToolPaneRun } from "../shared/toolpane/ToolPane";
+import { AreaFields, rectangleText } from "./AreaFields";
 import { addWhenReadyStore } from "./follow";
 import {
-  areaOf,
   cellLimitStore,
   coverage,
   estimate,
   formatCells,
   formatSurface,
   loadCellLimit,
-  outlineArea,
   plan,
-  sidesFault,
-  sidesOf,
+  requestArea,
   surface,
   tooLarge,
   type Planned,
   type RequestProduct,
-  type Sides,
 } from "./getLayer";
 import { JobFields } from "./JobFields";
 import { dismissJob, isUnfinished, jobsStore, startJob, STATUS_WORDS, type Job } from "./jobs";
 import { formatDay, formatSize } from "./products";
+import { firstDraft, type SearchDraft } from "./search";
+import { viewArea } from "./searchArea";
 import { wordsOf } from "./service";
-import { viewArea } from "./viewArea";
+import { useSession, type Session } from "./session";
+import { SIGN_IN_PANE } from "./SignInPane";
+import { GET_LAYER_PANE, productsStore, searchDraftStore, selectedProductStore } from "./state";
 
-/** The name of the pane, which is the name of the ribbon button Get layer. */
-export const GET_LAYER = "get-layer";
-
-/** The explanation of the four fields of the area. */
-const AREA_EXPLANATION =
-  "The four sides are given in degrees of longitude and latitude on WGS 84. Each layer is clipped to this area.";
-
-const NO_SIDES: Sides = { west: "", south: "", east: "", north: "" };
-
-const SIDE_NAMES = [
-  ["west", "West"],
-  ["east", "East"],
-  ["south", "South"],
-  ["north", "North"],
-] as const;
+/** The explanations of the tool and of its titles, one for each title. Each one shows from the button beside its title. */
+export const ABOUT = {
+  tool: "The tool requests layers of the selected product from NASA and receives each one clipped to the area, as a file that Lynkeus draws on the map. Each layer is one job. The Catalog pane lists the jobs and the layers. The tool needs a sign-in to Earthdata.",
+  layers: "The layers of the product that Lynkeus receives. Each layer that is chosen is requested as one job.",
+  area: "The area to which each layer is clipped. It is the area of the search, so a change here changes it there. A layer is received for a rectangle that meets the outline of the product. An area of polygons gives the rectangle around them.",
+  estimate:
+    "The largest number of cells that each layer can hold in the area, from the smallest cell size of the layer, and the size of these cells as 32-bit numbers before compression.",
+} as const;
 
 /** The jobs that the last press of the run button started. */
 export interface Started {
@@ -124,12 +119,12 @@ export function runOf(started: Started | null, jobs: readonly Job[]): ToolPaneRu
   return { state: "warning", text: parts.filter(Boolean).join(" "), details };
 }
 
-interface GetLayerPaneProps {
+interface GetLayerFormProps {
   /** The products that are selected in the list of the search. */
   products: readonly RequestProduct[];
-  /** Whether the visitor is signed in to Earthdata, or null while the server has not said. */
-  signedIn: boolean | null;
-  /** Opens the form of Sign in. */
+  /** What the page knows about the visitor's sign-in to Earthdata. */
+  session: Session["state"];
+  /** Opens the pane of Sign in. */
   onSignIn: () => void;
 }
 
@@ -142,26 +137,37 @@ function CellLimit() {
 }
 
 /**
- * The form of the button Get layer, in the tool pane. The visitor chooses layers of the selected products and an
- * area, and each layer of each product is requested from NASA as one job. The foot of the pane shows the
- * progress of these jobs and their outcome; the Catalog pane lists every job and every layer of the session.
+ * The form of the button Get layer, in the tool pane. The visitor chooses layers of the selected products and
+ * the area, with the area control of the search, and each layer of each product is requested from NASA as one
+ * job. The foot of the pane shows the progress of these jobs and their outcome; the Catalog pane lists every job
+ * and every layer of the session.
  */
-export function GetLayerPane({ products, signedIn, onSignIn }: GetLayerPaneProps) {
+export function GetLayerForm({ products, session, onSignIn }: GetLayerFormProps) {
   const map = useMap();
   const id = useId();
   const jobs = useStore(jobsStore);
-  const drawn = useStore(areaStore);
+  const draft = useStore(searchDraftStore);
   const limit = useStore(cellLimitStore);
   const addWhenReady = useStore(addWhenReadyStore);
   const [chosen, setChosen] = useState<Record<string, readonly string[] | undefined>>({});
-  const [typed, setTyped] = useState<Sides | null>(null);
   const [started, setStarted] = useState<Started | null>(null);
 
-  // The fields follow the drawn area until the visitor types in them or takes the area from a button.
-  const sides = typed ?? (drawn ? sidesOf(drawn) : NO_SIDES);
-  const area = areaOf(sides);
-  const areaFault = sides === NO_SIDES ? null : sidesFault(sides);
-  const outline = outlineArea(products.map(({ footprint }) => footprint));
+  // The area is the one of the search. Before the search pane was first opened, it starts as there: with the
+  // area of the Map tab or, without one, with the view of the map.
+  useEffect(() => {
+    if (searchDraftStore.get() === null) {
+      searchDraftStore.set(firstDraft(rectangleText(areaStore.get() ?? viewArea(map))));
+    }
+  }, [map]);
+
+  const change = (changes: Partial<SearchDraft>) => {
+    const current = searchDraftStore.get();
+    if (current) {
+      searchDraftStore.set({ ...current, ...changes });
+    }
+  };
+
+  const { area, fault: areaFault, around } = draft ? requestArea(draft) : { area: null, fault: null, around: false };
   const planned: Planned[] = area ? plan(products, chosen, area) : [];
   const layersChosen = products.reduce(
     (count, { id: product, layers }) => count + layers.filter(({ name }) => chosen[product]?.includes(name)).length,
@@ -174,8 +180,7 @@ export function GetLayerPane({ products, signedIn, onSignIn }: GetLayerPaneProps
     return size ? [{ key: `${product.id} ${choice.name}`, product, choice, ...size }] : [];
   });
   const overLimit = limit === null ? [] : estimates.filter(({ cells }) => cells > limit);
-  const ready =
-    signedIn === true && planned.length > 0 && areaFault === null && outside.length === 0 && overLimit.length === 0;
+  const ready = session === "signed-in" && planned.length > 0 && outside.length === 0 && overLimit.length === 0;
 
   const toggle = (product: string, name: string) => {
     const names = chosen[product] ?? [];
@@ -185,8 +190,6 @@ export function GetLayerPane({ products, signedIn, onSignIn }: GetLayerPaneProps
     });
   };
 
-  const take = (next: Area) => setTyped(sidesOf(next));
-
   const start = () => {
     const requests = planned.map(({ request }) => request);
     setStarted({ ids: [], sending: requests.length, fault: null, cancelled: false });
@@ -195,7 +198,7 @@ export function GetLayerPane({ products, signedIn, onSignIn }: GetLayerPaneProps
       let fault: string | null = null;
       for (const request of requests) {
         try {
-          ids.push((await startJob(GET_LAYER, { ...request })).jobID);
+          ids.push((await startJob(GET_LAYER_PANE, { ...request })).jobID);
         } catch (error) {
           fault = wordsOf(error, "The job could not be started.");
           break;
@@ -206,8 +209,8 @@ export function GetLayerPane({ products, signedIn, onSignIn }: GetLayerPaneProps
       }
       setStarted({ ids, sending: null, fault, cancelled: false });
       // The form stays in front when the Catalog pane appears with the first job of the session.
-      if (dockStore.get().tools.includes(GET_LAYER)) {
-        showPane(GET_LAYER);
+      if (dockStore.get().tools.includes(GET_LAYER_PANE)) {
+        showPane(GET_LAYER_PANE);
       }
     })();
   };
@@ -230,8 +233,9 @@ export function GetLayerPane({ products, signedIn, onSignIn }: GetLayerPaneProps
 
   return (
     <ToolPane
-      id={GET_LAYER}
+      id={GET_LAYER_PANE}
       title="Get layer"
+      info={ABOUT.tool}
       runLabel={planned.length > 1 ? `Get ${String(planned.length)} layers` : "Get layer"}
       onRun={start}
       ready={ready}
@@ -239,14 +243,16 @@ export function GetLayerPane({ products, signedIn, onSignIn }: GetLayerPaneProps
       onCancel={started && started.sending === null ? cancel : undefined}
     >
       <CellLimit />
-      {signedIn === true ? null : signedIn === null ? (
+      {session === "signed-in" ? null : session === "unknown" ? (
         <p className="get-layer-note" role="status">
           Checking whether you are signed in to Earthdata.
         </p>
       ) : (
         <div className="get-layer-sign-in">
           <p>
-            You are not signed in to Earthdata. Lynkeus requests a layer from NASA with your Earthdata Login account.
+            {session === "signed-out"
+              ? "You are not signed in to Earthdata. Lynkeus requests a layer from NASA with your Earthdata Login account."
+              : "The server of Lynkeus did not answer, so it is not known whether you are signed in to Earthdata."}
           </p>
           <button type="button" className="usa-button usa-button--outline" onClick={onSignIn}>
             Sign in
@@ -260,89 +266,60 @@ export function GetLayerPane({ products, signedIn, onSignIn }: GetLayerPaneProps
           products fills that list.
         </p>
       ) : (
-        products.map((product) => (
-          <fieldset key={product.id} className="usa-fieldset">
-            <legend className="usa-legend">Layers of {productTitle(product)}</legend>
-            {product.layers.length === 0 ? (
-              <p className="get-layer-note">Lynkeus receives no layer of this product.</p>
-            ) : (
-              product.layers.map(({ name, title }) => (
-                <div key={name} className="usa-checkbox">
-                  <input
-                    className="usa-checkbox__input"
-                    type="checkbox"
-                    id={`${id}-${product.id}-${name}`}
-                    checked={chosen[product.id]?.includes(name) ?? false}
-                    onChange={() => toggle(product.id, name)}
-                  />
-                  <label className="usa-checkbox__label" htmlFor={`${id}-${product.id}-${name}`}>
-                    {title}
-                  </label>
-                </div>
-              ))
-            )}
-          </fieldset>
-        ))
+        products.map((product) => {
+          const title = `Layers of ${productTitle(product)}`;
+          const group = `${id}-${product.id}`;
+          return (
+            <fieldset
+              key={product.id}
+              className="usa-fieldset"
+              aria-labelledby={`${group}-title`}
+              aria-describedby={`${group}-info`}
+            >
+              <legend className="usa-legend">
+                <span id={`${group}-title`}>{title}</span>
+                <Info id={`${group}-info`} about={title}>
+                  {ABOUT.layers}
+                </Info>
+              </legend>
+              {product.layers.length === 0 ? (
+                <p className="get-layer-note">Lynkeus receives no layer of this product.</p>
+              ) : (
+                product.layers.map(({ name, title: layer }) => (
+                  <div key={name} className="usa-checkbox">
+                    <input
+                      className="usa-checkbox__input"
+                      type="checkbox"
+                      id={`${group}-${name}`}
+                      checked={chosen[product.id]?.includes(name) ?? false}
+                      onChange={() => toggle(product.id, name)}
+                    />
+                    <label className="usa-checkbox__label" htmlFor={`${group}-${name}`}>
+                      {layer}
+                    </label>
+                  </div>
+                ))
+              )}
+            </fieldset>
+          );
+        })
       )}
 
-      <fieldset className="usa-fieldset">
-        <legend className="usa-legend">Area</legend>
-        <div className="get-layer-tools" role="group" aria-label="Take the area from">
-          <button type="button" className="get-layer-tool" onClick={() => take(viewArea(map))}>
-            Map view
-          </button>
-          <button
-            type="button"
-            className="get-layer-tool"
-            disabled={!drawn}
-            onClick={() => {
-              if (drawn) {
-                take(drawn);
-              }
-            }}
-          >
-            Drawn area
-          </button>
-          <button
-            type="button"
-            className="get-layer-tool"
-            disabled={!outline}
-            onClick={() => {
-              if (outline) {
-                take(outline);
-              }
-            }}
-          >
-            {products.length > 1 ? "Outline of the products" : "Outline of the product"}
-          </button>
-        </div>
-        <div className="get-layer-sides">
-          {SIDE_NAMES.map(([side, name]) => (
-            <div key={side}>
-              <label className="usa-label" htmlFor={`${id}-${side}`}>
-                {name}
-              </label>
-              <input
-                className="usa-input"
-                id={`${id}-${side}`}
-                inputMode="decimal"
-                autoComplete="off"
-                value={sides[side]}
-                aria-describedby={`${id}-area-hint`}
-                onChange={(event) => setTyped({ ...sides, [side]: event.target.value })}
-              />
-            </div>
-          ))}
-        </div>
-        <p className="usa-hint get-layer-hint" id={`${id}-area-hint`}>
-          {AREA_EXPLANATION}
-        </p>
+      <ToolPaneGroup title="Area" open>
+        {draft ? <AreaFields draft={draft} onChange={change} explanation={ABOUT.area} /> : null}
         {areaFault ? (
           <p className="usa-error-message" role="alert">
             {areaFault}
           </p>
         ) : null}
-        {area ? <p className="get-layer-note">The area has a surface of {formatSurface(surface(area))}.</p> : null}
+        {area ? (
+          <p className="get-layer-note">
+            {around
+              ? `Each layer is clipped to the rectangle around this area: west ${String(area.west)}, south ${String(area.south)}, east ${String(area.east)}, north ${String(area.north)}. The rectangle`
+              : "The area"}{" "}
+            has a surface of {formatSurface(surface(area))}.
+          </p>
+        ) : null}
         {lying.map(({ product, lies }) =>
           lies === "outside" ? (
             <p key={product.id} className="usa-error-message" role="alert">
@@ -354,10 +331,16 @@ export function GetLayerPane({ products, signedIn, onSignIn }: GetLayerPaneProps
             </p>
           ) : null,
         )}
-      </fieldset>
+      </ToolPaneGroup>
 
       {estimates.length > 0 ? (
-        <ToolPaneGroup title="Estimate" open>
+        <fieldset className="usa-fieldset" aria-labelledby={`${id}-estimate`} aria-describedby={`${id}-estimate-info`}>
+          <legend className="usa-legend">
+            <span id={`${id}-estimate`}>Estimate</span>
+            <Info id={`${id}-estimate-info`} about="Estimate">
+              {ABOUT.estimate}
+            </Info>
+          </legend>
           <ul className="get-layer-estimates">
             {estimates.map(({ key, product, choice, cells, bytes }) => (
               <li key={key}>
@@ -371,7 +354,7 @@ export function GetLayerPane({ products, signedIn, onSignIn }: GetLayerPaneProps
               {tooLarge(choice.title, cells, limit ?? 0)}
             </p>
           ))}
-        </ToolPaneGroup>
+        </fieldset>
       ) : null}
 
       <ToolPaneGroup title="Result" open>
@@ -404,5 +387,23 @@ export function GetLayerPane({ products, signedIn, onSignIn }: GetLayerPaneProps
         </p>
       ) : null}
     </ToolPane>
+  );
+}
+
+/**
+ * The pane of the button Get layer. It gives the form the product that is selected in the list of the search and
+ * the state of the sign-in, and its Sign in button opens the pane of the sign-in.
+ */
+export function GetLayerPane() {
+  const session = useSession();
+  const results = useStore(productsStore);
+  const selected = useStore(selectedProductStore);
+  const product = results?.products.find((found) => found.id === selected);
+  return (
+    <GetLayerForm
+      products={product ? [product] : []}
+      session={session.state}
+      onSignIn={() => openToolPane(SIGN_IN_PANE)}
+    />
   );
 }

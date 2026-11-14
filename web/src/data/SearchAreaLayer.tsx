@@ -12,7 +12,7 @@ import { report } from "../shared/messages/messages";
 import { useStore } from "../shared/store";
 import type { SearchDraft } from "./search";
 import { areaGeometry, fitRings, rectangleOfExtent, ringsOfGeometry, type SearchArea } from "./searchArea";
-import { drawingStore, SEARCH_PANE, searchDraftStore } from "./state";
+import { drawingStore, GET_LAYER_PANE, SEARCH_PANE, searchDraftStore } from "./state";
 
 // The area of the search is drawn as a broken line in the secondary colour of the U.S. Web Design System, so
 // that it differs from the outlines of the products.
@@ -64,13 +64,13 @@ export function takeDrawnShape(shape: Geometry, kind: "rectangle" | "polygon", p
 }
 
 /**
- * The area of the search on the map. It is shown while the search pane is open, and while the user draws it: a
- * rectangle with a press, a move and a release, or a polygon with one click for each point and a double click
- * for the last. The Escape key ends the drawing without a shape.
+ * The area of the search on the map. It is shown while the search pane or the pane of Get layer, which takes the
+ * same area, is open, and while the user draws it: a rectangle with a press, a move and a release, or a polygon
+ * with one click for each point and a double click for the last. The Escape key ends the drawing without a shape.
  */
 export function SearchAreaLayer() {
   const map = useMap();
-  const open = useStore(dockStore).tools.includes(SEARCH_PANE);
+  const open = useStore(dockStore).tools.some((tool) => tool === SEARCH_PANE || tool === GET_LAYER_PANE);
   const draft = useStore(searchDraftStore);
   const drawing = useStore(drawingStore);
   const [layer] = useState(() => new VectorLayer({ source: new VectorSource(), style: AREA_STYLE, zIndex: 1001 }));
