@@ -50,6 +50,7 @@
   display: flex;
   flex: none;
   overflow-x: auto;
+  scrollbar-width: thin;
   border-top: 1px solid uswds.color("base-lighter");
   background: uswds.color("base-lightest");
 }
