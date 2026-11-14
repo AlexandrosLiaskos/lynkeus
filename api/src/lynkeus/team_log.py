@@ -5,8 +5,6 @@ are replaced only after the page has been rendered, so a source that cannot
 be rendered leaves the published page unchanged.
 """
 
-from __future__ import annotations
-
 import argparse
 import html
 import re
@@ -71,19 +69,9 @@ stores only the total number of visits.</p>
 
 
 def details_list(source: str) -> str:
-    """Replace the table of details, whose header row is empty, with a definition list.
+    """Rewrite the first two-column table with an empty header row as an HTML definition list.
 
-    Parameters
-    ----------
-    source : str
-        Markdown text of the log.
-
-    Returns
-    -------
-    str
-        The text with the first two-column table that has an empty header
-        row rewritten as an HTML definition list. The text is returned
-        unchanged if it holds no such table.
+    The text is returned unchanged if it holds no such table.
     """
     lines = source.splitlines()
     for start, line in enumerate(lines):
@@ -96,31 +84,20 @@ def details_list(source: str) -> str:
         for row in lines[start + 2 : end]:
             term, _, value = row.strip().strip("|").partition("|")
             items.append(f"<dt>{html.escape(term.strip())}</dt><dd>{html.escape(value.strip())}</dd>")
-        block = ['<dl class="details">', *items, "</dl>"]
-        return "\n".join([*lines[:start], *block, *lines[end:]])
+        return "\n".join([*lines[:start], '<dl class="details">', *items, "</dl>", *lines[end:]])
     return source
 
 
 def mark_rows(table: str) -> str:
-    """Give every entry row an anchor and link the references to other entries.
+    """Anchor each entry row of a table and link the entry numbers in its cells.
 
-    Parameters
-    ----------
-    table : str
-        HTML of one table of log entries.
-
-    Returns
-    -------
-    str
-        The table, wrapped in a region that scrolls sideways on narrow
-        screens. Each row whose first cell is the number of a decision or of
-        an action, such as ``D-07`` or ``A-02``, carries the anchor ``d-07``
-        or ``a-02``, and each such number in the other cells is a link to
-        that anchor.
+    A row whose first cell is ``D-07`` or ``A-02`` gets the anchor ``d-07`` or
+    ``a-02``. The table is wrapped in a region that scrolls sideways on narrow
+    screens.
     """
 
     def row(match: re.Match[str]) -> str:
-        entry, cells = match.group(1), match.group(2)
+        entry, cells = match.groups()
         cells = _ENTRY.sub(lambda m: f'<a href="#{m.group(0).lower()}">{m.group(0)}</a>', cells)
         return f'<tr id="{entry.lower()}"><th scope="row">{entry}</th>{cells}</tr>'
 
@@ -129,19 +106,7 @@ def mark_rows(table: str) -> str:
 
 
 def render(source: str, changed: datetime) -> str:
-    """Return the complete web page for the Markdown text of the log.
-
-    Parameters
-    ----------
-    source : str
-        Markdown text of the log.
-    changed : datetime
-        Time of the last change of the log, with its time zone.
-
-    Returns
-    -------
-    str
-        The HTML page.
+    """Return the web page for the Markdown text of the log.
 
     Raises
     ------
@@ -169,15 +134,7 @@ def render(source: str, changed: datetime) -> str:
 
 
 def publish(source_path: Path, output_dir: Path) -> None:
-    """Write the page and a copy of the log into a directory.
-
-    Parameters
-    ----------
-    source_path : Path
-        The Markdown file of the log.
-    output_dir : Path
-        The directory that receives ``index.html`` and the copy of the log.
-        It is created if it does not exist.
+    """Write ``index.html`` and a copy of the log into ``output_dir``.
 
     Raises
     ------
@@ -195,26 +152,14 @@ def publish(source_path: Path, output_dir: Path) -> None:
         temporary.replace(output_dir / name)
 
 
-def main(arguments: Sequence[str] | None = None) -> int:
-    """Publish the log from the command line.
-
-    Parameters
-    ----------
-    arguments : Sequence[str] or None, optional
-        Command-line arguments; the arguments of the process if ``None``.
-
-    Returns
-    -------
-    int
-        The exit status: 0 on success.
-    """
+def main(arguments: Sequence[str] | None = None) -> None:
+    """Publish the log from the command line."""
     parser = argparse.ArgumentParser(description="Publish the team log as a web page.")
     parser.add_argument("source", type=Path, help="Markdown file of the log")
     parser.add_argument("output", type=Path, help="directory that receives the page")
     options = parser.parse_args(arguments)
     publish(options.source, options.output)
-    return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()

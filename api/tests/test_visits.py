@@ -1,7 +1,5 @@
 """Tests of the visit counter."""
 
-from __future__ import annotations
-
 import json
 import threading
 from collections.abc import Iterator
@@ -64,10 +62,3 @@ def test_service_reports_health_and_unknown_paths(address: str) -> None:
     assert fetch(address + "/healthz") == (200, {"status": "ok"})
     assert fetch(address + "/other") == (404, {"error": "not found"})
     assert fetch(address + "/other", "POST") == (404, {"error": "not found"})
-
-
-def test_service_answers_head_without_body(address: str) -> None:
-    with urlopen(Request(address + "/api/visit", method="HEAD"), timeout=5) as response:  # noqa: S310 - local test server
-        assert response.status == 200
-        assert response.headers["Content-Type"] == "application/json; charset=utf-8"
-        assert response.read() == b""

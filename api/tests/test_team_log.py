@@ -1,7 +1,5 @@
 """Tests of the team-log page."""
 
-from __future__ import annotations
-
 from datetime import datetime
 from pathlib import Path
 
@@ -84,7 +82,7 @@ def test_publish_writes_page_and_copy(tmp_path: Path) -> None:
     source = tmp_path / "Team_Log.md"
     source.write_text(LOG, encoding="utf-8")
     output = tmp_path / "site" / "team-log"
-    assert team_log.main([str(source), str(output)]) == 0
+    team_log.main([str(source), str(output)])
     assert (output / "index.html").read_text(encoding="utf-8").startswith("<!doctype html>")
     assert (output / team_log.DOWNLOAD_NAME).read_text(encoding="utf-8") == LOG
     assert not list(output.glob("*.tmp"))

@@ -1,17 +1,15 @@
 """Count page visits and serve the total over HTTP.
 
-The service stores one number, the total of recorded visits, in a JSON
-file. A ``GET`` request to ``/api/visit`` returns the total and a ``POST``
-request adds one visit and returns the new total. Nothing about a visitor
-is stored.
+``GET /api/visit`` returns the total, ``POST /api/visit`` adds one visit and
+returns the new total, and ``GET /healthz`` reports that the service runs.
+Only the total is stored; nothing about a visitor is kept.
 """
-
-from __future__ import annotations
 
 import argparse
 import json
 import threading
 from collections.abc import Sequence
+from contextlib import suppress
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -22,13 +20,7 @@ HEALTH_PATH = "/healthz"
 
 
 class VisitCounter:
-    """A total of visits kept in a JSON file.
-
-    Parameters
-    ----------
-    path : Path
-        The file that holds the total. It is created with the first visit.
-    """
+    """Total of visits, kept in a JSON file that is created on the first visit."""
 
     def __init__(self, path: Path) -> None:
         self._path = path
@@ -42,29 +34,12 @@ class VisitCounter:
             return 0
 
     def current(self) -> int:
-        """Return the total of recorded visits.
-
-        Returns
-        -------
-        int
-            The total; 0 if the file is missing or cannot be read.
-        """
+        """Return the total, or 0 if the file is missing or cannot be read."""
         with self._lock:
             return self._read()
 
     def increment(self) -> int:
-        """Add one visit and return the new total.
-
-        Returns
-        -------
-        int
-            The total after the visit has been added.
-
-        Raises
-        ------
-        OSError
-            If the file cannot be written.
-        """
+        """Add one visit, replace the file atomically and return the new total."""
         with self._lock:
             count = self._read() + 1
             self._path.parent.mkdir(parents=True, exist_ok=True)
@@ -75,17 +50,7 @@ class VisitCounter:
 
 
 class VisitServer(ThreadingHTTPServer):
-    """An HTTP server that holds the visit counter.
-
-    Parameters
-    ----------
-    address : tuple[str, int]
-        Host and port to listen on.
-    counter : VisitCounter
-        The counter that the requests read and change.
-    """
-
-    allow_reuse_address = True
+    """HTTP server that gives its request handlers access to the counter."""
 
     def __init__(self, address: tuple[str, int], counter: VisitCounter) -> None:
         super().__init__(address, VisitRequestHandler)
@@ -101,11 +66,13 @@ class VisitRequestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self) -> None:
         """Return the total, or the state of the service."""
-        self._answer_read(with_body=True)
-
-    def do_HEAD(self) -> None:
-        """Return the headers of the answer to the same ``GET`` request."""
-        self._answer_read(with_body=False)
+        path = urlparse(self.path).path
+        if path == VISIT_PATH:
+            self._send_json({"count": self.server.counter.current()})
+        elif path == HEALTH_PATH:
+            self._send_json({"status": "ok"})
+        else:
+            self._send_json({"error": "not found"}, HTTPStatus.NOT_FOUND)
 
     def do_POST(self) -> None:
         """Add one visit and return the new total."""
@@ -119,18 +86,7 @@ class VisitRequestHandler(BaseHTTPRequestHandler):
             return
         self._send_json({"count": count})
 
-    def _answer_read(self, *, with_body: bool) -> None:
-        path = urlparse(self.path).path
-        if path == VISIT_PATH:
-            self._send_json({"count": self.server.counter.current()}, with_body=with_body)
-        elif path == HEALTH_PATH:
-            self._send_json({"status": "ok"}, with_body=with_body)
-        else:
-            self._send_json({"error": "not found"}, HTTPStatus.NOT_FOUND, with_body=with_body)
-
-    def _send_json(
-        self, payload: dict[str, object], status: HTTPStatus = HTTPStatus.OK, *, with_body: bool = True
-    ) -> None:
+    def _send_json(self, payload: dict[str, object], status: HTTPStatus = HTTPStatus.OK) -> None:
         body = json.dumps(payload).encode("utf-8")
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
@@ -138,40 +94,23 @@ class VisitRequestHandler(BaseHTTPRequestHandler):
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")
         self.end_headers()
-        if with_body:
-            self.wfile.write(body)
+        self.wfile.write(body)
 
     def log_message(self, format: str, *args: object) -> None:  # noqa: A002 - name set by the standard library
         """Write no access log, so that no address of a visitor is kept."""
 
 
-def main(arguments: Sequence[str] | None = None) -> int:
-    """Run the service from the command line.
-
-    Parameters
-    ----------
-    arguments : Sequence[str] or None, optional
-        Command-line arguments; the arguments of the process if ``None``.
-
-    Returns
-    -------
-    int
-        The exit status: 0 after the service has been stopped.
-    """
+def main(arguments: Sequence[str] | None = None) -> None:
+    """Run the service until it is interrupted."""
     parser = argparse.ArgumentParser(description="Serve the total of recorded page visits.")
     parser.add_argument("--host", default="127.0.0.1", help="address to listen on")
     parser.add_argument("--port", type=int, default=8766, help="port to listen on")
     parser.add_argument("--count-file", type=Path, required=True, help="JSON file that holds the total")
     options = parser.parse_args(arguments)
-    server = VisitServer((options.host, options.port), VisitCounter(options.count_file))
-    try:
+    counter = VisitCounter(options.count_file)
+    with VisitServer((options.host, options.port), counter) as server, suppress(KeyboardInterrupt):
         server.serve_forever()
-    except KeyboardInterrupt:
-        pass
-    finally:
-        server.server_close()
-    return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()
