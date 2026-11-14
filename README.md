@@ -91,11 +91,27 @@ Lynkeus runs in containers behind a front web server that ends HTTPS. The front 
 the containers over an external Docker network, which `compose.yaml` names.
 
 ```sh
-install -d -o 10001 -g 10001 data/visits
+install -d -o 10001 -g 10001 data/visits data/api data/api/files
 docker compose build
 docker compose up -d
 sh deploy/install-team-log-units.sh /path/to/Team_Log.md
 ```
+
+The first command creates the folders that the containers write, owned by the user of the
+containers (number 10001). The folder `data/api` holds the record of the sessions, jobs and layers
+(`lynkeus.sqlite3`) and, in `files/`, the two files of every layer. The container of the web service
+writes the folder, and the container of the web server reads `files/` and serves it under `/files/`.
+A restart of the web service keeps the layers and the finished jobs of every session. It ends the
+jobs that wait or run and records them as failed, and it forgets every Earthdata token.
+
+The web service runs as one process, because it holds the running jobs and the Earthdata tokens in
+its memory. It reads three settings from the environment.
+
+| Setting | Meaning | Without it |
+|---|---|---|
+| `LYNKEUS_DATA_FOLDER` | Folder of the record and of the files of the layers | A temporary folder, removed when the service stops |
+| `LYNKEUS_EARTHDATA_KEYS` | Address of the public keys with which an Earthdata token is checked, for tests | The address of NASA Earthdata Login |
+| `LYNKEUS_COOKIE_SECURE` | `false` lets the cookie of a session pass over plain HTTP, for tests | The cookie passes over HTTPS only |
 
 The last command installs two systemd units. They publish the team log again whenever its file
 changes.
