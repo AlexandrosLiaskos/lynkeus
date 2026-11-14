@@ -43,6 +43,7 @@
 
 // The frame of the page and the elements that every part shares.
 @use "shared/focus";
+@use "shared/form/form";
 @use "header/header";
 @use "ribbon/ribbon";
 @use "shared/dialog/dialog";
