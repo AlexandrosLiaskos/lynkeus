@@ -62,3 +62,15 @@ test("the fields show the area and follow it when another tool changes it", () =
   act(() => areaStore.set(null));
   expect(field("East").value).toBe("");
 });
+
+/** Return the explanation that describes an element. */
+function explanation(element: HTMLElement): string | undefined {
+  return document.getElementById(element.getAttribute("aria-describedby") ?? "")?.textContent;
+}
+
+test("the group of the four sides keeps its name and is described by its explanation", () => {
+  openPane("area-from-coordinates", <AreaCoordinatesPane />);
+  const group = screen.getByRole("group", { name: "Sides of the area" });
+  expect(explanation(group)).toMatch(/^Each side is a number of decimal degrees .* south is smaller than north\.$/);
+  expect(screen.getByRole("button", { name: "Information about Sides of the area" })).toBeDefined();
+});

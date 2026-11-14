@@ -31,7 +31,7 @@ export const VIEW_TAB = {
         {
           id: "view-status-bar",
           label: "Status bar",
-          icon: "more_horiz",
+          icon: "info_outline",
           description: "Shows or hides the status bar under the map.",
         },
         {
