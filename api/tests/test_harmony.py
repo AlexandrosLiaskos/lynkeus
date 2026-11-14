@@ -8,6 +8,7 @@ layers that the capabilities of Harmony listed for each NISAR collection on
 14 November 2026 (https://harmony.earthdata.nasa.gov/capabilities).
 """
 
+import itertools
 import json
 import os
 import shutil
@@ -230,6 +231,28 @@ def test_area_is_compared_with_the_outline_of_the_product() -> None:
     assert not harmony._overlaps(Area(west=10, south=10, east=10.05, north=10.05), footprint)
     # The box around the outline holds this area, and the outline itself does not.
     assert not harmony._overlaps(Area(west=-69.2, south=43.6, east=-68.9, north=43.9), footprint)
+
+
+def test_outline_cut_at_the_meridian_of_180_degrees_is_compared_on_both_sides() -> None:
+    # The record of a product near Antarctica, as the catalogue returned it on 14 November 2026:
+    # its outline is two rings, one from 177.7 to 180 degrees and one from -180 to -176.0 degrees.
+    footprint = product_from_record(record("granule-across-180")).footprint
+    assert len(footprint) == 2
+    assert all(abs(second[0] - first[0]) < 180 for ring in footprint for first, second in itertools.pairwise(ring))
+    assert harmony._overlaps(Area(west=179.0, south=-66, east=179.5, north=-65.5), footprint)
+    assert harmony._overlaps(Area(west=-179.5, south=-66, east=-179.0, north=-65.5), footprint)
+    assert not harmony._overlaps(Area(west=170, south=-66, east=171, north=-65.5), footprint)
+    assert not harmony._overlaps(Area(west=-170, south=-66, east=-169, north=-65.5), footprint)
+
+
+def test_ring_that_crosses_the_meridian_of_180_degrees_is_compared_on_both_sides() -> None:
+    # No record of the catalogue read so far holds such a ring; this one is made for the test.
+    ring = ((179.0, 10.0), (-179.0, 10.0), (-179.0, 12.0), (179.0, 12.0), (179.0, 10.0))
+    assert harmony._overlaps(Area(west=179.4, south=10.4, east=179.6, north=10.6), (ring,))
+    assert harmony._overlaps(Area(west=-179.6, south=10.4, east=-179.4, north=10.6), (ring,))
+    assert harmony._overlaps(Area(west=178, south=11, east=179.5, north=13), (ring,))
+    assert not harmony._overlaps(Area(west=0, south=10.4, east=1, north=10.6), (ring,))
+    assert not harmony._overlaps(Area(west=177, south=10.4, east=178, north=10.6), (ring,))
 
 
 def test_layer_is_received_and_written(visit: Visit) -> None:

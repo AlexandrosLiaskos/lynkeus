@@ -417,17 +417,30 @@ def _find(product: ProductType, name: str) -> tuple[Product, str]:
 
 def _overlaps(area: Area, footprint: Sequence[Sequence[tuple[float, float]]]) -> bool:
     """Tell whether an area and the outline of a product have a point in common."""
-    corners = [(area.west, area.south), (area.east, area.south), (area.east, area.north), (area.west, area.north)]
-    sides = list(zip(corners, corners[1:] + corners[:1], strict=True))
     for ring in footprint:
-        edges = list(itertools.pairwise([*ring, ring[0]]))
-        if any(area.west <= x <= area.east and area.south <= y <= area.north for x, y in ring):
-            return True
-        if _inside(corners[0], edges):
-            return True
-        if any(_cross(edge, side) for edge in edges for side in sides):
-            return True
+        points = [*ring, ring[0]]
+        # The catalogue cuts an outline at the meridian of 180 degrees into two rings. A ring that
+        # crosses it all the same jumps from one side to the other: its western longitudes are then
+        # counted beyond 180, and the area is compared on both sides.
+        crosses = any(abs(second[0] - first[0]) > 180 for first, second in itertools.pairwise(points))
+        if crosses:
+            points = [(x + 360 if x < 0 else x, y) for x, y in points]
+        for turn in (0.0, 360.0) if crosses else (0.0,):
+            if _box_meets_ring(area.west + turn, area.south, area.east + turn, area.north, points):
+                return True
     return False
+
+
+def _box_meets_ring(west: float, south: float, east: float, north: float, ring: Sequence[tuple[float, float]]) -> bool:
+    """Tell whether a box and a closed ring have a point in common."""
+    corners = [(west, south), (east, south), (east, north), (west, north)]
+    sides = list(itertools.pairwise([*corners, corners[0]]))
+    edges = list(itertools.pairwise(ring))
+    if any(west <= x <= east and south <= y <= north for x, y in ring):
+        return True
+    if _inside(corners[0], edges):
+        return True
+    return any(_cross(edge, side) for edge in edges for side in sides)
 
 
 def _inside(point: tuple[float, float], edges: Sequence[tuple[tuple[float, float], tuple[float, float]]]) -> bool:
