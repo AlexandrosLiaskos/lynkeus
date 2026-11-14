@@ -12,10 +12,10 @@ Space Administration (NASA).
 
 ## Status
 
-Lynkeus is under development. At present the repository holds the page of the application with its
-ribbon and its map, the formats that connect the interface and the server, the program that publishes
-the team log as a web page, and the service that counts page visits. A button of the ribbon is grey
-until its function is finished.
+Lynkeus is under development. At present the application searches NASA's catalogue for NISAR products
+and shows the products found in a list and on the map. The repository also holds the formats that
+connect the interface and the server, the program that publishes the team log as a web page, and the
+service that counts page visits. A button of the ribbon is grey until its function is finished.
 
 ## Repository
 
@@ -46,13 +46,16 @@ npm run dev
 ```
 
 The last command serves the application page at <http://localhost:5173/> and shows each saved change
-at once. The server package needs Python 3.13 and [uv](https://docs.astral.sh/uv/).
+at once. The server needs Python 3.13 and [uv](https://docs.astral.sh/uv/).
 
 ```sh
 cd lynkeus/api
 uv sync
-uv run pytest
+uv run uvicorn lynkeus.server:app --port 8000
 ```
+
+The page of `npm run dev` passes its requests to this server, so both commands run at the same time,
+each in its own terminal.
 
 ## Checks
 
@@ -101,6 +104,9 @@ changes.
 | Software | Version | Licence | Use |
 |---|---|---|---|
 | [Python](https://www.python.org/) | 3.13 | PSF-2.0 | Language of the server |
+| [FastAPI](https://fastapi.tiangolo.com/) | 0.162.7 | MIT | Web service of the server |
+| [Uvicorn](https://www.uvicorn.org/) | 0.54.0 | BSD-3-Clause | Runs the web service |
+| [earthaccess](https://earthaccess.readthedocs.io/) | 0.19.0 | MIT | Searches NASA's catalogue |
 | [Python-Markdown](https://python-markdown.github.io/) | 3.11.3 | BSD-3-Clause | Renders the team log |
 | [tzdata](https://github.com/python/tzdata) | 2026.6 | Apache-2.0 | Time zones |
 | [NumPy](https://numpy.org/) | 2.5.4 | BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0 | Arrays of the layers |
@@ -117,6 +123,7 @@ changes.
 | [Ruff](https://docs.astral.sh/ruff/) | 0.17.5 | MIT | Style check |
 | [mypy](https://mypy-lang.org/) | 2.4.1 | MIT | Type check |
 | [pytest](https://pytest.org/) | 9.2.0 | MIT | Tests |
+| [httpx2](https://github.com/pydantic/httpx2) | 2.16.0 | BSD-3-Clause | Tests of the web service |
 | [Vitest](https://vitest.dev/) | 5.1.0 | MIT | Tests of the interface |
 | [happy-dom](https://github.com/capricorn86/happy-dom) | 21.0.4 | MIT | Simulated browser for the tests |
 | [Testing Library](https://testing-library.com/) | React 16.3.3, DOM 10.4.2, user-event 14.6.10 | MIT | Tests of the components |
@@ -125,7 +132,12 @@ changes.
 | [typescript-eslint](https://typescript-eslint.io/) | 8.72.2 | MIT | Code check |
 | [eslint-plugin-react-hooks](https://react.dev/reference/eslint-plugin-react-hooks) | 7.1.1 | MIT | Code check |
 
-## Map data
+## Data
+
+The products that the search lists are found in NASA's Common Metadata Repository (CMR), which holds
+the records of the NISAR products of the NASA Alaska Satellite Facility Distributed Active Archive
+Center (ASF DAAC). The search reads the validated and the provisional collections of four product
+types: GCOV, GUNW, GOFF and SME2.
 
 The background maps of the application come from two services.
 

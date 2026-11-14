@@ -19,6 +19,9 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The formats of a layer description, a layer request and a tool run, in the interface and in the server.
 - The tests of the interface, which the automatic checks run.
 - The research notes of the parts and the folder of the method sheets.
+- The web service of the server, in its own container.
+- The search of NISAR products in NASA's catalogue by type, area and period. The products found are listed
+  in the Catalog pane and outlined on the map.
 
 ### Changed
 
