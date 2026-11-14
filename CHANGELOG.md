@@ -32,6 +32,10 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   JSON, OGC Process Description, Job list and Dismiss). Each job runs in an operating-system process of its own.
 - The layers of a session, which can be renamed and removed, and whose files the web server serves under
   `/files/`, in parts on a range request.
+- The keyboard use of the ribbon: the arrow keys, Home and End move between the tabs and between the buttons,
+  the down and up arrow keys pass between a tab and its buttons, and the Tab key stops once on the buttons.
+- The collapsed ribbon: a double click on a tab, Ctrl+F1 or the button at the end of the row of tabs hides
+  the groups of buttons and leaves the row of tabs. A click on a tab then shows its groups for a while.
 
 ### Changed
 
