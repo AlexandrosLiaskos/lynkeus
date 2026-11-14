@@ -8,6 +8,7 @@ import {
   setPaneWidth,
   sideOf,
   widthAfterKey,
+  widthHolder,
 } from "./panes";
 
 beforeEach(resetPanes);
@@ -15,6 +16,11 @@ beforeEach(resetPanes);
 test("the Contents pane stands on the left and the Catalog pane on the right", () => {
   expect(sideOf("contents")).toBe("left");
   expect(sideOf("catalog")).toBe("right");
+});
+
+test("each side takes the width that its first pane holds", () => {
+  expect(widthHolder("left")).toBe("contents");
+  expect(widthHolder("right")).toBe("catalog");
 });
 
 test("a width is brought inside the limits and rounded to whole pixels", () => {

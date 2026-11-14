@@ -15,6 +15,7 @@ import { MapView } from "./map/MapView";
 import { Ribbon } from "./ribbon/Ribbon";
 import { TABS } from "./ribbon/tabs";
 import type { ToolActions } from "./ribbon/types";
+import { Dock } from "./shared/dock/Dock";
 import { MapContext, useMap } from "./shared/map";
 import { Messages } from "./shared/messages/Messages";
 import { useShareActions } from "./share/actions";
@@ -24,8 +25,10 @@ import { useViewActions } from "./view/actions";
 import { ViewDialogs } from "./view/ViewDialogs";
 
 /**
- * The elements of the page, in their places: the header, the ribbon, the map between the two panes, and the
- * status bar. Each element comes from the folder of its owner, and the ribbon receives the actions of every tab.
+ * The elements of the page, in their places: the header, the ribbon, the map between the panes of its two sides,
+ * and the status bar. Each element comes from the folder of its owner, and the ribbon receives the actions of
+ * every tab. The dialogs and the tool panes of every tab are declared inside the right side, where a tool pane
+ * is drawn; a dialog is drawn over the page wherever it is declared.
  */
 function Page() {
   const map = useMap();
@@ -43,20 +46,24 @@ function Page() {
       <Header />
       <Ribbon tabs={TABS} actions={actions} />
       <div className="workspace">
-        <ContentsPane />
+        <Dock side="left">
+          <ContentsPane />
+        </Dock>
         <div className="workspace-map">
           <MapView map={map} />
           <Messages />
         </div>
-        <CatalogPane />
+        <Dock side="right">
+          <CatalogPane />
+          <MapDialogs />
+          <DataDialogs />
+          <AnalysisDialogs />
+          <ViewDialogs />
+          <ShareDialogs />
+          <HelpDialogs />
+        </Dock>
       </div>
       <StatusBar />
-      <MapDialogs />
-      <DataDialogs />
-      <AnalysisDialogs />
-      <ViewDialogs />
-      <ShareDialogs />
-      <HelpDialogs />
     </>
   );
 }

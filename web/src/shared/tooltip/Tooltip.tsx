@@ -75,9 +75,10 @@ export function Tooltip({ title, text, note, children }: TooltipProps) {
       onPointerUp={() => {
         pressed.current = false;
       }}
-      // The description shows when the keyboard brings the focus, and stays hidden when a click does.
-      onFocus={() => {
-        if (!pressed.current) {
+      // The description shows when the keyboard brings the focus. It stays hidden when a click does, and when
+      // the focus returns to the element after a pane or a dialog that a click had opened is closed.
+      onFocus={(event) => {
+        if (!pressed.current && event.target.matches(":focus-visible")) {
           show();
         }
       }}

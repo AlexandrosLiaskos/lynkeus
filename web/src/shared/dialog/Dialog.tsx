@@ -15,12 +15,17 @@ interface DialogProps {
 }
 
 /**
- * A dialog over the page, with the look of the modal of the U.S. Web Design System. It is the dialog element of
- * the browser, opened as a modal: the browser keeps the keyboard focus inside it, closes it on the Escape key
- * and returns the focus to the element that opened it.
+ * A dialog over the page, with the look of the modal of the U.S. Web Design System, for a confirmation or a
+ * notice. The form of a tool opens in a pane instead (see `ToolPane`). It is the dialog element of the browser,
+ * opened as a modal: the browser keeps the keyboard focus inside it, closes it on the Escape key and returns the
+ * focus to the element that opened it.
+ *
+ * The first focus goes to the heading, as the ARIA Authoring Practices Guide advises for content that has to be
+ * read from its start. The heading shows the focus line only when the keyboard opened the dialog.
  */
 export function Dialog({ title, open, onClose, large = false, footer, children }: DialogProps) {
   const dialog = useRef<HTMLDialogElement>(null);
+  const heading = useRef<HTMLHeadingElement>(null);
   const headingId = useId();
 
   useEffect(() => {
@@ -29,7 +34,11 @@ export function Dialog({ title, open, onClose, large = false, footer, children }
       return;
     }
     if (open && !element.open) {
+      // The element that opens the dialog shows the focus line only when the keyboard reached it.
+      const byKeyboard = document.activeElement?.matches(":focus-visible") ?? false;
+      element.dataset.opened = byKeyboard ? "keyboard" : "pointer";
       element.showModal();
+      heading.current?.focus();
     } else if (!open && element.open) {
       element.close();
     }
@@ -53,7 +62,7 @@ export function Dialog({ title, open, onClose, large = false, footer, children }
     >
       <div className="usa-modal__content">
         <div className="usa-modal__main">
-          <h2 className="usa-modal__heading" id={headingId}>
+          <h2 className="usa-modal__heading" id={headingId} ref={heading} tabIndex={-1}>
             {title}
           </h2>
           {children}

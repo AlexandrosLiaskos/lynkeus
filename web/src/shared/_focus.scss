@@ -1,0 +1,53 @@
+@use "uswds-core" as uswds;
+
+// The indication of the keyboard focus, one for the whole page: a solid line of 2 pixels in the primary colour.
+// The settings of the design system in `styles.scss` give its width and colour. The primary colour has a
+// contrast of 6.7 to 1 with white and of 5.9 to 1 with the light grey of the ribbon and the title bars.
+//
+// The line stands inside the edge of an element, so that a container which scrolls does not cut it. Two kinds
+// of element keep it outside. A field has a border almost as dark as the line, so its line stands against the
+// outside of the border, where all of it shows and a red border of a wrong value stays in view. A filled button,
+// a check box and a radio button would hide a line inside them, so the design system places theirs 4 pixels
+// outside.
+
+// The line shows when the keyboard moves the focus, or when the element takes typed text. It stays hidden on an
+// element that a click has focused, and on one that received the focus because a click opened its pane.
+:is(a, button, input, select, textarea, summary, iframe, [href], [tabindex]):focus:not(:focus-visible) {
+  outline: none;
+}
+
+:is(.usa-checkbox__input, .usa-radio__input):focus:not(:focus-visible) + [class*="__label"]::before {
+  outline: none;
+}
+
+// The browser counts the first focus of a dialog as focus from the keyboard. The heading that receives it stays
+// without the line when a click opened the dialog.
+.dialog[data-opened="pointer"] .usa-modal__heading:focus {
+  outline: none;
+}
+
+// These two rules name `:not([disabled])` as the rule of the design system does, so that they come after it.
+:is(.usa-input, .usa-select, .usa-textarea):not([disabled]):focus-visible {
+  outline-offset: 0;
+}
+
+// A button that looks like a link has no box of its own, so its line stands at the edge of its text.
+.usa-button.usa-button--unstyled:not([disabled]):focus-visible {
+  outline-offset: 0;
+}
+
+// The elements that the design system leaves to the browser take the same line.
+summary:focus-visible,
+dialog:focus-visible {
+  @include uswds.focus-outline;
+}
+
+// The map shows pictures of any colour under the line, so a white line stands inside the line of the map.
+.workspace-map:has(> :focus-visible)::after {
+  position: absolute;
+  z-index: 1;
+  inset: 2px;
+  border: 2px solid uswds.color("white");
+  content: "";
+  pointer-events: none;
+}

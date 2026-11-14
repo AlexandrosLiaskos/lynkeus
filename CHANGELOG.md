@@ -22,11 +22,18 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The web service of the server, in its own container.
 - The search of NISAR products in NASA's catalogue by type, area and period. The products found are listed
   in the Catalog pane and outlined on the map.
+- The tool pane: the form of a tool opens in a pane on the right of the map, with its run button, the
+  progress of a run and its outcome.
+- The stack of panes on each side of the map, with a tab for each pane.
+- One size for the form elements inside the panes and the dialogs.
 
 ### Changed
 
 - Each tab of the ribbon is declared in its own folder, and the ribbon joins them.
 - The header of the application page shows only the name of the application.
+- The keyboard focus is shown by a line of 2 pixels in the primary colour. The line shows when the
+  keyboard moves the focus, and stays hidden on the element that receives the focus after a click.
+- A dialog gives its first focus to its heading.
 
 ### Removed
 
