@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import type OlMap from "ol/Map";
 
-/** The area of the page that shows the map. */
+/** The map view: the area of the page that shows the map. */
 export function MapView({ map }: { map: OlMap }) {
   const target = useRef<HTMLElement>(null);
 

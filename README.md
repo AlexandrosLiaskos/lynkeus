@@ -26,6 +26,9 @@ The analysis tools are added as each one is finished.
 | `compose.yaml` | The file that starts the containers |
 | `.github/workflows/` | The automatic checks |
 
+In `web/src/`, each element of the interface (header, ribbon, map and footer) has its own folder,
+which holds the component of the element and its style.
+
 ## Checks
 
 The Python code follows PEP 8, carries type annotations and numpydoc documentation strings, and has
@@ -78,7 +81,7 @@ changes.
 | [Node.js](https://nodejs.org/) | 22 | MIT | Builds the interface |
 | [React](https://react.dev/) | 19.3.1 | MIT | Interface |
 | [OpenLayers](https://openlayers.org/) | 10.11.0 | BSD-2-Clause | Map |
-| [U.S. Web Design System](https://designsystem.digital.gov/) | 3.14.0 | CC0-1.0 | Icons |
+| [U.S. Web Design System](https://designsystem.digital.gov/) | 3.14.0 | CC0-1.0 | Base styles, colours and icons |
 | [TypeScript](https://www.typescriptlang.org/) | 6.0.3 | Apache-2.0 | Language of the interface |
 | [Vite](https://vite.dev/) | 8.3.8 | MIT | Builds the interface |
 | [Sass](https://sass-lang.com/) | 1.108.2 | MIT | Compiles the styles |

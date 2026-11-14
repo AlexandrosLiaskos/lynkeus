@@ -1,0 +1,9 @@
+@use "uswds-core" as uswds;
+
+.footer {
+  padding: 0.25rem 0.75rem;
+  border-top: 1px solid uswds.color("base-light");
+  background: uswds.color("base-lightest");
+  color: uswds.color("base-darker");
+  font-size: 0.75rem;
+}

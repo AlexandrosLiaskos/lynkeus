@@ -1,15 +1,25 @@
-// Style of the application page. The colours and the brand come from
-// /assets/site.css, which the static pages share.
+// The style of the application page. Each element of the interface has its
+// own file, in the folder of the element.
 
-// Icons of the U.S. Web Design System, with the fonts of the system.
+// The parts of the U.S. Web Design System that the page uses, with the fonts
+// of the system.
 @use "uswds-core" with (
   $theme-show-notifications: false,
   $theme-font-type-mono: false,
   $theme-font-type-sans: "system",
-  $theme-font-type-serif: false
+  $theme-font-type-serif: false,
+  $theme-global-link-styles: true
 );
+@forward "uswds-global";
 @forward "usa-icon";
 
+@use "header/header";
+@use "ribbon/ribbon";
+@use "map/map";
+@use "footer/footer";
+
+// The elements stand one under the other, and the map takes the height that
+// the others leave.
 html,
 body,
 #root {
@@ -21,130 +31,8 @@ body,
   flex-direction: column;
 }
 
-.app-header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  column-gap: 2rem;
-}
-
-.app-header .site-brand {
-  margin: 0;
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
-.app-header nav {
-  margin-left: auto;
-}
-
-.ribbon-tabs {
-  display: flex;
-  align-self: stretch;
-}
-
-.ribbon-tabs button {
-  padding: 0 1rem;
-  border: 0;
-  border-bottom: 0.25rem solid transparent;
-  background: none;
-  color: var(--ink);
-  font: inherit;
-  cursor: pointer;
-}
-
-.ribbon-tabs button[aria-selected="true"] {
-  border-bottom-color: var(--link);
-  color: var(--link);
-}
-
-.ribbon-panel {
-  display: flex;
-  overflow-x: auto;
-  padding: 0.25rem 1rem;
-  border-bottom: 1px solid var(--line);
-  background: var(--shade);
-}
-
-.ribbon-group {
-  display: flex;
-  flex-direction: column;
-  padding: 0 0.5rem;
-}
-
-.ribbon-group + .ribbon-group {
-  border-left: 1px solid var(--line);
-}
-
-.ribbon-tools {
-  display: flex;
-}
-
-.ribbon-group-label {
-  color: var(--ink-light);
-  font-size: 0.75rem;
-  text-align: center;
-  white-space: nowrap;
-}
-
-.ribbon-tool {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
-  min-width: 4rem;
-  padding: 0.375rem 0.5rem;
-  border: 1px solid transparent;
-  border-radius: 0.25rem;
-  background: none;
-  color: var(--ink);
-  font: inherit;
-  font-size: 0.75rem;
-  white-space: nowrap;
-  cursor: pointer;
-}
-
-.ribbon-tool:enabled:hover {
-  background: #dfe1e2;
-}
-
-.ribbon-tool[aria-pressed="true"] {
-  border-color: var(--link);
-  background: #d9e8f6;
-}
-
-.ribbon-tool:disabled {
-  color: var(--line);
-  cursor: default;
-}
-
-.ribbon-tabs button:focus-visible,
-.ribbon-tool:focus-visible {
-  outline: 0.25rem solid var(--focus);
-  outline-offset: -0.25rem;
-}
-
-.map {
-  flex: 1;
-  min-height: 0;
-  max-width: none;
-  margin: 0;
-  padding: 0;
-}
-
-.map:focus-visible {
-  outline: 0.25rem solid var(--focus);
-  outline-offset: -0.25rem;
-}
-
-.app-footer {
-  padding: 0.5rem 1.5rem;
-  border-top: 1px solid var(--line);
-  background: var(--shade);
-  color: var(--ink-light);
-  font-size: 0.875rem;
-}
-
-.app-footer p {
-  margin: 0;
+// The outline of the focused element shows when the keyboard moves the focus,
+// and stays hidden after a click.
+:focus:not(:focus-visible) {
+  outline: none;
 }

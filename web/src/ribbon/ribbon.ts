@@ -1,4 +1,4 @@
-import type { BaseMapId } from "./baseMaps";
+import type { BaseMapId } from "../map/baseMaps";
 
 type Measurement = "backscatter" | "coherence" | "displacement" | "soil-moisture";
 
@@ -47,18 +47,18 @@ export const RIBBON: readonly RibbonTab[] = [
     label: "Map",
     groups: [
       {
-        label: "Base map",
+        label: "Navigate",
         tools: [
-          { id: "blue-marble", label: "Blue Marble", icon: "public" },
-          { id: "openstreetmap", label: "OpenStreetMap", icon: "map" },
+          { id: "full-extent", label: "Full extent", icon: "zoom_out_map" },
+          { id: "zoom-in", label: "Zoom in", icon: "zoom_in" },
+          { id: "zoom-out", label: "Zoom out", icon: "zoom_out" },
         ],
       },
       {
-        label: "Navigate",
+        label: "Basemap",
         tools: [
-          { id: "zoom-in", label: "Zoom in", icon: "zoom_in" },
-          { id: "zoom-out", label: "Zoom out", icon: "zoom_out" },
-          { id: "full-extent", label: "Full extent", icon: "zoom_out_map" },
+          { id: "blue-marble", label: "Blue Marble", icon: "public" },
+          { id: "openstreetmap", label: "OpenStreetMap", icon: "map" },
         ],
       },
     ],
