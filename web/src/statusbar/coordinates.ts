@@ -136,18 +136,22 @@ function unitSign(units: string | undefined): string {
 
 /**
  * Write the coordinates of a point of the map in the chosen way. `projection` is the projection of the map and
- * `resolution` the size of one of its pixels in the units of the projection, which sets the number of decimals.
+ * `resolution` the size of one of its pixels in the units of the projection. The number of decimals follows the
+ * size of one pixel at `centre`, the centre of the map, so that every point of one view is written with the same
+ * number of decimals. Without a centre the point itself is used.
  */
 export function writeCoordinate(
   point: Coordinate,
   projection: ProjectionLike,
   resolution: number,
   format: CoordinateFormat,
+  centre: Coordinate = point,
 ): WrittenCoordinate {
   const [x = NaN, y = NaN] = point;
   const [longitude, latitude] = toDegrees(point, projection);
-  // The size of one pixel of the map along a meridian, in degrees.
-  const pixel = Math.abs(toDegrees([x, y + resolution], projection)[1] - latitude);
+  // The size of one pixel of the map along a meridian at the centre of the map, in degrees.
+  const [centreX = NaN, centreY = NaN] = centre;
+  const pixel = Math.abs(toDegrees([centreX, centreY + resolution], projection)[1] - toDegrees(centre, projection)[1]);
 
   switch (format) {
     case "degrees": {

@@ -30,7 +30,7 @@ function Field({ text, widest }: { text: string; widest: readonly string[] }) {
 function Coordinates({ state }: { state: MapState }) {
   const format = useStore(coordinateFormatStore);
   const { projection, resolution, centre, pointer } = state;
-  const { parts, widest } = writeCoordinate(pointer?.coordinate ?? centre, projection, resolution, format);
+  const { parts, widest } = writeCoordinate(pointer?.coordinate ?? centre, projection, resolution, format, centre);
 
   return (
     <span className="statusbar-item">

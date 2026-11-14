@@ -135,6 +135,20 @@ test("a finer map writes more decimals", () => {
   expect(writeCoordinate(POINT, "EPSG:3857", fine, "map").parts).toEqual(["X -7900900.9 m", "Y 5277787.0 m"]);
 });
 
+test("every point of one view is written with the decimals of the centre of the map", () => {
+  // At zoom level 3 one pixel is 0.17 degrees of latitude at latitude 20 degrees and 0.06 degrees at latitude 70.
+  const coarse = RESOLUTION * 2 ** 7;
+  const centre = fromLonLat([0, 20]);
+  const north = fromLonLat([-37.5, 70.2986]);
+  const south = fromLonLat([31.26, 35.3013]);
+  expect(writeCoordinate(north, "EPSG:3857", coarse, "degrees").parts).toEqual(["70.30°N", "37.50°W"]);
+  expect(writeCoordinate(north, "EPSG:3857", coarse, "degrees", centre).parts).toEqual(["70.3°N", "37.5°W"]);
+  expect(writeCoordinate(south, "EPSG:3857", coarse, "degrees", centre).parts).toEqual(["35.3°N", "31.3°E"]);
+  expect(writeCoordinate(south, "EPSG:3857", coarse, "degrees", centre).widest).toEqual(
+    writeCoordinate(north, "EPSG:3857", coarse, "degrees", centre).widest,
+  );
+});
+
 test("the widest texts of each part are given, so that a field can keep one width", () => {
   expect(writeCoordinate(POINT, "EPSG:3857", RESOLUTION, "degrees").widest).toEqual([["88.500°N"], ["178.500°W"]]);
   expect(writeCoordinate(POINT, "EPSG:3857", RESOLUTION, "dms").widest).toEqual([["88°30′00″N"], ["178°30′00″W"]]);
