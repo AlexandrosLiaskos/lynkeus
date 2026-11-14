@@ -109,6 +109,33 @@ test("a scale of classes with more than ten values states that the colours repea
   expect(screen.getByText("The colours repeat every ten values.")).toBeTruthy();
 });
 
+test("every note of the legend has one style", () => {
+  const power: LayerDescription = {
+    ...MOISTURE,
+    id: "power",
+    quantity: "Radar backscatter gamma nought, HH, linear power",
+    unit: "1",
+    range: [0.01, 0.4],
+    colours: "rainbow",
+  };
+  setDisplay(power, { noDataColour: "#ff8800", mask: [0.02, 0.3] });
+  const { container } = render(<Legend layer={power} />);
+  const notes = [...container.querySelectorAll(".legend-note")].map((note) => note.textContent);
+  expect(notes).toEqual([
+    "Shown in decibels (dB).",
+    "No data",
+    "Values below -17 dB and above -5.23 dB are hidden.",
+    "Lynkeus has no colour scale named rainbow. The layer is drawn in greys.",
+  ]);
+  // Apart from the quantity, the legend has no paragraph of another style.
+  expect(container.querySelectorAll("p:not(.legend-note, .legend-quantity)")).toHaveLength(0);
+});
+
+test("the note on the classes of a scale has the style of the other notes", () => {
+  const { container } = render(<Legend layer={{ ...COMPONENTS, range: [1, 25] }} />);
+  expect(container.querySelector(".legend-note")?.textContent).toBe("The colours repeat every ten values.");
+});
+
 test("the legend states when the name of the colour scale is not known", () => {
   render(<Legend layer={{ ...MOISTURE, colours: "rainbow" }} />);
   expect(screen.getByRole("img", { name: /^Colour scale grey,/ })).toBeTruthy();
