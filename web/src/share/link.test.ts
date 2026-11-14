@@ -248,3 +248,11 @@ test("opening a link with the imagery of a date shows that image as the backgrou
   baseMapStore.set("blue-marble");
   expect(mapState(map)?.imagery).toBeNull();
 });
+
+test("opening a link without a background map hides the background map, and the map writes that link again", () => {
+  const map = createMap();
+  expect(openLink(map, "#map=3/10/20&basemap=none")).toEqual([]);
+  expect(baseMapStore.get()).toBeNull();
+  expect(mapState(map)?.baseMap).toBeNull();
+  expect(mapLink(map, "https://lynkeus.nkua.cloud/")).toBe("https://lynkeus.nkua.cloud/#map=3/10/20&basemap=none");
+});

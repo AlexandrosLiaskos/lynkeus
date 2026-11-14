@@ -210,7 +210,7 @@ export function mapState(map: OlMap): MapState | null {
   if (longitude === undefined || latitude === undefined) {
     return null;
   }
-  const baseMap: BaseMapId | null = baseMapStore.get();
+  const baseMap = baseMapStore.get();
   return {
     zoom,
     latitude,
@@ -246,9 +246,7 @@ export function openLink(map: OlMap, fragment: string): readonly LinkPart[] {
   if (state.imagery) {
     imageryStore.set(state.imagery);
   }
-  // The store of the background map does not yet take the value for no background map; such a link leaves the
-  // background map as it is.
-  if (state.baseMap !== undefined && state.baseMap !== null) {
+  if (state.baseMap !== undefined) {
     baseMapStore.set(state.baseMap);
   }
   if (state.area !== undefined) {

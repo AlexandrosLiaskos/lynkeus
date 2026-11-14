@@ -67,6 +67,8 @@ beforeEach(() => {
   selectedLayerStore.set(null);
   forgetDataSources();
   vi.unstubAllGlobals();
+  // A test that reads a record gives the answer of the server itself; no test sends a request.
+  vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("No record is given in this test.")));
   map = new OlMap({ view: new View({ center: fromLonLat([-70.975, 42.775]), zoom: 10 }) });
   map.setSize([1052, 655]);
 });

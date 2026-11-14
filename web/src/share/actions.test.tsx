@@ -41,6 +41,8 @@ function messages(): string[][] {
 beforeEach(() => {
   vi.clearAllMocks();
   vi.unstubAllGlobals();
+  // A test that reads a record gives the answer of the server itself; no test sends a request.
+  vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("No record is given in this test.")));
   resetDock();
   forgetDataSources();
   messagesStore.set([]);

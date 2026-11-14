@@ -107,8 +107,8 @@ export function leftOut(map: OlMap, picture: readonly [number, number]): string[
 }
 
 /** Tell whether a background map enters a picture only when the picture is made of the pixels of the screen. */
-export function isViewedOnly(id: string): boolean {
-  return VIEWED_ONLY.includes(id);
+export function isViewedOnly(id: string | null): boolean {
+  return id !== null && VIEWED_ONLY.includes(id);
 }
 
 /** The sentence that tells the user why OpenStreetMap is not in a picture. */
