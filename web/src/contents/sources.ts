@@ -1,14 +1,10 @@
 import type { Source } from "../shared/sources";
 
-/** The programs and the colour scales that the Contents pane and the drawing of the layers use. */
+/**
+ * The programs and the colour scales that the Contents pane and the drawing of the layers use. OpenLayers, which
+ * draws the tiles, is in the list of the Map tab.
+ */
 export const SOURCES: readonly Source[] = [
-  {
-    name: "OpenLayers",
-    version: "10.11.0",
-    licence: "BSD-2-Clause",
-    url: "https://openlayers.org/",
-    use: "Draws the tiles of a layer on the map and moves them to the projection of the map.",
-  },
   {
     name: "geotiff.js",
     version: "3.1.0-beta.0",
