@@ -1,0 +1,70 @@
+@use "uswds-core" as uswds;
+@use "../tokens/tokens";
+
+// A list of items in a pane, such as products, jobs or layers. An item has a title line and at most two
+// secondary lines, and its commands stand at its right end.
+.item-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: tokens.$space-2;
+  min-height: tokens.$row;
+  padding: tokens.$space-1 tokens.$space-2 tokens.$space-1 tokens.$space-1;
+  border-top: 1px solid tokens.$border;
+  border-left: tokens.$space-1 solid transparent;
+}
+
+.item:first-child {
+  border-top: 0;
+}
+
+// The selected item is the one tinted row of a list: the colour of a chosen element and a bar at its left.
+.item--selected,
+.item[aria-selected="true"],
+.item[aria-current="true"] {
+  border-left-color: tokens.$selected-bar;
+  background: tokens.$selected;
+}
+
+// In a list whose items can be selected, the item under the pointer is shaded in grey.
+.item-list--selectable > .item {
+  cursor: pointer;
+}
+
+.item-list--selectable > .item:not(.item--selected, [aria-selected="true"], [aria-current="true"]):hover {
+  background: tokens.$hover;
+}
+
+.item-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.item-title {
+  margin: 0;
+  color: tokens.$ink;
+  font-size: tokens.$text;
+  font-weight: bold;
+  line-height: tokens.$line;
+  overflow-wrap: anywhere;
+}
+
+.item-line {
+  margin: 0;
+  color: tokens.$secondary;
+  font-size: tokens.$text-small;
+  line-height: tokens.$line-small;
+  overflow-wrap: anywhere;
+}
+
+.item-actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  margin-left: auto;
+}

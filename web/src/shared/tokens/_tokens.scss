@@ -1,0 +1,56 @@
+@use "uswds-core" as uswds;
+
+// The sizes of text, the distances and the colours that every pane, tool pane and dialog shares. The style of a
+// part of the interface takes them from here and sets no text size, distance or text colour of its own. The rules
+// behind the values are in `docs/Interface_Guide.md`.
+
+// Text. Labels, values, controls and the titles of items take 13 pixels. Secondary lines and notes take 12
+// pixels, and no text is smaller.
+$text: 0.8125rem;
+$text-small: 0.75rem;
+$line: 1.4;
+$line-small: 1.35;
+
+// Distances, on a grid of 4 pixels.
+$space-1: 0.25rem;
+$space-2: 0.5rem;
+$space-3: 0.75rem;
+$space-4: 1rem;
+
+// The padding at the sides of a pane, the distance between two fields and the distance between two groups.
+$pane-padding: $space-3;
+$field-gap: $space-3;
+$group-gap: $space-4;
+
+// A row of the frame (a title bar, the header of a section, a control) is 28 pixels high. A target of the
+// pointer is at least 24 pixels wide and high, as criterion 2.5.8 of the Web Content Accessibility Guidelines 2.2
+// asks, and an icon is 16 pixels.
+$row: 1.75rem;
+$target: 1.5rem;
+$icon: 1rem;
+
+// Colours of text. Each has a contrast of at least 4.5 to 1 with white and with every tinted background below,
+// as criterion 1.4.3 of the same guidelines asks; the test of this folder computes it.
+$ink: uswds.color("ink");
+$secondary: uswds.color("base-darker");
+$muted: uswds.color("base-dark");
+$link: uswds.color("primary");
+
+// Lines, and the backgrounds that carry a state. No other background is tinted.
+$border: uswds.color("base-lighter");
+$hover: uswds.color("base-lightest");
+$selected: uswds.color("primary-lighter");
+$selected-bar: uswds.color("primary");
+
+// A change of state is shown within a tenth of a second. A user who has asked the operating system for less
+// motion sees it at once.
+$motion: 0.1s;
+
+@mixin transition($properties...) {
+  transition: $motion ease-in-out;
+  transition-property: $properties;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}

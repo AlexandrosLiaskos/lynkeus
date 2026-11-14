@@ -1,4 +1,5 @@
 @use "uswds-core" as uswds;
+@use "../tokens/tokens";
 
 // The messages stand over the foot of the map, in the middle, above the credit that a background map may need
 // in the lower right corner of the map. The descriptions of the ribbon buttons show over the top of the map, so
@@ -11,7 +12,7 @@
   left: 50%;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: tokens.$space-1;
   width: min(40rem, calc(100% - 1rem));
   transform: translateX(-50%);
   pointer-events: none;
@@ -31,13 +32,13 @@
 }
 
 .message .usa-alert__text {
-  font-size: 0.8125rem;
+  font-size: tokens.$text;
 }
 
 .message-close {
   position: absolute;
   top: 50%;
-  right: 0.5rem;
+  right: tokens.$space-2;
   display: flex;
   padding: 0;
   border: 0;

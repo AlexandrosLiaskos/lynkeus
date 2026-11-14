@@ -38,7 +38,8 @@ button receives its action only when its function is finished.
 ## Shared elements of the interface
 
 The folder `web/src/shared/` holds the elements that every tab uses. A part uses them as they are and
-builds no element of its own for the same purpose.
+builds no element of its own for the same purpose. The rules that every pane follows, and the building blocks
+that carry them, are in [docs/Interface_Guide.md](docs/Interface_Guide.md).
 
 ### Tool pane
 

@@ -1,4 +1,5 @@
 @use "uswds-core" as uswds;
+@use "../tokens/tokens";
 
 // One pane of a side: its title bar and, under it, its content.
 .pane {
@@ -8,17 +9,20 @@
   min-width: 0;
   min-height: 0;
   background: uswds.color("white");
-  font-size: 0.8125rem;
+  color: tokens.$ink;
+  font-size: tokens.$text;
+  line-height: tokens.$line;
 }
 
+// The title begins where the content of the pane begins, at the padding of the pane.
 .pane-header {
   display: flex;
   flex: none;
   align-items: center;
   justify-content: space-between;
-  height: 1.75rem;
-  padding: 0 0.125rem 0 0.5rem;
-  border-bottom: 1px solid uswds.color("base-lighter");
+  height: tokens.$row;
+  padding: 0 0.125rem 0 tokens.$pane-padding;
+  border-bottom: 1px solid tokens.$border;
   background: uswds.color("base-lightest");
 }
 
@@ -29,7 +33,7 @@
   min-width: 0;
   margin: 0;
   overflow: hidden;
-  font-size: 0.8125rem;
+  font-size: tokens.$text;
   line-height: 1.5rem;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -42,30 +46,39 @@
   flex: none;
   align-items: center;
   justify-content: center;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: tokens.$target;
+  height: tokens.$target;
   padding: 0;
   border: 0;
   border-radius: 0.125rem;
   background: none;
   margin-left: auto;
-  color: uswds.color("base-dark");
+  color: tokens.$muted;
   cursor: pointer;
 }
 
 .pane-close .usa-icon {
-  width: 1rem;
-  height: 1rem;
+  width: tokens.$icon;
+  height: tokens.$icon;
 }
 
 .pane-close:hover {
   background: uswds.color("base-lighter");
-  color: uswds.color("ink");
+  color: tokens.$ink;
 }
 
+// The content of a pane is the one part of it that scrolls. The title bar stays in view.
 .pane-body {
   flex: 1;
   min-height: 0;
+  padding: 0 tokens.$pane-padding tokens.$space-3;
   overflow-y: auto;
   scrollbar-width: thin;
+}
+
+// An element of the content that reaches the two edges of the pane, such as a list whose rows are marked over
+// their whole width.
+.pane-bleed {
+  margin-right: -1 * tokens.$pane-padding;
+  margin-left: -1 * tokens.$pane-padding;
 }

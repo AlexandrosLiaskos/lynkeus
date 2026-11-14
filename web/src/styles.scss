@@ -56,6 +56,16 @@
 @use "shared/toolpane/toolpane";
 @use "shared/tooltip/tooltip";
 
+// The building blocks of a pane. Their sizes, distances and colours come from `shared/tokens`.
+@use "shared/section/section";
+@use "shared/empty/empty";
+// The notice of the version in the header has a file of the same name, so this one is named apart.
+@use "shared/notice/notice" as pane-notice;
+@use "shared/properties/properties";
+@use "shared/list/list";
+@use "shared/toolbar/toolbar";
+@use "shared/menu/menu";
+
 // The elements of each part.
 @use "map/map";
 @use "contents/contents";

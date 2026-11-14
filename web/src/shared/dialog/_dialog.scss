@@ -1,4 +1,5 @@
 @use "uswds-core" as uswds;
+@use "../tokens/tokens";
 
 // The modal of the design system is a box inside an overlay that a script shows and hides. Here the box is the
 // dialog element of the browser, which centres itself and draws its own backdrop, so only these rules are added.
@@ -12,23 +13,24 @@
 
 // The modal of the design system is made for a web page. Here it takes the sizes of the frame of the page.
 .dialog.usa-modal {
-  border-radius: 0.25rem;
-  font-size: 0.8125rem;
-  line-height: 1.4;
+  border-radius: tokens.$space-1;
+  color: tokens.$ink;
+  font-size: tokens.$text;
+  line-height: tokens.$line;
 }
 
 .dialog .usa-modal__main {
-  padding: 0 1rem 1rem;
+  padding: 0 tokens.$space-4 tokens.$space-4;
 }
 
 .dialog .usa-modal__heading {
-  margin-bottom: 0.5rem;
+  margin-bottom: tokens.$space-2;
   font-size: 1rem;
   line-height: 1.5rem;
 }
 
 .dialog .usa-modal__footer {
-  margin-top: 1rem;
+  margin-top: tokens.$space-4;
 }
 
 .dialog .usa-modal__close {
@@ -38,7 +40,7 @@
 .dialog .usa-modal__close .usa-icon {
   width: 1.5rem;
   height: 1.5rem;
-  margin: 0.25rem;
+  margin: tokens.$space-1;
 }
 
 .dialog:not([open]) {
