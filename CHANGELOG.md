@@ -20,8 +20,15 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The tests of the interface, which the automatic checks run.
 - The research notes of the parts and the folder of the method sheets.
 - The web service of the server, in its own container.
-- The search of NISAR products in NASA's catalogue by type, area and period. The products found are listed
-  in the Catalog pane and outlined on the map.
+- The search of NISAR products in NASA's catalogue by type, level of validation, area, period, season,
+  track, frame, direction of the orbit, cycle, absolute orbit, channels, frequency bands, bandwidth, coverage
+  of the frame and joint observation, or by product names. The area is typed, taken from the view of the
+  map, drawn on the map, taken from the outline of a product, or read from a GeoJSON, KML, KMZ or zipped
+  shapefile.
+- The products found, in the Catalog pane: a list that can be sorted, grouped, loaded further and saved as
+  CSV or GeoJSON, the outlines of the products on the map, and the details of a product with its browse
+  image, its record and its files.
+- The layers that Lynkeus receives, stated with every product of a search.
 - The tool pane: the form of a tool opens in a pane on the right of the map, with its run button, the
   progress of a run and its outcome.
 - The stack of panes on each side of the map, with a tab for each pane.
@@ -46,6 +53,7 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The keyboard focus is shown by a line of 2 pixels in the primary colour. The line shows when the
   keyboard moves the focus, and stays hidden on the element that receives the focus after a click.
 - A dialog gives its first focus to its heading.
+- The form of the search stands in the tool pane, and no longer in a dialog.
 - The description of a ribbon button shows under the panel of the ribbon and leaves the names of the
   groups in view.
 - The messages show over the foot of the map.
