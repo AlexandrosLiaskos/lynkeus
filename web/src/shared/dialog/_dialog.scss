@@ -1,0 +1,19 @@
+@use "uswds-core" as uswds;
+
+// The modal of the design system is a box inside an overlay that a script shows and hides. Here the box is the
+// dialog element of the browser, which centres itself and draws its own backdrop, so only these rules are added.
+.dialog {
+  max-height: calc(100% - 2rem);
+  margin: auto;
+  padding: 0;
+  border: 0;
+  overflow-y: auto;
+}
+
+.dialog:not([open]) {
+  display: none;
+}
+
+.dialog::backdrop {
+  background: uswds.color("black-transparent-70");
+}

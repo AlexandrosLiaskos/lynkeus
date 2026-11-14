@@ -1,0 +1,44 @@
+@use "uswds-core" as uswds;
+
+// The messages stand over the top of the map, in the middle, and leave the rest of the map free for the pointer.
+.messages {
+  position: absolute;
+  z-index: 10;
+  top: 0.5rem;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: min(40rem, calc(100% - 1rem));
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.message {
+  position: relative;
+  margin: 0;
+  box-shadow: 0 0.125rem 0.375rem uswds.color("black-transparent-20");
+  pointer-events: auto;
+}
+
+// The text leaves room for the close button, which stands at the right end of the message.
+.message .usa-alert__body {
+  padding-right: 2.5rem;
+}
+
+.message .usa-alert__text {
+  font-size: 0.875rem;
+}
+
+.message-close {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  display: flex;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  transform: translateY(-50%);
+  cursor: pointer;
+}

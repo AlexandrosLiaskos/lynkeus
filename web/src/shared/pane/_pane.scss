@@ -1,0 +1,79 @@
+@use "uswds-core" as uswds;
+
+.pane {
+  position: relative;
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  min-height: 0;
+  background: uswds.color("white");
+  font-size: 0.8125rem;
+}
+
+.pane--left {
+  border-right: 1px solid uswds.color("base-light");
+}
+
+.pane--right {
+  border-left: 1px solid uswds.color("base-light");
+}
+
+.pane-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 1.75rem;
+  padding: 0 0.25rem 0 0.5rem;
+  border-bottom: 1px solid uswds.color("base-lighter");
+  background: uswds.color("base-lightest");
+}
+
+.pane-title {
+  margin: 0;
+  font-size: 0.8125rem;
+}
+
+.pane-close {
+  display: flex;
+  padding: 0.125rem;
+  border: 0;
+  border-radius: 0.125rem;
+  background: none;
+  color: uswds.color("base-dark");
+  cursor: pointer;
+}
+
+.pane-close:hover {
+  background: uswds.color("base-lighter");
+  color: uswds.color("ink");
+}
+
+.pane-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+// The edge that changes the width lies over the border between the pane and the map.
+.pane-edge {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+  width: 0.375rem;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.pane--left .pane-edge {
+  right: -0.1875rem;
+}
+
+.pane--right .pane-edge {
+  left: -0.1875rem;
+}
+
+.pane-edge:hover,
+.pane-edge:focus-visible {
+  background: uswds.color("primary-light");
+}

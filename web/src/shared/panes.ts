@@ -1,0 +1,73 @@
+import { createStore } from "./store";
+
+/** The Contents pane stands on the left of the map and the Catalog pane on the right. */
+export type PaneId = "contents" | "catalog";
+export type PaneSide = "left" | "right";
+
+export interface PaneState {
+  open: boolean;
+  /** Width in pixels. */
+  width: number;
+}
+
+/** The widths that a pane may take, in pixels, and the change that one press of an arrow key makes. */
+export const PANE_WIDTH = { smallest: 192, first: 288, largest: 480, step: 16 } as const;
+
+/** Both panes start open, as in a GIS program, when the window is wide enough for them and the map. */
+function firstState(): Record<PaneId, PaneState> {
+  const open = window.matchMedia("(min-width: 64em)").matches;
+  return {
+    contents: { open, width: PANE_WIDTH.first },
+    catalog: { open, width: PANE_WIDTH.first },
+  };
+}
+
+export const panesStore = createStore(firstState());
+
+/** Return the side of the map on which a pane stands. */
+export function sideOf(id: PaneId): PaneSide {
+  return id === "contents" ? "left" : "right";
+}
+
+/** Bring a width inside the limits of a pane. */
+export function clampWidth(width: number): number {
+  return Math.min(PANE_WIDTH.largest, Math.max(PANE_WIDTH.smallest, Math.round(width)));
+}
+
+/**
+ * Return the width of a pane after a key is pressed on its edge, or undefined for a key that does not change it.
+ * An arrow key moves the edge by one step, Home gives the smallest width and End the largest.
+ */
+export function widthAfterKey(width: number, key: string, side: PaneSide): number | undefined {
+  const outwards = side === "left" ? "ArrowRight" : "ArrowLeft";
+  const inwards = side === "left" ? "ArrowLeft" : "ArrowRight";
+  switch (key) {
+    case outwards:
+      return clampWidth(width + PANE_WIDTH.step);
+    case inwards:
+      return clampWidth(width - PANE_WIDTH.step);
+    case "Home":
+      return PANE_WIDTH.smallest;
+    case "End":
+      return PANE_WIDTH.largest;
+    default:
+      return undefined;
+  }
+}
+
+/** Show or hide a pane. */
+export function setPaneOpen(id: PaneId, open: boolean): void {
+  const panes = panesStore.get();
+  panesStore.set({ ...panes, [id]: { ...panes[id], open } });
+}
+
+/** Set the width of a pane, inside its limits. */
+export function setPaneWidth(id: PaneId, width: number): void {
+  const panes = panesStore.get();
+  panesStore.set({ ...panes, [id]: { ...panes[id], width: clampWidth(width) } });
+}
+
+/** Return both panes to their first state. */
+export function resetPanes(): void {
+  panesStore.set(firstState());
+}
