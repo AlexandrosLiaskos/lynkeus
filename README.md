@@ -113,6 +113,10 @@ its memory. It reads three settings from the environment.
 | `LYNKEUS_EARTHDATA_KEYS` | Address of the public keys with which an Earthdata token is checked, for tests | The address of NASA Earthdata Login |
 | `LYNKEUS_COOKIE_SECURE` | `false` lets the cookie of a session pass over plain HTTP, for tests | The cookie passes over HTTPS only |
 
+The container of the web service may use 2 gigabytes of memory, for the service and the two jobs that run
+at once. The web service and its jobs reach NASA's catalogue, Earthdata Login and NASA Harmony over HTTPS,
+so the container needs a connection to the internet.
+
 The last command installs two systemd units. They publish the team log again whenever its file
 changes.
 
@@ -124,6 +128,8 @@ changes.
 | [FastAPI](https://fastapi.tiangolo.com/) | 0.162.7 | MIT | Web service of the server |
 | [Uvicorn](https://www.uvicorn.org/) | 0.54.0 | BSD-3-Clause | Runs the web service |
 | [earthaccess](https://earthaccess.readthedocs.io/) | 0.19.0 | MIT | Searches NASA's catalogue |
+| [harmony-py](https://github.com/nasa/harmony-py) | 1.8.0 | Apache-2.0 | Asks NASA Harmony for the layers |
+| [Rasterio](https://rasterio.readthedocs.io/) | 1.5.2 | BSD-3-Clause | Reads and writes the GeoTIFF files, with the GDAL library 3.12.2 that it contains |
 | [Python-Markdown](https://python-markdown.github.io/) | 3.11.3 | BSD-3-Clause | Renders the team log |
 | [tzdata](https://github.com/python/tzdata) | 2026.6 | Apache-2.0 | Time zones |
 | [NumPy](https://numpy.org/) | 2.5.4 | BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0 | Arrays of the layers |
@@ -141,6 +147,8 @@ changes.
 | [mypy](https://mypy-lang.org/) | 2.4.1 | MIT | Type check |
 | [pytest](https://pytest.org/) | 9.2.0 | MIT | Tests |
 | [httpx2](https://github.com/pydantic/httpx2) | 2.16.0 | BSD-3-Clause | Tests of the web service |
+| [rio-cogeo](https://cogeotiff.github.io/rio-cogeo/) | 7.0.4 | BSD-3-Clause | Checks the Cloud Optimized GeoTIFF files in the tests |
+| [jsonschema](https://python-jsonschema.readthedocs.io/) | 4.26.0 | MIT | Checks the STAC records in the tests |
 | [Vitest](https://vitest.dev/) | 5.1.0 | MIT | Tests of the interface |
 | [happy-dom](https://github.com/capricorn86/happy-dom) | 21.0.4 | MIT | Simulated browser for the tests |
 | [Testing Library](https://testing-library.com/) | React 16.3.3, DOM 10.4.2, user-event 14.6.10 | MIT | Tests of the components |
