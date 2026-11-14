@@ -57,3 +57,31 @@ of a pane are in [data.md](data.md).
 | Measured | Chromium, 1440 by 900 pixels, in a pane 288 pixels wide: text field, select and date field 271 by 28 pixels with text of 13 pixels; run button 28 pixels high; label of a check box 24 pixels high; close button of a pane 24 by 24 pixels; name of a group 28 pixels high; the links Cancel and View details 24 pixels high. Contrast with the background: labels 17.22 to 1, hints 4.59, error text 6.98, border of a field 6.74, text of the run button 6.72 and of the inactive run button 5.79. |
 | Limits | The date field is the one of the browser, which writes the date in the order of the user's language. |
 | Read on | 14 Nov 2026 |
+
+
+## Review of the frame
+
+The elements of the frame were looked at in Chromium, through Playwright 1.65.1, in windows of 1920 by 1080, 1440
+by 900, 1024 by 768 and 390 by 800 pixels, and their sizes and colours were measured. The table lists what was
+found and changed. The numbers come from the measurements; the choices come from no source.
+
+| Element | Found | Changed to |
+|---|---|---|
+| Description of a ribbon button | It stood directly under its button and covered the name of the group, and with it the top of a message. | It stands under the panel of the ribbon, 4 pixels below it. The clear strip between the button and the description belongs to the description, so the pointer can cross it: the description stayed while the pointer moved from the button onto it, and hid when the pointer left, as criterion 1.4.13 asks. |
+| Messages | They stood over the top of the map, where the descriptions of the ribbon buttons show. In a window of 390 pixels with a pane open, they were squeezed into the 86 pixels that the pane left, and one message was 508 pixels high. Their text was 14 pixels, and they had a shadow. | They stand over the foot of the map, 36 pixels above its lower edge, above the scale and the credits of the map, so a description and a message do not meet. In a narrow window they stand over the pane that covers the map (374 pixels wide). Their text is 13 pixels. A line of 1 pixel replaces the shadow. |
+| Pressed button of the ribbon | Its border (rgb 115, 179, 231) had a contrast of 2.25 to 1 with the white panel, under the 3 to 1 of criterion 1.4.11 for the sign of a state. | The border is the colour `primary`: 6.72 to 1 with the panel and 5.39 with the fill of the button. |
+| Unfinished button of the ribbon | Its label (rgb 169, 174, 177) had a contrast of 2.24 to 1. The criteria exempt an inactive element, but the button can take the focus and its description is read. | The colour `disabled` of the design system (rgb 117, 117, 117): 4.61 to 1. |
+| Heights of the ribbon | The line height of the labels gave heights with fractions of a pixel (a button of 72.8 pixels, a ribbon of 123.4), so the lines under the ribbon fell between pixels. | Whole pixels: a button of 72 pixels and a ribbon of 124. |
+| Dialog | The modal of the design system is made for a web page: a heading of 22 pixels, a close button of 42 pixels, padding of 32 pixels and corners of 8 pixels. The search dialog was 596 pixels high. | A heading of 16 pixels, a close button of 32 pixels, padding of 16 pixels and corners of 4 pixels. The same dialog is 444 pixels high. |
+| Close button of a pane | A target of 17 by 17 pixels, under the 24 pixels of criterion 2.5.8. | 24 by 24 pixels, with an icon of 16 pixels. |
+| Scroll bars | The panel of the ribbon in a narrow window, the content of a pane and the tabs of a stack had the wide scroll bar of the browser. | The thin scroll bar of the browser (`scrollbar-width: thin`). |
+
+Measured and left as it is: the header (32 pixels high, name of 14 pixels, 15.11 to 1), the tabs of the ribbon (28
+pixels high; the selected tab 5.90 to 1), the names of the groups (11 pixels, 6.74 to 1), the labels of the
+buttons (12 pixels, 17.22 to 1), the title of a pane (13 pixels, 15.11 to 1), the tabs of a stack (28 pixels high;
+the selected tab 6.72 to 1), and the text of a message (15.42 to 1 on the warning colour). The page did not scroll
+sideways at any of the four widths. At 390 pixels the panel of the ribbon scrolls sideways (835 pixels of buttons
+in 380).
+
+Not changed, because the folders belong to other parts: the scale of the map and its credits keep the look that
+OpenLayers gives them.
