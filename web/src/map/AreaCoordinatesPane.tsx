@@ -1,5 +1,6 @@
 import { useId, useState } from "react";
 import { areaStore, type Area } from "../shared/area";
+import { Info } from "../shared/info/Info";
 import { useStore } from "../shared/store";
 import { ToolPane, type ToolPaneRun } from "../shared/toolpane/ToolPane";
 import { areaOfText, SIDES, type Side } from "./area";
@@ -43,11 +44,15 @@ export function AreaCoordinatesPane() {
 
   return (
     <ToolPane id="area-from-coordinates" title="Area from coordinates" runLabel="Set area" onRun={setArea} run={run}>
-      <fieldset className="usa-fieldset">
-        <legend className="usa-legend">Sides of the area</legend>
-        <span className="usa-hint">
-          In degrees of longitude and latitude. West and east run from -180 to 180, south and north from -90 to 90.
-        </span>
+      <fieldset className="usa-fieldset" aria-labelledby={`${id}-sides`} aria-describedby={`${id}-sides-info`}>
+        <legend className="usa-legend">
+          <span id={`${id}-sides`}>Sides of the area</span>
+          <Info id={`${id}-sides-info`} about="Sides of the area">
+            Each side is a number of decimal degrees of longitude or of latitude, for example -70.9. West and east lie
+            between -180 and 180, and south and north between -90 and 90. West is smaller than east, and south is
+            smaller than north.
+          </Info>
+        </legend>
         {SIDES.map((side) => (
           <div key={side}>
             <label className="usa-label" htmlFor={`${id}-${side}`}>

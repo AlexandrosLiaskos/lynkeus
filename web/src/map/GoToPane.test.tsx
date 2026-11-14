@@ -55,3 +55,20 @@ test("a text that is not a latitude or a longitude is refused in a sentence", as
   expect(map.getView().getAnimating()).toBe(false);
   expect(markStore.get()).toBeNull();
 });
+
+/** Return the explanation that describes an element. */
+function explanation(element: HTMLElement): string | undefined {
+  return document.getElementById(element.getAttribute("aria-describedby") ?? "")?.textContent;
+}
+
+test("each field is described by its explanation, which shows from the button beside its title", () => {
+  openPane("go-to-coordinates", <GoToPane />);
+  expect(explanation(screen.getByLabelText("Latitude"))).toMatch(
+    /^The latitude of the place, from 90 degrees south to 90 degrees north\. .* as 42° 48′ 30″ N\./,
+  );
+  expect(explanation(screen.getByLabelText("Longitude"))).toMatch(
+    /^The longitude of the place, from 180 degrees west to 180 degrees east\. .* as 70° 54′ 00″ W\./,
+  );
+  expect(screen.getByRole("button", { name: "Information about Latitude" })).toBeDefined();
+  expect(screen.getByRole("button", { name: "Information about Longitude" })).toBeDefined();
+});

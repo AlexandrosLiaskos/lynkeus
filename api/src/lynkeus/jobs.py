@@ -32,7 +32,10 @@ from lynkeus.processes import Process, Work
 from lynkeus.store import JobRecord, LayerRecord, Store
 
 MAX_RUNNING_JOBS = 2
-"""The largest number of jobs that run at once. It equals the number of processors of the machine."""
+"""The largest number of jobs that run at once. It equals the number of processors of the machine.
+
+The memory limit of the web service in ``compose.yaml`` allows for this number of jobs.
+"""
 
 MAX_WAITING_JOBS = 20
 """The largest number of jobs of all sessions that wait. With more, a new job would wait for hours."""
@@ -58,8 +61,13 @@ MAX_SESSION_SIZE = 2_000_000_000
 MAX_TOTAL_SIZE = 20_000_000_000
 """The largest total size of the layers of all sessions, in bytes. It is half of the free space of the machine."""
 
-JOB_TIME = 1800.0
-"""The longest time that a job may run, in seconds."""
+JOB_TIME = 2400.0
+"""The longest time that a job may run, in seconds.
+
+It is 10 minutes longer than the longest wait for NASA Harmony (``lynkeus.harmony.MOST_WAIT``). A job whose
+wait for Harmony passes that limit therefore ends with the sentence of ``lynkeus.harmony``, and a job that
+receives its layer near the limit still has the time to fetch it and to write its files.
+"""
 
 END_TIME = 5.0
 """The time that a job has to end after the signal SIGTERM, in seconds. It is then ended with SIGKILL."""
@@ -130,7 +138,8 @@ def _work(
 
     This is the whole of the operating-system process of a job. It leads a
     process group of its own, so that the server can end it together with
-    every program that it started.
+    every program that it started. The function runs in the main thread of
+    the process, so it can set a handler for the signal that ends the job.
     """
     if hasattr(os, "setsid"):
         os.setsid()
