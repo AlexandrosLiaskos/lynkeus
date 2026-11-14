@@ -6,6 +6,9 @@ export const HOVER_DELAY = 500;
 /** The largest width of a description, in pixels. The style file gives the same value. */
 const WIDTH = 256;
 
+/** The clear strip between an element, or its row, and the description, in pixels. */
+const GAP = 4;
+
 interface TooltipProps {
   /** Name of the element. */
   title: string;
@@ -21,19 +24,30 @@ interface TooltipProps {
  * The description of a button. It shows under the button while the pointer rests on it or while the button has
  * keyboard focus. The Escape key hides it, and the pointer may move onto it without hiding it, as the criterion
  * 1.4.13 of the Web Content Accessibility Guidelines asks.
+ *
+ * An element that holds the button may carry the attribute `data-tooltip-row`. The description then shows under
+ * that element, so that it does not cover what the element shows under the button, as the ribbon shows the name
+ * of a group.
  */
 export function Tooltip({ title, text, note, children }: TooltipProps) {
   const id = useId();
   const anchor = useRef<HTMLSpanElement>(null);
   const timer = useRef<number | undefined>(undefined);
   const pressed = useRef(false);
-  const [position, setPosition] = useState<{ left: number; top: number } | null>(null);
+  const [position, setPosition] = useState<{ left: number; top: number; borderTopWidth: number } | null>(null);
 
   const show = () => {
     // The anchor has no box of its own, so the place is taken from the element that it holds.
-    const box = anchor.current?.firstElementChild?.getBoundingClientRect();
-    if (box) {
-      setPosition({ left: Math.max(0, Math.min(box.left, window.innerWidth - WIDTH)), top: box.bottom });
+    const element = anchor.current?.firstElementChild;
+    if (element) {
+      const box = element.getBoundingClientRect();
+      const row = element.closest("[data-tooltip-row]")?.getBoundingClientRect();
+      setPosition({
+        left: Math.max(0, Math.min(box.left, window.innerWidth - WIDTH)),
+        top: box.bottom,
+        // The clear strip reaches from the element to the description, so the pointer can cross it.
+        borderTopWidth: Math.max(0, (row?.bottom ?? box.bottom) - box.bottom) + GAP,
+      });
     }
   };
 
