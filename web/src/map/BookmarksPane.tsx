@@ -1,5 +1,6 @@
 import { useId, useState, type KeyboardEvent } from "react";
 import { Icon } from "../shared/icon/Icon";
+import { Info } from "../shared/info/Info";
 import { useMap } from "../shared/map";
 import { useStore } from "../shared/store";
 import { ToolPane, type ToolPaneRun } from "../shared/toolpane/ToolPane";
@@ -67,12 +68,15 @@ export function BookmarksPane() {
 
   return (
     <ToolPane id="bookmarks" title="Bookmarks" runLabel="Save view" onRun={save} run={run}>
-      <label className="usa-label" htmlFor={`${id}-name`}>
-        Name of the view
-      </label>
-      <span className="usa-hint" id={`${id}-hint`}>
-        The bookmarks are kept in the local storage of this browser and are not sent to the server.
-      </span>
+      <div className="info-title">
+        <label className="usa-label" htmlFor={`${id}-name`}>
+          Name of the view
+        </label>
+        <Info id={`${id}-hint`} about="Name of the view">
+          The name under which the present view of the map is saved. Lynkeus keeps the bookmarks in the local storage of
+          this browser and does not send them to the server.
+        </Info>
+      </div>
       <input
         className="usa-input"
         id={`${id}-name`}

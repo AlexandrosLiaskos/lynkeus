@@ -214,3 +214,46 @@ test("a tool closes its own pane, and the pane starts again when it is opened th
     "Buffer",
   );
 });
+
+const BUFFER_INFO = "Draws a zone of one width around each feature of a layer.";
+
+test("the explanation of a tool shows from the button beside its title and describes the pane", () => {
+  render(
+    <ToolPane id="buffer" title="Buffer" info={BUFFER_INFO} onRun={vi.fn()}>
+      Parameters
+    </ToolPane>,
+  );
+  act(() => openToolPane("buffer"));
+  const pane = screen.getByRole("complementary", { name: "Buffer" });
+  const info = within(pane).getByRole("button", { name: "Information about Buffer" });
+  expect(document.getElementById(pane.getAttribute("aria-describedby") ?? "")?.textContent).toBe(BUFFER_INFO);
+  expect(info.getAttribute("aria-describedby")).toBe(pane.getAttribute("aria-describedby"));
+  expect(screen.getByRole("heading", { name: "Buffer" }).contains(info)).toBe(false);
+});
+
+test("a tool without an explanation has no such button, and its pane has no description", () => {
+  render(<Buffer />);
+  act(() => openToolPane("buffer"));
+  expect(screen.queryByRole("button", { name: "Information about Buffer" })).toBeNull();
+  expect(screen.getByRole("complementary", { name: "Buffer" }).hasAttribute("aria-describedby")).toBe(false);
+});
+
+test("the Escape key first hides the explanation of a pane, and the second time moves the focus to the map", async () => {
+  render(
+    <>
+      <main tabIndex={0} aria-label="Map" />
+      <ToolPane id="buffer" title="Buffer" info={BUFFER_INFO} onRun={vi.fn()}>
+        Parameters
+      </ToolPane>
+    </>,
+  );
+  act(() => openToolPane("buffer"));
+  const info = screen.getByRole("button", { name: "Information about Buffer" });
+  act(() => info.focus());
+  expect(screen.getByRole("tooltip").classList.contains("info-bubble--open")).toBe(true);
+  await userEvent.keyboard("{Escape}");
+  expect(screen.getByRole("tooltip").classList.contains("info-bubble--open")).toBe(false);
+  expect(document.activeElement).toBe(info);
+  await userEvent.keyboard("{Escape}");
+  expect(document.activeElement).toBe(screen.getByRole("main"));
+});
