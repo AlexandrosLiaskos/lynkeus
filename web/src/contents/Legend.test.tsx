@@ -1,0 +1,80 @@
+import { render, screen } from "@testing-library/react";
+import { beforeEach, expect, test } from "vitest";
+import type { LayerDescription } from "../shared/layer";
+import { colourScale } from "./colours";
+import { Legend } from "./Legend";
+import { displayStore, setDisplay } from "./state";
+
+const MOISTURE: LayerDescription = {
+  id: "moisture",
+  title: "Soil moisture",
+  kind: "layer",
+  url: "/files/moisture/moisture.tif",
+  quantity: "Soil moisture",
+  unit: "m3 m-3",
+  range: [0.05, 0.45],
+  colours: "YlGnBu",
+  dates: ["2026-10-21"],
+  inputs: ["NISAR_L3_PR_SME2"],
+  program: "Lynkeus 0.1.0",
+  method: null,
+  record: "/files/moisture/moisture.json",
+};
+
+const COMPONENTS: LayerDescription = {
+  ...MOISTURE,
+  id: "components",
+  quantity: "Connected component of the phase unwrapping, HH",
+  unit: "1",
+  range: [0, 3],
+  colours: "tab10",
+};
+
+beforeEach(() => {
+  displayStore.set({});
+});
+
+test("the legend names the quantity and its unit, and marks the ends of the scale and round values between them", () => {
+  const { container } = render(<Legend layer={MOISTURE} />);
+  expect(screen.getByText("Soil moisture (m\u00b3 m\u207b\u00b3)")).toBeTruthy();
+  const ramp = screen.getByRole("img", { name: "Colour scale YlGnBu, from 0.05 to 0.45 m\u00b3 m\u207b\u00b3" });
+  expect(ramp.style.background).toContain("linear-gradient(to top, #ffffd9,");
+  const marks = [...container.querySelectorAll<HTMLElement>(".legend-marks li")];
+  expect(marks.map((mark) => mark.textContent)).toEqual(["0.05", "0.1", "0.2", "0.3", "0.4", "0.45"]);
+  expect(marks[0]?.style.bottom).toBe("0%");
+  expect(parseFloat(marks[2]?.style.bottom ?? "")).toBeCloseTo(37.5, 9);
+  expect(marks.at(-1)?.style.bottom).toBe("100%");
+});
+
+test("a quantity without dimension is written without a unit", () => {
+  render(<Legend layer={{ ...MOISTURE, quantity: "Interferometric coherence magnitude, HH", unit: "1" }} />);
+  expect(screen.getByText("Interferometric coherence magnitude, HH")).toBeTruthy();
+});
+
+test("the legend follows the display of the layer", () => {
+  setDisplay(MOISTURE, { range: [0, 1], colours: "viridis" });
+  render(<Legend layer={MOISTURE} />);
+  const ramp = screen.getByRole("img", { name: "Colour scale viridis, from 0 to 1 m\u00b3 m\u207b\u00b3" });
+  expect(ramp.style.background).toContain("#440154");
+});
+
+test("a scale of classes lists each whole number of the range beside its colour", () => {
+  const { container } = render(<Legend layer={COMPONENTS} />);
+  const classes = [...container.querySelectorAll("li")];
+  expect(classes.map((item) => item.textContent)).toEqual(["0", "1", "2", "3"]);
+  const swatches = [...container.querySelectorAll<HTMLElement>(".legend-swatch")];
+  expect(swatches.map((swatch) => swatch.style.background)).toEqual(colourScale("tab10").slice(0, 4));
+  expect(screen.queryByText("The colours repeat every ten values.")).toBeNull();
+});
+
+test("a scale of classes with more than ten values states that the colours repeat", () => {
+  const { container } = render(<Legend layer={{ ...COMPONENTS, range: [1, 25] }} />);
+  expect(container.querySelectorAll("li")).toHaveLength(10);
+  expect(screen.getByText("The colours repeat every ten values.")).toBeTruthy();
+});
+
+test("the legend states when the name of the colour scale is not known", () => {
+  render(<Legend layer={{ ...MOISTURE, colours: "rainbow" }} />);
+  expect(screen.getByRole("img", { name: /^Colour scale grey,/ })).toBeTruthy();
+  expect(screen.getByText("Lynkeus has no colour scale named rainbow. The layer is drawn in greys.")).toBeTruthy();
+});
