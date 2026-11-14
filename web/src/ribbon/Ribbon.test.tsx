@@ -404,3 +404,51 @@ test("on a collapsed ribbon the down arrow key shows the groups and moves the fo
   expect(screen.queryByRole("toolbar")).toBeNull();
   expect(focused()).toBe("tab First");
 });
+
+test("the description of a button that an arrow key reaches shows under the panel of the ribbon", async () => {
+  render(<Ribbon tabs={TWO_GROUPS} actions={{ ready: { run: vi.fn() } }} />);
+  const later = screen.getByRole("button", { name: "Later" });
+  vi.spyOn(later, "getBoundingClientRect").mockReturnValue({ left: 60, bottom: 100 } as DOMRect);
+  vi.spyOn(screen.getByRole("tabpanel"), "getBoundingClientRect").mockReturnValue({ bottom: 120 } as DOMRect);
+  await userEvent.tab();
+  await userEvent.tab();
+  await userEvent.keyboard("{ArrowRight}");
+  const tip = document.getElementById(later.getAttribute("aria-describedby") ?? "")?.parentElement;
+  expect(tip?.hidden).toBe(false);
+  expect(tip?.style.left).toBe("60px");
+  expect(tip?.style.top).toBe("100px");
+  expect(tip?.style.borderTopWidth).toBe("24px");
+});
+
+test("the description shows under the groups that a collapsed ribbon shows for a while", async () => {
+  render(<Ribbon tabs={TWO_GROUPS} actions={{ ready: { run: vi.fn() } }} />);
+  vi.spyOn(screen.getByRole("tabpanel"), "getBoundingClientRect").mockReturnValue({ bottom: 120 } as DOMRect);
+  await userEvent.keyboard("{Control>}{F1}{/Control}");
+  await userEvent.tab();
+  await userEvent.keyboard("{ArrowDown}");
+  const ready = screen.getByRole("button", { name: "Ready" });
+  expect(document.activeElement).toBe(ready);
+  const tip = document.getElementById(ready.getAttribute("aria-describedby") ?? "")?.parentElement;
+  expect(tip?.hidden).toBe(false);
+  // The simulated browser gives the button a bottom edge of 0, so the clear strip is 120 pixels and the gap of 4.
+  expect(tip?.style.borderTopWidth).toBe("124px");
+});
+
+test("the description of the button that collapses the ribbon shows under the whole ribbon", async () => {
+  const { container } = render(<Ribbon tabs={TWO_GROUPS} actions={{ ready: { run: vi.fn() } }} />);
+  const collapse = screen.getByRole("button", { name: "Collapse the ribbon" });
+  vi.spyOn(collapse, "getBoundingClientRect").mockReturnValue({ left: 10, bottom: 28 } as DOMRect);
+  const ribbon = container.firstElementChild;
+  expect(ribbon?.className).toBe("ribbon");
+  if (ribbon) {
+    vi.spyOn(ribbon, "getBoundingClientRect").mockReturnValue({ bottom: 124 } as DOMRect);
+  }
+  await userEvent.tab();
+  await userEvent.tab();
+  await userEvent.tab();
+  expect(document.activeElement).toBe(collapse);
+  const tip = document.getElementById(collapse.getAttribute("aria-describedby") ?? "")?.parentElement;
+  expect(tip?.hidden).toBe(false);
+  expect(tip?.style.top).toBe("28px");
+  expect(tip?.style.borderTopWidth).toBe("100px");
+});

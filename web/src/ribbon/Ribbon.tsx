@@ -177,9 +177,12 @@ export function Ribbon({ tabs, actions }: RibbonProps) {
   };
 
   return (
+    // The description of the button that collapses the ribbon shows under the whole ribbon, as the descriptions
+    // of the other buttons show under the panel.
     <div
       ref={ribbon}
       className={collapsed ? "ribbon ribbon--collapsed" : "ribbon"}
+      data-tooltip-row
       onBlur={onBlur}
       onKeyDown={onKeyDown}
     >
