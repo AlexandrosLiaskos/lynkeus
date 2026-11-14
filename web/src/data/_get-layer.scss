@@ -1,49 +1,19 @@
-@use "uswds-core" as uswds;
+@use "../shared/tokens/tokens";
 
-// The style of the form of Get layer, and of the tables that show every field of a job or of a layer.
-
-// A sentence of the form about the choices made so far.
-.get-layer-note {
-  margin: 0.375rem 0 0;
-  color: uswds.color("base-darker");
-  font-size: 0.75rem;
-  line-height: 1.35;
-}
-
-// The notice for a visitor who is not signed in to Earthdata, with the button that opens the form of Sign in.
-// Its colours are those of the notice of the design system.
-.get-layer-sign-in {
-  margin-top: 0.5rem;
-  padding: 0.375rem 0.5rem 0.625rem;
-  border-left: 0.25rem solid uswds.color("info");
-  background: uswds.color("info-lighter");
-  font-size: 0.75rem;
-  line-height: 1.35;
-}
-
-.get-layer-sign-in p {
-  margin: 0 0 0.375rem;
-}
-
-.get-layer-estimates {
-  margin: 0;
-  padding: 0;
-  font-size: 0.75rem;
-  line-height: 1.4;
-  list-style: none;
-}
+// The style of the tables that show every field of a job or of a layer. The form of Get layer is drawn with the
+// shared elements alone.
 
 // Every field of a job or of a layer: its name in the first column and its value in the second.
 .fields {
   width: 100%;
   margin: 0;
-  font-size: 0.8125rem;
-  line-height: 1.4;
+  font-size: tokens.$text;
+  line-height: tokens.$line;
 }
 
 .fields th {
   width: 34%;
-  color: uswds.color("base-darker");
+  color: tokens.$secondary;
   font-weight: normal;
   vertical-align: top;
 }
@@ -54,7 +24,7 @@
 
 // The tables of several jobs stand one under the other.
 .fields + .fields {
-  margin-top: 1rem;
+  margin-top: tokens.$space-4;
 }
 
 .fields-list {
