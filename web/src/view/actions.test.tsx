@@ -1,13 +1,16 @@
-import { act, renderHook } from "@testing-library/react";
+import { act, renderHook, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Attribution, ScaleLine } from "ol/control";
+import type Control from "ol/control/Control";
 import OlMap from "ol/Map";
 import View from "ol/View";
 import type { ReactNode } from "react";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
-import { dockStore, openToolPane, resetDock } from "../shared/dock/dock";
+import { dockStore, enterDock, frontOf, openToolPane, resetDock } from "../shared/dock/dock";
 import { MapContext } from "../shared/map";
 import { messagesStore } from "../shared/messages/messages";
-import { PANE_WIDTH, panesStore, resetPanes, setPaneWidth } from "../shared/panes";
+import { Pane } from "../shared/pane/Pane";
+import { PANE_WIDTH, panesStore, resetPanes, setPaneWidth, type PaneId } from "../shared/panes";
 import { statusBarStore } from "../statusbar/state";
 import { useViewActions } from "./actions";
 import { findScaleBar } from "./scaleBar";
@@ -32,8 +35,14 @@ function setFullScreen(enabled: boolean, element: Element | null = null): void {
   Object.defineProperty(document, "fullscreenElement", { value: element, configurable: true });
 }
 
-/** Give the actions of the View tab for a map that stands in the frame of the page. */
-function setUp(controls = [new Attribution(), new ScaleLine()]) {
+interface SetUp {
+  controls?: Control[];
+  /** The panes that have something to show, and so are drawn beside the map. */
+  panes?: PaneId[];
+}
+
+/** Give the actions of the View tab for a map that stands in the frame of the page, between its panes. */
+function setUp({ controls = [new Attribution(), new ScaleLine()], panes = ["contents", "catalog"] }: SetUp = {}) {
   const frame = document.createElement("div");
   frame.className = "workspace-map";
   const target = document.createElement("main");
@@ -41,31 +50,71 @@ function setUp(controls = [new Attribution(), new ScaleLine()]) {
   frame.append(target);
   document.body.append(frame);
   const map = new OlMap({ view: new View({ center: [0, 0], zoom: 2 }), controls, target });
-  const wrapper = ({ children }: { children: ReactNode }) => <MapContext value={map}>{children}</MapContext>;
+  const wrapper = ({ children }: { children: ReactNode }) => (
+    <MapContext value={map}>
+      {panes.includes("contents") && (
+        <Pane id="contents" title="Contents">
+          Layers
+        </Pane>
+      )}
+      {panes.includes("catalog") && (
+        <Pane id="catalog" title="Catalog">
+          Items
+        </Pane>
+      )}
+      {children}
+    </MapContext>
+  );
   const { result } = renderHook(useViewActions, { wrapper });
   return { map, frame, target, actions: () => result.current };
 }
 
-test("the Contents and Catalog buttons show and hide their panes and stay pressed while the pane is open", () => {
+test("the Contents and Catalog buttons hide and show their panes and are pressed while the pane is on the page", async () => {
   setFullScreen(true);
   const { actions } = setUp();
+  expect(screen.getByRole("complementary", { name: "Contents" })).toBeDefined();
   expect(actions()["view-contents"]?.pressed).toBe(true);
   act(() => actions()["view-contents"]?.run());
   expect(panesStore.get().contents.open).toBe(false);
+  expect(screen.queryByRole("complementary", { name: "Contents" })).toBeNull();
   expect(actions()["view-contents"]?.pressed).toBe(false);
   expect(actions()["view-catalog"]?.pressed).toBe(true);
   act(() => actions()["view-catalog"]?.run());
-  expect(panesStore.get().catalog.open).toBe(false);
+  expect(screen.queryByRole("complementary", { name: "Catalog" })).toBeNull();
   act(() => actions()["view-catalog"]?.run());
-  expect(panesStore.get().catalog.open).toBe(true);
+  expect(screen.getByRole("complementary", { name: "Catalog" })).toBeDefined();
   expect(actions()["view-catalog"]?.pressed).toBe(true);
+  // The close button of a pane releases the button of the tab.
+  await userEvent.click(screen.getByRole("button", { name: "Close the Catalog pane" }));
+  expect(actions()["view-catalog"]?.pressed).toBe(false);
 });
 
-test("a pane that is closed with its own button leaves the button of the tab not pressed", () => {
+test("the button of a pane that has nothing to show is not pressed, and a press says why", () => {
+  setFullScreen(true);
+  const { actions } = setUp({ panes: ["contents"] });
+  expect(panesStore.get().catalog.open).toBe(true);
+  expect(screen.queryByRole("complementary", { name: "Catalog" })).toBeNull();
+  expect(actions()["view-catalog"]?.pressed).toBe(false);
+  act(() => actions()["view-catalog"]?.run());
+  expect(panesStore.get().catalog.open).toBe(true);
+  expect(messagesStore.get().map(({ kind, text }) => [kind, text])).toEqual([
+    ["info", "The Catalog pane has nothing to show yet."],
+  ]);
+  expect(actions()["view-contents"]?.pressed).toBe(true);
+});
+
+test("a press brings a pane that stands behind the pane of a tool to the front, and the next press hides it", () => {
   setFullScreen(true);
   const { actions } = setUp();
-  act(() => panesStore.set({ ...panesStore.get(), contents: { ...panesStore.get().contents, open: false } }));
-  expect(actions()["view-contents"]?.pressed).toBe(false);
+  act(() => enterDock({ id: "tool", title: "Tool" }));
+  expect(frontOf(dockStore.get(), "right")).toBe("tool");
+  expect(actions()["view-catalog"]?.pressed).toBe(true);
+  act(() => actions()["view-catalog"]?.run());
+  expect(frontOf(dockStore.get(), "right")).toBe("catalog");
+  expect(panesStore.get().catalog.open).toBe(true);
+  act(() => actions()["view-catalog"]?.run());
+  expect(panesStore.get().catalog.open).toBe(false);
+  expect(actions()["view-catalog"]?.pressed).toBe(false);
 });
 
 test("Reset panes returns both panes to their first state and closes the panes of tools", () => {
@@ -115,7 +164,7 @@ test("the Scale bar button takes the scale bar off the map and puts the same one
 
 test("on a map without a scale bar the Scale bar button has no action", () => {
   setFullScreen(true);
-  const { actions } = setUp([new Attribution()]);
+  const { actions } = setUp({ controls: [new Attribution()] });
   expect(actions()["view-scale-bar"]).toBeUndefined();
 });
 
