@@ -61,15 +61,117 @@ uses for it, the limits found and what could not be confirmed. Every source was 
 
 | | |
 |---|---|
-| Catalogue | NASA's Common Metadata Repository (CMR) holds one record for each NISAR product file. A search needs no Earthdata account. The collections were read from `https://cmr.earthdata.nasa.gov/search/collections.umm_json` (provider ASF, short name `NISAR_L*`): GCOV, GUNW and GOFF each have a validated, a provisional and a beta collection, and SME2 has a provisional and a beta collection. Their short names and identifiers are in `api/src/lynkeus/products.py`. |
-| Fields of a record | Read from the records of three product files (in `api/tests/data/`): the name (`GranuleUR`), the start and end of the acquisition (`TemporalExtent`), the outline (`SpatialExtent`, one or more polygons), the size of each file (`DataGranule`), and the additional attributes `TRACK_NUMBER`, `FRAME_NUMBER`, `ASCENDING_DESCENDING`, `FREQUENCY_A_POLARIZATION`. A product made from a pair of acquisitions (GUNW, GOFF) also carries `REFERENCE_ZERO_DOPPLER_START_TIME` and `SECONDARY_ZERO_DOPPLER_START_TIME`. |
-| GIS programs | ArcGIS Pro and QGIS were not read for this function. NASA's own search pages (Earthdata Search, ASF Vertex) were not read. |
-| Function used | earthaccess 0.19.0, class `DataGranules`: `concept_id`, `bounding_box`, `temporal`, `sort_key`, `hits` and `get` (signatures and documentation strings read from the installed package). The web service is FastAPI 0.162.7, run by Uvicorn 0.54.0; pydantic checks the choices of a search before the catalogue is asked. |
-| Choices of Lynkeus | The validated and the provisional collection of a product type are searched together, and the list states which one holds each product. The beta collections are not searched. One search returns at most 200 products, the latest first, and states how many the catalogue holds. A search may take 45 seconds. The period starts as the last 30 days. Selecting a product moves the map to its outline when the map does not show it, or shows it narrower than one eighth of the view. These numbers come from no source. |
-| Limits | An area cannot cross the meridian of 180 degrees. The catalogue gives the outline of a product that crosses it as two polygons, and Lynkeus draws both. The channels listed are those of the main frequency band (A). |
-| Tried on real data | 14 Nov 2026. For the box -71.20, 42.60, -70.75, 42.95 and the period 1 Oct to 14 Nov 2026 the search returned 12 GCOV products (5 validated, 7 provisional) in 0.7 to 1.0 seconds, among them the two validated products of track 141, frame 67 (21 Oct and 2 Nov 2026). For the same box from 1 Sept 2026 it returned 18 GUNW and 13 SME2 products. For the whole Earth it reported 13,172 GOFF products and returned 200. The records of the latest 600 products of each of the seven collections (3,172 records) were all read without a fault; 25 of them have two polygons. |
-| Tried in a browser | Chromium, through Playwright 1.65.1, on a private copy of the page and the web service: the search of the box above listed the 12 products, drew their outlines, reported "12 products were found." and opened the Catalog pane; a wrong latitude was refused in the dialog and nothing was sent; a search of GUNW over the whole view reported that the latest 200 of 35,133 products are listed; the outlines stayed on the map when the background map changed. |
+| Catalogue | NASA's Common Metadata Repository (CMR) holds one record for each NISAR product file. A search needs no Earthdata account. The collections were read from `https://cmr.earthdata.nasa.gov/search/collections.umm_json` (provider ASF, short name `NISAR_L*`): 31 collections. GCOV, GUNW and GOFF each have a validated, a provisional and a beta collection, and SME2 has a provisional and a beta collection. Their short names and identifiers are in `api/src/lynkeus/products.py`. The records of the validated and the provisional collections state 28 October 2025 as the first day of the data, and the records of the beta collections 1 October 2025. The earliest beta product starts on 12 October 2025 (GCOV) and the earliest provisional product on 29 October 2025. |
+| Fields of a record | Read from the records of four product files (in `api/tests/data/`) and from the 400 latest and the 400 earliest records of each of the eleven collections (7,544 records, because three collections hold fewer than 800): the name (`GranuleUR`), the start and end of the acquisition (`TemporalExtent`), the outline (`SpatialExtent`, one or more polygons without holes), the kinds of surface and the continents (`GranuleLocalities`), the absolute orbit number (`OrbitCalculatedSpatialDomains`), the files with their sizes and checksums (`DataGranule`), the addresses of the files (`RelatedUrls`), the input products (`InputGranules`), the program (`PGEVersionClass`), and the additional attributes listed below. A product made from a pair of acquisitions (GUNW, GOFF) also carries the start and the end of each acquisition. No field holds the cycle; it stands in the name, after the product type ([naming convention of GCOV](https://nisar-docs.asf.alaska.edu/gcov/)). |
+| Programs read | ASF Vertex ([manual](https://docs.asf.alaska.edu/vertex/manual/), [NISAR guide](https://nisar-docs.asf.alaska.edu/vertex/), [baseline tool](https://docs.asf.alaska.edu/vertex/baseline/)), the ASF search API and the library asf_search ([keywords](https://docs.asf.alaska.edu/api/keywords/), [searching](https://docs.asf.alaska.edu/asf_search/searching/), file `asf_search/CMR/field_map.py` of the [source](https://github.com/asfadmin/Discovery-asf_search), commit 7cfcfa8), NASA Earthdata Search ([NISAR guide](https://nisar-docs.asf.alaska.edu/earthdata-search/), [address parameters](https://wiki.earthdata.nasa.gov/display/EDSC/Earthdata+Search+URL+Parameters)), ArcGIS Pro ([processing extent](https://doc.esri.com/en/arcgis-pro/latest/help/analysis/geoprocessing/basics/extent-control.html), [extent setting](https://pro.arcgis.com/en/pro-app/latest/tool-reference/environment-settings/output-extent.htm), [catalog views](https://pro.arcgis.com/en/pro-app/latest/help/projects/use-catalog-views.htm), [search of portal items](https://pro.arcgis.com/en/pro-app/latest/help/projects/search-portal-items.htm)) and QGIS 3.44 ([extent parameter of a tool](https://docs.qgis.org/3.44/en/docs/user_manual/processing/toolbox.html), [spatial extent selector](https://docs.qgis.org/3.44/en/docs/user_manual/introduction/general_tools.html)). The pages were read as text; the programs themselves were not run. |
+| Function used | earthaccess 0.19.0, class `DataGranules`: `concept_id`, `bounding_box`, `temporal`, `orbit_number`, `readable_granule_name` and `option` (code of the installed package). earthaccess has no function for additional attributes, for several polygons, for a season or for an offset, so Lynkeus writes these four into the `params` of the query in the form of the catalogue, and sends the query once with `page_size` and `offset`, as the function `hits` of earthaccess sends it. One answer carries the products and, in the header `CMR-Hits`, the number that match. The browse image is received with `http.client` of Python. In the interface: the tool pane of the frame (`shared/toolpane`), the interaction `Draw` of OpenLayers 10.11.0 with `createBox` and `freehand` for the rectangle, the function `getFeaturesAtCoordinate` of its vector source for the product under the pointer, its formats `GeoJSON` and `KML`, the function `simplify` of its geometries, and the function `DecompressionStream` of the browser for a zip file. |
+| Choices of Lynkeus | A search without a choice of level reads the validated and the provisional collections. One answer holds 200 products, the list holds at most 2,000, and a search may take 45 seconds (one request to the catalogue 40 seconds). The period starts as the last 30 days, and the offered periods are 12, 30, 90 and 365 days and the whole mission, which starts on 1 October 2025, the earliest first day of a collection. The area is chosen in one list, as the extent of a tool in ArcGIS Pro and QGIS, and starts as the area drawn with the Map tab or, without one, the view of the map. The Catalog pane comes to the front only when a search finds products. "All dates of this frame" searches at the levels of validation of the list. Every product states the layers that Lynkeus receives, as `lynkeus.harmony.layers_of` lists them for its type and the channels of its main band. A product of a beta collection states none, because layers are received from the validated and the provisional collections alone. A product whose record states only band B states none, because the layers are those of band A; this rule follows from the group `frequencyA` of the layers and was not tried with a request to Harmony. The polygons of an area are at most 10 with at most 250 points in all; a longer address is refused (measured below). A side of a drawn polygon receives a point every 2 degrees of longitude, because the catalogue joins two points along the shortest way on the globe and the map joins them with a straight line. Coordinates are sent with 5 decimals. A file with an area is at most 20 MB, and a file inside a zip file at most 50 MB. A search by names takes at most 50 names. Selecting a product moves the map to its outline when the map does not show it, or shows it narrower than one eighth of the view. A click on the map selects the first product under the pointer, and the next click on the same place the product after it. These numbers and rules come from no source. |
+| Limits | The four product types of Lynkeus are searched; the catalogue also holds the raw, RSLC, GSLC, RIFG, RUNW and ROFF products. Channels and bands are joined with "and": a product is found when it has every channel chosen. Vertex instead offers the eight exact combinations of channels and the seven of bandwidths. The bandwidth is that of the main band. The cycle is read in the product name, and for a pair it is the cycle of the first acquisition. A name pattern that starts with a wildcard takes about 11 seconds. The order by size follows the sum of all files of a product, and the list shows the size of the product file alone. The holes of a polygon of a file are left out, because the catalogue takes polygons without holes. A polygon that encloses a pole is not handled. A shapefile must be in degrees on WGS 84; other systems are refused and not transformed. The reading of the zip and shapefile formats was written from the formats themselves, which were not read again on this date; it was checked with a shapefile written by pyshp 3.1.8 and zipped by Python 3.13. The days between the two dates of a pair cannot be searched in the catalogue; the list can be grouped by them. The browse image shown is the small one (100 by 100 pixels), which the server passes on because the page accepts images only from its own address; soil moisture products have none. |
+| Tried in a browser | 14 Nov 2026, Chromium through Playwright 1.65.1, at 1440 by 900 pixels, on a private copy of the page and of the web service, which asked NASA's catalogue. The user ended the browser checks on private copies during this work, so the last run was stopped before its end. It ran on the code of this pull request before the first day of the whole mission moved from 28 to 1 October 2025. In it: the pane opened beside the map with the focus on its title; the search of the box (1 Oct to 14 Nov 2026) listed 12 GCOV products in 1.1 seconds and brought the Catalog pane to the front; the details showed the browse image (100 pixels wide) and 23 file links; the pointer on an outline marked one product of the list; a click on an outline selected a product and a second click on the same place the next one; the outlines were hidden and shown; the list was grouped by track and frame (4 groups of 3); the order "earliest first" asked the server again; the list was saved as CSV (13 lines) and as GeoJSON (12 features); "All dates of this frame" listed the 11 products of track 141, frame 67 and put its choices in the form; a rectangle and a polygon drawn on the map became the area, and the polygon found 19 products; the zipped shapefile, the KML and the GeoJSON file of the box each gave a polygon of 4 points, and its search listed the same 12 products; the outline of the selected product became the area (6 points); a GUNW pair of 9 and 21 October 2026 was found for the period 15 October alone, and not when both dates must lie inside the period. In the run before it, which ran to its end on the code before three later changes (the rectangle drawn with one drag, no message for a search that the Catalog pane starts and that finds products, no side padding of the link buttons), the page showed no message in its console and no request failed, and at 390 by 800 pixels the page did not scroll sideways and showed the 12 products and the details. |
+| Not tried in a browser | The search with a season, channels, a bandwidth and a direction chosen in the form; the search by names; "Load 200 more"; "Zoom to all"; the area from a view of the map across the meridian of 180 degrees; the refusal of a wrong choice in the pane. No run reached these steps. They are covered by the tests of the interface, which run in a simulated browser, and by the rows below, which were asked through the functions of the server. Nothing was tried in a browser after the branch was moved onto the status bar, the tools of the Map tab, the later changes of the frame and the layers through Harmony, nor after the layers of a product were added and the explanations of the fields moved behind the buttons beside their titles. Firefox and Safari were not tried, nor a touch screen. |
 | Read on | 14 Nov 2026 |
+
+### Additional attributes of the NISAR records
+
+Counted in the catalogue on 14 Nov 2026 over the validated, provisional and beta collections of each product type.
+
+| Attribute | Values found | Search |
+|---|---|---|
+| `TRACK_NUMBER`, `FRAME_NUMBER` | Whole numbers. Every record lies in tracks 1 to 173 and frames 1 to 176, the numbers of the [track and frame database](https://nisar.asf.earthdatacloud.nasa.gov/NISAR-SAMPLE-DATA/DOCS/NISAR_D-105021_RevA_Track_Frame_Database_SIS_20250428_w-esig.pdf). | One number or a range |
+| `ASCENDING_DESCENDING` | `ASCENDING`, `DESCENDING` | Direction of the orbit |
+| `FREQUENCY_A_POLARIZATION`, `FREQUENCY_B_POLARIZATION` | `HH`, `HV`, `VH`, `VV`; no record has `LH`, `LV`, `RH` or `RV`. Band B only in GCOV and SME2. | Channels of each band |
+| `FREQUENCIES` | `A`, `B` or both; GUNW and GOFF only `A` | Frequency bands |
+| `FREQUENCY_A_RANGE_BANDWIDTH` | 5, 20, 40, 77 (megahertz); not in SME2 | Bandwidth |
+| `FREQUENCY_B_RANGE_BANDWIDTH` | 5 | Shown in the details |
+| `FULL_FRAME` | `TRUE`, `FALSE` | Coverage of the frame |
+| `JOINT_OBSERVATION` | `TRUE`, `FALSE` | Observed with the S-band radar |
+| `REFERENCE_ZERO_DOPPLER_START_TIME`, `SECONDARY_ZERO_DOPPLER_START_TIME` | Moments, in GUNW and GOFF. In 4,000 records read the first acquisition is always before the second, the period of the record runs from the start of the first to the end of the second, and the days between are 12, 24, 36, 48, 60 or 72. | Both dates inside the period |
+| `STACK_ID` | For example `141_D_067`: track, direction, frame | Through track, frame and direction |
+| `PRODUCTION_PIPELINE`, `PROCESSING_CENTER`, `ORBIT_TYPE` | `PR`, `JPL`, `MOE` in every record read | Not offered: one value |
+| `PRODUCT_VERSION`, `PRODUCT_TYPE`, `PRODUCT_TYPE_DESC`, `PROCESSING_LEVEL`, `RANGE_BANDWIDTH_CONCAT`, `FREQUENCY_A_POLARIZATION_CONCAT`, `FREQUENCY_B_POLARIZATION_CONCAT` | Text | Shown in the details |
+
+### Options of a search
+
+| Option | Offered by | The catalogue serves it through | Lynkeus |
+|---|---|---|---|
+| Product type | Vertex, Earthdata Search | The collection | Built: GCOV, GUNW, GOFF, SME2 |
+| Level of validation | Vertex, Earthdata Search | The collection | Built: validated, provisional, beta |
+| Area from the view of the map | ArcGIS Pro (Current Display Extent), QGIS (map canvas extent) | `bounding_box` | Built; a view across 180 degrees gives a rectangle that crosses it |
+| Area drawn as a rectangle | ArcGIS Pro (Draw Extent), QGIS (draw on canvas), Vertex, Earthdata Search | `bounding_box` | Built |
+| Area drawn as a polygon | Vertex, Earthdata Search | `polygon`, points counter-clockwise | Built; the server turns the points |
+| Area typed as coordinates | ArcGIS Pro and QGIS (four sides), Vertex (well-known text) | `bounding_box` | Built for the four sides; not built for well-known text |
+| Area from the outline of a product | ArcGIS Pro (extent of selected features) | `polygon` | Built: the selected product |
+| Area from a layer | ArcGIS Pro (Extent of a Layer), QGIS (calculate from layer) | `bounding_box` | Not built: a layer of Lynkeus does not yet state its outline |
+| Area from a file | Vertex (GeoJSON, KML, shapefile), Earthdata Search (also KMZ, GeoRSS), ArcGIS Pro (Browse) | `polygon`, several joined with "or" | Built: GeoJSON, KML, KMZ, zipped shapefile; not GeoRSS |
+| Area as a point, a line or a circle | Vertex, Earthdata Search | `point`, `line`, `circle` | Not built |
+| Area from a place name, a bookmark or the clipboard | Vertex (place name), QGIS (bookmark), ArcGIS Pro (clipboard) | — | Not built |
+| Period | All | `temporal` | Built, with offered periods |
+| Season of each year | Vertex (Seasonal Search), Earthdata Search (recurring) | `temporal` with two days of the year | Built; a season may pass the new year |
+| Track and frame, one or a range | Vertex, asf_search | Attributes | Built |
+| Direction of the orbit | Vertex, asf_search | Attribute | Built |
+| Channels of the main and of the side band | Vertex, asf_search | Attributes | Built, joined with "and" |
+| Range bandwidth | Vertex, asf_search | Attribute | Built for the main band |
+| Coverage of the frame, joint observation | Vertex, asf_search | Attributes | Built |
+| Production configuration, instrument | Vertex | Attribute | Not built: one value in the catalogue |
+| Cycle, composite release identifier | Vertex (name patterns) | `readable_granule_name` with wildcards | Built: a field for the cycle, and names with wildcards |
+| Absolute orbit | Earthdata Search | `orbit_number` | Built |
+| Product names, with wildcards | Vertex (List Search, name patterns), Earthdata Search (Granule IDs) | `readable_granule_name` | Built; not built: a list of names from a file |
+| Stack of one frame | Vertex (More Like This, Baseline) | Track, frame, direction | Built: "All dates of this frame" |
+| Pairs by perpendicular or temporal baseline | Vertex (Baseline, SBAS) | No field holds a baseline | Not built; the days between the dates of a pair are shown and can group the list |
+| Pairs with both dates inside the period | — | Attributes of the two starts | Built |
+| Order of the results | Vertex (date, path, frame), Earthdata Search (start, end) | `sort_key` | Built: six orders, each a new search |
+| Groups of the results | ArcGIS Pro (catalog view) | — | Built in the page: by track and frame, by date, by level of validation, and for pairs by the days between the two dates |
+| More results | Vertex (maximum of results), Earthdata Search | `offset`, at most one million | Built: 200 at a time |
+| Day or night, cloud cover | Earthdata Search | — | Not built: the records state "Unspecified" |
+| Result list with details, files and browse image | Vertex, ArcGIS Pro (details panel) | The record | Built |
+| Outlines on the map, selection in both directions, zoom to the results | Vertex | The record | Built |
+| Export of the results | Vertex (CSV, KML, GeoJSON, metalink, download script) | — | Built: CSV (RFC 4180) and GeoJSON (RFC 7946) |
+| Statement of what was searched | Vertex (search address) | — | Built, in sentences |
+| Saved searches and history | Vertex, with an account | — | Not built |
+
+### Measured in the catalogue
+
+Every row was asked on 14 Nov 2026 through the functions of the server, from the server of the team. "Box" is the rectangle -71.20, 42.60, -70.75, 42.95. Unless a row names another product type or level, it asks for GCOV in the validated and the provisional collection.
+
+| Search | Found | Time |
+|---|---|---|
+| GCOV, box, 1 Oct to 14 Nov 2026, validated and provisional | 12 (5 validated) | 0.3 s |
+| The same with the beta collection | 12 | 0.3 s |
+| The same box as a polygon with its points clockwise | 12 | 0.3 s |
+| Rectangle across the meridian of 180 degrees (170 to -170, -20 to -10) | 107 | 0.6 s |
+| Two polygons (the box, and 10 to 11 east, 45 to 46 north) | 41 | 0.3 s |
+| One polygon of 250 points | 63 | 0.5 s |
+| A polygon that crosses itself | Refused, with the words of the catalogue | 0.1 s |
+| Box, 28 Oct 2025 to 14 Nov 2026 | 42 | 0.3 s |
+| The same, only days 152 to 243 of each year (June to August) | 20 | 0.3 s |
+| The same, only days 335 to 59 (December to February) | 0 | 0.2 s |
+| Whole Earth, 1 Oct 2025 to 14 Nov 2026, only days 335 to 59 | 2,198; the latest of February, the earliest of 1 December 2025 | 0.8 to 1.7 s |
+| Beta, 1 to 27 October 2025 | 986, from 12 October 2025 | 0.5 s |
+| Validated and provisional, 1 to 27 October 2025 | 0 | 0.2 s |
+| Track 141, frame 67, from 28 Oct 2025 | 11, of cycles 23 to 34 without 26 (13 with the beta collection, from 1 Oct 2025) | 0.2 s |
+| Track 141, frames 60 to 70, from 28 Oct 2025 | 136 | 0.7 s |
+| Tracks 140 to 142, from 28 Oct 2025 | 3,286 | 0.6 s |
+| Whole Earth, 1 Oct to 14 Nov 2026: ascending; descending; both | 22,838; 21,807; 44,645, the sum of the two | 0.8 to 1.2 s |
+| The same period: channels HH and HV of band A; all four channels; VV of band B | 23,106; 420; 14,086 | 0.8 to 1.6 s |
+| The same period: bands A and B; band A; band B | 29,880; 30,915; 43,610 | 0.8 to 0.9 s |
+| The same period: bandwidth 5; 20; 40; 77 megahertz | 1,602; 15,999; 12,398; 916 | 0.8 to 1.6 s |
+| The same period: full frame; partial frame | 32,435; 12,210, together 44,645 | 0.6 to 1.3 s |
+| The same period: joint with the S-band radar; not joint | 6,316; 38,329, together 44,645 | 0.9 to 1.8 s |
+| Cycle 33, whole mission | 16,586; every product of the first 200 is of cycle 33 | 1.4 s |
+| GUNW, cycle 32 | 8,211; the first date of every pair of the first 200 is 9 Oct 2026 | 0.5 s |
+| Absolute orbit 6468; orbits 6460 to 6468 | 107; 995 | 0.7 to 0.9 s |
+| Two names, one with a wildcard, every product type | 2: one GCOV and one SME2 | 0.2 s |
+| Name pattern `*_141_D_067_*` | 11 | 11.4 s |
+| GUNW, track 141, frame 67 | 9 pairs: eight of 12 days and one of 24 | 0.2 s |
+| The same, period 15 Oct 2026 alone: pair overlaps; both dates inside | 1; 0 | 0.2 to 1.2 s |
+| The same, period 9 to 21 Oct 2026: both dates inside; pair overlaps | 1; 2 | 0.4 to 1.2 s |
+| GOFF, beta collection, whole Earth | 3,666 | 0.5 s |
+| SME2, box, 1 Sept to 14 Nov 2026 | 13 | 0.2 s |
+| Track 141 in the six orders | 1,184 each; the first 200 stand in the order asked by date and by name; by size they follow the sum of the files; the order by the date of the record was not compared | 0.7 to 1.4 s |
+| The same from product 0, 200, 400 and 1,000 | 200, 200, 200 and 184 products, all 784 different | 0.6 to 0.7 s |
+| Record of one product: GCOV; GUNW; SME2; GOFF | 21, 22, 17 and 22 attributes; 23, 15, 8 and 15 files | 0.2 to 0.6 s |
+| Browse image: GCOV; GUNW; GOFF; SME2 | 9,780; 14,084; 8,546 bytes; none | 1.3 to 1.8 s |
+| Identifier `G1-ASF` | Answered as not found | — |
 
 ## Server: sessions, processes and jobs
 

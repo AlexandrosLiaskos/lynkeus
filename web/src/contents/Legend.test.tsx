@@ -58,6 +58,42 @@ test("the legend follows the display of the layer", () => {
   expect(ramp.style.background).toContain("#440154");
 });
 
+test("a power is shown in decibels, and the legend says so", () => {
+  const backscatter: LayerDescription = {
+    ...MOISTURE,
+    id: "backscatter",
+    quantity: "Radar backscatter gamma nought, HH, linear power",
+    unit: "1",
+    range: [0.01, 0.4],
+    colours: "grey",
+  };
+  const { container, unmount } = render(<Legend layer={backscatter} />);
+  expect(screen.getByText("Radar backscatter gamma nought, HH, linear power")).toBeTruthy();
+  expect(screen.getByText("Shown in decibels (dB).")).toBeTruthy();
+  // Ten times the logarithm of 0.01 is -20, and of 0.4 it is -3.98.
+  expect(screen.getByRole("img", { name: "Colour scale grey, from -20 to -3.98 dB" })).toBeTruthy();
+  const marks = [...container.querySelectorAll(".legend-marks li")].map((mark) => mark.textContent);
+  expect(marks).toEqual(["-20", "-15", "-10", "-3.98"]);
+  unmount();
+
+  setDisplay(backscatter, { decibels: false });
+  render(<Legend layer={backscatter} />);
+  expect(screen.queryByText("Shown in decibels (dB).")).toBeNull();
+  expect(screen.getByRole("img", { name: "Colour scale grey, from 0.01 to 0.4" })).toBeTruthy();
+});
+
+test("the legend shows an inverted scale, the colour of the cells without data and the mask", () => {
+  setDisplay(MOISTURE, { inverted: true, noDataColour: "#ff8800", mask: [0.1, 0.4] });
+  const { container } = render(<Legend layer={MOISTURE} />);
+  const ramp = screen.getByRole("img", { name: /^Colour scale YlGnBu, inverted, from 0.05 to 0.45/ });
+  expect(ramp.style.background).toContain("linear-gradient(to top, #081d58,");
+  expect(screen.getByText("No data")).toBeTruthy();
+  expect(container.querySelector<HTMLElement>(".legend-nodata .legend-swatch")?.style.background).toBe("#ff8800");
+  expect(
+    screen.getByText("Values below 0.1 m\u00b3 m\u207b\u00b3 and above 0.4 m\u00b3 m\u207b\u00b3 are hidden."),
+  ).toBeTruthy();
+});
+
 test("a scale of classes lists each whole number of the range beside its colour", () => {
   const { container } = render(<Legend layer={COMPONENTS} />);
   const classes = [...container.querySelectorAll("li")];

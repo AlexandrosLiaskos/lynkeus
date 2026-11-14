@@ -7,13 +7,30 @@
  "dates": [
   "2026-10-21"
  ],
+ "start": "2026-10-21T23:43:30Z",
+ "end": "2026-10-21T23:44:05.999342Z",
  "track": 141,
  "frame": 67,
  "direction": "descending",
+ "cycle": 33,
+ "orbit": 6468,
+ "bands": [
+  "A",
+  "B"
+ ],
  "channels": [
   "HH",
   "HV"
  ],
+ "side_channels": [
+  "HH",
+  "HV"
+ ],
+ "bandwidth": 40,
+ "side_bandwidth": 5,
+ "coverage": "full",
+ "joint": true,
+ "version": "1.0.20",
  "size": 5758779392,
  "footprint": [
   [
@@ -38,5 +55,32 @@
     43.98766
    ]
   ]
+ ],
+ "layers": [
+  {
+   "name": "HHHH",
+   "title": "Backscatter HH",
+   "spacing": 10.0
+  },
+  {
+   "name": "HVHV",
+   "title": "Backscatter HV",
+   "spacing": 10.0
+  },
+  {
+   "name": "rtcGammaToSigmaFactor",
+   "title": "Factor from gamma nought to sigma nought",
+   "spacing": 10.0
+  },
+  {
+   "name": "numberOfLooks",
+   "title": "Number of looks",
+   "spacing": 10.0
+  },
+  {
+   "name": "mask",
+   "title": "Mask of valid samples",
+   "spacing": 10.0
+  }
  ]
 }

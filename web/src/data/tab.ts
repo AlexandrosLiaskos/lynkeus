@@ -31,7 +31,7 @@ export const DATA_TAB = {
           id: "search-products",
           label: "Search products",
           icon: "search",
-          description: "Finds NISAR products by type, area and dates.",
+          description: "Finds NISAR products by type, area, period, orbit and radar properties, or by name.",
         },
         {
           id: "get-layer",
