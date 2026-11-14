@@ -97,6 +97,11 @@ test("the value at a pixel is the first number of the drawn data, and null where
 
   getData.mockReturnValue(new Float32Array([0, 0]));
   expect(valueAt(map, "coherence", [10, 10])).toBeNull();
+  getData.mockReturnValue(new Float32Array([0, 0.5]));
+  expect(valueAt(map, "coherence", [10, 10])).toBeNull();
+  // With decibels the value of the file is the second number.
+  getData.mockReturnValue(new Float32Array([-6.0206, 0.25, 1]));
+  expect(valueAt(map, "coherence", [10, 10])).toBe(0.25);
   getData.mockReturnValue(new Float32Array([Number.NaN, 1]));
   expect(valueAt(map, "coherence", [10, 10])).toBeNull();
   getData.mockReturnValue(null);

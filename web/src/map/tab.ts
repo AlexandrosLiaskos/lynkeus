@@ -12,20 +12,19 @@ export const MAP_TAB = {
           id: "full-extent",
           label: "Full extent",
           icon: "zoom_out_map",
-          description:
-            "Shows the whole world; while the map has the keyboard focus, the arrow keys move it and the Insert key shows the whole world.",
+          description: "Shows the whole world.",
         },
         {
           id: "zoom-in",
           label: "Zoom in",
           icon: "zoom_in",
-          description: "Enlarges the map by one level, as the plus key does on the map.",
+          description: "Enlarges the map by one level.",
         },
         {
           id: "zoom-out",
           label: "Zoom out",
           icon: "zoom_out",
-          description: "Reduces the map by one level, as the minus key does on the map.",
+          description: "Reduces the map by one level.",
         },
         {
           id: "zoom-to-layer",
@@ -43,41 +42,37 @@ export const MAP_TAB = {
           id: "previous-extent",
           label: "Previous extent",
           icon: "arrow_back",
-          description: "Returns to the view shown before, as the comma key does on the map.",
+          description: "Returns to the view shown before.",
         },
         {
           id: "next-extent",
           label: "Next extent",
           icon: "arrow_forward",
-          description:
-            "Goes forward again to the view that Previous extent has left, as the period key does on the map.",
+          description: "Goes forward again to the view that Previous extent has left.",
         },
         {
           id: "go-to-coordinates",
           label: "Go to coordinates",
           icon: "location_on",
-          description:
-            "Moves the map to a typed latitude and longitude, in decimal degrees or in degrees, minutes and seconds, and marks the place.",
+          description: "Moves the map to a typed latitude and longitude and marks the place.",
         },
         {
           id: "bookmarks",
           label: "Bookmarks",
           icon: "bookmark",
-          description:
-            "Saves the view under a name and returns to it; the bookmarks are kept in the local storage of this browser.",
+          description: "Saves the view under a name in the local storage of this browser and returns to it.",
         },
         {
           id: "rotate",
           label: "Rotate",
           icon: "autorenew",
-          description:
-            "Turns the map by 15 degrees clockwise, as the D key does on the map; the A key turns it the other way, and dragging with the Alt and Shift keys held turns it freely.",
+          description: "Turns the map by 15 degrees clockwise.",
         },
         {
           id: "north-up",
           label: "North up",
           icon: "arrow_upward",
-          description: "Returns north to the top of the map, as the N key does on the map.",
+          description: "Returns north to the top of the map.",
         },
       ],
     },
@@ -117,8 +112,7 @@ export const MAP_TAB = {
           id: "area-rectangle",
           label: "Rectangle",
           icon: "check_box_outline_blank",
-          description:
-            "Draws the rectangle that the Data and Analysis tools use as their area, by a click on each of two opposite corners; while the button is on, the rectangle is moved by dragging it and resized by dragging its handles, and on the map the Enter key sets a corner at the cross in its centre.",
+          description: "Draws the rectangle that the Data and Analysis tools use as their area.",
         },
         {
           id: "area-from-view",
@@ -142,7 +136,8 @@ export const MAP_TAB = {
           id: "identify",
           label: "Identify",
           icon: "info",
-          description: "Shows the value of every visible layer at a clicked point, with its unit.",
+          description:
+            "Shows the coordinates of a clicked place and the value of every visible layer there, with its unit and date.",
         },
         {
           id: "measure-distance",
@@ -165,7 +160,7 @@ export const MAP_TAB = {
           id: "swipe",
           label: "Swipe",
           icon: "drag_handle",
-          description: "Uncovers the layer below the top one along a line that is dragged across the map.",
+          description: "Uncovers what lies below the selected layer along a line that is moved across the map.",
         },
       ],
     },

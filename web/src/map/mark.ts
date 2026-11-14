@@ -31,9 +31,9 @@ const MARK = [
 
 export type MarkLayer = VectorLayer<VectorSource>;
 
-/** Create the layer that draws the mark above every other layer. */
-export function createMarkLayer(): MarkLayer {
-  return new VectorLayer({ source: new VectorSource(), zIndex: 1030, properties: { id: MARK_LAYER_ID }, style: MARK });
+/** Create a layer that draws a mark above every other layer, under the given name. */
+export function createMarkLayer(id = MARK_LAYER_ID): MarkLayer {
+  return new VectorLayer({ source: new VectorSource(), zIndex: 1030, properties: { id }, style: MARK });
 }
 
 /** Draw the mark at a place, or remove it when there is no place. */

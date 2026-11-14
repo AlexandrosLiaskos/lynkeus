@@ -82,16 +82,16 @@ export function legendTicks(lowest: number, highest: number): Tick[] {
 }
 
 /**
- * Return the CSS image of a colour scale that runs from the bottom, for the lowest value, to the top. A scale of
- * classes is drawn as bands of one colour each.
+ * Return the CSS image of a colour scale that runs from the bottom, for the lowest value, to the top, or from the
+ * left to the right. A scale of classes is drawn as bands of one colour each.
  */
-export function rampImage(colours: readonly string[], kind: ScaleKind): string {
+export function rampImage(colours: readonly string[], kind: ScaleKind, towards: "top" | "right" = "top"): string {
   if (kind !== "classes") {
-    return `linear-gradient(to top, ${colours.join(", ")})`;
+    return `linear-gradient(to ${towards}, ${colours.join(", ")})`;
   }
   const share = 100 / colours.length;
   const bands = colours.map((colour, index) => {
     return `${colour} ${String(index * share)}% ${String((index + 1) * share)}%`;
   });
-  return `linear-gradient(to top, ${bands.join(", ")})`;
+  return `linear-gradient(to ${towards}, ${bands.join(", ")})`;
 }

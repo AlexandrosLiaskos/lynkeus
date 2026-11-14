@@ -1,0 +1,71 @@
+{
+  "type": "Feature",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/projection/v2.0.0/schema.json",
+    "https://stac-extensions.github.io/raster/v2.0.0/schema.json",
+    "https://stac-extensions.github.io/processing/v1.2.0/schema.json"
+  ],
+  "id": "backscatter-change",
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [-71.21240946923143, 42.59232397512833],
+        [-70.74021462753375, 42.59232397512833],
+        [-70.74021462753375, 42.957757337981135],
+        [-71.21240946923143, 42.957757337981135],
+        [-71.21240946923143, 42.59232397512833]
+      ]
+    ]
+  },
+  "bbox": [-71.21240946923143, 42.59232397512833, -70.74021462753375, 42.957757337981135],
+  "properties": {
+    "title": "Change of backscatter HH",
+    "description": "Change of radar backscatter gamma nought, HH",
+    "datetime": null,
+    "start_datetime": "2026-10-21T00:00:00Z",
+    "end_datetime": "2026-11-02T23:59:59Z",
+    "created": "2026-11-14T16:10:00Z",
+    "proj:code": "EPSG:32619",
+    "proj:shape": [3972, 3772],
+    "proj:transform": [10.0, 0.0, 319520.0, 0.0, -10.0, 4757610.0],
+    "proj:bbox": [319520.0, 4717890.0, 357240.0, 4757610.0],
+    "processing:lineage": "Result of the analysis tool backscatter-change of Lynkeus 0.1.0 on the layers: Backscatter HH, 21 Oct 2026, Backscatter HH, 2 Nov 2026. Method: Method sheet of the tool.",
+    "processing:datetime": "2026-11-14T16:10:00Z",
+    "processing:software": {
+      "Lynkeus": "0.1.0",
+      "GDAL": "3.11.4"
+    }
+  },
+  "links": [
+    {
+      "rel": "derived_from",
+      "href": "/files/gcov-hhhh-20261021/gcov-hhhh-20261021.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "derived_from",
+      "href": "/files/gcov-hhhh-20261102/gcov-hhhh-20261102.json",
+      "type": "application/geo+json"
+    }
+  ],
+  "assets": {
+    "data": {
+      "href": "./backscatter-change.tif",
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "title": "Change of backscatter HH",
+      "roles": ["data"],
+      "bands": [
+        {
+          "description": "Change of radar backscatter gamma nought, HH",
+          "data_type": "float32",
+          "nodata": "nan",
+          "unit": "dB",
+          "raster:sampling": "area",
+          "raster:spatial_resolution": 10.0
+        }
+      ]
+    }
+  }
+}

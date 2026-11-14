@@ -104,8 +104,8 @@ export function MeasurePane({ kind }: { kind: MeasureKind }) {
         <Info id={`${id}-results-info`} about="Results">
           The lengths and the areas are measured on a sphere with a radius of{" "}
           {new Intl.NumberFormat("en-US").format(EARTH_RADIUS)} metres, the mean radius of the WGS 84 ellipsoid. Each
-          segment is the great circle between its two points. On the ellipsoid itself a length or an area differs by up
-          to about half of one percent.
+          segment is the great circle between its two points. On the ellipsoid itself a length differs by up to 0.6
+          percent and an area by up to 0.9 percent.
         </Info>
       </div>
       {sketch ? (
