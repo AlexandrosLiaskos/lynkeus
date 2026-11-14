@@ -218,9 +218,11 @@
   cursor: pointer;
 }
 
+// A command is shaded under the pointer and when the keyboard has reached it. The command that receives the focus
+// when a click opens the menu stays plain.
 .contents-menu button:hover,
-.contents-menu button:focus {
-  background: uswds.color("primary-lighter");
+.contents-menu button:focus-visible {
+  background: uswds.color("base-lightest");
 }
 
 .contents-menu button[aria-disabled="true"] {
