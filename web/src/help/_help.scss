@@ -4,6 +4,46 @@
 // The style of the elements of the Help tab. The sizes, the distances and the colours come from `shared/tokens`,
 // and the lists of names and values, the sections and the rows of a list bring their own style.
 
+// The pane Getting started. A step is a row of the shared list: its number or its check mark, and beside it the
+// name of the step, one sentence and its button.
+.start-step {
+  gap: tokens.$space-2;
+  padding: tokens.$space-2 0;
+  border-left: 0;
+}
+
+// The number of a step, or the check mark of a step whose result exists, in a column of 24 pixels.
+.start-step-mark {
+  display: flex;
+  flex: none;
+  justify-content: center;
+  width: tokens.$target;
+  color: tokens.$secondary;
+  font-size: tokens.$text;
+  line-height: tokens.$line;
+}
+
+// The check mark has the green of a success of the design system, in the height of the line of the name.
+.start-step-mark--done {
+  align-items: center;
+  height: calc(#{tokens.$text} * #{tokens.$line});
+  color: uswds.color("success-dark");
+}
+
+.start-step-mark .usa-icon {
+  width: tokens.$icon;
+  height: tokens.$icon;
+}
+
+// The button of a step stands 8 pixels under its sentence, and the links of the step beside the button.
+.start-step-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: tokens.$space-1 tokens.$space-3;
+  margin-top: tokens.$space-2;
+}
+
 // The dialog About: two paragraphs, the facts, and the sections.
 .about > p {
   margin: 0 0 tokens.$space-2;
