@@ -158,7 +158,7 @@ test("the Home and End keys move to the first and the last tab and show its grou
   expect(screen.getByRole("group", { name: "Group" })).toBeDefined();
 });
 
-test("the Tab key stops once on the tabs and once on the buttons", async () => {
+test("the Tab key stops once on the tabs, once on the buttons and once on the button that collapses the ribbon", async () => {
   render(
     <>
       <Ribbon tabs={TWO_GROUPS} actions={{ ready: { run: vi.fn() } }} />
@@ -166,11 +166,19 @@ test("the Tab key stops once on the tabs and once on the buttons", async () => {
     </>,
   );
   const stops: string[] = [];
-  for (const shift of [false, false, false, true, true]) {
+  for (const shift of [false, false, false, false, true, true, true]) {
     await userEvent.tab({ shift });
     stops.push(focused());
   }
-  expect(stops).toEqual(["tab First", "button Ready", "button After", "button Ready", "tab First"]);
+  expect(stops).toEqual([
+    "tab First",
+    "button Ready",
+    "button Collapse the ribbon",
+    "button After",
+    "button Collapse the ribbon",
+    "button Ready",
+    "tab First",
+  ]);
 });
 
 test("the arrow keys, Home and End move between the buttons, across the groups", async () => {
@@ -238,4 +246,147 @@ test("the Tab key stops first on the first finished button, or on the first butt
   await userEvent.tab();
   await userEvent.tab();
   expect(focused()).toBe("button Ready");
+});
+
+test("a double click on a tab hides the groups and leaves the row of tabs, and a second one shows them again", async () => {
+  render(<Ribbon tabs={TWO_GROUPS} actions={{}} />);
+  const first = screen.getByRole("tab", { name: "First" });
+  const second = screen.getByRole("tab", { name: "Second" });
+  expect(first.getAttribute("aria-expanded")).toBe("true");
+  expect(second.getAttribute("aria-expanded")).toBeNull();
+  await userEvent.dblClick(first);
+  expect(screen.queryByRole("toolbar")).toBeNull();
+  expect(screen.queryByRole("group", { name: "Group" })).toBeNull();
+  expect(screen.getAllByRole("tab")).toHaveLength(2);
+  expect(first.getAttribute("aria-expanded")).toBe("false");
+  await userEvent.dblClick(second);
+  expect(screen.getByRole("group", { name: "Other" })).toBeDefined();
+  expect(second.getAttribute("aria-expanded")).toBe("true");
+  expect(screen.getByRole("button", { name: "Collapse the ribbon" }).getAttribute("aria-pressed")).toBe("false");
+});
+
+test("Control+F1 collapses and expands the ribbon from any part of the page, and a dialog keeps the key", async () => {
+  render(
+    <>
+      <Ribbon tabs={TWO_GROUPS} actions={{}} />
+      <button type="button">After</button>
+      <dialog open>
+        <button type="button">Inside</button>
+      </dialog>
+    </>,
+  );
+  screen.getByRole("button", { name: "After" }).focus();
+  await userEvent.keyboard("{Control>}{F1}{/Control}");
+  expect(screen.queryByRole("toolbar")).toBeNull();
+  await userEvent.keyboard("{F1}");
+  expect(screen.queryByRole("toolbar")).toBeNull();
+  await userEvent.keyboard("{Control>}{F1}{/Control}");
+  expect(screen.getByRole("toolbar")).toBeDefined();
+  screen.getByRole("button", { name: "Inside" }).focus();
+  await userEvent.keyboard("{Control>}{F1}{/Control}");
+  expect(screen.getByRole("toolbar")).toBeDefined();
+});
+
+test("the button that collapses the ribbon works with the keyboard and stays pressed while the ribbon is collapsed", async () => {
+  render(<Ribbon tabs={TWO_GROUPS} actions={{}} />);
+  const collapse = screen.getByRole("button", { name: "Collapse the ribbon" });
+  expect(collapse.getAttribute("aria-pressed")).toBe("false");
+  expect(document.getElementById(collapse.getAttribute("aria-describedby") ?? "")?.textContent).toBe(
+    "Hides the groups of buttons and leaves the row of tabs. Ctrl+F1 and a double click on a tab do the same.",
+  );
+  collapse.focus();
+  await userEvent.keyboard("{Enter}");
+  expect(collapse.getAttribute("aria-pressed")).toBe("true");
+  expect(screen.queryByRole("toolbar")).toBeNull();
+  await userEvent.keyboard(" ");
+  expect(collapse.getAttribute("aria-pressed")).toBe("false");
+  expect(screen.getByRole("toolbar")).toBeDefined();
+});
+
+test("the focus passes to the selected tab when Control+F1 hides the button that has it", async () => {
+  render(<Ribbon tabs={TWO_GROUPS} actions={{ ready: { run: vi.fn() } }} />);
+  await userEvent.tab();
+  await userEvent.tab();
+  expect(focused()).toBe("button Ready");
+  await userEvent.keyboard("{Control>}{F1}{/Control}");
+  expect(screen.queryByRole("toolbar")).toBeNull();
+  expect(focused()).toBe("tab First");
+  await userEvent.tab();
+  expect(focused()).toBe("button Collapse the ribbon");
+});
+
+test("on a collapsed ribbon a click on a tab shows its groups until a button has run", async () => {
+  const run = vi.fn();
+  render(<Ribbon tabs={TWO_GROUPS} actions={{ ready: { run } }} />);
+  const collapse = screen.getByRole("button", { name: "Collapse the ribbon" });
+  const first = screen.getByRole("tab", { name: "First" });
+  await userEvent.click(collapse);
+  await userEvent.click(first);
+  expect(screen.getByRole("group", { name: "Group" })).toBeDefined();
+  expect(first.getAttribute("aria-expanded")).toBe("true");
+  expect(collapse.getAttribute("aria-pressed")).toBe("true");
+  // A button that is not finished runs nothing, so the groups stay.
+  await userEvent.click(screen.getByRole("button", { name: "Later" }));
+  expect(screen.getByRole("group", { name: "Group" })).toBeDefined();
+  await userEvent.click(screen.getByRole("button", { name: "Ready" }));
+  expect(run).toHaveBeenCalledTimes(1);
+  expect(screen.queryByRole("toolbar")).toBeNull();
+  expect(first.getAttribute("aria-expanded")).toBe("false");
+  expect(focused()).toBe("tab First");
+});
+
+test("the groups that a collapsed ribbon shows hide on a second click on the tab and on the Escape key", async () => {
+  render(<Ribbon tabs={TWO_GROUPS} actions={{}} />);
+  await userEvent.click(screen.getByRole("button", { name: "Collapse the ribbon" }));
+  const second = screen.getByRole("tab", { name: "Second" });
+  await userEvent.click(second);
+  expect(screen.getByRole("group", { name: "Other" })).toBeDefined();
+  await userEvent.click(second);
+  expect(screen.queryByRole("toolbar")).toBeNull();
+  await userEvent.click(second);
+  await userEvent.click(screen.getByRole("tab", { name: "First" }));
+  expect(screen.getByRole("group", { name: "Group" })).toBeDefined();
+  await userEvent.keyboard("{Escape}");
+  expect(screen.queryByRole("toolbar")).toBeNull();
+});
+
+test("the groups that a collapsed ribbon shows hide when the pointer or the focus goes to another part of the page", async () => {
+  render(
+    <>
+      <Ribbon tabs={TWO_GROUPS} actions={{}} />
+      <button type="button">After</button>
+      <p>Text</p>
+    </>,
+  );
+  await userEvent.click(screen.getByRole("button", { name: "Collapse the ribbon" }));
+  const first = screen.getByRole("tab", { name: "First" });
+  await userEvent.click(first);
+  expect(screen.getByRole("toolbar")).toBeDefined();
+  // A press on the name of a group, inside the ribbon, leaves the groups shown.
+  fireEvent.pointerDown(screen.getByText("More"));
+  expect(screen.getByRole("toolbar")).toBeDefined();
+  fireEvent.pointerDown(screen.getByText("Text"));
+  expect(screen.queryByRole("toolbar")).toBeNull();
+  await userEvent.click(first);
+  const stops: string[] = [];
+  for (let press = 0; press < 3; press += 1) {
+    await userEvent.tab();
+    stops.push(`${focused()}, ${screen.queryByRole("toolbar") ? "shown" : "hidden"}`);
+  }
+  expect(stops).toEqual(["button Ready, shown", "button Collapse the ribbon, shown", "button After, hidden"]);
+});
+
+test("on a collapsed ribbon the down arrow key shows the groups and moves the focus to the buttons", async () => {
+  render(<Ribbon tabs={TWO_GROUPS} actions={{}} />);
+  await userEvent.keyboard("{Control>}{F1}{/Control}");
+  await userEvent.tab();
+  await userEvent.keyboard("{ArrowRight}");
+  expect(focused()).toBe("tab Second");
+  expect(screen.queryByRole("toolbar")).toBeNull();
+  await userEvent.keyboard("{ArrowLeft}{ArrowDown}");
+  expect(focused()).toBe("button Ready");
+  expect(screen.getByRole("group", { name: "Group" })).toBeDefined();
+  await userEvent.keyboard("{Escape}");
+  expect(screen.queryByRole("toolbar")).toBeNull();
+  expect(focused()).toBe("tab First");
 });

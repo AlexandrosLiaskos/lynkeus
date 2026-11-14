@@ -1,6 +1,7 @@
 @use "uswds-core" as uswds;
 
 .ribbon {
+  position: relative;
   background: uswds.color("base-lightest");
   font-size: 0.8125rem;
 }
@@ -42,6 +43,46 @@
   display: flex;
   overflow-x: auto;
   padding: 0.125rem 0;
+}
+
+// A collapsed ribbon holds no groups, and its empty panel takes no room.
+.ribbon-panel:empty {
+  display: none;
+}
+
+// The groups that a collapsed ribbon shows for a while stand over the map and the panes, which keep their size.
+.ribbon--collapsed .ribbon-panel {
+  position: absolute;
+  z-index: 30;
+  top: 100%;
+  right: 0;
+  left: 0;
+  box-shadow: 0 0.125rem 0.375rem uswds.color("black-transparent-20");
+}
+
+// The button that collapses the ribbon stands over the right end of the row of tabs.
+.ribbon-collapse {
+  position: absolute;
+  top: 0;
+  right: 0.25rem;
+  display: flex;
+  align-items: center;
+  height: 1.75rem;
+  padding: 0 0.375rem;
+  border: 0;
+  background: none;
+  color: uswds.color("ink");
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.ribbon-collapse:hover {
+  background: uswds.color("base-lighter");
+}
+
+.ribbon-collapse[aria-pressed="true"] {
+  background: uswds.color("primary-lighter");
+  color: uswds.color("primary");
 }
 
 .ribbon-group {
