@@ -1,11 +1,13 @@
 import { useEffect, useId, useState } from "react";
 import { areaStore } from "../shared/area";
+import { Info } from "../shared/info/Info";
 import { PRODUCT_TYPES, type ProductType } from "../shared/layer";
 import { useMap } from "../shared/map";
 import { useStore } from "../shared/store";
 import { ToolPane, ToolPaneGroup, type ToolPaneRun } from "../shared/toolpane/ToolPane";
 import { AreaFields, rectangleText } from "./AreaFields";
 import { EXPLANATIONS } from "./explanations";
+import { FieldTitle, infoId } from "./FieldTitle";
 import { daysOfMonth, MONTHS, periodDays, PERIODS, type PeriodId, type SeasonDay } from "./period";
 import {
   BANDS,
@@ -32,17 +34,28 @@ function toggled<Value extends string>(offered: readonly Value[], chosen: readon
 
 interface ChecksProps<Value extends string> {
   legend: string;
+  /** The explanation of the group, in complete sentences. */
+  info: string;
   offered: readonly Value[];
   chosen: readonly Value[];
   onChange: (chosen: Value[]) => void;
 }
 
-/** A row of check boxes under one name. */
-function Checks<Value extends string>({ legend, offered, chosen, onChange }: ChecksProps<Value>) {
+/** A row of check boxes under one name, with the explanation of the name behind the button beside it. */
+function Checks<Value extends string>({ legend, info, offered, chosen, onChange }: ChecksProps<Value>) {
   const id = useId();
   return (
-    <fieldset className="usa-fieldset search-checks">
-      <legend className="usa-legend">{legend}</legend>
+    <fieldset
+      className="usa-fieldset search-checks"
+      aria-labelledby={`${id}-title`}
+      aria-describedby={infoId(`${id}-title`)}
+    >
+      <legend className="usa-legend">
+        <span id={`${id}-title`}>{legend}</span>
+        <Info id={infoId(`${id}-title`)} about={legend}>
+          {info}
+        </Info>
+      </legend>
       {offered.map((value) => (
         <div className="usa-checkbox" key={value}>
           <input
@@ -149,6 +162,7 @@ function SearchFields({ onRestore }: { onRestore: () => void }) {
   const maturity = (
     <Checks
       legend="Level of validation"
+      info={EXPLANATIONS.maturity}
       offered={MATURITIES}
       chosen={draft.maturity}
       onChange={(chosen) => change({ maturity: chosen })}
@@ -183,18 +197,18 @@ function SearchFields({ onRestore }: { onRestore: () => void }) {
 
       {draft.by === "names" ? (
         <ToolPaneGroup title="Product names" open>
-          <label className="usa-label" htmlFor={`${id}-names`}>
-            Names
-          </label>
+          <FieldTitle field={`${id}-names`} title="Names">
+            {EXPLANATIONS.names}
+          </FieldTitle>
           <textarea
             className="usa-textarea search-names"
             id={`${id}-names`}
+            aria-describedby={infoId(`${id}-names`)}
             rows={6}
             spellCheck={false}
             value={draft.names}
             onChange={(event) => change({ names: event.target.value })}
           />
-          <p className="usa-hint search-hint">{EXPLANATIONS.names}</p>
           {maturity}
         </ToolPaneGroup>
       ) : (
@@ -223,12 +237,13 @@ function SearchFields({ onRestore }: { onRestore: () => void }) {
           </ToolPaneGroup>
 
           <ToolPaneGroup title="Period" open>
-            <label className="usa-label" htmlFor={`${id}-period`}>
-              Period
-            </label>
+            <FieldTitle field={`${id}-period`} title="Period">
+              {EXPLANATIONS.period}
+            </FieldTitle>
             <select
               className="usa-select"
               id={`${id}-period`}
+              aria-describedby={infoId(`${id}-period`)}
               value={draft.period}
               onChange={(event) => {
                 const period = event.target.value as PeriodId;
@@ -267,7 +282,6 @@ function SearchFields({ onRestore }: { onRestore: () => void }) {
                 />
               </div>
             </div>
-            <p className="usa-hint search-hint">{EXPLANATIONS.days}</p>
 
             <div className="usa-checkbox">
               <input
@@ -330,12 +344,13 @@ function SearchFields({ onRestore }: { onRestore: () => void }) {
           <ToolPaneGroup title="Orbit" open>
             <div className="search-row">
               <div>
-                <label className="usa-label" htmlFor={`${id}-track`}>
-                  Track
-                </label>
+                <FieldTitle field={`${id}-track`} title="Track">
+                  {EXPLANATIONS.track}
+                </FieldTitle>
                 <input
                   className="usa-input"
                   id={`${id}-track`}
+                  aria-describedby={infoId(`${id}-track`)}
                   inputMode="numeric"
                   autoComplete="off"
                   placeholder={`1 to ${String(TRACKS)}`}
@@ -344,12 +359,13 @@ function SearchFields({ onRestore }: { onRestore: () => void }) {
                 />
               </div>
               <div>
-                <label className="usa-label" htmlFor={`${id}-frame`}>
-                  Frame
-                </label>
+                <FieldTitle field={`${id}-frame`} title="Frame">
+                  {EXPLANATIONS.frame}
+                </FieldTitle>
                 <input
                   className="usa-input"
                   id={`${id}-frame`}
+                  aria-describedby={infoId(`${id}-frame`)}
                   inputMode="numeric"
                   autoComplete="off"
                   placeholder={`1 to ${String(FRAMES)}`}
@@ -358,7 +374,6 @@ function SearchFields({ onRestore }: { onRestore: () => void }) {
                 />
               </div>
             </div>
-            <p className="usa-hint search-hint">{`${EXPLANATIONS.track} ${EXPLANATIONS.frame}`}</p>
             <label className="usa-label" htmlFor={`${id}-direction`}>
               Direction of the orbit
             </label>
@@ -374,12 +389,13 @@ function SearchFields({ onRestore }: { onRestore: () => void }) {
             </select>
             <div className="search-row">
               <div>
-                <label className="usa-label" htmlFor={`${id}-cycle`}>
-                  Cycle
-                </label>
+                <FieldTitle field={`${id}-cycle`} title="Cycle">
+                  {isPair ? EXPLANATIONS.pairCycle : EXPLANATIONS.cycle}
+                </FieldTitle>
                 <input
                   className="usa-input"
                   id={`${id}-cycle`}
+                  aria-describedby={infoId(`${id}-cycle`)}
                   inputMode="numeric"
                   autoComplete="off"
                   value={draft.cycle}
@@ -387,12 +403,13 @@ function SearchFields({ onRestore }: { onRestore: () => void }) {
                 />
               </div>
               <div>
-                <label className="usa-label" htmlFor={`${id}-orbit`}>
-                  Absolute orbit
-                </label>
+                <FieldTitle field={`${id}-orbit`} title="Absolute orbit">
+                  {EXPLANATIONS.orbit}
+                </FieldTitle>
                 <input
                   className="usa-input"
                   id={`${id}-orbit`}
+                  aria-describedby={infoId(`${id}-orbit`)}
                   inputMode="numeric"
                   autoComplete="off"
                   value={draft.orbit}
@@ -400,14 +417,12 @@ function SearchFields({ onRestore }: { onRestore: () => void }) {
                 />
               </div>
             </div>
-            <p className="usa-hint search-hint">
-              {`${isPair ? EXPLANATIONS.pairCycle : EXPLANATIONS.cycle} ${EXPLANATIONS.orbit}`}
-            </p>
           </ToolPaneGroup>
 
           <ToolPaneGroup title="Radar" open={radarUsed}>
             <Checks
               legend={hasSideBand ? "Channels of the main band (A)" : "Channels"}
+              info={EXPLANATIONS.channels}
               offered={CHANNELS}
               chosen={draft.channels}
               onChange={(channels) => change({ channels })}
@@ -416,19 +431,20 @@ function SearchFields({ onRestore }: { onRestore: () => void }) {
               <>
                 <Checks
                   legend="Channels of the side band (B)"
+                  info={EXPLANATIONS.sideChannels}
                   offered={CHANNELS}
                   chosen={draft.sideChannels}
                   onChange={(sideChannels) => change({ sideChannels })}
                 />
                 <Checks
                   legend="Frequency bands"
+                  info={EXPLANATIONS.bands}
                   offered={BANDS}
                   chosen={draft.bands}
                   onChange={(bands) => change({ bands })}
                 />
               </>
             ) : null}
-            <p className="usa-hint search-hint">{EXPLANATIONS.channels}</p>
             {hasBandwidth ? (
               <>
                 <label className="usa-label" htmlFor={`${id}-bandwidth`}>
@@ -521,7 +537,15 @@ export function SearchPane() {
   };
 
   return (
-    <ToolPane id={SEARCH_PANE} title="Search products" runLabel="Search" onRun={start} run={run} onCancel={cancel}>
+    <ToolPane
+      id={SEARCH_PANE}
+      title="Search products"
+      info={EXPLANATIONS.tool}
+      runLabel="Search"
+      onRun={start}
+      run={run}
+      onCancel={cancel}
+    >
       <SearchFields onRestore={() => setRun(null)} />
     </ToolPane>
   );

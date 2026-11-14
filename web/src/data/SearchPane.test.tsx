@@ -6,6 +6,7 @@ import { closeToolPane, openToolPane, resetDock } from "../shared/dock/dock";
 import { MapContext } from "../shared/map";
 import { messagesStore } from "../shared/messages/messages";
 import { resetPanes } from "../shared/panes";
+import { EXPLANATIONS } from "./explanations";
 import { stopSearch } from "./run";
 import { SearchPane } from "./SearchPane";
 import {
@@ -83,6 +84,29 @@ test("the pane starts with the drawn area when there is one, and keeps its choic
   act(() => openToolPane(SEARCH_PANE));
   expect(sides()).toEqual(["-71.2", "42.6", "-70.75", "42.95"]);
   expect(field("Track").value).toBe("141");
+});
+
+/** Return the explanation that describes an element. */
+function explanation(element: HTMLElement): string | undefined {
+  return document.getElementById(element.getAttribute("aria-describedby") ?? "")?.textContent;
+}
+
+test("each explanation shows from the button beside its title, and none stands under a field", async () => {
+  show();
+  expect(explanation(field("Track"))).toBe(EXPLANATIONS.track);
+  expect(explanation(field("West"))).toBe(EXPLANATIONS.west);
+  expect(explanation(choice("Area"))).toBe(EXPLANATIONS.area);
+  expect(explanation(choice("Period"))).toBe(EXPLANATIONS.period);
+  expect(explanation(screen.getByRole("group", { name: "Level of validation" }))).toBe(EXPLANATIONS.maturity);
+  expect(explanation(field("Cycle"))).toBe(EXPLANATIONS.cycle);
+  await userEvent.selectOptions(choice("Product type"), "GUNW");
+  expect(explanation(field("Cycle"))).toBe(EXPLANATIONS.pairCycle);
+  for (const title of ["Search products", "Area", "North", "Frame", "Absolute orbit", "Channels"]) {
+    expect(screen.getByRole("button", { name: `Information about ${title}` })).toBeDefined();
+  }
+  expect(document.querySelector(".usa-hint")).toBeNull();
+  await userEvent.click(field("Product names"));
+  expect(explanation(field("Names"))).toBe(EXPLANATIONS.names);
 });
 
 test("wrong choices are named and nothing is sent", async () => {

@@ -3,6 +3,7 @@ import { useMap } from "../shared/map";
 import { useStore } from "../shared/store";
 import { AREA_FILE_TYPES, readAreaFile } from "./areaFile";
 import { EXPLANATIONS } from "./explanations";
+import { FieldTitle, infoId } from "./FieldTitle";
 import type { SearchDraft } from "./search";
 import { describeArea, fitRings, rectangleAround, viewArea, type Rectangle, type SearchArea } from "./searchArea";
 import { drawingStore, productsStore, selectedProductStore } from "./state";
@@ -31,7 +32,8 @@ interface AreaFieldsProps {
 /**
  * The area of the search. As the extent of a tool in ArcGIS Pro and in QGIS, one list takes the area from the
  * view of the map, from a shape drawn on the map, from the outline of the selected product or from a file, and
- * four fields take typed coordinates. After the area is taken, the list names what the area is.
+ * four fields take typed coordinates. After the area is taken, the list names what the area is. The explanation
+ * of each title shows from the button beside it.
  */
 export function AreaFields({ draft, onChange }: AreaFieldsProps) {
   const map = useMap();
@@ -96,10 +98,16 @@ export function AreaFields({ draft, onChange }: AreaFieldsProps) {
 
   return (
     <>
-      <label className="usa-label" htmlFor={`${id}-area`}>
-        Area
-      </label>
-      <select className="usa-select" id={`${id}-area`} value={shown} onChange={onChoose}>
+      <FieldTitle field={`${id}-area`} title="Area">
+        {EXPLANATIONS.area}
+      </FieldTitle>
+      <select
+        className="usa-select"
+        id={`${id}-area`}
+        aria-describedby={infoId(`${id}-area`)}
+        value={shown}
+        onChange={onChoose}
+      >
         <option value="rectangle">Rectangle with the sides below</option>
         {polygons ? (
           <option value="polygons">{polygonName.charAt(0).toUpperCase() + polygonName.slice(1)}</option>
@@ -134,26 +142,24 @@ export function AreaFields({ draft, onChange }: AreaFieldsProps) {
       ) : null}
 
       {limited && area.kind === "rectangle" ? (
-        <>
-          <div className="search-row">
-            {SIDES.map(([side, name]) => (
-              <div key={side}>
-                <label className="usa-label" htmlFor={`${id}-${side}`}>
-                  {name}
-                </label>
-                <input
-                  className="usa-input"
-                  id={`${id}-${side}`}
-                  inputMode="decimal"
-                  autoComplete="off"
-                  value={area[side]}
-                  onChange={(event) => onChange({ area: { ...area, [side]: event.target.value } })}
-                />
-              </div>
-            ))}
-          </div>
-          <p className="usa-hint search-hint">{EXPLANATIONS.sides}</p>
-        </>
+        <div className="search-row">
+          {SIDES.map(([side, name]) => (
+            <div key={side}>
+              <FieldTitle field={`${id}-${side}`} title={name}>
+                {EXPLANATIONS[side]}
+              </FieldTitle>
+              <input
+                className="usa-input"
+                id={`${id}-${side}`}
+                aria-describedby={infoId(`${id}-${side}`)}
+                inputMode="decimal"
+                autoComplete="off"
+                value={area[side]}
+                onChange={(event) => onChange({ area: { ...area, [side]: event.target.value } })}
+              />
+            </div>
+          ))}
+        </div>
       ) : null}
 
       {note ? (
