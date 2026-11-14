@@ -13,9 +13,11 @@ authors = [{ name = "Alexandros Liaskos" }]
 dependencies = [
     "earthaccess==0.19.0",
     "fastapi==0.162.7",
+    "harmony-py==1.8.0",
     "markdown==3.11.3",
     "numpy==2.5.4",
     "pydantic==2.14.3",
+    "rasterio==1.5.2",
     "tzdata==2026.6",
     "uvicorn==0.54.0",
 ]
@@ -27,9 +29,12 @@ Repository = "https://github.com/AlexandrosLiaskos/lynkeus"
 [dependency-groups]
 dev = [
     "httpx2==2.16.0",
+    "jsonschema==4.26.0",
     "mypy==2.4.1",
     "pytest==9.2.0",
+    "rio-cogeo==7.0.4",
     "ruff==0.17.5",
+    "types-jsonschema",
     "types-markdown",
 ]
 
@@ -53,6 +58,10 @@ convention = "numpy"
 python_version = "3.13"
 strict = true
 files = ["src", "tests"]
+
+[[tool.mypy.overrides]]
+module = ["harmony.*", "rasterio.*"]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
