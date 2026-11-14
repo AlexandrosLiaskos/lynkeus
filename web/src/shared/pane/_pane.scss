@@ -22,8 +22,10 @@
   background: uswds.color("base-lightest");
 }
 
+// The title takes the width of its text, so that the button of an explanation stands beside it, and the close
+// button stands at the right end of the bar.
 .pane-title {
-  flex: 1;
+  flex: 0 1 auto;
   min-width: 0;
   margin: 0;
   overflow: hidden;
@@ -46,6 +48,7 @@
   border: 0;
   border-radius: 0.125rem;
   background: none;
+  margin-left: auto;
   color: uswds.color("base-dark");
   cursor: pointer;
 }
