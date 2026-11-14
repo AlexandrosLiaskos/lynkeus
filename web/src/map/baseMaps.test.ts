@@ -3,6 +3,8 @@ import { get as getProjection } from "ol/proj";
 import { expect, test } from "vitest";
 import { BASE_MAPS, baseMapStore } from "./baseMaps";
 
+// The Blue Marble, OpenStreetMap and the imagery of a date.
+
 test("every background map asks for its images with the crossOrigin attribute", () => {
   const projection = getProjection("EPSG:3857");
   if (!projection) {

@@ -10,8 +10,8 @@ function start() {
 
 test("the map has one layer for each background map, under every other layer", () => {
   const layers = start().getLayers().getArray();
-  expect(layers.map((layer): unknown => layer.get("id"))).toEqual(["blue-marble", "openstreetmap"]);
-  expect(layers.map((layer) => layer.getZIndex())).toEqual([0, 0]);
+  expect(layers.map((layer): unknown => layer.get("id"))).toEqual(["blue-marble", "openstreetmap", "imagery"]);
+  expect(layers.map((layer) => layer.getZIndex())).toEqual([0, 0, 0]);
 });
 
 test("one background map is shown at a time", () => {
@@ -22,7 +22,7 @@ test("one background map is shown at a time", () => {
       .getLayers()
       .getArray()
       .map((layer) => layer.getVisible()),
-  ).toEqual([false, true]);
+  ).toEqual([false, true, false]);
 });
 
 test("the map turns clockwise by an angle in degrees and returns to north", () => {
