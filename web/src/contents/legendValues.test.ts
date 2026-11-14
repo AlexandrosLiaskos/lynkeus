@@ -48,6 +48,10 @@ test("a continuous scale is drawn from the bottom to the top", () => {
   );
 });
 
+test("a scale can run from the left to the right", () => {
+  expect(rampImage(["#000000", "#ffffff"], "sequential", "right")).toBe("linear-gradient(to right, #000000, #ffffff)");
+});
+
 test("a scale of classes is drawn as bands", () => {
   expect(rampImage(["#1f77b4", "#ff7f0e"], "classes")).toBe(
     "linear-gradient(to top, #1f77b4 0% 50%, #ff7f0e 50% 100%)",
