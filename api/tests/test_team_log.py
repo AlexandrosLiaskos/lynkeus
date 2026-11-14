@@ -18,12 +18,18 @@ LOG = """# Team Lynkeus: Team Log
 
 Introduction.
 
-## 1. Entries
+## 1. Decisions
 
-| ID | Date | Decision or action | Reasons |
+| ID | Date | Decision | Reasons |
 |---|---|---|---|
-| L-01 | 29 Oct 2026 | First decision. | First reason. |
-| L-02 | 30 Oct 2026 | Second decision (L-01). | It follows L-01. |
+| D-01 | 29 Oct 2026 | First decision. | First reason. |
+| D-02 | 30 Oct 2026 | Second decision (D-01). | It follows D-01 and policy SPD-41a. |
+
+## 2. Actions
+
+| ID | Date | Action | Reasons |
+|---|---|---|---|
+| A-01 | 31 Oct 2026 | First action (D-02). | It carries out D-02. |
 """
 
 CHANGED = datetime(2026, 11, 14, 11, 42, tzinfo=team_log.TEAM_ZONE)
@@ -42,9 +48,17 @@ def test_text_without_details_is_unchanged() -> None:
 
 def test_entry_rows_have_anchors_and_links() -> None:
     page = team_log.render(LOG, CHANGED)
-    assert '<tr id="l-01"><th scope="row">L-01</th>' in page
-    assert '<tr id="l-02"><th scope="row">L-02</th>' in page
-    assert page.count('<a href="#l-01">L-01</a>') == 2
+    assert '<tr id="d-01"><th scope="row">D-01</th>' in page
+    assert '<tr id="d-02"><th scope="row">D-02</th>' in page
+    assert '<tr id="a-01"><th scope="row">A-01</th>' in page
+    assert page.count('<a href="#d-01">D-01</a>') == 2
+    assert page.count('<a href="#d-02">D-02</a>') == 2
+
+
+def test_other_codes_are_not_linked() -> None:
+    page = team_log.render(LOG, CHANGED)
+    assert "policy SPD-41a." in page
+    assert 'href="#d-41"' not in page
 
 
 def test_page_states_title_time_and_download() -> None:

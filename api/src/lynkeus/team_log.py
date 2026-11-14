@@ -22,8 +22,8 @@ TEAM_ZONE = ZoneInfo("Europe/Athens")
 
 _HEADING = re.compile(r"^# (.+)$", re.MULTILINE)
 _EMPTY_HEADER = re.compile(r"\|\s*\|\s*\|")
-_ENTRY = re.compile(r"L-\d+")
-_ROW = re.compile(r"<tr>\s*<td>(L-\d+)</td>(.*?)</tr>", re.DOTALL)
+_ENTRY = re.compile(r"\b[DA]-\d{2,}\b")
+_ROW = re.compile(r"<tr>\s*<td>([DA]-\d{2,})</td>(.*?)</tr>", re.DOTALL)
 _TABLE = re.compile(r"<table>.*?</table>", re.DOTALL)
 
 _PAGE = """<!doctype html>
@@ -113,9 +113,10 @@ def mark_rows(table: str) -> str:
     -------
     str
         The table, wrapped in a region that scrolls sideways on narrow
-        screens. Each row whose first cell is an entry number such as
-        ``L-07`` carries the anchor ``l-07``, and each such number in the
-        other cells is a link to that anchor.
+        screens. Each row whose first cell is the number of a decision or of
+        an action, such as ``D-07`` or ``A-02``, carries the anchor ``d-07``
+        or ``a-02``, and each such number in the other cells is a link to
+        that anchor.
     """
 
     def row(match: re.Match[str]) -> str:
