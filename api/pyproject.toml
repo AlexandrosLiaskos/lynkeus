@@ -1,0 +1,53 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "lynkeus"
+version = "0.1.0"
+description = "Analysis of surface change with NISAR radar data."
+readme = "README.md"
+requires-python = ">=3.13"
+license = "Apache-2.0"
+authors = [{ name = "Alexandros Liaskos" }]
+dependencies = [
+    "markdown==3.11.3",
+    "tzdata==2026.6",
+]
+
+[project.urls]
+Homepage = "https://lynkeus.nkua.cloud/"
+Repository = "https://github.com/AlexandrosLiaskos/lynkeus"
+
+[dependency-groups]
+dev = [
+    "mypy==2.4.1",
+    "pytest==9.2.0",
+    "ruff==0.17.5",
+    "types-markdown",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/lynkeus"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["A", "B", "C4", "D", "E", "F", "I", "N", "PTH", "RUF", "S", "SIM", "UP", "W"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D103", "S101"]
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+files = ["src", "tests"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

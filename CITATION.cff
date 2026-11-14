@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: Lynkeus
+type: software
+abstract: "A web platform for the analysis of surface change with radar data of the NISAR mission."
+authors:
+  - family-names: Liaskos
+    given-names: Alexandros
+repository-code: "https://github.com/AlexandrosLiaskos/lynkeus"
+url: "https://lynkeus.nkua.cloud/"
+license: Apache-2.0
+version: 0.1.0

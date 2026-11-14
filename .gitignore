@@ -1,0 +1,11 @@
+# Generated on the server
+/data/
+/web/site/team-log/
+
+# Python
+__pycache__/
+.venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+dist/

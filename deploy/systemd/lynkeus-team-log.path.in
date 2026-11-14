@@ -1,0 +1,9 @@
+[Unit]
+Description=Watch the Lynkeus team log for changes
+
+[Path]
+PathChanged=@TEAM_LOG@
+Unit=lynkeus-team-log.service
+
+[Install]
+WantedBy=multi-user.target
