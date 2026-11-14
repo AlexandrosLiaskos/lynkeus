@@ -11,7 +11,9 @@ export const MESSAGE_TIME = 8000;
  * itself, but not while the pointer or the keyboard focus rests on it.
  */
 function MessageItem({ message: { id, kind, text } }: { message: Message }) {
-  const [resting, setResting] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const resting = hovered || focused;
   const leaves = kind === "success" || kind === "info";
 
   useEffect(() => {
@@ -26,10 +28,10 @@ function MessageItem({ message: { id, kind, text } }: { message: Message }) {
     <div
       className={`usa-alert usa-alert--${kind} usa-alert--slim message`}
       role={kind === "error" ? "alert" : "status"}
-      onPointerEnter={() => setResting(true)}
-      onPointerLeave={() => setResting(false)}
-      onFocus={() => setResting(true)}
-      onBlur={() => setResting(false)}
+      onPointerEnter={() => setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
     >
       <div className="usa-alert__body">
         <p className="usa-alert__text">{text}</p>
