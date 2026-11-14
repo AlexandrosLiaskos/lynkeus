@@ -47,6 +47,7 @@
 @use "header/header";
 @use "ribbon/ribbon";
 @use "shared/dialog/dialog";
+@use "shared/dock/dock";
 @use "shared/messages/messages";
 @use "shared/pane/pane";
 @use "shared/tooltip/tooltip";
@@ -76,6 +77,7 @@ body,
 }
 
 .workspace {
+  position: relative;
   display: flex;
   flex: 1;
   min-height: 0;
