@@ -39,6 +39,13 @@ $control-height: 1.75rem;
     font-weight: bold;
   }
 
+  // A label that stands with the button of its explanation: the line of the two takes the margin.
+  .info-title > .usa-label {
+    margin-top: 0;
+  }
+
+  // The explanation of a field stands in the bubble of the `Info` element and not under the title. The style of
+  // a hint stays for a form that has not yet moved its explanations.
   .usa-hint,
   .usa-error-message {
     font-size: $small-text;
