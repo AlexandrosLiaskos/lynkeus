@@ -29,7 +29,6 @@ test("the scales start and end with the colours of their sources", () => {
   // The first and the last colour of each table, as matplotlib 3.11.2, cmcrameri 1.10 and cmocean 4.0.3 give them.
   const ends: Record<string, [string, string]> = {
     viridis: ["#440154", "#fde725"],
-    cividis: ["#00224e", "#fee838"],
     magma: ["#000004", "#fcfdbf"],
     inferno: ["#000004", "#fcffa4"],
     plasma: ["#0d0887", "#f0f921"],

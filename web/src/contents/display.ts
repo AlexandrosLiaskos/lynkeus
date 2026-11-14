@@ -9,6 +9,7 @@ import type Source from "ol/source/Source";
 import TileSource from "ol/source/Tile";
 import VectorSource from "ol/source/Vector";
 import { mapLayersStore } from "../shared/mapLayers";
+import { PRESENT } from "./cog";
 
 /** The number of points on each side of an extent that are moved to the projection of the view. */
 const POINTS_ON_A_SIDE = 16;
@@ -74,11 +75,12 @@ export function valueAt(map: OlMap, id: string, pixel: Pixel): number | null {
   if (!(layer instanceof WebGLTileLayer) || !layer.getVisible()) {
     return null;
   }
-  // The drawn data of a layer hold two numbers for each cell: the value, and 0 where the cell has no data.
+  // The drawn data of a cell end with 1 where the cell holds data. They hold the value of the file as their
+  // first number, or as their second number when the first one is the value in decibels.
   const data = layer.getData(pixel);
-  if (!(data instanceof Float32Array)) {
+  if (!(data instanceof Float32Array) || data.length < 2) {
     return null;
   }
-  const [value, present] = data;
-  return value === undefined || present === undefined || present === 0 || Number.isNaN(value) ? null : value;
+  const value = data[data.length - 2];
+  return value === undefined || data[data.length - 1] !== PRESENT || Number.isNaN(value) ? null : value;
 }
