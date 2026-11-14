@@ -2,6 +2,8 @@
 
 ``GET /api/health`` reports that the service runs, with its version.
 ``GET /api/products`` searches NASA's catalogue for NISAR products.
+The addresses of the sessions, the processes, the jobs and the layers are added
+by ``lynkeus.routes``.
 """
 
 import asyncio
@@ -15,6 +17,7 @@ from pydantic import Field, model_validator
 from lynkeus import __version__
 from lynkeus.layers import Area, Format, ProductType
 from lynkeus.products import CatalogueError, ProductSearch, ProductsFound, search_products
+from lynkeus.routes import install
 
 SEARCH_TIME = 45.0
 """The longest time that a search may take, in seconds."""
@@ -89,6 +92,7 @@ def create_app() -> FastAPI:
             detail = "NASA's catalogue did not answer, or its answer could not be read."
             raise HTTPException(status.HTTP_502_BAD_GATEWAY, detail) from error
 
+    install(app)
     return app
 
 
