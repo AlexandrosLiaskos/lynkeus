@@ -2,16 +2,17 @@ import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { areaStore } from "../shared/area";
-import { closeToolPane, openToolPane, resetDock } from "../shared/dock/dock";
+import { closeToolPane, dockStore, openToolPane, resetDock } from "../shared/dock/dock";
 import { MapContext } from "../shared/map";
 import { messagesStore } from "../shared/messages/messages";
-import { resetPanes } from "../shared/panes";
+import { panesStore, resetPanes, setPaneOpen } from "../shared/panes";
 import { EXPLANATIONS } from "./explanations";
 import { stopSearch } from "./run";
 import { SearchPane } from "./SearchPane";
 import {
   clearProducts,
   drawingStore,
+  GET_LAYER_PANE,
   productsStore,
   SEARCH_PANE,
   searchDraftStore,
@@ -42,6 +43,15 @@ function sides(): string[] {
 
 async function searchNow(): Promise<void> {
   await userEvent.click(screen.getByRole("button", { name: "Search" }));
+}
+
+/** Return the group of choices with a title, which opens and closes. */
+function group(title: string): HTMLDetailsElement {
+  const element = screen.getByText(title).closest("details");
+  if (!element) {
+    throw new Error(`The form has no group ${title}.`);
+  }
+  return element;
 }
 
 beforeEach(() => {
@@ -77,6 +87,7 @@ test("the pane starts with the drawn area when there is one, and keeps its choic
   areaStore.set({ west: -71.2, south: 42.6, east: -70.75, north: 42.95 });
   show();
   expect(sides()).toEqual(["-71.2", "42.6", "-70.75", "42.95"]);
+  await userEvent.click(screen.getByText("Orbit"));
   await userEvent.type(field("Track"), "141");
   act(() => closeToolPane(SEARCH_PANE));
   expect(screen.queryByLabelText("Track")).toBeNull();
@@ -84,6 +95,39 @@ test("the pane starts with the drawn area when there is one, and keeps its choic
   act(() => openToolPane(SEARCH_PANE));
   expect(sides()).toEqual(["-71.2", "42.6", "-70.75", "42.95"]);
   expect(field("Track").value).toBe("141");
+  // The group of a choice that is made is open, so that the choice is seen.
+  expect(group("Orbit").open).toBe(true);
+  expect(group("Radar").open).toBe(false);
+});
+
+test("the common choices stand first and open, and the groups of the orbit and of the radar are closed", () => {
+  show();
+  for (const name of ["Product type", "Area", "West", "Period", "First day", "Only a season of each year"]) {
+    expect(field(name).closest("details")).toBeNull();
+  }
+  expect([...document.querySelectorAll("details > summary")].map((summary) => summary.textContent)).toEqual([
+    "Orbit",
+    "Radar",
+  ]);
+  expect(group("Orbit").open).toBe(false);
+  expect(group("Radar").open).toBe(false);
+  expect(group("Orbit").contains(field("Track"))).toBe(true);
+  expect(group("Radar").contains(field("Coverage of the frame"))).toBe(true);
+});
+
+test("a group opens when one of its choices is made elsewhere, and stays open when the choice is taken back", () => {
+  show();
+  const change = (changes: { track?: string; coverage?: "" | "full" }) =>
+    act(() => {
+      const draft = searchDraftStore.get();
+      searchDraftStore.set(draft && { ...draft, ...changes });
+    });
+  change({ track: "141" });
+  expect(group("Orbit").open).toBe(true);
+  expect(group("Radar").open).toBe(false);
+  change({ track: "", coverage: "full" });
+  expect(group("Orbit").open).toBe(true);
+  expect(group("Radar").open).toBe(true);
 });
 
 /** Return the explanation that describes an element. */
@@ -101,6 +145,7 @@ test("each explanation shows from the button beside its title, and none stands u
   expect(explanation(field("Cycle"))).toBe(EXPLANATIONS.cycle);
   await userEvent.selectOptions(choice("Product type"), "GUNW");
   expect(explanation(field("Cycle"))).toBe(EXPLANATIONS.pairCycle);
+  expect(explanation(screen.getByRole("group", { name: "Pairs of acquisitions" }))).toBe(EXPLANATIONS.pairs);
   for (const title of ["Search products", "Area", "North", "Frame", "Absolute orbit", "Channels"]) {
     expect(screen.getByRole("button", { name: `Information about ${title}` })).toBeDefined();
   }
@@ -136,6 +181,7 @@ test("a search sends every choice, fills the list and states the number found at
   await userEvent.selectOptions(field("Season from: month"), "12");
   await userEvent.selectOptions(field("Season to: month"), "2");
   await userEvent.selectOptions(field("Season to: day"), "28");
+  await userEvent.click(screen.getByText("Orbit"));
   await userEvent.type(field("Track"), "141");
   await userEvent.type(field("Frame"), "60-70");
   await userEvent.selectOptions(field("Direction of the orbit"), "descending");
@@ -152,8 +198,10 @@ test("a search sends every choice, fills the list and states the number found at
   await userEvent.selectOptions(field("Range bandwidth of the main band"), "40");
   await userEvent.selectOptions(field("Coverage of the frame"), "full");
   await userEvent.selectOptions(field("Observed together with the S-band radar"), "no");
+  setPaneOpen("catalog", false);
   await searchNow();
-  expect(await screen.findByText("1 product was found.")).toBeDefined();
+  expect(await screen.findByText("1 product was found. The Catalog pane lists it.")).toBeDefined();
+  expect(panesStore.get().catalog.open).toBe(true);
   expect(decodeURIComponent(asked[0] ?? "")).toBe(
     "/api/products?product=GCOV&maturity=Validated&maturity=Provisional&maturity=Beta&west=-71.2&south=42.6&east=-70.75&north=42.95" +
       "&start=2025-10-01&end=2026-11-14&season_start=335&season_end=59&track=141&frame=60-70&orbit=6460-6468" +
@@ -161,6 +209,9 @@ test("a search sends every choice, fills the list and states the number found at
   );
   expect(productsStore.get()?.products.map(({ id }) => id)).toEqual(["G0-ASF"]);
   expect(messagesStore.get()).toEqual([]);
+  // The outcome offers the next step.
+  await userEvent.click(screen.getByRole("button", { name: "Get layer", hidden: true }));
+  expect(dockStore.get().tools).toEqual([SEARCH_PANE, GET_LAYER_PANE]);
   // The test makes some thirty choices, which takes longer than the usual time of a test on a slow machine.
 }, 30_000);
 
@@ -177,9 +228,10 @@ test("the choice between the two ways to find a pair shows only for products mad
   const { fetch, asked } = serverWith({ found: 0, products: [] });
   vi.stubGlobal("fetch", fetch);
   show();
-  expect(screen.queryByRole("group", { name: "A pair of acquisitions is found when" })).toBeNull();
+  expect(screen.queryByRole("group", { name: "Pairs of acquisitions" })).toBeNull();
   await userEvent.selectOptions(field("Product type"), "GUNW");
-  await userEvent.click(field("both of its dates lie inside the period"));
+  expect(field("Overlapping the period").checked).toBe(true);
+  await userEvent.click(field("Inside the period"));
   // A product of pairs has one frequency band, so the form offers no side band for it.
   expect(screen.queryByRole("group", { name: "Channels of the side band (B)" })).toBeNull();
   expect(screen.getByRole("group", { name: "Channels" })).toBeDefined();
@@ -226,6 +278,7 @@ test("a search without a product says so at the foot of the pane", async () => {
   show();
   await searchNow();
   expect(await screen.findByText("No product was found for these choices.")).toBeDefined();
+  expect(screen.queryByRole("button", { name: "Get layer" })).toBeNull();
 });
 
 test("the Cancel button stops a search that is running", async () => {
@@ -351,10 +404,16 @@ test("the button Restore defaults returns the first choices with the view of the
   areaStore.set({ west: 0, south: 0, east: 1, north: 1 });
   show();
   await userEvent.selectOptions(field("Product type"), "GOFF");
+  await userEvent.click(screen.getByText("Orbit"));
   await userEvent.type(field("Track"), "abc");
   await searchNow();
   expect(screen.getByRole("alert")).toBeDefined();
-  await userEvent.click(screen.getByRole("button", { name: "Restore defaults" }));
+  const restore = screen.getByRole("button", { name: "Restore defaults" });
+  // The link stands at the foot of the form, after every field and group.
+  expect(restore.closest(".search-foot")?.nextElementSibling).toBeNull();
+  expect(restore.closest("details")).toBeNull();
+  await userEvent.click(restore);
+  expect(group("Orbit").open).toBe(false);
   expect(screen.queryByRole("alert")).toBeNull();
   expect(choice("Product type").value).toBe("GCOV");
   expect(field("Track").value).toBe("");
