@@ -1,8 +1,9 @@
 @use "uswds-core" as uswds;
 
-// The messages stand over the foot of the map, in the middle, above the scale and the credits of the map. The
-// descriptions of the ribbon buttons show over the top of the map, so the two do not meet. The messages leave
-// the rest of the map free for the pointer, and in a narrow window they stand over a pane that covers the map.
+// The messages stand over the foot of the map, in the middle, above the credit that a background map may need
+// in the lower right corner of the map. The descriptions of the ribbon buttons show over the top of the map, so
+// the two do not meet. The messages leave the rest of the map free for the pointer, and in a narrow window they
+// stand over a pane that covers the map.
 .messages {
   position: absolute;
   z-index: 30;

@@ -44,6 +44,8 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   groups in view.
 - The messages show over the foot of the map.
 - The lines of latitude and longitude have a white edge of half a pixel, and their values one of 1 pixel.
+- The credits of the layers stand at the right end of the status bar. The credit of OpenStreetMap stays
+  in the corner of the map, where its tile service asks for it.
 - The dialog and the close button of a pane take the sizes of the frame, and the pressed and the
   unfinished buttons of the ribbon have a stronger contrast.
 

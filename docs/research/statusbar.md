@@ -61,13 +61,14 @@ the npm package.
 | Tried | In the same browser: after the map was dragged with the Alt and Shift keys the bar showed Rotation 35.8° and the button North up (60 by 24 pixels); the Enter key on the button set the rotation to zero, and the rotation left the bar. The word Loading was not yet confirmed in a browser. |
 | Read on | 14 Nov 2026 |
 
-## Scale bar and attribution on the map
+## Scale bar and credits on the map
 
 | | |
 |---|---|
 | ArcGIS Pro | A scale bar is an element of a layout and cannot be added to a map view ([Scale bars](https://pro.arcgis.com/en/pro-app/3.0/help/layouts/scale-bars.htm)). |
 | QGIS | A scale bar is a decoration of the map view, switched on and off from the menu View, Decorations ([General Tools, Decorations](https://docs.qgis.org/3.10/en/docs/user_manual/introduction/general_tools.html)). |
-| Choice of Lynkeus | Both controls of the map stay as they are. The scale bar gives the scale as a length, which the number 1 : n does not; both are computed for the centre of the map with the same pixel size, so they agree. The attribution names the sources of the background maps and must stay on the map. The View tab can hide the scale bar, as QGIS does. |
+| Choice of Lynkeus | The map has no scale bar (decision of 14 Nov 2026). The status bar shows the scale as a number that the user can also set, and ArcGIS Pro likewise gives the scale of a map view in its scale list only. The View tab therefore has no Scale bar button. The attribution control of OpenLayers is no longer on the map either. The credits of the layers stand at the right end of the status bar, and only a credit that its source asks for on the map itself is drawn in the lower right corner of the map. [frame.md](frame.md#credits-of-the-map) records the sources and the rule. |
+| Earlier trials | The rows "Tried" of this note that compare the scale with the scale bar of the map, that name the link of the attribution after the map, or that press the Scale bar button, describe the page before this change. |
 | Read on | 14 Nov 2026 |
 
 ## View tab

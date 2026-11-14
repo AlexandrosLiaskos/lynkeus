@@ -8,6 +8,7 @@ import { rotationInDegrees, showNorthUp } from "./rotation";
 import { formatScale, scaleAt, showScale } from "./scale";
 import { ScaleControl } from "./ScaleControl";
 import { coordinateFormatStore, statusBarStore } from "./state";
+import { Credits } from "../shared/credits/Credits";
 
 /**
  * A value of the status bar in a field of one width. The widest texts that the value can take stand unseen in
@@ -107,6 +108,7 @@ function Bar() {
         </span>
       )}
       <Projection name={projectionName(projection)} />
+      <Credits place="beside" />
     </section>
   );
 }
