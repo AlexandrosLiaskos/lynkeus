@@ -34,6 +34,32 @@ test("the map is set to a scale at its centre", () => {
   expect(scaleAt(view.getProjection(), view.getResolution() ?? NaN, view.getCenter() ?? [])).toBeCloseTo(25_000, 6);
 });
 
+test("a map wider than the world at its first zoom level shows one world, and the scale is that of its resolution", () => {
+  // The first view of the page: zoom level 2 at latitude 20 degrees, on a map 1440 pixels wide. At zoom level 2
+  // the world is 1024 pixels wide, so the map shows one world over its width: 40,075,016.686 m over 1440 pixels.
+  // On the page the map gives the size of its element to the view; the test gives it in the same way.
+  const map = new OlMap({ view: new View({ center: fromLonLat([0, 20]), zoom: 2 }) });
+  const view = map.getView();
+  view.setViewportSize([1440, 718]);
+  expect(view.getResolution()).toBeCloseTo(27829.872698318395, 6);
+  expect(view.getZoom()).toBeCloseTo(2.4919, 4);
+  // 27,829.8727 m times cos(20 degrees), over 0.28 mm.
+  expect(scaleAt(view.getProjection(), view.getResolution() ?? NaN, view.getCenter() ?? [])).toBeCloseTo(
+    93398307.19,
+    1,
+  );
+  expect(formatScale(scaleAt(view.getProjection(), view.getResolution() ?? NaN, view.getCenter() ?? []))).toBe(
+    "1:93,398,307",
+  );
+  // On a map 390 pixels wide the same view keeps zoom level 2: 39,135.7585 m times cos(20 degrees), over 0.28 mm.
+  view.setViewportSize([390, 560]);
+  view.setZoom(2);
+  expect(view.getResolution()).toBeCloseTo(39135.75848201024, 6);
+  expect(formatScale(scaleAt(view.getProjection(), view.getResolution() ?? NaN, view.getCenter() ?? []))).toBe(
+    "1:131,341,369",
+  );
+});
+
 test("a scale that the map cannot show gives the nearest one and is reported", () => {
   const map = new OlMap({ view: new View({ center: fromLonLat([-70.975, 42.775]), zoom: 10 }) });
   const view = map.getView();
