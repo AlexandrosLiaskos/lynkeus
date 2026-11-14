@@ -78,9 +78,13 @@ test("the list of formats writes the coordinates in each of the four ways", asyn
 
 test("the bar names the projection of the map", () => {
   setUp();
-  // The name stands in its own element, which a narrow window hides; the code follows it.
-  expect(screen.getByText("(EPSG:3857)").textContent).toBe("WGS 84 / Pseudo-Mercator (EPSG:3857)");
-  expect(screen.getByText("WGS 84 / Pseudo-Mercator").className).toBe("statusbar-projection-name");
+  // The name and the brackets stand in elements of their own, which a narrow window hides; the code stays.
+  const code = screen.getByText("EPSG:3857");
+  expect(code.textContent).toBe("WGS 84 / Pseudo-Mercator (EPSG:3857)");
+  expect([...code.children].map((part) => [part.className, part.textContent])).toEqual([
+    ["statusbar-projection-name", "WGS 84 / Pseudo-Mercator ("],
+    ["statusbar-projection-name", ")"],
+  ]);
 });
 
 test("a typed scale is set on the map", async () => {

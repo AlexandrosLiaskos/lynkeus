@@ -61,11 +61,15 @@ function Coordinates({ state }: { state: MapState }) {
  * style file hides the name there.
  */
 function Projection({ name }: { name: string }) {
-  const code = name.indexOf("(");
+  const bracket = name.indexOf(" (");
+  if (bracket < 0) {
+    return <span className="statusbar-item">{name}</span>;
+  }
   return (
-    <span className="statusbar-item">
-      {code > 0 && <span className="statusbar-projection-name">{name.slice(0, code)}</span>}
-      {name.slice(Math.max(code, 0))}
+    <span className="statusbar-item statusbar-projection">
+      <span className="statusbar-projection-name">{name.slice(0, bracket + 2)}</span>
+      {name.slice(bracket + 2, -1)}
+      <span className="statusbar-projection-name">)</span>
     </span>
   );
 }

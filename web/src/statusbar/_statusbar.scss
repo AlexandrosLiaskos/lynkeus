@@ -32,6 +32,11 @@
   margin-left: auto;
 }
 
+// The name of the projection, its code and the brackets around the code stand together as one text.
+.statusbar-projection {
+  gap: 0;
+}
+
 .statusbar-label {
   color: uswds.color("base-dark");
 }
