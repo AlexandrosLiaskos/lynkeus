@@ -17,7 +17,9 @@ by area, period, orbit and radar properties, or by product names. It shows the p
 list and on the map, with the record, the files and the browse image of each one. A visitor signs in to
 Earthdata with a user token of Earthdata Login, and the title bar shows who is signed in. A visitor who
 is signed in requests layers of the selected product from NASA, clipped to an area; the Catalog pane lists
-the jobs and the layers of the session, and a layer is added to the map from there. The repository also
+the jobs and the layers of the session, and a layer is added to the map from there. The title bar shows
+the version of Lynkeus beside its name; a press on the version opens a notice that states what Lynkeus may
+use of its server and the limits that follow, each with its reason. The repository also
 holds the formats that connect the interface and the server, the program that publishes the team log as a
 web page, and the service that counts page visits. A button of the ribbon is grey until its function is finished.
 

@@ -46,6 +46,7 @@
 @use "shared/credits/credits";
 @use "shared/form/form";
 @use "header/header";
+@use "header/notice/notice";
 @use "ribbon/ribbon";
 @use "shared/dialog/dialog";
 @use "shared/dock/dock";
@@ -58,7 +59,8 @@
 // The building blocks of a pane. Their sizes, distances and colours come from `shared/tokens`.
 @use "shared/section/section";
 @use "shared/empty/empty";
-@use "shared/notice/notice";
+// The notice of the version in the header has a file of the same name, so this one is named apart.
+@use "shared/notice/notice" as pane-notice;
 @use "shared/properties/properties";
 @use "shared/list/list";
 @use "shared/toolbar/toolbar";

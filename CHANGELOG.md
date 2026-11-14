@@ -62,6 +62,11 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The sections Jobs and Layers of the Catalog pane, with the jobs and the layers of the session: a job is
   cancelled, run again and removed, and a layer is added to the map, shown in full, downloaded, renamed and
   removed.
+- The address `GET /api/limits` of the web service, which reports the version of Lynkeus, the processors
+  and the memory that the service may use, and the limits of the service.
+- The version of Lynkeus beside the name in the title bar. A press on it opens a notice, written from the
+  answer of the server: the version, the statement that the application is under development, what Lynkeus
+  may use of its server, and each limit with its reason.
 - The interface guide, and the shared building blocks of a pane that carry its rules: section, empty state,
   notice, property list, toolbar of icon buttons, menu button and the line of a tool pane that states what is
   missing.
