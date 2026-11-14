@@ -4,7 +4,7 @@ import { beforeEach, expect, test } from "vitest";
 import { Ribbon } from "../ribbon/Ribbon";
 import { useHelpActions } from "./actions";
 import { HelpDialogs } from "./HelpDialogs";
-import { aboutDialogStore } from "./state";
+import { aboutDialogStore, sourcesDialogStore } from "./state";
 import { HELP_TAB } from "./tab";
 
 /** The Help tab as the page holds it: its buttons with their actions, and its dialogs. */
@@ -19,12 +19,19 @@ function HelpTab() {
 
 beforeEach(() => {
   aboutDialogStore.set(false);
+  sourcesDialogStore.set(false);
 });
 
 test("the button About opens its dialog", async () => {
   render(<HelpTab />);
   await userEvent.click(screen.getByRole("button", { name: "About" }));
   expect(screen.getByRole<HTMLDialogElement>("dialog", { name: "About Lynkeus" }).open).toBe(true);
+});
+
+test("the button Sources opens its dialog", async () => {
+  render(<HelpTab />);
+  await userEvent.click(screen.getByRole("button", { name: "Sources" }));
+  expect(screen.getByRole<HTMLDialogElement>("dialog", { name: "Sources" }).open).toBe(true);
 });
 
 test("the button Methods is not finished and does nothing", async () => {

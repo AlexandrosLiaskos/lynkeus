@@ -2,7 +2,8 @@
 
 // The style of the elements of the Help tab.
 
-.about h3 {
+.about h3,
+.sources h3 {
   margin: 1rem 0 0.375rem;
   font-size: inherit;
 }
@@ -31,5 +32,42 @@
 
 .about-facts dd {
   margin: 0;
+  overflow-wrap: anywhere;
+}
+
+// The table of the sources has five columns, which need more width than a dialog has. A dialog that holds the
+// sources takes the width of the large modal of the design system.
+.usa-modal:has(.sources) {
+  max-width: uswds.units("tablet-lg");
+}
+
+// The parts stand one under the other in a column that may be narrower than its content, so that a table wider
+// than the dialog scrolls sideways inside its frame and does not widen the dialog.
+.sources {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.sources p {
+  margin: 0;
+}
+
+.sources .usa-table-container--scrollable {
+  margin: 0;
+}
+
+.sources .usa-table {
+  width: 100%;
+  font-size: inherit;
+}
+
+// The scrollable frame of the design system keeps the text of a cell in one line. Here it breaks into lines, so
+// that the five columns fit a wide window, and the frame scrolls only in a narrow one.
+.sources .usa-table td {
+  white-space: normal;
+}
+
+// A long address breaks where its column ends.
+.sources .usa-table a {
   overflow-wrap: anywhere;
 }
