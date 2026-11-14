@@ -11,6 +11,8 @@ export default defineConfig({
   // Every image is a file of the site, because the security policy of the web
   // server accepts images only from the site and from the map services.
   build: { assetsInlineLimit: 0 },
+  // On a member's own computer the interface asks the server that runs beside it.
+  server: { proxy: { "/api": "http://localhost:8000" } },
   // The tests run in a simulated browser.
   test: {
     environment: "happy-dom",
