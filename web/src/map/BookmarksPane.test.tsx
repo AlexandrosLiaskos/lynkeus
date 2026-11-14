@@ -68,3 +68,16 @@ test("a bookmark is renamed with the Enter key and removed", async () => {
   expect(names()).toEqual(["Third"]);
   expect(screen.getByRole("status").textContent).toBe('The bookmark "First" was removed.');
 });
+
+/** Return the explanation that describes an element. */
+function explanation(element: HTMLElement): string | undefined {
+  return document.getElementById(element.getAttribute("aria-describedby") ?? "")?.textContent;
+}
+
+test("the field of the name is described by its explanation, which shows from the button beside its title", () => {
+  openPane("bookmarks", <BookmarksPane />);
+  expect(explanation(screen.getByLabelText("Name of the view"))).toMatch(
+    /^The name under which the present view of the map is saved\. .* does not send them to the server\.$/,
+  );
+  expect(screen.getByRole("button", { name: "Information about Name of the view" })).toBeDefined();
+});

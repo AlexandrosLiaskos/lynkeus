@@ -41,6 +41,13 @@
   color: uswds.color("base-dark");
 }
 
+// A long name of a layer is cut, so that the value beside it stays in the bar.
+.statusbar-layer-name {
+  overflow: hidden;
+  max-width: 16rem;
+  text-overflow: ellipsis;
+}
+
 .statusbar-field {
   display: inline-grid;
   justify-items: end;
@@ -81,10 +88,15 @@
   padding: 0 0.125rem;
 }
 
-// In a narrow window the list of formats shows its arrow alone, and the projection its code alone.
+// In a narrow window the list of formats stands beside the scale, on the first row, so that the format chosen
+// stays readable, and the projection shows its code alone.
 @media (max-width: 40em) {
-  .statusbar-select {
-    width: 1.5rem;
+  .statusbar-scale {
+    order: -2;
+  }
+
+  .statusbar-format {
+    order: -1;
   }
 
   .statusbar-projection-name {

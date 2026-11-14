@@ -4,14 +4,44 @@ import type BaseEvent from "ol/events/Event";
 import OlMap from "ol/Map";
 import View from "ol/View";
 import { fromLonLat } from "ol/proj";
-import { beforeEach, expect, test } from "vitest";
+import { afterEach, beforeEach, expect, test, vi } from "vitest";
+import { valueAt } from "../contents/display";
+import { selectedLayerStore } from "../contents/state";
+import type { LayerDescription } from "../shared/layer";
 import { MapContext } from "../shared/map";
+import { addToMap, mapLayersStore } from "../shared/mapLayers";
 import { messagesStore } from "../shared/messages/messages";
 import { scaleAt } from "./scale";
 import { coordinateFormatStore, statusBarStore } from "./state";
 import { StatusBar } from "./StatusBar";
 
+vi.mock("../contents/display", () => ({ valueAt: vi.fn() }));
+const read = vi.mocked(valueAt);
+
+const LAYER: LayerDescription = {
+  id: "gcov-hhhh-20261020",
+  title: "Backscatter HH, 20 Oct 2026",
+  kind: "layer",
+  url: "/files/gcov-hhhh-20261020.tif",
+  quantity: "Radar backscatter",
+  unit: "dB",
+  range: [-25, 0],
+  colours: "grey",
+  dates: ["2026-10-20"],
+  inputs: ["product-file.h5"],
+  program: "Lynkeus 0.1.0",
+  method: null,
+  record: "/files/gcov-hhhh-20261020.json",
+};
+
+afterEach(() => {
+  vi.useRealTimers();
+});
+
 beforeEach(() => {
+  read.mockReset();
+  mapLayersStore.set([]);
+  selectedLayerStore.set(null);
   statusBarStore.set(true);
   coordinateFormatStore.set("degrees");
   messagesStore.set([]);
@@ -152,4 +182,79 @@ test("the bar is a named region of the page, and is not drawn while it is hidden
   expect(screen.getByRole("region", { name: "Status bar" })).toBeDefined();
   act(() => statusBarStore.set(false));
   expect(screen.queryByRole("region")).toBeNull();
+});
+
+test("without a selected layer the bar shows no value of a layer", () => {
+  setUp();
+  act(() => addToMap(LAYER));
+  expect(screen.queryByText(LAYER.title)).toBeNull();
+  expect(read).not.toHaveBeenCalled();
+});
+
+test("the bar shows the name of the selected layer and its value under the pointer, with the unit", () => {
+  vi.useFakeTimers();
+  const { map, values } = setUp();
+  map.setSize([800, 600]);
+  read.mockImplementation((_map, _id, pixel) => (pixel[0] === 10 ? -12.345678 : -7.5));
+  act(() => {
+    addToMap(LAYER);
+    selectedLayerStore.set(LAYER.id);
+  });
+  act(() => {
+    vi.advanceTimersToNextFrame();
+  });
+  // Without a pointer over the map the value is that of the centre of the map.
+  expect(read).toHaveBeenLastCalledWith(map, LAYER.id, [400, 300]);
+  expect(screen.getByText(LAYER.title)).toBeDefined();
+  expect(values()).toEqual(["Centre", "42.775°N", "70.975°W", "-7.5 dB", ""]);
+  act(() => {
+    const coordinate = fromLonLat([23.7281, 37.9838]);
+    map.dispatchEvent({ type: "pointermove", pixel: [10, 20], coordinate } as unknown as BaseEvent);
+  });
+  act(() => {
+    vi.advanceTimersToNextFrame();
+  });
+  expect(read).toHaveBeenLastCalledWith(map, LAYER.id, [10, 20]);
+  expect(values().at(3)).toBe("-12.3457 dB");
+});
+
+test("where the selected layer has no value the bar says so", () => {
+  vi.useFakeTimers();
+  const { values } = setUp();
+  read.mockReturnValue(null);
+  act(() => {
+    addToMap(LAYER);
+    selectedLayerStore.set(LAYER.id);
+  });
+  act(() => {
+    vi.advanceTimersToNextFrame();
+  });
+  expect(values().at(3)).toBe("No data");
+});
+
+test("the value leaves the bar when the selected layer is taken off the map", () => {
+  setUp();
+  act(() => {
+    addToMap(LAYER);
+    selectedLayerStore.set(LAYER.id);
+  });
+  expect(screen.getByText(LAYER.title)).toBeDefined();
+  act(() => mapLayersStore.set([]));
+  expect(screen.queryByText(LAYER.title)).toBeNull();
+});
+
+test("the value of a layer without dimension is written without a unit", () => {
+  vi.useFakeTimers();
+  const { map, values } = setUp();
+  map.setSize([800, 600]);
+  // A linear power, held as a number of 32 bits, as the files hold their values.
+  read.mockReturnValue(Math.fround(0.0432156));
+  act(() => {
+    addToMap({ ...LAYER, unit: "1" });
+    selectedLayerStore.set(LAYER.id);
+  });
+  act(() => {
+    vi.advanceTimersToNextFrame();
+  });
+  expect(values().at(3)).toBe("0.0432156");
 });

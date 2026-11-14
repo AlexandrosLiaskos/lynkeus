@@ -61,3 +61,21 @@ test("the button Clear results empties the list, and is inactive without results
   await userEvent.click(clear);
   expect(measurementsStore.get()).toEqual([]);
 });
+
+/** Return the explanation that describes an element. */
+function explanation(element: HTMLElement): string | undefined {
+  return document.getElementById(element.getAttribute("aria-describedby") ?? "")?.textContent;
+}
+
+test("the pane and its results are described by their explanations, which show from the buttons beside the titles", () => {
+  openPane("measure-area", <MeasurePane kind="area" />);
+  expect(explanation(screen.getByRole("complementary", { name: "Measure area" }))).toMatch(
+    /^Click the points of the polygon on the map, .* the Escape key gives up the polygon\.$/,
+  );
+  expect(explanation(screen.getByRole("list", { name: "Finished measurements" }))).toMatch(
+    /^The lengths and the areas are measured on a sphere with a radius of 6,371,008\.8 metres, /,
+  );
+  expect(screen.getByRole("button", { name: "Information about Measure area" })).toBeDefined();
+  expect(screen.getByRole("button", { name: "Information about Results" })).toBeDefined();
+  expect(screen.getByRole("heading", { name: "Results" })).toBeDefined();
+});

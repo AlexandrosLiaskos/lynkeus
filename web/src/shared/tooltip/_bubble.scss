@@ -1,0 +1,31 @@
+@use "uswds-core" as uswds;
+
+// The look of a bubble of text that shows beside an element: the description of a ribbon button and the
+// explanation of a title. Both take it from here, so the page has one bubble.
+@mixin look {
+  border-radius: 0.25rem;
+  background: uswds.color("ink");
+  color: uswds.color("white");
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1.4;
+  text-align: left;
+  white-space: normal;
+}
+
+// A bubble appears with a fade of 0.08 seconds, the time of the tooltip of the design system. A user who has
+// asked the operating system for less motion sees it at once.
+@mixin appear {
+  animation: bubble-appear 0.08s ease-in-out;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes bubble-appear {
+  from {
+    opacity: 0;
+  }
+}

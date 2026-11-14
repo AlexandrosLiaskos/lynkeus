@@ -22,7 +22,9 @@ services:
     container_name: lynkeus-api
     restart: unless-stopped
     read_only: true
-    mem_limit: 1g
+    # The service holds about 100 MB, and a job that writes a layer of the largest size about 510 MB.
+    # Two jobs run at once (MAX_RUNNING_JOBS in api/src/lynkeus/jobs.py), which makes about 1.1 GB.
+    mem_limit: 2g
     # An init process ends and collects the programs that a job leaves behind.
     init: true
     # A running job has 5 seconds to end when the container stops.
