@@ -11,10 +11,13 @@ requires-python = ">=3.13"
 license = "Apache-2.0"
 authors = [{ name = "Alexandros Liaskos" }]
 dependencies = [
+    "earthaccess==0.19.0",
+    "fastapi==0.162.7",
     "markdown==3.11.3",
     "numpy==2.5.4",
     "pydantic==2.14.3",
     "tzdata==2026.6",
+    "uvicorn==0.54.0",
 ]
 
 [project.urls]
@@ -23,6 +26,7 @@ Repository = "https://github.com/AlexandrosLiaskos/lynkeus"
 
 [dependency-groups]
 dev = [
+    "httpx2==2.16.0",
     "mypy==2.4.1",
     "pytest==9.2.0",
     "ruff==0.17.5",
@@ -43,7 +47,7 @@ select = ["A", "B", "C4", "D", "E", "F", "I", "N", "PTH", "RUF", "S", "SIM", "UP
 convention = "numpy"
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["D103", "S101"]
+"tests/*" = ["D102", "D103", "S101"]
 
 [tool.mypy]
 python_version = "3.13"

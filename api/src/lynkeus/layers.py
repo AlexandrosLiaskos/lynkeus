@@ -23,13 +23,13 @@ type ProductType = Literal["GCOV", "GUNW", "GOFF", "SME2"]
 type Text = Annotated[str, Field(min_length=1)]
 
 
-class _Format(BaseModel):
+class Format(BaseModel):
     """A format that accepts no unknown field and cannot be changed after it is made."""
 
     model_config = ConfigDict(extra="forbid", frozen=True, allow_inf_nan=False)
 
 
-class Area(_Format):
+class Area(Format):
     """A rectangle on the Earth, in degrees of longitude and latitude (WGS 84).
 
     West is smaller than east and south smaller than north, so an area does
@@ -50,7 +50,7 @@ class Area(_Format):
         return self
 
 
-class LayerDescription(_Format):
+class LayerDescription(Format):
     """The description of a layer.
 
     Attributes
@@ -109,7 +109,7 @@ class LayerDescription(_Format):
         return self
 
 
-class LayerRequest(_Format):
+class LayerRequest(Format):
     """What a dialog sends to the server to receive a layer.
 
     Attributes
@@ -130,7 +130,7 @@ class LayerRequest(_Format):
     area: Area
 
 
-class ToolRun(_Format):
+class ToolRun(Format):
     """What the tool dialog sends to the server to start an analysis.
 
     Attributes
