@@ -25,6 +25,7 @@ import { layersStore } from "../data/layers";
 import { wordsOf } from "../data/service";
 import { Dialog } from "../shared/dialog/Dialog";
 import { Icon } from "../shared/icon/Icon";
+import { Info } from "../shared/info/Info";
 import { report } from "../shared/messages/messages";
 import { useStore } from "../shared/store";
 import { keepFocus, openLayerStore } from "./state";
@@ -36,6 +37,10 @@ const STATUS_ICONS: Record<JobStatus, string> = {
   failed: "error",
   dismissed: "cancel",
 };
+
+/** The explanation of the section. It shows from the button beside the heading. */
+export const ABOUT_JOBS =
+  "The requests of this session to receive a layer or to run an analysis tool. A job that waits or runs can be cancelled. A finished job can be run again with the same inputs. The removal of the record of a job leaves the layer that the job produced.";
 
 /** State how many jobs the list holds, by their state, as "3 jobs: 1 running, 2 finished." */
 export function jobsSentence(jobs: readonly Job[]): string {
@@ -119,7 +124,7 @@ function JobItem({ job, open, onToggle, onDetails, onGone }: JobItemProps) {
           {unfinished ? (
             <button
               type="button"
-              className="catalog-tool"
+              className="usa-button usa-button--unstyled"
               disabled={busy}
               onClick={() =>
                 act(
@@ -133,18 +138,22 @@ function JobItem({ job, open, onToggle, onDetails, onGone }: JobItemProps) {
               Cancel
             </button>
           ) : null}
-          <button type="button" className="catalog-tool" onClick={onDetails}>
+          <button type="button" className="usa-button usa-button--unstyled" onClick={onDetails}>
             Details
           </button>
           {made && job.layer ? (
-            <button type="button" className="catalog-tool" onClick={() => openLayerStore.set(job.layer ?? null)}>
+            <button
+              type="button"
+              className="usa-button usa-button--unstyled"
+              onClick={() => openLayerStore.set(job.layer ?? null)}
+            >
               Show layer
             </button>
           ) : null}
           {!unfinished && inputs ? (
             <button
               type="button"
-              className="catalog-tool"
+              className="usa-button usa-button--unstyled"
               disabled={busy}
               onClick={() =>
                 act(
@@ -160,7 +169,7 @@ function JobItem({ job, open, onToggle, onDetails, onGone }: JobItemProps) {
           {unfinished ? null : (
             <button
               type="button"
-              className="catalog-tool"
+              className="usa-button usa-button--unstyled"
               disabled={busy}
               onClick={() => act(() => dismissJob(job.jobID), null, "The job could not be removed.", true)}
             >
@@ -213,11 +222,16 @@ export function JobsSection() {
   };
 
   return (
-    <section className="catalog-section catalog-jobs" aria-labelledby={`${id}-heading`}>
+    <section className="catalog-section catalog-jobs" aria-labelledby={`${id}-heading`} aria-describedby={`${id}-info`}>
       <div className="catalog-heading">
-        <h3 id={`${id}-heading`} ref={heading} tabIndex={-1}>
-          Jobs
-        </h3>
+        <div className="info-title">
+          <h3 id={`${id}-heading`} ref={heading} tabIndex={-1}>
+            Jobs
+          </h3>
+          <Info id={`${id}-info`} about="Jobs">
+            {ABOUT_JOBS}
+          </Info>
+        </div>
         <button
           type="button"
           className="usa-button usa-button--unstyled"
@@ -271,7 +285,7 @@ export function JobsSection() {
           {shown.length === 0 ? (
             <p className="catalog-summary">No job of the list is in this state.</p>
           ) : (
-            <ul className="catalog-list">
+            <ul className="catalog-list session-list">
               {shown.map((job) => (
                 <JobItem
                   key={job.jobID}

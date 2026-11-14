@@ -1,6 +1,7 @@
 import { transformExtent } from "ol/proj";
 import { useEffect, useId, useRef, useState, type SyntheticEvent } from "react";
 import { loadJobs } from "../data/jobs";
+import { zoomTo } from "../data/footprints";
 import { LayerFields } from "../data/LayerFields";
 import {
   groupLayers,
@@ -21,11 +22,16 @@ import {
 import { formatDay, formatSize } from "../data/products";
 import { wordsOf } from "../data/service";
 import { Dialog } from "../shared/dialog/Dialog";
+import { Info } from "../shared/info/Info";
 import { useMap } from "../shared/map";
 import { addToMap, mapLayersStore, removeFromMap } from "../shared/mapLayers";
 import { report } from "../shared/messages/messages";
 import { useStore } from "../shared/store";
 import { keepFocus, openLayerStore } from "./state";
+
+/** The explanation of the section. It shows from the button beside the heading. */
+export const ABOUT_LAYERS =
+  "The layers of this session: those received from NASA and those computed by the analysis tools. The server keeps the files of a layer until the layer is removed or the session ends. A layer is added to the map from here, and the Contents pane then lists it.";
 
 /** The largest length of the name of a layer, in characters, as the server takes it. */
 const MOST_TITLE = 200;
@@ -72,14 +78,7 @@ function LayerItem({ entry, open, onMap, onDetails, onRemove }: LayerItemProps) 
 
   const zoom = () => {
     layerExtent(layer)
-      .then((extent) => {
-        const view = map.getView();
-        view.fit(transformExtent(extent, "EPSG:4326", view.getProjection()), {
-          size: map.getSize(),
-          padding: [40, 40, 40, 40],
-          duration: 250,
-        });
-      })
+      .then((extent) => zoomTo(map, transformExtent(extent, "EPSG:4326", map.getView().getProjection())))
       .catch((error: unknown) => report("error", wordsOf(error, "The extent of the layer could not be read.")));
   };
 
@@ -149,10 +148,10 @@ function LayerItem({ entry, open, onMap, onDetails, onRemove }: LayerItemProps) 
               </p>
             ) : null}
             <div className="catalog-tools">
-              <button type="submit" className="catalog-tool" disabled={busy}>
+              <button type="submit" className="usa-button" disabled={busy}>
                 Rename
               </button>
-              <button type="button" className="catalog-tool" onClick={() => setRenaming(false)}>
+              <button type="button" className="usa-button usa-button--unstyled" onClick={() => setRenaming(false)}>
                 Cancel
               </button>
             </div>
@@ -161,23 +160,23 @@ function LayerItem({ entry, open, onMap, onDetails, onRemove }: LayerItemProps) 
           <div className="catalog-tools layer-tools" role="group" aria-label={`Tools of the layer ${layer.title}`}>
             <button
               type="button"
-              className="catalog-tool"
+              className="usa-button usa-button--unstyled"
               onClick={() => (onMap ? removeFromMap(layer.id) : addToMap(layer))}
             >
               {onMap ? "Remove from the map" : "Add to the map"}
             </button>
-            <button type="button" className="catalog-tool" onClick={zoom}>
+            <button type="button" className="usa-button usa-button--unstyled" onClick={zoom}>
               Zoom to
             </button>
-            <button type="button" className="catalog-tool" onClick={onDetails}>
+            <button type="button" className="usa-button usa-button--unstyled" onClick={onDetails}>
               Details
             </button>
-            <a className="catalog-tool" href={layer.url} download>
+            <a className="usa-button usa-button--unstyled" href={layer.url} download>
               Download
             </a>
             <button
               type="button"
-              className="catalog-tool"
+              className="usa-button usa-button--unstyled"
               onClick={() => {
                 setName(layer.title);
                 setFault(null);
@@ -186,7 +185,7 @@ function LayerItem({ entry, open, onMap, onDetails, onRemove }: LayerItemProps) 
             >
               Rename
             </button>
-            <button type="button" className="catalog-tool" onClick={onRemove}>
+            <button type="button" className="usa-button usa-button--unstyled" onClick={onRemove}>
               Remove
             </button>
           </div>
@@ -245,11 +244,20 @@ export function LayersSection() {
   };
 
   return (
-    <section className="catalog-section catalog-layers" aria-labelledby={`${id}-heading`}>
+    <section
+      className="catalog-section catalog-layers"
+      aria-labelledby={`${id}-heading`}
+      aria-describedby={`${id}-info`}
+    >
       <div className="catalog-heading">
-        <h3 id={`${id}-heading`} ref={heading} tabIndex={-1}>
-          Layers
-        </h3>
+        <div className="info-title">
+          <h3 id={`${id}-heading`} ref={heading} tabIndex={-1}>
+            Layers
+          </h3>
+          <Info id={`${id}-info`} about="Layers">
+            {ABOUT_LAYERS}
+          </Info>
+        </div>
       </div>
       <p className="catalog-summary" role="status">
         {entries.length === 0 ? null : layersSentence(entries, entries.filter(isOnMap).length)}
@@ -292,30 +300,32 @@ export function LayersSection() {
               ))}
             </select>
           </div>
-          {groupLayers(sortLayers(entries, sort), grouping, formatDay).map(({ title, layers }) => (
-            <div key={title} className="catalog-group">
-              {title === "" ? null : (
-                <h4>
-                  {title} <span className="catalog-group-count">({layers.length})</span>
-                </h4>
-              )}
-              <ul className="catalog-list">
-                {layers.map((entry) => (
-                  <LayerItem
-                    key={entry.layer.id}
-                    entry={entry}
-                    open={entry.layer.id === open}
-                    onMap={isOnMap(entry)}
-                    onDetails={() => setDetails(entry.layer.id)}
-                    onRemove={() => {
-                      setDoomed(entry.layer.id);
-                      setAsking(true);
-                    }}
-                  />
-                ))}
-              </ul>
-            </div>
-          ))}
+          <div className="session-list">
+            {groupLayers(sortLayers(entries, sort), grouping, formatDay).map(({ title, layers }) => (
+              <div key={title} className="catalog-group">
+                {title === "" ? null : (
+                  <h4>
+                    {title} <span className="catalog-group-count">({layers.length})</span>
+                  </h4>
+                )}
+                <ul className="catalog-list">
+                  {layers.map((entry) => (
+                    <LayerItem
+                      key={entry.layer.id}
+                      entry={entry}
+                      open={entry.layer.id === open}
+                      onMap={isOnMap(entry)}
+                      onDetails={() => setDetails(entry.layer.id)}
+                      onRemove={() => {
+                        setDoomed(entry.layer.id);
+                        setAsking(true);
+                      }}
+                    />
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </>
       )}
       {described ? (
