@@ -5,13 +5,18 @@
 // of the system. The images of the design system are taken from its package.
 @use "uswds-core" with (
   $theme-show-notifications: false,
-  $theme-focus-offset: "neg-05",
+  // The indication of the keyboard focus: see `shared/_focus.scss`.
+  $theme-focus-color: "primary",
+  $theme-focus-width: "2px",
+  $theme-focus-offset: "neg-2px",
   $theme-font-type-mono: false,
   $theme-font-type-sans: "system",
   $theme-font-type-serif: false,
   $theme-font-role-heading: "sans",
   $theme-global-link-styles: true,
-  $theme-image-path: "@uswds/uswds/img"
+  $theme-image-path: "@uswds/uswds/img",
+  // The border of a field with a wrong value has the width of the focus line.
+  $theme-input-state-border-width: "2px"
 );
 @forward "uswds-global";
 @forward "usa-icon";
@@ -21,7 +26,7 @@
 @forward "usa-alert";
 @forward "usa-table";
 
-// The form elements that the dialogs use.
+// The form elements that the panes and the dialogs use.
 @forward "usa-form";
 @forward "usa-form-group";
 @forward "usa-fieldset";
@@ -37,6 +42,7 @@
 @forward "usa-range";
 
 // The frame of the page and the elements that every part shares.
+@use "shared/focus";
 @use "header/header";
 @use "ribbon/ribbon";
 @use "shared/dialog/dialog";
@@ -79,12 +85,4 @@ body,
   display: flex;
   flex: 1;
   min-width: 0;
-}
-
-// The design system outlines the focused element, inside its edge. The outline
-// shows when the keyboard moves the focus and stays hidden after a click.
-a:focus:not(:focus-visible),
-button:focus:not(:focus-visible),
-[tabindex]:focus:not(:focus-visible) {
-  outline: none;
 }
