@@ -37,14 +37,16 @@ test("a link whose text is its address is written once, and tags and repeated sp
 });
 
 test("each background map gives the line that its service asks for on a picture", () => {
-  const [blueMarble, openStreetMap] = BASE_MAPS.map(
-    ({ id, createSource }) => new TileLayer({ source: createSource(), properties: { id } }),
+  const layers = BASE_MAPS.map(
+    ({ id, createSource }) => new TileLayer({ source: createSource(), properties: { id }, visible: false }),
   );
+  const blueMarble = layers.find((layer) => layer.get("id") === "blue-marble");
+  const openStreetMap = layers.find((layer) => layer.get("id") === "openstreetmap");
   if (!blueMarble || !openStreetMap) {
     throw new Error("The two background maps are missing.");
   }
-  openStreetMap.setVisible(false);
-  const map = mapOf([blueMarble, openStreetMap]);
+  blueMarble.setVisible(true);
+  const map = mapOf(layers);
   expect(creditsOf(frameOf(map))).toEqual([
     "We acknowledge the use of imagery provided by services from NASA's Global Imagery Browse Services (GIBS), " +
       "part of NASA's Earth Science Data and Information System (ESDIS).",
@@ -52,6 +54,22 @@ test("each background map gives the line that its service asks for on a picture"
   blueMarble.setVisible(false);
   openStreetMap.setVisible(true);
   expect(creditsOf(frameOf(map))).toEqual(["\u00a9 OpenStreetMap contributors, openstreetmap.org/copyright"]);
+});
+
+test("the imagery of a date gives its day and instrument, and then the acknowledgement of GIBS", () => {
+  const imagery = new TileLayer({
+    source: new XYZ({
+      url: "/tiles/{z}/{x}/{y}.jpeg",
+      attributions:
+        'Image of 2026-11-13 (MODIS, Terra): <a href="https://nasa-gibs.github.io/gibs-api-docs/">NASA GIBS</a>',
+    }),
+    properties: { id: "imagery" },
+  });
+  expect(creditsOf(frameOf(mapOf([imagery])))).toEqual([
+    "Image of 2026-11-13 (MODIS, Terra): NASA GIBS (https://nasa-gibs.github.io/gibs-api-docs/)",
+    "We acknowledge the use of imagery provided by services from NASA's Global Imagery Browse Services (GIBS), " +
+      "part of NASA's Earth Science Data and Information System (ESDIS).",
+  ]);
 });
 
 test("another layer gives the attributions of its source, and a layer without any gives nothing", () => {

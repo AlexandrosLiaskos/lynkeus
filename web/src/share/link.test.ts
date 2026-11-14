@@ -3,6 +3,7 @@ import View from "ol/View";
 import { fromLonLat, toLonLat } from "ol/proj";
 import { beforeEach, expect, test } from "vitest";
 import { baseMapStore } from "../map/baseMaps";
+import { imageryStore } from "../map/imagery";
 import { areaStore } from "../shared/area";
 import {
   faultMessage,
@@ -27,8 +28,11 @@ const STATE: MapState = {
   longitude: -70.975,
   rotation: 30,
   baseMap: "openstreetmap",
+  imagery: null,
   area: MERRIMACK,
 };
+const TODAY = "2026-11-14";
+const IMAGE = { layer: "VIIRS_NOAA20_CorrectedReflectance_TrueColor", date: "2026-11-13" } as const;
 
 function createMap(): OlMap {
   const map = new OlMap({ view: new View({ center: fromLonLat([0, 20]), zoom: 2 }) });
@@ -58,7 +62,8 @@ test("the zoom level is written with two decimals and the centre with five", () 
 });
 
 test("a fragment that was written is read back as the same state", () => {
-  expect(readLink(writeLink(STATE), LIMITS)).toEqual({ state: STATE, faults: [] });
+  // A link without an image of a date says nothing about it.
+  expect(readLink(writeLink(STATE), LIMITS)).toEqual({ state: { ...STATE, imagery: undefined }, faults: [] });
 });
 
 test("an empty fragment gives nothing and no fault", () => {
@@ -191,7 +196,7 @@ test("an address without a rotation turns the map north up", () => {
 
 test("the parts of a link are taken out of a fragment, and a part of another function stays", () => {
   expect(withoutLink(writeLink(STATE))).toBe("");
-  expect(withoutLink("#other=1&map=3/10/20&area=1,2,3,4")).toBe("#other=1");
+  expect(withoutLink("#other=1&map=3/10/20&imagery=a,b&area=1,2,3,4")).toBe("#other=1");
   expect(withoutLink("")).toBe("");
 });
 
@@ -202,4 +207,44 @@ test("the message names the parts that could not be read", () => {
   expect(faultMessage(["map", "basemap", "area"])).toBe(
     "The address of the page gives a view, a background map and an area that Lynkeus cannot read. These parts were ignored.",
   );
+});
+
+test("the imagery of a date is written with the name of its layer and its day, and read back", () => {
+  const state: MapState = { ...STATE, baseMap: "imagery", imagery: IMAGE, area: null };
+  const link = writeLink(state);
+  expect(link).toBe(
+    "#map=10.5/42.775/-70.975&rotation=30&basemap=imagery&imagery=VIIRS_NOAA20_CorrectedReflectance_TrueColor,2026-11-13",
+  );
+  expect(readLink(link, LIMITS, TODAY)).toEqual({
+    state: { zoom: 10.5, latitude: 42.775, longitude: -70.975, rotation: 30, baseMap: "imagery", imagery: IMAGE },
+    faults: [],
+  });
+});
+
+test.each([
+  ["the layer is not one of NASA GIBS", "#imagery=Landsat,2026-11-13"],
+  ["the day is missing", "#imagery=VIIRS_NOAA20_CorrectedReflectance_TrueColor"],
+  ["the day is not a day", "#imagery=VIIRS_NOAA20_CorrectedReflectance_TrueColor,2026-02-30"],
+  ["the day lies after the present day", "#imagery=VIIRS_NOAA20_CorrectedReflectance_TrueColor,2026-11-15"],
+  ["the day lies before the first image", "#imagery=VIIRS_NOAA20_CorrectedReflectance_TrueColor,2017-12-31"],
+  ["a third value follows", "#imagery=VIIRS_NOAA20_CorrectedReflectance_TrueColor,2026-11-13,1"],
+])("the image of a date is refused when %s", (_reason, fragment) => {
+  expect(readLink(fragment, LIMITS, TODAY)).toEqual({ state: {}, faults: ["imagery"] });
+});
+
+test("a map without a background map is written and read as the word none", () => {
+  expect(writeLink({ ...STATE, baseMap: null, rotation: 0, area: null })).toBe("#map=10.5/42.775/-70.975&basemap=none");
+  expect(readLink("#basemap=none", LIMITS)).toEqual({ state: { baseMap: null }, faults: [] });
+});
+
+test("opening a link with the imagery of a date shows that image as the background map", () => {
+  const map = createMap();
+  imageryStore.set({ layer: "MODIS_Terra_CorrectedReflectance_TrueColor", date: "2026-01-01" });
+  const faults = openLink(map, `#basemap=imagery&imagery=${IMAGE.layer},2026-11-01`);
+  expect(faults).toEqual([]);
+  expect(baseMapStore.get()).toBe("imagery");
+  expect(imageryStore.get()).toEqual({ layer: IMAGE.layer, date: "2026-11-01" });
+  expect(mapState(map)?.imagery).toEqual({ layer: IMAGE.layer, date: "2026-11-01" });
+  baseMapStore.set("blue-marble");
+  expect(mapState(map)?.imagery).toBeNull();
 });

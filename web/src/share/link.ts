@@ -1,7 +1,11 @@
 import type OlMap from "ol/Map";
 import { fromLonLat, get as getProjection, toLonLat } from "ol/proj";
 import { BASE_MAPS, baseMapStore, type BaseMapId } from "../map/baseMaps";
+import { IMAGERY, imageryFault, imageryStore, utcDay, type ImageryChoice } from "../map/imagery";
 import { areaStore, isArea, type Area } from "../shared/area";
+
+/** The word that a link writes for a map without a background map. */
+const NO_BASE_MAP = "none";
 
 /** What a link to a map holds: the view, the background map and the area. */
 export interface MapState {
@@ -12,12 +16,15 @@ export interface MapState {
   longitude: number;
   /** Rotation of the map in degrees, clockwise. North is up at 0. */
   rotation: number;
-  baseMap: BaseMapId;
+  /** The background map, or null when none is shown. */
+  baseMap: BaseMapId | null;
+  /** The image that is shown when the background map is the imagery of a date, and null with any other. */
+  imagery: ImageryChoice | null;
   area: Area | null;
 }
 
 /** The parts of a link, as they are named in the address. */
-export type LinkPart = "map" | "rotation" | "basemap" | "area";
+export type LinkPart = "map" | "rotation" | "basemap" | "imagery" | "area";
 
 /** What was read from an address: the parts that are valid, and the names of the parts that are not. */
 export interface LinkReading {
@@ -63,15 +70,18 @@ export function normalRotation(degrees: number): number {
  * writes it, `map=zoom/latitude/longitude`. The zoom level has two decimals, and the centre five, which is about
  * one metre. The rotation is written only when the map is rotated and the area only when one is set. The area
  * is written as west, south, east and north, the order of a bounding box in the standards of the Open
- * Geospatial Consortium.
+ * Geospatial Consortium. The imagery of a date is written as the name of its layer in NASA GIBS and its day.
  */
-export function writeLink({ zoom, latitude, longitude, rotation, baseMap, area }: MapState): string {
+export function writeLink({ zoom, latitude, longitude, rotation, baseMap, imagery, area }: MapState): string {
   const parts = [`map=${decimals(zoom, 2)}/${decimals(latitude, 5)}/${decimals(longitude, 5)}`];
   const turned = Number(normalRotation(rotation).toFixed(2));
   if (turned !== 0) {
     parts.push(`rotation=${String(turned)}`);
   }
-  parts.push(`basemap=${baseMap}`);
+  parts.push(`basemap=${baseMap ?? NO_BASE_MAP}`);
+  if (imagery) {
+    parts.push(`imagery=${imagery.layer},${imagery.date}`);
+  }
   if (area) {
     parts.push(`area=${[area.west, area.south, area.east, area.north].map(String).join(",")}`);
   }
@@ -81,11 +91,12 @@ export function writeLink({ zoom, latitude, longitude, rotation, baseMap, area }
 /**
  * Read the fragment of an address. Every part is checked as any other input: a number must be written with
  * digits, the zoom level must lie inside the limits of the view, the centre inside Web Mercator, the rotation
- * between -360 and 360 degrees, the background map must be one of those that Lynkeus offers, and the area must be
- * a valid area. A part that fails is named in `faults` and is not returned. A part with an unknown name is
- * ignored, because it may belong to another function of the page.
+ * between -360 and 360 degrees, the background map must be one of those that Lynkeus offers, the image of a date
+ * must be one that NASA GIBS serves for a day up to `today`, and the area must be a valid area. A part that fails
+ * is named in `faults` and is not returned. A part with an unknown name is ignored, because it may belong to
+ * another function of the page.
  */
-export function readLink(fragment: string, limits: ZoomLimits): LinkReading {
+export function readLink(fragment: string, limits: ZoomLimits, today: string = utcDay(new Date())): LinkReading {
   const given = new URLSearchParams(fragment.replace(/^#/, ""));
   const state: Partial<MapState> = {};
   const faults: LinkPart[] = [];
@@ -122,8 +133,26 @@ export function readLink(fragment: string, limits: ZoomLimits): LinkReading {
     const known = BASE_MAPS.find(({ id }) => id === baseMap);
     if (known) {
       state.baseMap = known.id;
+    } else if (baseMap === NO_BASE_MAP) {
+      state.baseMap = null;
     } else {
       faults.push("basemap");
+    }
+  }
+
+  const image = given.get("imagery");
+  if (image !== null) {
+    const [name, date, ...rest] = image.split(",");
+    const layer = IMAGERY.find(({ id }) => id === name)?.id;
+    if (
+      layer !== undefined &&
+      date !== undefined &&
+      rest.length === 0 &&
+      imageryFault({ layer, date }, today) === null
+    ) {
+      state.imagery = { layer, date };
+    } else {
+      faults.push("imagery");
     }
   }
 
@@ -141,13 +170,14 @@ export function readLink(fragment: string, limits: ZoomLimits): LinkReading {
   return { state, faults };
 }
 
-const PARTS: readonly LinkPart[] = ["map", "rotation", "basemap", "area"];
+const PARTS: readonly LinkPart[] = ["map", "rotation", "basemap", "imagery", "area"];
 
 /** The names of the parts of a link, as a message writes them. */
 const PART_NAMES: Readonly<Record<LinkPart, string>> = {
   map: "a view",
   rotation: "a rotation",
   basemap: "a background map",
+  imagery: "an image of a date",
   area: "an area",
 };
 
@@ -180,12 +210,14 @@ export function mapState(map: OlMap): MapState | null {
   if (longitude === undefined || latitude === undefined) {
     return null;
   }
+  const baseMap: BaseMapId | null = baseMapStore.get();
   return {
     zoom,
     latitude,
     longitude,
     rotation: normalRotation((view.getRotation() * 180) / Math.PI),
-    baseMap: baseMapStore.get(),
+    baseMap,
+    imagery: baseMap === "imagery" ? imageryStore.get() : null,
     area: areaStore.get(),
   };
 }
@@ -211,7 +243,12 @@ export function openLink(map: OlMap, fragment: string): readonly LinkPart[] {
   } else if (state.rotation !== undefined) {
     view.setRotation((state.rotation * Math.PI) / 180);
   }
-  if (state.baseMap !== undefined) {
+  if (state.imagery) {
+    imageryStore.set(state.imagery);
+  }
+  // The store of the background map does not yet take the value for no background map; such a link leaves the
+  // background map as it is.
+  if (state.baseMap !== undefined && state.baseMap !== null) {
     baseMapStore.set(state.baseMap);
   }
   if (state.area !== undefined) {
