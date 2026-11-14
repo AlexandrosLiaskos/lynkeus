@@ -32,6 +32,11 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   JSON, OGC Process Description, Job list and Dismiss). Each job runs in an operating-system process of its own.
 - The layers of a session, which can be renamed and removed, and whose files the web server serves under
   `/files/`, in parts on a range request.
+- The dialog About of the Help tab: the purpose, the version, the team, the licence and the citation of
+  Lynkeus, the statement that it is independent of NASA, what is stored about a visitor, and the links to
+  the team log and the repository.
+- The dialog Sources of the Help tab, which joins the lists of sources of the three parts, and the list of
+  the Data part.
 
 ### Changed
 
