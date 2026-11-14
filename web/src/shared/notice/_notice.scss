@@ -1,0 +1,54 @@
+@use "uswds-core" as uswds;
+@use "../tokens/tokens";
+
+// A message inside a pane: an icon, the text and, when there is something to do, one button. The bar at its left
+// and its background take the colours of the alert of the design system.
+.notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: tokens.$space-1 tokens.$space-2;
+  margin: tokens.$space-2 0 0;
+  padding: tokens.$space-1 tokens.$space-2;
+  border-left: tokens.$space-1 solid uswds.color("info");
+  background: uswds.color("info-lighter");
+  color: tokens.$ink;
+  font-size: tokens.$text-small;
+  line-height: tokens.$line-small;
+}
+
+.notice--success {
+  border-left-color: uswds.color("success");
+  background: uswds.color("success-lighter");
+}
+
+.notice--warning {
+  border-left-color: uswds.color("warning");
+  background: uswds.color("warning-lighter");
+}
+
+.notice--error {
+  border-left-color: uswds.color("error");
+  background: uswds.color("error-lighter");
+}
+
+.notice > .usa-icon {
+  flex: none;
+  width: tokens.$icon;
+  height: tokens.$icon;
+}
+
+.notice-text {
+  flex: 1;
+  min-width: 8rem;
+  overflow-wrap: anywhere;
+}
+
+// The button of a notice is 24 pixels high, the smallest target of the pointer.
+.pane .notice .usa-button,
+.dialog .notice .usa-button {
+  flex: none;
+  min-height: tokens.$target;
+  padding: 0 tokens.$space-2;
+  font-size: tokens.$text-small;
+}

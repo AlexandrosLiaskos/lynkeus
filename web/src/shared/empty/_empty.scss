@@ -1,0 +1,29 @@
+@use "../tokens/tokens";
+
+// What a pane or a section shows while it has nothing to list: one bold line, one sentence and one button.
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: tokens.$space-1;
+  padding: tokens.$space-3 0;
+  font-size: tokens.$text;
+  line-height: tokens.$line;
+}
+
+.empty-state-title {
+  margin: 0;
+  color: tokens.$ink;
+  font-weight: bold;
+}
+
+.empty-state-text {
+  margin: 0;
+  color: tokens.$secondary;
+}
+
+// The button stands 8 pixels under the sentence. The selector is as strong as the one of the shared form style.
+.pane .empty-state .usa-button,
+.dialog .empty-state .usa-button {
+  margin-top: tokens.$space-1;
+}

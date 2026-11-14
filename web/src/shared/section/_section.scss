@@ -1,0 +1,105 @@
+@use "uswds-core" as uswds;
+@use "../tokens/tokens";
+
+// The header of a section, 28 pixels high: the arrow, the title in bold, the count and, at the right end, the
+// commands. A group of parameters of a tool pane takes the same look from these mixins.
+@mixin toggle {
+  display: flex;
+  align-items: center;
+  gap: tokens.$space-1;
+  min-width: 0;
+  min-height: tokens.$row;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: tokens.$ink;
+  font: inherit;
+  font-weight: bold;
+  line-height: 1.25rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+// The arrow points down while the section is open and to the right while it is closed.
+@mixin arrow {
+  flex: none;
+  width: tokens.$icon;
+  height: tokens.$icon;
+  color: tokens.$muted;
+
+  @include tokens.transition(transform);
+}
+
+@mixin arrow-closed {
+  transform: rotate(-90deg);
+}
+
+// A section of a pane. A line parts it from the section above it.
+.section {
+  border-top: 1px solid tokens.$border;
+}
+
+.section:first-child {
+  border-top: 0;
+}
+
+// Sections stand against each other. A section that follows other content stands 16 pixels under it.
+:not(.section, .tool-pane-group) + .section {
+  margin-top: tokens.$group-gap;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  min-height: tokens.$row;
+}
+
+// The heading takes the width of its text, so that the button of an explanation stands beside the title.
+.section-heading {
+  flex: 0 1 auto;
+  min-width: 0;
+  margin: 0;
+  font: inherit;
+}
+
+.section-toggle {
+  @include toggle;
+
+  max-width: 100%;
+}
+
+.section-toggle .usa-icon {
+  @include arrow;
+}
+
+.section-toggle:hover .usa-icon {
+  color: tokens.$ink;
+}
+
+.section-toggle[aria-expanded="false"] .usa-icon {
+  @include arrow-closed;
+}
+
+.section-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.section-count {
+  flex: none;
+  color: tokens.$muted;
+  font-weight: normal;
+}
+
+.section-actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  margin-left: auto;
+}
+
+.section-body {
+  padding-bottom: tokens.$space-3;
+}
