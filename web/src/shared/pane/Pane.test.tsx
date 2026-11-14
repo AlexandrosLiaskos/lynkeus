@@ -1,10 +1,16 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, expect, test } from "vitest";
-import { PANE_WIDTH, panesStore, resetPanes, setPaneOpen } from "../panes";
+import { beforeEach, expect, test, vi } from "vitest";
+import { Dock } from "../dock/Dock";
+import { dockStore, frontOf, resetDock } from "../dock/dock";
+import { DockPane } from "../dock/DockPane";
+import { panesStore, resetPanes, setPaneOpen } from "../panes";
 import { Pane } from "./Pane";
 
-beforeEach(resetPanes);
+beforeEach(() => {
+  resetDock();
+  resetPanes();
+});
 
 test("an open pane shows its title and its content", () => {
   render(
@@ -13,8 +19,8 @@ test("an open pane shows its title and its content", () => {
     </Pane>,
   );
   const pane = screen.getByRole("complementary", { name: "Contents" });
+  expect(screen.getByRole("heading", { name: "Contents" })).toBeDefined();
   expect(pane.textContent).toContain("Layers");
-  expect(pane.style.width).toBe(`${String(PANE_WIDTH.first)}px`);
 });
 
 test("a closed pane is not shown", () => {
@@ -38,18 +44,34 @@ test("the close button closes the pane", async () => {
   expect(screen.queryByRole("complementary")).toBeNull();
 });
 
-test("the arrow keys on the edge change the width, and the edge states it", async () => {
+test("a pane that closes with the keyboard focus inside it passes the focus to the map", async () => {
   render(
-    <Pane id="contents" title="Contents">
-      Layers
-    </Pane>,
+    <>
+      <main tabIndex={0} aria-label="Map" />
+      <Pane id="catalog" title="Catalog">
+        Items
+      </Pane>
+    </>,
   );
-  const edge = screen.getByRole("separator", { name: "Width of the Contents pane" });
-  expect(edge.getAttribute("aria-valuenow")).toBe(String(PANE_WIDTH.first));
-  edge.focus();
-  await userEvent.keyboard("{ArrowRight}{ArrowRight}");
-  expect(panesStore.get().contents.width).toBe(PANE_WIDTH.first + 2 * PANE_WIDTH.step);
-  expect(edge.getAttribute("aria-valuenow")).toBe(String(PANE_WIDTH.first + 2 * PANE_WIDTH.step));
-  await userEvent.keyboard("{Home}");
-  expect(panesStore.get().contents.width).toBe(PANE_WIDTH.smallest);
+  screen.getByRole("button", { name: "Close the Catalog pane" }).focus();
+  await userEvent.keyboard("{Enter}");
+  expect(screen.queryByRole("complementary")).toBeNull();
+  expect(document.activeElement).toBe(screen.getByRole("main"));
+});
+
+test("a pane that is opened again comes to the front of its side", () => {
+  render(
+    <Dock side="right">
+      <Pane id="catalog" title="Catalog">
+        Items
+      </Pane>
+      <DockPane id="get-layer" title="Get layer" onClose={vi.fn()}>
+        Form
+      </DockPane>
+    </Dock>,
+  );
+  expect(frontOf(dockStore.get(), "right")).toBe("get-layer");
+  act(() => setPaneOpen("catalog", true));
+  expect(frontOf(dockStore.get(), "right")).toBe("catalog");
+  expect(screen.getByRole("complementary", { name: "Catalog" })).toBeDefined();
 });

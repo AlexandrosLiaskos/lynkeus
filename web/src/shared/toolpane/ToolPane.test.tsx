@@ -1,0 +1,216 @@
+import { act, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { useState } from "react";
+import { beforeEach, expect, test, vi } from "vitest";
+import { Dock } from "../dock/Dock";
+import { closeToolPane, dockStore, openToolPane, resetDock } from "../dock/dock";
+import { Pane } from "../pane/Pane";
+import { resetPanes, setPaneOpen } from "../panes";
+import { ToolPane, ToolPaneGroup, type ToolPaneRun } from "./ToolPane";
+
+beforeEach(() => {
+  resetDock();
+  resetPanes();
+  setPaneOpen("catalog", true);
+});
+
+/**
+ * A tool as a part of the interface declares it: a ribbon button that opens the pane, the parameters, and the
+ * state of the run, which the tool sets.
+ */
+function Buffer({ onRun = vi.fn(), run = null }: { onRun?: () => void; run?: ToolPaneRun | null }) {
+  const [distance, setDistance] = useState("100");
+  return (
+    <>
+      <button type="button" onClick={() => openToolPane("buffer")}>
+        Buffer
+      </button>
+      <main tabIndex={0} aria-label="Map" />
+      <Dock side="right">
+        <Pane id="catalog" title="Catalog">
+          Items
+        </Pane>
+        <ToolPane id="buffer" title="Buffer" runLabel="Compute" onRun={onRun} ready={distance !== ""} run={run}>
+          <label className="usa-label" htmlFor="buffer-distance">
+            Distance in metres
+          </label>
+          <input
+            className="usa-input"
+            id="buffer-distance"
+            value={distance}
+            onChange={(event) => setDistance(event.target.value)}
+          />
+          <ToolPaneGroup title="Output">
+            <label className="usa-label" htmlFor="buffer-name">
+              Name of the result
+            </label>
+            <input className="usa-input" id="buffer-name" defaultValue="Buffer" />
+          </ToolPaneGroup>
+        </ToolPane>
+      </Dock>
+    </>
+  );
+}
+
+const opener = () => screen.getByRole("button", { name: "Buffer" });
+
+test("a tool pane is not drawn before its button opens it", () => {
+  render(<Buffer />);
+  expect(screen.queryByRole("complementary", { name: "Buffer" })).toBeNull();
+  expect(screen.getByRole("complementary", { name: "Catalog" })).toBeDefined();
+});
+
+test("the button opens the pane in front of the Catalog pane, with a tab for each", async () => {
+  render(<Buffer />);
+  await userEvent.click(opener());
+  const pane = screen.getByRole("complementary", { name: "Buffer" });
+  expect(within(pane).getByRole("textbox", { name: "Distance in metres" })).toBeDefined();
+  expect(within(pane).getByRole("button", { name: "Compute" })).toBeDefined();
+  expect(screen.getAllByRole("tab").map((tab) => tab.textContent)).toEqual(["Catalog", "Buffer"]);
+  expect(screen.queryByRole("complementary", { name: "Catalog" })).toBeNull();
+});
+
+test("the pane is not modal: it is no dialog, and the elements of the page beside it stay in use", async () => {
+  render(<Buffer />);
+  await userEvent.click(opener());
+  expect(screen.queryByRole("dialog")).toBeNull();
+  await userEvent.click(screen.getByRole("main"));
+  expect(document.activeElement).toBe(screen.getByRole("main"));
+  expect(screen.getByRole("complementary", { name: "Buffer" })).toBeDefined();
+});
+
+test("the keyboard focus moves to the title of the pane, also when the button is pressed again", async () => {
+  render(<Buffer />);
+  await userEvent.click(opener());
+  const title = screen.getByRole("heading", { name: "Buffer" });
+  expect(document.activeElement).toBe(title);
+  await userEvent.click(screen.getByRole("tab", { name: "Catalog" }));
+  await userEvent.click(opener());
+  expect(screen.getByRole("tab", { name: "Buffer" }).getAttribute("aria-selected")).toBe("true");
+  expect(document.activeElement).toBe(title);
+});
+
+test("the run button and the Enter key in a field run the tool", async () => {
+  const onRun = vi.fn();
+  render(<Buffer onRun={onRun} />);
+  await userEvent.click(opener());
+  await userEvent.click(screen.getByRole("button", { name: "Compute" }));
+  await userEvent.type(screen.getByRole("textbox", { name: "Distance in metres" }), "{Enter}");
+  expect(onRun).toHaveBeenCalledTimes(2);
+});
+
+test("the run button is inactive while the tool lacks what it needs", async () => {
+  const onRun = vi.fn();
+  render(<Buffer onRun={onRun} />);
+  await userEvent.click(opener());
+  await userEvent.clear(screen.getByRole("textbox", { name: "Distance in metres" }));
+  const run = screen.getByRole("button", { name: "Compute" });
+  expect(run.getAttribute("aria-disabled")).toBe("true");
+  await userEvent.click(run);
+  expect(onRun).not.toHaveBeenCalled();
+});
+
+test("a run shows its progress and its Cancel button, and the tool cannot be run again meanwhile", async () => {
+  const onRun = vi.fn();
+  const onCancel = vi.fn();
+  render(
+    <ToolPane id="buffer" title="Buffer" onRun={onRun} onCancel={onCancel} run={{ state: "running", progress: 0.4 }}>
+      Parameters
+    </ToolPane>,
+  );
+  act(() => openToolPane("buffer"));
+  const bar = screen.getByRole<HTMLProgressElement>("progressbar", { name: "Progress of Buffer" });
+  expect(bar.value).toBe(0.4);
+  expect(screen.getByRole("status").textContent).toBe("Running (40 %)");
+  await userEvent.click(screen.getByRole("button", { name: "Run" }));
+  expect(onRun).not.toHaveBeenCalled();
+  await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
+  expect(onCancel).toHaveBeenCalledTimes(1);
+});
+
+test("a run without a known share shows its own text and no Cancel button when it cannot be stopped", () => {
+  render(
+    <ToolPane id="buffer" title="Buffer" onRun={vi.fn()} run={{ state: "running", text: "Searching" }}>
+      Parameters
+    </ToolPane>,
+  );
+  act(() => openToolPane("buffer"));
+  expect(screen.getByRole("progressbar").hasAttribute("value")).toBe(false);
+  expect(screen.getByRole("status").textContent).toBe("Searching");
+  expect(screen.queryByRole("button", { name: "Cancel" })).toBeNull();
+});
+
+test("the outcome of a run is stated at the foot, and a failure is announced as an alert", () => {
+  const { rerender } = render(<Buffer run={{ state: "success", text: "The buffer was added to the map." }} />);
+  act(() => openToolPane("buffer"));
+  expect(screen.getByRole("status").textContent).toBe("The buffer was added to the map.");
+  expect(screen.queryByRole("button", { name: "View details" })).toBeNull();
+  rerender(<Buffer run={{ state: "error", text: "The server did not answer." }} />);
+  expect(screen.getByRole("alert").textContent).toBe("The server did not answer.");
+  rerender(<Buffer run={{ state: "warning", text: "The buffer crosses the edge of the layer." }} />);
+  expect(screen.getByRole("status").textContent).toBe("The buffer crosses the edge of the layer.");
+});
+
+test("the link View details opens the details of the outcome in a dialog", async () => {
+  render(<Buffer run={{ state: "success", text: "Finished.", details: <p>It took 3 seconds.</p> }} />);
+  act(() => openToolPane("buffer"));
+  expect(screen.getByRole<HTMLDialogElement>("dialog", { hidden: true }).open).toBe(false);
+  await userEvent.click(screen.getByRole("button", { name: "View details" }));
+  const dialog = screen.getByRole<HTMLDialogElement>("dialog", { name: "Buffer: details" });
+  expect(dialog.open).toBe(true);
+  expect(dialog.textContent).toContain("It took 3 seconds.");
+});
+
+test("a group of parameters starts closed and opens with a click on its name", async () => {
+  render(<Buffer />);
+  act(() => openToolPane("buffer"));
+  const group = screen.getByRole("group");
+  expect(group.hasAttribute("open")).toBe(false);
+  await userEvent.click(screen.getByText("Output"));
+  expect(group.hasAttribute("open")).toBe(true);
+});
+
+test("the close button closes the pane, reports it and returns the keyboard focus to the button that opened it", async () => {
+  const onClose = vi.fn();
+  render(
+    <>
+      <button type="button" onClick={() => openToolPane("buffer")}>
+        Buffer
+      </button>
+      <ToolPane id="buffer" title="Buffer" onRun={vi.fn()} onClose={onClose}>
+        Parameters
+      </ToolPane>
+    </>,
+  );
+  await userEvent.click(opener());
+  await userEvent.click(screen.getByRole("button", { name: "Close the Buffer pane" }));
+  expect(screen.queryByRole("complementary")).toBeNull();
+  expect(onClose).toHaveBeenCalledTimes(1);
+  expect(dockStore.get().tools).toEqual([]);
+  expect(document.activeElement).toBe(opener());
+});
+
+test("Shift with Escape closes the pane, and the Escape key alone moves the focus to the map", async () => {
+  render(<Buffer />);
+  await userEvent.click(opener());
+  screen.getByRole("textbox", { name: "Distance in metres" }).focus();
+  await userEvent.keyboard("{Escape}");
+  expect(document.activeElement).toBe(screen.getByRole("main"));
+  expect(screen.getByRole("complementary", { name: "Buffer" })).toBeDefined();
+  screen.getByRole("textbox", { name: "Distance in metres" }).focus();
+  await userEvent.keyboard("{Shift>}{Escape}{/Shift}");
+  expect(screen.queryByRole("complementary", { name: "Buffer" })).toBeNull();
+  expect(screen.getByRole("complementary", { name: "Catalog" })).toBeDefined();
+});
+
+test("a tool closes its own pane, and the pane starts again when it is opened the next time", async () => {
+  render(<Buffer />);
+  await userEvent.click(opener());
+  await userEvent.type(screen.getByRole("textbox", { name: "Name of the result", hidden: true }), " of roads");
+  act(() => closeToolPane("buffer"));
+  expect(screen.queryByRole("complementary", { name: "Buffer" })).toBeNull();
+  await userEvent.click(opener());
+  expect(screen.getByRole<HTMLInputElement>("textbox", { name: "Name of the result", hidden: true }).value).toBe(
+    "Buffer",
+  );
+});
