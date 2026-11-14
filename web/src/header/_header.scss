@@ -3,11 +3,9 @@
 .header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   height: 2rem;
   padding: 0 0.75rem;
   background: uswds.color("base-lightest");
-  font-size: 0.8125rem;
 }
 
 .header-name {

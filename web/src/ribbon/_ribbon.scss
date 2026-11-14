@@ -63,7 +63,8 @@
 }
 
 // A tool is a button with its icon above its label. The label takes one line
-// for each word, so that the tools stay narrow.
+// for each word, so that the tools stay narrow. Every tool has room for a label
+// of two lines, so that the ribbon keeps its height from one tab to the next.
 .ribbon-tool {
   display: flex;
   flex-direction: column;
@@ -71,6 +72,7 @@
   gap: 0.125rem;
   width: min-content;
   min-width: 3.25rem;
+  min-height: calc(2rem + 2 * 1.2em + 0.625rem + 2px);
   padding: 0.25rem 0.375rem;
   border: 1px solid transparent;
   border-radius: 0.125rem;
@@ -82,7 +84,12 @@
   cursor: pointer;
 }
 
-.ribbon-tool:enabled:hover {
+// A label of more than two words gets a wider button, so that it also takes two lines.
+.ribbon-tool--wide {
+  min-width: 5rem;
+}
+
+.ribbon-tool:not([aria-disabled="true"]):hover {
   background: uswds.color("base-lighter");
 }
 
@@ -91,7 +98,7 @@
   background: uswds.color("primary-lighter");
 }
 
-.ribbon-tool:disabled {
+.ribbon-tool[aria-disabled="true"] {
   color: uswds.color("base-light");
   cursor: default;
 }

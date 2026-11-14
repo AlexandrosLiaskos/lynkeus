@@ -1,20 +1,24 @@
-import sprite from "@uswds/uswds/img/sprite.svg";
 import { useState, type KeyboardEvent } from "react";
-import { RIBBON, type TabId, type ToolId } from "./ribbon";
+import { Icon } from "../shared/icon/Icon";
+import { Tooltip } from "../shared/tooltip/Tooltip";
+import type { RibbonTab, ToolActions } from "./types";
 
-/** What each finished tool does. A tool without an entry is shown in grey. */
-export type ToolActions = Partial<Record<ToolId, { run: () => void; pressed?: boolean }>>;
+interface RibbonProps {
+  tabs: readonly RibbonTab[];
+  /** What each finished button does. A button without an entry is shown in grey. */
+  actions: ToolActions;
+}
 
-/** The ribbon: a row of tabs and, under it, the groups of tools of the selected tab. */
-export function Ribbon({ actions }: { actions: ToolActions }) {
-  const [selected, setSelected] = useState<TabId>("map");
-  const groups = RIBBON.find(({ id }) => id === selected)?.groups ?? [];
+/** The ribbon: a row of tabs and, under it, the groups of buttons of the selected tab. */
+export function Ribbon({ tabs, actions }: RibbonProps) {
+  const [selected, setSelected] = useState(tabs[0]?.id);
+  const groups = tabs.find(({ id }) => id === selected)?.groups ?? [];
 
   // The left and right arrow keys move between the tabs.
   const onKeyDown = (event: KeyboardEvent) => {
     const step = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
-    const current = RIBBON.findIndex(({ id }) => id === selected);
-    const next = RIBBON[(current + step + RIBBON.length) % RIBBON.length];
+    const current = tabs.findIndex(({ id }) => id === selected);
+    const next = tabs[(current + step + tabs.length) % tabs.length];
     if (step !== 0 && next) {
       setSelected(next.id);
       document.getElementById(`ribbon-tab-${next.id}`)?.focus();
@@ -24,7 +28,7 @@ export function Ribbon({ actions }: { actions: ToolActions }) {
   return (
     <div className="ribbon">
       <div className="ribbon-tabs" role="tablist" aria-label="Ribbon" onKeyDown={onKeyDown}>
-        {RIBBON.map(({ id, label }) => (
+        {tabs.map(({ id, label }) => (
           <button
             key={id}
             type="button"
@@ -39,27 +43,35 @@ export function Ribbon({ actions }: { actions: ToolActions }) {
           </button>
         ))}
       </div>
-      <div className="ribbon-panel" role="tabpanel" id="ribbon-panel" aria-labelledby={`ribbon-tab-${selected}`}>
+      <div
+        className="ribbon-panel"
+        role="tabpanel"
+        id="ribbon-panel"
+        aria-labelledby={selected ? `ribbon-tab-${selected}` : undefined}
+      >
         {groups.map(({ label, tools }) => (
           <div key={label} className="ribbon-group" role="group" aria-label={label}>
             <div className="ribbon-tools">
-              {tools.map(({ id, label, icon }) => {
+              {tools.map(({ id, label, icon, description }) => {
                 const action = actions[id];
                 return (
-                  <button
-                    key={id}
-                    type="button"
-                    className="ribbon-tool"
-                    disabled={!action}
-                    aria-pressed={action?.pressed}
-                    title={action ? undefined : "Not yet available"}
-                    onClick={action?.run}
-                  >
-                    <svg className="usa-icon usa-icon--size-4" aria-hidden="true" focusable="false">
-                      <use href={`${sprite}#${icon}`} />
-                    </svg>
-                    {label}
-                  </button>
+                  <Tooltip key={id} title={label} text={description} note={action ? undefined : "Not yet available."}>
+                    {(describedBy) => (
+                      // A button that is not finished stays in the order of the keyboard, so that its description
+                      // can be read. It is marked as inactive and does nothing.
+                      <button
+                        type="button"
+                        className={label.split(" ").length > 2 ? "ribbon-tool ribbon-tool--wide" : "ribbon-tool"}
+                        aria-disabled={action ? undefined : true}
+                        aria-pressed={action?.pressed}
+                        aria-describedby={describedBy}
+                        onClick={action?.run}
+                      >
+                        <Icon name={icon} size={4} />
+                        {label}
+                      </button>
+                    )}
+                  </Tooltip>
                 );
               })}
             </div>

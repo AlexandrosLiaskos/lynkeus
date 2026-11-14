@@ -2,25 +2,61 @@
 // own file, in the folder of the element.
 
 // The parts of the U.S. Web Design System that the page uses, with the fonts
-// of the system.
+// of the system. The images of the design system are taken from its package.
 @use "uswds-core" with (
   $theme-show-notifications: false,
   $theme-focus-offset: "neg-05",
   $theme-font-type-mono: false,
   $theme-font-type-sans: "system",
   $theme-font-type-serif: false,
-  $theme-global-link-styles: true
+  $theme-font-role-heading: "sans",
+  $theme-global-link-styles: true,
+  $theme-image-path: "@uswds/uswds/img"
 );
 @forward "uswds-global";
 @forward "usa-icon";
+@forward "usa-button";
+@forward "usa-button-group";
+@forward "usa-modal";
+@forward "usa-alert";
+@forward "usa-table";
 
+// The form elements that the dialogs use.
+@forward "usa-form";
+@forward "usa-form-group";
+@forward "usa-fieldset";
+@forward "usa-legend";
+@forward "usa-label";
+@forward "usa-hint";
+@forward "usa-error-message";
+@forward "usa-input";
+@forward "usa-textarea";
+@forward "usa-select";
+@forward "usa-checkbox";
+@forward "usa-radio";
+@forward "usa-range";
+
+// The frame of the page and the elements that every part shares.
 @use "header/header";
 @use "ribbon/ribbon";
-@use "map/map";
-@use "footer/footer";
+@use "shared/dialog/dialog";
+@use "shared/messages/messages";
+@use "shared/pane/pane";
+@use "shared/tooltip/tooltip";
 
-// The elements stand one under the other, and the map takes the height that
-// the others leave.
+// The elements of each part.
+@use "map/map";
+@use "contents/contents";
+@use "statusbar/statusbar";
+@use "view/view";
+@use "share/share";
+@use "data/data";
+@use "catalog/catalog";
+@use "analysis/analysis";
+@use "help/help";
+
+// The elements stand one under the other. The map and the panes beside it
+// take the height that the others leave.
 html,
 body,
 #root {
@@ -30,6 +66,19 @@ body,
 #root {
   display: flex;
   flex-direction: column;
+}
+
+.workspace {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.workspace-map {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-width: 0;
 }
 
 // The design system outlines the focused element, inside its edge. The outline

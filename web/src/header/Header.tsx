@@ -1,4 +1,4 @@
-/** The title bar: the name of the application and the link to the team log. */
+/** The title bar: the name of the application. */
 export function Header() {
   return (
     <header className="header">
@@ -6,9 +6,6 @@ export function Header() {
         <img src="/assets/lynkeus-mark.png" alt="" width="20" height="20" />
         Lynkeus
       </h1>
-      <nav aria-label="Site">
-        <a href="/team-log/">Team log</a>
-      </nav>
     </header>
   );
 }
