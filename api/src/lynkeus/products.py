@@ -96,28 +96,36 @@ COLLECTIONS: Mapping[ProductType, tuple[Collection, ...]] = {
     "GCOV": (
         Collection("NISAR_L2_GCOV_V1", "C3622241360-ASF", "Validated"),
         Collection("NISAR_L2_GCOV_PROVISIONAL_V1", "C2854338529-ASF", "Provisional"),
-        Collection("NISAR_L2_GCOV_BETA_V1", "C3622214170-ASF", "Beta"),
     ),
     "GUNW": (
         Collection("NISAR_L2_GUNW_V1", "C3622247503-ASF", "Validated"),
         Collection("NISAR_L2_GUNW_PROVISIONAL_V1", "C2854335566-ASF", "Provisional"),
-        Collection("NISAR_L2_GUNW_BETA_V1", "C2850261892-ASF", "Beta"),
     ),
     "GOFF": (
         Collection("NISAR_L2_GOFF_V1", "C3622250865-ASF", "Validated"),
         Collection("NISAR_L2_GOFF_PROVISIONAL_V1", "C2854341702-ASF", "Provisional"),
-        Collection("NISAR_L2_GOFF_BETA_V1", "C2850263910-ASF", "Beta"),
     ),
-    "SME2": (
-        Collection("NISAR_L3_SME2_PROVISIONAL_V1", "C2854344945-ASF", "Provisional"),
-        Collection("NISAR_L3_SME2_BETA_V1", "C2850265000-ASF", "Beta"),
-    ),
+    "SME2": (Collection("NISAR_L3_SME2_PROVISIONAL_V1", "C2854344945-ASF", "Provisional"),),
 }
-"""The collections of each product type, by NASA's level of validation. No validated soil moisture exists yet."""
+"""The validated and the provisional collection of each product type. No validated soil moisture exists yet.
 
+Lynkeus receives the layers of the products of these collections.
+"""
+
+BETA_COLLECTIONS: Mapping[ProductType, Collection] = {
+    "GCOV": Collection("NISAR_L2_GCOV_BETA_V1", "C3622214170-ASF", "Beta"),
+    "GUNW": Collection("NISAR_L2_GUNW_BETA_V1", "C2850261892-ASF", "Beta"),
+    "GOFF": Collection("NISAR_L2_GOFF_BETA_V1", "C2850263910-ASF", "Beta"),
+    "SME2": Collection("NISAR_L3_SME2_BETA_V1", "C2850265000-ASF", "Beta"),
+}
+"""The beta collection of each product type. Its products are searched, and no layer of them is received."""
+
+_SEARCHED: Mapping[ProductType, tuple[Collection, ...]] = {
+    product: (*collections, BETA_COLLECTIONS[product]) for product, collections in COLLECTIONS.items()
+}
 _BY_CONCEPT_ID = {
     collection.concept_id: (product, collection)
-    for product, collections in COLLECTIONS.items()
+    for product, collections in _SEARCHED.items()
     for collection in collections
 }
 
@@ -322,6 +330,25 @@ class ProductSearch(Format):
         return values
 
 
+class ProductLayer(Format):
+    """A layer of a product that Lynkeus receives.
+
+    Attributes
+    ----------
+    name : str
+        Name of the layer, as a layer request takes it.
+    title : str
+        Name of the layer for the visitor.
+    spacing : float
+        Smallest cell size that the product specification gives for the
+        layer, in metres.
+    """
+
+    name: Text
+    title: Text
+    spacing: float = Field(gt=0)
+
+
 class Product(Format):
     """A product file found by a search.
 
@@ -372,6 +399,10 @@ class Product(Format):
     footprint : tuple
         Outline of the product on the ground: one ring of longitude and
         latitude pairs, in degrees, for each of its polygons.
+    layers : tuple of ProductLayer
+        The layers of the product that Lynkeus receives, as
+        ``lynkeus.harmony.layers_of`` lists them. It is empty when none can
+        be received.
     """
 
     id: Text
@@ -397,6 +428,7 @@ class Product(Format):
     version: str | None
     size: int | None
     footprint: tuple[Ring, ...]
+    layers: tuple[ProductLayer, ...] = ()
 
 
 class ProductsFound(Format):
@@ -515,6 +547,27 @@ def _attributes(umm: Mapping[str, Any]) -> dict[str, Any]:
     return {attribute["Name"]: attribute["Values"] for attribute in umm["AdditionalAttributes"]}
 
 
+def _layers(
+    product: ProductType, maturity: Maturity, bands: Sequence[str], channels: Sequence[str]
+) -> tuple[ProductLayer, ...]:
+    """List the layers of a product that Lynkeus receives.
+
+    A product of a beta collection has none, because Lynkeus receives layers
+    from the validated and the provisional collections alone. The layers of a
+    GCOV, GUNW or GOFF product are those of its main frequency band (A), so a
+    product whose record states only the side band has none.
+    """
+    # The module of the layers reads this module, so it is imported here and not at the top.
+    from lynkeus.harmony import layers_of
+
+    if maturity == "Beta" or (product != "SME2" and bands and "A" not in bands):
+        return ()
+    return tuple(
+        ProductLayer(name=layer.name, title=layer.title, spacing=layer.spacing)
+        for layer in layers_of(product, channels)
+    )
+
+
 def product_from_record(record: Mapping[str, Any]) -> Product:
     """Read a product from its record in the catalogue.
 
@@ -550,6 +603,8 @@ def product_from_record(record: Mapping[str, Any]) -> Product:
         orbits = [domain["OrbitNumber"] for domain in umm.get("OrbitCalculatedSpatialDomains", [])]
         cycle = _NAME_START.match(name)
         full = _flag(attributes, "FULL_FRAME")
+        bands = tuple(attributes.get("FREQUENCIES", ()))
+        channels = tuple(attributes.get("FREQUENCY_A_POLARIZATION", ()))
         return Product(
             id=meta["concept-id"],
             name=name,
@@ -564,8 +619,8 @@ def product_from_record(record: Mapping[str, Any]) -> Product:
             direction=attributes["ASCENDING_DESCENDING"][0].lower(),
             cycle=int(cycle.group(1)) if cycle else None,
             orbit=orbits[0] if orbits else None,
-            bands=tuple(attributes.get("FREQUENCIES", ())),
-            channels=tuple(attributes.get("FREQUENCY_A_POLARIZATION", ())),
+            bands=bands,
+            channels=channels,
             side_channels=tuple(attributes.get("FREQUENCY_B_POLARIZATION", ())),
             bandwidth=_whole(attributes, "FREQUENCY_A_RANGE_BANDWIDTH"),
             side_bandwidth=_whole(attributes, "FREQUENCY_B_RANGE_BANDWIDTH"),
@@ -577,6 +632,7 @@ def product_from_record(record: Mapping[str, Any]) -> Product:
                 tuple((point["Longitude"], point["Latitude"]) for point in polygon["Boundary"]["Points"])
                 for polygon in polygons
             ),
+            layers=_layers(product, collection.maturity, bands, channels),
         )
     except (KeyError, IndexError, TypeError, ValueError, ValidationError) as error:
         raise CatalogueError(f"a record of the catalogue could not be read: {error!r}") from error
@@ -713,7 +769,7 @@ def _attribute_conditions(search: ProductSearch) -> list[str]:
 
 def collections_of(search: ProductSearch) -> list[str]:
     """Return the identifiers of the collections that a search reads."""
-    types = COLLECTIONS if search.product is None else {search.product: COLLECTIONS[search.product]}
+    types = _SEARCHED if search.product is None else {search.product: _SEARCHED[search.product]}
     return [
         collection.concept_id
         for collections in types.values()

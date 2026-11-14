@@ -56,6 +56,33 @@
      43.98766
     ]
    ]
+  ],
+  "layers": [
+   {
+    "name": "HHHH",
+    "title": "Backscatter HH",
+    "spacing": 10.0
+   },
+   {
+    "name": "HVHV",
+    "title": "Backscatter HV",
+    "spacing": 10.0
+   },
+   {
+    "name": "rtcGammaToSigmaFactor",
+    "title": "Factor from gamma nought to sigma nought",
+    "spacing": 10.0
+   },
+   {
+    "name": "numberOfLooks",
+    "title": "Number of looks",
+    "spacing": 10.0
+   },
+   {
+    "name": "mask",
+    "title": "Mask of valid samples",
+    "spacing": 10.0
+   }
   ]
  },
  "attributes": [

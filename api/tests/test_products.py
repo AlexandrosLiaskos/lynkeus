@@ -15,7 +15,9 @@ import pytest
 from pydantic import ValidationError
 
 from lynkeus import products
+from lynkeus.harmony import layers_of
 from lynkeus.products import (
+    BETA_COLLECTIONS,
     COLLECTIONS,
     MOST_POINTS,
     MOST_PRODUCTS,
@@ -87,6 +89,44 @@ def test_interferogram_product_has_the_two_dates_of_its_pair() -> None:
     assert (product.bands, product.channels, product.side_channels) == (("A",), ("HH",), ())
     assert (product.bandwidth, product.side_bandwidth) == (40, None)
     assert product.size == 2415919104
+
+
+def test_product_carries_the_layers_that_lynkeus_receives() -> None:
+    product = product_from_record(record("granule-gcov"))
+    assert [layer.name for layer in product.layers] == [
+        "HHHH",
+        "HVHV",
+        "rtcGammaToSigmaFactor",
+        "numberOfLooks",
+        "mask",
+    ]
+    assert (product.layers[0].title, product.layers[0].spacing) == ("Backscatter HH", 10)
+    for name in ("granule-gcov", "granule-gunw", "granule-goff", "granule-sme2"):
+        product = product_from_record(record(name))
+        offered = layers_of(product.product, product.channels)
+        assert len(offered) > 0
+        assert [layer.model_dump() for layer in product.layers] == [layer.model_dump() for layer in offered]
+
+
+def test_product_of_the_side_band_alone_has_no_layers() -> None:
+    # The layers are those of the main band (A). Records that state only band B exist in the GCOV collections.
+    side = record("granule-gcov")
+    side["umm"]["AdditionalAttributes"] = [
+        {"Name": "FREQUENCIES", "Values": ["B"]} if attribute["Name"] == "FREQUENCIES" else attribute
+        for attribute in side["umm"]["AdditionalAttributes"]
+        if not attribute["Name"].startswith("FREQUENCY_A_")
+    ]
+    product = product_from_record(side)
+    assert (product.bands, product.channels, product.side_channels) == (("B",), (), ("HH", "HV"))
+    assert product.layers == ()
+
+
+def test_product_of_a_beta_collection_has_no_layers() -> None:
+    beta = record("granule-gcov")
+    beta["meta"]["collection-concept-id"] = BETA_COLLECTIONS["GCOV"].concept_id
+    product = product_from_record(beta)
+    assert (product.maturity, product.channels) == ("Beta", ("HH", "HV"))
+    assert product.layers == ()
 
 
 def test_soil_moisture_product_is_provisional_and_states_no_bandwidth() -> None:
@@ -175,10 +215,13 @@ def test_soil_moisture_product_has_no_browse_image() -> None:
 
 
 def test_every_product_type_has_its_collections() -> None:
-    assert set(COLLECTIONS) == {"GCOV", "GUNW", "GOFF", "SME2"}
+    assert set(COLLECTIONS) == set(BETA_COLLECTIONS) == {"GCOV", "GUNW", "GOFF", "SME2"}
     identifiers = [collection.concept_id for collections in COLLECTIONS.values() for collection in collections]
+    identifiers += [collection.concept_id for collection in BETA_COLLECTIONS.values()]
     assert len(set(identifiers)) == len(identifiers) == 11
-    assert [collection.maturity for collection in COLLECTIONS["SME2"]] == ["Provisional", "Beta"]
+    assert [collection.maturity for collection in COLLECTIONS["GCOV"]] == ["Validated", "Provisional"]
+    assert [collection.maturity for collection in COLLECTIONS["SME2"]] == ["Provisional"]
+    assert {collection.maturity for collection in BETA_COLLECTIONS.values()} == {"Beta"}
 
 
 def test_search_reads_the_collections_of_the_chosen_levels_of_validation() -> None:

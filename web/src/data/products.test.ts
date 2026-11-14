@@ -27,6 +27,8 @@ afterEach(() => {
 
 test("the product that the server sends for a real record is accepted", () => {
   expect(isProduct(product)).toBe(true);
+  expect(product.layers[0]).toEqual({ name: "HHHH", title: "Backscatter HH", spacing: 10 });
+  expect(product.layers).toHaveLength(5);
   expect(isProductsFound({ found: 1, products: [product] })).toBe(true);
 });
 
@@ -45,12 +47,15 @@ test.each([
   ["the joint observation is text", { joint: "TRUE" }],
   ["the size is negative", { size: -1 }],
   ["a point of the outline has one number", { footprint: [[[1]]] }],
+  ["the layers are missing", { layers: undefined }],
+  ["a layer has no title", { layers: [{ name: "HHHH", spacing: 10 }] }],
+  ["the cell size of a layer is zero", { layers: [{ name: "HHHH", title: "Backscatter HH", spacing: 0 }] }],
 ])("a product is rejected when %s", (_reason, change) => {
   expect(isProduct({ ...product, ...change })).toBe(false);
 });
 
 test("a product of a beta collection, and one whose record leaves fields out, are accepted", () => {
-  expect(isProduct({ ...product, maturity: "Beta" })).toBe(true);
+  expect(isProduct({ ...product, maturity: "Beta", layers: [] })).toBe(true);
   const bare = { cycle: null, orbit: null, bandwidth: null, side_bandwidth: null, coverage: null, joint: null };
   expect(isProduct({ ...product, ...bare, version: null, size: null, channels: [], bands: [] })).toBe(true);
 });

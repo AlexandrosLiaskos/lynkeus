@@ -50,6 +50,16 @@ export type Sort = keyof typeof SORTS;
 /** A ring of longitude and latitude pairs, in degrees. The last point repeats the first. */
 export type Ring = readonly (readonly [number, number])[];
 
+/** A layer of a product that Lynkeus receives, as the server lists it. */
+export interface ProductLayer {
+  /** Name of the layer, as a layer request takes it. */
+  name: string;
+  /** Name of the layer for the visitor. */
+  title: string;
+  /** Smallest cell size that the product specification gives for the layer, in metres. */
+  spacing: number;
+}
+
 /** A product file found by a search, as the server describes it. */
 export interface Product {
   /** Identifier of the product file in NASA's catalogue. */
@@ -92,6 +102,8 @@ export interface Product {
   size: number | null;
   /** Outline on the ground: one ring for each polygon. */
   footprint: readonly Ring[];
+  /** The layers of the product that Lynkeus receives. The list is empty when none can be received. */
+  layers: readonly ProductLayer[];
 }
 
 /** The answer of a search: the number of products that match, and the products returned, in the order asked. */
@@ -161,12 +173,22 @@ function isPoint(value: unknown): boolean {
   return Array.isArray(value) && value.length === 2 && value.every((number) => typeof number === "number");
 }
 
+function isProductLayer(value: unknown): value is ProductLayer {
+  return (
+    isRecord(value) &&
+    isText(value.name) &&
+    isText(value.title) &&
+    typeof value.spacing === "number" &&
+    value.spacing > 0
+  );
+}
+
 /** Tell whether a value that the server sent is a product. */
 export function isProduct(value: unknown): value is Product {
   if (!isRecord(value)) {
     return false;
   }
-  const { dates, size, footprint, coverage, joint, version } = value;
+  const { dates, size, footprint, coverage, joint, version, layers } = value;
   return (
     [value.id, value.name, value.collection].every(isText) &&
     PRODUCT_TYPES.some((type) => type === value.product) &&
@@ -185,7 +207,9 @@ export function isProduct(value: unknown): value is Product {
     (version === null || typeof version === "string") &&
     (size === null || (typeof size === "number" && size >= 0)) &&
     Array.isArray(footprint) &&
-    footprint.every((ring) => Array.isArray(ring) && ring.every(isPoint))
+    footprint.every((ring) => Array.isArray(ring) && ring.every(isPoint)) &&
+    Array.isArray(layers) &&
+    layers.every(isProductLayer)
   );
 }
 
