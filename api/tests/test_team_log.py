@@ -52,6 +52,8 @@ def test_page_states_title_time_and_download() -> None:
     assert "<title>Team Lynkeus: Team Log | Lynkeus</title>" in page
     assert '<time datetime="2026-11-14T11:42+02:00">14 November 2026, 11:42 EET (UTC+2)</time>' in page
     assert f'<a href="{team_log.DOWNLOAD_NAME}" download>' in page
+    assert page.count("</footer>") == 1
+    assert "not sponsored or endorsed by the National Aeronautics" in page
 
 
 def test_log_without_heading_is_rejected() -> None:

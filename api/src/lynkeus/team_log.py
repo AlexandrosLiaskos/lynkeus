@@ -56,12 +56,14 @@ _PAGE = """<!doctype html>
 <dt>Source file</dt><dd><a href="{download}" download>{download}</a></dd>
 <dt>Recorded page visits</dt><dd id="visit-count" data-endpoint="/api/visit">not available</dd>
 </dl>
+<div class="notices">
 <p>Lynkeus is an independent project of Team Lynkeus, prepared for the
 <a href="https://www.spaceappschallenge.org/">2026 NASA Space Apps Challenge</a>, an international hackathon
 organised by <a href="https://www.nasa.gov/">NASA</a>. It is not sponsored or endorsed by the National Aeronautics
 and Space Administration (NASA).</p>
 <p>This page uses no cookies. It keeps one marker in the browser, so that a visit is counted once, and the server
 stores only the total number of visits.</p>
+</div>
 </footer>
 </body>
 </html>
