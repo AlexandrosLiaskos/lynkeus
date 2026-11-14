@@ -8,13 +8,32 @@ import { projectionOf } from "./projections";
 const MOST_DECODERS = 4;
 
 let pool: Pool | undefined;
+let inPage = false;
+let tellStopped: () => void = () => undefined;
 
-/** Return the programs that decompress tiles beside the page. They start with the first layer. */
-function decoders(): Pool {
-  pool ??= new Pool(
-    Math.min(MOST_DECODERS, navigator.hardwareConcurrency || 1),
-    () => new Worker(new URL("./decodeWorker.ts", import.meta.url), { type: "module" }),
-  );
+/** Settles when one of the programs beside the page could not start. */
+const stopped = new Promise<"stopped">((resolve) => {
+  tellStopped = () => {
+    resolve("stopped");
+  };
+});
+
+/**
+ * Return the programs that decompress tiles beside the page, or undefined when one of them could not start. They
+ * start with the first layer. After a failure the page decompresses the tiles itself.
+ */
+function decoders(): Pool | undefined {
+  if (inPage) {
+    return undefined;
+  }
+  pool ??= new Pool(Math.min(MOST_DECODERS, navigator.hardwareConcurrency || 1), () => {
+    const worker = new Worker(new URL("./decodeWorker.ts", import.meta.url), { type: "module" });
+    worker.addEventListener("error", () => {
+      inPage = true;
+      tellStopped();
+    });
+    return worker;
+  });
   return pool;
 }
 
@@ -86,13 +105,18 @@ export class CogSource extends DataTile {
         throw new Error(`The file has no image ${String(z)}.`);
       }
       const [columns, rows] = level.tile;
-      const rasters = await level.image.readRasters({
-        window: [x * columns, y * rows, (x + 1) * columns, (y + 1) * rows],
-        samples: [0],
-        interleave: false,
-        pool: workers ? decoders() : undefined,
-        signal,
-      });
+      const read = (beside: Pool | undefined) =>
+        level.image.readRasters({
+          window: [x * columns, y * rows, (x + 1) * columns, (y + 1) * rows],
+          samples: [0],
+          interleave: false,
+          pool: beside,
+          signal,
+        });
+      const beside = workers ? decoders() : undefined;
+      // A program beside the page that could not start never answers, so the tile is then read again in the page.
+      const answer = beside ? await Promise.race([read(beside), stopped]) : await read(undefined);
+      const rasters = answer === "stopped" ? await read(undefined) : answer;
       const inside = [level.size[0] - x * columns, level.size[1] - y * rows] as const;
       return composeTile(rasters[0] as ArrayLike<number>, level.tile, inside, cog.noData, decibels);
     });

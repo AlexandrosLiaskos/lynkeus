@@ -1,5 +1,5 @@
 import TileState from "ol/TileState";
-import { expect, test } from "vitest";
+import { expect, test, vi } from "vitest";
 import { CogError, type Cog } from "./cog";
 import { CogSource } from "./CogSource";
 import { openTestFile } from "./testdata/files";
@@ -117,4 +117,39 @@ test("a file in a projection that Lynkeus does not hold is refused in one senten
   await settled(source);
   expect(source.getError()).toBeInstanceOf(CogError);
   expect(source.getError()?.message).toBe("Lynkeus cannot draw a file in the projection EPSG:2100.");
+});
+
+test("the page decompresses a tile itself when the programs beside it cannot start", async () => {
+  const jobs: unknown[] = [];
+  /** A program beside the page that takes a tile, never answers and then reports that it could not start. */
+  class StoppedWorker {
+    private readonly listeners: (() => void)[] = [];
+
+    addEventListener(type: string, listener: () => void): void {
+      if (type === "error") {
+        this.listeners.push(listener);
+      }
+    }
+
+    postMessage(message: unknown): void {
+      jobs.push(message);
+      setTimeout(() => {
+        this.listeners.forEach((listener) => {
+          listener();
+        });
+      }, 0);
+    }
+  }
+  vi.stubGlobal("Worker", StoppedWorker);
+  const source = new CogSource({ cog: openTestFile("backscatter"), decibels: false });
+  await settled(source);
+  const tile = await tileOf(source, 1, 1, 1);
+  vi.unstubAllGlobals();
+  expect(jobs).toHaveLength(1);
+  expect(tile[0]).toBe(Math.fround(0.3625984191894531));
+  expect(tile[1]).toBe(1);
+  // The next tile is read in the page at once.
+  const next = await tileOf(source, 1, 0, 0);
+  expect(jobs).toHaveLength(1);
+  expect(next[(10 * 64 + 20) * 2]).toBe(Math.fround(0.3737335205078125));
 });
