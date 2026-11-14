@@ -1,11 +1,16 @@
 import { Footprints } from "./Footprints";
-import { SearchDialog } from "./SearchDialog";
+import { SearchAreaLayer } from "./SearchAreaLayer";
+import { SearchPane } from "./SearchPane";
 
-/** The dialogs of the Data tab, and the outlines that its search draws on the map. The page holds them once. */
+/**
+ * The panes of the Data tab, and what its search draws on the map: the area of the search and the outlines of
+ * the products found. The page holds them once.
+ */
 export function DataDialogs() {
   return (
     <>
-      <SearchDialog />
+      <SearchPane />
+      <SearchAreaLayer />
       <Footprints />
     </>
   );
