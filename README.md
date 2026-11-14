@@ -113,6 +113,10 @@ its memory. It reads three settings from the environment.
 | `LYNKEUS_EARTHDATA_KEYS` | Address of the public keys with which an Earthdata token is checked, for tests | The address of NASA Earthdata Login |
 | `LYNKEUS_COOKIE_SECURE` | `false` lets the cookie of a session pass over plain HTTP, for tests | The cookie passes over HTTPS only |
 
+The container of the web service may use 2 gigabytes of memory, for the service and the two jobs that run
+at once. The web service and its jobs reach NASA's catalogue, Earthdata Login and NASA Harmony over HTTPS,
+so the container needs a connection to the internet.
+
 The last command installs two systemd units. They publish the team log again whenever its file
 changes.
 
