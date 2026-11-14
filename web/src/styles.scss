@@ -5,6 +5,7 @@
 // of the system.
 @use "uswds-core" with (
   $theme-show-notifications: false,
+  $theme-focus-offset: "neg-05",
   $theme-font-type-mono: false,
   $theme-font-type-sans: "system",
   $theme-font-type-serif: false,
@@ -31,8 +32,10 @@ body,
   flex-direction: column;
 }
 
-// The outline of the focused element shows when the keyboard moves the focus,
-// and stays hidden after a click.
-:focus:not(:focus-visible) {
+// The design system outlines the focused element, inside its edge. The outline
+// shows when the keyboard moves the focus and stays hidden after a click.
+a:focus:not(:focus-visible),
+button:focus:not(:focus-visible),
+[tabindex]:focus:not(:focus-visible) {
   outline: none;
 }

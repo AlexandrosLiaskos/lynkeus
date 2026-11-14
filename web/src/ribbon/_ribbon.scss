@@ -95,9 +95,3 @@
   color: uswds.color("base-light");
   cursor: default;
 }
-
-.ribbon-tabs button:focus-visible,
-.ribbon-tool:focus-visible {
-  outline: 0.125rem solid uswds.color("blue-40v");
-  outline-offset: -0.125rem;
-}
