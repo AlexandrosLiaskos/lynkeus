@@ -4,16 +4,22 @@ import OlMap from "ol/Map";
 import View from "ol/View";
 import { fromLonLat } from "ol/proj";
 import { beforeEach, expect, test, vi } from "vitest";
+import { displayStore, selectedLayerStore, setDisplay } from "../contents/state";
 import { baseMapStore } from "../map/baseMaps";
 import { areaStore } from "../shared/area";
 import { openToolPane, resetDock } from "../shared/dock/dock";
+import type { LayerDescription } from "../shared/layer";
+import { mapLayersStore } from "../shared/mapLayers";
 import { MapContext } from "../shared/map";
 import { copyText } from "./clipboard";
 import { saveFile } from "./download";
+import { forgetDataSources } from "./layerSources";
 import { FIRST_LAYOUT_FORM } from "./layout";
+import { pictureLegend } from "./legend";
 import { makePicture, pictureFile } from "./mapImage";
 import type { Picture } from "./picture";
 import { printLayout } from "./printLayout";
+import received from "./testdata/record-gcov-20261021.json";
 import { SharePanes } from "./SharePanes";
 
 vi.mock("./clipboard", () => ({ copyText: vi.fn() }));
@@ -32,6 +38,23 @@ const PICTURE: Picture = {
 };
 const NOTE = /^OpenStreetMap is left out of a picture/;
 
+const BACKSCATTER: LayerDescription = {
+  id: "gcov-hhhh-20261021",
+  title: "Backscatter HH, 21 Oct 2026",
+  kind: "layer",
+  url: "/files/gcov-hhhh-20261021/gcov-hhhh-20261021.tif",
+  quantity: "Radar backscatter gamma nought, HH, linear power",
+  unit: "1",
+  range: [0, 0.5],
+  colours: "grey",
+  dates: ["2026-10-21"],
+  inputs: ["NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"],
+  program: "Lynkeus 0.1.0",
+  method: null,
+  record: "/files/gcov-hhhh-20261021/gcov-hhhh-20261021.json",
+};
+const HIDDEN: LayerDescription = { ...BACKSCATTER, id: "hidden", title: "Hidden layer" };
+
 let map: OlMap;
 
 beforeEach(() => {
@@ -39,6 +62,11 @@ beforeEach(() => {
   resetDock();
   baseMapStore.set("blue-marble");
   areaStore.set(null);
+  mapLayersStore.set([]);
+  displayStore.set({});
+  selectedLayerStore.set(null);
+  forgetDataSources();
+  vi.unstubAllGlobals();
   map = new OlMap({ view: new View({ center: fromLonLat([-70.975, 42.775]), zoom: 10 }) });
   map.setSize([1052, 655]);
 });
@@ -154,14 +182,18 @@ test("the layout takes a title, a paper size, an orientation, a resolution and i
   await userEvent.selectOptions(screen.getByLabelText("Resolution of the map"), "150");
   await userEvent.click(screen.getByLabelText("North arrow"));
   await userEvent.click(screen.getByRole("button", { name: "Print" }));
-  expect(printLayout).toHaveBeenCalledWith(map, {
-    ...FIRST_LAYOUT_FORM,
-    title: "Lower Merrimack River",
-    paper: "A3",
-    orientation: "portrait",
-    resolution: 150,
-    northArrow: false,
-  });
+  expect(printLayout).toHaveBeenCalledWith(
+    map,
+    {
+      ...FIRST_LAYOUT_FORM,
+      title: "Lower Merrimack River",
+      paper: "A3",
+      orientation: "portrait",
+      resolution: 150,
+      northArrow: false,
+    },
+    [],
+  );
   expect(await screen.findByText("The page was given to the print window of the browser.")).toBeDefined();
   expect(printLayout).toHaveBeenCalledTimes(1);
 });
@@ -216,4 +248,133 @@ test("when the browser refuses the copy, the address is selected for the keyboar
   expect(document.activeElement).toBe(address);
   expect(address.selectionStart).toBe(0);
   expect(address.selectionEnd).toBe(address.value.length);
+});
+
+test("the legend is offered when the map shows a layer, and the picture and the page receive the layers shown", async () => {
+  vi.mocked(makePicture).mockResolvedValue({ picture: PICTURE, notes: [] });
+  vi.mocked(pictureFile).mockResolvedValue(new Blob());
+  vi.mocked(printLayout).mockResolvedValue([]);
+  open("export-map-image");
+  expect(screen.queryByLabelText("Legend of the visible layers")).toBeNull();
+  act(() => {
+    mapLayersStore.set([BACKSCATTER, HIDDEN]);
+    setDisplay(HIDDEN, { visible: false });
+  });
+  expect(screen.getByLabelText<HTMLInputElement>("Legend of the visible layers").checked).toBe(true);
+  await userEvent.click(screen.getByRole("button", { name: "Save" }));
+  await screen.findByText(/^The picture was saved as /);
+  expect(vi.mocked(makePicture).mock.calls[0]?.[1].legends).toEqual([pictureLegend(BACKSCATTER)]);
+
+  act(() => openToolPane("print-layout"));
+  await userEvent.click(screen.getByRole("button", { name: "Print" }));
+  expect(vi.mocked(printLayout).mock.calls[0]?.[2]).toEqual([BACKSCATTER]);
+});
+
+test("without the legend, the picture is drawn with no legend", async () => {
+  vi.mocked(makePicture).mockResolvedValue({ picture: PICTURE, notes: [] });
+  vi.mocked(pictureFile).mockResolvedValue(new Blob());
+  mapLayersStore.set([BACKSCATTER]);
+  open("export-map-image");
+  await userEvent.click(screen.getByLabelText("Legend of the visible layers"));
+  await userEvent.click(screen.getByRole("button", { name: "Save" }));
+  await screen.findByText(/^The picture was saved as /);
+  expect(vi.mocked(makePicture).mock.calls[0]?.[1].legends).toEqual([]);
+});
+
+test("the record asks for a selected layer", () => {
+  open("export-record");
+  expect(screen.getByText("No layer is selected. Select a layer in the Contents pane first.")).toBeDefined();
+  expect(screen.getByRole("button", { name: "Save" }).getAttribute("aria-disabled")).toBe("true");
+});
+
+test("the STAC record of the selected layer is saved beside the name of its data file", async () => {
+  vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve(received) }));
+  mapLayersStore.set([BACKSCATTER]);
+  selectedLayerStore.set(BACKSCATTER.id);
+  open("export-record");
+  expect(screen.getByRole("group", { name: "Record of Backscatter HH, 21 Oct 2026" })).toBeDefined();
+  expect(screen.getByLabelText<HTMLInputElement>("STAC record").checked).toBe(true);
+  await userEvent.click(screen.getByRole("button", { name: "Save" }));
+  expect(await screen.findByText("The record was saved as backscatter-hh-20261021.json.")).toBeDefined();
+  const [content, name] = vi.mocked(saveFile).mock.calls[0] ?? [];
+  expect(name).toBe("backscatter-hh-20261021.json");
+  expect(content?.type).toBe("application/geo+json");
+  const saved = JSON.parse((await content?.text()) ?? "null") as typeof received;
+  expect(saved.assets.data.href).toBe("./backscatter-hh-20261021.tif");
+  expect(saved.properties).toEqual(received.properties);
+});
+
+test("the provenance record is saved as text, also when the STAC record cannot be read", async () => {
+  const fetched = vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve(received) });
+  vi.stubGlobal("fetch", fetched);
+  mapLayersStore.set([BACKSCATTER]);
+  selectedLayerStore.set(BACKSCATTER.id);
+  open("export-record");
+  await userEvent.click(screen.getByLabelText("Provenance record"));
+  await userEvent.click(screen.getByRole("button", { name: "Save" }));
+  expect(
+    await screen.findByText("The provenance record was saved as backscatter-hh-20261021-provenance.txt."),
+  ).toBeDefined();
+  const [content, name] = vi.mocked(saveFile).mock.calls[0] ?? [];
+  expect(name).toBe("backscatter-hh-20261021-provenance.txt");
+  expect(content?.type).toBe("text/plain;charset=utf-8");
+  const text = (await content?.text()) ?? "";
+  expect(text).toContain("Title: Backscatter HH, 21 Oct 2026");
+  expect(text).toContain("Lineage: Layer /science/LSAR/GCOV/grids/frequencyA/HHHH of the NISAR product");
+
+  fetched.mockResolvedValue({ ok: false, status: 404 });
+  await userEvent.click(screen.getByRole("button", { name: "Save" }));
+  expect(await screen.findByText(/without the lines of the STAC record, which could not be read\.$/)).toBeDefined();
+  expect((await vi.mocked(saveFile).mock.calls[1]?.[0].text()) ?? "").not.toContain("Lineage:");
+});
+
+test("a STAC record that cannot be read is not saved, and the reason is shown", async () => {
+  vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 404 }));
+  mapLayersStore.set([BACKSCATTER]);
+  selectedLayerStore.set(BACKSCATTER.id);
+  open("export-record");
+  await userEvent.click(screen.getByRole("button", { name: "Save" }));
+  const failure = await screen.findByText("The server did not give the record of the layer (answer 404).");
+  expect(failure.getAttribute("role")).toBe("alert");
+  expect(saveFile).not.toHaveBeenCalled();
+});
+
+test("the citation of the selected layer is shown and copied", async () => {
+  vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve(received) }));
+  vi.mocked(copyText).mockResolvedValue(undefined);
+  mapLayersStore.set([BACKSCATTER]);
+  selectedLayerStore.set(BACKSCATTER.id);
+  open("citation");
+  const citation = await screen.findByLabelText<HTMLTextAreaElement>("Citation of Backscatter HH, 21 Oct 2026");
+  expect(citation.readOnly).toBe(true);
+  expect(citation.value).toContain(
+    "NASA/JPL/NISAR. NISAR Validated Geocoded Polarimetric Covariance Product (Version 1) [Dataset]. " +
+      "NASA Alaska Satellite Facility Distributed Active Archive Center. https://doi.org/10.5067/NIL2GCOV-V1 " +
+      "Date accessed: 2026-11-14.",
+  );
+  expect(citation.value).toContain("Liaskos, A. Lynkeus (Version ");
+  await userEvent.click(screen.getByRole("button", { name: "Copy" }));
+  expect(await screen.findByText("The citation was copied.")).toBeDefined();
+  expect(copyText).toHaveBeenCalledWith(citation.value);
+});
+
+test("a layer whose record names no DOI has no citation, and nothing can be copied", async () => {
+  const withoutDoi = { ...received, properties: { ...received.properties, "sci:doi": undefined } };
+  vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve(withoutDoi) }));
+  mapLayersStore.set([BACKSCATTER]);
+  selectedLayerStore.set(BACKSCATTER.id);
+  open("citation");
+  expect(
+    await screen.findByText(
+      "The record of Backscatter HH, 21 Oct 2026 does not name the DOI of its NISAR collection, so Lynkeus gives no citation for it.",
+    ),
+  ).toBeDefined();
+  expect(screen.getByRole("button", { name: "Copy" }).getAttribute("aria-disabled")).toBe("true");
+  await userEvent.click(screen.getByRole("button", { name: "Copy" }));
+  expect(copyText).not.toHaveBeenCalled();
+});
+
+test("the citation asks for a selected layer", () => {
+  open("citation");
+  expect(screen.getByText("No layer is selected. Select a layer in the Contents pane first.")).toBeDefined();
 });

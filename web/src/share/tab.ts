@@ -24,7 +24,8 @@ export const SHARE_TAB = {
           id: "export-record",
           label: "Record",
           icon: "file_present",
-          description: "Saves the record of the selected layer: its input files, program, version and method.",
+          description:
+            "Saves the record of the selected layer, as a STAC record or as a text with its input files, program, version and method.",
         },
         {
           id: "export-area",
@@ -64,7 +65,8 @@ export const SHARE_TAB = {
           id: "citation",
           label: "Citation",
           icon: "format_quote",
-          description: "Gives the text that cites the selected layer, with its data and its method.",
+          description:
+            "Gives the text that cites the data, the method and Lynkeus for a selected layer whose record names the DOI of its NISAR collection.",
         },
       ],
     },
