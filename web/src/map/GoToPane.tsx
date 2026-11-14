@@ -1,4 +1,5 @@
 import { useId, useState } from "react";
+import { Info } from "../shared/info/Info";
 import { useMap } from "../shared/map";
 import { useStore } from "../shared/store";
 import { ToolPane, type ToolPaneRun } from "../shared/toolpane/ToolPane";
@@ -47,12 +48,16 @@ export function GoToPane() {
 
   return (
     <ToolPane id="go-to-coordinates" title="Go to coordinates" runLabel="Go to" onRun={go} run={run}>
-      <label className="usa-label" htmlFor={`${id}-latitude`}>
-        Latitude
-      </label>
-      <span className="usa-hint" id={`${id}-latitude-hint`}>
-        For example 42.8, 42.8 N or 42° 48′ 30″ N. South is S or a minus sign.
-      </span>
+      <div className="info-title">
+        <label className="usa-label" htmlFor={`${id}-latitude`}>
+          Latitude
+        </label>
+        <Info id={`${id}-latitude-hint`} about="Latitude">
+          The latitude of the place, from 90 degrees south to 90 degrees north. It is written in decimal degrees, as
+          42.8 or 42.8 N, or in degrees, minutes and seconds, as 42° 48′ 30″ N. A latitude south of the equator takes
+          the letter S or a minus sign.
+        </Info>
+      </div>
       <input
         className="usa-input"
         id={`${id}-latitude`}
@@ -60,12 +65,16 @@ export function GoToPane() {
         value={latitude}
         onChange={(event) => setLatitude(event.target.value)}
       />
-      <label className="usa-label" htmlFor={`${id}-longitude`}>
-        Longitude
-      </label>
-      <span className="usa-hint" id={`${id}-longitude-hint`}>
-        For example -70.9, 70.9 W or 70° 54′ 00″ W. West is W or a minus sign.
-      </span>
+      <div className="info-title">
+        <label className="usa-label" htmlFor={`${id}-longitude`}>
+          Longitude
+        </label>
+        <Info id={`${id}-longitude-hint`} about="Longitude">
+          The longitude of the place, from 180 degrees west to 180 degrees east. It is written in decimal degrees, as
+          -70.9 or 70.9 W, or in degrees, minutes and seconds, as 70° 54′ 00″ W. A longitude west of the meridian of
+          Greenwich takes the letter W or a minus sign.
+        </Info>
+      </div>
       <input
         className="usa-input"
         id={`${id}-longitude`}

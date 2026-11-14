@@ -1,1 +1,69 @@
+@use "uswds-core" as uswds;
+
 // The style of the Contents pane.
+
+// The legend of a layer: the quantity, and under it the colour scale with its values.
+.legend {
+  color: uswds.color("base-darker");
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+.legend-quantity,
+.legend-note {
+  margin: 0 0 0.25rem;
+}
+
+.legend-note {
+  margin-top: 0.25rem;
+  color: uswds.color("base-dark");
+}
+
+// The scale stands upright, with the highest value at its top, and its values stand on its right.
+.legend-scale {
+  display: flex;
+  height: 6rem;
+  margin: 0.375rem 0;
+}
+
+.legend-ramp {
+  flex: none;
+  width: 1rem;
+  border: 1px solid uswds.color("base");
+}
+
+.legend-marks {
+  position: relative;
+  flex: 1;
+  margin: 0 0 0 0.375rem;
+  padding: 0;
+  list-style: none;
+}
+
+// A value stands at the height of its colour: the middle of its line is at that height.
+.legend-marks li {
+  position: absolute;
+  left: 0;
+  line-height: 1;
+  white-space: nowrap;
+  transform: translateY(50%);
+}
+
+.legend-classes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legend-classes li {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.legend-swatch {
+  flex: none;
+  width: 1rem;
+  height: 0.75rem;
+  border: 1px solid uswds.color("base");
+}

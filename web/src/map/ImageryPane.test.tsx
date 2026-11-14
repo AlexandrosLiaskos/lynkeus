@@ -67,3 +67,20 @@ test("a day before the first image of the layer is refused in a sentence", async
   expect(screen.getByRole("alert").textContent).toBe("The images of VIIRS, NOAA-20 start on 2018-01-05.");
   expect(baseMapStore.get()).toBe("blue-marble");
 });
+
+/** Return the explanation that describes an element. */
+function explanation(element: HTMLElement): string | undefined {
+  return document.getElementById(element.getAttribute("aria-describedby") ?? "")?.textContent;
+}
+
+test("each field is described by its explanation, which shows from the button beside its title", () => {
+  openPane("imagery-of-a-date", <ImageryPane />);
+  expect(explanation(day())).toBe(
+    "The day of the image in Coordinated Universal Time, from 2000-02-24 to 2026-11-14. The image of the present day is still incomplete.",
+  );
+  expect(explanation(screen.getByLabelText("Instrument and satellite"))).toMatch(
+    /^The instrument and the satellite that took the image\. .* about 306 metres at the equator\.$/,
+  );
+  expect(screen.getByRole("button", { name: "Information about Day" })).toBeDefined();
+  expect(screen.getByRole("button", { name: "Information about Instrument and satellite" })).toBeDefined();
+});
