@@ -1,0 +1,33 @@
+name: Checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  api:
+    name: Server (Python)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install uv
+        run: pip install uv==0.13.8
+      - name: Install the package and the tools
+        run: uv sync --frozen
+      - name: Style
+        run: |
+          uv run ruff format --check .
+          uv run ruff check .
+      - name: Types
+        run: uv run mypy
+      - name: Tests
+        run: uv run pytest
