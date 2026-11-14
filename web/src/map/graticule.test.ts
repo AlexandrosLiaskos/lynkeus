@@ -1,7 +1,16 @@
 import { asArray } from "ol/color";
 import Graticule from "ol/layer/Graticule";
 import { expect, test } from "vitest";
-import { createGraticule, GRATICULE_LAYER_ID, label, LINE, LINE_EDGE } from "./graticule";
+import {
+  createGraticule,
+  GRATICULE_LAYER_ID,
+  label,
+  LABEL_GAP,
+  LATITUDE_LABEL,
+  LINE,
+  LINE_EDGE,
+  LONGITUDE_LABEL,
+} from "./graticule";
 
 /**
  * Return the relative luminance of a colour, as the Web Content Accessibility Guidelines 2.2 define it: 0 for
@@ -59,4 +68,16 @@ test("on a background of any grey, the dark colour or the white edge has a contr
   }
   expect(weakest).toBeGreaterThan(4.1);
   expect(weakest).toBeLessThan(4.2);
+});
+
+test("a value stands beside its line and clear of both white edges, not on the line", () => {
+  // Half the white line of a graticule line plus the white edge of the text, which reaches 1 pixel outside it.
+  const covered = (LINE_EDGE.getWidth() ?? 0) / 2 + (LONGITUDE_LABEL.getStroke()?.getWidth() ?? 0) / 2;
+  expect(LABEL_GAP).toBeGreaterThan(covered);
+  // A value of longitude starts to the right of its vertical line.
+  expect(LONGITUDE_LABEL.getTextAlign()).toBe("start");
+  expect(LONGITUDE_LABEL.getOffsetX()).toBe(LABEL_GAP);
+  // A value of latitude stands with its base line above its horizontal line.
+  expect(LATITUDE_LABEL.getTextBaseline()).toBe("alphabetic");
+  expect(LATITUDE_LABEL.getOffsetY()).toBe(-LABEL_GAP);
 });
