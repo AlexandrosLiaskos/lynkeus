@@ -1,22 +1,23 @@
 @use "sass:list";
 @use "uswds-core" as uswds;
+@use "../shared/tokens/tokens";
 
 // The style of the elements of the Share tab.
 
-// A note under the fields of a form.
-.share-note {
-  margin: 0.5rem 0 0;
+// A list of names and values among the fields of a form stands as far under the field before it as a field does.
+.share-facts {
+  margin-top: tokens.$field-gap;
+}
+
+// A choice that follows a field stands 8 pixels under it.
+.share-choice {
+  margin-top: tokens.$space-2;
 }
 
 // The address of a link is one long word, so it breaks anywhere.
 .share-address {
   overflow-wrap: anywhere;
   word-break: break-all;
-}
-
-// The explanation of a choice stands under its label, in line with the text of the label.
-.share-note--choice {
-  margin: 0 0 0.25rem 1.625rem;
 }
 
 // A citation is read and copied as it is, so its lines break only where they are too long.
