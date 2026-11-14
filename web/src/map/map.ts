@@ -1,6 +1,6 @@
 import OlMap from "ol/Map";
 import View from "ol/View";
-import { Attribution, ScaleLine } from "ol/control";
+import { Attribution } from "ol/control";
 import type { Extent } from "ol/extent";
 import TileLayer from "ol/layer/Tile";
 import { fromLonLat } from "ol/proj";
@@ -25,7 +25,7 @@ export function createMap(): OlMap {
       ({ id, createSource }) => new TileLayer({ source: createSource(), zIndex: 0, properties: { id } }),
     ),
     view: new View(WORLD),
-    controls: [new Attribution({ collapsible: false }), new ScaleLine()],
+    controls: [new Attribution({ collapsible: false })],
   });
 }
 

@@ -49,4 +49,5 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 
 ### Removed
 
+- The scale bar of the map and its button in the View tab. The status bar shows the scale.
 - The footer of the application page.
