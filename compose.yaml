@@ -11,6 +11,8 @@ services:
     restart: unless-stopped
     volumes:
       - ./data/team-log:/usr/share/nginx/html/team-log:ro
+      # The files of the layers, which this container only reads.
+      - ./data/api/files:/srv/lynkeus/files:ro
     networks:
       - proxy
 
@@ -21,10 +23,19 @@ services:
     restart: unless-stopped
     read_only: true
     mem_limit: 1g
+    # An init process ends and collects the programs that a job leaves behind.
+    init: true
+    # A running job has 5 seconds to end when the container stops.
+    stop_grace_period: 20s
     environment:
       HOME: /tmp
+      # The folder of the record of sessions, jobs and layers and of the files of the layers.
+      LYNKEUS_DATA_FOLDER: /data
     tmpfs:
       - /tmp
+    volumes:
+      - ./data/api:/data
+    # One process only: the jobs and the Earthdata tokens are held in its memory.
     command: ["uvicorn", "lynkeus.server:app", "--host", "0.0.0.0", "--port", "8000", "--no-access-log"]
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=2)"]
