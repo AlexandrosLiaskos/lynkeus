@@ -43,6 +43,7 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The description of a ribbon button shows under the panel of the ribbon and leaves the names of the
   groups in view.
 - The messages show over the foot of the map.
+- The lines of latitude and longitude have a white edge of half a pixel, and their values one of 1 pixel.
 - The dialog and the close button of a pane take the sizes of the frame, and the pressed and the
   unfinished buttons of the ribbon have a stronger contrast.
 
