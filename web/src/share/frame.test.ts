@@ -120,7 +120,7 @@ test("without a rotation the meridians meet the top and the bottom, and the para
   expect(ticks).toHaveLength(18);
 });
 
-test("every mark lies on the line that its label names", () => {
+test("every mark of a rotated map lies on the line that its label names", () => {
   const turned: PictureView = { ...VIEW, rotation: Math.PI / 6 };
   const [width, height] = turned.size;
   const ticks = frameTicks(turned);
@@ -138,9 +138,22 @@ test("every mark lies on the line that its label names", () => {
     const value = label.endsWith("W") ? longitude : latitude;
     expect(angleLabel(value ?? 0, label.endsWith("W") ? "longitude" : "latitude", 1 / 60)).toBe(label);
   }
-  // With a rotation both kinds of line meet the same side.
-  const kinds = new Set(on(ticks, "top").map(({ label }) => label.at(-1)));
-  expect(kinds).toEqual(new Set(["W", "N"]));
+  // Each side carries one kind of line: at 30 degrees the meridians still run across the top and the bottom.
+  for (const side of ["top", "bottom"] as const) {
+    expect(new Set(on(ticks, side).map(({ label }) => label.at(-1)))).toEqual(new Set(["W"]));
+  }
+  for (const side of ["left", "right"] as const) {
+    expect(new Set(on(ticks, side).map(({ label }) => label.at(-1)))).toEqual(new Set(["N"]));
+  }
+});
+
+test("a map that is turned by more than 45 degrees has the parallels on its top and its bottom", () => {
+  const ticks = frameTicks({ ...VIEW, rotation: (Math.PI * 50) / 180 });
+  expect(new Set(on(ticks, "top").map(({ label }) => label.at(-1)))).toEqual(new Set(["N"]));
+  expect(new Set(on(ticks, "right").map(({ label }) => label.at(-1)))).toEqual(new Set(["W"]));
+  // Turned by 180 degrees, the map has the meridians on its top again.
+  const upsideDown = frameTicks({ ...VIEW, rotation: Math.PI });
+  expect(new Set(on(upsideDown, "top").map(({ label }) => label.at(-1)))).toEqual(new Set(["W"]));
 });
 
 test("with a rotation of 90 degrees the parallels meet the top and the bottom", () => {

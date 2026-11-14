@@ -125,6 +125,9 @@ const HALVINGS = 30;
  * round step meet its four sides, with their angles in WGS 84. The step of the meridians follows from the span
  * of longitude of the picture, and the step of the parallels from its span of latitude. Each side is followed in
  * small pieces, and a crossing inside a piece is found by halving, so the marks are right for a rotated map too.
+ * Each side is marked with one kind of line, so that two marks do not stand in one place: the top and the bottom
+ * with the meridians and the left and the right with the parallels, or the other way round when the map is
+ * turned by more than 45 degrees from north.
  */
 export function frameTicks(view: PictureView): FrameTick[] {
   const [topLeft, topRight, bottomRight, bottomLeft] = cornersOf(view);
@@ -148,9 +151,12 @@ export function frameTicks(view: PictureView): FrameTick[] {
   };
   const intervals = [intervalFor(span(0)), intervalFor(span(1))] as const;
 
+  // The lines that run across a side: meridians across the top and the bottom of a map with north up.
+  const turned = Math.abs(Math.sin(view.rotation)) > Math.SQRT1_2;
   const ticks: FrameTick[] = [];
   for (const [side, from, to] of sides) {
-    for (const axis of [0, 1] as const) {
+    const horizontal = side === "top" || side === "bottom";
+    for (const axis of [horizontal === turned ? 1 : 0] as const) {
       const interval = intervals[axis];
       const valueAt = (at: number): number => degreesAt(from, to, at)[axis] ?? 0;
       for (let piece = 0; piece < PIECES; piece += 1) {
