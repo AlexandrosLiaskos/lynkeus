@@ -8,6 +8,7 @@ import { MapContext } from "../shared/map";
 import { addToMap, mapLayersStore } from "../shared/mapLayers";
 import { dockStore, resetDock } from "../shared/dock/dock";
 import { resetPanes, setPaneOpen } from "../shared/panes";
+import { listedBasemapStore } from "./BasemapItem";
 import { ContentsPane } from "./ContentsPane";
 import { layerProblemsStore } from "./drawing";
 import {
@@ -66,6 +67,7 @@ const nameOf = (text: string) => screen.getByRole("button", { name: text });
 
 beforeEach(() => {
   baseMapStore.set("blue-marble");
+  listedBasemapStore.set("blue-marble");
   resetDock();
   resetPanes();
   setPaneOpen("contents", true);
@@ -79,11 +81,35 @@ beforeEach(() => {
   layerProblemsStore.set({});
 });
 
-test("without layers the pane says so and lists the background maps", () => {
+test("without layers the pane shows the map with its basemap as its only layer", () => {
   show();
-  expect(screen.getByText(/^The map has no layers\./)).toBeTruthy();
-  const background = screen.getByRole("list", { name: "Background maps" });
-  expect(within(background).getAllByRole("checkbox")).toHaveLength(3);
+  expect(screen.getByRole("button", { name: "Map" }).getAttribute("aria-expanded")).toBe("true");
+  const layers = screen.getByRole("list", { name: "Layers, the top layer first" });
+  expect(within(layers).getAllByRole("listitem")).toHaveLength(1);
+  expect(within(layers).getByRole("checkbox", { name: "Show Blue Marble" })).toHaveProperty("checked", true);
+  expect(screen.queryByText(/has no layers/)).toBeNull();
+});
+
+test("the row of the map folds and unfolds its layers", async () => {
+  addToMap(COHERENCE);
+  show();
+  const map = screen.getByRole("button", { name: "Map" });
+  await userEvent.click(map);
+  expect(map.getAttribute("aria-expanded")).toBe("false");
+  expect(screen.queryByRole("list", { name: "Layers, the top layer first" })).toBeNull();
+  await userEvent.click(map);
+  expect(screen.getByRole("list", { name: "Layers, the top layer first" })).toBeTruthy();
+});
+
+test("the basemap is listed under the other layers", () => {
+  [OCTOBER, COHERENCE].forEach(addToMap);
+  show();
+  const items = within(screen.getByRole("list", { name: "Layers, the top layer first" })).getAllByRole("listitem");
+  expect(items.map((item) => item.textContent)).toEqual([
+    expect.stringContaining("Coherence HH, 20 m"),
+    expect.stringContaining("Backscatter HH"),
+    "Blue Marble",
+  ]);
 });
 
 test("the layers are listed in drawing order, the top layer first, each with its dates", () => {
@@ -241,13 +267,13 @@ test("the Remove command takes the layer off the map and moves the focus to the 
   expect(screen.getByRole("status").textContent).toBe("The layer was removed.");
 });
 
-test("the Delete key on the name removes the layer, and the last layer leaves the empty pane", async () => {
+test("the Delete key on the name removes the layer, and after the last layer the focus moves to the map", async () => {
   addToMap(COHERENCE);
   show();
   nameOf("Coherence HH, 20 m 9 Oct 2026 and 21 Oct 2026").focus();
   await userEvent.keyboard("{Delete}");
   expect(mapLayersStore.get()).toEqual([]);
-  expect(document.activeElement?.textContent).toMatch(/^The map has no layers\./);
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: "Map" }));
 });
 
 test("the F2 key on the name opens a field, and Enter gives the layer the name typed", async () => {
@@ -350,22 +376,32 @@ test("a layer dragged onto another one takes the place below it", () => {
   expect(document.querySelector(".contents-layer--drop-below")).toBeNull();
 });
 
-test("the box of a background map shows it in place of the one shown, and the box of the one shown hides it", () => {
+test("the box of the basemap hides and shows it, and a basemap chosen on the Map tab takes its place", () => {
   show();
-  const marble = screen.getByRole("checkbox", { name: "Blue Marble" });
-  const streets = screen.getByRole("checkbox", { name: "OpenStreetMap" });
-  expect(screen.getByRole("checkbox", { name: "Imagery of a date" })).toHaveProperty("checked", false);
-  expect(marble).toHaveProperty("checked", true);
-  fireEvent.click(streets);
-  expect(baseMapStore.get()).toBe("openstreetmap");
-  expect(marble).toHaveProperty("checked", false);
-  fireEvent.click(streets);
+  const marble = screen.getByRole("checkbox", { name: "Show Blue Marble" });
+  fireEvent.click(marble);
   expect(baseMapStore.get()).toBeNull();
-  // The boxes follow the store when a button of the Map tab sets it.
+  expect(marble).toHaveProperty("checked", false);
+  fireEvent.click(marble);
+  expect(baseMapStore.get()).toBe("blue-marble");
   act(() => {
-    baseMapStore.set("blue-marble");
+    baseMapStore.set("openstreetmap");
   });
-  expect(marble).toHaveProperty("checked", true);
+  expect(screen.queryByRole("checkbox", { name: "Show Blue Marble" })).toBeNull();
+  expect(screen.getByRole("checkbox", { name: "Show OpenStreetMap" })).toHaveProperty("checked", true);
+});
+
+test("the Remove command of the basemap takes it off the map and out of the list", async () => {
+  show();
+  await userEvent.click(screen.getByRole("button", { name: "Commands of Blue Marble" }));
+  await userEvent.click(screen.getByRole("menuitem", { name: "Remove" }));
+  expect(baseMapStore.get()).toBeNull();
+  expect(screen.queryByRole("checkbox", { name: "Show Blue Marble" })).toBeNull();
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: "Map" }));
+  act(() => {
+    baseMapStore.set("imagery");
+  });
+  expect(screen.getByRole("checkbox", { name: "Show Imagery of a date" })).toHaveProperty("checked", true);
 });
 
 test("a layer whose file could not be read says so in place of its legend", () => {
