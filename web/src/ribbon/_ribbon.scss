@@ -31,13 +31,17 @@
 }
 
 .ribbon-panel {
-  display: flex;
-  overflow-x: auto;
   margin: 0 0.25rem 0.25rem;
-  padding: 0.125rem 0;
   border: 1px solid uswds.color("base-light");
   border-radius: 0.25rem;
   background: uswds.color("white");
+}
+
+// The groups stand side by side, and scroll sideways in a window that is too narrow for them.
+.ribbon-groups {
+  display: flex;
+  overflow-x: auto;
+  padding: 0.125rem 0;
 }
 
 .ribbon-group {

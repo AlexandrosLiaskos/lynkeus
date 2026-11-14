@@ -114,3 +114,128 @@ test("the Escape key hides a description that the pointer opened, without keyboa
   fireEvent.keyDown(document.body, { key: "Escape" });
   expect(tip?.hidden).toBe(true);
 });
+
+// The tests of the keyboard use a first tab with two groups of buttons.
+const TWO_GROUPS: readonly RibbonTab[] = TABS.map((tab) =>
+  tab.id === "first"
+    ? {
+        ...tab,
+        groups: [
+          ...tab.groups,
+          {
+            label: "More",
+            tools: [
+              { id: "extra", label: "Extra", icon: "add", description: "Does more work." },
+              { id: "last", label: "Last", icon: "flag", description: "Does the last work." },
+            ],
+          },
+        ],
+      }
+    : tab,
+);
+
+/** Return the element that has the keyboard focus, as its role and its name. */
+function focused(): string {
+  const element = document.activeElement;
+  const name = element?.getAttribute("aria-label") ?? element?.textContent ?? "";
+  return `${element?.getAttribute("role") ?? element?.tagName.toLowerCase() ?? ""} ${name}`;
+}
+
+test("the buttons of a tab form a toolbar that carries the name of the tab", () => {
+  render(<Ribbon tabs={TWO_GROUPS} actions={{}} />);
+  const toolbar = screen.getByRole("toolbar", { name: "First" });
+  expect(within(toolbar).getAllByRole("button")).toHaveLength(4);
+});
+
+test("the Home and End keys move to the first and the last tab and show its groups", async () => {
+  render(<Ribbon tabs={TWO_GROUPS} actions={{}} />);
+  await userEvent.tab();
+  await userEvent.keyboard("{End}");
+  expect(focused()).toBe("tab Second");
+  expect(screen.getByRole("group", { name: "Other" })).toBeDefined();
+  await userEvent.keyboard("{Home}");
+  expect(focused()).toBe("tab First");
+  expect(screen.getByRole("group", { name: "Group" })).toBeDefined();
+});
+
+test("the Tab key stops once on the tabs and once on the buttons", async () => {
+  render(
+    <>
+      <Ribbon tabs={TWO_GROUPS} actions={{ ready: { run: vi.fn() } }} />
+      <button type="button">After</button>
+    </>,
+  );
+  const stops: string[] = [];
+  for (const shift of [false, false, false, true, true]) {
+    await userEvent.tab({ shift });
+    stops.push(focused());
+  }
+  expect(stops).toEqual(["tab First", "button Ready", "button After", "button Ready", "tab First"]);
+});
+
+test("the arrow keys, Home and End move between the buttons, across the groups", async () => {
+  render(<Ribbon tabs={TWO_GROUPS} actions={{ ready: { run: vi.fn() } }} />);
+  await userEvent.tab();
+  await userEvent.tab();
+  const stops: string[] = [];
+  for (const key of ["{ArrowRight}", "{ArrowRight}", "{End}", "{ArrowRight}", "{ArrowLeft}", "{Home}"]) {
+    await userEvent.keyboard(key);
+    stops.push(focused());
+  }
+  expect(stops).toEqual(["button Later", "button Extra", "button Last", "button Ready", "button Last", "button Ready"]);
+});
+
+test("the Control key with an arrow key moves to the first button of the group beside", async () => {
+  render(<Ribbon tabs={TWO_GROUPS} actions={{ ready: { run: vi.fn() } }} />);
+  await userEvent.tab();
+  await userEvent.tab();
+  await userEvent.keyboard("{ArrowRight}{Control>}{ArrowRight}{/Control}");
+  expect(focused()).toBe("button Extra");
+  await userEvent.keyboard("{ArrowRight}{Control>}{ArrowLeft}{/Control}");
+  expect(focused()).toBe("button Ready");
+});
+
+test("an unfinished button takes the focus from an arrow key and shows its description", async () => {
+  render(<Ribbon tabs={TWO_GROUPS} actions={{ ready: { run: vi.fn() } }} />);
+  await userEvent.tab();
+  await userEvent.tab();
+  await userEvent.keyboard("{ArrowRight}");
+  const later = screen.getByRole("button", { name: "Later" });
+  expect(document.activeElement).toBe(later);
+  expect(later.getAttribute("aria-disabled")).toBe("true");
+  const tip = document.getElementById(later.getAttribute("aria-describedby") ?? "")?.parentElement;
+  expect(tip?.hidden).toBe(false);
+  expect(tip?.textContent).toBe("LaterWill do its work. Not yet available.");
+});
+
+test("the down arrow key moves from a tab to the buttons, and the up arrow key back to the tab", async () => {
+  render(<Ribbon tabs={TWO_GROUPS} actions={{ ready: { run: vi.fn() } }} />);
+  await userEvent.tab();
+  await userEvent.keyboard("{ArrowDown}");
+  expect(focused()).toBe("button Ready");
+  await userEvent.keyboard("{ArrowRight}{ArrowUp}");
+  expect(focused()).toBe("tab First");
+});
+
+test("the Tab key returns to the button that last had the focus", async () => {
+  render(<Ribbon tabs={TWO_GROUPS} actions={{ ready: { run: vi.fn() } }} />);
+  await userEvent.tab();
+  await userEvent.tab();
+  await userEvent.keyboard("{ArrowRight}{ArrowRight}");
+  await userEvent.tab({ shift: true });
+  expect(focused()).toBe("tab First");
+  await userEvent.tab();
+  expect(focused()).toBe("button Extra");
+});
+
+test("the Tab key stops first on the first finished button, or on the first button when none is finished", async () => {
+  const { unmount } = render(<Ribbon tabs={TWO_GROUPS} actions={{ extra: { run: vi.fn() } }} />);
+  await userEvent.tab();
+  await userEvent.tab();
+  expect(focused()).toBe("button Extra");
+  unmount();
+  render(<Ribbon tabs={TWO_GROUPS} actions={{}} />);
+  await userEvent.tab();
+  await userEvent.tab();
+  expect(focused()).toBe("button Ready");
+});
