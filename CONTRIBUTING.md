@@ -124,6 +124,14 @@ a filled button, a check box and a radio button. The settings of the design syst
 and the file `web/src/shared/_focus.scss` give it. A part does not set `outline` on its elements, and leaves
 2 pixels free around a field. A style that should show only for the keyboard uses `:focus-visible`.
 
+### Credits
+
+A layer is credited through its source. Give the source of OpenLayers its `attributions`: the text of the
+credit, in which the name of the provider may be a link to an address that starts with `https://`. The element
+`Credits` in `web/src/shared/credits/` then writes the credit at the right end of the status bar while the layer
+is visible. A part draws no credit of its own. A source whose terms ask for its credit on the map itself is
+named in the function `creditsOf` of `credits.ts`, and its credit is drawn in the lower right corner of the map.
+
 ## Research and proof
 
 Nothing invented, assumed or left as a placeholder enters `main`. Before a function is built, its sources
