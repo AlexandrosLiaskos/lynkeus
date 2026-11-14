@@ -41,6 +41,13 @@
   color: uswds.color("base-dark");
 }
 
+// A long name of a layer is cut, so that the value beside it stays in the bar.
+.statusbar-layer-name {
+  overflow: hidden;
+  max-width: 16rem;
+  text-overflow: ellipsis;
+}
+
 .statusbar-field {
   display: inline-grid;
   justify-items: end;
