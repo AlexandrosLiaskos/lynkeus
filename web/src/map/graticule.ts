@@ -10,7 +10,9 @@ const INK = "#1b1b1b";
 const WHITE = "#ffffff";
 const FONT = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
 
-function label(place: Partial<{ textBaseline: CanvasTextBaseline; textAlign: CanvasTextAlign }>): Text {
+function label(
+  place: Partial<{ textBaseline: CanvasTextBaseline; textAlign: CanvasTextAlign; offsetX: number; offsetY: number }>,
+): Text {
   return new Text({
     font: FONT,
     fill: new Fill({ color: INK }),
@@ -20,8 +22,8 @@ function label(place: Partial<{ textBaseline: CanvasTextBaseline; textAlign: Can
 }
 
 /**
- * Create the lines of latitude and longitude, with their values in degrees, minutes and seconds along the edge
- * of the map. OpenLayers chooses the interval between the lines from the scale of the map. Each line is a dark
+ * Create the lines of latitude and longitude, with their values in degrees, minutes and seconds along the top
+ * and the left edge of the map. OpenLayers chooses the interval between the lines from the scale of the map. Each line is a dark
  * line on a wider white line, so that it stays visible on a background map of any colour. The lines start hidden.
  */
 export function createGraticule(): LayerGroup {
@@ -33,8 +35,12 @@ export function createGraticule(): LayerGroup {
       new Graticule({
         strokeStyle: new Stroke({ color: INK, width: 1 }),
         showLabels: true,
-        lonLabelStyle: label({ textBaseline: "bottom" }),
-        latLabelStyle: label({ textAlign: "end" }),
+        // The values stand along the top and the left edge of the map, clear of the scale bar and of the line
+        // of the sources at its bottom.
+        lonLabelPosition: 1,
+        lonLabelStyle: label({ textBaseline: "top", offsetY: 4 }),
+        latLabelPosition: 0,
+        latLabelStyle: label({ textAlign: "start", offsetX: 4 }),
         zIndex: 1001,
       }),
     ],
