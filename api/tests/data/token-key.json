@@ -1,0 +1,7 @@
+{
+  "kty": "RSA",
+  "kid": "key-of-the-tests",
+  "n": "yR8eit6L2HFvOMuNCF0xaW7EyDPU1a3JHC5n5p4y0zmJ6gxlJm2vYw1hITj3vvP3_M4LNMCIDrjae8_K8svP6NF5PJcYOFexiKkMp32ss4HvWr0LWBG2VaCiqQ3wRwFdO3uxQwfdfkkVL2nD1pEX8hERYfXwVvLq4FhMtmN5A3nT5pZKbVtY4_RyTpcQVrps4Obv_7GiXgE3tPmyjzoJbfzkpIGpSkH2HvyC5GoJZ9XeITF_8j9mVVFtuaWRkuQ6qqxfZzzYYwNDn_Z_ciOTKy5kQuQ40wcI9CTf9lSLGrzYDTNe2AEftaNGMlgH-QWv0nvnhNqzhk2CuzMKhuY6JQ",
+  "e": "AQAB",
+  "d": "D781Qbu7eNKm2exMCk3bpszisOcoAKP29VMn1O1pftLIOtBGIixf2VJMmtCOSz_oWH2ccICrlnWAO8Xw9rIhAPJXuvf8kDrDfnb38-w516Myhaj8CKT4YPtvCOv7tl-DuHrOjfhBbhgURc5S5Eufc5dFBGXAb9pcq_yV4wjmSnB9jtvpyrhpYuXk-ZmKgJgi-UVw7Im5NrDaxexoCruWnp-UfD7WBVYjP3vonZkmLY5ESe1ZL7ijrIFKf2RPgKon-_rUEtZExEUN5PsVTlvhTJQuYl8HXiQfI2XJH_iIlXIjlSiO3HHSwMSmyPAR_48GDN8MLVm8rUipNI9yyRdZmQ"
+}
