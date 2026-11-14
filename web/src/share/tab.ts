@@ -12,26 +12,27 @@ export const SHARE_TAB = {
           id: "export-layer",
           label: "Layer",
           icon: "file_download",
-          description: "Saves the file of the selected layer as a GeoTIFF.",
+          description: "Saves the file of the layer that is selected in the Contents pane as a GeoTIFF file.",
         },
         {
           id: "export-map-image",
           label: "Map image",
           icon: "photo_camera",
-          description: "Saves the map as a PNG image, with a scale bar, the legend and the line of sources.",
+          description:
+            "Saves the map as a PNG image with a scale bar, a north arrow, the legend and the sources of the map.",
         },
         {
           id: "export-record",
           label: "Record",
           icon: "file_present",
           description:
-            "Saves the record of the selected layer, as a STAC record or as a text with its input files, program, version and method.",
+            "Saves the record of the layer that is selected in the Contents pane, as a STAC record or as a provenance record.",
         },
         {
           id: "export-area",
           label: "Area",
           icon: "save_alt",
-          description: "Saves the area as a GeoJSON file.",
+          description: "Saves the area that is set in the Map tab as a GeoJSON file.",
         },
       ],
     },
@@ -43,7 +44,7 @@ export const SHARE_TAB = {
           label: "Layout",
           icon: "print",
           description:
-            "Prints the map on a page with a title, the legend, a scale bar, a north arrow, a coordinate frame and the line of sources, or saves the page as a PDF file.",
+            "Prints the map on a page with a title, the legend, a scale bar, a north arrow, a coordinate frame and the sources of the map, or saves the page as a PDF file.",
         },
       ],
     },
@@ -54,7 +55,7 @@ export const SHARE_TAB = {
           id: "link-to-map",
           label: "Link to this map",
           icon: "link",
-          description: "Gives an address that opens Lynkeus with the same view, background map and area.",
+          description: "Gives an address that opens Lynkeus with the same view, basemap and area.",
         },
       ],
     },
@@ -66,7 +67,7 @@ export const SHARE_TAB = {
           label: "Citation",
           icon: "format_quote",
           description:
-            "Gives the text that cites the data, the method and Lynkeus for a selected layer whose record names the DOI of its NISAR collection.",
+            "Gives the text that cites the data, the method and Lynkeus for the layer that is selected in the Contents pane, when its record names the DOI of its NISAR collection.",
         },
       ],
     },
