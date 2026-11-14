@@ -1,0 +1,65 @@
+@use "uswds-core" as uswds;
+@use "../tokens/tokens";
+
+// A list of names and values. The names stand in a column at the left and the values beside them.
+.property-list {
+  font-size: tokens.$text;
+  line-height: tokens.$line;
+}
+
+.property-group + .property-group {
+  margin-top: tokens.$space-3;
+}
+
+.property-group-title {
+  margin: 0 0 tokens.$space-1;
+  font: inherit;
+  font-weight: bold;
+}
+
+.property-rows {
+  display: grid;
+  grid-template-columns: minmax(5rem, 2fr) minmax(0, 3fr);
+  gap: tokens.$space-1 tokens.$space-2;
+  margin: 0;
+}
+
+// A row adds no box of its own: its name and its value are cells of the grid.
+.property-row {
+  display: contents;
+}
+
+.property-name {
+  display: flex;
+  align-items: flex-start;
+  min-width: 0;
+  color: tokens.$secondary;
+  overflow-wrap: anywhere;
+}
+
+// A long identifier wraps at any letter, so that it never widens the pane.
+.property-value {
+  display: flex;
+  align-items: flex-start;
+  gap: tokens.$space-1;
+  min-width: 0;
+  margin: 0;
+  color: tokens.$ink;
+}
+
+.property-value-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+// The copy button and the "i" are 24 pixels high in a line of text of 18 pixels. They reach 3 pixels over the
+// line on each side, so that the rows keep the height of their text.
+.property-value .icon-button {
+  margin: -0.1875rem 0;
+}
+
+.property-copied {
+  flex: none;
+  color: tokens.$secondary;
+  font-size: tokens.$text-small;
+}

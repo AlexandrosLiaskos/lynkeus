@@ -1,0 +1,48 @@
+@use "uswds-core" as uswds;
+@use "../tokens/tokens";
+
+// A row of icon buttons.
+.toolbar {
+  display: flex;
+  flex: none;
+  align-items: center;
+}
+
+// A button that shows an icon alone: an icon of 16 pixels in a target of 24 pixels.
+.icon-button {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: tokens.$target;
+  height: tokens.$target;
+  padding: 0;
+  border: 0;
+  border-radius: 0.125rem;
+  background: none;
+  color: tokens.$muted;
+  cursor: pointer;
+}
+
+.icon-button .usa-icon {
+  width: tokens.$icon;
+  height: tokens.$icon;
+}
+
+.icon-button:hover {
+  background: uswds.color("base-lighter");
+  color: tokens.$ink;
+}
+
+// A button that is switched on, or whose menu is open, takes the colours of a chosen element.
+.icon-button[aria-pressed="true"],
+.icon-button[aria-expanded="true"] {
+  background: tokens.$selected;
+  color: tokens.$link;
+}
+
+.icon-button[aria-disabled="true"] {
+  background: none;
+  color: uswds.color("disabled");
+  cursor: default;
+}

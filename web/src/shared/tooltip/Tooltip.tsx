@@ -12,8 +12,8 @@ const GAP = 4;
 interface TooltipProps {
   /** Name of the element. */
   title: string;
-  /** One sentence on what the element does. */
-  text: string;
+  /** One sentence on what the element does. An element whose name says it all, such as an icon button, has none. */
+  text?: string;
   /** A second sentence, for example the reason why the element is inactive. */
   note?: string;
   /** The element that is described. It receives the id of the description for its `aria-describedby` attribute. */
@@ -21,9 +21,9 @@ interface TooltipProps {
 }
 
 /**
- * The description of a button. It shows under the button while the pointer rests on it or while the button has
- * keyboard focus. The Escape key hides it, and the pointer may move onto it without hiding it, as the criterion
- * 1.4.13 of the Web Content Accessibility Guidelines asks.
+ * The description of a button, or the name alone of a button that shows only an icon. It shows under the button
+ * while the pointer rests on it or while the button has keyboard focus. The Escape key hides it, and the pointer
+ * may move onto it without hiding it, as the criterion 1.4.13 of the Web Content Accessibility Guidelines asks.
  *
  * An element that holds the button may carry the attribute `data-tooltip-row`. The description then shows under
  * that element, so that it does not cover what the element shows under the button, as the ribbon shows the name
@@ -101,10 +101,12 @@ export function Tooltip({ title, text, note, children }: TooltipProps) {
       {children(id)}
       <span role="tooltip" className="tooltip" hidden={!position} style={position ?? undefined}>
         <strong className="tooltip-title">{title}</strong>
-        <span id={id}>
-          {text}
-          {note ? ` ${note}` : null}
-        </span>
+        {text === undefined && note === undefined ? null : (
+          <span id={id}>
+            {text}
+            {note ? ` ${note}` : null}
+          </span>
+        )}
       </span>
     </span>
   );

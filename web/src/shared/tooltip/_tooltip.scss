@@ -28,3 +28,8 @@
 .tooltip[hidden] {
   display: none;
 }
+
+// The name of an icon button stands alone in its tooltip, in the weight of plain text.
+.tooltip-title:only-child {
+  font-weight: normal;
+}
