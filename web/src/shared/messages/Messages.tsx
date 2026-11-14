@@ -43,7 +43,7 @@ function MessageItem({ message: { id, kind, text } }: { message: Message }) {
   );
 }
 
-/** The place of the page that shows the messages, over the top of the map. */
+/** The place of the page that shows the messages, over the foot of the map. */
 export function Messages() {
   const messages = useStore(messagesStore);
   return (

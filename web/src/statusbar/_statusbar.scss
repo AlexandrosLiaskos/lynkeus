@@ -1,1 +1,162 @@
-// The style of the status bar.
+@use "uswds-core" as uswds;
+
+// The status bar: one row under the map, in the colours of the ribbon. The figures have one width each, and
+// every value stands in a field of one width, so the bar keeps its form while the values change.
+.statusbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 0.75rem;
+  min-height: 1.625rem;
+  padding: 0 0.5rem;
+  border-top: 1px solid uswds.color("base-light");
+  background: uswds.color("base-lightest");
+  color: uswds.color("ink");
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.5rem;
+}
+
+// A part of the bar: a name and its value. In a window that is too narrow for one row, the parts go on to a
+// second row and none is left out.
+.statusbar-item {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 1.625rem;
+  white-space: nowrap;
+}
+
+// The parts from this one on stand at the right end of the bar.
+.statusbar-item--end {
+  margin-left: auto;
+}
+
+// The name of the projection, its code and the brackets around the code stand together as one text.
+.statusbar-projection {
+  gap: 0;
+}
+
+.statusbar-label {
+  color: uswds.color("base-dark");
+}
+
+.statusbar-field {
+  display: inline-grid;
+  justify-items: end;
+}
+
+.statusbar-field > * {
+  grid-area: 1 / 1;
+}
+
+.statusbar-field-widest {
+  visibility: hidden;
+}
+
+// The controls of the bar are 24 pixels high, the smallest target that criterion 2.5.8 of the Web Content
+// Accessibility Guidelines 2.2 accepts.
+.statusbar-scale-box {
+  position: relative;
+  display: flex;
+}
+
+.statusbar-scale-field,
+.statusbar-select {
+  height: 1.5rem;
+  border: 1px solid uswds.color("base");
+  border-radius: 0.125rem;
+  background-color: uswds.color("white");
+  color: uswds.color("ink");
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+.statusbar-scale-field {
+  width: 7.5rem;
+  padding: 0 1.5rem 0 0.25rem;
+}
+
+.statusbar-select {
+  padding: 0 0.125rem;
+}
+
+// In a narrow window the list of formats shows its arrow alone, and the projection its code alone.
+@media (max-width: 40em) {
+  .statusbar-select {
+    width: 1.5rem;
+  }
+
+  .statusbar-projection-name {
+    display: none;
+  }
+}
+
+.statusbar-scale-open {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: uswds.color("base-dark");
+  cursor: pointer;
+}
+
+.statusbar-scale-open:hover {
+  color: uswds.color("ink");
+}
+
+// The list of scales opens upwards, over the map.
+.statusbar-scale-list {
+  position: absolute;
+  z-index: 20;
+  bottom: 100%;
+  left: 0;
+  overflow-y: auto;
+  width: 100%;
+  max-height: calc(100vh - 4rem);
+  margin: 0;
+  padding: 0;
+  border: 1px solid uswds.color("base");
+  background: uswds.color("white");
+  list-style: none;
+}
+
+.statusbar-scale-list[hidden] {
+  display: none;
+}
+
+.statusbar-scale-list li {
+  padding: 0 0.25rem;
+  cursor: pointer;
+}
+
+.statusbar-scale-list li:hover {
+  background: uswds.color("base-lighter");
+}
+
+.statusbar-scale-list li[aria-selected="true"] {
+  background: uswds.color("primary");
+  color: uswds.color("white");
+}
+
+.statusbar-button {
+  height: 1.5rem;
+  padding: 0 0.375rem;
+  border: 1px solid uswds.color("base");
+  border-radius: 0.125rem;
+  background: uswds.color("white");
+  color: uswds.color("ink");
+  font: inherit;
+  cursor: pointer;
+}
+
+.statusbar-button:hover {
+  background: uswds.color("base-lighter");
+}

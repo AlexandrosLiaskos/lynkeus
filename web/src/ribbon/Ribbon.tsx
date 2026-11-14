@@ -47,6 +47,7 @@ export function Ribbon({ tabs, actions }: RibbonProps) {
         className="ribbon-panel"
         role="tabpanel"
         id="ribbon-panel"
+        data-tooltip-row
         aria-labelledby={selected ? `ribbon-tab-${selected}` : undefined}
       >
         {groups.map(({ label, tools }) => (

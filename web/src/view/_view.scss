@@ -1,1 +1,9 @@
+@use "uswds-core" as uswds;
+
 // The style of the elements of the View tab.
+
+// The map keeps the white background of the page while it fills the screen.
+.workspace-map:fullscreen,
+.map:fullscreen {
+  background: uswds.color("white");
+}
