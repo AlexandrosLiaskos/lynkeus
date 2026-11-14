@@ -6,7 +6,6 @@ import { panesStore, resetPanes, setPaneOpen, type PaneId } from "../shared/pane
 import { useStore } from "../shared/store";
 import { statusBarStore } from "../statusbar/state";
 import { canFillScreen, toggleFullScreen, useFullScreenElement } from "./fullScreen";
-import { useScaleBar } from "./scaleBar";
 import type { ViewToolId } from "./tab";
 
 /**
@@ -46,8 +45,7 @@ export function paneAction(id: PaneId, title: string, open: boolean, dock: DockS
 
 /**
  * What the finished buttons of the View tab do. A button that shows and hides an element stays pressed while
- * the element is shown. The Full screen button is inactive in a browser that cannot fill the screen, and the
- * Scale bar button on a map that has no scale bar.
+ * the element is shown. The Full screen button is inactive in a browser that cannot fill the screen.
  */
 export function useViewActions(): ToolActions<ViewToolId> {
   const map = useMap();
@@ -55,7 +53,6 @@ export function useViewActions(): ToolActions<ViewToolId> {
   const dock = useStore(dockStore);
   const statusBar = useStore(statusBarStore);
   const fullScreen = useFullScreenElement();
-  const scaleBar = useScaleBar(map);
 
   const actions: ToolActions<ViewToolId> = {
     "view-contents": paneAction("contents", "Contents", contents.open, dock),
@@ -65,9 +62,6 @@ export function useViewActions(): ToolActions<ViewToolId> {
   };
   if (canFillScreen()) {
     actions["view-full-screen"] = { run: () => toggleFullScreen(map), pressed: fullScreen !== null };
-  }
-  if (scaleBar) {
-    actions["view-scale-bar"] = { run: scaleBar.toggle, pressed: scaleBar.shown };
   }
   return actions;
 }

@@ -1,0 +1,42 @@
+@use "uswds-core" as uswds;
+
+// The credits of the layers of the map: one line of text in the size and the grey of the names of the status
+// bar. The grey has a contrast of 5.9 to 1 with the light grey behind it. A link keeps its underline and takes
+// the colour of the text.
+.credits {
+  margin: 0;
+  color: uswds.color("base-dark");
+  font-size: 0.75rem;
+}
+
+.credits a,
+.credits a:visited {
+  color: inherit;
+}
+
+.credits a:hover {
+  color: uswds.color("ink");
+}
+
+// Two credits stand apart.
+.credit + .credit {
+  margin-left: 0.5rem;
+}
+
+// The credits beside the map are a part of the status bar and keep to one line, as its other parts do.
+.credits--beside {
+  white-space: nowrap;
+}
+
+// The credits that must stand on the map itself: a band in the lower right corner of the map, in the light
+// grey of the status bar. The band is opaque, so the text keeps its contrast on a map of any colour. It stands
+// 4 pixels inside the edges of the map, clear of the two lines that show the keyboard focus of the map.
+.credits--map {
+  position: absolute;
+  right: 0.25rem;
+  bottom: 0.25rem;
+  max-width: calc(100% - 0.5rem);
+  padding: 0 0.375rem;
+  background: uswds.color("base-lightest");
+  line-height: 1.25rem;
+}

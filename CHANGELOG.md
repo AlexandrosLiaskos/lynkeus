@@ -70,6 +70,9 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   groups in view.
 - The messages show over the foot of the map.
 - A job may run for 40 minutes, and the container of the web service may use 2 gigabytes of memory.
+- The lines of latitude and longitude have a white edge of half a pixel, and their values one of 1 pixel.
+- The credits of the layers stand at the right end of the status bar. The credit of OpenStreetMap stays
+  in the corner of the map, where its tile service asks for it.
 - The dialog and the close button of a pane take the sizes of the frame, and the pressed and the
   unfinished buttons of the ribbon have a stronger contrast.
 - The explanations of the fields of the Map tab stand behind the "i" beside each title and no longer under
@@ -78,4 +81,5 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 
 ### Removed
 
+- The scale bar of the map and its button in the View tab. The status bar shows the scale.
 - The footer of the application page.

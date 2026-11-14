@@ -12,6 +12,7 @@ import { rotationInDegrees, showNorthUp } from "./rotation";
 import { formatScale, scaleAt, showScale } from "./scale";
 import { ScaleControl } from "./ScaleControl";
 import { coordinateFormatStore, statusBarStore } from "./state";
+import { Credits } from "../shared/credits/Credits";
 
 /**
  * A value of the status bar in a field of one width. The widest texts that the value can take stand unseen in
@@ -149,13 +150,15 @@ function Bar() {
         </span>
       )}
       <Projection name={projectionName(projection)} />
+      <Credits place="beside" />
     </section>
   );
 }
 
 /**
  * The status bar, under the map: the scale, the coordinates under the pointer, the value of the selected layer
- * there, the state of loading, the rotation and the projection of the map. The View tab shows and hides it.
+ * there, the state of loading, the rotation and the projection of the map, and the credits of its layers. The
+ * View tab shows and hides it.
  */
 export function StatusBar() {
   return useStore(statusBarStore) ? <Bar /> : null;
