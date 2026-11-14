@@ -14,7 +14,9 @@ Space Administration (NASA).
 
 Lynkeus is under development. At present the application searches NASA's catalogue for NISAR products
 by area, period, orbit and radar properties, or by product names. It shows the products found in a
-list and on the map, with the record, the files and the browse image of each one. The repository also holds the formats that
+list and on the map, with the record, the files and the browse image of each one. A visitor signs in to
+Earthdata with a user token of Earthdata Login, and the title bar shows who is signed in. The repository
+also holds the formats that
 connect the interface and the server, the program that publishes the team log as a web page, and the
 service that counts page visits. A button of the ribbon is grey until its function is finished.
 
@@ -165,6 +167,12 @@ the records of the NISAR products of the NASA Alaska Satellite Facility Distribu
 Center (ASF DAAC). The search reads the validated and the provisional collections of four product
 types, GCOV, GUNW, GOFF and SME2, and their beta collections when the user chooses them. The browse
 image of a product comes from the ASF DAAC.
+
+NASA delivers data to the holder of an Earthdata Login account. A visitor signs in to Lynkeus with a user
+token of that account, which Earthdata Login generates on its page Generate Token and which is valid for
+60 days. The server checks the signature and the expiry date of the token with the public keys of Earthdata
+Login and keeps the token in its memory only. It forgets the token when the visitor signs out, after 30
+minutes without use and after 8 hours.
 
 The background maps of the application come from two services.
 
