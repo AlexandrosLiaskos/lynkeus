@@ -19,6 +19,7 @@ services:
     image: lynkeus-api:local
     container_name: lynkeus-visits
     restart: unless-stopped
+    stop_signal: SIGINT
     read_only: true
     command: ["python", "-m", "lynkeus.visits", "--host", "0.0.0.0", "--count-file", "/data/visits.json"]
     volumes:
