@@ -1,4 +1,57 @@
+@use "uswds-core" as uswds;
+
 .map {
   flex: 1;
   min-height: 0;
+}
+
+// While a tool is in use, the pointer over the map is a cross.
+.map-tool {
+  cursor: crosshair;
+}
+
+// The cross in the centre of the map marks the place at which the Enter key acts. It shows while a tool is in
+// use and the keyboard has brought the focus to the map. Each bar is dark with a white edge, so that it stays
+// visible on a background map of any colour.
+.map-cross {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin: -0.875rem 0 0 -0.875rem;
+  pointer-events: none;
+}
+
+.map:focus-visible .map-tool .map-cross {
+  display: block;
+}
+
+.map-cross::before,
+.map-cross::after {
+  position: absolute;
+  border: 1px solid uswds.color("white");
+  background: uswds.color("ink");
+  content: "";
+}
+
+.map-cross::before {
+  top: 0;
+  bottom: 0;
+  left: calc(50% - 2px);
+  width: 2px;
+}
+
+.map-cross::after {
+  top: calc(50% - 2px);
+  right: 0;
+  left: 0;
+  height: 2px;
+}
+
+// A sentence for screen readers about what the map shows. It is kept off the screen.
+.map-live {
+  position: absolute;
+  left: -999em;
 }
