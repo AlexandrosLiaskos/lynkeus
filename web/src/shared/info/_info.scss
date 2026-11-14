@@ -1,0 +1,79 @@
+@use "uswds-core" as uswds;
+@use "../tooltip/bubble";
+
+// The line of a title with the button of its explanation. The title keeps its own text style, and the line
+// takes the place and the margins of the title.
+.info-title {
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.info-title > :is(h2, h3, h4) {
+  margin: 0;
+  font: inherit;
+  font-weight: bold;
+}
+
+// The button of an explanation: a circled "i" of 14 pixels in a target of 24 pixels, the smallest target that
+// criterion 2.5.8 of the Web Content Accessibility Guidelines 2.2 accepts. The target reaches 3 pixels over the
+// line of the title on each side, so the line keeps the height of its text.
+.info {
+  display: inline-flex;
+  flex: none;
+  margin: -0.1875rem 0;
+  vertical-align: middle;
+}
+
+.info-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: uswds.color("base-dark");
+  cursor: pointer;
+}
+
+.info-button .usa-icon {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.info-button:hover,
+.info-button:has(+ .info-bubble--open) {
+  color: uswds.color("primary");
+}
+
+// The bubble is fixed to the window, at a place that the component sets, so a pane that scrolls does not cut
+// it. It keeps its size while it is not shown, so that its place can be found before it shows. Its width does
+// not depend on its place, and it leaves 8 pixels to each edge of a narrow window. The clear strips above and
+// under the text belong to the bubble, so the pointer can cross from the button to the text.
+.info-bubble {
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(16rem, calc(100vw - 1rem));
+  padding: 0.25rem 0;
+  visibility: hidden;
+  cursor: default;
+}
+
+.info-bubble--open {
+  @include bubble.appear;
+
+  visibility: visible;
+}
+
+.info-bubble-text {
+  @include bubble.look;
+
+  display: block;
+  padding: 0.375rem 0.5rem;
+}
