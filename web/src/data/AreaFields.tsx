@@ -27,6 +27,8 @@ function draftArea(area: SearchArea): SearchDraft["area"] {
 interface AreaFieldsProps {
   draft: SearchDraft;
   onChange: (change: Partial<SearchDraft>) => void;
+  /** The explanation of the area, when the area serves another tool than the search. */
+  explanation?: string;
 }
 
 /**
@@ -35,7 +37,7 @@ interface AreaFieldsProps {
  * four fields take typed coordinates. After the area is taken, the list names what the area is. The explanation
  * of each title shows from the button beside it.
  */
-export function AreaFields({ draft, onChange }: AreaFieldsProps) {
+export function AreaFields({ draft, onChange, explanation = EXPLANATIONS.area }: AreaFieldsProps) {
   const map = useMap();
   const id = useId();
   const fileInput = useRef<HTMLInputElement>(null);
@@ -99,7 +101,7 @@ export function AreaFields({ draft, onChange }: AreaFieldsProps) {
   return (
     <>
       <FieldTitle field={`${id}-area`} title="Area">
-        {EXPLANATIONS.area}
+        {explanation}
       </FieldTitle>
       <select
         className="usa-select"

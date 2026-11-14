@@ -37,7 +37,7 @@ export const DATA_TAB = {
           id: "get-layer",
           label: "Get layer",
           icon: "save_alt",
-          description: "Requests one layer of the selected product, clipped to the area.",
+          description: "Requests layers of the selected product from NASA, each clipped to the area.",
         },
       ],
     },

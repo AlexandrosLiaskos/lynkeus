@@ -57,6 +57,11 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   the down and up arrow keys pass between a tab and its buttons, and the Tab key stops once on the buttons.
 - The collapsed ribbon: a double click on a tab, Ctrl+F1 or the button at the end of the row of tabs hides
   the groups of buttons and leaves the row of tabs. A click on a tab then shows its groups for a while.
+- The button Get layer: its form, in the tool pane, requests layers of the selected product from NASA, each
+  clipped to the area of the search, as one job for each layer.
+- The sections Jobs and Layers of the Catalog pane, with the jobs and the layers of the session: a job is
+  cancelled, run again and removed, and a layer is added to the map, shown in full, downloaded, renamed and
+  removed.
 
 ### Changed
 

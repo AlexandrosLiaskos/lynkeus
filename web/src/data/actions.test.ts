@@ -22,6 +22,12 @@ test("the button Sign in opens the pane of the sign-in", () => {
   expect(dockStore.get().tools).toEqual(["sign-in"]);
 });
 
+test("the button Get layer opens the pane of Get layer", () => {
+  const { result } = renderHook(() => useDataActions());
+  result.current["get-layer"]?.run();
+  expect(dockStore.get().tools).toEqual(["get-layer"]);
+});
+
 test("the button Sign out signs the visitor out", async () => {
   const server = earthdata("a_user");
   sessionStore.set({ state: "signed-in", user: "a_user" });

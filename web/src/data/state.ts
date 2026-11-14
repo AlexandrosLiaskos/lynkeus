@@ -5,6 +5,9 @@ import type { ProductSearch, SearchDraft } from "./search";
 /** The name of the pane of the search, which is also the name of the ribbon button that opens it. */
 export const SEARCH_PANE = "search-products";
 
+/** The name of the pane of Get layer, which is also the name of the ribbon button that opens it. */
+export const GET_LAYER_PANE = "get-layer";
+
 /** The choices of the search pane, or null before the pane is first opened. They stay when the pane closes. */
 export const searchDraftStore = createStore<SearchDraft | null>(null);
 

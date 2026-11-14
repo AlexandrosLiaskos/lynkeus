@@ -1,0 +1,114 @@
+@use "uswds-core" as uswds;
+
+// The style of the sections "Jobs" and "Layers" of the Catalog pane.
+
+// With the jobs or the layers of the session the pane holds more sections than its height can show. Each
+// section then takes the height of its content, up to a limit above which its list scrolls, and the pane scrolls
+// over the sections.
+.catalog--session {
+  height: auto;
+}
+
+.catalog--session .catalog-section {
+  flex: none;
+  max-height: 20rem;
+}
+
+.catalog-section + .catalog-section {
+  border-top: 0.125rem solid uswds.color("base-light");
+}
+
+.catalog-heading .info-title {
+  margin-top: 0;
+}
+
+.catalog-fault {
+  flex: none;
+  margin: 0 0.5rem 0.375rem;
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+// The list of a section scrolls when the section has reached its largest height.
+.session-list {
+  flex: 0 1 auto;
+  min-height: 3rem;
+  margin-top: 0.375rem;
+  overflow-y: auto;
+}
+
+// A job or a layer of the list. While its tools are shown, a line in the primary colour marks it.
+.job,
+.layer {
+  border-top: 1px solid uswds.color("base-lighter");
+  border-left: 0.1875rem solid transparent;
+}
+
+.job .catalog-item,
+.layer .catalog-item {
+  border-top: 0;
+  border-left: 0;
+}
+
+.job--open,
+.layer--open {
+  border-left-color: uswds.color("primary");
+  background: uswds.color("primary-lighter");
+}
+
+.job--open .catalog-item:hover,
+.layer--open .catalog-item:hover {
+  background: none;
+}
+
+// The icon of the state of a job stands before its name. The state is also written in words under the name.
+.catalog-item-title .usa-icon {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.125rem;
+  color: uswds.color("base-dark");
+  vertical-align: text-bottom;
+}
+
+.job--successful .catalog-item-title .usa-icon {
+  color: uswds.color("success-dark");
+}
+
+.job--failed .catalog-item-title .usa-icon,
+.job--failed .job-message {
+  color: uswds.color("error-dark");
+}
+
+.job-message {
+  color: uswds.color("ink");
+  overflow-wrap: anywhere;
+}
+
+// The bar is the progress element of the browser, in the primary colour, as in the tool pane.
+.job-progress {
+  display: block;
+  width: calc(100% - 1rem);
+  height: 0.375rem;
+  margin: 0 0.5rem 0.375rem;
+  accent-color: uswds.color("primary");
+}
+
+// The tools of a job or of a layer stand under it, as links, as the tools of the list of products do.
+.job-tools,
+.layer-tools {
+  margin: 0 0.5rem;
+  padding-bottom: 0.375rem;
+}
+
+.layer-rename {
+  padding: 0 0.5rem 0.5rem;
+}
+
+.layer-rename .usa-label {
+  margin-top: 0;
+}
+
+.layer-rename .catalog-tools {
+  align-items: center;
+  margin: 0.375rem 0 0;
+}
