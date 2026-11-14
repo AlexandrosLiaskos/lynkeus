@@ -205,7 +205,7 @@ test("the message names the parts that could not be read", () => {
     "The address of the page gives a view that Lynkeus cannot read. This part was ignored.",
   );
   expect(faultMessage(["map", "basemap", "area"])).toBe(
-    "The address of the page gives a view, a basemap and an area that Lynkeus cannot read. These parts were ignored.",
+    "The address of the page gives a view, a background map and an area that Lynkeus cannot read. These parts were ignored.",
   );
 });
 
