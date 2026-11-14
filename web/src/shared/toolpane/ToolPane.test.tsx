@@ -257,3 +257,74 @@ test("the Escape key first hides the explanation of a pane, and the second time 
   await userEvent.keyboard("{Escape}");
   expect(document.activeElement).toBe(screen.getByRole("main"));
 });
+
+test("the foot states what is missing beside the inactive run button, and the button is described by it", async () => {
+  function Named() {
+    const [name, setName] = useState("");
+    return (
+      <ToolPane id="buffer" title="Buffer" onRun={vi.fn()} ready={name !== ""} missing="Enter the name of the result.">
+        <label className="usa-label" htmlFor="buffer-name">
+          Name of the result
+        </label>
+        <input className="usa-input" id="buffer-name" value={name} onChange={(event) => setName(event.target.value)} />
+      </ToolPane>
+    );
+  }
+  render(<Named />);
+  act(() => openToolPane("buffer"));
+  const run = screen.getByRole("button", { name: "Run" });
+  expect(screen.getByRole("status").textContent).toBe("Enter the name of the result.");
+  expect(run.getAttribute("aria-disabled")).toBe("true");
+  expect(document.getElementById(run.getAttribute("aria-describedby") ?? "")).toBe(screen.getByRole("status"));
+  await userEvent.type(screen.getByRole("textbox", { name: "Name of the result" }), "Roads");
+  expect(screen.queryByRole("status")).toBeNull();
+  expect(run.hasAttribute("aria-disabled")).toBe(false);
+  expect(run.hasAttribute("aria-describedby")).toBe(false);
+});
+
+test("the sentence on what is missing gives way to the progress of a run", () => {
+  render(
+    <ToolPane
+      id="buffer"
+      title="Buffer"
+      onRun={vi.fn()}
+      ready={false}
+      missing="Enter the distance."
+      run={{ state: "running" }}
+    >
+      Parameters
+    </ToolPane>,
+  );
+  act(() => openToolPane("buffer"));
+  expect(screen.getByRole("status").textContent).toBe("Running");
+});
+
+test("the outcome of a run offers the link to the next step", async () => {
+  const show = vi.fn();
+  render(
+    <ToolPane
+      id="buffer"
+      title="Buffer"
+      onRun={vi.fn()}
+      run={{
+        state: "success",
+        text: "12 products were found.",
+        action: { label: "Show in the Catalog pane", onClick: show },
+      }}
+    >
+      Parameters
+    </ToolPane>,
+  );
+  act(() => openToolPane("buffer"));
+  await userEvent.click(screen.getByRole("button", { name: "Show in the Catalog pane" }));
+  expect(show).toHaveBeenCalledTimes(1);
+  expect(screen.getByRole("status").textContent).toBe("12 products were found.");
+});
+
+test("the name of a group of parameters carries the arrow of a section header", () => {
+  render(<Buffer />);
+  act(() => openToolPane("buffer"));
+  const name = screen.getByText("Output");
+  expect(name.tagName).toBe("SUMMARY");
+  expect(name.querySelector("svg")?.getAttribute("aria-hidden")).toBe("true");
+});

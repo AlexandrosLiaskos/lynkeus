@@ -1,4 +1,5 @@
 @use "uswds-core" as uswds;
+@use "../tokens/tokens";
 @use "../tooltip/bubble";
 
 // The line of a title with the button of its explanation. The title keeps its own text style, and the line
@@ -6,7 +7,7 @@
 .info-title {
   display: flex;
   align-items: center;
-  margin-top: 0.5rem;
+  margin-top: tokens.$field-gap;
 }
 
 .info-title > :is(h2, h3, h4) {
@@ -29,13 +30,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: tokens.$target;
+  height: tokens.$target;
   padding: 0;
   border: 0;
   border-radius: 50%;
   background: none;
-  color: uswds.color("base-dark");
+  color: tokens.$muted;
   cursor: pointer;
 }
 
@@ -46,7 +47,7 @@
 
 .info-button:hover,
 .info-button:has(+ .info-bubble--open) {
-  color: uswds.color("primary");
+  color: tokens.$link;
 }
 
 // The bubble is fixed to the window, at a place that the component sets, so a pane that scrolls does not cut
@@ -75,5 +76,5 @@
   @include bubble.look;
 
   display: block;
-  padding: 0.375rem 0.5rem;
+  padding: 0.375rem tokens.$space-2;
 }

@@ -1,4 +1,4 @@
-import { useState, type ReactNode, type SyntheticEvent } from "react";
+import { useId, useState, type ReactNode, type SyntheticEvent } from "react";
 import { Dialog } from "../dialog/Dialog";
 import { closeToolPane, dockStore } from "../dock/dock";
 import { DockPane } from "../dock/DockPane";
@@ -8,11 +8,17 @@ import { useStore } from "../store";
 /**
  * What the foot of a tool pane shows about a run of the tool. While the tool runs, `progress` is the share of the
  * work done, from 0 to 1; without it the bar shows that the work goes on, with no share. After the run, `text`
- * states the outcome in one sentence, and `details` holds whatever else the tool reports.
+ * states the outcome in one sentence, `action` is the link to the next step, and `details` holds whatever else
+ * the tool reports.
  */
 export type ToolPaneRun =
   | { state: "running"; progress?: number; text?: string }
-  | { state: "success" | "warning" | "error"; text: string; details?: ReactNode };
+  | {
+      state: "success" | "warning" | "error";
+      text: string;
+      action?: { label: string; onClick: () => void };
+      details?: ReactNode;
+    };
 
 interface ToolPaneProps {
   /** Unique name of the pane: the name of the ribbon button that opens it with `openToolPane`. */
@@ -27,6 +33,8 @@ interface ToolPaneProps {
   onRun: () => void;
   /** Whether the tool has what it needs to run. The run button is inactive without it. */
   ready?: boolean;
+  /** The first thing that the tool still lacks, in one sentence. The foot shows it while the tool is not ready. */
+  missing?: string;
   /** The run in progress or the outcome of the last run, or null before the first run. */
   run?: ToolPaneRun | null;
   /** Called when the user stops a run. The Cancel button shows during a run only when this is given. */
@@ -42,8 +50,9 @@ const STATE_ICONS = { success: "check_circle", warning: "warning", error: "error
 /**
  * The form of a tool, in a pane on the right of the map, as the Geoprocessing pane of ArcGIS Pro shows a tool:
  * the title, the parameters, which scroll, and at the foot the run button and, after the first run, the progress
- * with a Cancel button or the outcome with a link to its details. The pane is not modal, so the map and the
- * ribbon stay in use.
+ * with a Cancel button or the outcome with a link to the next step and a link to its details. While the tool is
+ * not ready, the foot states beside the inactive run button what is still missing. The pane is not modal, so the
+ * map and the ribbon stay in use.
  *
  * A ribbon button opens the pane with `openToolPane(id)`, and the tool closes it with `closeToolPane(id)`. The
  * content is drawn only while the pane is open, so a component inside the pane starts again each time the pane
@@ -63,8 +72,9 @@ const STATE_ICONS = { success: "check_circle", warning: "warning", error: "error
  *         );
  *       };
  *       return (
- *         <ToolPane id="buffer" title="Buffer" onRun={start} ready={distance !== ""} run={run}>
- *           <label className="usa-label" htmlFor="buffer-distance">Distance in metres</label>
+ *         <ToolPane id="buffer" title="Buffer" onRun={start} ready={distance !== ""}
+ *           missing="Enter the distance." run={run}>
+ *           <label className="usa-label" htmlFor="buffer-distance">Distance (m)</label>
  *           <input className="usa-input" id="buffer-distance" value={distance}
  *             onChange={(event) => setDistance(event.target.value)} />
  *         </ToolPane>
@@ -78,6 +88,7 @@ export function ToolPane({
   runLabel = "Run",
   onRun,
   ready = true,
+  missing,
   run = null,
   onCancel,
   onClose,
@@ -85,6 +96,7 @@ export function ToolPane({
 }: ToolPaneProps) {
   const open = useStore(dockStore).tools.includes(id);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const missingId = useId();
 
   if (!open) {
     return null;
@@ -92,6 +104,7 @@ export function ToolPane({
 
   const running = run?.state === "running";
   const inactive = !ready || running;
+  const lacking = !ready && !running ? missing : undefined;
 
   const onSubmit = (event: SyntheticEvent) => {
     event.preventDefault();
@@ -111,8 +124,18 @@ export function ToolPane({
         <div className="tool-pane-body">{children}</div>
         <div className="tool-pane-foot">
           <div className="tool-pane-actions">
+            {lacking ? (
+              <p className="tool-pane-missing" id={missingId} role="status">
+                {lacking}
+              </p>
+            ) : null}
             {/* An inactive run button stays in the order of the keyboard, as an unfinished button of the ribbon does. */}
-            <button type="submit" className="usa-button" aria-disabled={inactive ? true : undefined}>
+            <button
+              type="submit"
+              className="usa-button"
+              aria-disabled={inactive ? true : undefined}
+              aria-describedby={lacking ? missingId : undefined}
+            >
               {runLabel}
             </button>
           </div>
@@ -140,6 +163,11 @@ export function ToolPane({
               <span className="tool-pane-status-text" role={run.state === "error" ? "alert" : "status"}>
                 {run.text}
               </span>
+              {run.action ? (
+                <button type="button" className="usa-button usa-button--unstyled" onClick={run.action.onClick}>
+                  {run.action.label}
+                </button>
+              ) : null}
               {run.details ? (
                 <button type="button" className="usa-button usa-button--unstyled" onClick={() => setDetailsOpen(true)}>
                   View details
@@ -168,12 +196,15 @@ interface ToolPaneGroupProps {
 
 /**
  * A group of parameters that opens and closes with a click on its name. It is the details element of the
- * browser.
+ * browser, and its name is drawn as the header of a `Section` is: an arrow and the name in bold.
  */
 export function ToolPaneGroup({ title, open = false, children }: ToolPaneGroupProps) {
   return (
     <details className="tool-pane-group" open={open}>
-      <summary>{title}</summary>
+      <summary>
+        <Icon name="expand_more" />
+        {title}
+      </summary>
       <div className="tool-pane-group-body">{children}</div>
     </details>
   );

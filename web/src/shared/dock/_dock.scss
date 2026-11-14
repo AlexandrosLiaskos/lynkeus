@@ -1,4 +1,5 @@
 @use "uswds-core" as uswds;
+@use "../tokens/tokens";
 
 // The place of the panes on one side of the map. The component sets its width.
 .dock {
@@ -11,7 +12,7 @@
   max-width: calc(50% - 2rem);
   min-height: 0;
   background: uswds.color("white");
-  font-size: 0.8125rem;
+  font-size: tokens.$text;
 }
 
 .dock--left {
@@ -51,20 +52,20 @@
   flex: none;
   overflow-x: auto;
   scrollbar-width: thin;
-  border-top: 1px solid uswds.color("base-lighter");
+  border-top: 1px solid tokens.$border;
   background: uswds.color("base-lightest");
 }
 
 .dock-tabs button {
   flex: none;
   max-width: 11rem;
-  height: 1.75rem;
-  padding: 0 0.625rem;
+  height: tokens.$row;
+  padding: 0 tokens.$space-3;
   overflow: hidden;
   border: 0;
   border-top: 0.125rem solid transparent;
   background: none;
-  color: uswds.color("ink");
+  color: tokens.$ink;
   font: inherit;
   text-overflow: ellipsis;
   white-space: nowrap;
