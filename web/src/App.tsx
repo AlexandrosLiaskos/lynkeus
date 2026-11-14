@@ -1,10 +1,27 @@
-import { useState } from "react";
-import { BASE_MAPS, type BaseMapId } from "./baseMaps";
+import { useEffect, useState } from "react";
+import type { BaseMapId } from "./baseMaps";
+import { createMap, showBaseMap, showWorld, zoomBy } from "./map";
 import { MapView } from "./MapView";
+import { RibbonPanel, RibbonTabs, type ToolActions } from "./Ribbon";
+import type { TabId } from "./ribbon";
 
-/** The page of the application: the top bar, the tools of the map, the map and the notice. */
+/** The page of the application: the top bar with the ribbon of tools, the map and the notice. */
 export function App() {
+  const [map] = useState(createMap);
   const [baseMap, setBaseMap] = useState<BaseMapId>("blue-marble");
+  const [tab, setTab] = useState<TabId>("map");
+
+  useEffect(() => {
+    showBaseMap(map, baseMap);
+  }, [map, baseMap]);
+
+  const actions: ToolActions = {
+    "blue-marble": { run: () => setBaseMap("blue-marble"), pressed: baseMap === "blue-marble" },
+    openstreetmap: { run: () => setBaseMap("openstreetmap"), pressed: baseMap === "openstreetmap" },
+    "zoom-in": { run: () => zoomBy(map, 1) },
+    "zoom-out": { run: () => zoomBy(map, -1) },
+    "full-extent": { run: () => showWorld(map) },
+  };
 
   return (
     <>
@@ -13,30 +30,13 @@ export function App() {
           <img src="/assets/lynkeus-mark.png" alt="" width="40" height="40" />
           <span className="site-name">Lynkeus</span>
         </h1>
+        <RibbonTabs selected={tab} onSelect={setTab} />
         <nav aria-label="Site">
           <a href="/team-log/">Team log</a>
         </nav>
       </header>
-      <div className="toolbar" role="group" aria-labelledby="base-map-label">
-        <span id="base-map-label">Base map</span>
-        <ul className="usa-button-group usa-button-group--segmented">
-          {BASE_MAPS.map(({ id, label }) => (
-            <li key={id} className="usa-button-group__item">
-              <button
-                type="button"
-                className={id === baseMap ? "usa-button" : "usa-button usa-button--outline"}
-                aria-pressed={id === baseMap}
-                onClick={() => {
-                  setBaseMap(id);
-                }}
-              >
-                {label}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <MapView baseMap={baseMap} />
+      <RibbonPanel selected={tab} actions={actions} />
+      <MapView map={map} />
       <footer className="app-footer">
         <p>
           Lynkeus is an independent project of Team Lynkeus, prepared for the{" "}

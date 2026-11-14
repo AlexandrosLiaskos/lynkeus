@@ -9,4 +9,6 @@ export default defineConfig(
   tseslint.configs.strictTypeChecked,
   reactHooks.configs.flat.recommended,
   { languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname } } },
+  // An arrow function may call a function that returns nothing, as event handlers do.
+  { rules: { "@typescript-eslint/no-confusing-void-expression": ["error", { ignoreArrowShorthand: true }] } },
 );

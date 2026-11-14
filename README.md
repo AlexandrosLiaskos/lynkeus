@@ -78,7 +78,7 @@ changes.
 | [Node.js](https://nodejs.org/) | 22 | MIT | Builds the interface |
 | [React](https://react.dev/) | 19.3.1 | MIT | Interface |
 | [OpenLayers](https://openlayers.org/) | 10.11.0 | BSD-2-Clause | Map |
-| [U.S. Web Design System](https://designsystem.digital.gov/) | 3.14.0 | CC0-1.0 | Buttons |
+| [U.S. Web Design System](https://designsystem.digital.gov/) | 3.14.0 | CC0-1.0 | Icons |
 | [TypeScript](https://www.typescriptlang.org/) | 6.0.3 | Apache-2.0 | Language of the interface |
 | [Vite](https://vite.dev/) | 8.3.8 | MIT | Builds the interface |
 | [Sass](https://sass-lang.com/) | 1.108.2 | MIT | Compiles the styles |
