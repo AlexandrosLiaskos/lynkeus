@@ -1,7 +1,7 @@
 import { createStore } from "../shared/store";
 
 /** The tools of the Map tab that work on the map itself. At most one of them is in use at a time. */
-export type MapTool = "area-rectangle";
+export type MapTool = "area-rectangle" | "measure-distance" | "measure-area";
 
 /** The tool in use, or null. The button of the tool in use is shown as pressed. */
 export const toolStore = createStore<MapTool | null>(null);

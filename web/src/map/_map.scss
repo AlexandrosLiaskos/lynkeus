@@ -11,8 +11,8 @@
 }
 
 // The cross in the centre of the map marks the place at which the Enter key acts. It shows while a tool is in
-// use and the keyboard has brought the focus to the map. Each bar is dark with a white edge, so that it stays
-// visible on a background map of any colour.
+// use and the keyboard has brought the focus to the map. Each bar is 4 pixels thick, dark with a white edge of
+// one pixel, so that it stays visible on a background map of any colour.
 .map-cross {
   position: absolute;
   top: 50%;
@@ -40,18 +40,92 @@
   top: 0;
   bottom: 0;
   left: calc(50% - 2px);
-  width: 2px;
+  width: 4px;
 }
 
 .map-cross::after {
   top: calc(50% - 2px);
   right: 0;
   left: 0;
-  height: 2px;
+  height: 4px;
 }
 
 // A sentence for screen readers about what the map shows. It is kept off the screen.
 .map-live {
   position: absolute;
   left: -999em;
+}
+
+// The parts of the panes of the Map tab: a heading, a line of text with its buttons, and the lists.
+.map-pane-heading {
+  margin: 0.75rem 0 0.25rem;
+  font-size: 0.8125rem;
+}
+
+.map-pane-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  margin: 0.5rem 0 0;
+}
+
+.bookmark-list,
+.measure-results {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+// A bookmark: its name, which returns the map to its view, and the buttons that rename and remove it.
+.bookmark {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-height: 1.75rem;
+  border-bottom: 1px solid uswds.color("base-lighter");
+}
+
+.bookmark-name {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  text-align: left;
+}
+
+.bookmark .usa-input {
+  flex: 1;
+  min-width: 0;
+  margin-top: 0;
+}
+
+.bookmark-action {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0.125rem;
+  background: none;
+  color: uswds.color("base-dark");
+  cursor: pointer;
+}
+
+.bookmark-action:hover {
+  background: uswds.color("base-lighter");
+  color: uswds.color("ink");
+}
+
+// A measurement: the whole, and under it the numbered lengths of its segments.
+.measure-result {
+  margin-top: 0.375rem;
+  padding-top: 0.375rem;
+  border-top: 1px solid uswds.color("base-lighter");
+}
+
+.measure-segments {
+  margin: 0.125rem 0 0;
+  padding-left: 1.5rem;
 }
