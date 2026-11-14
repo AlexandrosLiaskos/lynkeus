@@ -51,5 +51,7 @@ jobs:
           npm run lint
       - name: Types
         run: npm run types
+      - name: Tests
+        run: npm test
       - name: Build
         run: npm run build
