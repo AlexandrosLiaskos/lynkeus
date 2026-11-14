@@ -73,8 +73,8 @@ export function BookmarksPane() {
           Name of the view
         </label>
         <Info id={`${id}-hint`} about="Name of the view">
-          The name under which the present view of the map is saved, for example Merrimack River. Lynkeus keeps the
-          bookmarks in the local storage of this browser and does not send them to the server.
+          The name under which the present view of the map is saved. Lynkeus keeps the bookmarks in the local storage of
+          this browser and does not send them to the server.
         </Info>
       </div>
       <input
