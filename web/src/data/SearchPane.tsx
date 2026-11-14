@@ -1,0 +1,528 @@
+import { useEffect, useId, useState } from "react";
+import { areaStore } from "../shared/area";
+import { PRODUCT_TYPES, type ProductType } from "../shared/layer";
+import { useMap } from "../shared/map";
+import { useStore } from "../shared/store";
+import { ToolPane, ToolPaneGroup, type ToolPaneRun } from "../shared/toolpane/ToolPane";
+import { AreaFields, rectangleText } from "./AreaFields";
+import { EXPLANATIONS } from "./explanations";
+import { daysOfMonth, MONTHS, periodDays, PERIODS, type PeriodId, type SeasonDay } from "./period";
+import {
+  BANDS,
+  BANDWIDTH_PRODUCTS,
+  BANDWIDTHS,
+  CHANNELS,
+  MATURITIES,
+  PAIR_PRODUCTS,
+  PRODUCT_NAMES,
+  SIDE_BAND_PRODUCTS,
+  type Bandwidth,
+  type Coverage,
+  type Direction,
+} from "./products";
+import { runSearch, stopSearch } from "./run";
+import { firstDraft, FRAMES, searchOfDraft, TRACKS, type SearchDraft } from "./search";
+import { viewArea } from "./searchArea";
+import { productsStore, SEARCH_PANE, searchDraftStore } from "./state";
+
+/** Add a value to a list, or take it out, and keep the order of the offered values. */
+function toggled<Value extends string>(offered: readonly Value[], chosen: readonly Value[], value: Value): Value[] {
+  return offered.filter((other) => (other === value ? !chosen.includes(value) : chosen.includes(other)));
+}
+
+interface ChecksProps<Value extends string> {
+  legend: string;
+  offered: readonly Value[];
+  chosen: readonly Value[];
+  onChange: (chosen: Value[]) => void;
+}
+
+/** A row of check boxes under one name. */
+function Checks<Value extends string>({ legend, offered, chosen, onChange }: ChecksProps<Value>) {
+  const id = useId();
+  return (
+    <fieldset className="usa-fieldset search-checks">
+      <legend className="usa-legend">{legend}</legend>
+      {offered.map((value) => (
+        <div className="usa-checkbox" key={value}>
+          <input
+            className="usa-checkbox__input"
+            type="checkbox"
+            id={`${id}-${value}`}
+            checked={chosen.includes(value)}
+            onChange={() => onChange(toggled(offered, chosen, value))}
+          />
+          <label className="usa-checkbox__label" htmlFor={`${id}-${value}`}>
+            {value}
+          </label>
+        </div>
+      ))}
+    </fieldset>
+  );
+}
+
+interface SeasonDayFieldsProps {
+  legend: string;
+  value: SeasonDay;
+  onChange: (value: SeasonDay) => void;
+}
+
+/** The day and the month of one end of a season. */
+function SeasonDayFields({ legend, value, onChange }: SeasonDayFieldsProps) {
+  return (
+    <fieldset className="usa-fieldset search-season-day">
+      <legend className="usa-legend">{legend}</legend>
+      <select
+        className="usa-select"
+        aria-label={`${legend}: day`}
+        value={value.day}
+        onChange={(event) => onChange({ ...value, day: Number(event.target.value) })}
+      >
+        {Array.from({ length: daysOfMonth(value.month) }, (_, index) => index + 1).map((day) => (
+          <option key={day} value={day}>
+            {day}
+          </option>
+        ))}
+      </select>
+      <select
+        className="usa-select"
+        aria-label={`${legend}: month`}
+        value={value.month}
+        onChange={(event) => {
+          const month = Number(event.target.value);
+          onChange({ month, day: Math.min(value.day, daysOfMonth(month)) });
+        }}
+      >
+        {MONTHS.map((month, index) => (
+          <option key={month} value={index + 1}>
+            {month}
+          </option>
+        ))}
+      </select>
+    </fieldset>
+  );
+}
+
+/**
+ * The choices of the search. They are kept when the pane closes. The first time that the pane opens, they are
+ * the drawn area or, without one, the view of the map, and the last 30 days.
+ */
+function SearchFields({ onRestore }: { onRestore: () => void }) {
+  const map = useMap();
+  const id = useId();
+  const stored = useStore(searchDraftStore);
+
+  useEffect(() => {
+    if (searchDraftStore.get() === null) {
+      searchDraftStore.set(firstDraft(rectangleText(areaStore.get() ?? viewArea(map))));
+    }
+  }, [map]);
+
+  if (!stored) {
+    return null;
+  }
+  const draft = stored;
+  const change = (changes: Partial<SearchDraft>) => {
+    const current = searchDraftStore.get();
+    if (current) {
+      searchDraftStore.set({ ...current, ...changes });
+    }
+  };
+
+  const restore = () => {
+    onRestore();
+    searchDraftStore.set(firstDraft(rectangleText(viewArea(map))));
+  };
+
+  const { product } = draft;
+  const isPair = PAIR_PRODUCTS.includes(product);
+  const hasSideBand = SIDE_BAND_PRODUCTS.includes(product);
+  const hasBandwidth = BANDWIDTH_PRODUCTS.includes(product);
+  const radarUsed =
+    draft.channels.length > 0 ||
+    draft.sideChannels.length > 0 ||
+    draft.bands.length > 0 ||
+    draft.bandwidth !== "" ||
+    draft.coverage !== "" ||
+    draft.joint !== "";
+
+  const maturity = (
+    <Checks
+      legend="Level of validation"
+      offered={MATURITIES}
+      chosen={draft.maturity}
+      onChange={(chosen) => change({ maturity: chosen })}
+    />
+  );
+
+  return (
+    <>
+      <fieldset className="usa-fieldset search-checks">
+        <legend className="usa-legend">Search by</legend>
+        {(
+          [
+            ["properties", "Area, period and properties"],
+            ["names", "Product names"],
+          ] as const
+        ).map(([by, label]) => (
+          <div className="usa-radio" key={by}>
+            <input
+              className="usa-radio__input"
+              type="radio"
+              name={`${id}-by`}
+              id={`${id}-by-${by}`}
+              checked={draft.by === by}
+              onChange={() => change({ by })}
+            />
+            <label className="usa-radio__label" htmlFor={`${id}-by-${by}`}>
+              {label}
+            </label>
+          </div>
+        ))}
+      </fieldset>
+
+      {draft.by === "names" ? (
+        <ToolPaneGroup title="Product names" open>
+          <label className="usa-label" htmlFor={`${id}-names`}>
+            Names
+          </label>
+          <textarea
+            className="usa-textarea search-names"
+            id={`${id}-names`}
+            rows={6}
+            spellCheck={false}
+            value={draft.names}
+            onChange={(event) => change({ names: event.target.value })}
+          />
+          <p className="usa-hint search-hint">{EXPLANATIONS.names}</p>
+          {maturity}
+        </ToolPaneGroup>
+      ) : (
+        <>
+          <ToolPaneGroup title="Product" open>
+            <label className="usa-label" htmlFor={`${id}-product`}>
+              Product type
+            </label>
+            <select
+              className="usa-select"
+              id={`${id}-product`}
+              value={product}
+              onChange={(event) => change({ product: event.target.value as ProductType })}
+            >
+              {PRODUCT_TYPES.map((type) => (
+                <option key={type} value={type}>
+                  {type}: {PRODUCT_NAMES[type]}
+                </option>
+              ))}
+            </select>
+            {maturity}
+          </ToolPaneGroup>
+
+          <ToolPaneGroup title="Area" open>
+            <AreaFields draft={draft} onChange={change} />
+          </ToolPaneGroup>
+
+          <ToolPaneGroup title="Period" open>
+            <label className="usa-label" htmlFor={`${id}-period`}>
+              Period
+            </label>
+            <select
+              className="usa-select"
+              id={`${id}-period`}
+              value={draft.period}
+              onChange={(event) => {
+                const period = event.target.value as PeriodId;
+                change({ period, ...periodDays(period) });
+              }}
+            >
+              {PERIODS.map(({ id: period, label }) => (
+                <option key={period} value={period}>
+                  {label}
+                </option>
+              ))}
+            </select>
+            <div className="search-row">
+              <div>
+                <label className="usa-label" htmlFor={`${id}-start`}>
+                  First day
+                </label>
+                <input
+                  className="usa-input"
+                  id={`${id}-start`}
+                  type="date"
+                  value={draft.start}
+                  onChange={(event) => change({ period: "custom", start: event.target.value })}
+                />
+              </div>
+              <div>
+                <label className="usa-label" htmlFor={`${id}-end`}>
+                  Last day
+                </label>
+                <input
+                  className="usa-input"
+                  id={`${id}-end`}
+                  type="date"
+                  value={draft.end}
+                  onChange={(event) => change({ period: "custom", end: event.target.value })}
+                />
+              </div>
+            </div>
+            <p className="usa-hint search-hint">{EXPLANATIONS.days}</p>
+
+            <div className="usa-checkbox">
+              <input
+                className="usa-checkbox__input"
+                type="checkbox"
+                id={`${id}-season`}
+                checked={draft.season !== null}
+                onChange={(event) =>
+                  change({
+                    season: event.target.checked ? { start: { month: 6, day: 1 }, end: { month: 8, day: 31 } } : null,
+                  })
+                }
+              />
+              <label className="usa-checkbox__label" htmlFor={`${id}-season`}>
+                Only a season of each year
+              </label>
+            </div>
+            {draft.season ? (
+              <div className="search-row">
+                <SeasonDayFields
+                  legend="Season from"
+                  value={draft.season.start}
+                  onChange={(start) => change({ season: draft.season && { ...draft.season, start } })}
+                />
+                <SeasonDayFields
+                  legend="Season to"
+                  value={draft.season.end}
+                  onChange={(end) => change({ season: draft.season && { ...draft.season, end } })}
+                />
+              </div>
+            ) : null}
+
+            {isPair ? (
+              <fieldset className="usa-fieldset search-checks search-checks--lines">
+                <legend className="usa-legend">A pair of acquisitions is found when</legend>
+                {(
+                  [
+                    [false, "the time from its first date to its second overlaps the period"],
+                    [true, "both of its dates lie inside the period"],
+                  ] as const
+                ).map(([inside, label]) => (
+                  <div className="usa-radio" key={String(inside)}>
+                    <input
+                      className="usa-radio__input"
+                      type="radio"
+                      name={`${id}-pair`}
+                      id={`${id}-pair-${String(inside)}`}
+                      checked={draft.pairInside === inside}
+                      onChange={() => change({ pairInside: inside })}
+                    />
+                    <label className="usa-radio__label" htmlFor={`${id}-pair-${String(inside)}`}>
+                      {label}
+                    </label>
+                  </div>
+                ))}
+              </fieldset>
+            ) : null}
+          </ToolPaneGroup>
+
+          <ToolPaneGroup title="Orbit" open>
+            <div className="search-row">
+              <div>
+                <label className="usa-label" htmlFor={`${id}-track`}>
+                  Track
+                </label>
+                <input
+                  className="usa-input"
+                  id={`${id}-track`}
+                  inputMode="numeric"
+                  autoComplete="off"
+                  placeholder={`1 to ${String(TRACKS)}`}
+                  value={draft.track}
+                  onChange={(event) => change({ track: event.target.value })}
+                />
+              </div>
+              <div>
+                <label className="usa-label" htmlFor={`${id}-frame`}>
+                  Frame
+                </label>
+                <input
+                  className="usa-input"
+                  id={`${id}-frame`}
+                  inputMode="numeric"
+                  autoComplete="off"
+                  placeholder={`1 to ${String(FRAMES)}`}
+                  value={draft.frame}
+                  onChange={(event) => change({ frame: event.target.value })}
+                />
+              </div>
+            </div>
+            <p className="usa-hint search-hint">{`${EXPLANATIONS.track} ${EXPLANATIONS.frame}`}</p>
+            <label className="usa-label" htmlFor={`${id}-direction`}>
+              Direction of the orbit
+            </label>
+            <select
+              className="usa-select"
+              id={`${id}-direction`}
+              value={draft.direction}
+              onChange={(event) => change({ direction: event.target.value as Direction | "" })}
+            >
+              <option value="">Ascending and descending</option>
+              <option value="ascending">Ascending</option>
+              <option value="descending">Descending</option>
+            </select>
+            <div className="search-row">
+              <div>
+                <label className="usa-label" htmlFor={`${id}-cycle`}>
+                  Cycle
+                </label>
+                <input
+                  className="usa-input"
+                  id={`${id}-cycle`}
+                  inputMode="numeric"
+                  autoComplete="off"
+                  value={draft.cycle}
+                  onChange={(event) => change({ cycle: event.target.value })}
+                />
+              </div>
+              <div>
+                <label className="usa-label" htmlFor={`${id}-orbit`}>
+                  Absolute orbit
+                </label>
+                <input
+                  className="usa-input"
+                  id={`${id}-orbit`}
+                  inputMode="numeric"
+                  autoComplete="off"
+                  value={draft.orbit}
+                  onChange={(event) => change({ orbit: event.target.value })}
+                />
+              </div>
+            </div>
+            <p className="usa-hint search-hint">
+              {`${isPair ? EXPLANATIONS.pairCycle : EXPLANATIONS.cycle} ${EXPLANATIONS.orbit}`}
+            </p>
+          </ToolPaneGroup>
+
+          <ToolPaneGroup title="Radar" open={radarUsed}>
+            <Checks
+              legend={hasSideBand ? "Channels of the main band (A)" : "Channels"}
+              offered={CHANNELS}
+              chosen={draft.channels}
+              onChange={(channels) => change({ channels })}
+            />
+            {hasSideBand ? (
+              <>
+                <Checks
+                  legend="Channels of the side band (B)"
+                  offered={CHANNELS}
+                  chosen={draft.sideChannels}
+                  onChange={(sideChannels) => change({ sideChannels })}
+                />
+                <Checks
+                  legend="Frequency bands"
+                  offered={BANDS}
+                  chosen={draft.bands}
+                  onChange={(bands) => change({ bands })}
+                />
+              </>
+            ) : null}
+            <p className="usa-hint search-hint">{EXPLANATIONS.channels}</p>
+            {hasBandwidth ? (
+              <>
+                <label className="usa-label" htmlFor={`${id}-bandwidth`}>
+                  Range bandwidth{hasSideBand ? " of the main band" : ""}
+                </label>
+                <select
+                  className="usa-select"
+                  id={`${id}-bandwidth`}
+                  value={draft.bandwidth}
+                  onChange={(event) =>
+                    change({ bandwidth: event.target.value === "" ? "" : (Number(event.target.value) as Bandwidth) })
+                  }
+                >
+                  <option value="">Any</option>
+                  {BANDWIDTHS.map((bandwidth) => (
+                    <option key={bandwidth} value={bandwidth}>
+                      {bandwidth} MHz
+                    </option>
+                  ))}
+                </select>
+              </>
+            ) : null}
+            <label className="usa-label" htmlFor={`${id}-coverage`}>
+              Coverage of the frame
+            </label>
+            <select
+              className="usa-select"
+              id={`${id}-coverage`}
+              value={draft.coverage}
+              onChange={(event) => change({ coverage: event.target.value as Coverage | "" })}
+            >
+              <option value="">Full and partial</option>
+              <option value="full">Full</option>
+              <option value="partial">Partial</option>
+            </select>
+            <label className="usa-label" htmlFor={`${id}-joint`}>
+              Observed together with the S-band radar
+            </label>
+            <select
+              className="usa-select"
+              id={`${id}-joint`}
+              value={draft.joint}
+              onChange={(event) => change({ joint: event.target.value as SearchDraft["joint"] })}
+            >
+              <option value="">Yes and no</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </ToolPaneGroup>
+        </>
+      )}
+
+      <p className="search-restore">
+        <button type="button" className="usa-button usa-button--unstyled" onClick={restore}>
+          Restore defaults
+        </button>
+      </p>
+    </>
+  );
+}
+
+/**
+ * The pane of the button Search products. The search needs no Earthdata account. The foot of the pane states
+ * what is wrong with the choices, or how many products were found.
+ */
+export function SearchPane() {
+  const [run, setRun] = useState<ToolPaneRun | null>(null);
+
+  const start = () => {
+    const draft = searchDraftStore.get();
+    if (!draft) {
+      return;
+    }
+    const search = searchOfDraft(draft, productsStore.get()?.search.sort);
+    if (typeof search === "string") {
+      setRun({ state: "error", text: search });
+      return;
+    }
+    setRun({ state: "running", text: "Searching NASA's catalogue" });
+    runSearch(search).then(setRun, (error: unknown) => {
+      // A search that the user stopped leaves no outcome.
+      const stopped = error instanceof DOMException && error.name === "AbortError";
+      setRun(stopped ? null : { state: "error", text: error instanceof Error ? error.message : "The search failed." });
+    });
+  };
+
+  const cancel = () => {
+    stopSearch();
+    setRun(null);
+  };
+
+  return (
+    <ToolPane id={SEARCH_PANE} title="Search products" runLabel="Search" onRun={start} run={run} onCancel={cancel}>
+      <SearchFields onRestore={() => setRun(null)} />
+    </ToolPane>
+  );
+}
