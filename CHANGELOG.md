@@ -32,6 +32,8 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   JSON, OGC Process Description, Job list and Dismiss). Each job runs in an operating-system process of its own.
 - The layers of a session, which can be renamed and removed, and whose files the web server serves under
   `/files/`, in parts on a range request.
+- The form of Get layer and the sections Jobs and Layers of the Catalog pane, with the modules that read the
+  jobs and the layers of the session from the server. They are not yet joined to the page.
 
 ### Changed
 
