@@ -3,6 +3,7 @@ import { useAnalysisActions } from "./analysis/actions";
 import { AnalysisDialogs } from "./analysis/AnalysisDialogs";
 import { CatalogPane } from "./catalog/CatalogPane";
 import { ContentsPane } from "./contents/ContentsPane";
+import { ContentsTools } from "./contents/ContentsTools";
 import { useDataActions } from "./data/actions";
 import { DataDialogs } from "./data/DataDialogs";
 import { Header } from "./header/Header";
@@ -55,6 +56,7 @@ function Page() {
         </div>
         <Dock side="right">
           <CatalogPane />
+          <ContentsTools />
           <MapDialogs />
           <DataDialogs />
           <AnalysisDialogs />

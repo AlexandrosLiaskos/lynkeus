@@ -1,11 +1,19 @@
 import OlMap from "ol/Map";
 import View from "ol/View";
 import { fromLonLat, toLonLat } from "ol/proj";
-import { beforeEach, expect, test } from "vitest";
+import { beforeEach, expect, test, vi } from "vitest";
+import { selectedLayerStore } from "../contents/state";
 import { areaStore, isArea } from "../shared/area";
 import { messagesStore } from "../shared/messages/messages";
 import { AREA_FAULTS } from "./area";
-import { NOTICES, setAreaFromView, showNextView, showPreviousView, zoomToArea } from "./commands";
+import { NOTICES, setAreaFromView, showNextView, showPreviousView, zoomToArea, zoomToLayer } from "./commands";
+
+vi.mock("../contents/display", async () => {
+  const { transformExtent } = await import("ol/proj");
+  // The simulated browser reads no file, so the extent of a layer is given here: the box of the sample files.
+  const box = transformExtent([-71.2, 42.6, -70.75, 42.95], "EPSG:4326", "EPSG:3857");
+  return { extentOf: (_map: unknown, id: string) => Promise.resolve(id === "sample" ? box : null) };
+});
 
 function start(longitude: number, latitude: number, zoom: number) {
   const map = new OlMap({ view: new View({ center: fromLonLat([longitude, latitude]), zoom }) });
@@ -18,6 +26,7 @@ function messages() {
 }
 
 beforeEach(() => {
+  selectedLayerStore.set(null);
   areaStore.set(null);
   messagesStore.set([]);
 });
@@ -60,4 +69,27 @@ test("without an area, or without another view, a notice says so", () => {
     ["info", NOTICES.noEarlierView],
     ["info", NOTICES.noLaterView],
   ]);
+});
+
+test("the map moves to the whole of the selected layer", async () => {
+  const map = start(0, 0, 3);
+  selectedLayerStore.set("sample");
+  await zoomToLayer(map, 0);
+  const [longitude = 0, latitude = 0] = toLonLat(map.getView().getCenter() ?? [0, 0]);
+  expect(longitude).toBeCloseTo(-70.975, 6);
+  expect(latitude).toBeCloseTo(42.775, 2);
+  expect(map.getView().getZoom()).toBeGreaterThan(9);
+  expect(messages()).toEqual([]);
+});
+
+test("without a selected layer, or without its extent, a sentence says so", async () => {
+  const map = start(0, 0, 3);
+  await zoomToLayer(map, 0);
+  selectedLayerStore.set("unread");
+  await zoomToLayer(map, 0);
+  expect(messages()).toEqual([
+    ["info", NOTICES.noLayer],
+    ["error", NOTICES.noExtent],
+  ]);
+  expect(map.getView().getZoom()).toBe(3);
 });

@@ -18,7 +18,6 @@ export interface ColourScale {
 export const COLOUR_SCALES: readonly ColourScale[] = [
   { name: "grey", kind: "sequential" },
   { name: "viridis", kind: "sequential" },
-  { name: "cividis", kind: "sequential" },
   { name: "batlow", kind: "sequential" },
   { name: "magma", kind: "sequential" },
   { name: "inferno", kind: "sequential" },
