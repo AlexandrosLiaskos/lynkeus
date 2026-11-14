@@ -1,13 +1,37 @@
 @use "uswds-core" as uswds;
 @use "session";
 
-// The style of the Catalog pane.
+// The style of the Catalog pane. The sizes of the form elements come from the shared form style.
+
+// The sections of the pane stand one under the other and share its height. Each one scrolls by itself.
+.catalog {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.catalog-section {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.catalog-products {
+  flex: 1 1 55%;
+}
+
+// The details take at most a little less than half of the pane, so that the list stays in view above them.
+.catalog-details {
+  flex: 0 1 45%;
+  border-top: 0.125rem solid uswds.color("base-light");
+}
 
 .catalog-heading {
   display: flex;
-  align-items: baseline;
+  flex: none;
+  align-items: center;
   justify-content: space-between;
-  padding: 0.5rem 0.5rem 0;
+  padding: 0.375rem 0.5rem 0;
 }
 
 .catalog-heading h3 {
@@ -15,15 +39,75 @@
   font-size: 0.8125rem;
 }
 
-.catalog-heading .usa-button {
+.catalog-summary {
+  flex: none;
+  margin: 0.25rem 0.5rem 0.375rem;
+  color: uswds.color("base-darker");
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+// The choices of the order and of the groups, each with its name before it.
+.catalog-choices {
+  display: grid;
+  flex: none;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.25rem 0.5rem;
+  margin: 0 0.5rem;
+}
+
+.catalog-choices .usa-label,
+.catalog-choices .usa-select {
+  margin-top: 0;
+}
+
+// The tools of the list and of the details stand in a row, as links.
+.catalog-tools {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  gap: 0 1rem;
+  margin: 0.25rem 0.5rem 0;
+}
+
+// The shared style of the forms gives every button of a pane the side padding of a filled button. A button
+// that is shown as a link among the text of the pane has none.
+.pane .catalog .usa-button.usa-button--unstyled {
+  padding: 0;
+}
+
+.catalog-outlines {
+  flex: none;
+  margin: 0 0.5rem 0.25rem;
+}
+
+.catalog-scroll,
+.catalog-details-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+// The list keeps the height of two products when the pane is short.
+.catalog-scroll {
+  min-height: 7.5rem;
+}
+
+.catalog-group h4 {
+  position: sticky;
+  z-index: 1;
+  top: 0;
+  margin: 0;
+  padding: 0.25rem 0.5rem;
+  border-top: 1px solid uswds.color("base-lighter");
+  background: uswds.color("base-lightest");
   font-size: 0.75rem;
 }
 
-.catalog-summary {
-  margin: 0.25rem 0.5rem 0.5rem;
+.catalog-group-count {
   color: uswds.color("base-dark");
-  font-size: 0.75rem;
-  line-height: 1.4;
+  font-weight: normal;
 }
 
 .catalog-list {
@@ -51,8 +135,13 @@
   cursor: pointer;
 }
 
-.catalog-item:hover {
+.catalog-item:hover,
+.catalog-item--hovered {
   background: uswds.color("base-lightest");
+}
+
+.catalog-item--hovered {
+  border-left-color: uswds.color("primary-light");
 }
 
 .catalog-item[aria-pressed="true"] {
@@ -64,4 +153,97 @@
   color: uswds.color("ink");
   font-size: 0.8125rem;
   font-weight: bold;
+}
+
+.catalog-item-days {
+  font-weight: normal;
+}
+
+// The foot of the list: the button that loads more products, or the sentence that says why there is none.
+.catalog-more-row {
+  margin: 0;
+  padding: 0.5rem;
+  border-top: 1px solid uswds.color("base-lighter");
+  color: uswds.color("base-darker");
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+// The details of the selected product.
+.catalog-details-body {
+  padding: 0.25rem 0.5rem 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.catalog-details-body p {
+  margin: 0.25rem 0;
+}
+
+.catalog-details .catalog-tools {
+  margin: 0;
+}
+
+.catalog-name {
+  color: uswds.color("ink");
+  font-weight: bold;
+  overflow-wrap: anywhere;
+}
+
+.catalog-browse {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.catalog-browse img {
+  border: 1px solid uswds.color("base-lighter");
+  background: uswds.color("base-lightest");
+}
+
+// A name and its value on one line; a long value takes the lines that it needs.
+.catalog-rows {
+  margin: 0.25rem 0;
+}
+
+.catalog-rows > div {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: 0 0.5rem;
+  padding: 0.125rem 0;
+  border-top: 1px solid uswds.color("base-lightest");
+}
+
+.catalog-rows dt {
+  color: uswds.color("base-dark");
+  overflow-wrap: anywhere;
+}
+
+.catalog-rows dd {
+  margin: 0;
+  color: uswds.color("ink");
+  overflow-wrap: anywhere;
+}
+
+.catalog-more {
+  margin-top: 0.25rem;
+  border-top: 1px solid uswds.color("base-lighter");
+}
+
+.catalog-more > summary {
+  padding: 0.25rem 0;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.catalog-more h4 {
+  margin: 0.25rem 0 0;
+  font-size: 0.75rem;
+}
+
+.catalog-files {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-wrap: anywhere;
 }

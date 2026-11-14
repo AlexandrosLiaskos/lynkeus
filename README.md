@@ -13,7 +13,10 @@ Space Administration (NASA).
 ## Status
 
 Lynkeus is under development. At present the application searches NASA's catalogue for NISAR products
-and shows the products found in a list and on the map. The repository also holds the formats that
+by area, period, orbit and radar properties, or by product names. It shows the products found in a
+list and on the map, with the record, the files and the browse image of each one. A visitor signs in to
+Earthdata with a user token of Earthdata Login, and the title bar shows who is signed in. The repository
+also holds the formats that
 connect the interface and the server, the program that publishes the team log as a web page, and the
 service that counts page visits. A button of the ribbon is grey until its function is finished.
 
@@ -32,8 +35,8 @@ In `web/src/`, each element of the interface has its own folder, which holds the
 element and its style. Each tab of the ribbon is declared in its own folder (`map/`, `data/`,
 `analysis/`, `view/`, `share/` and `help/`), and `ribbon/` joins them. The folder `shared/` holds what
 every part uses: the tool pane, the stack of panes beside the map, the dialog, the messages, the
-description of a button, the styles of the form elements and of the keyboard focus, and the formats of
-a layer. The server holds the same formats in `api/src/lynkeus/layers.py`.
+description of a button, the explanation of a title, the styles of the form elements and of the
+keyboard focus, and the formats of a layer. The server holds the same formats in `api/src/lynkeus/layers.py`.
 
 ## Running Lynkeus on your own computer
 
@@ -113,6 +116,10 @@ its memory. It reads three settings from the environment.
 | `LYNKEUS_EARTHDATA_KEYS` | Address of the public keys with which an Earthdata token is checked, for tests | The address of NASA Earthdata Login |
 | `LYNKEUS_COOKIE_SECURE` | `false` lets the cookie of a session pass over plain HTTP, for tests | The cookie passes over HTTPS only |
 
+The container of the web service may use 2 gigabytes of memory, for the service and the two jobs that run
+at once. The web service and its jobs reach NASA's catalogue, Earthdata Login and NASA Harmony over HTTPS,
+so the container needs a connection to the internet.
+
 The last command installs two systemd units. They publish the team log again whenever its file
 changes.
 
@@ -158,7 +165,14 @@ changes.
 The products that the search lists are found in NASA's Common Metadata Repository (CMR), which holds
 the records of the NISAR products of the NASA Alaska Satellite Facility Distributed Active Archive
 Center (ASF DAAC). The search reads the validated and the provisional collections of four product
-types: GCOV, GUNW, GOFF and SME2.
+types, GCOV, GUNW, GOFF and SME2, and their beta collections when the user chooses them. The browse
+image of a product comes from the ASF DAAC.
+
+NASA delivers data to the holder of an Earthdata Login account. A visitor signs in to Lynkeus with a user
+token of that account, which Earthdata Login generates on its page Generate Token and which is valid for
+60 days. The server checks the signature and the expiry date of the token with the public keys of Earthdata
+Login and keeps the token in its memory only. It forgets the token when the visitor signs out, after 30
+minutes without use and after 8 hours.
 
 The background maps of the application come from two services.
 

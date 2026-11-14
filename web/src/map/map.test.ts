@@ -14,7 +14,7 @@ test("the map has one layer for each background map, under every other layer", (
   expect(layers.map((layer) => layer.getZIndex())).toEqual([0, 0, 0]);
 });
 
-test("one background map is shown at a time", () => {
+test("one background map is shown at a time, or none", () => {
   const map = start();
   showBaseMap(map, "openstreetmap");
   expect(
@@ -23,6 +23,13 @@ test("one background map is shown at a time", () => {
       .getArray()
       .map((layer) => layer.getVisible()),
   ).toEqual([false, true, false]);
+  showBaseMap(map, null);
+  expect(
+    map
+      .getLayers()
+      .getArray()
+      .some((layer) => layer.getVisible()),
+  ).toBe(false);
 });
 
 test("the map turns clockwise by an angle in degrees and returns to north", () => {

@@ -1,4 +1,5 @@
 import { useId } from "react";
+import { Info } from "../shared/info/Info";
 import { useStore } from "../shared/store";
 import { ToolPane } from "../shared/toolpane/ToolPane";
 import {
@@ -56,12 +57,14 @@ export function MeasurePane({ kind }: { kind: MeasureKind }) {
       runLabel="Clear results"
       onRun={() => measurementsStore.set([])}
       ready={measurements.length > 0}
+      info={
+        <>
+          Click the points of the {noun} on the map, and click twice on the last point. With the keyboard focus on the
+          map, the Enter key adds a point at the cross and, pressed twice at one place, ends the {noun}. The Backspace
+          key takes back the last point, and the Escape key gives up the {noun}.
+        </>
+      }
     >
-      <p className="usa-hint">
-        Click the points of the {noun} on the map, and click twice on the last one. With the keyboard focus on the map,
-        the Enter key adds a point at the cross and, pressed twice at one place, ends the {noun}; the Backspace key
-        takes back a point and the Escape key gives up the {noun}.
-      </p>
       <label className="usa-label" htmlFor={`${id}-distance`}>
         Unit of length
       </label>
@@ -96,14 +99,22 @@ export function MeasurePane({ kind }: { kind: MeasureKind }) {
           </select>
         </>
       ) : null}
-      <h3 className="map-pane-heading">Results</h3>
+      <div className="info-title map-pane-heading">
+        <h3>Results</h3>
+        <Info id={`${id}-results-info`} about="Results">
+          The lengths and the areas are measured on a sphere with a radius of{" "}
+          {new Intl.NumberFormat("en-US").format(EARTH_RADIUS)} metres, the mean radius of the WGS 84 ellipsoid. Each
+          segment is the great circle between its two points. On the ellipsoid itself a length differs by up to 0.6
+          percent and an area by up to 0.9 percent.
+        </Info>
+      </div>
       {sketch ? (
         <div className="measure-result">
           <MeasurementLines measurement={sketch} name={`The ${noun} being drawn`} />
         </div>
       ) : null}
       {measurements.length === 0 && !sketch ? <p className="usa-hint">Nothing is measured.</p> : null}
-      <ol className="measure-results" aria-label="Finished measurements">
+      <ol className="measure-results" aria-label="Finished measurements" aria-describedby={`${id}-results-info`}>
         {measurements.map((measurement, index) => (
           <li key={index} className="measure-result">
             <MeasurementLines
@@ -113,11 +124,6 @@ export function MeasurePane({ kind }: { kind: MeasureKind }) {
           </li>
         ))}
       </ol>
-      <p className="usa-hint">
-        Measured on a sphere with a radius of {new Intl.NumberFormat("en-US").format(EARTH_RADIUS)} metres, the mean
-        radius of the WGS 84 ellipsoid: each segment is the great circle between its two points. On the ellipsoid itself
-        a length or an area differs by up to about half of one percent.
-      </p>
     </ToolPane>
   );
 }

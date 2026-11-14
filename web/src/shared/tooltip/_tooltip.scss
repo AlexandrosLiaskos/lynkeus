@@ -1,4 +1,5 @@
 @use "uswds-core" as uswds;
+@use "bubble";
 
 // The anchor adds no box of its own, so the element that it describes keeps its place.
 .tooltip-anchor {
@@ -8,6 +9,9 @@
 // The description stands under its element, at a place that the component sets. It is fixed to the window, so
 // that an element which scrolls, such as the ribbon, does not cut it.
 .tooltip {
+  @include bubble.look;
+  @include bubble.appear;
+
   position: fixed;
   z-index: 100;
   display: flex;
@@ -18,15 +22,7 @@
   // A clear strip separates the description from its element. It belongs to the description, so the pointer
   // can cross it without hiding the description. The component sets its height.
   border-top: 0.25rem solid transparent;
-  border-radius: 0.25rem;
-  background: uswds.color("ink");
   background-clip: padding-box;
-  color: uswds.color("white");
-  font-size: 0.75rem;
-  font-weight: normal;
-  line-height: 1.4;
-  text-align: left;
-  white-space: normal;
 }
 
 .tooltip[hidden] {

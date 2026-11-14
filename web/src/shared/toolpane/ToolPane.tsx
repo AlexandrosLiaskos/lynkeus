@@ -19,6 +19,8 @@ interface ToolPaneProps {
   id: string;
   /** Name of the tool, shown at the top of the pane and on its tab. */
   title: string;
+  /** What the tool does and how it is used, in complete sentences. It shows from the "i" beside the title. */
+  info?: ReactNode;
   /** Label of the button that runs the tool. */
   runLabel?: string;
   /** Called when the user presses the run button, or the Enter key in a field. It is not called during a run. */
@@ -47,6 +49,9 @@ const STATE_ICONS = { success: "check_circle", warning: "warning", error: "error
  * content is drawn only while the pane is open, so a component inside the pane starts again each time the pane
  * opens; state kept in the component that declares the pane lasts while the pane is closed.
  *
+ * The explanation of a parameter does not stand under its title: it goes into an `Info` element beside the
+ * title, and the explanation of the tool itself into the property `info`.
+ *
  *     function BufferPane() {
  *       const [distance, setDistance] = useState("100");
  *       const [run, setRun] = useState<ToolPaneRun | null>(null);
@@ -69,6 +74,7 @@ const STATE_ICONS = { success: "check_circle", warning: "warning", error: "error
 export function ToolPane({
   id,
   title,
+  info,
   runLabel = "Run",
   onRun,
   ready = true,
@@ -100,7 +106,7 @@ export function ToolPane({
   };
 
   return (
-    <DockPane id={id} title={title} onClose={close}>
+    <DockPane id={id} title={title} info={info} onClose={close}>
       <form className="usa-form tool-pane" onSubmit={onSubmit} noValidate>
         <div className="tool-pane-body">{children}</div>
         <div className="tool-pane-foot">

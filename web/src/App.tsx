@@ -3,8 +3,10 @@ import { useAnalysisActions } from "./analysis/actions";
 import { AnalysisDialogs } from "./analysis/AnalysisDialogs";
 import { CatalogPane } from "./catalog/CatalogPane";
 import { ContentsPane } from "./contents/ContentsPane";
+import { ContentsTools } from "./contents/ContentsTools";
 import { useDataActions } from "./data/actions";
 import { DataDialogs } from "./data/DataDialogs";
+import { EarthdataAccount } from "./data/EarthdataAccount";
 import { Header } from "./header/Header";
 import { useHelpActions } from "./help/actions";
 import { HelpDialogs } from "./help/HelpDialogs";
@@ -43,7 +45,7 @@ function Page() {
 
   return (
     <>
-      <Header />
+      <Header account={<EarthdataAccount />} />
       <Ribbon tabs={TABS} actions={actions} />
       <div className="workspace">
         <Dock side="left">
@@ -55,6 +57,7 @@ function Page() {
         </div>
         <Dock side="right">
           <CatalogPane />
+          <ContentsTools />
           <MapDialogs />
           <DataDialogs />
           <AnalysisDialogs />
