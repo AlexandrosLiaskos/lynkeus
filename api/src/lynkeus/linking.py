@@ -151,10 +151,14 @@ class PairingKey(Format):
     key : str
         Secret that the own server sends with every later request. The project server keeps its
         SHA-256 digest only.
+    user : str or None
+        Earthdata user name of the owner, which the program shows on the computer. The program shows
+        no name when the field is absent.
     """
 
     server: ServerId
     key: Key
+    user: Label | None = None
 
 
 class PairingConfirmation(Format):
@@ -298,7 +302,11 @@ class DismissTask(Format):
 
 
 class RenameTask(Format):
-    """Give a layer another title, in its description and in its two files."""
+    """Give a layer another title, in its description and in its STAC record.
+
+    The GeoTIFF keeps the title of its creation, as on the project server (``lynkeus.jobs``): writing
+    the file again would move its parts, and a map that reads the file would receive wrong ones.
+    """
 
     id: Key
     kind: Literal["rename"] = "rename"

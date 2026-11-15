@@ -77,7 +77,8 @@ def _start(client: TestClient, process: str = "stand-in", **inputs: object) -> d
 def _layers(client: TestClient) -> list[dict[str, Any]]:
     """Return the descriptions of the layers of the session, the newest first."""
     entries = client.get("/api/layers").json()["layers"]
-    assert all(set(entry) == {"layer", "size", "created"} for entry in entries)
+    assert all(set(entry) == {"layer", "size", "created", "server"} for entry in entries)
+    assert all(entry["server"] is None for entry in entries)
     return [entry["layer"] for entry in entries]
 
 
