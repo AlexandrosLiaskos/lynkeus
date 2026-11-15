@@ -5,7 +5,7 @@
 | Tool | `coherence-state` (Analysis tab, group Coherence, button One pair) |
 | NISAR product | GUNW, Level-2 Geocoded Unwrapped Interferogram |
 | Result | Magnitude of the interferometric coherence of one pair of dates, without unit |
-| State | The comparison (D-17) was made on 14 Nov 2026 on the sample file of the pilot area, against the layer as NASA Harmony delivered it. The original product file was not compared. |
+| State | The comparison (D-17) was made on 14 Nov 2026 on the sample file of the pilot area, against the layer as NASA Harmony delivered it. On 15 Nov 2026 the layer of the original HDF5 product file was compared as well: every cell that holds a value in the sample is equal. The comparison was repeated independently on 15 Nov 2026, with other scripts, and gave the same numbers. |
 
 ## Reference
 
@@ -92,7 +92,9 @@ coherence = |<s1 * conj(s2)>| / sqrt(<|s1|^2> * <|s2|^2>)
 Here `s1` and `s2` are the complex images of the two dates and `< >` is the average over the looks.
 The number of looks of each layer is recorded in the product, under
 `/science/LSAR/GUNW/metadata/processingInformation/parameters/[unwrappedInterferogram or wrappedInterferogram]/frequencyA/`,
-as `numberOfRangeLooks` and `numberOfAzimuthLooks`.
+as `numberOfRangeLooks` and `numberOfAzimuthLooks`. In the pilot product they are 5 looks in range
+by 6 in azimuth for the 20 m layer, and 13 by 16 for the 80 m layer (read from the product file on
+15 Nov 2026).
 
 ## Unit
 
@@ -116,44 +118,44 @@ two pairs can be compared.
 
 ## How to read the result
 
-Near 1, the radar echoes of the two dates are alike; near 0, they are not. A low value does not by
-itself show that the surface changed: several sources lower the coherence, and change of the surface
-is one of them (Zebker and Villasenor, 1992). The estimate is biased toward higher values, and it is
+Near 1, the radar echoes of the two dates are alike; near 0, they are not. Several sources
+contribute to the correlation of the two echoes, and one term describes the change of the surface
+(Zebker and Villasenor, 1992, abstract). A low value therefore does not by itself show that the
+surface changed; this is a conclusion of this sheet. The estimate is biased toward higher values, and it is
 more accurate at a coarser resolution (Touzi et al., 1999). The 80 m layer is the coarser of the two
 (specification, section 2.2), so it is expected to be the more accurate. This is a conclusion of
 this sheet; the article does not treat NISAR products. The sheet states no threshold: no document of
-the mission that was read for it gives one.
+the mission that was read for it gives one. Only the abstract of each article was read.
 
 ## Comparison with the source program (D-17)
 
 | | |
 |---|---|
-| Source program | ISCE3, the program of the mission that produced the layer. Each product records its version in `/science/LSAR/GUNW/metadata/processingInformation/algorithms/softwareVersion`. The NASA catalogue records ISCE3 0.25.21 for the product of the pilot area (field `SASVersionId`) |
+| Source program | ISCE3, the program of the mission that produced the layer. Each product records its version in `/science/LSAR/GUNW/metadata/processingInformation/algorithms/softwareVersion`. The NASA catalogue records ISCE3 0.25.21 for the product of the pilot area (field `SASVersionId`), and the field `softwareVersion` of the product file reads `0.25.21` (read on 15 Nov 2026) |
 | Licence | Apache-2.0 |
 | Comparison | The values of the result against the values of the sample file, that is the layer as NASA Harmony delivered it. No program is run for the comparison, because the tool computes nothing |
 | File compared | `gunw-coherence-20261009-20261021.tif` (SHA-256 `e02cb42feeae25a9420c6298a98b59583b0f3a3e70cd0cba5241be484ea1de81`), a layer `coherenceMagnitude` of the product `NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001`, with cells of 20 m. The file is GeoTIFF as NASA Harmony delivered it, read at full resolution |
-| Platform | Linux 6.8.0-146-generic x86_64, in a container of the image `python:3.13-slim`, Python 3.13.18. Lynkeus: `main` at commit `22167b4` with the code of this tool, numpy 2.5.4. The file was read with rasterio 1.5.2 (GDAL 3.12.2). The run started 2026-11-14T16:47:24Z, with the final code |
-| Largest difference | 0 of 3,743,710 cells differ. The result is bit-identical to the values of the file, and it is the input array itself. 164,618 cells hold `nan` |
-| Not reached | The result was not compared with the original HDF5 product file; whether Harmony delivers the values of the HDF5 layer unchanged was not examined. One pair of dates and one area were compared, at the spacing of 20 m only |
+| Platform | `Linux-6.8.0-146-generic-x86_64-with-glibc2.41`, Python 3.13.18, numpy 2.5.4. The file was read with rasterio 1.5.2 (GDAL 3.12.2). The comparison was made on 14 Nov 2026 and again on 15 Nov 2026, with scripts that were written separately; the row describes the run of 15 Nov 2026, whose records are kept in `docs/research/records/analysis/` (`comparison.json`, `lynkeus_side.json`) |
+| Largest difference | 0 of 3,743,710 cells differ. The result is bit-identical to the values of the file, and it is the input array itself. 164,618 cells hold `nan`. These 164,618 cells are the cells of the file whose centre lies outside the requested box, which NASA Harmony fills with the no-data value; in the product they hold values |
+| Not reached | On 15 Nov 2026 the layer was read from the original HDF5 product file for the whole rectangle of the sample: the 3,579,092 cells that hold a value in the sample equal the product bit for bit. One pair of dates and one area were compared, at the spacing of 20 m only |
 
 The exact numbers of the comparison are in `docs/research/analysis.md`, part 4.5.
 
 ## Not yet confirmed
 
-1. The comparison of the result with the layer in the original HDF5 product file (Andreas).
-2. Which routine of ISCE3 the processing of the mission runs for the coherence. The workflow
+1. Which routine of ISCE3 the processing of the mission runs for the coherence. The workflow
    `python/packages/nisar/workflows/crossmul.py` (version 0.25.21, lines 65 and 67) creates
    `isce3.signal.Crossmul`, the class of the formula above, or `isce3.cuda.signal.Crossmul`. Which
    of the two the mission runs, and how the 80 m layer is derived, was not traced. The point is with
    Andreas.
-3. The layers `coherenceMagnitude` of the channel VV and of the unwrapped interferogram (80 m): the
+2. The layers `coherenceMagnitude` of the channel VV and of the unwrapped interferogram (80 m): the
    tool accepts them by their names, and only the layer of the channel HH of the wrapped
    interferogram (20 m) was received and computed.
-4. The name `grey` of the colour scale in the Contents pane, and which end of it is black (Stelios).
+3. The name `grey` of the colour scale in the Contents pane, and which end of it is black (Stelios).
    A later commit of `main`, `5095ee0`, holds a scale `grey` that runs from black at the lowest
    value to white (`web/src/contents/colours.ts`, lines 54 to 57); the file was read and nothing was
    tried.
-5. That the sentence of a refusal reaches the visitor through a job of the server. The tool raises
-   `LayerError`, which `run_tool` passes on (`api/src/lynkeus/tools.py`, lines 59 to 64, at commit
-   `0ad795b` of `main`). This was read in the files; no job of a tool was run
-   (`docs/research/analysis.md`, part 7, point 10; Andreas).
+4. How the interface shows the sentence of a refusal. On 15 Nov 2026 the tool ran as a job of a
+   private copy of the web service, and each refusal that was tried ended its job as failed, with
+   the sentence of the tool as the message of the job (`docs/research/analysis.md`, parts 3.4 and
+   4.7). Nothing was seen in a browser.
