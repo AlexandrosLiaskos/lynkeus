@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
-import { act, fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, expect, test, vi } from "vitest";
-import { HOVER_DELAY } from "../shared/tooltip/Tooltip";
+import { restPointerOn, takePointerOff } from "../shared/tooltip/pointer";
 import { NOT_YET_AVAILABLE, reasonOf, Ribbon } from "./Ribbon";
 import type { RibbonTab } from "./types";
 
@@ -84,16 +84,24 @@ test("a finished button that lacks something is inactive, says what it lacks and
   render(<Ribbon tabs={TABS} actions={{ ready: { run, missing: "Select a layer in the Contents pane." } }} />);
   const ready = screen.getByRole("button", { name: "Ready" });
   expect(ready.getAttribute("aria-disabled")).toBe("true");
-  const tip = document.getElementById(ready.getAttribute("aria-describedby") ?? "")?.parentElement;
-  expect(tip?.textContent).toBe("ReadyDoes its work. Select a layer in the Contents pane.");
+  const sentences = document.getElementById(ready.getAttribute("aria-describedby") ?? "");
+  expect(sentences?.textContent).toBe("Does its work. Select a layer in the Contents pane.");
   await userEvent.click(ready);
   expect(run).not.toHaveBeenCalled();
 });
 
 test("the description of every button reads its name first and then its sentence", () => {
+  vi.useFakeTimers();
   render(<Ribbon tabs={TABS} actions={{ ready: { run: vi.fn() } }} />);
-  const tips = screen.getAllByRole("tooltip", { hidden: true });
-  expect(tips.map((tip) => [tip.firstElementChild?.tagName, tip.textContent])).toEqual([
+  const tips = ["Ready", "Later", "Collapse the ribbon"].map((name) => {
+    const button = screen.getByRole("button", { name });
+    restPointerOn(button);
+    const tip = screen.getByRole("tooltip");
+    const read = [tip.firstElementChild?.tagName, tip.textContent];
+    takePointerOff(button);
+    return read;
+  });
+  expect(tips).toEqual([
     ["STRONG", "ReadyDoes its work."],
     ["STRONG", "LaterWill do its work. Not yet available."],
     [
@@ -105,60 +113,44 @@ test("the description of every button reads its name first and then its sentence
 
 test("the description shows on keyboard focus and hides on the Escape key", async () => {
   render(<Ribbon tabs={TABS} actions={{ ready: { run: vi.fn() } }} />);
-  const group = screen.getByRole("group", { name: "Group" });
-  const [tip] = within(group).getAllByRole("tooltip", { hidden: true });
-  expect(tip?.hidden).toBe(true);
+  expect(screen.queryByRole("tooltip")).toBeNull();
   await userEvent.tab();
   await userEvent.tab();
   expect(document.activeElement).toBe(screen.getByRole("button", { name: "Ready" }));
-  expect(tip?.hidden).toBe(false);
-  expect(tip?.textContent).toBe("ReadyDoes its work.");
+  expect(screen.getByRole("tooltip").textContent).toBe("ReadyDoes its work.");
   await userEvent.keyboard("{Escape}");
-  expect(tip?.hidden).toBe(true);
+  expect(screen.queryByRole("tooltip")).toBeNull();
 });
 
 test("the description shows after the pointer rests on a button and hides when it leaves", () => {
   vi.useFakeTimers();
   render(<Ribbon tabs={TABS} actions={{}} />);
   const later = screen.getByRole("button", { name: "Later" });
-  const tip = document.getElementById(later.getAttribute("aria-describedby") ?? "")?.parentElement;
-  fireEvent.pointerEnter(later);
-  expect(tip?.hidden).toBe(true);
-  act(() => {
-    vi.advanceTimersByTime(HOVER_DELAY);
-  });
-  expect(tip?.hidden).toBe(false);
-  fireEvent.pointerLeave(later);
-  expect(tip?.hidden).toBe(true);
+  expect(screen.queryByRole("tooltip")).toBeNull();
+  restPointerOn(later);
+  expect(screen.getByRole("tooltip").textContent).toBe("LaterWill do its work. Not yet available.");
+  takePointerOff(later);
+  expect(screen.queryByRole("tooltip")).toBeNull();
 });
 
 test("the Escape key hides a description that the pointer opened, without keyboard focus on its button", () => {
   vi.useFakeTimers();
   render(<Ribbon tabs={TABS} actions={{}} />);
   const later = screen.getByRole("button", { name: "Later" });
-  const tip = document.getElementById(later.getAttribute("aria-describedby") ?? "")?.parentElement;
-  fireEvent.pointerEnter(later);
-  act(() => {
-    vi.advanceTimersByTime(HOVER_DELAY);
-  });
+  restPointerOn(later);
   expect(document.activeElement).toBe(document.body);
-  expect(tip?.hidden).toBe(false);
+  expect(screen.queryByRole("tooltip")).not.toBeNull();
   fireEvent.keyDown(document.body, { key: "Escape" });
-  expect(tip?.hidden).toBe(true);
+  expect(screen.queryByRole("tooltip")).toBeNull();
 });
 
-test("the description shows under the panel of the ribbon, with a clear strip from the button to it", async () => {
+test("the description shows under the panel of the ribbon, 4 pixels from it", () => {
+  vi.useFakeTimers();
   render(<Ribbon tabs={TABS} actions={{ ready: { run: vi.fn() } }} />);
-  const ready = screen.getByRole("button", { name: "Ready" });
-  vi.spyOn(ready, "getBoundingClientRect").mockReturnValue({ left: 10, bottom: 100 } as DOMRect);
-  vi.spyOn(screen.getByRole("tabpanel"), "getBoundingClientRect").mockReturnValue({ bottom: 120 } as DOMRect);
-  await userEvent.tab();
-  await userEvent.tab();
-  const tip = document.getElementById(ready.getAttribute("aria-describedby") ?? "")?.parentElement;
-  expect(tip?.hidden).toBe(false);
-  expect(tip?.style.left).toBe("10px");
-  expect(tip?.style.top).toBe("100px");
-  expect(tip?.style.borderTopWidth).toBe("24px");
+  // The page of the test gives every element the place 0, so the button ends at 0. The panel ends 20 pixels lower.
+  vi.spyOn(screen.getByRole("tabpanel"), "getBoundingClientRect").mockReturnValue({ bottom: 20 } as DOMRect);
+  restPointerOn(screen.getByRole("button", { name: "Ready" }));
+  expect(screen.getByRole("tooltip").style.top).toBe("24px");
 });
 
 // The tests of the keyboard use a first tab with two groups of buttons.

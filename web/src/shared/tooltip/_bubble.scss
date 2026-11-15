@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 @use "uswds-core" as uswds;
+@use "../tokens/tokens";
 
 // The look of a bubble of text that shows beside an element: the description of a ribbon button and the
 // explanation of a title. Both take it from here, so the page has one bubble.
 @mixin look {
+  width: max-content;
+  max-width: min(16rem, calc(100vw - 1rem));
   border-radius: 0.25rem;
   background: uswds.color("ink");
   color: uswds.color("white");
@@ -14,20 +17,50 @@
   line-height: 1.4;
   text-align: left;
   white-space: normal;
+  pointer-events: auto;
 }
 
-// A bubble appears with a fade of 0.08 seconds, the time of the tooltip of the design system. A user who has
-// asked the operating system for less motion sees it at once.
-@mixin appear {
-  animation: bubble-appear 0.08s ease-in-out;
+// A bubble enters and leaves with a change of its opacity and a move of 4 pixels from the side of its element,
+// two properties that the graphics card draws. React Aria Components marks the bubble with `data-entering` in its
+// first frame and with `data-exiting` while it leaves, and removes it from the page when the transition has
+// ended. A user who has asked the operating system for less motion sees the bubble come and go at once.
+@mixin motion {
+  transition:
+    opacity tokens.$motion-enter tokens.$ease-enter,
+    transform tokens.$motion-enter tokens.$ease-enter;
 
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
-  }
-}
-
-@keyframes bubble-appear {
-  from {
+  &[data-entering],
+  &[data-exiting] {
+    transform: translateY(-0.25rem);
     opacity: 0;
   }
+
+  &[data-placement="top"][data-entering],
+  &[data-placement="top"][data-exiting] {
+    transform: translateY(0.25rem);
+  }
+
+  &[data-exiting] {
+    transition-duration: tokens.$motion-exit;
+    transition-timing-function: tokens.$ease-exit;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+// The layer in which the library draws a bubble. It stands beside the element of the bubble in the page, so a
+// bubble of an element in a dialog shows over the dialog, and it is fixed to the window and covers it, so the
+// library places the bubble in the window and a pane that scrolls does not cut it. The layer lets the pointer
+// through to the page, and it takes no part in the page while it holds no bubble.
+.bubble-layer {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  pointer-events: none;
+}
+
+.bubble-layer:empty {
+  display: none;
 }

@@ -63,7 +63,7 @@
 }
 
 // The name of the button does not show over the open menu, which states the user name itself.
-.account-button[aria-expanded="true"] + .tooltip {
+.account-button[aria-expanded="true"] ~ .bubble-layer {
   display: none;
 }
 
