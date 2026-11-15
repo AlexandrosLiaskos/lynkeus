@@ -98,6 +98,11 @@ def result_job_title(inputs: ToolInputs) -> str:
     return inputs.title
 
 
+def input_layers(inputs: ToolInputs) -> tuple[str, ...]:
+    """Return the names of the layers that a job of an analysis tool reads."""
+    return inputs.inputs
+
+
 GET_LAYER = Process(
     id="get-layer",
     title="Get layer",
@@ -144,6 +149,7 @@ def tool_process(name: str, function: AnalysisFunction) -> Process[ToolInputs]:
         run=partial(run_analysis, name),
         job_title=result_job_title,
         errors=(LayerError,),
+        layers=input_layers,
     )
 
 

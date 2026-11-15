@@ -5,10 +5,11 @@ import type { LayerDescription } from "../shared/layer";
 import { useMap } from "../shared/map";
 import { MenuButton } from "../shared/menu/MenuButton";
 import { Notice } from "../shared/notice/Notice";
+import { serverOfAddress, serversStore } from "../shared/servers";
 import { useStore } from "../shared/store";
 import { formatDates } from "./dates";
 import { fitLayer } from "./display";
-import { layerProblemsStore } from "./drawing";
+import { drawAgain, layerProblemsStore } from "./drawing";
 import { Legend } from "./Legend";
 import { Menu, type MenuItem } from "./Menu";
 import { moveLayer, removeLayer, renameLayer, type Move } from "./order";
@@ -58,6 +59,8 @@ export function nameButtonId(id: string): string {
  * One layer of the Contents pane. Its row holds the arrow that folds its legend, the box that shows or hides it,
  * its name with its dates, which selects it, and the button of its menu. Under the row stand its legend and its
  * opacity, or a notice when its file could not be read. The right mouse button opens the same menu at the pointer.
+ * A layer that an own server of the visitor keeps is marked while that server is not connected, and the notice
+ * of a file that may be readable later offers to try again.
  */
 export function LayerItem({ layer, place, count, drop, onMoved, onRemoved, ...drag }: LayerItemProps) {
   const map = useMap();
@@ -65,6 +68,9 @@ export function LayerItem({ layer, place, count, drop, onMoved, onRemoved, ...dr
   const selected = useStore(selectedLayerStore) === layer.id;
   const folded = useStore(foldedStore).includes(layer.id);
   const problem = useStore(layerProblemsStore)[layer.id];
+  const keeper = serverOfAddress(layer.url);
+  const servers = useStore(serversStore)?.servers ?? [];
+  const away = servers.some((server) => server.id === keeper && !server.connected);
   const copied = useStore(copiedDisplayStore);
   const [renaming, setRenaming] = useState(false);
   const refocus = useRef(false);
@@ -247,7 +253,10 @@ export function LayerItem({ layer, place, count, drop, onMoved, onRemoved, ...dr
             onKeyDown={onNameKey}
           >
             <span className="item-title">{layer.title}</span>{" "}
-            <span className="item-line">{formatDates(layer.dates)}</span>
+            <span className="item-line">
+              {formatDates(layer.dates)}
+              {away ? " · server not connected" : ""}
+            </span>
           </button>
         )}
         <MenuButton
@@ -283,8 +292,15 @@ export function LayerItem({ layer, place, count, drop, onMoved, onRemoved, ...dr
             </div>
           </>
         ) : (
-          <Notice kind="error" action={{ label: "Remove layer", onClick: remove }}>
-            {problem}
+          <Notice
+            kind="error"
+            action={
+              problem.again
+                ? { label: "Try again", onClick: () => drawAgain(layer.id) }
+                : { label: "Remove layer", onClick: remove }
+            }
+          >
+            {problem.text}
           </Notice>
         )}
       </div>

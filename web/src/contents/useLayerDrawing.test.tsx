@@ -5,12 +5,15 @@ import type { LayerDescription } from "../shared/layer";
 import { MapContext } from "../shared/map";
 import { addToMap, mapLayersStore } from "../shared/mapLayers";
 import { dropShapeLayer, putShapeLayer, setLayerOrder, shapeLayersStore, type ShapeLayer } from "../shared/shapeLayers";
+import { drawAgain, drawAgainStore } from "./drawing";
 import { displayStore, selectedLayerStore, setDisplay } from "./state";
 import { useLayerDrawing } from "./useLayerDrawing";
 
-// The drawing itself needs a real browser. Here it only records what the hook asks of it.
+// The drawing itself needs a real browser. Here it only records what the hook asks of it. The store of the
+// layers to draw again stays the real one.
 const { update, clear } = vi.hoisted(() => ({ update: vi.fn(), clear: vi.fn() }));
-vi.mock("./drawing", () => ({
+vi.mock("./drawing", async (original) => ({
+  ...(await original<typeof import("./drawing")>()),
   LayerDrawing: class {
     update = update;
     clear = clear;
@@ -58,6 +61,7 @@ beforeEach(() => {
   mapLayersStore.set([]);
   shapeLayersStore.set([]);
   displayStore.set({});
+  drawAgainStore.set({});
   selectedLayerStore.set(null);
 });
 
@@ -65,16 +69,25 @@ test("the layers are drawn with the drawing order of all the layers, and again w
   ["a", "b"].forEach((id) => addToMap(layer(id)));
   putShapeLayer(shape("area"));
   show();
-  expect(update).toHaveBeenLastCalledWith(mapLayersStore.get(), {}, ["a", "b", "area"]);
+  expect(update).toHaveBeenLastCalledWith(mapLayersStore.get(), {}, ["a", "b", "area"], {});
   // The shape layer moves between the two layers: their own store stays as it was, and they are drawn again.
   const calls = update.mock.calls.length;
   act(() => setLayerOrder(["a", "area", "b"]));
   expect(update.mock.calls.length).toBe(calls + 1);
-  expect(update).toHaveBeenLastCalledWith(mapLayersStore.get(), {}, ["a", "area", "b"]);
+  expect(update).toHaveBeenLastCalledWith(mapLayersStore.get(), {}, ["a", "area", "b"], {});
   act(() => putShapeLayer(shape("products")));
-  expect(update).toHaveBeenLastCalledWith(mapLayersStore.get(), {}, ["a", "area", "b", "products"]);
+  expect(update).toHaveBeenLastCalledWith(mapLayersStore.get(), {}, ["a", "area", "b", "products"], {});
   act(() => setDisplay(layer("a"), { opacity: 0.5 }));
-  expect(update).toHaveBeenLastCalledWith(mapLayersStore.get(), displayStore.get(), ["a", "area", "b", "products"]);
+  expect(update).toHaveBeenLastCalledWith(mapLayersStore.get(), displayStore.get(), ["a", "area", "b", "products"], {});
+});
+
+test("a layer that the visitor asks to draw again is drawn again, with the number of times asked", () => {
+  addToMap(layer("a"));
+  show();
+  const calls = update.mock.calls.length;
+  act(() => drawAgain("a"));
+  expect(update.mock.calls.length).toBe(calls + 1);
+  expect(update).toHaveBeenLastCalledWith(mapLayersStore.get(), {}, ["a"], { a: 1 });
 });
 
 test("a selected shape layer keeps its selection while it is on the map, and loses it when it is dropped", () => {

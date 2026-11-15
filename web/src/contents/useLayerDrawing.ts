@@ -3,7 +3,7 @@ import { useMap } from "../shared/map";
 import { mapLayersStore } from "../shared/mapLayers";
 import { layerOrderStore, shapeLayersStore } from "../shared/shapeLayers";
 import { useStore } from "../shared/store";
-import { LayerDrawing } from "./drawing";
+import { drawAgainStore, LayerDrawing } from "./drawing";
 import { forgetAbsentLayers } from "./order";
 import { displayStore } from "./state";
 
@@ -15,13 +15,14 @@ export function useLayerDrawing(): void {
   const map = useMap();
   const layers = useStore(mapLayersStore);
   const displays = useStore(displayStore);
+  const again = useStore(drawAgainStore);
   const order = useStore(layerOrderStore);
   const shapes = useStore(shapeLayersStore);
   const [drawing] = useState(() => new LayerDrawing(map));
 
   useEffect(() => {
-    drawing.update(layers, displays, order);
-  }, [drawing, layers, displays, order]);
+    drawing.update(layers, displays, order, again);
+  }, [drawing, layers, displays, order, again]);
 
   // A layer of either kind that another part of the page took off the map loses its display and its selection.
   useEffect(forgetAbsentLayers, [layers, shapes]);

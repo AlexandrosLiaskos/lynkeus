@@ -116,6 +116,11 @@ class Work:
     report: Callable[[int, str], None]
 
 
+def no_layers(inputs: BaseModel) -> tuple[str, ...]:
+    """Return the layers that a job of a process without input layers reads: none."""
+    return ()
+
+
 @dataclass(frozen=True)
 class Process[Inputs: BaseModel]:
     """A process that the server offers.
@@ -150,6 +155,9 @@ class Process[Inputs: BaseModel]:
         Further facts about the process, each a name with its values, for
         example a limit on the inputs. The description gives them in the
         field ``additionalParameters`` of the standard.
+    layers : callable
+        Returns the names of the layers that a job reads, from the inputs. A
+        job runs on the server that keeps them (``docs/Own_Servers.md``).
     """
 
     id: str
@@ -162,6 +170,7 @@ class Process[Inputs: BaseModel]:
     errors: tuple[type[Exception], ...] = (ProcessError,)
     version: str = __version__
     parameters: Mapping[str, Sequence[object]] = field(default_factory=dict)
+    layers: Callable[[Inputs], Sequence[str]] = no_layers
     _inputs_description: dict[str, Any] = field(init=False, repr=False, compare=False)
 
     def __post_init__(self) -> None:

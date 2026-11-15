@@ -58,7 +58,7 @@ test("with the first job the pane holds its three sections, and each empty one s
 
 test("with the first layer the pane holds its three sections", () => {
   show();
-  act(() => layersStore.set([{ layer: layer(), size: 1000, created: null }]));
+  act(() => layersStore.set([{ layer: layer(), size: 1000, created: null, server: null }]));
   expect(headings()).toEqual(["Products", "Jobs (0)", "Layers (1)"]);
   expect(screen.getByText("A job starts when a layer is requested or an analysis tool is run.")).toBeDefined();
 });
@@ -72,7 +72,7 @@ test("the sections stand in the order of the work: products, jobs, layers", () =
       products: [realProduct()],
     });
     jobsStore.set([job()]);
-    layersStore.set([{ layer: layer(), size: 1000, created: null }]);
+    layersStore.set([{ layer: layer(), size: 1000, created: null, server: null }]);
   });
   expect(headings()).toEqual(["Products (1)", "Jobs (1)", "Layers (1)"]);
   expect([...document.querySelectorAll(".catalog > .section")].map((section) => section.id)).toEqual([
@@ -105,7 +105,7 @@ test("the command Show layer of a job opens the section of the layers and marks 
   show();
   act(() => {
     jobsStore.set([job({ status: "successful", progress: 100, finished: "2026-11-14T16:22:00Z", layer: "made" })]);
-    layersStore.set([{ layer: layer({ id: "made" }), size: 1000, created: null }]);
+    layersStore.set([{ layer: layer({ id: "made" }), size: 1000, created: null, server: null }]);
   });
   await userEvent.click(screen.getByRole("button", { name: "Layers (1)" }));
   expect(screen.getByRole("button", { name: "Layers (1)" }).getAttribute("aria-expanded")).toBe("false");

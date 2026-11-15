@@ -1,0 +1,23 @@
+{
+  "id": "3f9a1c0b7e24d658",
+  "name": "Field laptop",
+  "connected": true,
+  "paired": 1794729600.0,
+  "seen": 1794735612.5,
+  "state": {
+    "processors": 20,
+    "memory": 17179869184,
+    "disk_free": 412000000000,
+    "disk_used": 1250000000,
+    "running": 1,
+    "waiting": 2,
+    "layers": 6,
+    "limits": {
+      "running_jobs": 2,
+      "storage": 250000000000,
+      "layer_size": 20000000000
+    },
+    "system": "Windows 11",
+    "version": "0.1.0"
+  }
+}

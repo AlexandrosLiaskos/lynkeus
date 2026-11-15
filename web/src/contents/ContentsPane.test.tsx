@@ -8,9 +8,11 @@ import { MapContext } from "../shared/map";
 import { addToMap, mapLayersStore } from "../shared/mapLayers";
 import { dockStore, resetDock } from "../shared/dock/dock";
 import { resetPanes, setPaneOpen } from "../shared/panes";
+import { serversStore } from "../shared/servers";
+import { LABORATORY, OFFICE, SERVERS } from "../servers/testServers";
 import { listedBasemapStore } from "./BasemapItem";
 import { ContentsPane } from "./ContentsPane";
-import { layerProblemsStore } from "./drawing";
+import { drawAgainStore, layerProblemsStore } from "./drawing";
 import {
   copiedDisplayStore,
   displayOf,
@@ -79,6 +81,8 @@ beforeEach(() => {
   foldedStore.set([]);
   selectedLayerStore.set(null);
   layerProblemsStore.set({});
+  drawAgainStore.set({});
+  serversStore.set(null);
 });
 
 test("without layers the pane shows the map with its basemap as its only layer", () => {
@@ -462,7 +466,7 @@ test("the Remove command of the basemap takes it off the map and out of the list
 
 test("a layer whose file could not be read says so in a notice in place of its legend", () => {
   addToMap(COHERENCE);
-  layerProblemsStore.set({ coherence: "The file of the layer could not be read." });
+  layerProblemsStore.set({ coherence: { text: "The file of the layer could not be read.", again: false } });
   show();
   expect(screen.getByRole("alert").textContent).toBe("The file of the layer could not be read.");
   expect(screen.queryByRole("slider")).toBeNull();
@@ -470,7 +474,7 @@ test("a layer whose file could not be read says so in a notice in place of its l
 
 test("the notice of a layer that could not be read offers to remove the layer", async () => {
   [OCTOBER, COHERENCE].forEach(addToMap);
-  layerProblemsStore.set({ coherence: "The file of the layer could not be read." });
+  layerProblemsStore.set({ coherence: { text: "The file of the layer could not be read.", again: false } });
   show();
   await userEvent.click(screen.getByRole("button", { name: "Remove layer" }));
   expect(mapLayersStore.get().map(({ id }) => id)).toEqual(["october"]);
@@ -485,4 +489,41 @@ test("the basemap has its menu at the pointer too, and Escape returns the focus 
   ).toHaveLength(1);
   await userEvent.keyboard("{Escape}");
   expect(document.activeElement).toBe(screen.getByRole("button", { name: "More commands of Blue Marble" }));
+});
+
+const keptOn = (server: string, id: string, title: string): LayerDescription => ({
+  ...layer(id, title, ["2026-10-21"]),
+  url: `/api/servers/${server}/files/fedcba9876543210fedcba9876543210/${id}.tif`,
+  record: `/api/servers/${server}/files/fedcba9876543210fedcba9876543210/${id}.json`,
+});
+
+test("a layer whose own server is not connected is marked beside its dates", () => {
+  serversStore.set(SERVERS);
+  [keptOn(OFFICE.id, "near", "Backscatter HV"), keptOn(LABORATORY.id, "far", "Backscatter VV"), OCTOBER].forEach(
+    addToMap,
+  );
+  show();
+  expect(listed()).toEqual([
+    "Backscatter HH 21 Oct 2026",
+    "Backscatter VV 21 Oct 2026 · server not connected",
+    "Backscatter HV 21 Oct 2026",
+  ]);
+  act(() =>
+    serversStore.set({ ...SERVERS, servers: SERVERS.servers.map((server) => ({ ...server, connected: true })) }),
+  );
+  expect(listed()[1]).toBe("Backscatter VV 21 Oct 2026");
+});
+
+test("the notice of a layer whose file may be readable later offers to try again, and the layer stays", async () => {
+  const far = keptOn(LABORATORY.id, "far", "Backscatter VV");
+  addToMap(far);
+  const text =
+    'Your server "Laboratory server", which keeps this layer, is not connected. Start Lynkeus Server on that computer and try again.';
+  layerProblemsStore.set({ far: { text, again: true } });
+  show();
+  expect(screen.getByRole("alert").textContent).toBe(text);
+  expect(screen.queryByRole("button", { name: "Remove layer" })).toBeNull();
+  await userEvent.click(screen.getByRole("button", { name: "Try again" }));
+  expect(drawAgainStore.get()).toEqual({ far: 1 });
+  expect(mapLayersStore.get().map(({ id }) => id)).toEqual(["far"]);
 });

@@ -1,4 +1,5 @@
 import { memo, useEffect, useId, useState } from "react";
+import { ServerField, useServerChoice } from "../servers/ServerField";
 import { dockStore, openToolPane, showPane } from "../shared/dock/dock";
 import { EmptyState } from "../shared/empty/EmptyState";
 import { Info } from "../shared/info/Info";
@@ -330,7 +331,7 @@ function CellLimit() {
  * area, with the area control of the search, and each layer of each product is requested from NASA as one job.
  * While the tool cannot run, the foot of the pane states the first thing that is missing. During and after a
  * run it shows the progress of the jobs and their outcome; the Catalog pane lists every job and every layer of
- * the session.
+ * the session. A visitor who has an own server also chooses the server that runs the jobs and keeps the layers.
  */
 export function GetLayerForm({ found, selected, products, session, onSignIn, onSearch, onSelect }: GetLayerFormProps) {
   const map = useMap();
@@ -340,6 +341,7 @@ export function GetLayerForm({ found, selected, products, session, onSignIn, onS
   const limit = useStore(cellLimitStore);
   const addWhenReady = useStore(addWhenReadyStore);
   const mapLayers = useStore(mapLayersStore);
+  const server = useServerChoice();
   const [chosen, setChosen] = useState<Record<string, readonly string[] | undefined>>({});
   const [started, setStarted] = useState<Started | null>(null);
 
@@ -373,7 +375,7 @@ export function GetLayerForm({ found, selected, products, session, onSignIn, onS
     return size ? [{ key: `${product.id} ${choice.name}`, product, choice, ...size }] : [];
   });
   const overLimit = limit === null ? [] : estimates.filter(({ cells }) => cells > limit);
-  const missing = missingOf({
+  const lacking = missingOf({
     session,
     found: found.length,
     products: products.length,
@@ -383,6 +385,8 @@ export function GetLayerForm({ found, selected, products, session, onSignIn, onS
     outside: outside.length > 0,
     tooLarge: overLimit.length > 0,
   });
+  // The server is the last thing that the form asks for, so what it lacks is stated last.
+  const missing = lacking ?? server.missing;
 
   // A product is named in a sentence only when the form holds several.
   const several = products.length > 1;
@@ -408,7 +412,7 @@ export function GetLayerForm({ found, selected, products, session, onSignIn, onS
       let fault: string | null = null;
       for (const request of requests) {
         try {
-          ids.push((await startJob(GET_LAYER_PANE, { ...request })).jobID);
+          ids.push((await startJob(GET_LAYER_PANE, { ...request }, server.parameter)).jobID);
         } catch (error) {
           fault = wordsOf(error, "The job could not be started.");
           break;
@@ -538,6 +542,8 @@ export function GetLayerForm({ found, selected, products, session, onSignIn, onS
               </Notice>
             ) : null,
           )}
+
+          <ServerField />
 
           <div className="usa-checkbox data-option">
             <input

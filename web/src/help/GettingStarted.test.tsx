@@ -118,7 +118,7 @@ test("a step whose result exists carries a check mark, and the filled button mov
   act(() => productsStore.set(FOUND));
   expect(marks(pane)).toEqual([true, true, false, false, false]);
   expect(filled(pane)).toEqual(["Get layer"]);
-  act(() => layersStore.set([{ layer: layer("a"), size: null, created: null }]));
+  act(() => layersStore.set([{ layer: layer("a"), size: null, created: null, server: null }]));
   expect(marks(pane)).toEqual([true, true, true, false, false]);
   expect(filled(pane)).toEqual(["Open Symbology"]);
   act(() => mapLayersStore.set([layer("a")]));
@@ -145,7 +145,7 @@ test("a search that found nothing and a step done out of order leave the filled 
   const pane = open();
   act(() => {
     productsStore.set({ found: 0, products: [] } as unknown as Results);
-    layersStore.set([{ layer: layer("a"), size: null, created: null }]);
+    layersStore.set([{ layer: layer("a"), size: null, created: null, server: null }]);
   });
   expect(marks(pane)).toEqual([false, false, true, false, false]);
   expect(filled(pane)).toEqual(["Sign in"]);

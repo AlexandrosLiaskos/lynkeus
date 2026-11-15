@@ -1,5 +1,6 @@
 import { vi } from "vitest";
 import type { LayerDescription } from "../shared/layer";
+import type { ServerName, Servers } from "../shared/servers";
 import type { Job } from "./jobs";
 
 /** A job as the server describes it, for the tests. */
@@ -64,6 +65,7 @@ export interface SentLayer {
   layer: LayerDescription;
   size?: number;
   created?: string;
+  server?: ServerName | null;
 }
 
 /**
@@ -81,6 +83,10 @@ export class StandIn {
   process: unknown = null;
   /** The files that the web server holds, by their address. */
   files: Record<string, unknown> = {};
+  /** The own servers of the visitor, or null for a visitor who is not signed in to Earthdata. */
+  servers: Servers | null = null;
+  /** The answer of the server about its version, its resources and its limits, or null when it gives none. */
+  limits: unknown = null;
   /** The requests received, in their order. */
   readonly received: Received[] = [];
 
@@ -141,6 +147,9 @@ export class StandIn {
     if (method === "POST" && /^\/api\/processes\/[^/]+\/execution$/.test(path)) {
       this.started += 1;
       const inputs = (content as { inputs: Record<string, unknown> }).inputs;
+      // A job that names an own server of the visitor runs there. Every other job runs on the project server.
+      const chosen = new URLSearchParams(query).get("server");
+      const server = this.servers?.servers.find((listed) => listed.id === chosen);
       const created = job({
         jobID: `job-${String(this.started)}`,
         processID: path.split("/").at(-2) ?? "",
@@ -150,6 +159,7 @@ export class StandIn {
         started: undefined,
         progress: 0,
         inputs,
+        server: server ? { id: server.id, name: server.name } : null,
       });
       this.jobs = [created, ...this.jobs];
       return { status: 201, content: created, headers: { Location: `/api/jobs/${created.jobID}` } };
@@ -172,6 +182,14 @@ export class StandIn {
       }
       const made = this.layers.find((entry) => entry.layer.id === found.layer);
       return results && made ? { status: 200, content: made.layer } : { status: 200, content: found };
+    }
+    if (method === "GET" && path === "/api/limits" && this.limits !== null) {
+      return { status: 200, content: this.limits };
+    }
+    if (method === "GET" && path === "/api/servers") {
+      return this.servers === null
+        ? { status: 401, content: { detail: "Sign in to Earthdata to see your servers." } }
+        : { status: 200, content: this.servers };
     }
     if (method === "GET" && path === "/api/layers") {
       return { status: 200, content: { layers: this.layers } };

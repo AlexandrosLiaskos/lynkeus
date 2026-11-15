@@ -22,6 +22,7 @@ import {
   startJob,
   watchJobs,
 } from "./jobs";
+import { OFFICE, OFFICE_NAME, SERVERS } from "../servers/testServers";
 import { Refusal } from "./service";
 import { job, layer, showPage, standIn } from "./testSession";
 
@@ -403,4 +404,38 @@ test("a part of the list holds the jobs of its states", () => {
   expect(names(filterJobs(jobs, "unfinished"))).toBe("ab");
   expect(names(filterJobs(jobs, "successful"))).toBe("c");
   expect(names(filterJobs(jobs, "failed"))).toBe("d");
+});
+
+test("a job is started on the server that is named, and without a name the address carries no parameter", async () => {
+  const server = standIn();
+  server.servers = SERVERS;
+  await startJob("get-layer", {}, OFFICE.id);
+  await startJob("get-layer", {}, "project");
+  await startJob("get-layer", {});
+  expect(server.sent("POST").map(({ address }) => address)).toEqual([
+    `/api/processes/get-layer/execution?server=${OFFICE.id}`,
+    "/api/processes/get-layer/execution?server=project",
+    "/api/processes/get-layer/execution",
+  ]);
+  expect(jobsStore.get().map((started) => started.server)).toEqual([null, null, OFFICE_NAME]);
+});
+
+test("the state of a job names the own server on which the job runs, or none", () => {
+  expect(isJob(job({ server: OFFICE_NAME }))).toBe(true);
+  expect(isJob(job({ server: null }))).toBe(true);
+  expect(isJob(job())).toBe(true);
+  expect(isJob({ ...job(), server: { id: "office", name: "Office computer" } })).toBe(false);
+  expect(isJob({ ...job(), server: "Office computer" })).toBe(false);
+});
+
+test("input layers that are kept on different servers are refused in the words of the server", async () => {
+  const server = standIn();
+  const sentence = "The input layers are kept on different servers. A tool takes the input layers of one server.";
+  server.refuse("POST", "/api/processes", 422, sentence);
+  const refusal = await startJob("backscatter-change", { inputs: ["a", "b"] }, OFFICE.id).catch(
+    (error: unknown) => error,
+  );
+  expect(refusal).toBeInstanceOf(Refusal);
+  expect(refusal).toMatchObject({ status: 422, message: sentence });
+  expect(jobsStore.get()).toEqual([]);
 });

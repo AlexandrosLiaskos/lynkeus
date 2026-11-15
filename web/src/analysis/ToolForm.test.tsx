@@ -6,12 +6,16 @@ import { jobsStore, loadJobs, resetJobs } from "../data/jobs";
 import { layersStore, resetLayers } from "../data/layers";
 import { GET_LAYER_PANE } from "../data/state";
 import { job, standIn, type StandIn } from "../data/testSession";
+import { SAMPLE } from "../header/notice/testLimits";
 import { methodsStore } from "../help/state";
+import { resetServersState } from "../servers/state";
+import { LABORATORY, OFFICE, OFFICE_NAME, SERVERS } from "../servers/testServers";
 import { dockStore, openToolPane, resetDock } from "../shared/dock/dock";
 import type { LayerDescription } from "../shared/layer";
 import { mapLayersStore } from "../shared/mapLayers";
 import { messagesStore } from "../shared/messages/messages";
 import { resetPanes } from "../shared/panes";
+import { serversStore, type ServerName } from "../shared/servers";
 import { AnalysisDialogs } from "./AnalysisDialogs";
 import { rowOf } from "./methods";
 import { METHODS } from "./methodSheets";
@@ -30,6 +34,8 @@ beforeEach(() => {
   mapLayersStore.set([]);
   messagesStore.set([]);
   methodsStore.set({ open: false, tool: null });
+  serversStore.set(null);
+  resetServersState();
   server = standIn();
 });
 
@@ -39,12 +45,30 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-/** Show the form of a tool, open, in a session that holds the given layers. */
-function show(tool: FinishedTool, layers: readonly LayerDescription[] = []) {
-  layersStore.set(layers.map((layer) => ({ layer, size: null, created: null })));
+/**
+ * Show the form of a tool, open, in a session that holds the given layers. `keeper` names the own server that
+ * keeps the layers; without it the project server keeps them.
+ */
+function show(tool: FinishedTool, layers: readonly LayerDescription[] = [], keeper: ServerName | null = null) {
+  layersStore.set(layers.map((layer) => ({ layer, size: null, created: null, server: keeper })));
   openToolPane(tool);
   render(<ToolForm tool={tool} />);
 }
+
+/** Give the visitor the own servers of the examples: the Office computer is connected, the Laboratory server is not. */
+function withServers() {
+  server.servers = SERVERS;
+  server.limits = SAMPLE;
+  serversStore.set(SERVERS);
+}
+
+const serverChoice = () => screen.getByLabelText<HTMLSelectElement>("Server");
+const serverRows = () =>
+  [...document.querySelectorAll(".server-choice .property-row")].map(
+    (row) =>
+      `${row.querySelector(".property-name")?.textContent ?? ""}: ${row.querySelector(".property-value-text")?.textContent ?? ""}`,
+  );
+const missing = () => document.querySelector(".tool-pane-missing")?.textContent ?? null;
 
 /** The texts of the choices of a list. */
 function options(label: string): (string | null)[] {
@@ -430,6 +454,108 @@ test("a form with a layer shows its fields in their order, and nothing else", as
     "Add to the map when ready",
   ]);
   expect(body?.querySelectorAll(".property-row")).toHaveLength(1);
+});
+
+test("a visitor without an own server has no field Server in the form of a tool", async () => {
+  show("backscatter-state", [term()]);
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "hh-oct");
+  expect(screen.queryByLabelText("Server")).toBeNull();
+});
+
+test("a visitor with an own server chooses the server of a tool, Automatic at first, and the job names no server", async () => {
+  withServers();
+  show("backscatter-state", [term()], OFFICE_NAME);
+  expect(serverChoice().value).toBe("automatic");
+  // Before a layer is chosen the job would go to the connected own server; the chosen layer is kept there too.
+  expect(serverRows()[0]).toBe("At present: Office computer");
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "hh-oct");
+  expect(serverRows()[0]).toBe("At present: Office computer");
+  const body = document.querySelector(".tool-pane-body");
+  expect(Array.from(body?.querySelectorAll("label") ?? [], (label) => label.textContent)).toEqual([
+    "Layer",
+    "Result name",
+    "Server",
+    "Add to the map when ready",
+  ]);
+  await userEvent.click(runButton());
+  await vi.waitFor(() => expect(server.sent("POST")).toHaveLength(1));
+  expect(server.sent("POST")[0]?.address).toBe("/api/processes/backscatter-state/execution");
+});
+
+test("Automatic names the project server for a layer that the project server keeps", async () => {
+  withServers();
+  show("backscatter-state", [term()]);
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "hh-oct");
+  expect(serverRows()[0]).toBe("At present: Project server");
+});
+
+test("a tool is started on the server that the visitor chose, with the limits of that server under the field", async () => {
+  withServers();
+  show("backscatter-state", [term()], OFFICE_NAME);
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "hh-oct");
+  await userEvent.selectOptions(serverChoice(), OFFICE.id);
+  expect(serverRows()).toEqual([
+    "Jobs at the same time: 4 (1 running, 2 waiting)",
+    "Largest layer: 10 GB",
+    "Space for layers: 1.3 GB of 100 GB used",
+    "Free disk space: 412 GB",
+  ]);
+  expect(document.querySelector(".server-choice .usa-alert")).toBeNull();
+  await userEvent.click(runButton());
+  await vi.waitFor(() => expect(server.sent("POST")).toHaveLength(1));
+  expect(server.sent("POST")[0]).toEqual({
+    method: "POST",
+    address: `/api/processes/backscatter-state/execution?server=${OFFICE.id}`,
+    content: { inputs: { inputs: ["hh-oct"], title: "Backscatter HH in dB, 21 Oct 2026" } },
+  });
+  expect(jobsStore.get()[0]?.server).toEqual(OFFICE_NAME);
+});
+
+test("the form says that a chosen layer is kept on another server than the one chosen", async () => {
+  withServers();
+  show("backscatter-state", [term()]);
+  await userEvent.selectOptions(serverChoice(), OFFICE.id);
+  const apart =
+    "An input layer is kept on another server. A tool takes the input layers of the server on which it runs, so choose Automatic or the server of the layers.";
+  // No layer is chosen yet, so nothing is kept elsewhere.
+  expect(screen.queryByText(apart)).toBeNull();
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "hh-oct");
+  expect(screen.getByText(apart)).toBeDefined();
+  await userEvent.selectOptions(serverChoice(), "project");
+  expect(screen.queryByText(apart)).toBeNull();
+});
+
+test("the two layers of Backscatter, Change on different servers are named under Automatic", async () => {
+  withServers();
+  layersStore.set([
+    { layer: term(), size: null, created: null, server: OFFICE_NAME },
+    { layer: laterTerm(), size: null, created: null, server: null },
+  ]);
+  openToolPane("backscatter-change");
+  render(<ToolForm tool="backscatter-change" />);
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "hh-oct");
+  await userEvent.selectOptions(screen.getByLabelText("Layer of the other date"), "hh-nov");
+  expect(
+    screen.getByText("The input layers are kept on different servers. A tool takes the input layers of one server."),
+  ).toBeDefined();
+  expect(serverRows()[0]).toBe("At present: Project server");
+});
+
+test("a chosen server that is not connected is the last thing that the foot of a tool names, and nothing is sent", async () => {
+  withServers();
+  show("backscatter-state", [term()], { id: LABORATORY.id, name: LABORATORY.name });
+  await userEvent.selectOptions(serverChoice(), LABORATORY.id);
+  expect(missing()).toBe("Choose a layer.");
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "hh-oct");
+  expect(missing()).toBe('Choose a server that is connected: "Laboratory server" is not.');
+  expect(runButton().getAttribute("aria-disabled")).toBe("true");
+  await userEvent.click(runButton());
+  expect(server.sent("POST")).toEqual([]);
+  expect(
+    screen.getByText(
+      'The server "Laboratory server" is not connected. Start Lynkeus Server on that computer, or choose another server.',
+    ),
+  ).toBeDefined();
 });
 
 test("the link Method at the foot opens the page Methods at the tool", async () => {

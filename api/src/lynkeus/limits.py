@@ -6,6 +6,10 @@ resources when it is called: the processors that the service may use and the
 memory that it may hold. The limits are the named constants of the modules
 that apply them, read when the answer is made.
 
+The answer describes the project server. A job that runs on an own server of
+a visitor (``docs/Own_Servers.md``) meets the limits that the owner of that
+server set, which the server reports in its state (``GET /api/servers``).
+
 A container finds the limits of its own control group (cgroup v2) in the
 files ``cpu.max`` and ``memory.max`` of the folder ``/sys/fs/cgroup``, as the
 documentation of the Linux kernel describes them. The answer gives the

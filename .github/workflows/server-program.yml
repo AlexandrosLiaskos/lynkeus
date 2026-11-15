@@ -1,0 +1,137 @@
+name: Server program
+
+# Packs Lynkeus Server for Windows, macOS and Linux, checks each packed program, and attaches the
+# downloads to the release of a version tag.
+
+on:
+  push:
+    tags:
+      - "v*"
+  pull_request:
+    paths:
+      - "api/src/lynkeus/**"
+      - "api/packing/**"
+      - "api/pyproject.toml"
+      - "api/uv.lock"
+      - "api/tests/journey.py"
+      - "api/tests/project.py"
+      - "api/tests/nasaweb.py"
+      - ".github/workflows/server-program.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pack:
+    name: Pack and check (${{ matrix.system }})
+    runs-on: ${{ matrix.system }}
+    strategy:
+      fail-fast: false
+      matrix:
+        system: [windows-latest, macos-latest, ubuntu-latest]
+    defaults:
+      run:
+        working-directory: api
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install uv
+        run: pip install uv==0.13.8
+      - name: Install the package, the tools and PyInstaller
+        run: uv sync --frozen --group pack
+      - name: Install Inno Setup
+        if: runner.os == 'Windows'
+        run: |
+          if ! ls "/c/Program Files (x86)/Inno Setup "*/ISCC.exe > /dev/null 2>&1; then
+            choco install innosetup --yes --no-progress
+          fi
+      - name: Install a display without a screen
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install --yes --no-install-recommends xvfb
+      - name: Pack the program and make the download
+        run: uv run python packing/pack.py
+      # The download is unpacked or installed as a visitor does it, and the program is run from there.
+      - name: Install the download (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $download = Get-ChildItem dist -Filter "Lynkeus-Server-*-Windows.exe" | Select-Object -First 1
+          $folder = Join-Path $env:RUNNER_TEMP "installed"
+          Start-Process -FilePath $download.FullName -Wait -ArgumentList "/VERYSILENT", "/SUPPRESSMSGBOXES", "/CURRENTUSER", "/NORESTART", "/DIR=`"$folder`""
+          if (-not (Test-Path (Join-Path $folder "lynkeus-server.exe"))) { throw "The installer did not install the program." }
+          "TERMINAL=$folder\lynkeus-server.exe" >> $env:GITHUB_ENV
+          "WINDOW=$folder\Lynkeus Server.exe" >> $env:GITHUB_ENV
+      - name: Open the download (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          hdiutil attach dist/Lynkeus-Server-*-macOS.dmg -nobrowse -mountpoint "$RUNNER_TEMP/image"
+          cp -R "$RUNNER_TEMP/image/Lynkeus Server.app" "$RUNNER_TEMP/Lynkeus Server.app"
+          hdiutil detach "$RUNNER_TEMP/image"
+          echo "TERMINAL=$RUNNER_TEMP/Lynkeus Server.app/Contents/MacOS/Lynkeus Server" >> "$GITHUB_ENV"
+          echo "WINDOW=$RUNNER_TEMP/Lynkeus Server.app/Contents/MacOS/Lynkeus Server" >> "$GITHUB_ENV"
+      - name: Unpack the download (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          mkdir "$RUNNER_TEMP/unpacked"
+          tar -xzf dist/Lynkeus-Server-*-Linux.tar.gz -C "$RUNNER_TEMP/unpacked"
+          echo "TERMINAL=$RUNNER_TEMP/unpacked/lynkeus-server/lynkeus-server" >> "$GITHUB_ENV"
+          echo "WINDOW=$RUNNER_TEMP/unpacked/lynkeus-server/lynkeus-server" >> "$GITHUB_ENV"
+      # The packed program is started against stand-ins for the project server and for NASA. With
+      # --no-window it is paired, a job receives a layer and writes its files, the files are read
+      # back, a second job is ended and the pairing is ended. Then the program is started with its window.
+      - name: Check the packed program
+        run: |
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            xvfb-run --auto-servernum uv run python -m tests.journey "$TERMINAL" --window "$WINDOW" --result dist/checked.json
+          else
+            uv run python -m tests.journey "$TERMINAL" --window "$WINDOW" --result dist/checked.json
+          fi
+      - name: Report the download
+        run: |
+          {
+            echo "### Lynkeus Server, ${{ matrix.system }}"
+            echo '```json'
+            cat dist/packed.json dist/checked.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          cat dist/packed.json dist/checked.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lynkeus-server-${{ matrix.system }}
+          path: |
+            api/dist/Lynkeus-Server-*
+            api/dist/packed.json
+            api/dist/checked.json
+          if-no-files-found: error
+
+  release:
+    name: Attach the downloads to the release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: pack
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: downloads
+          pattern: lynkeus-server-*
+          merge-multiple: false
+      - name: Check that the tag is the version of the program
+        run: |
+          version=$(sed -n 's/^__version__ = "\(.*\)"$/\1/p' api/src/lynkeus/__init__.py)
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "The tag $GITHUB_REF_NAME is not the version $version of the program." >&2
+            exit 1
+          fi
+      - name: Attach the downloads
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1 || gh release create "$GITHUB_REF_NAME" --title "Lynkeus $GITHUB_REF_NAME" --generate-notes
+          gh release upload "$GITHUB_REF_NAME" downloads/*/Lynkeus-Server-* --clobber

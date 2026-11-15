@@ -4,6 +4,7 @@ import type { LayerDescription } from "../shared/layer";
 import { mapLayersStore } from "../shared/mapLayers";
 import { Notice } from "../shared/notice/Notice";
 import { PropertyList, type Property, type PropertyGroup } from "../shared/properties/PropertyList";
+import { PROJECT_SERVER_WORDS, serverOfAddress, serversStore, type Server } from "../shared/servers";
 import { shapeLayersStore, type ShapeLayer } from "../shared/shapeLayers";
 import { useStore } from "../shared/store";
 import type { Cog } from "./cog";
@@ -46,6 +47,29 @@ function addressRow(address: string, info: string): Property {
     value: <a href={address}>{address}</a>,
     copy: wholeAddress(address, window.location.href),
     info,
+  };
+}
+
+/**
+ * Return the row that says which server keeps the file of a layer: the project server, or the own server that
+ * the address of the file names, with its name where the list of the servers of the visitor holds it.
+ *
+ * @param address The address of the file, as the description of the layer gives it.
+ * @param servers The own servers of the visitor, as far as the page knows them.
+ */
+export function keptRow(address: string, servers: readonly Server[]): Property {
+  const id = serverOfAddress(address);
+  const server = servers.find((listed) => listed.id === id);
+  const value =
+    id === null
+      ? PROJECT_SERVER_WORDS
+      : server
+        ? `Your server "${server.name}"${server.connected ? "" : ", which is not connected"}`
+        : "An own server";
+  return {
+    name: "Kept on",
+    value,
+    info: "The server that keeps the file: the project server of Lynkeus, or an own server of yours. The file of a layer of an own server is read through the project server while that server is connected.",
   };
 }
 
@@ -138,6 +162,7 @@ function fileRows(cog: Cog, unit: string): Property[] {
  */
 function PropertiesOf({ layer }: { layer: LayerDescription }) {
   const [cog, setCog] = useState<Cog | "reading" | "failed">("reading");
+  const servers = useStore(serversStore)?.servers ?? [];
 
   useEffect(() => {
     let current = true;
@@ -158,11 +183,11 @@ function PropertiesOf({ layer }: { layer: LayerDescription }) {
     };
   }, [layer.url]);
 
-  const file = addressRow(layer.url, "The file is a Cloud Optimized GeoTIFF.");
+  const file = [addressRow(layer.url, "The file is a Cloud Optimized GeoTIFF."), keptRow(layer.url, servers)];
   const groups: PropertyGroup[] = [
     { title: "Layer", rows: layerRows(layer) },
     ...(typeof cog === "string" ? [] : [{ title: "Projection and grid", rows: gridRows(cog) }]),
-    { title: "File", rows: typeof cog === "string" ? [file] : [file, ...fileRows(cog, formatUnit(layer.unit))] },
+    { title: "File", rows: typeof cog === "string" ? file : [...file, ...fileRows(cog, formatUnit(layer.unit))] },
     { title: "Record", rows: [addressRow(layer.record, "The record is a STAC Item, which describes the layer.")] },
   ];
 

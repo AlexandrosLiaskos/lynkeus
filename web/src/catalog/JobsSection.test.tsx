@@ -4,9 +4,11 @@ import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { jobsFaultStore, jobsStore, loadJobs, resetJobs } from "../data/jobs";
 import { loadLayers, resetLayers } from "../data/layers";
 import { job, layer, standIn, type StandIn } from "../data/testSession";
+import { LABORATORY, OFFICE, OFFICE_NAME, SERVERS } from "../servers/testServers";
 import { messagesStore } from "../shared/messages/messages";
+import { serversStore } from "../shared/servers";
 import { jobGroups } from "./details";
-import { JobsSection, jobsSentence, noteWords, stateWords } from "./JobsSection";
+import { awayWords, JobsSection, jobsSentence, noteWords, serverWords, stateWords } from "./JobsSection";
 import { layersOpenStore, markedLayerStore } from "./state";
 
 let server: StandIn;
@@ -45,6 +47,7 @@ const FAILED = job({
 beforeEach(() => {
   resetJobs();
   resetLayers();
+  serversStore.set(null);
   markedLayerStore.set(null);
   layersOpenStore.set(true);
   messagesStore.set([]);
@@ -178,6 +181,7 @@ test("the details show every field of a job in groups, with its inputs", async (
   ).toEqual([
     "Name: Soil moisture, 2 Nov 2026",
     "Process: get-layer",
+    "Server: Project server",
     "Status: Finished",
     "Message: The layer is ready.",
     "Requested: 14 Nov 2026, 16:00:00 UTC",
@@ -197,7 +201,7 @@ test("the details show every field of a job in groups, with its inputs", async (
 test("a job without inputs and without a layer has no such group", () => {
   const groups = jobGroups({ ...WAITING, inputs: undefined });
   expect(groups.map(({ title, rows }) => [title, rows.length])).toEqual([
-    ["Job", 5],
+    ["Job", 6],
     ["Identifiers", 1],
   ]);
   expect(groups[1]?.rows[0]).toEqual({ name: "Identifier of the job", value: "wait", copy: true });
@@ -344,4 +348,85 @@ test("a job is cancelled with the keyboard alone", async () => {
   commandsOf("Backscatter HH, 21 Oct 2026").getByRole("button", { name: "Cancel" }).focus();
   await userEvent.keyboard("{Enter}");
   await vi.waitFor(() => expect(jobsStore.get()).toEqual([]));
+});
+
+const LABORATORY_NAME = { id: LABORATORY.id, name: LABORATORY.name };
+const stateLine = (title: string) =>
+  screen.getByText(title, { selector: ".item-title" }).closest("li")?.querySelector(".item-line")?.textContent;
+
+test("a job says on which server it runs once the visitor has an own server", () => {
+  expect(serverWords(RUNNING, [])).toBeNull();
+  expect(serverWords(RUNNING, SERVERS.servers)).toBe("On the project server");
+  expect(serverWords({ ...RUNNING, server: OFFICE_NAME }, SERVERS.servers)).toBe("On Office computer");
+  expect(serverWords({ ...RUNNING, server: OFFICE_NAME }, [])).toBe("On Office computer");
+});
+
+test("the list shows the server of each job beside its state", async () => {
+  serversStore.set(SERVERS);
+  await show([{ ...RUNNING, server: OFFICE_NAME }, FINISHED]);
+  expect(stateLine("Backscatter HH, 21 Oct 2026")).toBe("Running, 40 % after 1 min 5 s · On Office computer");
+  expect(stateLine("Soil moisture, 2 Nov 2026")).toBe("Finished · On the project server");
+});
+
+test("a visitor without an own server reads no server in the list", async () => {
+  await show([RUNNING]);
+  expect(stateLine("Backscatter HH, 21 Oct 2026")).toBe("Running, 40 % after 1 min 5 s");
+});
+
+test("a job whose server disconnects while it runs says that its state is the last one reported", async () => {
+  const away =
+    'The server "Laboratory server" is not connected, so this is the last state that it reported. The state follows when the server connects again.';
+  const running = { ...RUNNING, server: LABORATORY_NAME };
+  expect(awayWords(running, SERVERS.servers)).toBe(away);
+  expect(awayWords({ ...FINISHED, server: LABORATORY_NAME }, SERVERS.servers)).toBeNull();
+  expect(awayWords({ ...RUNNING, server: OFFICE_NAME }, SERVERS.servers)).toBeNull();
+  expect(awayWords(RUNNING, SERVERS.servers)).toBeNull();
+  expect(awayWords(running, [])).toBeNull();
+  serversStore.set({ ...SERVERS, servers: [OFFICE, { ...LABORATORY, connected: true }] });
+  await show([running]);
+  expect(screen.queryByText(away)).toBeNull();
+  act(() => serversStore.set(SERVERS));
+  expect(screen.getByText(away)).toBeDefined();
+  expect(stateLine("Backscatter HH, 21 Oct 2026")).toBe("Running, 40 % after 1 min 5 s · On Laboratory server");
+});
+
+test("a job is run again on the server on which it ran", async () => {
+  serversStore.set(SERVERS);
+  server.servers = SERVERS;
+  await show([
+    { ...FAILED, server: OFFICE_NAME },
+    { ...FAILED, jobID: "site", title: "Coherence HH, 9 and 21 Oct 2026" },
+  ]);
+  await userEvent.click(commandsOf("Azimuth offset, 9 and 21 Oct 2026").getByRole("button", { name: "Run again" }));
+  await vi.waitFor(() => expect(server.sent("POST")).toHaveLength(1));
+  await userEvent.click(commandsOf("Coherence HH, 9 and 21 Oct 2026").getByRole("button", { name: "Run again" }));
+  await vi.waitFor(() => expect(server.sent("POST")).toHaveLength(2));
+  expect(server.sent("POST").map(({ address }) => address)).toEqual([
+    `/api/processes/get-layer/execution?server=${OFFICE.id}`,
+    "/api/processes/get-layer/execution?server=project",
+  ]);
+});
+
+test("a visitor without an own server runs a job again without naming a server", async () => {
+  await show([FAILED]);
+  await userEvent.click(commandsOf("Azimuth offset, 9 and 21 Oct 2026").getByRole("button", { name: "Run again" }));
+  await vi.waitFor(() => expect(server.sent("POST")).toHaveLength(1));
+  expect(server.sent("POST")[0]?.address).toBe("/api/processes/get-layer/execution");
+});
+
+test("a new run that the server refuses for the servers of its input layers is reported in its words", async () => {
+  const sentence = "The input layers are kept on different servers. A tool takes the input layers of one server.";
+  server.refuse("POST", "/api/processes", 422, sentence);
+  await show([{ ...FAILED, processID: "backscatter-change", inputs: { inputs: ["a", "b"], title: "Change" } }]);
+  await userEvent.click(commandsOf("Azimuth offset, 9 and 21 Oct 2026").getByRole("button", { name: "Run again" }));
+  await vi.waitFor(() => expect(messages()).toEqual([["error", sentence]]));
+});
+
+test("the details of a job name its server", () => {
+  const rows = (groups: ReturnType<typeof jobGroups>) =>
+    groups.flatMap(({ title, rows: part }) =>
+      part.map(({ name, value }) => `${title ?? ""} / ${name}: ${typeof value === "string" ? value : ""}`),
+    );
+  expect(rows(jobGroups(RUNNING))).toContain("Job / Server: Project server");
+  expect(rows(jobGroups({ ...RUNNING, server: OFFICE_NAME }))).toContain("Job / Server: Office computer");
 });
