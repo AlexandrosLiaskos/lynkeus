@@ -54,6 +54,8 @@ test("the limits written here are those of the formats of the server", () => {
   expect(linking).toContain(
     `layer_cells: int = Field(default=FIRST_LAYER_CELLS, ge=${python(LEAST_LAYER_CELLS)}, le=${python(MOST_LAYER_CELLS)})`,
   );
+  // Every server of an answer says whether its program knows the cells of a layer.
+  expect(linking).toContain("    state: ServerState | None\n    knows_cells: bool\n");
 });
 
 test("limits state the most cells of a layer, and limits of the older program, which lack them, count as 25 million", () => {

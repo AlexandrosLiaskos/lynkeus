@@ -312,7 +312,9 @@ test("the limits of a server are shown and set in jobs, in gigabytes and in mill
     await userEvent.type(field, value);
   }
   expect(memory()).toBe(cellsMemoryWords(150_000_000, OFFICE.state?.memory ?? null));
-  expect(memory()).toMatch(/^A job that receives a layer of 150 million cells needs about .+ of memory\. The 16 GB of this computer allow \d+ such jobs at the same time\.$/);
+  expect(memory()).toMatch(
+    /^A job that receives a layer of 150 million cells needs about .+ of memory\. The 16 GB of this computer allow \d+ such jobs at the same time\.$/,
+  );
   await userEvent.click(formButton("Set limits"));
   await vi.waitFor(() => expect(server.sent("PATCH")).toHaveLength(1));
   expect(server.sent("PATCH")[0]).toEqual({

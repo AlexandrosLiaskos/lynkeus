@@ -173,8 +173,18 @@ const RELEASE: Downloads = {
     version: "v0.1.0",
     published: "2026-11-15T12:00:00Z",
     downloads: [
-      { system: "windows", name: "Lynkeus-Server-0.1.0-Windows.exe", address: `${FILES}/Lynkeus-Server-0.1.0-Windows.exe`, size: 83_300_000 },
-      { system: "linux", name: "Lynkeus-Server-0.1.0-Linux.tar.gz", address: `${FILES}/Lynkeus-Server-0.1.0-Linux.tar.gz`, size: 121_900_000 },
+      {
+        system: "windows",
+        name: "Lynkeus-Server-0.1.0-Windows.exe",
+        address: `${FILES}/Lynkeus-Server-0.1.0-Windows.exe`,
+        size: 83_300_000,
+      },
+      {
+        system: "linux",
+        name: "Lynkeus-Server-0.1.0-Linux.tar.gz",
+        address: `${FILES}/Lynkeus-Server-0.1.0-Linux.tar.gz`,
+        size: 121_900_000,
+      },
     ],
   },
 };

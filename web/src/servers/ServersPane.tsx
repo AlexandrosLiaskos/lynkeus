@@ -72,11 +72,7 @@ function ServerList() {
       </p>
       <ul className="item-list servers-list">
         {listed.servers.map((server) => (
-          <ServerItem
-            key={server.id}
-            server={server}
-            upgrade={upgradeOf(server, downloads, navigator.userAgent)}
-          />
+          <ServerItem key={server.id} server={server} upgrade={upgradeOf(server, downloads, navigator.userAgent)} />
         ))}
       </ul>
       <div className="servers-buttons">
