@@ -7,6 +7,19 @@
 | Result | Magnitude of the interferometric coherence of one pair of dates, without unit |
 | State | The comparison (D-17) was made on 14 Nov 2026 on the sample file of the pilot area, against the layer as NASA Harmony delivered it. On 15 Nov 2026 the layer of the original HDF5 product file was compared as well: every cell that holds a value in the sample is equal. The comparison was repeated independently on 15 Nov 2026, with other scripts, and gave the same numbers. |
 
+## In brief
+
+| | |
+|---|---|
+| What it shows | The interferometric coherence of one pair of dates, from 0 to 1. |
+| Input | One coherence layer (`coherenceMagnitude`) of a GUNW product. |
+| Formula | The layer of the product, unchanged. The mission computes it as `\|<s1 * conj(s2)>\| / sqrt(<\|s1\|^2> * <\|s2\|^2>)`. |
+| Result | Without unit. The legend runs from 0 to 1, in grey. |
+| How to read | Near 1, the radar echoes of the two dates are alike. Near 0, they differ. A low value has several possible causes, and a change of the surface is one of them. |
+| Limits | The tool applies no mask of the product and sets no threshold. Zoomed out, the map shows the mean coherence of the cells that each drawn cell covers. |
+| Checked | The result equals the layer of the product file in every cell of the test area (lower Merrimack River, pair of 9 and 21 Oct 2026). |
+| References | [NISAR L2 GUNW Product Specification, JPL D-102272 Rev E](https://nisar-docs.asf.alaska.edu/product-specification/). [Touzi et al. (1999)](https://doi.org/10.1109/36.739146) and [Zebker and Villasenor (1992)](https://doi.org/10.1109/36.175330), of which the abstracts were read. |
+
 ## Reference
 
 1. NASA SDS Product Specification, Level-2 Geocoded Unwrapped Interferogram (L2 GUNW), JPL D-102272,
