@@ -202,6 +202,12 @@ Started with `--no-window` it writes the same on the terminal, for a server with
 `--server` and `--data-folder` give another project server and another data folder; an address that does
 not start with `https://` is taken only when it names the computer itself, for tests.
 
+The program reads the map data that came with it, the database of the coordinate systems among it, and not
+the data that the computer names in the variables `PROJ_DATA`, `PROJ_LIB` and `GDAL_DATA`. PostGIS and QGIS
+set these variables for the whole computer, for their own versions of the libraries, and PROJ refuses a
+database of another version. The program names its own folders in the three variables before it loads the
+libraries, in every process that it starts, its jobs included. The log says which variables named other data.
+
 ### First limits
 
 A new own server derives its first limits from the computer, and its owner changes them on the site.

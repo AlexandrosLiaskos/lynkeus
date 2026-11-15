@@ -22,7 +22,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from rio_cogeo.cogeo import cog_validate
 
-from lynkeus import harmony, jobs, offered, server
+from lynkeus import __version__, harmony, jobs, offered, server
 from lynkeus.analysis import SERIES_TOOLS, TOOLS
 from lynkeus.layers import LayerRequest
 from lynkeus.processes import Work
@@ -125,7 +125,7 @@ def test_server_offers_get_layer_and_one_process_for_every_tool(monkeypatch: pyt
         assert [summary["id"] for summary in summaries] == ["get-layer", *TOOLS, *SERIES_TOOLS]
         assert client.get(f"/api/processes/{nasa.TOOL}").status_code == 404
     first = summaries[0]
-    assert (first["title"], first["version"]) == ("Get layer", "0.1.0")
+    assert (first["title"], first["version"]) == ("Get layer", __version__)
     assert first["description"].startswith("Receives one layer of a NISAR product from NASA Harmony")
     assert first["jobControlOptions"] == ["async-execute", "dismiss"]
     assert first["additionalParameters"] == {"parameters": [{"name": "most-cells", "value": [harmony.MOST_CELLS]}]}

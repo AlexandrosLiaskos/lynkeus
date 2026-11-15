@@ -180,3 +180,9 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 
 - The scale bar of the map and its button in the View tab. The status bar shows the scale.
 - The footer of the application page.
+
+### Fixed
+
+- Lynkeus Server writes a layer on a computer where PostGIS, QGIS or another program names its own map data in the
+  variables PROJ_DATA, PROJ_LIB or GDAL_DATA. It used that data, PROJ refused the database of another version, and
+  every job of Get layer ended with an internal error. The program now uses the map data that came with it.

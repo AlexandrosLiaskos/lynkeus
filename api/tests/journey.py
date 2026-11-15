@@ -17,15 +17,18 @@ import json
 import os
 import secrets
 import signal
+import sqlite3
 import subprocess
 import sys
 import tempfile
 import time
 from collections.abc import Sequence
+from contextlib import closing
 from pathlib import Path
 from typing import Any
 
 import numpy as np
+import rasterio
 from rio_cogeo.cogeo import cog_validate
 
 from lynkeus import computer, jobs
@@ -63,6 +66,26 @@ program that is quit must not wait for the answer to its open question before it
 """
 START_TIME = 180.0
 """The longest time that the check waits for a start of the program or of a job, in seconds."""
+CARRIES_MAP_DATA = (Path(rasterio.__file__).parent / "proj_data" / "proj.db").is_file()
+"""Whether the installed rasterio carries map data of its own, as the wheels of PyPI do and those of conda do not."""
+
+
+def other_map_data(folder: Path) -> dict[str, str]:
+    """Make the map data of another program in a folder, and return the variables with which a computer names it.
+
+    PostGIS, QGIS and other programs name their own map data in ``PROJ_DATA``, ``PROJ_LIB`` and ``GDAL_DATA``
+    for the whole computer. The database of the coordinate systems in the folder is one of another version
+    of PROJ, which PROJ refuses, so that a program that read it could not write a layer. That was the failure
+    of the first Lynkeus Server on a Windows computer with PostGIS.
+    """
+    folder.mkdir(parents=True, exist_ok=True)
+    with closing(sqlite3.connect(folder / "proj.db")) as database, database:
+        database.execute("CREATE TABLE IF NOT EXISTS metadata (key TEXT NOT NULL PRIMARY KEY, value TEXT NOT NULL)")
+        database.executemany(
+            "INSERT OR REPLACE INTO metadata VALUES (?, ?)",
+            [("DATABASE.LAYOUT.VERSION.MAJOR", "0"), ("DATABASE.LAYOUT.VERSION.MINOR", "0")],
+        )
+    return {variable: str(folder) for variable in ("PROJ_DATA", "PROJ_LIB", "GDAL_DATA")}
 
 
 def _whole_file(site: Project, layer: str, file: str) -> bytes:
@@ -104,6 +127,9 @@ def _quit(program: subprocess.Popen[bytes], window: bool) -> None:
 def journey(command: Sequence[str], folder: Path, whole: bool = True, window: bool = False) -> dict[str, Any]:
     """Run Lynkeus Server through its journey, and return what was measured.
 
+    The computer names the map data of another program in ``PROJ_DATA``, ``PROJ_LIB`` and ``GDAL_DATA``
+    (``other_map_data``), as a computer with PostGIS does. The program must use the map data that came with it.
+
     Parameters
     ----------
     command : sequence of str
@@ -135,7 +161,12 @@ def journey(command: Sequence[str], folder: Path, whole: bool = True, window: bo
     output = folder / "output.txt"
     measured: dict[str, Any] = {}
     with project() as site, nasa(FILE) as web, output.open("wb") as written:
-        environment = {**os.environ, **web.environment(), "PYTHONUNBUFFERED": "1"}
+        environment = {
+            **os.environ,
+            **web.environment(),
+            **other_map_data(folder / "map-data"),
+            "PYTHONUNBUFFERED": "1",
+        }
         group = 0
         if sys.platform == "win32":
             # Windows sends the key Ctrl+Break to a program that leads a group of its own.
@@ -175,6 +206,10 @@ def journey(command: Sequence[str], folder: Path, whole: bool = True, window: bo
             measured["leave"] = round(time.monotonic() - asked, 1)
             assert program.wait(START_TIME) == 0
             assert (len(site.leaves), site.asked[-1]) == (1, "/api/link/leave")
+            if CARRIES_MAP_DATA:
+                # The computer named the map data of another program, and the program used its own.
+                text_of_log = (data / computer.LOG).read_text(encoding="utf-8")
+                assert "other programs in PROJ_DATA, PROJ_LIB, GDAL_DATA" in text_of_log
             assert site.faults == [], site.faults
         except BaseException:
             written.flush()

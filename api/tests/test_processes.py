@@ -6,6 +6,7 @@ from typing import Any
 import pytest
 from pydantic import Field
 
+from lynkeus import __version__
 from lynkeus.layers import Area, Format, LayerDescription, LayerRequest
 from lynkeus.processes import MAX_REFERENCES, InputError, Process, Work
 from tests.standin import STAND_IN, StandInInputs, job_title, run
@@ -47,7 +48,7 @@ def test_summary_names_the_process_and_how_it_is_executed() -> None:
         "id": "stand-in",
         "title": "Stand-in",
         "description": "Writes two small files after a pause.",
-        "version": "0.1.0",
+        "version": __version__,
         "jobControlOptions": ["async-execute", "dismiss"],
         "outputTransmission": ["value"],
     }

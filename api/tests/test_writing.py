@@ -33,6 +33,7 @@ from rasterio.crs import CRS
 from rasterio.warp import transform
 from rio_cogeo.cogeo import cog_validate
 
+from lynkeus import __version__
 from lynkeus.layers import LayerDescription
 from lynkeus.writing import Grid, LayerError, grid_of, legend_range, read_layer, statistics_of, write_layer
 from tests.records import LAYERS, stac_faults
@@ -173,7 +174,7 @@ def test_file_carries_what_a_gis_program_reads(tmp_path: Path) -> None:
         assert (structure["LAYOUT"], structure["COMPRESSION"], structure["PREDICTOR"]) == ("COG", "DEFLATE", "3")
         tags = source.tags()
         assert tags["TIFFTAG_IMAGEDESCRIPTION"] == "Backscatter HH, 21 Oct 2026"
-        assert tags["TIFFTAG_SOFTWARE"] == "Lynkeus 0.1.0"
+        assert tags["TIFFTAG_SOFTWARE"] == f"Lynkeus {__version__}"
         assert datetime.strptime(tags["TIFFTAG_DATETIME"], "%Y:%m:%d %H:%M:%S").year >= 2026
         assert (tags["dates"], tags["inputs"]) == ("2026-10-21", GRANULE)
         assert "method" not in tags
@@ -191,7 +192,7 @@ def test_description_gives_the_addresses_and_a_legend_from_the_data(tmp_path: Pa
     assert description.id == "k3v9x2"
     assert description.url == "/files/k3v9x2/gcov-hhhh-20261021.tif"
     assert description.record == "/files/k3v9x2/gcov-hhhh-20261021.json"
-    assert (description.kind, description.method, description.program) == ("layer", None, "Lynkeus 0.1.0")
+    assert (description.kind, description.method, description.program) == ("layer", None, f"Lynkeus {__version__}")
     assert description.range == tuple(float(value) for value in np.percentile(delivered, (2, 98)))
     assert description.dates == (date(2026, 10, 21),)
     assert description.inputs == (GRANULE,)
@@ -351,7 +352,7 @@ def test_record_describes_the_file(tmp_path: Path) -> None:
     assert properties["proj:transform"] == [10.0, 0.0, 321040.0, 0.0, -10.0, 4733370.0]
     assert properties["proj:bbox"] == [321040.0, 4727770.0, 327040.0, 4733370.0]
     assert properties["processing:level"] == "L2"
-    assert properties["processing:software"] == {"Lynkeus": "0.1.0", "GDAL": rasterio.__gdal_version__}
+    assert properties["processing:software"] == {"Lynkeus": __version__, "GDAL": rasterio.__gdal_version__}
     assert record["links"] == [{"rel": "via", "href": SOURCE, "type": "application/json"}]
     asset = record["assets"]["data"]
     assert asset["href"] == "./gcov-hhhh-20261021.tif"

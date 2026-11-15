@@ -17,6 +17,7 @@ import pytest
 import rasterio
 from numpy.typing import NDArray
 
+from lynkeus import __version__
 from lynkeus.analysis import TOOLS
 from lynkeus.analysis.backscatter import backscatter_state
 from lynkeus.layers import AnalysisResult, LayerDescription, ToolRun
@@ -97,7 +98,7 @@ def test_result_is_described_by_the_tool_and_by_its_layers(tmp_path: Path) -> No
     assert (description.range, description.colours, description.method) == ((-6.0, 6.0), "RdBu", METHOD)
     assert description.dates == (date(2026, 10, 21), date(2026, 11, 2))
     assert description.inputs == ("product-of-21-october.h5", "product-of-2-november.h5")
-    assert description.program == "Lynkeus 0.1.0"
+    assert description.program == f"Lynkeus {__version__}"
     assert description.ends is None
 
 
