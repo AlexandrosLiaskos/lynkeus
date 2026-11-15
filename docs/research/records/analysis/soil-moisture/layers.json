@@ -1,0 +1,758 @@
+[
+ {
+  "name": "sm-20260915",
+  "granule": "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001",
+  "layer": "soilMoisture",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 16.7,
+  "received_utc": "2026-11-15T09:55:54Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.3,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    3.4,
+    5,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    6.8,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    10.1,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    16.7,
+    90,
+    "Writing the layer."
+   ],
+   [
+    16.7,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "sm-20260915",
+   "title": "Soil moisture, 15 Sep 2026",
+   "kind": "layer",
+   "url": "/files/sm-20260915/sme2-soilmoisture-20260915.tif",
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    0.23740190804004668,
+    0.4309999942779541
+   ],
+   "colours": "YlGnBu",
+   "dates": [
+    "2026-09-15"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001.h5"
+   ],
+   "layer": "soilMoisture",
+   "ends": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/sm-20260915/sme2-soilmoisture-20260915.json"
+  },
+  "files": {
+   "sme2-soilmoisture-20260915.json": {
+    "bytes": 4864,
+    "sha256": "1abf6fbee1ca031e64ef6b0f5b768545b33c18e45b6494caaf72f3890d6941e1"
+   },
+   "sme2-soilmoisture-20260915.tif": {
+    "bytes": 99762,
+    "sha256": "bfd119fb52d7b283be86099909625cc689e443fa706c63786fcd4dd730a4a11d"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "0.6000000238418579",
+    "STATISTICS_MEAN": "0.2907900572357234",
+    "STATISTICS_MINIMUM": "0.08500000089406967",
+    "STATISTICS_STDDEV": "0.0407113505563074",
+    "STATISTICS_VALID_PERCENT": "82.53726287262873"
+   },
+   "overviews": []
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  },
+  "lineage": "Layer /science/LSAR/SME2/grids/soilMoisture of the NISAR product NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001, clipped to the area -71.2, 42.6, -70.75, 42.95 (west, south, east and north, in degrees) by NASA Harmony (job 02a9a081-640f-4d69-a9ef-726296d0829f), and written by Lynkeus 0.1.0 with reduced copies made by averaging.",
+  "harmony_job": "02a9a081-640f-4d69-a9ef-726296d0829f",
+  "links": [
+   [
+    "via",
+    "https://cmr.earthdata.nasa.gov/search/concepts/G4314760500-ASF.umm_json"
+   ]
+  ]
+ },
+ {
+  "name": "sm-20260927",
+  "granule": "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001",
+  "layer": "soilMoisture",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 15.9,
+  "received_utc": "2026-11-15T09:54:27Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.4,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    3.3,
+    5,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    6.5,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    9.9,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    15.7,
+    90,
+    "Writing the layer."
+   ],
+   [
+    15.9,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "sm-20260927",
+   "title": "Soil moisture, 27 Sep 2026",
+   "kind": "layer",
+   "url": "/files/sm-20260927/sme2-soilmoisture-20260927.tif",
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    0.2289392176270485,
+    0.37700000405311584
+   ],
+   "colours": "YlGnBu",
+   "dates": [
+    "2026-09-27"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5"
+   ],
+   "layer": "soilMoisture",
+   "ends": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/sm-20260927/sme2-soilmoisture-20260927.json"
+  },
+  "files": {
+   "sme2-soilmoisture-20260927.json": {
+    "bytes": 4865,
+    "sha256": "76bbbcf6fc51dd56c9e8eb0e530a52b79b43b6b5fb075b0191d2cf9eca1e133e"
+   },
+   "sme2-soilmoisture-20260927.tif": {
+    "bytes": 99726,
+    "sha256": "1485f51a4a971fcad41815c903259aaf0d99e7da9b8b2cb23b239e936e3ee9f0"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "0.6000000238418579",
+    "STATISTICS_MEAN": "0.2765517229501881",
+    "STATISTICS_MINIMUM": "0.08900000154972076",
+    "STATISTICS_STDDEV": "0.03175475256026234",
+    "STATISTICS_VALID_PERCENT": "82.53726287262873"
+   },
+   "overviews": []
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  },
+  "lineage": "Layer /science/LSAR/SME2/grids/soilMoisture of the NISAR product NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001, clipped to the area -71.2, 42.6, -70.75, 42.95 (west, south, east and north, in degrees) by NASA Harmony (job 6521c6cb-b20a-448c-96e0-1d716acb7b59), and written by Lynkeus 0.1.0 with reduced copies made by averaging.",
+  "harmony_job": "6521c6cb-b20a-448c-96e0-1d716acb7b59",
+  "links": [
+   [
+    "via",
+    "https://cmr.earthdata.nasa.gov/search/concepts/G4328574868-ASF.umm_json"
+   ]
+  ]
+ },
+ {
+  "name": "sm-20261004-t069",
+  "granule": "NISAR_L3_PR_SME2_032_069_D_067_4005_DHDH_A_20261004T235149_20261004T235224_P05023_N_F_J_001",
+  "layer": "soilMoisture",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 17.4,
+  "received_utc": "2026-11-15T09:55:38Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.3,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    4.0,
+    5,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    7.7,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    11.0,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    17.4,
+    90,
+    "Writing the layer."
+   ],
+   [
+    17.4,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "sm-20261004-t069",
+   "title": "Soil moisture, 4 Oct 2026",
+   "kind": "layer",
+   "url": "/files/sm-20261004-t069/sme2-soilmoisture-20261004.tif",
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    0.2016413164138794,
+    0.31117190122604366
+   ],
+   "colours": "YlGnBu",
+   "dates": [
+    "2026-10-04"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_032_069_D_067_4005_DHDH_A_20261004T235149_20261004T235224_P05023_N_F_J_001.h5"
+   ],
+   "layer": "soilMoisture",
+   "ends": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/sm-20261004-t069/sme2-soilmoisture-20261004.json"
+  },
+  "files": {
+   "sme2-soilmoisture-20261004.json": {
+    "bytes": 4868,
+    "sha256": "bd6b0a7b206e2968a529c205a3fcd9c63c9dfbefe34c85754715965d36ad0e95"
+   },
+   "sme2-soilmoisture-20261004.tif": {
+    "bytes": 36427,
+    "sha256": "171c3397ba9f062cdaa1bd6081177b5048166d61c329f5f8f46c4da0efb6c8a5"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.115491281,
+    0.0,
+    -200.17900467012078,
+    4990662.763762229
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "0.4764682650566101",
+    "STATISTICS_MEAN": "0.2542184936535361",
+    "STATISTICS_MINIMUM": "0.05967140197753906",
+    "STATISTICS_STDDEV": "0.024999820437345076",
+    "STATISTICS_VALID_PERCENT": "26.021906052393856"
+   },
+   "overviews": []
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  },
+  "lineage": "Layer /science/LSAR/SME2/grids/soilMoisture of the NISAR product NISAR_L3_PR_SME2_032_069_D_067_4005_DHDH_A_20261004T235149_20261004T235224_P05023_N_F_J_001, clipped to the area -71.2, 42.6, -70.75, 42.95 (west, south, east and north, in degrees) by NASA Harmony (job 69f8bb5d-bdcd-49fc-9e7a-de904786d504), and written by Lynkeus 0.1.0 with reduced copies made by averaging.",
+  "harmony_job": "69f8bb5d-bdcd-49fc-9e7a-de904786d504",
+  "links": [
+   [
+    "via",
+    "https://cmr.earthdata.nasa.gov/search/concepts/G4345894394-ASF.umm_json"
+   ]
+  ]
+ },
+ {
+  "name": "sm-20261007-t104",
+  "granule": "NISAR_L3_PR_SME2_032_104_A_023_4005_DHDH_A_20261007T094232_20261007T094307_P05023_N_F_J_001",
+  "layer": "soilMoisture",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 16.0,
+  "received_utc": "2026-11-15T09:55:20Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.4,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    3.4,
+    5,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    6.8,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    10.1,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    16.0,
+    90,
+    "Writing the layer."
+   ],
+   [
+    16.0,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "sm-20261007-t104",
+   "title": "Soil moisture, 7 Oct 2026",
+   "kind": "layer",
+   "url": "/files/sm-20261007-t104/sme2-soilmoisture-20261007.tif",
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    0.1899999976158142,
+    0.2997061693668364
+   ],
+   "colours": "YlGnBu",
+   "dates": [
+    "2026-10-07"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_032_104_A_023_4005_DHDH_A_20261007T094232_20261007T094307_P05023_N_F_J_001.h5"
+   ],
+   "layer": "soilMoisture",
+   "ends": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/sm-20261007-t104/sme2-soilmoisture-20261007.json"
+  },
+  "files": {
+   "sme2-soilmoisture-20261007.json": {
+    "bytes": 4867,
+    "sha256": "7edf829f97ba53903152e56ed1ae34a04c453e89914f73cbfce5a7b933367089"
+   },
+   "sme2-soilmoisture-20261007.tif": {
+    "bytes": 100486,
+    "sha256": "c386aeba2ea7b059a834f8220addcf850ebc6bf19c5e1e2770dcfd79e542907a"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.115491529,
+    0.0,
+    -200.17900467012078,
+    4990662.763762229
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "0.5951008796691895",
+    "STATISTICS_MEAN": "0.23889177604287615",
+    "STATISTICS_MINIMUM": "0.07999999821186066",
+    "STATISTICS_STDDEV": "0.02737123664484073",
+    "STATISTICS_VALID_PERCENT": "82.53726287262873"
+   },
+   "overviews": []
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  },
+  "lineage": "Layer /science/LSAR/SME2/grids/soilMoisture of the NISAR product NISAR_L3_PR_SME2_032_104_A_023_4005_DHDH_A_20261007T094232_20261007T094307_P05023_N_F_J_001, clipped to the area -71.2, 42.6, -70.75, 42.95 (west, south, east and north, in degrees) by NASA Harmony (job 330ee37b-b565-4d64-8334-fb8617edffb8), and written by Lynkeus 0.1.0 with reduced copies made by averaging.",
+  "harmony_job": "330ee37b-b565-4d64-8334-fb8617edffb8",
+  "links": [
+   [
+    "via",
+    "https://cmr.earthdata.nasa.gov/search/concepts/G4351794098-ASF.umm_json"
+   ]
+  ]
+ },
+ {
+  "name": "sm-20261009",
+  "granule": "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001",
+  "layer": "soilMoisture",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 18.1,
+  "received_utc": "2026-11-15T09:54:45Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.4,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    4.2,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    7.9,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    11.2,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    18.0,
+    90,
+    "Writing the layer."
+   ],
+   [
+    18.1,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "sm-20261009",
+   "title": "Soil moisture, 9 Oct 2026",
+   "kind": "layer",
+   "url": "/files/sm-20261009/sme2-soilmoisture-20261009.tif",
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    0.17800000309944153,
+    0.2919092983007429
+   ],
+   "colours": "YlGnBu",
+   "dates": [
+    "2026-10-09"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+   ],
+   "layer": "soilMoisture",
+   "ends": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/sm-20261009/sme2-soilmoisture-20261009.json"
+  },
+  "files": {
+   "sme2-soilmoisture-20261009.json": {
+    "bytes": 4864,
+    "sha256": "3aeef2b53f122df56cf037ebe7483d7c04f46cd25cb4ec80550259a7ba180b50"
+   },
+   "sme2-soilmoisture-20261009.tif": {
+    "bytes": 100772,
+    "sha256": "aefe8f4759a11d7cd5a13dad9deffba67471704ae0484206dfafdde784df93f9"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "0.6000000238418579",
+    "STATISTICS_MEAN": "0.23388739770511627",
+    "STATISTICS_MINIMUM": "0.07999999821186066",
+    "STATISTICS_STDDEV": "0.02790906132319405",
+    "STATISTICS_VALID_PERCENT": "82.53726287262873"
+   },
+   "overviews": []
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  },
+  "lineage": "Layer /science/LSAR/SME2/grids/soilMoisture of the NISAR product NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001, clipped to the area -71.2, 42.6, -70.75, 42.95 (west, south, east and north, in degrees) by NASA Harmony (job 20386b7b-782a-4d75-bd01-8ec85b009651), and written by Lynkeus 0.1.0 with reduced copies made by averaging.",
+  "harmony_job": "20386b7b-782a-4d75-bd01-8ec85b009651",
+  "links": [
+   [
+    "via",
+    "https://cmr.earthdata.nasa.gov/search/concepts/G4359373353-ASF.umm_json"
+   ]
+  ]
+ },
+ {
+  "name": "smu-20261009",
+  "granule": "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001",
+  "layer": "soilMoistureUncertainty",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 18.8,
+  "received_utc": "2026-11-15T09:55:04Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.3,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    5.1,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    8.9,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    12.2,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    18.8,
+    90,
+    "Writing the layer."
+   ],
+   [
+    18.8,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "smu-20261009",
+   "title": "Uncertainty of soil moisture, 9 Oct 2026",
+   "kind": "layer",
+   "url": "/files/smu-20261009/sme2-soilmoistureuncertainty-20261009.tif",
+   "quantity": "Uncertainty of soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    0.027579993158578873,
+    0.04875277176499366
+   ],
+   "colours": "viridis",
+   "dates": [
+    "2026-10-09"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+   ],
+   "layer": "soilMoistureUncertainty",
+   "ends": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/smu-20261009/sme2-soilmoistureuncertainty-20261009.json"
+  },
+  "files": {
+   "sme2-soilmoistureuncertainty-20261009.json": {
+    "bytes": 4961,
+    "sha256": "24c2a5eed3288341a7c332402c3f101c5d9044c12eee9a2fc30027e8219e3e89"
+   },
+   "sme2-soilmoistureuncertainty-20261009.tif": {
+    "bytes": 102244,
+    "sha256": "21a745467998d4143589ac996abc4883c4676e6f6448b8e9f42564fc2d8dcd5b"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "0.11446380615234375",
+    "STATISTICS_MEAN": "0.035356722729755284",
+    "STATISTICS_MINIMUM": "0.012111267074942589",
+    "STATISTICS_STDDEV": "0.005217995238111482",
+    "STATISTICS_VALID_PERCENT": "82.5344399277326"
+   },
+   "overviews": []
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  },
+  "lineage": "Layer /science/LSAR/SME2/grids/soilMoistureUncertainty of the NISAR product NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001, clipped to the area -71.2, 42.6, -70.75, 42.95 (west, south, east and north, in degrees) by NASA Harmony (job 3e1ebb77-df54-4779-ad2e-add50e088973), and written by Lynkeus 0.1.0 with reduced copies made by averaging.",
+  "harmony_job": "3e1ebb77-df54-4779-ad2e-add50e088973",
+  "links": [
+   [
+    "via",
+    "https://cmr.earthdata.nasa.gov/search/concepts/G4359373353-ASF.umm_json"
+   ]
+  ]
+ }
+]
