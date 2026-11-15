@@ -58,18 +58,11 @@ test("every member, the event and every logo is a link", () => {
   }
 });
 
-test("the button Enter the Platform slides the screen up", () => {
-  render(<Welcome count={() => Promise.reject(new Error("No answer."))} />);
-  const dialog = screen.getByRole<HTMLDialogElement>("dialog", { name: NAME });
-  fireEvent.click(screen.getByRole("button", { name: /^Enter the Platform/ }));
-  expect(dialog.classList.contains("welcome-leaving")).toBe(true);
-});
-
-test("the arrow at the foot slides the screen up, and the screen closes when it has left the window", () => {
+test("the button at the foot slides the screen up, and the screen closes when it has left the window", () => {
   vi.useFakeTimers();
   render(<Welcome count={silent} />);
   const dialog = screen.getByRole<HTMLDialogElement>("dialog", { name: NAME });
-  fireEvent.click(screen.getByRole("button", { name: "Enter Lynkeus" }));
+  fireEvent.click(screen.getByRole("button", { name: "Enter the Platform" }));
   expect(dialog.classList.contains("welcome-leaving")).toBe(true);
   expect(dialog.open).toBe(true);
   act(() => {

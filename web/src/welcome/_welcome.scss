@@ -68,13 +68,13 @@ $slide: 0.7s;
   pointer-events: none;
 }
 
-// The texts: one wide block in the lower right part of the window, above the arrow. Its three rows are the mark
-// with the name, the team beside the event, and the button that opens the page.
+// The texts: one wide block in the lower right part of the window, above the button. Its three rows are the mark
+// with the name, the team, and the event with its logos.
 .welcome-content {
   position: absolute;
   z-index: 2;
   right: clamp(1.5rem, 4vw, 4rem);
-  bottom: clamp(3.75rem, 9vh, 6.5rem);
+  bottom: clamp(5.25rem, 11vh, 7.5rem);
   display: flex;
   flex-direction: column;
   width: min(54rem, calc(100vw - 3rem));
@@ -115,36 +115,6 @@ $slide: 0.7s;
   flex: none;
   width: auto;
   height: clamp(5rem, 8.4vw, 7rem);
-}
-
-// The team and the event, side by side.
-.welcome-credits {
-  display: grid;
-  grid-template-columns: repeat(2, auto);
-  align-items: center;
-  justify-content: center;
-  gap: 1.25rem clamp(2rem, 5vw, 4rem);
-}
-
-.welcome a,
-.welcome a:visited {
-  color: inherit;
-  text-decoration: none;
-}
-
-.welcome :is(a, button):focus-visible {
-  outline: 2px solid #fff;
-  outline-offset: 2px;
-}
-
-.welcome ul {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: center;
-  margin: 0;
-  padding: 0;
-  list-style: none;
 }
 
 .welcome-title {
@@ -225,10 +195,8 @@ $slide: 0.7s;
   line-height: 1.35;
 }
 
-.welcome-event p a {
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
+.welcome-event p a:hover {
+  opacity: 0.75;
 }
 
 .welcome-event ul {
@@ -256,68 +224,87 @@ $slide: 0.7s;
   height: 2.6rem;
 }
 
-// The button that opens the page: words and an arrow, without a frame.
-.welcome-start {
-  align-self: center;
-  padding: 0.3rem 0.6rem;
+// The source of the image: a small letter i in a circle in the lower left corner, which shows the words beside
+// it while the pointer or the keyboard focus rests on it.
+.welcome-credit {
+  position: absolute;
+  z-index: 3;
+  bottom: 0.9rem;
+  left: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgb(255 255 255 / 72%);
+  font-size: 0.6rem;
+  letter-spacing: 0.04em;
+  cursor: default;
+  animation: welcome-rise 0.9s $ease 1.2s both;
+}
+
+.welcome-credit:focus {
+  outline: none;
+}
+
+.welcome-credit > :first-child {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid currentcolor;
+  border-radius: 50%;
+  font-family: $serif;
+  font-size: 0.7rem;
+  font-style: italic;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.welcome-credit-text {
+  opacity: 0;
+  transition: opacity 0.2s $ease;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.welcome-credit:is(:hover, :focus) .welcome-credit-text {
+  opacity: 1;
+}
+
+// The button at the middle of the foot, which slides the screen up: two strokes that point upward and brighten
+// one after the other, and its words under them. It has no frame.
+.welcome-enter {
+  position: absolute;
+  z-index: 3;
+  right: 0;
+  bottom: 0.8rem;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  width: fit-content;
+  margin: 0 auto;
+  padding: 0.2rem 0.8rem;
   border: 0;
   background: none;
   color: #fff;
   font-family: $serif;
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   font-style: italic;
   cursor: pointer;
+  animation: welcome-rise 0.9s $ease 1.3s both;
 }
 
-.welcome-start span {
-  display: inline-block;
-  margin-left: 0.35rem;
-  font-style: normal;
-  transition: transform 0.2s $ease;
-}
-
-.welcome-start:hover span {
-  transform: translateX(0.3rem);
-}
-
-// The keyboard focus underlines the words instead of drawing a frame around them.
-.welcome .welcome-start:focus-visible {
+// The keyboard focus underlines the words instead of drawing a frame around the button.
+.welcome .welcome-enter:focus-visible {
   outline: none;
+}
+
+.welcome-enter:focus-visible span {
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 4px;
-}
-
-// The credit of the image, in the lower left corner.
-.welcome-credit {
-  position: absolute;
-  z-index: 2;
-  bottom: 0.75rem;
-  left: 1rem;
-  margin: 0;
-  color: rgb(255 255 255 / 60%);
-  font-size: 0.55rem;
-  letter-spacing: 0.04em;
-  animation: welcome-rise 0.9s $ease 1.2s both;
-}
-
-// The arrow at the middle of the foot, which slides the screen up. Its two strokes brighten one after the other.
-.welcome-enter {
-  position: absolute;
-  z-index: 3;
-  bottom: 0.75rem;
-  left: calc(50% - 1.25rem);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: #fff;
-  cursor: pointer;
-  animation: welcome-rise 0.9s $ease 1.3s both;
 }
 
 .welcome-enter svg {
@@ -387,14 +374,6 @@ $slide: 0.7s;
     left: 0;
     width: min(22rem, calc(100vw - 2rem));
     margin: 0 auto;
-  }
-
-  .welcome-credits {
-    grid-template-columns: auto;
-  }
-
-  .welcome-credit {
-    display: none;
   }
 }
 

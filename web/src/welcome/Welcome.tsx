@@ -30,9 +30,10 @@ interface WelcomeProps {
  * The welcome screen, which covers the page when it opens, as the lock screen of a computer covers the desktop.
  * It shows an illustration of the NISAR satellite and, in its lower right part, the mark and the name of the
  * platform, the team, the event for which Lynkeus was started with the logos of its organisers and of the
- * universities of the team, and the button that opens the page. Every member, the event and every logo is a link.
+ * universities of the team. Every member, the event and every logo is a link. A small letter i in the lower left
+ * corner names the source of the image.
  *
- * The visitor slides the screen up to enter: with that button, with the arrow at its foot, by dragging it upward, by
+ * The visitor slides the screen up to enter: with the button at the middle of its foot, by dragging it upward, by
  * scrolling, or
  * with the Enter, Space, Up or Escape key. The screen then moves up out of the window and the page stands under
  * it.
@@ -157,59 +158,52 @@ export function Welcome({ count = visits }: WelcomeProps) {
             <p className="welcome-subtitle">{WELCOME.subtitle}</p>
           </div>
         </header>
-        <div className="welcome-credits">
-          <section className="welcome-team">
-            <h3 className="welcome-label">Research team</h3>
-            <ul>
-              {WELCOME.team.map(({ name, photo, address, label }) => (
-                <li key={name}>
-                  <a
-                    href={address}
-                    aria-label={label}
-                    title={address.replace(/^mailto:/, "")}
-                    {...(address.startsWith("mailto:") ? {} : { target: "_blank", rel: "noreferrer" })}
-                  >
-                    <img className="welcome-avatar" src={`/assets/welcome/${photo}`} alt="" draggable={false} />
-                    <span className="welcome-name">{name}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
-          <section className="welcome-event">
-            <p>
-              <a href={WELCOME.event.address} target="_blank" rel="noreferrer">
-                {WELCOME.event.name}
-              </a>{" "}
-              • {WELCOME.event.place}
-            </p>
-            <ul>
-              {WELCOME.logos.map(({ name, file, address }) => (
-                <li key={file}>
-                  <a href={address} title={name} target="_blank" rel="noreferrer">
-                    <img src={`/assets/welcome/${file}`} alt={name} draggable={false} />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
-        </div>
-        <button type="button" className="welcome-start" onClick={enter}>
-          {WELCOME.enter} <span aria-hidden="true">→</span>
-        </button>
+        <section className="welcome-team">
+          <h3 className="welcome-label">Research team</h3>
+          <ul>
+            {WELCOME.team.map(({ name, photo, address, label }) => (
+              <li key={name}>
+                <a
+                  href={address}
+                  aria-label={label}
+                  title={address.replace(/^mailto:/, "")}
+                  {...(address.startsWith("mailto:") ? {} : { target: "_blank", rel: "noreferrer" })}
+                >
+                  <img className="welcome-avatar" src={`/assets/welcome/${photo}`} alt="" draggable={false} />
+                  <span className="welcome-name">{name}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section className="welcome-event">
+          <p>
+            <a href={WELCOME.event.address} target="_blank" rel="noreferrer">
+              {WELCOME.event.name}
+            </a>{" "}
+            • {WELCOME.event.place}
+          </p>
+          <ul>
+            {WELCOME.logos.map(({ name, file, address }) => (
+              <li key={file}>
+                <a href={address} title={name} target="_blank" rel="noreferrer">
+                  <img src={`/assets/welcome/${file}`} alt={name} draggable={false} />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
       </div>
-      <p className="welcome-credit">{WELCOME.image.credit}</p>
-      <button
-        type="button"
-        className="welcome-enter"
-        aria-label="Enter Lynkeus"
-        title="Slide up to enter"
-        onClick={enter}
-      >
+      <span className="welcome-credit" tabIndex={0} role="note" aria-label={WELCOME.image.credit}>
+        <span aria-hidden="true">i</span>
+        <span className="welcome-credit-text">{WELCOME.image.credit}</span>
+      </span>
+      <button type="button" className="welcome-enter" onClick={enter}>
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <polyline points="5,13 12,6 19,13" />
           <polyline points="5,20 12,13 19,20" />
         </svg>
+        <span>{WELCOME.enter}</span>
       </button>
     </dialog>
   );
