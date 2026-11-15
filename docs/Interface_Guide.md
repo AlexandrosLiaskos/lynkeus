@@ -88,16 +88,19 @@ The test `web/src/shared/tokens/tokens.test.ts` computes these values at every r
 |---|---|---|
 | product | A NISAR data product that NASA's catalogue lists. | granule, scene |
 | layer | What the map shows and the Contents pane lists: data received from NASA or computed by a tool, or shapes that a tool draws (the area, the area of the search, the outlines of the products found). | dataset, raster |
-| job | A request of the session to receive a layer or to run an analysis tool. | task, request |
+| job | A request of an Earthdata account to receive a layer or to run an analysis tool. | task, request |
 | area | The area of a search or of a tool. | region, area of interest |
 | outline | The ground outline of a product on the map. | footprint |
 | basemap | The bottom layer of the map, which the Map tab chooses and the Contents pane lists last. | background map |
-| session | The jobs and the layers of one visitor, which the server keeps until the session ends. | |
+| session | The link of one browser to the project server, which a sign-in makes and a cookie names. The layers, the series and the jobs belong to the account and not to the session. | |
+| keeping time | The time for which the project server keeps a layer or a series after it was made or last extended. The interface reads it from the limits of the server. | retention, expiry |
+| project server | The server of the site, which keeps the layers, the series and the jobs of an account until the date that each one states. | the server, where a server of the visitor could be meant |
+| your server | A computer of the visitor that runs Lynkeus Server and keeps its layers until the visitor removes them. | own server |
 | Contents pane | The pane on the left that lists the layers of the map. | layer list, table of contents |
 | Catalog pane | The pane on the right that lists products, jobs and layers. | results panel |
 | tool pane | The pane on the right that holds the form of one tool. | dialog, sidebar |
 | NASA's catalogue | The catalogue that the search asks. The pane is spelt "Catalog", as in ArcGIS Pro. | CMR |
-| Earthdata account | The account of the user at NASA. "Earthdata Login" names only NASA's service itself. | Earthdata Login account, NASA account |
+| Earthdata account | The account of the user at NASA, to which the layers, the series and the jobs on the project server belong. "Earthdata Login" names only NASA's service itself. | Earthdata Login account, NASA account |
 | user token | The token of Earthdata Login with which the user signs in. | key, password |
 | sign in, sign out | | log in, log out |
 
@@ -108,9 +111,23 @@ The test `web/src/shared/tokens/tokens.test.ts` computes these values at every r
 | The page has one indication of the keyboard focus, a line of 2 px in the primary colour, which shows only for the keyboard (`web/src/shared/_focus.scss`). | Project |
 | A change of state takes 150 ms or less and happens at once for a user who has asked the operating system for less motion (`prefers-reduced-motion`). | [W4] for the preference of the user; the limit is a decision of the project |
 
+## H. What is kept
+
+What Lynkeus keeps, where, for how long, and how the visitor sees and removes it is fixed in [Storage.md](Storage.md).
+The pane Storage of the Options tab shows all of it. The rules below are the ones that a text or a row of the
+interface follows when it speaks of what is kept.
+
+| Rule | Source |
+|---|---|
+| A text about what is kept copies a statement of the table "What is kept" of [Storage.md](Storage.md), from `web/src/options/kept.ts`, and a test compares the two. | Project |
+| A duration or a limit of what is kept is read from `GET /api/limits` (`limitsStore` and `useLimits` in `web/src/header/notice/limits.ts`) and is never typed. While the limits are not known, the text names the thing without its number, for example "Keep longer". | Project |
+| A row of something that is kept states what it is, its size where it has one, until when it is kept and the command that removes it. | Project |
+| An amount beside its limit is written as numbers, for example "12 of at most 50", and drawn as a bar with the role `meter`, whose `aria-valuetext` holds the same words. A bar does not show progress. | [A4] |
+| A layer or a series of the project server states "Kept until" and its date. From three days before that date its row carries the icon and the tint of a warning, with the words. | Project |
+
 ## Sources
 
-Read on 14 November 2026.
+Read on 14 November 2026; [A4] on 15 November 2026.
 
 - [W1] W3C, Understanding Success Criterion 1.4.3 Contrast (Minimum), WCAG 2.2. https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html
 - [W2] W3C, Understanding Success Criterion 2.5.8 Target Size (Minimum), WCAG 2.2. https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html
@@ -119,6 +136,7 @@ Read on 14 November 2026.
 - [A1] W3C, WAI-ARIA Authoring Practices 1.2, section 3.10 Disclosure (Show/Hide). https://www.w3.org/TR/2021/NOTE-wai-aria-practices-1.2-20211129/
 - [A2] W3C, ARIA Authoring Practices Guide, Toolbar Pattern. https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/
 - [A3] W3C, ARIA Authoring Practices Guide, Menu Button Pattern. https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/
+- [A4] W3C, ARIA Authoring Practices Guide, Meter Pattern. https://www.w3.org/WAI/ARIA/apg/patterns/meter/
 - [M1] MDN Web Docs, ARIA: toolbar role. https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/toolbar_role
 - [U1] U.S. Web Design System, Button. https://designsystem.digital.gov/components/button/
 - [U2] U.S. Web Design System 1.0, Buttons. https://v1.designsystem.digital.gov/components/buttons/
@@ -176,7 +194,7 @@ The blocks are in `web/src/shared/`. The import paths below are written from a f
 <Section
   title="Layers"
   count={layers.length}
-  info="The layers of this session."
+  info="The layers of your Earthdata account."
   actions={<IconButton icon="add" label="Add a layer" onClick={add} />}
 >
   <ul className="item-list">…</ul>
