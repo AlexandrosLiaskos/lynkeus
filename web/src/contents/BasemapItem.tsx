@@ -1,7 +1,7 @@
-import { useRef, useState, type KeyboardEvent, type MouseEvent } from "react";
+import { useRef, useState, type MouseEvent } from "react";
 import { baseMapStore, type BaseMapId } from "../map/baseMaps";
 import { MAP_TAB } from "../map/tab";
-import { Icon } from "../shared/icon/Icon";
+import { MenuButton } from "../shared/menu/MenuButton";
 import { createStore, useStore } from "../shared/store";
 import { Menu, type MenuItem } from "./Menu";
 
@@ -27,11 +27,15 @@ baseMapStore.subscribe(() => {
   }
 });
 
-/** The basemap, the bottom layer of the map: its box shows or hides it, and its menu removes it. */
+/**
+ * The basemap, the bottom layer of the map: its box shows or hides it, and its menu removes it. Its row has the
+ * columns of the row of a layer, so that the boxes and the names of all the rows stand in line. The right mouse
+ * button opens the same menu at the pointer.
+ */
 export function BasemapItem() {
   const shown = useStore(baseMapStore);
   const listed = useStore(listedBasemapStore);
-  const [menu, setMenu] = useState<{ x: number; y: number; focus: "first" | "last" } | null>(null);
+  const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
   const opener = useRef<HTMLElement | null>(null);
 
   if (listed === null) {
@@ -52,23 +56,11 @@ export function BasemapItem() {
     },
   ];
 
-  const openMenuAt = (button: HTMLElement, focus: "first" | "last") => {
-    const { left, bottom } = button.getBoundingClientRect();
-    opener.current = button;
-    setMenu({ x: left, y: bottom, focus });
-  };
-
-  const onMenuButtonKey = (event: KeyboardEvent<HTMLButtonElement>) => {
-    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-      event.preventDefault();
-      openMenuAt(event.currentTarget, event.key === "ArrowDown" ? "first" : "last");
-    }
-  };
-
+  // The name of the basemap is not a button, so the focus returns from the menu at the pointer to the menu button.
   const onContextMenu = (event: MouseEvent<HTMLElement>) => {
     event.preventDefault();
-    opener.current = event.currentTarget.querySelector<HTMLElement>(".contents-menu-button");
-    setMenu({ x: event.clientX, y: event.clientY, focus: "first" });
+    opener.current = event.currentTarget.querySelector<HTMLElement>('button[aria-haspopup="menu"]');
+    setMenu({ x: event.clientX, y: event.clientY });
   };
 
   const closeMenu = (refocus: boolean) => {
@@ -90,20 +82,14 @@ export function BasemapItem() {
             onChange={(event) => baseMapStore.set(event.target.checked ? listed : null)}
           />
         </label>
-        <span className="contents-basemap-name">{name}</span>
-        <button
-          type="button"
-          className="contents-menu-button"
-          aria-haspopup="menu"
-          aria-expanded={menu !== null}
-          aria-label={`Commands of ${name}`}
-          onClick={(event) => openMenuAt(event.currentTarget, "first")}
-          onKeyDown={onMenuButtonKey}
-        >
-          <Icon name="more_vert" />
-        </button>
+        <span className="contents-basemap-name item-title">{name}</span>
+        <MenuButton
+          icon="more_vert"
+          label={`Commands of ${name}`}
+          items={items.map(({ label, run }) => ({ label, onSelect: run }))}
+        />
       </div>
-      {menu && <Menu label={`Commands of ${name}`} items={items} at={menu} focus={menu.focus} onClose={closeMenu} />}
+      {menu && <Menu label={`Commands of ${name}`} items={items} at={menu} focus="first" onClose={closeMenu} />}
     </li>
   );
 }
