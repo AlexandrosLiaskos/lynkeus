@@ -25,7 +25,18 @@ from fastapi import FastAPI
 
 from lynkeus import harmony, jobs, server_routes, servers
 from lynkeus.layers import Area
-from lynkeus.linking import MAX_USER_SERVERS, MOST_BYTES, DismissTask, ReadTask, RemoveTask, StartTask
+from lynkeus.linking import (
+    MAX_USER_SERVERS,
+    MOST_BYTES,
+    DismissTask,
+    LimitsTask,
+    ReadTask,
+    RemoveTask,
+    ServerLimits,
+    ServerState,
+    StartTask,
+    Tasks,
+)
 from lynkeus.offered import GET_LAYER
 from lynkeus.processes import Process
 from lynkeus.routes import Service, install
@@ -1322,6 +1333,32 @@ def test_limits_that_need_more_memory_than_the_server_reported_are_refused(site:
 def test_memory_of_a_job_passes_through_the_two_measured_values() -> None:
     assert servers.job_memory(15_000_000) == 353_000_000
     assert servers.job_memory(25_000_000) == 508_000_000
+
+
+def test_tasks_are_written_without_the_cells_for_a_program_that_does_not_know_them() -> None:
+    limits = ServerLimits(running_jobs=2, storage=7, layer_size=5, layer_cells=40_000_000)
+    start = StartTask(id="s" * 43, job="0" * 32, process="stand-in", title="A job", inputs="{}")
+    tasks = Tasks(tasks=(start, LimitsTask(id="l" * 43, limits=limits), DismissTask(id="d" * 43, job="1" * 32)))
+    state = ServerState(
+        processors=4,
+        memory=None,
+        disk_free=1,
+        disk_used=0,
+        running=0,
+        waiting=0,
+        layers=0,
+        limits=limits,
+        system="Stand-in 1",
+        version="0.2.0",
+    )
+    whole = json.loads(tasks.model_dump_json())
+    assert json.loads(servers.written_tasks(tasks, state)) == whole
+    assert whole["tasks"][1]["limits"]["layer_cells"] == 40_000_000
+    # A program of version 0.1.0, and a server that has not reported yet, receive every other field.
+    del whole["tasks"][1]["limits"]["layer_cells"]
+    first = state.model_copy(update={"version": "0.1.0"})
+    assert json.loads(servers.written_tasks(tasks, first)) == whole
+    assert json.loads(servers.written_tasks(tasks, None)) == whole
 
 
 def test_program_of_version_0_1_0_receives_its_limits_without_the_cells_of_a_layer(site: Site) -> None:
