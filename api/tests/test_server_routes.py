@@ -819,9 +819,9 @@ def test_parameter_server_chooses_where_a_job_runs(site: Site, monkeypatch: pyte
         assert started(visitor, "uses-layers", uses=[on_second])["server"]["name"] == "Second"
         assert started(visitor, "uses-layers", uses=[project_layer["id"]])["server"] is None
         assert started(visitor, "uses-layers", server=first.server, uses=[on_first])["server"]["name"] == "First"
-        # A layer that no server keeps is found missing by the job, as before.
-        unknown = started(visitor, "uses-layers", server="project", uses=["f" * 32])
-        assert (unknown["server"], state(visitor, unknown["jobID"])["status"]) == (None, "failed")
+        # A layer that neither the session nor a server keeps is refused before a job is recorded.
+        unknown = start(visitor, "uses-layers", server="project", uses=["f" * 32])
+        problem(unknown, 400, "A layer of the analysis no longer exists.")
         # Input layers of more than one server are refused with 422 and one sentence.
         sentence = "and a job takes input layers of its own server only."
         for server, uses in (
