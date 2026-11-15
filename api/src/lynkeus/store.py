@@ -2,19 +2,27 @@
 # Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """The record of the sessions, jobs, layers and series, and of the own servers, kept in one SQLite file.
 
-The file outlives a restart of the server, so a visitor keeps the layers, the
-series and the finished jobs of a session, and an Earthdata user keeps his own servers
+The file outlives a restart of the server, so an account keeps its layers, its
+series and its finished jobs, and an Earthdata user keeps his own servers
 with their jobs and layers. It holds the SHA-256 digest of a session key, of
 the key of an own server and of the device code of a pairing, and never the
 secret itself. It never holds an Earthdata token.
 
+A job, a layer and a series have one holder (``Holder``): an account, which is
+the name of an Earthdata user, or a session that has no account. The project
+server records the account (``docs/Storage.md``). The program Lynkeus Server
+records one session for its pairing, and that session holds its jobs and layers.
+
 The tables of version 1 (sessions, jobs and layers) are unchanged in version 2,
 which adds the tables of the own servers (``docs/Own_Servers.md``). The tables
-of version 2 are unchanged in version 3, which adds the table of the series. A
-file of version 1 or 2 receives the new tables when it is opened and keeps
-every row.
+of version 2 are unchanged in version 3, which adds the table of the series.
+Version 4 adds the account of a session, the owner of a job, of a layer and of
+a series, the moment until which a layer and a series are kept, and the request
+that made a layer. A file of version 1, 2 or 3 is brought to version 4 when it
+is opened, in one change that is written whole or not at all, and keeps every row.
 """
 
+import json
 import sqlite3
 import threading
 from collections.abc import Iterator, Sequence
@@ -25,24 +33,25 @@ from typing import Any, Literal
 
 type Status = Literal["accepted", "running", "successful", "failed", "dismissed"]
 
-VERSION = 3
+VERSION = 4
 """The version of the tables.
 
-A file of version 1 or 2 is brought to this version; a file of a later one is not opened. The table of the
-series has a version of its own, as the tables of the own servers have: a program of version 2 does not
-know the table, and it would answer that the layer of a series job was removed, so it must not open the file.
+A file of version 1, 2 or 3 is brought to this version; a file of a later one is not opened. A program of an
+earlier version must not open a file of this version: it would read the layers of an account as layers of
+no session.
 """
 
-_TABLES = """
-CREATE TABLE IF NOT EXISTS sessions (
+EARLIER_VERSIONS = (1, 2, 3)
+"""The versions of the tables that are brought to ``VERSION`` when their file is opened."""
+
+_HELD = "CHECK ((session IS NULL) != (owner IS NULL))"
+"""A job, a layer and a series have a session or an owner, and never both."""
+
+_BODIES = {
+    "jobs": f"""(
     id TEXT PRIMARY KEY,
-    key_digest TEXT NOT NULL UNIQUE,
-    created REAL NOT NULL,
-    used REAL NOT NULL
-);
-CREATE TABLE IF NOT EXISTS jobs (
-    id TEXT PRIMARY KEY,
-    session TEXT NOT NULL REFERENCES sessions (id) ON DELETE CASCADE,
+    session TEXT REFERENCES sessions (id) ON DELETE CASCADE,
+    owner TEXT,
     process TEXT NOT NULL,
     title TEXT NOT NULL,
     inputs TEXT NOT NULL,
@@ -54,17 +63,47 @@ CREATE TABLE IF NOT EXISTS jobs (
     started REAL,
     finished REAL,
     updated REAL NOT NULL,
-    layer TEXT
-);
-CREATE INDEX IF NOT EXISTS jobs_of_session ON jobs (session, created);
-CREATE TABLE IF NOT EXISTS layers (
+    layer TEXT,
+    {_HELD}
+)""",
+    "layers": f"""(
     id TEXT PRIMARY KEY,
-    session TEXT NOT NULL REFERENCES sessions (id) ON DELETE CASCADE,
+    session TEXT REFERENCES sessions (id) ON DELETE CASCADE,
+    owner TEXT,
     description TEXT NOT NULL,
     size INTEGER NOT NULL,
-    created REAL NOT NULL
+    created REAL NOT NULL,
+    kept_until REAL,
+    source TEXT,
+    {_HELD}
+)""",
+    "series": f"""(
+    id TEXT PRIMARY KEY,
+    session TEXT REFERENCES sessions (id) ON DELETE CASCADE,
+    owner TEXT,
+    description TEXT NOT NULL,
+    created REAL NOT NULL,
+    kept_until REAL,
+    {_HELD}
+)""",
+}
+"""The columns of the three tables that version 4 writes anew, by the name of the table."""
+
+_TABLES = f"""
+CREATE TABLE IF NOT EXISTS sessions (
+    id TEXT PRIMARY KEY,
+    key_digest TEXT NOT NULL UNIQUE,
+    created REAL NOT NULL,
+    used REAL NOT NULL,
+    account TEXT
 );
+CREATE INDEX IF NOT EXISTS sessions_of_account ON sessions (account, used);
+CREATE TABLE IF NOT EXISTS jobs {_BODIES["jobs"]};
+CREATE INDEX IF NOT EXISTS jobs_of_session ON jobs (session, created);
+CREATE INDEX IF NOT EXISTS jobs_of_owner ON jobs (owner, created);
+CREATE TABLE IF NOT EXISTS layers {_BODIES["layers"]};
 CREATE INDEX IF NOT EXISTS layers_of_session ON layers (session, created);
+CREATE INDEX IF NOT EXISTS layers_of_owner ON layers (owner, created);
 CREATE TABLE IF NOT EXISTS servers (
     id TEXT PRIMARY KEY,
     user TEXT NOT NULL,
@@ -110,22 +149,31 @@ CREATE TABLE IF NOT EXISTS server_layers (
     description TEXT NOT NULL,
     size INTEGER NOT NULL,
     created REAL NOT NULL,
+    source TEXT,
     PRIMARY KEY (server, id)
 );
 CREATE INDEX IF NOT EXISTS server_layers_of_owner ON server_layers (owner, created);
-CREATE TABLE IF NOT EXISTS series (
-    id TEXT PRIMARY KEY,
-    session TEXT NOT NULL REFERENCES sessions (id) ON DELETE CASCADE,
-    description TEXT NOT NULL,
-    created REAL NOT NULL
-);
+CREATE TABLE IF NOT EXISTS series {_BODIES["series"]};
 CREATE INDEX IF NOT EXISTS series_of_session ON series (session, created);
+CREATE INDEX IF NOT EXISTS series_of_owner ON series (owner, created);
 """
+
+_EARLIER_COLUMNS = {
+    "jobs": "id, session, process, title, inputs, response, status, message, progress, created, started, finished,"
+    " updated, layer",
+    "layers": "id, session, description, size, created",
+    "series": "id, session, description, created",
+}
+"""The columns of the three tables in the versions before 4, which a file of such a version holds."""
 
 _JOB = (
     "id, session, process, title, inputs, response, status, message, progress, created, started, finished,"
-    " updated, layer"
+    " updated, layer, owner"
 )
+
+_LAYER = "id, session, description, size, created, owner, kept_until, source"
+
+_SERIES = "id, session, description, created, owner, kept_until"
 
 _SERVER = "id, user, name, key_digest, paired, seen, reported, state, limits"
 
@@ -136,7 +184,51 @@ _SERVER_JOB = (
     " updated, layer, taken"
 )
 
-_SERVER_LAYER = "id, server, owner, description, size, created"
+_SERVER_LAYER = "id, server, owner, description, size, created, source"
+
+
+def source_of(process: str, inputs: str) -> str:
+    """Return the request that made a layer, as JSON: the name of the process and the inputs of the job.
+
+    Parameters
+    ----------
+    process : str
+        Name of the process that the job ran.
+    inputs : str
+        Inputs of the job, as JSON.
+    """
+    return json.dumps({"process": process, "inputs": json.loads(inputs)}, ensure_ascii=False)
+
+
+@dataclass(frozen=True)
+class Holder:
+    """Who holds a job, a layer or a series: an account, or a session that has no account.
+
+    Exactly one of the two is given.
+
+    Attributes
+    ----------
+    account : str or None
+        Name of the Earthdata user.
+    session : str or None
+        Name of a session without an account: a session that a record file of an earlier version
+        holds, or the session of the pairing of Lynkeus Server.
+    """
+
+    account: str | None = None
+    session: str | None = None
+
+    def __post_init__(self) -> None:
+        """Check that exactly one of the two is given."""
+        if (self.account is None) == (self.session is None):
+            raise ValueError("a holder is an account or a session, and not both")
+
+    @property
+    def condition(self) -> tuple[str, str]:
+        """The condition that selects the rows of the holder, and its value."""
+        if self.account is not None:
+            return "owner = ?", self.account
+        return "session = ?", str(self.session)
 
 
 @dataclass(frozen=True)
@@ -149,11 +241,14 @@ class SessionRecord:
         Name of the session inside the server.
     created, used : float
         Times of creation and of the last use, in seconds since 1 January 1970 (UTC).
+    account : str or None
+        Name of the Earthdata user who signed in to the session, or None for a session without an account.
     """
 
     id: str
     created: float
     used: float
+    account: str | None = None
 
 
 @dataclass(frozen=True)
@@ -164,8 +259,8 @@ class JobRecord:
     ----------
     id : str
         Name of the job.
-    session : str
-        Name of the session that started the job.
+    session : str or None
+        Name of the session that holds the job, when no account does.
     process : str
         Name of the process that the job runs.
     title : str
@@ -186,10 +281,12 @@ class JobRecord:
         Times at which the work started and ended.
     layer : str or None
         Name of the layer, or of the series, that a successful job produced.
+    owner : str or None
+        Name of the account that holds the job, when an account does.
     """
 
     id: str
-    session: str
+    session: str | None
     process: str
     title: str
     inputs: str
@@ -202,31 +299,52 @@ class JobRecord:
     finished: float | None
     updated: float
     layer: str | None
+    owner: str | None = None
+
+    @property
+    def holder(self) -> Holder:
+        """The account or the session that holds the job."""
+        return Holder(account=self.owner, session=self.session)
 
 
 @dataclass(frozen=True)
 class LayerRecord:
-    """A layer of a session.
+    """A layer of an account or of a session.
 
     Attributes
     ----------
     id : str
         Name of the layer, which is also the name of the folder of its files.
-    session : str
-        Name of the session that owns the layer.
+    session : str or None
+        Name of the session that holds the layer, when no account does.
     description : str
         Layer description, as JSON.
     size : int
         Total size of the files of the layer, in bytes.
     created : float
         Time of creation, in seconds since 1 January 1970 (UTC).
+    owner : str or None
+        Name of the account that holds the layer, when an account does.
+    kept_until : float or None
+        Moment after which the layer is removed, in seconds since 1 January 1970 (UTC), or None for a
+        layer that is kept without an end.
+    source : str or None
+        The request that made the layer, as JSON (``source_of``), or None when it is not known.
     """
 
     id: str
-    session: str
+    session: str | None
     description: str
     size: int
     created: float
+    owner: str | None = None
+    kept_until: float | None = None
+    source: str | None = None
+
+    @property
+    def holder(self) -> Holder:
+        """The account or the session that holds the layer."""
+        return Holder(account=self.owner, session=self.session)
 
 
 @dataclass(frozen=True)
@@ -339,6 +457,8 @@ class ServerLayerRecord:
         Total size of the files of the layer, in bytes.
     created : float
         Time of creation, in seconds since 1 January 1970 (UTC).
+    source : str or None
+        The request that made the layer, as JSON (``source_of``), or None when it is not known.
     """
 
     id: str
@@ -347,28 +467,41 @@ class ServerLayerRecord:
     description: str
     size: int
     created: float
+    source: str | None = None
 
 
 @dataclass(frozen=True)
 class SeriesRecord:
-    """A series of a session. A series has no files.
+    """A series of an account or of a session. A series has no files.
 
     Attributes
     ----------
     id : str
         Name of the series.
-    session : str
-        Name of the session that owns the series.
+    session : str or None
+        Name of the session that holds the series, when no account does.
     description : str
         Series description, as JSON.
     created : float
         Time of creation, in seconds since 1 January 1970 (UTC).
+    owner : str or None
+        Name of the account that holds the series, when an account does.
+    kept_until : float or None
+        Moment after which the series is removed, in seconds since 1 January 1970 (UTC), or None for a
+        series that is kept without an end.
     """
 
     id: str
-    session: str
+    session: str | None
     description: str
     created: float
+    owner: str | None = None
+    kept_until: float | None = None
+
+    @property
+    def holder(self) -> Holder:
+        """The account or the session that holds the series."""
+        return Holder(account=self.owner, session=self.session)
 
 
 class Store:
@@ -382,14 +515,73 @@ class Store:
         # Only the user of the server may read the file.
         path.touch(mode=0o600, exist_ok=True)
         self._database = sqlite3.connect(path, check_same_thread=False, isolation_level=None)
-        self._database.execute("PRAGMA foreign_keys = ON")
         version = self._database.execute("PRAGMA user_version").fetchone()[0]
-        if version not in (0, 1, 2, VERSION):
+        if version not in (0, *EARLIER_VERSIONS, VERSION):
             self._database.close()
             raise ValueError(f"the file {path.name} holds tables of version {version}, and version {VERSION} is needed")
-        # Every statement creates a table or an index that is missing, so a file of an earlier version keeps its rows.
+        if version in EARLIER_VERSIONS:
+            try:
+                self._bring_forward()
+            except BaseException:
+                self._database.close()
+                raise
+        self._database.execute("PRAGMA foreign_keys = ON")
+        # Every statement creates a table or an index that is missing: all of them in a new file, and in a
+        # file of an earlier version the tables that its version did not have.
         self._database.executescript(_TABLES)
         self._database.execute(f"PRAGMA user_version = {VERSION}")
+
+    def _bring_forward(self) -> None:
+        """Bring the tables of a file of version 1, 2 or 3 to version 4 without the loss of a row.
+
+        SQLite cannot change the constraints of a column, so the tables of the jobs, the layers and the
+        series are written anew and filled from the earlier ones, in the way that the documentation of
+        SQLite gives for such a change ("ALTER TABLE", section 7): with the foreign keys off, inside one
+        transaction, and with a check of the foreign keys before the transaction is written. A file
+        that is closed in the middle of the change is therefore still a whole file of its earlier
+        version. Every job, layer and series keeps its session, and has no owner. A layer receives
+        the request of the job that made it, while the record still holds that job.
+        """
+        database = self._database
+        database.execute("PRAGMA foreign_keys = OFF")
+        database.execute("BEGIN IMMEDIATE")
+        try:
+            existing = {str(name) for [name] in database.execute("SELECT name FROM sqlite_master WHERE type = 'table'")}
+            database.execute("ALTER TABLE sessions ADD COLUMN account TEXT")
+            for table, columns in _EARLIER_COLUMNS.items():
+                if table not in existing:
+                    continue
+                database.execute(f"CREATE TABLE new_{table} {_BODIES[table]}")
+                # A row keeps its number, which gives the order of two rows of the same time of creation.
+                database.execute(
+                    f"INSERT INTO new_{table} (rowid, {columns}) SELECT rowid, {columns} FROM {table}"  # noqa: S608 - the text holds names of this module only
+                )
+                database.execute(f"DROP TABLE {table}")
+                database.execute(f"ALTER TABLE new_{table} RENAME TO {table}")
+            made = database.execute(
+                "SELECT layers.id, jobs.process, jobs.inputs FROM layers JOIN jobs ON jobs.layer = layers.id"
+            ).fetchall()
+            for layer, process, inputs in made:
+                database.execute("UPDATE layers SET source = ? WHERE id = ?", (source_of(process, inputs), layer))
+            if "server_layers" in existing:
+                database.execute("ALTER TABLE server_layers ADD COLUMN source TEXT")
+                made = database.execute(
+                    "SELECT server_layers.server, server_layers.id, server_jobs.process, server_jobs.inputs"
+                    " FROM server_layers JOIN server_jobs"
+                    " ON server_jobs.server = server_layers.server AND server_jobs.layer = server_layers.id"
+                ).fetchall()
+                for server, layer, process, inputs in made:
+                    database.execute(
+                        "UPDATE server_layers SET source = ? WHERE server = ? AND id = ?",
+                        (source_of(process, inputs), server, layer),
+                    )
+            if database.execute("PRAGMA foreign_key_check").fetchall():
+                raise ValueError("the record file names a session or a server that it does not hold")
+            database.execute(f"PRAGMA user_version = {VERSION}")
+        except BaseException:
+            database.execute("ROLLBACK")
+            raise
+        database.execute("COMMIT")
 
     def close(self) -> None:
         """Close the file."""
@@ -418,15 +610,16 @@ class Store:
 
     # Sessions
 
-    def add_session(self, session: str, key_digest: str, now: float) -> None:
-        """Record a new session under the digest of its key."""
+    def add_session(self, session: str, key_digest: str, now: float, account: str | None = None) -> None:
+        """Record a new session under the digest of its key, with the account that signed in to it."""
         self._rows(
-            "INSERT INTO sessions (id, key_digest, created, used) VALUES (?, ?, ?, ?)", (session, key_digest, now, now)
+            "INSERT INTO sessions (id, key_digest, created, used, account) VALUES (?, ?, ?, ?, ?)",
+            (session, key_digest, now, now, account),
         )
 
     def session_of_key(self, key_digest: str) -> SessionRecord | None:
         """Return the session whose key has this digest."""
-        rows = self._rows("SELECT id, created, used FROM sessions WHERE key_digest = ?", (key_digest,))
+        rows = self._rows("SELECT id, created, used, account FROM sessions WHERE key_digest = ?", (key_digest,))
         return SessionRecord(*rows[0]) if rows else None
 
     def use_session(self, session: str, now: float) -> None:
@@ -437,24 +630,47 @@ class Store:
         """Replace the digest of the key of a session."""
         self._rows("UPDATE sessions SET key_digest = ? WHERE id = ?", (key_digest, session))
 
+    def give_to_account(self, session: str, account: str) -> None:
+        """Record the account of a session, and give the account what the session holds.
+
+        The jobs, the layers and the series of the session then have the account as their owner and
+        no session, so they stay when the session ends.
+        """
+        with self._change() as database:
+            database.execute("UPDATE sessions SET account = ? WHERE id = ?", (account, session))
+            for table in ("jobs", "layers", "series"):
+                database.execute(f"UPDATE {table} SET owner = ?, session = NULL WHERE session = ?", (account, session))  # noqa: S608 - the text holds names of this module only
+
     def remove_session(self, session: str) -> None:
-        """Remove a session with the records of its jobs, layers and series."""
+        """Remove a session with the records of the jobs, layers and series that it holds itself.
+
+        What the account of the session holds stays.
+        """
         self._rows("DELETE FROM sessions WHERE id = ?", (session,))
 
     def count_sessions(self) -> int:
         """Return the number of sessions."""
         return self._number("SELECT COUNT(*) FROM sessions")
 
+    def sessions_of(self, account: str) -> list[str]:
+        """Return the sessions of an account, the one unused for the longest time first."""
+        rows = self._rows("SELECT id FROM sessions WHERE account = ? ORDER BY used, rowid", (account,))
+        return [str(session) for [session] in rows]
+
     def sessions_unused_since(self, time: float) -> list[str]:
         """Return the sessions that were last used before a time."""
         return [str(session) for [session] in self._rows("SELECT id FROM sessions WHERE used < ?", (time,))]
 
     def sessions_without_content(self) -> list[str]:
-        """Return the sessions that hold no layer, no series and no job, the one unused for the longest time first."""
+        """Return the sessions that hold no layer, no series and no job themselves, the longest unused first.
+
+        What the account of a session holds is not counted: it stays when the session ends.
+        """
         rows = self._rows(
-            "SELECT id FROM sessions WHERE id NOT IN (SELECT session FROM layers)"
-            " AND id NOT IN (SELECT session FROM series)"
-            " AND id NOT IN (SELECT session FROM jobs WHERE status != 'dismissed') ORDER BY used"
+            "SELECT id FROM sessions WHERE id NOT IN (SELECT session FROM layers WHERE session IS NOT NULL)"
+            " AND id NOT IN (SELECT session FROM series WHERE session IS NOT NULL)"
+            " AND id NOT IN (SELECT session FROM jobs WHERE session IS NOT NULL AND status != 'dismissed')"
+            " ORDER BY used"
         )
         return [str(session) for [session] in rows]
 
@@ -477,8 +693,10 @@ class Store:
             job.finished,
             job.updated,
             job.layer,
+            job.owner,
         )
-        self._rows(f"INSERT INTO jobs ({_JOB}) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", values)  # noqa: S608 - the text holds column names only
+        marks = ", ".join("?" * len(values))
+        self._rows(f"INSERT INTO jobs ({_JOB}) VALUES ({marks})", values)  # noqa: S608 - the text holds column names only
 
     def _jobs(self, condition: str, values: Sequence[object] = ()) -> list[JobRecord]:
         rows = self._rows(f"SELECT {_JOB} FROM jobs WHERE {condition}", values)  # noqa: S608 - the text holds no value of a request
@@ -489,9 +707,10 @@ class Store:
         jobs = self._jobs("id = ?", (job,))
         return jobs[0] if jobs else None
 
-    def jobs_of(self, session: str) -> list[JobRecord]:
-        """Return the jobs of a session that were not dismissed, the newest first."""
-        return self._jobs("session = ? AND status != 'dismissed' ORDER BY created DESC, rowid DESC", (session,))
+    def jobs_of(self, holder: Holder) -> list[JobRecord]:
+        """Return the jobs of an account or of a session that were not dismissed, the newest first."""
+        whose, value = holder.condition
+        return self._jobs(f"{whose} AND status != 'dismissed' ORDER BY created DESC, rowid DESC", (value,))
 
     def unfinished_jobs(self) -> list[JobRecord]:
         """Return the jobs that wait or run."""
@@ -502,14 +721,16 @@ class Store:
         jobs = self._jobs("status = 'accepted' ORDER BY created, rowid LIMIT 1")
         return jobs[0] if jobs else None
 
-    def count_unfinished_jobs(self, session: str) -> int:
-        """Return the number of jobs of a session that wait or run."""
+    def count_unfinished_jobs(self, holder: Holder) -> int:
+        """Return the number of jobs of an account or of a session that wait or run."""
+        whose, value = holder.condition
         return self._number(
-            "SELECT COUNT(*) FROM jobs WHERE session = ? AND status IN ('accepted', 'running')", (session,)
+            f"SELECT COUNT(*) FROM jobs WHERE {whose} AND status IN ('accepted', 'running')",  # noqa: S608 - the text holds no value of a request
+            (value,),
         )
 
     def count_waiting_jobs(self) -> int:
-        """Return the number of jobs of all sessions that wait."""
+        """Return the number of jobs of all accounts and sessions that wait."""
         return self._number("SELECT COUNT(*) FROM jobs WHERE status = 'accepted'")
 
     def start_job(self, job: str, message: str, now: float) -> None:
@@ -538,6 +759,9 @@ class Store:
     def succeed_job(self, job: str, message: str, layer: LayerRecord) -> bool:
         """Record that a running job produced a layer, and record the layer.
 
+        The layer is recorded with the request of the job (``source_of``), which therefore stays
+        when the record of the job is removed.
+
         Returns
         -------
         bool
@@ -551,10 +775,18 @@ class Store:
                 (message, layer.created, layer.created, layer.id, job),
             ).rowcount
             if changed:
-                database.execute(
-                    "INSERT INTO layers (id, session, description, size, created) VALUES (?, ?, ?, ?, ?)",
-                    (layer.id, layer.session, layer.description, layer.size, layer.created),
+                [[process, inputs]] = database.execute("SELECT process, inputs FROM jobs WHERE id = ?", (job,))
+                values = (
+                    layer.id,
+                    layer.session,
+                    layer.description,
+                    layer.size,
+                    layer.created,
+                    layer.owner,
+                    layer.kept_until,
+                    source_of(process, inputs),
                 )
+                database.execute(f"INSERT INTO layers ({_LAYER}) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", values)  # noqa: S608 - the text holds column names only
         return bool(changed)
 
     def succeed_job_with_series(self, job: str, message: str, series: SeriesRecord) -> bool:
@@ -573,10 +805,15 @@ class Store:
                 (message, series.created, series.created, series.id, job),
             ).rowcount
             if changed:
-                database.execute(
-                    "INSERT INTO series (id, session, description, created) VALUES (?, ?, ?, ?)",
-                    (series.id, series.session, series.description, series.created),
+                values = (
+                    series.id,
+                    series.session,
+                    series.description,
+                    series.created,
+                    series.owner,
+                    series.kept_until,
                 )
+                database.execute(f"INSERT INTO series ({_SERIES}) VALUES (?, ?, ?, ?, ?, ?)", values)  # noqa: S608 - the text holds column names only
         return bool(changed)
 
     def dismiss_job(self, job: str, message: str, now: float) -> None:
@@ -587,41 +824,69 @@ class Store:
             (message, now, now, job),
         )
 
-    def keep_latest_jobs(self, session: str, finished: int, dismissed: int) -> None:
-        """Remove the oldest records of finished and of dismissed jobs of a session beyond two numbers."""
+    def keep_latest_jobs(self, holder: Holder, finished: int, dismissed: int) -> None:
+        """Remove the oldest records of finished and of dismissed jobs of a holder beyond two numbers."""
+        whose, value = holder.condition
         with self._change() as database:
             for condition, number in (
                 ("status IN ('successful', 'failed')", finished),
                 ("status = 'dismissed'", dismissed),
             ):
                 database.execute(
-                    f"DELETE FROM jobs WHERE session = ? AND {condition} AND id NOT IN (SELECT id FROM jobs"  # noqa: S608 - the text holds no value of a request
-                    f" WHERE session = ? AND {condition} ORDER BY created DESC, rowid DESC LIMIT ?)",
-                    (session, session, number),
+                    f"DELETE FROM jobs WHERE {whose} AND {condition} AND id NOT IN (SELECT id FROM jobs"  # noqa: S608 - the text holds no value of a request
+                    f" WHERE {whose} AND {condition} ORDER BY created DESC, rowid DESC LIMIT ?)",
+                    (value, value, number),
                 )
+
+    def remove_jobs_ended_before(self, time: float) -> None:
+        """Remove the records of the failed and of the dismissed jobs that last changed before a time."""
+        self._rows("DELETE FROM jobs WHERE status IN ('failed', 'dismissed') AND updated < ?", (time,))
+
+    def remove_content(self, holder: Holder) -> list[str]:
+        """Remove the records of all jobs, layers and series of an account or of a session.
+
+        Returns
+        -------
+        list of str
+            The names of the layers whose records were removed, so that their files can be removed.
+        """
+        whose, value = holder.condition
+        with self._change() as database:
+            layers = [str(layer) for [layer] in database.execute(f"SELECT id FROM layers WHERE {whose}", (value,))]  # noqa: S608 - the text holds no value of a request
+            for table in ("jobs", "layers", "series"):
+                database.execute(f"DELETE FROM {table} WHERE {whose}", (value,))  # noqa: S608 - the text holds no value of a request
+        return layers
 
     # Layers
 
+    def _layers(self, condition: str, values: Sequence[object] = ()) -> list[LayerRecord]:
+        rows = self._rows(f"SELECT {_LAYER} FROM layers WHERE {condition}", values)  # noqa: S608 - the text holds no value of a request
+        return [LayerRecord(*row) for row in rows]
+
     def layer(self, layer: str) -> LayerRecord | None:
         """Return a layer, or None when no layer has this name."""
-        rows = self._rows("SELECT id, session, description, size, created FROM layers WHERE id = ?", (layer,))
-        return LayerRecord(*rows[0]) if rows else None
+        layers = self._layers("id = ?", (layer,))
+        return layers[0] if layers else None
 
-    def layers_of(self, session: str) -> list[LayerRecord]:
-        """Return the layers of a session, the newest first."""
-        rows = self._rows(
-            "SELECT id, session, description, size, created FROM layers WHERE session = ?"
-            " ORDER BY created DESC, rowid DESC",
-            (session,),
-        )
-        return [LayerRecord(*row) for row in rows]
+    def layers_of(self, holder: Holder) -> list[LayerRecord]:
+        """Return the layers of an account or of a session, the newest first."""
+        whose, value = holder.condition
+        return self._layers(f"{whose} ORDER BY created DESC, rowid DESC", (value,))
+
+    def layers_kept_until(self, time: float) -> list[LayerRecord]:
+        """Return the layers whose moment of removal lies before a time."""
+        return self._layers("kept_until IS NOT NULL AND kept_until < ?", (time,))
 
     def change_layer(self, layer: str, description: str, size: int) -> None:
         """Replace the description and the size of a layer."""
         self._rows("UPDATE layers SET description = ?, size = ? WHERE id = ?", (description, size, layer))
 
+    def keep_layer(self, layer: str, until: float) -> None:
+        """Record the moment until which a layer is kept."""
+        self._rows("UPDATE layers SET kept_until = ? WHERE id = ?", (until, layer))
+
     def layer_names(self) -> set[str]:
-        """Return the names of the layers of all sessions."""
+        """Return the names of the layers of all accounts and sessions."""
         return {str(layer) for [layer] in self._rows("SELECT id FROM layers")}
 
     def remove_layer(self, layer: str) -> None:
@@ -630,36 +895,80 @@ class Store:
             database.execute("DELETE FROM jobs WHERE layer = ?", (layer,))
             database.execute("DELETE FROM layers WHERE id = ?", (layer,))
 
-    def size_of_layers(self, session: str | None = None) -> int:
-        """Return the total size of the layers of one session, or of all sessions, in bytes."""
-        if session is None:
+    def size_of_layers(self, holder: Holder | None = None) -> int:
+        """Return the total size of the layers of one account or session, or of all of them, in bytes."""
+        if holder is None:
             return self._number("SELECT COALESCE(SUM(size), 0) FROM layers")
-        return self._number("SELECT COALESCE(SUM(size), 0) FROM layers WHERE session = ?", (session,))
+        whose, value = holder.condition
+        return self._number(f"SELECT COALESCE(SUM(size), 0) FROM layers WHERE {whose}", (value,))  # noqa: S608 - the text holds no value of a request
 
     # Series
 
+    def _series(self, condition: str, values: Sequence[object] = ()) -> list[SeriesRecord]:
+        rows = self._rows(f"SELECT {_SERIES} FROM series WHERE {condition}", values)  # noqa: S608 - the text holds no value of a request
+        return [SeriesRecord(*row) for row in rows]
+
     def series(self, series: str) -> SeriesRecord | None:
         """Return a series, or None when no series has this name."""
-        rows = self._rows("SELECT id, session, description, created FROM series WHERE id = ?", (series,))
-        return SeriesRecord(*rows[0]) if rows else None
+        found = self._series("id = ?", (series,))
+        return found[0] if found else None
 
-    def series_of(self, session: str) -> list[SeriesRecord]:
-        """Return the series of a session, the newest first."""
-        rows = self._rows(
-            "SELECT id, session, description, created FROM series WHERE session = ? ORDER BY created DESC, rowid DESC",
-            (session,),
-        )
-        return [SeriesRecord(*row) for row in rows]
+    def series_of(self, holder: Holder) -> list[SeriesRecord]:
+        """Return the series of an account or of a session, the newest first."""
+        whose, value = holder.condition
+        return self._series(f"{whose} ORDER BY created DESC, rowid DESC", (value,))
+
+    def series_kept_until(self, time: float) -> list[SeriesRecord]:
+        """Return the series whose moment of removal lies before a time."""
+        return self._series("kept_until IS NOT NULL AND kept_until < ?", (time,))
 
     def change_series(self, series: str, description: str) -> None:
         """Replace the description of a series."""
         self._rows("UPDATE series SET description = ? WHERE id = ?", (description, series))
+
+    def keep_series(self, series: str, until: float) -> None:
+        """Record the moment until which a series is kept."""
+        self._rows("UPDATE series SET kept_until = ? WHERE id = ?", (until, series))
 
     def remove_series(self, series: str) -> None:
         """Remove the record of a series and of the job that produced it."""
         with self._change() as database:
             database.execute("DELETE FROM jobs WHERE layer = ?", (series,))
             database.execute("DELETE FROM series WHERE id = ?", (series,))
+
+    # The keeping time
+
+    def keep_all(self, holder: Holder, until: float) -> None:
+        """Record one moment until which every layer and series of an account or of a session is kept."""
+        whose, value = holder.condition
+        with self._change() as database:
+            for table in ("layers", "series"):
+                database.execute(f"UPDATE {table} SET kept_until = ? WHERE {whose}", (until, value))  # noqa: S608 - the text holds no value of a request
+
+    def keep_unset(self, until: float, now: float) -> None:
+        """Record a moment of removal for every layer and series that has none.
+
+        The project server calls it when it starts, so that what a record file of an earlier version
+        holds is kept for the keeping time from that moment. A session that holds such a layer or
+        series itself counts as used at that moment, so that it lasts as long as what it holds and
+        can still give it to the account that signs in.
+
+        Parameters
+        ----------
+        until : float
+            The moment of removal, in seconds since 1 January 1970 (UTC).
+        now : float
+            Present time, in seconds since 1 January 1970 (UTC).
+        """
+        with self._change() as database:
+            database.execute(
+                "UPDATE sessions SET used = ? WHERE used < ? AND ("
+                "id IN (SELECT session FROM layers WHERE session IS NOT NULL AND kept_until IS NULL)"
+                " OR id IN (SELECT session FROM series WHERE session IS NOT NULL AND kept_until IS NULL))",
+                (now, now),
+            )
+            for table in ("layers", "series"):
+                database.execute(f"UPDATE {table} SET kept_until = ? WHERE kept_until IS NULL", (until,))  # noqa: S608 - the text holds names of this module only
 
     # Pairings of own servers
 
@@ -932,10 +1241,20 @@ class Store:
                     (message, started, finished, now, layer.id, now, job),
                 ).rowcount
                 if changed:
-                    database.execute(
-                        f"INSERT INTO server_layers ({_SERVER_LAYER}) VALUES (?, ?, ?, ?, ?, ?)",  # noqa: S608 - the text holds column names only
-                        (layer.id, layer.server, layer.owner, layer.description, layer.size, layer.created),
+                    [[process, inputs]] = database.execute(
+                        "SELECT process, inputs FROM server_jobs WHERE id = ?", (job,)
                     )
+                    values = (
+                        layer.id,
+                        layer.server,
+                        layer.owner,
+                        layer.description,
+                        layer.size,
+                        layer.created,
+                        source_of(process, inputs),
+                    )
+                    marks = ", ".join("?" * len(values))
+                    database.execute(f"INSERT INTO server_layers ({_SERVER_LAYER}) VALUES ({marks})", values)  # noqa: S608 - the text holds column names only
         except sqlite3.IntegrityError:
             return False
         return bool(changed)
