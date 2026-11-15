@@ -18,7 +18,9 @@ import { Notice } from "../shared/notice/Notice";
 import { setPaneOpen } from "../shared/panes";
 import { PropertyList } from "../shared/properties/PropertyList";
 import { useStore } from "../shared/store";
-import { ToolPane, type ToolPaneRun } from "../shared/toolpane/ToolPane";
+import { ToolPane, ToolPaneGroup, type ToolPaneRun } from "../shared/toolpane/ToolPane";
+import { analysisAreaStore } from "./analysisArea";
+import { AreaField } from "./AreaField";
 import { rowOf } from "./methods";
 import { METHODS } from "./methodSheets";
 import {
@@ -112,6 +114,12 @@ export interface Started {
   cancelled: boolean;
 }
 
+/** Where the statistics in the area of a run are found, by whether the result is on the map. */
+export const STATISTICS_PLACE = {
+  onMap: "Its statistics in the area are in its Properties in the Contents pane.",
+  offMap: "Its statistics in the area are in its Properties once it is on the map.",
+} as const;
+
 /** Bring the Catalog pane to the front of its side. */
 function showCatalog(): void {
   setPaneOpen("catalog", true);
@@ -124,14 +132,16 @@ function openGetLayer(): void {
 
 /**
  * Return what the foot of the pane shows about the job that the form started: its progress while it waits or
- * runs, and afterwards whether the result was computed and where it is. A refusal of the server, of the request
- * or of the job, is shown in the sentence of the server. `onMap` holds the identifiers of the layers that the
- * map shows.
+ * runs, and afterwards whether the result was computed and where it is, with the place of its statistics in the
+ * area of the run when it has them. A refusal of the server, of the request or of the job, is shown in the
+ * sentence of the server. `onMap` holds the identifiers of the layers that the map shows, and `withStatistics`
+ * those of the results whose description holds statistics in an area.
  */
 export function runOf(
   started: Started | null,
   jobs: readonly Job[],
   onMap: ReadonlySet<string> = new Set(),
+  withStatistics: ReadonlySet<string> = new Set(),
 ): ToolPaneRun | null {
   if (!started) {
     return null;
@@ -156,13 +166,15 @@ export function runOf(
   if (job.status !== "successful") {
     return { state: "error", text: job.message, details };
   }
-  const place =
-    typeof job.layer === "string" && onMap.has(job.layer)
-      ? "It is on the map and under Layers in the Catalog pane."
-      : "It is under Layers in the Catalog pane.";
+  const shown = typeof job.layer === "string" && onMap.has(job.layer);
+  const place = shown ? "It is on the map and under Layers in the Catalog pane." : "It is under Layers in the Catalog pane.";
+  const statistics =
+    typeof job.layer === "string" && withStatistics.has(job.layer)
+      ? ` ${shown ? STATISTICS_PLACE.onMap : STATISTICS_PLACE.offMap}`
+      : "";
   return {
     state: "success",
-    text: `The result is ready. ${place}`,
+    text: `The result is ready. ${place}${statistics}`,
     action: { label: "Show the Catalog pane", onClick: showCatalog },
     details,
   };
@@ -227,7 +239,9 @@ function showMethod(tool: FinishedTool): void {
  * The second field offers the layers that can stand beside the first, and states in one sentence why the tool
  * does not compare the two layers that are chosen. Surface displacement, One pair has two fields as well, for
  * two layers of one product, and no row of dates. The "i" of the pane states what
- * the tool shows, and the link Method at the foot opens the page Methods at the tool. While a choice is missing
+ * the tool shows, and the link Method at the foot opens the page Methods at the tool. The last field, Statistics in
+ * an area, is a group that is closed while no area is drawn: with an area, the Properties of the result give its
+ * statistics inside the area, and the outcome at the foot says where they are. While a choice is missing
  * or impossible, the foot of the pane states the first fault, and a field that was left states its own, with the
  * shared `FieldError`. Without a layer that the tool reads, the pane names the layer to get and offers the Get
  * layer form. A visitor who has an own server chooses the server of the job in the field Server, which stands
@@ -246,6 +260,7 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
   const [own, setOwn] = useState<string | null>(null);
   const [titleLeft, setTitleLeft] = useState(false);
   const [started, setStarted] = useState<Started | null>(null);
+  const area = useStore(analysisAreaStore);
 
   const method = METHODS[tool];
   const comparison = comparisonOf(tool);
@@ -272,7 +287,7 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
       return;
     }
     setStarted({ id: null, sending: true, fault: null, cancelled: false });
-    startJob(tool, { ...inputs }, server.parameter).then(
+    startJob(tool, { ...inputs, ...(area ? { area } : {}) }, server.parameter).then(
       (job) => {
         setStarted({ id: job.jobID, sending: false, fault: null, cancelled: false });
         // The form stays in front when the Catalog pane appears with the first job of the session.
@@ -311,7 +326,12 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
       onRun={start}
       ready={inputs !== null && server.missing === null}
       missing={missing ?? undefined}
-      run={runOf(started, jobs, new Set(mapLayers.map((layer) => layer.id)))}
+      run={runOf(
+        started,
+        jobs,
+        new Set(mapLayers.map((layer) => layer.id)),
+        new Set(layers.filter((layer) => layer.statistics).map((layer) => layer.id)),
+      )}
       onCancel={started && started.id !== null ? cancel : undefined}
     >
       {offered.length === 0 ? (
@@ -382,6 +402,10 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
               Add to the map when ready
             </label>
           </div>
+
+          <ToolPaneGroup title="Statistics in an area" open={area !== null}>
+            <AreaField use="statistics" />
+          </ToolPaneGroup>
         </>
       )}
       {without > 0 ? <Notice kind="info">{unnamedSentence(without)}</Notice> : null}

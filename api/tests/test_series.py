@@ -22,6 +22,7 @@ from rasterio.warp import transform
 
 from lynkeus import jobs, offered
 from lynkeus.analysis import SERIES_TOOLS
+from lynkeus.areas import cells_inside
 from lynkeus.layers import (
     Area,
     Format,
@@ -30,6 +31,7 @@ from lynkeus.layers import (
     SeriesDescription,
     SeriesEntry,
     SeriesRun,
+    Shape,
     Text,
 )
 from lynkeus.processes import SERIES_OUTPUT, InputError, Process, Work
@@ -240,6 +242,36 @@ def test_series_of_an_area_gives_each_date_with_the_number_of_its_cells() -> Non
     assert [message for _, message in reports[1:-1]] == ["Reading layer 1 of 2.", "Reading layer 2 of 2."]
     assert reports[-1] == (100, "The series is ready.")
     assert [progress for progress, _ in reports] == sorted(progress for progress, _ in reports)
+
+
+def test_series_of_an_area_drawn_on_the_map_takes_the_cells_inside_it() -> None:
+    grid = grid_of(LAYERS / OCTOBER)
+    a, _, c, _, e, f = grid.transform
+    corners = [(c + a * column, f + e * row) for column, row in ((3.3, 2.2), (60.7, 2.2), (60.7, 90.4), (3.3, 90.4))]
+    area = Shape(crs=grid.crs, kind="rectangle", points=(*corners, corners[0]))
+    series = run(area=area)
+    inside = cells_inside(area, grid)
+    first, cells_1 = decibels_of_mean(values_of(OCTOBER)[inside])
+    second, cells_2 = decibels_of_mean(values_of(NOVEMBER)[inside])
+    assert 0 < cells_1 < values_of(OCTOBER).size
+    assert [entry.cells for entry in series.entries] == [cells_1, cells_2]
+    assert [entry.value for entry in series.entries] == [pytest.approx(first, abs=1e-9), pytest.approx(second, abs=1e-9)]
+    assert (series.shape, series.point, series.cell) == (area, None, None)
+    assert series.area == area_of(grid)
+    far = Shape(crs=grid.crs, kind="rectangle", points=tuple((x + 1e6, y) for x, y in area.points))
+    with pytest.raises(LayerError, match="No layer of the series holds a value in the area"):
+        run(area=far)
+
+
+def test_series_is_made_at_a_point_or_for_an_area_drawn_on_the_map_and_not_for_both() -> None:
+    area = Shape(crs="EPSG:3857", kind="polygon", points=((0, 0), (1, 0), (1, 1), (0, 0)))
+    point = Point(longitude=-70.9, latitude=42.8)
+    with pytest.raises(ValidationError, match="at a point or for an area drawn on the map, not for both"):
+        SeriesRun(tool="backscatter-series", inputs=("a", "b"), title="Series", point=point, area=area)
+    with pytest.raises(ValidationError, match="at a point or for an area drawn on the map, not for both"):
+        SeriesDescription.model_validate(description(shape=area.model_dump()))
+    assert SeriesDescription.model_validate(description(point=None, cell=None, shape=area.model_dump())).shape == area
+    assert SeriesDescription.model_validate(description()).shape is None
 
 
 def test_area_of_a_series_is_the_rectangle_around_the_grid_of_the_layers() -> None:
@@ -628,14 +660,16 @@ def test_every_series_tool_is_offered_as_a_process_whose_output_is_a_series() ->
         assert process.title == name.replace("-", " ").capitalize()
         assert process.description.endswith(".")
         described = process.describe()
-        assert list(described["inputs"]) == ["inputs", "title", "point"]
+        assert list(described["inputs"]) == ["inputs", "title", "point", "area"]
         assert (described["inputs"]["inputs"]["minOccurs"], described["inputs"]["inputs"]["maxOccurs"]) == (2, 50)
         assert described["inputs"]["point"]["minOccurs"] == 0
         assert set(described["inputs"]["point"]["schema"]["properties"]) == {"longitude", "latitude"}
+        assert (described["inputs"]["area"]["minOccurs"], described["inputs"]["area"]["maxOccurs"]) == (0, 1)
+        assert set(described["inputs"]["area"]["schema"]["properties"]) == {"crs", "kind", "points"}
         assert set(described["outputs"]) == {"series"}
         assert offered.series_process(name, function).describe() == described
     assert processes["backscatter-series"].description == (
-        "Give the radar backscatter of many dates, at a point or as the mean of the area, in decibels."
+        "Give the radar backscatter of many dates, at a point or as the mean of an area, in decibels."
     )
     assert processes["backscatter-change"].output == "layer"
 

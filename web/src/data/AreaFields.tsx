@@ -1,4 +1,5 @@
 import { useId, useRef, useState, type ChangeEvent } from "react";
+import { DRAWING_HINTS } from "../shared/drawShape";
 import { useMap } from "../shared/map";
 import { Notice } from "../shared/notice/Notice";
 import { useStore } from "../shared/store";
@@ -141,13 +142,7 @@ export function AreaFields({ draft, onChange, explanation = EXPLANATIONS.area, f
         onChange={onFile}
       />
 
-      {drawing ? (
-        <Notice kind="info">
-          {drawing === "rectangle"
-            ? "Press on the map, move the pointer and release. The Escape key ends the drawing."
-            : "Click on the map for each point, and twice for the last. The Escape key ends the drawing."}
-        </Notice>
-      ) : null}
+      {drawing ? <Notice kind="info">{DRAWING_HINTS[drawing]}</Notice> : null}
 
       {limited && area.kind === "rectangle" ? (
         <div className="search-row">
