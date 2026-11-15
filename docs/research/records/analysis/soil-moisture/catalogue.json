@@ -1,0 +1,797 @@
+{
+ "read": "2026-11-15",
+ "search_of_the_box": {
+  "NISAR_L3_SME2_PROVISIONAL_V1": [
+   [
+    "G4251161841-ASF",
+    "NISAR_L3_PR_SME2_023_069_D_067_4005_DHDH_A_20260618T235153_20260618T235228_P05023_N_F_J_001",
+    "2026-07-18T04:18:53.074Z"
+   ],
+   [
+    "G4249757592-ASF",
+    "NISAR_L3_PR_SME2_023_104_A_023_4005_DHDH_A_20260621T094236_20260621T094311_P05023_N_F_J_001",
+    "2026-07-16T19:07:40.522Z"
+   ],
+   [
+    "G4249745130-ASF",
+    "NISAR_L3_PR_SME2_023_141_D_067_4005_DHDH_A_20260623T234333_20260623T234408_P05023_N_F_J_001",
+    "2026-07-16T18:44:47.078Z"
+   ],
+   [
+    "G4249569213-ASF",
+    "NISAR_L3_PR_SME2_024_032_A_023_4005_DHDH_A_20260628T095054_20260628T095129_P05023_N_F_J_001",
+    "2026-07-16T14:05:44.816Z"
+   ],
+   [
+    "G4254499944-ASF",
+    "NISAR_L3_PR_SME2_024_069_D_067_4005_DHDH_A_20260630T235152_20260630T235227_P05023_N_F_J_001",
+    "2026-07-21T03:14:40.802Z"
+   ],
+   [
+    "G4254175261-ASF",
+    "NISAR_L3_PR_SME2_024_104_A_023_4005_DHDH_A_20260703T094235_20260703T094310_P05023_N_F_J_001",
+    "2026-07-20T19:25:54.868Z"
+   ],
+   [
+    "G4254093072-ASF",
+    "NISAR_L3_PR_SME2_024_141_D_067_4005_DHDH_A_20260705T234333_20260705T234408_P05023_N_F_J_001",
+    "2026-07-20T16:53:44.912Z"
+   ],
+   [
+    "G4254957953-ASF",
+    "NISAR_L3_PR_SME2_025_032_A_023_4005_DHDH_A_20260710T095054_20260710T095129_P05023_N_F_J_001",
+    "2026-07-21T11:17:43.993Z"
+   ],
+   [
+    "G4263016802-ASF",
+    "NISAR_L3_PR_SME2_025_069_D_067_4005_DHDH_A_20260712T235152_20260712T235226_P05023_N_F_J_001",
+    "2026-07-28T14:32:43.529Z"
+   ],
+   [
+    "G4261796060-ASF",
+    "NISAR_L3_PR_SME2_025_104_A_023_4005_DHDH_A_20260715T094234_20260715T094309_P05023_N_F_J_001",
+    "2026-07-27T22:17:46.720Z"
+   ],
+   [
+    "G4263203106-ASF",
+    "NISAR_L3_PR_SME2_025_141_D_067_4005_DHDH_A_20260717T234332_20260717T234407_P05023_N_F_J_001",
+    "2026-07-28T16:20:52.593Z"
+   ],
+   [
+    "G4261748042-ASF",
+    "NISAR_L3_PR_SME2_026_032_A_023_4005_SHSH_A_20260722T095053_20260722T095128_P05023_N_F_J_001",
+    "2026-07-27T21:33:50.125Z"
+   ],
+   [
+    "G4264537946-ASF",
+    "NISAR_L3_PR_SME2_026_104_A_023_4005_DHDH_A_20260727T094234_20260727T094309_P05023_N_F_J_001",
+    "2026-07-29T21:25:47.693Z"
+   ],
+   [
+    "G4279643830-ASF",
+    "NISAR_L3_PR_SME2_027_141_D_067_4005_DHDH_A_20260810T234331_20260810T234406_P05023_N_F_J_001",
+    "2026-08-14T21:17:50.301Z"
+   ],
+   [
+    "G4284035895-ASF",
+    "NISAR_L3_PR_SME2_028_032_A_023_4005_DHDH_A_20260815T095052_20260815T095127_P05023_N_F_J_001",
+    "2026-08-20T22:30:51.608Z"
+   ],
+   [
+    "G4285819633-ASF",
+    "NISAR_L3_PR_SME2_028_069_D_067_4005_DHDH_A_20260817T235150_20260817T235225_P05023_N_F_J_001",
+    "2026-08-23T03:28:51.781Z"
+   ],
+   [
+    "G4287076611-ASF",
+    "NISAR_L3_PR_SME2_028_104_A_023_4005_DHDH_A_20260820T094232_20260820T094307_P05023_N_F_J_001",
+    "2026-08-24T20:36:55.012Z"
+   ],
+   [
+    "G4288948384-ASF",
+    "NISAR_L3_PR_SME2_028_141_D_067_4005_DHDH_A_20260822T234330_20260822T234405_P05023_N_F_J_001",
+    "2026-08-26T23:07:42.265Z"
+   ],
+   [
+    "G4291514762-ASF",
+    "NISAR_L3_PR_SME2_029_032_A_023_4005_DHDH_A_20260827T095052_20260827T095127_P05023_N_F_J_001",
+    "2026-08-29T11:04:39.425Z"
+   ],
+   [
+    "G4294204199-ASF",
+    "NISAR_L3_PR_SME2_029_069_D_067_4005_DHDH_A_20260829T235149_20260829T235224_P05023_N_F_J_001",
+    "2026-09-01T00:36:57.758Z"
+   ],
+   [
+    "G4297114133-ASF",
+    "NISAR_L3_PR_SME2_029_104_A_023_4005_DHDH_A_20260901T094232_20260901T094307_P05023_N_F_J_001",
+    "2026-09-03T07:23:39.090Z"
+   ],
+   [
+    "G4304107461-ASF",
+    "NISAR_L3_PR_SME2_029_141_D_067_4005_DHDH_A_20260903T234330_20260903T234405_P05023_N_F_J_001",
+    "2026-09-09T20:38:43.939Z"
+   ],
+   [
+    "G4310114014-ASF",
+    "NISAR_L3_PR_SME2_030_069_D_067_4005_DHDH_A_20260910T235149_20260910T235224_P05023_N_F_J_001",
+    "2026-09-13T23:02:53.432Z"
+   ],
+   [
+    "G4314760500-ASF",
+    "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001",
+    "2026-09-17T21:58:51.966Z"
+   ],
+   [
+    "G4322744228-ASF",
+    "NISAR_L3_PR_SME2_031_069_D_066_4005_DHDH_A_20260922T235115_20260922T235154_P05023_N_F_J_001",
+    "2026-09-24T22:58:39.998Z"
+   ],
+   [
+    "G4322772230-ASF",
+    "NISAR_L3_PR_SME2_031_069_D_067_4005_DHDH_A_20260922T235149_20260922T235224_P05023_N_F_J_001",
+    "2026-09-24T23:33:53.191Z"
+   ],
+   [
+    "G4325791825-ASF",
+    "NISAR_L3_PR_SME2_031_104_A_023_4005_DHDH_A_20260925T094232_20260925T094307_P05023_N_F_J_001",
+    "2026-09-27T12:41:05.879Z"
+   ],
+   [
+    "G4328574868-ASF",
+    "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001",
+    "2026-09-29T22:58:59.563Z"
+   ],
+   [
+    "G4345894394-ASF",
+    "NISAR_L3_PR_SME2_032_069_D_067_4005_DHDH_A_20261004T235149_20261004T235224_P05023_N_F_J_001",
+    "2026-10-07T01:36:38.764Z"
+   ],
+   [
+    "G4351794098-ASF",
+    "NISAR_L3_PR_SME2_032_104_A_023_4005_DHDH_A_20261007T094232_20261007T094307_P05023_N_F_J_001",
+    "2026-10-09T07:30:56.701Z"
+   ],
+   [
+    "G4359373353-ASF",
+    "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001",
+    "2026-10-12T05:46:47.382Z"
+   ],
+   [
+    "G4376341182-ASF",
+    "NISAR_L3_PR_SME2_033_069_D_067_4005_DHDH_A_20261016T235149_20261016T235224_P05023_N_F_J_001",
+    "2026-10-18T23:20:41.944Z"
+   ],
+   [
+    "G4381026050-ASF",
+    "NISAR_L3_PR_SME2_033_104_A_023_4005_DHDH_A_20261019T094232_20261019T094307_P05023_N_F_J_001",
+    "2026-10-21T08:06:41.995Z"
+   ]
+  ],
+  "NISAR_L3_SME2_BETA_V1": [
+   [
+    "G4058215181-ASF",
+    "NISAR_L3_PR_SME2_003_069_D_066_4005_DHDH_A_20251021T235116_20251021T235155_X05010_N_F_J_001",
+    "2026-02-28T06:32:02.929Z"
+   ],
+   [
+    "G4058212550-ASF",
+    "NISAR_L3_PR_SME2_003_069_D_067_4005_DHDH_A_20251021T235150_20251021T235155_X05010_N_P_J_001",
+    "2026-02-28T06:30:11.445Z"
+   ],
+   [
+    "G4058215317-ASF",
+    "NISAR_L3_PR_SME2_004_069_D_067_4005_DHDH_A_20251102T235150_20251102T235159_X05010_N_P_J_001",
+    "2026-02-28T06:32:08.786Z"
+   ],
+   [
+    "G4058315846-ASF",
+    "NISAR_L3_PR_SME2_005_069_D_067_4005_DHDH_A_20251114T235151_20251114T235200_X05010_N_P_J_001",
+    "2026-02-28T07:59:59.550Z"
+   ],
+   [
+    "G4058382626-ASF",
+    "NISAR_L3_PR_SME2_006_069_D_067_4005_DHDH_A_20251126T235151_20251126T235200_X05010_N_P_J_001",
+    "2026-02-28T08:54:03.444Z"
+   ],
+   [
+    "G4058430035-ASF",
+    "NISAR_L3_PR_SME2_007_069_D_067_4005_DHDH_A_20251208T235152_20251208T235227_X05010_N_F_J_001",
+    "2026-02-28T09:34:06.635Z"
+   ],
+   [
+    "G4058441365-ASF",
+    "NISAR_L3_PR_SME2_007_141_D_067_4005_DHDH_A_20251213T234332_20251213T234407_X05010_N_F_J_001",
+    "2026-02-28T09:44:12.263Z"
+   ],
+   [
+    "G4058581733-ASF",
+    "NISAR_L3_PR_SME2_008_069_D_067_4005_DHDH_A_20251220T235152_20251220T235201_X05010_N_P_J_001",
+    "2026-02-28T10:47:13.023Z"
+   ],
+   [
+    "G4058528737-ASF",
+    "NISAR_L3_PR_SME2_008_141_D_067_4005_DHDH_A_20251225T234333_20251225T234408_X05010_N_F_J_001",
+    "2026-02-28T10:29:13.974Z"
+   ],
+   [
+    "G4058703100-ASF",
+    "NISAR_L3_PR_SME2_009_069_D_067_4005_DHDH_A_20260101T235153_20260101T235202_X05010_N_P_J_001",
+    "2026-02-28T11:36:11.323Z"
+   ],
+   [
+    "G4059048550-ASF",
+    "NISAR_L3_PR_SME2_010_069_D_067_4005_DHDH_A_20260113T235154_20260113T235203_X05010_N_P_J_001",
+    "2026-02-28T16:39:15.140Z"
+   ]
+  ],
+  "NISAR_L3_SME2_V1": []
+ },
+ "granules": {
+  "G4328574868-ASF": {
+   "GranuleUR": "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001",
+   "collection": "C2854344945-ASF",
+   "CollectionReference": {
+    "ShortName": "NISAR_L3_SME2_PROVISIONAL_V1",
+    "Version": "1"
+   },
+   "revision-date": "2026-09-29T22:58:59.563Z",
+   "PGEVersionClass": {
+    "PGEName": "SM_L_PGE",
+    "PGEVersion": "R05.02.0"
+   },
+   "ProductionDateTime": "2026-09-29T22:48:39.000000Z",
+   "Temporal": {
+    "RangeDateTime": {
+     "BeginningDateTime": "2026-09-27T23:43:30.000000Z",
+     "EndingDateTime": "2026-09-27T23:44:05.000000Z"
+    }
+   },
+   "AdditionalAttributes": {
+    "ASCENDING_DESCENDING": [
+     "DESCENDING"
+    ],
+    "FRAME_NUMBER": [
+     "67"
+    ],
+    "FREQUENCIES": [
+     "A",
+     "B"
+    ],
+    "FREQUENCY_A_POLARIZATION": [
+     "HH",
+     "HV"
+    ],
+    "FREQUENCY_A_POLARIZATION_CONCAT": [
+     "HH+HV"
+    ],
+    "FREQUENCY_B_POLARIZATION": [
+     "HH",
+     "HV"
+    ],
+    "FREQUENCY_B_POLARIZATION_CONCAT": [
+     "HH+HV"
+    ],
+    "FULL_FRAME": [
+     "TRUE"
+    ],
+    "JOINT_OBSERVATION": [
+     "TRUE"
+    ],
+    "PROCESSING_CENTER": [
+     "JPL"
+    ],
+    "PROCESSING_LEVEL": [
+     "L3"
+    ],
+    "PRODUCTION_PIPELINE": [
+     "PR"
+    ],
+    "PRODUCT_TYPE": [
+     "SME2"
+    ],
+    "PRODUCT_TYPE_DESC": [
+     "Soil Moisture EASE Grid 2.0"
+    ],
+    "PRODUCT_VERSION": [
+     "1.0.11"
+    ],
+    "STACK_ID": [
+     "141_D_067"
+    ],
+    "TRACK_NUMBER": [
+     "141"
+    ]
+   },
+   "files": [
+    [
+     "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+     96468992,
+     {
+      "Value": "589bee4eaeaa196364ea995c7a14685f",
+      "Algorithm": "MD5"
+     }
+    ],
+    [
+     "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5.iso.xml",
+     77479,
+     {
+      "Value": "b2f6e2fa02ee02c524715393776089ae",
+      "Algorithm": "MD5"
+     }
+    ],
+    [
+     "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001_QA_STATS.h5",
+     5432,
+     {
+      "Value": "0087ca914c1d3afd47e1e3a6f1dbfca5",
+      "Algorithm": "MD5"
+     }
+    ],
+    [
+     "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.rc.yaml",
+     4275,
+     {
+      "Value": "fa8c9ee29c1176b5b6ff23b2ed96fcff",
+      "Algorithm": "MD5"
+     }
+    ]
+   ],
+   "h5": [
+    "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L3_SME2_PROVISIONAL_V1/NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001/NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5"
+   ]
+  },
+  "G4359373353-ASF": {
+   "GranuleUR": "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001",
+   "collection": "C2854344945-ASF",
+   "CollectionReference": {
+    "ShortName": "NISAR_L3_SME2_PROVISIONAL_V1",
+    "Version": "1"
+   },
+   "revision-date": "2026-10-12T05:46:47.382Z",
+   "PGEVersionClass": {
+    "PGEName": "SM_L_PGE",
+    "PGEVersion": "R05.02.0"
+   },
+   "ProductionDateTime": "2026-10-12T05:28:05.000000Z",
+   "Temporal": {
+    "RangeDateTime": {
+     "BeginningDateTime": "2026-10-09T23:43:30.000000Z",
+     "EndingDateTime": "2026-10-09T23:44:05.000000Z"
+    }
+   },
+   "AdditionalAttributes": {
+    "ASCENDING_DESCENDING": [
+     "DESCENDING"
+    ],
+    "FRAME_NUMBER": [
+     "67"
+    ],
+    "FREQUENCIES": [
+     "A",
+     "B"
+    ],
+    "FREQUENCY_A_POLARIZATION": [
+     "HH",
+     "HV"
+    ],
+    "FREQUENCY_A_POLARIZATION_CONCAT": [
+     "HH+HV"
+    ],
+    "FREQUENCY_B_POLARIZATION": [
+     "HH",
+     "HV"
+    ],
+    "FREQUENCY_B_POLARIZATION_CONCAT": [
+     "HH+HV"
+    ],
+    "FULL_FRAME": [
+     "TRUE"
+    ],
+    "JOINT_OBSERVATION": [
+     "TRUE"
+    ],
+    "PROCESSING_CENTER": [
+     "JPL"
+    ],
+    "PROCESSING_LEVEL": [
+     "L3"
+    ],
+    "PRODUCTION_PIPELINE": [
+     "PR"
+    ],
+    "PRODUCT_TYPE": [
+     "SME2"
+    ],
+    "PRODUCT_TYPE_DESC": [
+     "Soil Moisture EASE Grid 2.0"
+    ],
+    "PRODUCT_VERSION": [
+     "1.0.11"
+    ],
+    "STACK_ID": [
+     "141_D_067"
+    ],
+    "TRACK_NUMBER": [
+     "141"
+    ]
+   },
+   "files": [
+    [
+     "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+     96468992,
+     {
+      "Value": "bb103aa8e51bbeae487db6ba42072080",
+      "Algorithm": "MD5"
+     }
+    ],
+    [
+     "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5.iso.xml",
+     77478,
+     {
+      "Value": "8b18698e81dae12aee734daa2d989cf3",
+      "Algorithm": "MD5"
+     }
+    ],
+    [
+     "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001_QA_STATS.h5",
+     5432,
+     {
+      "Value": "9cf4a0da6613bceff5d4dd07918a04cf",
+      "Algorithm": "MD5"
+     }
+    ],
+    [
+     "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.rc.yaml",
+     4275,
+     {
+      "Value": "722616f0eeaf56b20ec7ee0eaec4865f",
+      "Algorithm": "MD5"
+     }
+    ]
+   ],
+   "h5": [
+    "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L3_SME2_PROVISIONAL_V1/NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001/NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+   ]
+  },
+  "G4351794098-ASF": {
+   "GranuleUR": "NISAR_L3_PR_SME2_032_104_A_023_4005_DHDH_A_20261007T094232_20261007T094307_P05023_N_F_J_001",
+   "collection": "C2854344945-ASF",
+   "CollectionReference": {
+    "ShortName": "NISAR_L3_SME2_PROVISIONAL_V1",
+    "Version": "1"
+   },
+   "revision-date": "2026-10-09T07:30:56.701Z",
+   "PGEVersionClass": {
+    "PGEName": "SM_L_PGE",
+    "PGEVersion": "R05.02.0"
+   },
+   "ProductionDateTime": "2026-10-09T07:19:03.000000Z",
+   "Temporal": {
+    "RangeDateTime": {
+     "BeginningDateTime": "2026-10-07T09:42:32.000000Z",
+     "EndingDateTime": "2026-10-07T09:43:07.000000Z"
+    }
+   },
+   "AdditionalAttributes": {
+    "ASCENDING_DESCENDING": [
+     "ASCENDING"
+    ],
+    "FRAME_NUMBER": [
+     "23"
+    ],
+    "FREQUENCIES": [
+     "A",
+     "B"
+    ],
+    "FREQUENCY_A_POLARIZATION": [
+     "HH",
+     "HV"
+    ],
+    "FREQUENCY_A_POLARIZATION_CONCAT": [
+     "HH+HV"
+    ],
+    "FREQUENCY_B_POLARIZATION": [
+     "HH",
+     "HV"
+    ],
+    "FREQUENCY_B_POLARIZATION_CONCAT": [
+     "HH+HV"
+    ],
+    "FULL_FRAME": [
+     "TRUE"
+    ],
+    "JOINT_OBSERVATION": [
+     "TRUE"
+    ],
+    "PROCESSING_CENTER": [
+     "JPL"
+    ],
+    "PROCESSING_LEVEL": [
+     "L3"
+    ],
+    "PRODUCTION_PIPELINE": [
+     "PR"
+    ],
+    "PRODUCT_TYPE": [
+     "SME2"
+    ],
+    "PRODUCT_TYPE_DESC": [
+     "Soil Moisture EASE Grid 2.0"
+    ],
+    "PRODUCT_VERSION": [
+     "1.0.11"
+    ],
+    "STACK_ID": [
+     "104_A_023"
+    ],
+    "TRACK_NUMBER": [
+     "104"
+    ]
+   },
+   "files": [
+    [
+     "NISAR_L3_PR_SME2_032_104_A_023_4005_DHDH_A_20261007T094232_20261007T094307_P05023_N_F_J_001.h5",
+     83886080,
+     {
+      "Value": "b0f0359300aae436f3d2ab4981251f81",
+      "Algorithm": "MD5"
+     }
+    ],
+    [
+     "NISAR_L3_PR_SME2_032_104_A_023_4005_DHDH_A_20261007T094232_20261007T094307_P05023_N_F_J_001.h5.iso.xml",
+     77476,
+     {
+      "Value": "69a4dd282c7b542a9cea45effe84b75b",
+      "Algorithm": "MD5"
+     }
+    ],
+    [
+     "NISAR_L3_PR_SME2_032_104_A_023_4005_DHDH_A_20261007T094232_20261007T094307_P05023_N_F_J_001_QA_STATS.h5",
+     5432,
+     {
+      "Value": "2847e8d38e41889bc0b18db1f0461277",
+      "Algorithm": "MD5"
+     }
+    ],
+    [
+     "NISAR_L3_PR_SME2_032_104_A_023_4005_DHDH_A_20261007T094232_20261007T094307_P05023_N_F_J_001.rc.yaml",
+     4275,
+     {
+      "Value": "5901d5c09fe33da21ec323792edecb08",
+      "Algorithm": "MD5"
+     }
+    ]
+   ],
+   "h5": [
+    "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L3_SME2_PROVISIONAL_V1/NISAR_L3_PR_SME2_032_104_A_023_4005_DHDH_A_20261007T094232_20261007T094307_P05023_N_F_J_001/NISAR_L3_PR_SME2_032_104_A_023_4005_DHDH_A_20261007T094232_20261007T094307_P05023_N_F_J_001.h5"
+   ]
+  },
+  "G4345894394-ASF": {
+   "GranuleUR": "NISAR_L3_PR_SME2_032_069_D_067_4005_DHDH_A_20261004T235149_20261004T235224_P05023_N_F_J_001",
+   "collection": "C2854344945-ASF",
+   "CollectionReference": {
+    "ShortName": "NISAR_L3_SME2_PROVISIONAL_V1",
+    "Version": "1"
+   },
+   "revision-date": "2026-10-07T01:36:38.764Z",
+   "PGEVersionClass": {
+    "PGEName": "SM_L_PGE",
+    "PGEVersion": "R05.02.0"
+   },
+   "ProductionDateTime": "2026-10-07T01:18:07.000000Z",
+   "Temporal": {
+    "RangeDateTime": {
+     "BeginningDateTime": "2026-10-04T23:51:49.000000Z",
+     "EndingDateTime": "2026-10-04T23:52:24.000000Z"
+    }
+   },
+   "AdditionalAttributes": {
+    "ASCENDING_DESCENDING": [
+     "DESCENDING"
+    ],
+    "FRAME_NUMBER": [
+     "67"
+    ],
+    "FREQUENCIES": [
+     "A",
+     "B"
+    ],
+    "FREQUENCY_A_POLARIZATION": [
+     "HH",
+     "HV"
+    ],
+    "FREQUENCY_A_POLARIZATION_CONCAT": [
+     "HH+HV"
+    ],
+    "FREQUENCY_B_POLARIZATION": [
+     "HH",
+     "HV"
+    ],
+    "FREQUENCY_B_POLARIZATION_CONCAT": [
+     "HH+HV"
+    ],
+    "FULL_FRAME": [
+     "TRUE"
+    ],
+    "JOINT_OBSERVATION": [
+     "TRUE"
+    ],
+    "PROCESSING_CENTER": [
+     "JPL"
+    ],
+    "PROCESSING_LEVEL": [
+     "L3"
+    ],
+    "PRODUCTION_PIPELINE": [
+     "PR"
+    ],
+    "PRODUCT_TYPE": [
+     "SME2"
+    ],
+    "PRODUCT_TYPE_DESC": [
+     "Soil Moisture EASE Grid 2.0"
+    ],
+    "PRODUCT_VERSION": [
+     "1.0.11"
+    ],
+    "STACK_ID": [
+     "069_D_067"
+    ],
+    "TRACK_NUMBER": [
+     "69"
+    ]
+   },
+   "files": [
+    [
+     "NISAR_L3_PR_SME2_032_069_D_067_4005_DHDH_A_20261004T235149_20261004T235224_P05023_N_F_J_001.h5",
+     127926272,
+     {
+      "Value": "a0b63f8acceefd9594e2ebb87ab84abf",
+      "Algorithm": "MD5"
+     }
+    ],
+    [
+     "NISAR_L3_PR_SME2_032_069_D_067_4005_DHDH_A_20261004T235149_20261004T235224_P05023_N_F_J_001.h5.iso.xml",
+     77450,
+     {
+      "Value": "a0d3debce6f73f1c004b898dc792a348",
+      "Algorithm": "MD5"
+     }
+    ],
+    [
+     "NISAR_L3_PR_SME2_032_069_D_067_4005_DHDH_A_20261004T235149_20261004T235224_P05023_N_F_J_001_QA_STATS.h5",
+     5432,
+     {
+      "Value": "8eeac3a3f22fb936ed9f1941c90a6f90",
+      "Algorithm": "MD5"
+     }
+    ],
+    [
+     "NISAR_L3_PR_SME2_032_069_D_067_4005_DHDH_A_20261004T235149_20261004T235224_P05023_N_F_J_001.rc.yaml",
+     4249,
+     {
+      "Value": "cede4c51485312b60d0e0bdac94e0d20",
+      "Algorithm": "MD5"
+     }
+    ]
+   ],
+   "h5": [
+    "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L3_SME2_PROVISIONAL_V1/NISAR_L3_PR_SME2_032_069_D_067_4005_DHDH_A_20261004T235149_20261004T235224_P05023_N_F_J_001/NISAR_L3_PR_SME2_032_069_D_067_4005_DHDH_A_20261004T235149_20261004T235224_P05023_N_F_J_001.h5"
+   ]
+  },
+  "G4314760500-ASF": {
+   "GranuleUR": "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001",
+   "collection": "C2854344945-ASF",
+   "CollectionReference": {
+    "ShortName": "NISAR_L3_SME2_PROVISIONAL_V1",
+    "Version": "1"
+   },
+   "revision-date": "2026-09-17T21:58:51.966Z",
+   "PGEVersionClass": {
+    "PGEName": "SM_L_PGE",
+    "PGEVersion": "R05.02.0"
+   },
+   "ProductionDateTime": "2026-09-17T21:45:23.000000Z",
+   "Temporal": {
+    "RangeDateTime": {
+     "BeginningDateTime": "2026-09-15T23:43:30.000000Z",
+     "EndingDateTime": "2026-09-15T23:44:05.000000Z"
+    }
+   },
+   "AdditionalAttributes": {
+    "ASCENDING_DESCENDING": [
+     "DESCENDING"
+    ],
+    "FRAME_NUMBER": [
+     "67"
+    ],
+    "FREQUENCIES": [
+     "A",
+     "B"
+    ],
+    "FREQUENCY_A_POLARIZATION": [
+     "HH",
+     "HV"
+    ],
+    "FREQUENCY_A_POLARIZATION_CONCAT": [
+     "HH+HV"
+    ],
+    "FREQUENCY_B_POLARIZATION": [
+     "HH",
+     "HV"
+    ],
+    "FREQUENCY_B_POLARIZATION_CONCAT": [
+     "HH+HV"
+    ],
+    "FULL_FRAME": [
+     "TRUE"
+    ],
+    "JOINT_OBSERVATION": [
+     "TRUE"
+    ],
+    "PROCESSING_CENTER": [
+     "JPL"
+    ],
+    "PROCESSING_LEVEL": [
+     "L3"
+    ],
+    "PRODUCTION_PIPELINE": [
+     "PR"
+    ],
+    "PRODUCT_TYPE": [
+     "SME2"
+    ],
+    "PRODUCT_TYPE_DESC": [
+     "Soil Moisture EASE Grid 2.0"
+    ],
+    "PRODUCT_VERSION": [
+     "1.0.11"
+    ],
+    "STACK_ID": [
+     "141_D_067"
+    ],
+    "TRACK_NUMBER": [
+     "141"
+    ]
+   },
+   "files": [
+    [
+     "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001.h5",
+     96468992,
+     {
+      "Value": "5a211ba8d6357cfd658778e7c6328738",
+      "Algorithm": "MD5"
+     }
+    ],
+    [
+     "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001.h5.iso.xml",
+     77469,
+     {
+      "Value": "2684a4cd22fdaf688c54dbadf9ece6f2",
+      "Algorithm": "MD5"
+     }
+    ],
+    [
+     "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001_QA_STATS.h5",
+     5432,
+     {
+      "Value": "187b9693c2bee0eba3cb4f41efadcd99",
+      "Algorithm": "MD5"
+     }
+    ],
+    [
+     "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001.rc.yaml",
+     4275,
+     {
+      "Value": "9ab67b21fe90e6837d157486221c66e2",
+      "Algorithm": "MD5"
+     }
+    ]
+   ],
+   "h5": [
+    "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L3_SME2_PROVISIONAL_V1/NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001/NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001.h5"
+   ]
+  }
+ }
+}

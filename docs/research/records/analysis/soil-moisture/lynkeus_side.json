@@ -1,0 +1,1407 @@
+{
+ "started": "2026-11-15T10:37:03Z",
+ "environment": {
+  "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+  "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+  "lynkeus": "0.1.0",
+  "gdal_in_rasterio": "3.12.2",
+  "packages": {
+   "numpy": "2.5.4",
+   "rasterio": "1.5.2",
+   "pydantic": "2.14.3",
+   "rio-cogeo": "7.0.4"
+  }
+ },
+ "tools_listed": [
+  "backscatter-change",
+  "backscatter-state",
+  "coherence-state",
+  "soil-moisture-change",
+  "soil-moisture-state"
+ ],
+ "layers": {
+  "sm-20260915": {
+   "file": "sme2-soilmoisture-20260915.tif",
+   "sha256": "bfd119fb52d7b283be86099909625cc689e443fa706c63786fcd4dd730a4a11d",
+   "granule": "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001",
+   "layer": "soilMoisture",
+   "title": "Soil moisture, 15 Sep 2026",
+   "unit": "m3 m-3",
+   "dates": [
+    "2026-09-15"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6186,
+    "cells_with_a_value": 29238,
+    "lowest": "0.08500000089406967",
+    "highest": "0.6000000238418579",
+    "median": "0.28378552198410034",
+    "p05_p95": [
+     "0.25104556381702425",
+     "0.4008160576224322"
+    ],
+    "cells_zero_negative_infinite": [
+     0,
+     0,
+     0
+    ],
+    "cells_below_0.02_float32": 0,
+    "cells_above_0.6_float32": 0
+   },
+   "sha256_of_values": "abeb6a163c6a6c55e9d548d0a5ea79d02b216cc58be89868476b2e9f0266bd21"
+  },
+  "sm-20260927": {
+   "file": "sme2-soilmoisture-20260927.tif",
+   "sha256": "1485f51a4a971fcad41815c903259aaf0d99e7da9b8b2cb23b239e936e3ee9f0",
+   "granule": "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001",
+   "layer": "soilMoisture",
+   "title": "Soil moisture, 27 Sep 2026",
+   "unit": "m3 m-3",
+   "dates": [
+    "2026-09-27"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6186,
+    "cells_with_a_value": 29238,
+    "lowest": "0.08900000154972076",
+    "highest": "0.6000000238418579",
+    "median": "0.2718707323074341",
+    "p05_p95": [
+     "0.23895682990550995",
+     "0.32998632937669753"
+    ],
+    "cells_zero_negative_infinite": [
+     0,
+     0,
+     0
+    ],
+    "cells_below_0.02_float32": 0,
+    "cells_above_0.6_float32": 0
+   },
+   "sha256_of_values": "1156d3a94ba1b36a118b18c5fb1a0177f580a68fbe38d1729cc65a19b0d99204"
+  },
+  "sm-20261004-t069": {
+   "file": "sme2-soilmoisture-20261004.tif",
+   "sha256": "171c3397ba9f062cdaa1bd6081177b5048166d61c329f5f8f46c4da0efb6c8a5",
+   "granule": "NISAR_L3_PR_SME2_032_069_D_067_4005_DHDH_A_20261004T235149_20261004T235224_P05023_N_F_J_001",
+   "layer": "soilMoisture",
+   "title": "Soil moisture, 4 Oct 2026",
+   "unit": "m3 m-3",
+   "dates": [
+    "2026-10-04"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.115491281,
+     0.0,
+     -200.17900467012078,
+     4990662.763762229
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 26206,
+    "cells_with_a_value": 9218,
+    "lowest": "0.05967140197753906",
+    "highest": "0.4764682650566101",
+    "median": "0.25332123041152954",
+    "p05_p95": [
+     "0.2234410263597965",
+     "0.28610632270574565"
+    ],
+    "cells_zero_negative_infinite": [
+     0,
+     0,
+     0
+    ],
+    "cells_below_0.02_float32": 0,
+    "cells_above_0.6_float32": 0
+   },
+   "sha256_of_values": "6b719a70a350a3daf2a52de2aa7305b8e67697728f03c95414b84f1f6a4bc58d"
+  },
+  "sm-20261007-t104": {
+   "file": "sme2-soilmoisture-20261007.tif",
+   "sha256": "c386aeba2ea7b059a834f8220addcf850ebc6bf19c5e1e2770dcfd79e542907a",
+   "granule": "NISAR_L3_PR_SME2_032_104_A_023_4005_DHDH_A_20261007T094232_20261007T094307_P05023_N_F_J_001",
+   "layer": "soilMoisture",
+   "title": "Soil moisture, 7 Oct 2026",
+   "unit": "m3 m-3",
+   "dates": [
+    "2026-10-07"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.115491529,
+     0.0,
+     -200.17900467012078,
+     4990662.763762229
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6186,
+    "cells_with_a_value": 29238,
+    "lowest": "0.07999999821186066",
+    "highest": "0.5951008796691895",
+    "median": "0.23668721318244934",
+    "p05_p95": [
+     "0.2048376679420471",
+     "0.27745128273963926"
+    ],
+    "cells_zero_negative_infinite": [
+     0,
+     0,
+     0
+    ],
+    "cells_below_0.02_float32": 0,
+    "cells_above_0.6_float32": 0
+   },
+   "sha256_of_values": "a87e5a858dd5a45fc9a55aaa23af020f315e269b2062cc413461a425245f40fd"
+  },
+  "sm-20261009": {
+   "file": "sme2-soilmoisture-20261009.tif",
+   "sha256": "aefe8f4759a11d7cd5a13dad9deffba67471704ae0484206dfafdde784df93f9",
+   "granule": "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001",
+   "layer": "soilMoisture",
+   "title": "Soil moisture, 9 Oct 2026",
+   "unit": "m3 m-3",
+   "dates": [
+    "2026-10-09"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6186,
+    "cells_with_a_value": 29238,
+    "lowest": "0.07999999821186066",
+    "highest": "0.6000000238418579",
+    "median": "0.2329612672328949",
+    "p05_p95": [
+     "0.19499999284744263",
+     "0.2722892880439758"
+    ],
+    "cells_zero_negative_infinite": [
+     0,
+     0,
+     0
+    ],
+    "cells_below_0.02_float32": 0,
+    "cells_above_0.6_float32": 0
+   },
+   "sha256_of_values": "ce67113ebf8f46d86564f75e1e7d19bb1bf19370e6d65cc74ab8dec6b6faaa03"
+  },
+  "smu-20261009": {
+   "file": "sme2-soilmoistureuncertainty-20261009.tif",
+   "sha256": "21a745467998d4143589ac996abc4883c4676e6f6448b8e9f42564fc2d8dcd5b",
+   "granule": "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001",
+   "layer": "soilMoistureUncertainty",
+   "title": "Uncertainty of soil moisture, 9 Oct 2026",
+   "unit": "m3 m-3",
+   "dates": [
+    "2026-10-09"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6187,
+    "cells_with_a_value": 29237,
+    "lowest": "0.012111267074942589",
+    "highest": "0.11446380615234375",
+    "median": "0.03426172956824303",
+    "p05_p95": [
+     "0.029906104132533074",
+     "0.04467691183090208"
+    ],
+    "cells_zero_negative_infinite": [
+     0,
+     0,
+     0
+    ],
+    "cells_below_0.02_float32": 86,
+    "cells_above_0.6_float32": 0
+   },
+   "sha256_of_values": "f575118eb1d45c396c87472e564f5aaeb1574abd81cb6eb4fb5c574fdb85aa1b"
+  }
+ },
+ "state": {
+  "sm-20260915": {
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    "0.02",
+    "0.6"
+   ],
+   "colours": "YlGnBu",
+   "method": "Layer soilMoisture of the product, unchanged (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3)",
+   "reduction": "mean",
+   "ends": null,
+   "dtype": "float32",
+   "sha256_of_values": "abeb6a163c6a6c55e9d548d0a5ea79d02b216cc58be89868476b2e9f0266bd21",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6186,
+    "cells_with_a_value": 29238,
+    "lowest": "0.08500000089406967",
+    "highest": "0.6000000238418579",
+    "median": "0.28378552198410034",
+    "p05_p95": [
+     "0.25104556381702425",
+     "0.4008160576224322"
+    ],
+    "cells_zero_negative_infinite": [
+     0,
+     0,
+     0
+    ],
+    "cells_below_0.02_float32": 0,
+    "cells_above_0.6_float32": 0
+   },
+   "the_result_is_the_input_array_itself": true,
+   "cells_that_differ_from_the_file": 0
+  },
+  "sm-20260927": {
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    "0.02",
+    "0.6"
+   ],
+   "colours": "YlGnBu",
+   "method": "Layer soilMoisture of the product, unchanged (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3)",
+   "reduction": "mean",
+   "ends": null,
+   "dtype": "float32",
+   "sha256_of_values": "1156d3a94ba1b36a118b18c5fb1a0177f580a68fbe38d1729cc65a19b0d99204",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6186,
+    "cells_with_a_value": 29238,
+    "lowest": "0.08900000154972076",
+    "highest": "0.6000000238418579",
+    "median": "0.2718707323074341",
+    "p05_p95": [
+     "0.23895682990550995",
+     "0.32998632937669753"
+    ],
+    "cells_zero_negative_infinite": [
+     0,
+     0,
+     0
+    ],
+    "cells_below_0.02_float32": 0,
+    "cells_above_0.6_float32": 0
+   },
+   "the_result_is_the_input_array_itself": true,
+   "cells_that_differ_from_the_file": 0
+  },
+  "sm-20261009": {
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    "0.02",
+    "0.6"
+   ],
+   "colours": "YlGnBu",
+   "method": "Layer soilMoisture of the product, unchanged (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3)",
+   "reduction": "mean",
+   "ends": null,
+   "dtype": "float32",
+   "sha256_of_values": "ce67113ebf8f46d86564f75e1e7d19bb1bf19370e6d65cc74ab8dec6b6faaa03",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6186,
+    "cells_with_a_value": 29238,
+    "lowest": "0.07999999821186066",
+    "highest": "0.6000000238418579",
+    "median": "0.2329612672328949",
+    "p05_p95": [
+     "0.19499999284744263",
+     "0.2722892880439758"
+    ],
+    "cells_zero_negative_infinite": [
+     0,
+     0,
+     0
+    ],
+    "cells_below_0.02_float32": 0,
+    "cells_above_0.6_float32": 0
+   },
+   "the_result_is_the_input_array_itself": true,
+   "cells_that_differ_from_the_file": 0
+  },
+  "sm-20261004-t069": {
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    "0.02",
+    "0.6"
+   ],
+   "colours": "YlGnBu",
+   "method": "Layer soilMoisture of the product, unchanged (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3)",
+   "reduction": "mean",
+   "ends": null,
+   "dtype": "float32",
+   "sha256_of_values": "6b719a70a350a3daf2a52de2aa7305b8e67697728f03c95414b84f1f6a4bc58d",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 26206,
+    "cells_with_a_value": 9218,
+    "lowest": "0.05967140197753906",
+    "highest": "0.4764682650566101",
+    "median": "0.25332123041152954",
+    "p05_p95": [
+     "0.2234410263597965",
+     "0.28610632270574565"
+    ],
+    "cells_zero_negative_infinite": [
+     0,
+     0,
+     0
+    ],
+    "cells_below_0.02_float32": 0,
+    "cells_above_0.6_float32": 0
+   },
+   "the_result_is_the_input_array_itself": true,
+   "cells_that_differ_from_the_file": 0
+  },
+  "sm-20261007-t104": {
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    "0.02",
+    "0.6"
+   ],
+   "colours": "YlGnBu",
+   "method": "Layer soilMoisture of the product, unchanged (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3)",
+   "reduction": "mean",
+   "ends": null,
+   "dtype": "float32",
+   "sha256_of_values": "a87e5a858dd5a45fc9a55aaa23af020f315e269b2062cc413461a425245f40fd",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6186,
+    "cells_with_a_value": 29238,
+    "lowest": "0.07999999821186066",
+    "highest": "0.5951008796691895",
+    "median": "0.23668721318244934",
+    "p05_p95": [
+     "0.2048376679420471",
+     "0.27745128273963926"
+    ],
+    "cells_zero_negative_infinite": [
+     0,
+     0,
+     0
+    ],
+    "cells_below_0.02_float32": 0,
+    "cells_above_0.6_float32": 0
+   },
+   "the_result_is_the_input_array_itself": true,
+   "cells_that_differ_from_the_file": 0
+  }
+ },
+ "change": {
+  "change-20260927-20261009": {
+   "quantity": "Change of soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    "-0.20562999561429127",
+    "0.20562999561429127"
+   ],
+   "colours": "RdBu",
+   "method": "Difference of the layer soilMoisture of two dates, later minus earlier (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939)",
+   "reduction": "mean",
+   "ends": [
+    "decrease",
+    "increase"
+   ],
+   "dtype": "float32",
+   "sha256_of_values": "d68134f0fc5e83445d35701e79e75af199de52801504989faaf33594766fbfe6",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6186,
+    "cells_with_a_value": 29238,
+    "lowest": "-0.30000001192092896",
+    "highest": "0.14100000262260437",
+    "median": "-0.0381951704621315",
+    "p05_p95": [
+     "-0.10036501437425613",
+     "0.0029699578881263516"
+    ],
+    "cells_zero_negative_infinite": [
+     2,
+     27382,
+     0
+    ],
+    "cells_below_0.02_float32": 28892,
+    "cells_above_0.6_float32": 0
+   },
+   "earlier": "sm-20260927",
+   "later": "sm-20261009",
+   "p01_p05_p50_p95_p99": [
+    "-0.20562999561429024",
+    "-0.10036501437425613",
+    "-0.0381951704621315",
+    "0.0029699578881263516",
+    "0.02190842896699906"
+   ],
+   "cells_with_a_value_in_both_inputs": 29238,
+   "cells_with_a_value_in_the_earlier_only": 0,
+   "cells_with_a_value_in_the_later_only": 0,
+   "cells_with_change_zero": 2,
+   "cells_with_increase": 1854,
+   "cells_with_decrease": 27382,
+   "p99_of_absolute_values_of_the_64_bit_difference": "0.20562999561429127",
+   "largest_difference_from_the_64_bit_difference": "1.4901161193847656e-08",
+   "sorted_absolute_values_around_the_99th_percentile": [
+    "0.20500001311302185",
+    "0.20599998533725739"
+   ]
+  },
+  "change-20260915-20260927": {
+   "quantity": "Change of soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    "-0.13345971763134046",
+    "0.13345971763134046"
+   ],
+   "colours": "RdBu",
+   "method": "Difference of the layer soilMoisture of two dates, later minus earlier (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939)",
+   "reduction": "mean",
+   "ends": [
+    "decrease",
+    "increase"
+   ],
+   "dtype": "float32",
+   "sha256_of_values": "c0e03d565e52d7d37c689362aa6123b3dd5a5c458df9c3241930b1e04d0cdf48",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6186,
+    "cells_with_a_value": 29238,
+    "lowest": "-0.2799999713897705",
+    "highest": "0.11254438757896423",
+    "median": "-0.012370750308036804",
+    "p05_p95": [
+     "-0.06400001049041748",
+     "0.0314894452691078"
+    ],
+    "cells_zero_negative_infinite": [
+     7,
+     20013,
+     0
+    ],
+    "cells_below_0.02_float32": 25978,
+    "cells_above_0.6_float32": 0
+   },
+   "earlier": "sm-20260915",
+   "later": "sm-20260927",
+   "p01_p05_p50_p95_p99": [
+    "-0.13345971763134",
+    "-0.06400001049041748",
+    "-0.012370750308036804",
+    "0.0314894452691078",
+    "0.05199763745069504"
+   ],
+   "cells_with_a_value_in_both_inputs": 29238,
+   "cells_with_a_value_in_the_earlier_only": 0,
+   "cells_with_a_value_in_the_later_only": 0,
+   "cells_with_change_zero": 7,
+   "cells_with_increase": 9218,
+   "cells_with_decrease": 20013,
+   "p99_of_absolute_values_of_the_64_bit_difference": "0.13345971763134046",
+   "largest_difference_from_the_64_bit_difference": "1.4901161193847656e-08",
+   "sorted_absolute_values_around_the_99th_percentile": [
+    "0.13319209218025208",
+    "0.13361689448356628"
+   ]
+  },
+  "change-20260915-20261009": {
+   "quantity": "Change of soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    "-0.24900001287460327",
+    "0.24900001287460327"
+   ],
+   "colours": "RdBu",
+   "method": "Difference of the layer soilMoisture of two dates, later minus earlier (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939)",
+   "reduction": "mean",
+   "ends": [
+    "decrease",
+    "increase"
+   ],
+   "dtype": "float32",
+   "sha256_of_values": "a839dfe9d8f1619dfcfba677a7fc5b8e0d3e26fbfe47df2ced7f74ebe0c4903c",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6186,
+    "cells_with_a_value": 29238,
+    "lowest": "-0.3569999933242798",
+    "highest": "0.11066555976867676",
+    "median": "-0.04981823265552521",
+    "p05_p95": [
+     "-0.17000000402331353",
+     "-0.009088704735040686"
+    ],
+    "cells_zero_negative_infinite": [
+     1,
+     28511,
+     0
+    ],
+    "cells_below_0.02_float32": 29088,
+    "cells_above_0.6_float32": 0
+   },
+   "earlier": "sm-20260915",
+   "later": "sm-20261009",
+   "p01_p05_p50_p95_p99": [
+    "-0.24900001287460327",
+    "-0.17000000402331353",
+    "-0.04981823265552521",
+    "-0.009088704735040686",
+    "0.01149959921836856"
+   ],
+   "cells_with_a_value_in_both_inputs": 29238,
+   "cells_with_a_value_in_the_earlier_only": 0,
+   "cells_with_a_value_in_the_later_only": 0,
+   "cells_with_change_zero": 1,
+   "cells_with_increase": 726,
+   "cells_with_decrease": 28511,
+   "p99_of_absolute_values_of_the_64_bit_difference": "0.24900001287460327",
+   "largest_difference_from_the_64_bit_difference": "1.4901161193847656e-08",
+   "sorted_absolute_values_around_the_99th_percentile": [
+    "0.24900001287460327",
+    "0.24900001287460327"
+   ]
+  }
+ },
+ "refusals": {
+  "state of the layer soilMoistureUncertainty": {
+   "tool": "soil-moisture-state",
+   "inputs": [
+    "smu-20261009"
+   ],
+   "refused_with": "The layer \"Uncertainty of soil moisture, 9 Oct 2026\" is the layer soilMoistureUncertainty of its product, and the tool reads the layer soilMoisture."
+  },
+  "state of two layers": {
+   "tool": "soil-moisture-state",
+   "inputs": [
+    "sm-20260927",
+    "sm-20261009"
+   ],
+   "refused_with": "The number of input layers must be 1, and it is 2."
+  },
+  "change with the later date first": {
+   "tool": "soil-moisture-change",
+   "inputs": [
+    "sm-20261009",
+    "sm-20260927"
+   ],
+   "refused_with": "The first layer must be of an earlier date than the second."
+  },
+  "change of one layer": {
+   "tool": "soil-moisture-change",
+   "inputs": [
+    "sm-20261009"
+   ],
+   "refused_with": "The number of input layers must be 2, and it is 1."
+  },
+  "change with the layer soilMoistureUncertainty": {
+   "tool": "soil-moisture-change",
+   "inputs": [
+    "sm-20260927",
+    "smu-20261009"
+   ],
+   "refused_with": "The layer \"Uncertainty of soil moisture, 9 Oct 2026\" is the layer soilMoistureUncertainty of its product, and the tool reads the layer soilMoisture."
+  },
+  "change of track 141 and track 104 (ascending)": {
+   "tool": "soil-moisture-change",
+   "inputs": [
+    "sm-20260927",
+    "sm-20261007-t104"
+   ],
+   "refused_with": "The two layers are not of the same instrument, track, direction and frame."
+  },
+  "change of track 141 and track 69": {
+   "tool": "soil-moisture-change",
+   "inputs": [
+    "sm-20260927",
+    "sm-20261004-t069"
+   ],
+   "refused_with": "The two layers are not of the same instrument, track, direction and frame."
+  },
+  "backscatter-state of a soil moisture layer": {
+   "tool": "backscatter-state",
+   "inputs": [
+    "sm-20261009"
+   ],
+   "refused_with": "The layer \"Soil moisture, 9 Oct 2026\" is not a layer received from one NISAR GCOV product."
+  },
+  "coherence-state of a soil moisture layer": {
+   "tool": "coherence-state",
+   "inputs": [
+    "sm-20261009"
+   ],
+   "refused_with": "The layer \"Soil moisture, 9 Oct 2026\" is not a layer received from one NISAR GUNW product."
+  }
+ },
+ "run_tool": {
+  "state-20260927": {
+   "tool": "soil-moisture-state",
+   "inputs": [
+    "sm-20260927"
+   ],
+   "steps": [
+    [
+     0,
+     "Reading the layers."
+    ],
+    [
+     40,
+     "Computing the result."
+    ],
+    [
+     70,
+     "Writing the result."
+    ],
+    [
+     100,
+     "The result is ready."
+    ]
+   ],
+   "description": {
+    "id": "state-20260927",
+    "title": "Result of soil-moisture-state",
+    "kind": "result",
+    "url": "/files/state-20260927/soil-moisture-state.tif",
+    "quantity": "Soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     0.02,
+     0.6
+    ],
+    "colours": "YlGnBu",
+    "dates": [
+     "2026-09-27"
+    ],
+    "inputs": [
+     "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": null,
+    "program": "Lynkeus 0.1.0",
+    "method": "Layer soilMoisture of the product, unchanged (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3)",
+    "record": "/files/state-20260927/soil-moisture-state.json"
+   },
+   "file": "soil-moisture-state.tif",
+   "file_bytes": 99932,
+   "sha256_of_the_file": "65c8495b643ffd5160c9b07d68694507902461f46749a67e0dddc78b68a22e4b",
+   "sha256_of_values": "1156d3a94ba1b36a118b18c5fb1a0177f580a68fbe38d1729cc65a19b0d99204",
+   "reduced_copies": [],
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "0.6000000238418579",
+    "STATISTICS_MEAN": "0.2765517229501881",
+    "STATISTICS_MINIMUM": "0.08900000154972076",
+    "STATISTICS_STDDEV": "0.03175475256026234",
+    "STATISTICS_VALID_PERCENT": "82.53726287262873"
+   },
+   "grid_equal_to_that_of_the_inputs": true,
+   "bit_identical_to_the_function": true,
+   "range_equal_to_that_of_the_function": true,
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool soil-moisture-state of Lynkeus 0.1.0 on the layers: Soil moisture, 27 Sep 2026. Method: Layer soilMoisture of the product, unchanged (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3). Reduced copies made by averaging the values.",
+   "bands_of_the_record": [
+    {
+     "description": "Soil moisture",
+     "data_type": "float32",
+     "nodata": "nan",
+     "unit": "m3 m-3",
+     "statistics": {
+      "minimum": 0.08900000154972076,
+      "maximum": 0.6000000238418579,
+      "mean": 0.2765517229501881,
+      "stddev": 0.03175475256026234,
+      "valid_percent": 82.53726287262873
+     },
+     "raster:sampling": "area",
+     "raster:spatial_resolution": 200.17900467012078
+    }
+   ],
+   "links": [
+    [
+     "derived_from",
+     "/files/sm-20260927/sme2-soilmoisture-20260927.json"
+    ]
+   ]
+  },
+  "state-20261009": {
+   "tool": "soil-moisture-state",
+   "inputs": [
+    "sm-20261009"
+   ],
+   "steps": [
+    [
+     0,
+     "Reading the layers."
+    ],
+    [
+     40,
+     "Computing the result."
+    ],
+    [
+     70,
+     "Writing the result."
+    ],
+    [
+     100,
+     "The result is ready."
+    ]
+   ],
+   "description": {
+    "id": "state-20261009",
+    "title": "Result of soil-moisture-state",
+    "kind": "result",
+    "url": "/files/state-20261009/soil-moisture-state.tif",
+    "quantity": "Soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     0.02,
+     0.6
+    ],
+    "colours": "YlGnBu",
+    "dates": [
+     "2026-10-09"
+    ],
+    "inputs": [
+     "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": null,
+    "program": "Lynkeus 0.1.0",
+    "method": "Layer soilMoisture of the product, unchanged (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3)",
+    "record": "/files/state-20261009/soil-moisture-state.json"
+   },
+   "file": "soil-moisture-state.tif",
+   "file_bytes": 100980,
+   "sha256_of_the_file": "bc2093eda60916aa8620302b77d11cead3e93ed659aefe5d82477d62a6487781",
+   "sha256_of_values": "ce67113ebf8f46d86564f75e1e7d19bb1bf19370e6d65cc74ab8dec6b6faaa03",
+   "reduced_copies": [],
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "0.6000000238418579",
+    "STATISTICS_MEAN": "0.23388739770511627",
+    "STATISTICS_MINIMUM": "0.07999999821186066",
+    "STATISTICS_STDDEV": "0.02790906132319405",
+    "STATISTICS_VALID_PERCENT": "82.53726287262873"
+   },
+   "grid_equal_to_that_of_the_inputs": true,
+   "bit_identical_to_the_function": true,
+   "range_equal_to_that_of_the_function": true,
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool soil-moisture-state of Lynkeus 0.1.0 on the layers: Soil moisture, 9 Oct 2026. Method: Layer soilMoisture of the product, unchanged (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3). Reduced copies made by averaging the values.",
+   "bands_of_the_record": [
+    {
+     "description": "Soil moisture",
+     "data_type": "float32",
+     "nodata": "nan",
+     "unit": "m3 m-3",
+     "statistics": {
+      "minimum": 0.07999999821186066,
+      "maximum": 0.6000000238418579,
+      "mean": 0.23388739770511627,
+      "stddev": 0.02790906132319405,
+      "valid_percent": 82.53726287262873
+     },
+     "raster:sampling": "area",
+     "raster:spatial_resolution": 200.17900467012078
+    }
+   ],
+   "links": [
+    [
+     "derived_from",
+     "/files/sm-20261009/sme2-soilmoisture-20261009.json"
+    ]
+   ]
+  },
+  "change-20260927-20261009": {
+   "tool": "soil-moisture-change",
+   "inputs": [
+    "sm-20260927",
+    "sm-20261009"
+   ],
+   "steps": [
+    [
+     0,
+     "Reading the layers."
+    ],
+    [
+     40,
+     "Computing the result."
+    ],
+    [
+     70,
+     "Writing the result."
+    ],
+    [
+     100,
+     "The result is ready."
+    ]
+   ],
+   "description": {
+    "id": "change-20260927-20261009",
+    "title": "Result of soil-moisture-change",
+    "kind": "result",
+    "url": "/files/change-20260927-20261009/soil-moisture-change.tif",
+    "quantity": "Change of soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     -0.20562999561429127,
+     0.20562999561429127
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-09-27",
+     "2026-10-09"
+    ],
+    "inputs": [
+     "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+     "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": [
+     "decrease",
+     "increase"
+    ],
+    "program": "Lynkeus 0.1.0",
+    "method": "Difference of the layer soilMoisture of two dates, later minus earlier (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939)",
+    "record": "/files/change-20260927-20261009/soil-moisture-change.json"
+   },
+   "file": "soil-moisture-change.tif",
+   "file_bytes": 113371,
+   "sha256_of_the_file": "a366857a11703e9806b4868e2517e7f9ea4cff66f5c6c739f8d13a82c4e0d5db",
+   "sha256_of_values": "d68134f0fc5e83445d35701e79e75af199de52801504989faaf33594766fbfe6",
+   "reduced_copies": [],
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "0.14100000262260437",
+    "STATISTICS_MEAN": "-0.04266432524201392",
+    "STATISTICS_MINIMUM": "-0.30000001192092896",
+    "STATISTICS_STDDEV": "0.037489579606094656",
+    "STATISTICS_VALID_PERCENT": "82.53726287262873"
+   },
+   "grid_equal_to_that_of_the_inputs": true,
+   "bit_identical_to_the_function": true,
+   "range_equal_to_that_of_the_function": true,
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool soil-moisture-change of Lynkeus 0.1.0 on the layers: Soil moisture, 27 Sep 2026, Soil moisture, 9 Oct 2026. Method: Difference of the layer soilMoisture of two dates, later minus earlier (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939). Reduced copies made by averaging the values.",
+   "bands_of_the_record": [
+    {
+     "description": "Change of soil moisture",
+     "data_type": "float32",
+     "nodata": "nan",
+     "unit": "m3 m-3",
+     "statistics": {
+      "minimum": -0.30000001192092896,
+      "maximum": 0.14100000262260437,
+      "mean": -0.04266432524201392,
+      "stddev": 0.037489579606094656,
+      "valid_percent": 82.53726287262873
+     },
+     "raster:sampling": "area",
+     "raster:spatial_resolution": 200.17900467012078
+    }
+   ],
+   "links": [
+    [
+     "derived_from",
+     "/files/sm-20260927/sme2-soilmoisture-20260927.json"
+    ],
+    [
+     "derived_from",
+     "/files/sm-20261009/sme2-soilmoisture-20261009.json"
+    ]
+   ]
+  },
+  "refusal-uncertainty": {
+   "tool": "soil-moisture-state",
+   "inputs": [
+    "smu-20261009"
+   ],
+   "refused_with": "The layer \"Uncertainty of soil moisture, 9 Oct 2026\" is the layer soilMoistureUncertainty of its product, and the tool reads the layer soilMoisture.",
+   "files_written": []
+  },
+  "refusal-later-first": {
+   "tool": "soil-moisture-change",
+   "inputs": [
+    "sm-20261009",
+    "sm-20260927"
+   ],
+   "refused_with": "The first layer must be of an earlier date than the second.",
+   "files_written": []
+  },
+  "refusal-other-track": {
+   "tool": "soil-moisture-change",
+   "inputs": [
+    "sm-20260927",
+    "sm-20261007-t104"
+   ],
+   "refused_with": "The layers of the analysis do not have the same grid.",
+   "files_written": []
+  },
+  "refusal-one-layer": {
+   "tool": "soil-moisture-change",
+   "inputs": [
+    "sm-20261009"
+   ],
+   "refused_with": "The number of input layers must be 2, and it is 1.",
+   "files_written": []
+  }
+ },
+ "frames": {
+  "sm-20260915": {
+   "product_file": "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001.h5",
+   "sha256_of_the_product_file": "c4b9589f86c175aa67b609d6038e57ac41316d5adc1406ebed06bec598b7d9e7",
+   "columns_rows": [
+    2205,
+    1620
+   ],
+   "spacing": [
+    200.17900467012078,
+    -200.17900467012078
+   ],
+   "x_first": -7044199.118061492,
+   "y_first": 5107467.212987235,
+   "values": {
+    "cells": 3572100,
+    "cells_with_nan": 2869400,
+    "cells_with_a_value": 702700,
+    "lowest": "0.03500000014901161",
+    "highest": "0.6029999852180481",
+    "median": "0.27892887592315674",
+    "p05_p95": [
+     "0.22302362620830535",
+     "0.3393896549940109"
+    ],
+    "cells_zero_negative_infinite": [
+     0,
+     0,
+     0
+    ],
+    "cells_below_0.02_float32": 0,
+    "cells_above_0.6_float32": 1
+   },
+   "sha256_of_values": "0957241baa2f606cc5a6998f7a183b7ff8e2f14937911873694ce94bf6448a3b",
+   "file_for_the_source_program": "frame-sm-20260915.tif",
+   "sha256_of_that_file": "2e194d7630111a71c0adcffa9436da2205e426547b6502fbd882c45abb5f7ec2",
+   "that_file_read_back_is_bit_identical": true,
+   "state": {
+    "quantity": "Soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     "0.02",
+     "0.6"
+    ],
+    "colours": "YlGnBu",
+    "method": "Layer soilMoisture of the product, unchanged (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3)",
+    "reduction": "mean",
+    "ends": null,
+    "dtype": "float32",
+    "sha256_of_values": "0957241baa2f606cc5a6998f7a183b7ff8e2f14937911873694ce94bf6448a3b",
+    "values": {
+     "cells": 3572100,
+     "cells_with_nan": 2869400,
+     "cells_with_a_value": 702700,
+     "lowest": "0.03500000014901161",
+     "highest": "0.6029999852180481",
+     "median": "0.27892887592315674",
+     "p05_p95": [
+      "0.22302362620830535",
+      "0.3393896549940109"
+     ],
+     "cells_zero_negative_infinite": [
+      0,
+      0,
+      0
+     ],
+     "cells_below_0.02_float32": 0,
+     "cells_above_0.6_float32": 1
+    },
+    "the_result_is_the_input_array_itself": true
+   }
+  },
+  "sm-20260927": {
+   "product_file": "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+   "sha256_of_the_product_file": "4ce70185c501879ec81bacf14ab2fd2e69bfd750f1325fa41da36be996837797",
+   "columns_rows": [
+    2205,
+    1620
+   ],
+   "spacing": [
+    200.17900467012078,
+    -200.17900467012078
+   ],
+   "x_first": -7044199.118061492,
+   "y_first": 5107467.212987235,
+   "values": {
+    "cells": 3572100,
+    "cells_with_nan": 2867942,
+    "cells_with_a_value": 704158,
+    "lowest": "0.01856086775660515",
+    "highest": "0.6000000238418579",
+    "median": "0.3036487400531769",
+    "p05_p95": [
+     "0.23397122770547868",
+     "0.3560774505138397"
+    ],
+    "cells_zero_negative_infinite": [
+     0,
+     0,
+     0
+    ],
+    "cells_below_0.02_float32": 4,
+    "cells_above_0.6_float32": 0
+   },
+   "sha256_of_values": "793d9a078309d1b04ce3ee117e562c8bfe1356d29e486cc3fae5e61dd6fa7266",
+   "file_for_the_source_program": "frame-sm-20260927.tif",
+   "sha256_of_that_file": "9e71d1cd9d13d687cf5f381a2a3e1e72c5025e6779d66f77989c1905fe282261",
+   "that_file_read_back_is_bit_identical": true,
+   "state": {
+    "quantity": "Soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     "0.02",
+     "0.6"
+    ],
+    "colours": "YlGnBu",
+    "method": "Layer soilMoisture of the product, unchanged (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3)",
+    "reduction": "mean",
+    "ends": null,
+    "dtype": "float32",
+    "sha256_of_values": "793d9a078309d1b04ce3ee117e562c8bfe1356d29e486cc3fae5e61dd6fa7266",
+    "values": {
+     "cells": 3572100,
+     "cells_with_nan": 2867942,
+     "cells_with_a_value": 704158,
+     "lowest": "0.01856086775660515",
+     "highest": "0.6000000238418579",
+     "median": "0.3036487400531769",
+     "p05_p95": [
+      "0.23397122770547868",
+      "0.3560774505138397"
+     ],
+     "cells_zero_negative_infinite": [
+      0,
+      0,
+      0
+     ],
+     "cells_below_0.02_float32": 4,
+     "cells_above_0.6_float32": 0
+    },
+    "the_result_is_the_input_array_itself": true
+   }
+  },
+  "sm-20261009": {
+   "product_file": "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+   "sha256_of_the_product_file": "579f26ae636c3adc36e0af5d88d69df82ea3a09a1cc1d758085a414f43a951f8",
+   "columns_rows": [
+    2205,
+    1620
+   ],
+   "spacing": [
+    200.17900467012078,
+    -200.17900467012078
+   ],
+   "x_first": -7044199.118061492,
+   "y_first": 5107467.212987235,
+   "values": {
+    "cells": 3572100,
+    "cells_with_nan": 2867390,
+    "cells_with_a_value": 704710,
+    "lowest": "0.019999999552965164",
+    "highest": "0.6000000238418579",
+    "median": "0.26695162057876587",
+    "p05_p95": [
+     "0.20662451162934303",
+     "0.3211815446615219"
+    ],
+    "cells_zero_negative_infinite": [
+     0,
+     0,
+     0
+    ],
+    "cells_below_0.02_float32": 0,
+    "cells_above_0.6_float32": 0
+   },
+   "sha256_of_values": "a445cd910da72abbf16cd3f623e85b89b9a9a01d90c25c6981ada4504dd912f1",
+   "file_for_the_source_program": "frame-sm-20261009.tif",
+   "sha256_of_that_file": "0b9ad74c474bcf94612314add359ae0677f0506996dbc996f5b4e1988918baff",
+   "that_file_read_back_is_bit_identical": true,
+   "state": {
+    "quantity": "Soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     "0.02",
+     "0.6"
+    ],
+    "colours": "YlGnBu",
+    "method": "Layer soilMoisture of the product, unchanged (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3)",
+    "reduction": "mean",
+    "ends": null,
+    "dtype": "float32",
+    "sha256_of_values": "a445cd910da72abbf16cd3f623e85b89b9a9a01d90c25c6981ada4504dd912f1",
+    "values": {
+     "cells": 3572100,
+     "cells_with_nan": 2867390,
+     "cells_with_a_value": 704710,
+     "lowest": "0.019999999552965164",
+     "highest": "0.6000000238418579",
+     "median": "0.26695162057876587",
+     "p05_p95": [
+      "0.20662451162934303",
+      "0.3211815446615219"
+     ],
+     "cells_zero_negative_infinite": [
+      0,
+      0,
+      0
+     ],
+     "cells_below_0.02_float32": 0,
+     "cells_above_0.6_float32": 0
+    },
+    "the_result_is_the_input_array_itself": true
+   }
+  },
+  "change-20260927-20261009": {
+   "earlier": "sm-20260927",
+   "later": "sm-20261009",
+   "the_two_frames_have_the_same_grid": true,
+   "quantity": "Change of soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    "-0.11297335147857668",
+    "0.11297335147857668"
+   ],
+   "colours": "RdBu",
+   "method": "Difference of the layer soilMoisture of two dates, later minus earlier (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939)",
+   "reduction": "mean",
+   "ends": [
+    "decrease",
+    "increase"
+   ],
+   "dtype": "float32",
+   "sha256_of_values": "2b14b7abedc2c6942d391b3806c3d2947b3fa435b33dd73aba0aee02f430627a",
+   "values": {
+    "cells": 3572100,
+    "cells_with_nan": 2871187,
+    "cells_with_a_value": 700913,
+    "lowest": "-0.30000001192092896",
+    "highest": "0.37481826543807983",
+    "median": "-0.03523761034011841",
+    "p05_p95": [
+     "-0.08508793413639068",
+     "0.01582103967666627"
+    ],
+    "cells_zero_negative_infinite": [
+     61,
+     614735,
+     0
+    ],
+    "cells_below_0.02_float32": 673580,
+    "cells_above_0.6_float32": 0
+   },
+   "p01_p05_p50_p95_p99": [
+    "-0.11000001430511475",
+    "-0.08508793413639068",
+    "-0.03523761034011841",
+    "0.01582103967666627",
+    "0.04248798191547395"
+   ],
+   "cells_with_a_value_in_both_inputs": 700913,
+   "cells_with_a_value_in_the_earlier_only": 3245,
+   "cells_with_a_value_in_the_later_only": 3797
+  },
+  "change-20260915-20260927": {
+   "earlier": "sm-20260915",
+   "later": "sm-20260927",
+   "the_two_frames_have_the_same_grid": true,
+   "quantity": "Change of soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    "-0.09359421789646152",
+    "0.09359421789646152"
+   ],
+   "colours": "RdBu",
+   "method": "Difference of the layer soilMoisture of two dates, later minus earlier (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939)",
+   "reduction": "mean",
+   "ends": [
+    "decrease",
+    "increase"
+   ],
+   "dtype": "float32",
+   "sha256_of_values": "441274192a1457fb0f461acf288e7cb770a5f0202daedde1e516a66291676342",
+   "values": {
+    "cells": 3572100,
+    "cells_with_nan": 2869425,
+    "cells_with_a_value": 702675,
+    "lowest": "-0.4127577245235443",
+    "highest": "0.33399999141693115",
+    "median": "0.023831605911254883",
+    "p05_p95": [
+     "-0.0291898101568222",
+     "0.06548953354358672"
+    ],
+    "cells_zero_negative_infinite": [
+     83,
+     139660,
+     0
+    ],
+    "cells_below_0.02_float32": 311574,
+    "cells_above_0.6_float32": 0
+   },
+   "p01_p05_p50_p95_p99": [
+    "-0.07057907462120057",
+    "-0.0291898101568222",
+    "0.023831605911254883",
+    "0.06548953354358672",
+    "0.08293437987565995"
+   ],
+   "cells_with_a_value_in_both_inputs": 702675,
+   "cells_with_a_value_in_the_earlier_only": 25,
+   "cells_with_a_value_in_the_later_only": 1483
+  },
+  "change-20260915-20261009": {
+   "earlier": "sm-20260915",
+   "later": "sm-20261009",
+   "the_two_frames_have_the_same_grid": true,
+   "quantity": "Change of soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    "-0.11872296631336203",
+    "0.11872296631336203"
+   ],
+   "colours": "RdBu",
+   "method": "Difference of the layer soilMoisture of two dates, later minus earlier (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939)",
+   "reduction": "mean",
+   "ends": [
+    "decrease",
+    "increase"
+   ],
+   "dtype": "float32",
+   "sha256_of_values": "9668ff9a8ad2a4b3547a847aebb9c9d473f4f86bed13dee2b52e81e778367b4c",
+   "values": {
+    "cells": 3572100,
+    "cells_with_nan": 2871544,
+    "cells_with_a_value": 700556,
+    "lowest": "-0.3569999933242798",
+    "highest": "0.27300000190734863",
+    "median": "-0.011897914111614227",
+    "p05_p95": [
+     "-0.058695971965789795",
+     "0.029691524803638458"
+    ],
+    "cells_zero_negative_infinite": [
+     116,
+     477269,
+     0
+    ],
+    "cells_below_0.02_float32": 629868,
+    "cells_above_0.6_float32": 0
+   },
+   "p01_p05_p50_p95_p99": [
+    "-0.11724740043282508",
+    "-0.058695971965789795",
+    "-0.011897914111614227",
+    "0.029691524803638458",
+    "0.04959545880556098"
+   ],
+   "cells_with_a_value_in_both_inputs": 700556,
+   "cells_with_a_value_in_the_earlier_only": 2144,
+   "cells_with_a_value_in_the_later_only": 4154
+  }
+ },
+ "grids_equal_to_that_of_sm-20261009": {
+  "sm-20260915": true,
+  "sm-20260927": true,
+  "sm-20261004-t069": false,
+  "sm-20261007-t104": false,
+  "sm-20261009": true,
+  "smu-20261009": true
+ },
+ "ended": "2026-11-15T10:37:07Z"
+}
