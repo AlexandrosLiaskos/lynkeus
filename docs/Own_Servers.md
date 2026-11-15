@@ -48,7 +48,7 @@ The pairing follows the device authorization grant of OAuth 2.0 (RFC 8628).
 | 5 | Program | Every `interval` seconds: `POST /api/link/pairings/token` with a `PairingQuestion` | 400 `PairingRefusal` until step 4; then 200 `PairingKey`, once |
 
 `verification_uri` is `https://lynkeus.nkua.cloud/?connect` and `verification_uri_complete` adds
-`=WDJB-MJHT`. The interface opens the dialog of the servers when the address carries `connect`.
+`=WDJB-MJHT`. The interface opens the pane of the servers when the address carries `connect`.
 A `PairingKey` also carries `user`, the Earthdata user name of the owner, which the program shows on the
 computer. The program keeps `server`, `key` and `user` in its settings file. The project server keeps the
 SHA-256 digest of the key only.

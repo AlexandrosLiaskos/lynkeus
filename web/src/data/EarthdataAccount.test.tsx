@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { dockStore, resetDock } from "../shared/dock/dock";
 import { messagesStore } from "../shared/messages/messages";
-import { resetServersState, serversDialogStore } from "../servers/state";
+import { resetServersState, serversViewStore } from "../servers/state";
 import { EarthdataAccount } from "./EarthdataAccount";
 import { resetSession, sessionStore } from "./session";
 import { earthdata } from "./testSignIn";
@@ -153,6 +153,7 @@ test("the command Servers of the menu opens the list of the servers of the accou
   render(<Bar />);
   await userEvent.click(account("Earthdata: a_user"));
   await userEvent.click(screen.getByRole("button", { name: "Servers" }));
-  expect(serversDialogStore.get()).toEqual({ open: true, view: "list", code: null });
+  expect(dockStore.get().tools).toEqual(["servers"]);
+  expect(serversViewStore.get()).toEqual({ view: "list", code: null });
   expect(screen.queryByRole("button", { name: "Servers" })).toBeNull();
 });

@@ -1,28 +1,23 @@
 import { useEffect, useId } from "react";
 import { useSession, type Session } from "../data/session";
 import { SIGN_IN_PANE } from "../data/SignInPane";
-import { Dialog } from "../shared/dialog/Dialog";
 import { openToolPane } from "../shared/dock/dock";
 import { EmptyState } from "../shared/empty/EmptyState";
 import { Notice } from "../shared/notice/Notice";
 import { serversStore } from "../shared/servers";
 import { useStore } from "../shared/store";
+import { InfoPane } from "../shared/toolpane/InfoPane";
 import { AddServer } from "./AddServer";
 import { connectOf, forgetConnect } from "./connect";
 import { focusHeading } from "./focus";
 import { followServers, loadServers, serversFaultStore } from "./requests";
 import { ServerItem } from "./ServerItem";
-import { closeServers, openAddServer, returnStore, serversDialogStore, type ServersDialogState } from "./state";
+import { openAddServer, returnStore, SERVERS_PANE, serversViewStore, showServerList, type ServersView } from "./state";
 import { serversSentence } from "./words";
 
 /** What an own server is for, in the words of the empty list. */
 export const PURPOSE =
   "An own server is a computer of yours that runs the program Lynkeus Server. Your jobs then run on it and their layers are kept on its disk, so the processors, the memory and the disk of the project server no longer limit them. The computer needs no public address, because the program itself connects to Lynkeus.";
-
-/** Show the list of the servers in the dialog. */
-function showList(): void {
-  serversDialogStore.set({ open: true, view: "list", code: null });
-}
 
 /**
  * The list of the servers of the visitor: for each one its name, whether it is connected and since when it is
@@ -38,7 +33,7 @@ function ServerList() {
   const read = () => void loadServers();
   const add = () => openAddServer();
 
-  // The row of a removed server leaves the dialog, and the focus goes to the heading of the dialog.
+  // The row of a removed server leaves the pane, and the focus goes to the title of the pane.
   useEffect(focusHeading, [count]);
 
   const notice =
@@ -96,18 +91,18 @@ function ServerList() {
 
 interface SignedOutProps {
   session: Exclude<Session["state"], "signed-in" | "unknown">;
-  dialog: ServersDialogState;
+  shown: ServersView;
 }
 
 /**
- * What the dialog shows to a visitor who is not signed in to Earthdata: that the servers belong to an Earthdata
- * account, and the button that leads to the sign-in. The dialog covers the page, so the button closes it and
- * opens the pane of the sign-in; after the sign-in the dialog opens again where it was, with the same code.
+ * What the pane shows to a visitor who is not signed in to Earthdata: that the servers belong to an Earthdata
+ * account, and the button that leads to the sign-in. The button opens the pane of the sign-in, which comes to
+ * the front of the stack; this pane stays behind it, and after the sign-in it comes to the front again where it
+ * was, with the same code.
  */
-function SignedOut({ session, dialog }: SignedOutProps) {
+function SignedOut({ session, shown }: SignedOutProps) {
   const toSignIn = () => {
-    returnStore.set(dialog);
-    closeServers();
+    returnStore.set(true);
     openToolPane(SIGN_IN_PANE);
   };
   const state =
@@ -115,9 +110,9 @@ function SignedOut({ session, dialog }: SignedOutProps) {
       ? "The server of Lynkeus did not answer, so it is not known whether you are signed in to Earthdata."
       : "You are not signed in to Earthdata, and an own server belongs to an Earthdata account.";
   const after =
-    dialog.view === "add" && dialog.code
-      ? `Sign in first: this window then opens again with the code ${dialog.code}.`
-      : "Sign in first: this window then opens again.";
+    shown.view === "add" && shown.code
+      ? `Sign in first: this pane then shows again with the code ${shown.code}.`
+      : "Sign in first: this pane then shows again.";
   return (
     <>
       <Notice kind="warning" action={{ label: "Sign in", onClick: toSignIn }}>
@@ -129,17 +124,20 @@ function SignedOut({ session, dialog }: SignedOutProps) {
 }
 
 /**
- * The dialog of the servers of the visitor: the computers of his own that run his jobs and keep his layers. It
- * lists the servers with their state, and each one is renamed, given its limits and removed there. The command
- * Add a server shows the steps that connect a computer. The servers belong to the Earthdata account, so a
- * visitor who is not signed in is led to the sign-in.
+ * The pane of the servers of the visitor: the computers of his own that run his jobs and keep his layers. It
+ * stands in the stack on the right of the map, as the pane of the sign-in and the forms of the tools do, and it
+ * is an `InfoPane`: it runs no tool, and the forms of its servers (rename, limits, removal) and the form of the
+ * code each have their own button, so it has no foot with one run button. It lists the servers with their
+ * state, and each one is renamed, given its limits and removed there. The command Add a server shows, in the
+ * same pane, the steps that connect a computer, and the link under them returns to the list. The servers belong
+ * to the Earthdata account, so a visitor who is not signed in is led to the sign-in.
  *
  * The page holds this component once. It keeps the servers up to date (see `followServers`). When the address
- * of the page carries `connect`, as the address that Lynkeus Server opens does, the dialog opens on the steps
- * with the code of the address; the word leaves the address when the pairing ends or the dialog is closed.
+ * of the page carries `connect`, as the address that Lynkeus Server opens does, the pane opens on the steps
+ * with the code of the address; the word leaves the address when the pairing ends or the pane is closed.
  */
-export function ServersDialog() {
-  const dialog = useStore(serversDialogStore);
+export function ServersPane() {
+  const shown = useStore(serversViewStore);
   const session = useSession();
 
   useEffect(() => {
@@ -150,38 +148,35 @@ export function ServersDialog() {
     return followServers();
   }, []);
 
+  // The pane is closed with its close button: the word leaves the address, and the next opening starts anew.
   const close = () => {
-    // A dialog that closes for the sign-in keeps the code in the address, so that a page loaded again finds it.
-    if (returnStore.get() === null) {
-      forgetConnect();
-    }
-    closeServers();
+    forgetConnect();
+    returnStore.set(false);
+    showServerList();
   };
 
-  // The button that changed the view has left the dialog, and the focus goes to the heading of the dialog.
-  useEffect(focusHeading, [dialog.view]);
+  // The button that changed the view has left the pane, and the focus goes to the title of the pane.
+  useEffect(focusHeading, [shown.view]);
 
-  const adding = dialog.view === "add";
+  const adding = shown.view === "add";
   return (
-    <Dialog title={adding ? "Add a server" : "Servers"} open={dialog.open} onClose={close} large>
-      {dialog.open ? (
-        <div className="servers">
-          {session.state === "unknown" ? (
-            <Notice kind="info">Checking whether you are signed in to Earthdata.</Notice>
-          ) : session.state !== "signed-in" ? (
-            <SignedOut session={session.state} dialog={dialog} />
-          ) : adding ? (
-            <>
-              <AddServer code={dialog.code} user={session.user} />
-              <button type="button" className="usa-button usa-button--unstyled servers-back" onClick={showList}>
-                Show my servers
-              </button>
-            </>
-          ) : (
-            <ServerList />
-          )}
-        </div>
-      ) : null}
-    </Dialog>
+    <InfoPane id={SERVERS_PANE} title={adding ? "Add a server" : "Servers"} onClose={close}>
+      <div className="servers">
+        {session.state === "unknown" ? (
+          <Notice kind="info">Checking whether you are signed in to Earthdata.</Notice>
+        ) : session.state !== "signed-in" ? (
+          <SignedOut session={session.state} shown={shown} />
+        ) : adding ? (
+          <>
+            <AddServer code={shown.code} user={session.user} />
+            <button type="button" className="usa-button usa-button--unstyled servers-back" onClick={showServerList}>
+              Show my servers
+            </button>
+          </>
+        ) : (
+          <ServerList />
+        )}
+      </div>
+    </InfoPane>
   );
 }

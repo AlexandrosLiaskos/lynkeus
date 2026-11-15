@@ -2,6 +2,7 @@ import { loadJobs } from "../data/jobs";
 import { loadLayers } from "../data/layers";
 import { call, checked, Refusal, wordsOf } from "../data/service";
 import { isSignedIn, sessionStore, type Session } from "../data/session";
+import { dockStore, openToolPane } from "../shared/dock/dock";
 import { mapLayersStore, removeFromMap } from "../shared/mapLayers";
 import {
   isPairingView,
@@ -16,7 +17,7 @@ import {
   type ServerLimits,
 } from "../shared/servers";
 import { createStore } from "../shared/store";
-import { returnStore, serversDialogStore } from "./state";
+import { isServersOpen, returnStore, SERVERS_PANE } from "./state";
 
 /**
  * The requests of the interface about the own servers of the visitor (`docs/Own_Servers.md`, Addresses for the
@@ -30,7 +31,7 @@ import { returnStore, serversDialogStore } from "./state";
  */
 export const POLL_TIME = 30_000;
 
-/** The time between two readings of the servers while their dialog is open, in milliseconds. */
+/** The time between two readings of the servers while their pane is open, in milliseconds. */
 export const OPEN_POLL_TIME = 10_000;
 
 const SERVERS = "/api/servers";
@@ -185,14 +186,14 @@ export async function confirmPairing(code: string): Promise<Server> {
 }
 
 // The next reading is planned only while the page is watched and shown and the visitor is signed in, and then
-// only while he has a server or looks at the dialog of the servers.
+// only while he has a server or the pane of the servers is open.
 function plan(): void {
   window.clearTimeout(timer);
   timer = undefined;
   if (!watching || document.visibilityState !== "visible" || !isSignedIn()) {
     return;
   }
-  const { open } = serversDialogStore.get();
+  const open = isServersOpen();
   if (open || (serversStore.get()?.servers.length ?? 0) > 0) {
     timer = window.setTimeout(refresh, open ? OPEN_POLL_TIME : POLL_TIME);
   }
@@ -212,11 +213,11 @@ function onVisibility(): void {
 
 /**
  * Keep the servers of the visitor up to date, and follow his sign-in. The servers are read when the visitor is
- * signed in, when the page is shown again and when the dialog of the servers opens, and then every half minute
+ * signed in, when the page is shown again and when the pane of the servers opens, and then every half minute
  * while he has a server. When he signs in or out, the lists of jobs and of layers are read again, because the
  * layers of his own servers are listed only while he is signed in; after a sign-out the servers are forgotten.
- * A dialog of the servers that closed for the sign-in opens again. The page calls this once, when it loads.
- * The function returned ends it.
+ * A pane of the servers that the visitor left for the sign-in comes to the front again. The page calls this
+ * once, when it loads. The function returned ends it.
  */
 export function followServers(): () => void {
   watching = true;
@@ -230,10 +231,9 @@ export function followServers(): () => void {
     before = state;
     if (state === "signed-in") {
       refresh();
-      const back = returnStore.get();
-      if (back) {
-        returnStore.set(null);
-        serversDialogStore.set(back);
+      if (returnStore.get()) {
+        returnStore.set(false);
+        openToolPane(SERVERS_PANE);
       }
     } else if (state === "signed-out") {
       changes += 1;
@@ -248,9 +248,9 @@ export function followServers(): () => void {
     }
   };
   const stopSession = sessionStore.subscribe(onSession);
-  let wasOpen = serversDialogStore.get().open;
-  const stopDialog = serversDialogStore.subscribe(() => {
-    const { open } = serversDialogStore.get();
+  let wasOpen = isServersOpen();
+  const stopPane = dockStore.subscribe(() => {
+    const open = isServersOpen();
     if (open && !wasOpen) {
       refresh();
     } else if (!open && wasOpen) {
@@ -263,7 +263,7 @@ export function followServers(): () => void {
   return () => {
     watching = false;
     stopSession();
-    stopDialog();
+    stopPane();
     document.removeEventListener("visibilitychange", onVisibility);
     plan();
   };

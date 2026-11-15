@@ -5,15 +5,16 @@ import { resetJobs } from "../data/jobs";
 import { layersStore, resetLayers } from "../data/layers";
 import { onSignInEnded } from "../data/service";
 import { resetSession, sessionStore, signIn, signInEnded } from "../data/session";
+import { SignInPane } from "../data/SignInPane";
 import { layer, showPage } from "../data/testSession";
-import { dockStore, resetDock } from "../shared/dock/dock";
+import { dockStore, frontOf, resetDock } from "../shared/dock/dock";
 import { mapLayersStore } from "../shared/mapLayers";
 import { messagesStore } from "../shared/messages/messages";
 import { serversStore } from "../shared/servers";
 import { tooManyServers, unknownCode, WRONG_FORM } from "./AddServer";
 import { loadServers, resetServers } from "./requests";
-import { PURPOSE, ServersDialog } from "./ServersDialog";
-import { openAddServer, openServers, resetServersState, returnStore, serversDialogStore } from "./state";
+import { PURPOSE, ServersPane } from "./ServersPane";
+import { openAddServer, openServers, resetServersState, returnStore, SERVERS_PANE, serversViewStore } from "./state";
 import {
   CHANGE_LIMITS,
   CHANGE_NAME,
@@ -59,25 +60,31 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-/** Draw the page with the dialog, as the page holds it, and an element that stands for the map. */
+/**
+ * Draw the page with the pane of the servers and the pane of the sign-in, as the page holds them, and an
+ * element that stands for the map.
+ */
 function show() {
   return render(
     <>
       <main tabIndex={0} aria-label="Map" />
-      <ServersDialog />
+      <SignInPane />
+      <ServersPane />
     </>,
   );
 }
 
-/** Draw the page and open the dialog on the list of the servers, once the servers are read. */
+/** Draw the page and open the pane on the list of the servers, once the servers are read. */
 async function showList() {
   show();
   act(() => openServers());
   await screen.findByText(/One Earthdata account connects at most/);
 }
 
-const dialog = (name = "Servers") => screen.getByRole<HTMLDialogElement>("dialog", { name });
-const isOpen = () => screen.queryByRole("dialog") !== null;
+/** The pane of the servers, by its title. It is found only while it is open and in front of its stack. */
+const pane = (name = "Servers") => screen.getByRole("complementary", { name });
+const isOpen = () => dockStore.get().tools.includes(SERVERS_PANE);
+const front = () => frontOf(dockStore.get(), "right");
 const messages = () => messagesStore.get().map(({ kind, text }) => [kind, text]);
 const elementOf = (name: string): HTMLElement => {
   const item = screen.getByText(name, { selector: ".item-title" }).closest("li");
@@ -106,52 +113,63 @@ const rowsOf = (name: string) =>
   );
 const alerts = () => screen.queryAllByRole("alert").map((alert) => alert.textContent);
 
-test("the dialog is closed until a command opens it", () => {
+test("the pane is closed until a command opens it, and then stands beside the map and not over the page", () => {
   show();
   expect(isOpen()).toBe(false);
+  expect(screen.queryByRole("complementary")).toBeNull();
   act(() => openServers());
-  expect(dialog().open).toBe(true);
+  expect(pane()).toBeDefined();
+  expect(isOpen()).toBe(true);
+  expect(front()).toBe(SERVERS_PANE);
+  expect(document.querySelector("dialog")).toBeNull();
+  expect(document.activeElement).toBe(screen.getByRole("heading", { name: "Servers" }));
 });
 
-test("before the server has answered about the sign-in, the dialog says that it is being checked", () => {
+test("before the server has answered about the sign-in, the pane says that it is being checked", () => {
   resetSession();
   show();
   act(() => openServers());
-  expect(within(dialog()).getByRole("status").textContent).toBe("Checking whether you are signed in to Earthdata.");
+  expect(within(pane()).getByRole("status").textContent).toBe("Checking whether you are signed in to Earthdata.");
   expect(server.sent("GET", "/api/servers")).toEqual([]);
 });
 
 test("a visitor who is not signed in is told so, with what an own server is for and the way to sign in", async () => {
   sessionStore.set({ state: "signed-out" });
+  server.user = null;
   show();
   act(() => openServers());
-  expect(within(dialog()).getByRole("status").textContent).toBe(
-    "You are not signed in to Earthdata, and an own server belongs to an Earthdata account. Sign in first: this window then opens again.",
+  expect(within(pane()).getByRole("status").textContent).toBe(
+    "You are not signed in to Earthdata, and an own server belongs to an Earthdata account. Sign in first: this pane then shows again.",
   );
-  expect(within(dialog()).getByText(PURPOSE)).toBeDefined();
+  expect(within(pane()).getByText(PURPOSE)).toBeDefined();
   expect(server.sent("GET", "/api/servers")).toEqual([]);
-  await userEvent.click(within(dialog()).getByRole("button", { name: "Sign in" }));
-  expect(isOpen()).toBe(false);
-  expect(dockStore.get().tools).toEqual(["sign-in"]);
+  await userEvent.click(within(pane()).getByRole("button", { name: "Sign in" }));
+  // The pane of the sign-in comes to the front of the stack, and the pane of the servers waits behind it.
+  expect(dockStore.get().tools).toEqual(["servers", "sign-in"]);
+  expect(front()).toBe("sign-in");
+  expect(screen.getByRole("complementary", { name: "Sign in to Earthdata" })).toBeDefined();
+  expect(screen.queryByRole("complementary", { name: "Servers" })).toBeNull();
 });
 
-test("after the sign-in the dialog opens again and lists the servers", async () => {
+test("after the sign-in the pane comes to the front again and lists the servers", async () => {
   sessionStore.set({ state: "signed-out" });
   server.user = null;
   show();
   act(() => openServers());
-  await userEvent.click(within(dialog()).getByRole("button", { name: "Sign in" }));
+  await userEvent.click(within(pane()).getByRole("button", { name: "Sign in" }));
+  expect(front()).toBe("sign-in");
   await act(() => signIn("a token"));
-  expect(dialog().open).toBe(true);
+  expect(front()).toBe(SERVERS_PANE);
+  expect(pane()).toBeDefined();
   expect(await screen.findByText("Office computer", { selector: ".item-title" })).toBeDefined();
 });
 
-test("when the server does not answer about the sign-in, the dialog says that the sign-in is not known", () => {
+test("when the server does not answer about the sign-in, the pane says that the sign-in is not known", () => {
   sessionStore.set({ state: "unreachable" });
   show();
   act(() => openServers());
-  expect(within(dialog()).getByRole("status").textContent).toBe(
-    "The server of Lynkeus did not answer, so it is not known whether you are signed in to Earthdata. Sign in first: this window then opens again.",
+  expect(within(pane()).getByRole("status").textContent).toBe(
+    "The server of Lynkeus did not answer, so it is not known whether you are signed in to Earthdata. Sign in first: this pane then shows again.",
   );
 });
 
@@ -163,7 +181,7 @@ test("without a server the list says what an own server is for and offers to add
   expect(screen.getByText(PURPOSE)).toBeDefined();
   expect(PURPOSE.split(". ")).toHaveLength(3);
   await userEvent.click(screen.getByRole("button", { name: "Add a server" }));
-  expect(dialog("Add a server").open).toBe(true);
+  expect(pane("Add a server")).toBeDefined();
   expect(document.activeElement).toBe(screen.getByRole("heading", { name: "Add a server" }));
 });
 
@@ -405,13 +423,13 @@ test("an account with the most servers allowed cannot add one, and is told why",
     "Your account has the most servers that it may connect. Remove one to connect another.",
   );
   await userEvent.click(add);
-  expect(dialog().open).toBe(true);
+  expect(pane()).toBeDefined();
 });
 
 test("the steps name the download, the program and the button, and say plainly when no version is published", async () => {
   await showList();
   await userEvent.click(screen.getByRole("button", { name: "Add a server" }));
-  expect(dialog("Add a server").open).toBe(true);
+  expect(pane("Add a server")).toBeDefined();
   expect([...document.querySelectorAll(".servers-steps > li")].map((step) => step.firstChild?.textContent)).toEqual([
     "Download Lynkeus Server for the system of your computer.",
     "Open Lynkeus Server on that computer. The program shows a code of eight letters and opens this page.",
@@ -424,7 +442,7 @@ test("the steps name the download, the program and the button, and say plainly w
   ).toBeDefined();
   expect(screen.queryByRole("list", { name: "Downloads of Lynkeus Server" })).toBeNull();
   await userEvent.click(screen.getByRole("button", { name: "Show my servers" }));
-  expect(dialog("Servers").open).toBe(true);
+  expect(pane("Servers")).toBeDefined();
 });
 
 test("the downloads of the latest release are listed for the three systems, each with its address and its size", async () => {
@@ -473,16 +491,16 @@ test("a release without a file of Lynkeus Server says so", async () => {
   ).toBeDefined();
 });
 
-test("an address with a code opens the dialog on the code and the computer that asked, and Connect confirms", async () => {
+test("an address with a code opens the pane on the code and the computer that asked, and Connect confirms", async () => {
   window.history.replaceState(null, "", `/?connect=${CODE}#map=7/42.8/-71`);
   server.servers = [OFFICE];
   show();
-  expect(dialog("Add a server").open).toBe(true);
+  expect(pane("Add a server")).toBeDefined();
   expect(await screen.findByText("DESKTOP-7Q2LM4K")).toBeDefined();
   expect(server.sent("GET", "/api/servers/pairings/").map(({ address }) => address)).toContain(
     `/api/servers/pairings/${CODE}`,
   );
-  expect([...dialog("Add a server").querySelectorAll(".property-row")].map((row) => row.textContent)).toEqual([
+  expect([...pane("Add a server").querySelectorAll(".property-row")].map((row) => row.textContent)).toEqual([
     "CodeWDJB-MJHT",
     "Name of the computerDESKTOP-7Q2LM4K",
     "SystemWindows 11",
@@ -496,7 +514,7 @@ test("an address with a code opens the dialog on the code and the computer that 
   expect(server.sent("POST")).toEqual([]);
   expect(window.location.search).toBe(`?connect=${CODE}`);
   await userEvent.click(screen.getByRole("button", { name: "Connect" }));
-  await vi.waitFor(() => expect(dialog("Servers").open).toBe(true));
+  await vi.waitFor(() => expect(pane("Servers")).toBeDefined());
   expect(server.sent("POST")).toEqual([{ method: "POST", address: "/api/servers", content: CONFIRMATION }]);
   expect(messages()).toEqual([
     ["success", 'The computer "DESKTOP-7Q2LM4K" is connected as a server of your Earthdata account.'],
@@ -506,10 +524,10 @@ test("an address with a code opens the dialog on the code and the computer that 
   expect(window.location.hash).toBe("#map=7/42.8/-71");
 });
 
-test("an address with the word alone opens the dialog on the steps, with a field for the code", async () => {
+test("an address with the word alone opens the pane on the steps, with a field for the code", async () => {
   window.history.replaceState(null, "", "/?connect");
   show();
-  expect(dialog("Add a server").open).toBe(true);
+  expect(pane("Add a server")).toBeDefined();
   const field = screen.getByLabelText<HTMLInputElement>("Code");
   expect(field.value).toBe("");
   expect(server.sent("GET", "/api/servers/pairings/")).toEqual([]);
@@ -579,17 +597,19 @@ test("a visitor who is not signed in signs in first and returns to the same code
   server.user = null;
   server.servers = [];
   show();
-  expect(within(dialog("Add a server")).getByRole("status").textContent).toBe(
-    "You are not signed in to Earthdata, and an own server belongs to an Earthdata account. Sign in first: this window then opens again with the code WDJB-MJHT.",
+  expect(within(pane("Add a server")).getByRole("status").textContent).toBe(
+    "You are not signed in to Earthdata, and an own server belongs to an Earthdata account. Sign in first: this pane then shows again with the code WDJB-MJHT.",
   );
   expect(server.sent("GET", "/api/servers")).toEqual([]);
   await userEvent.click(screen.getByRole("button", { name: "Sign in" }));
-  expect(isOpen()).toBe(false);
-  expect(dockStore.get().tools).toEqual(["sign-in"]);
-  expect(returnStore.get()).toEqual({ open: true, view: "add", code: CODE });
+  expect(dockStore.get().tools).toEqual(["servers", "sign-in"]);
+  expect(front()).toBe("sign-in");
+  expect(returnStore.get()).toBe(true);
+  expect(serversViewStore.get()).toEqual({ view: "add", code: CODE });
   expect(window.location.search).toBe(`?connect=${CODE}`);
   await act(() => signIn("a token"));
-  expect(dialog("Add a server").open).toBe(true);
+  expect(front()).toBe(SERVERS_PANE);
+  expect(pane("Add a server")).toBeDefined();
   expect(await screen.findByText("DESKTOP-7Q2LM4K")).toBeDefined();
   await userEvent.click(screen.getByRole("button", { name: "Connect" }));
   await vi.waitFor(() => expect(server.sent("POST", "/api/servers")).toHaveLength(1));
@@ -604,23 +624,23 @@ test("a sign-in that ends while the code is confirmed keeps the code for the ret
   server.user = null;
   await userEvent.click(screen.getByRole("button", { name: "Connect" }));
   await vi.waitFor(() => expect(sessionStore.get()).toEqual({ state: "signed-out" }));
-  expect(within(dialog("Add a server")).getAllByRole("status")[0]?.textContent).toMatch(
-    /this window then opens again with the code WDJB-MJHT\.$/,
+  expect(within(pane("Add a server")).getAllByRole("status")[0]?.textContent).toMatch(
+    /this pane then shows again with the code WDJB-MJHT\.$/,
   );
-  expect(serversDialogStore.get().code).toBe(CODE);
+  expect(serversViewStore.get().code).toBe(CODE);
 });
 
-test("closing the dialog takes the word out of the address", async () => {
+test("closing the pane takes the word out of the address", async () => {
   window.history.replaceState(null, "", `/?connect=${CODE}`);
   show();
   await screen.findByText("DESKTOP-7Q2LM4K");
-  await userEvent.click(screen.getByRole("button", { name: "Close this window" }));
+  await userEvent.click(screen.getByRole("button", { name: "Close the Add a server pane" }));
   expect(isOpen()).toBe(false);
   expect(window.location.search).toBe("");
   expect(server.sent("POST")).toEqual([]);
 });
 
-test("the servers are read again when the dialog opens", async () => {
+test("the servers are read again when the pane opens", async () => {
   show();
   await vi.waitFor(() => expect(serversStore.get()).toEqual(SERVERS));
   server.servers = [LABORATORY, NEW];
