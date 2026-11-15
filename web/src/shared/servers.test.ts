@@ -1,0 +1,95 @@
+import { readFileSync } from "node:fs";
+import { expect, test } from "vitest";
+import confirmation from "../../../api/tests/data/servers/pairing-confirmation.json";
+import view from "../../../api/tests/data/servers/pairing-view.json";
+import changed from "../../../api/tests/data/servers/server-changed.json";
+import name from "../../../api/tests/data/servers/server-name.json";
+import paired from "../../../api/tests/data/servers/server-paired.json";
+import list from "../../../api/tests/data/servers/servers.json";
+import {
+  isPairingView,
+  isServer,
+  isServerLimits,
+  isServerName,
+  isServers,
+  isServerState,
+  MOST_NAME,
+  MOST_RUNNING_JOBS,
+  PAIRING_TIME,
+  serverOfAddress,
+  USER_CODE,
+} from "./servers";
+
+// The formats of the server, which this file writes again as checks.
+const linking = readFileSync("../api/src/lynkeus/linking.py", "utf8");
+
+test("the example messages of the server have the form that the interface accepts", () => {
+  expect(isServers(list)).toBe(true);
+  expect(isServer(paired)).toBe(true);
+  expect(isServer(changed)).toBe(true);
+  expect(isPairingView(view)).toBe(true);
+  expect(isServerName(name)).toBe(true);
+  expect(USER_CODE.test(confirmation.user_code)).toBe(true);
+});
+
+test("the examples hold a server that is connected, one that is not, and one that has not reported yet", () => {
+  expect(list.servers.map(({ connected }) => connected)).toEqual([true, false, false]);
+  expect(list.servers.map(({ state }) => state === null)).toEqual([false, false, true]);
+  expect(list.servers[1]?.state?.memory).toBeNull();
+});
+
+test("the limits written here are those of the formats of the server", () => {
+  expect(linking).toContain(`PAIRING_TIME = ${String(PAIRING_TIME)}\n`);
+  expect(linking).toContain(`running_jobs: int = Field(ge=1, le=${String(MOST_RUNNING_JOBS)})`);
+  expect(linking).toContain(`type Label = Annotated[str, Field(min_length=1, max_length=${String(MOST_NAME)})]`);
+  expect(linking).toContain(`Field(pattern=r"${USER_CODE.source}")`);
+});
+
+test("a server with a wrong field is not accepted", () => {
+  const [server] = list.servers;
+  expect(isServer({ ...server, id: "3F9A1C0B7E24D658" })).toBe(false);
+  expect(isServer({ ...server, id: "3f9a1c0b7e24d65" })).toBe(false);
+  expect(isServer({ ...server, name: "" })).toBe(false);
+  expect(isServer({ ...server, name: "n".repeat(MOST_NAME + 1) })).toBe(false);
+  expect(isServer({ ...server, connected: "yes" })).toBe(false);
+  expect(isServer({ ...server, seen: "2026-11-15T09:40:12Z" })).toBe(false);
+  expect(isServer({ ...server, state: undefined })).toBe(false);
+  expect(isServers({ servers: [server] })).toBe(false);
+  expect(isServers({ servers: [server, null], limit: 8 })).toBe(false);
+  expect(isServers(null)).toBe(false);
+});
+
+test("a state and limits with a wrong number are not accepted", () => {
+  const state = list.servers[0]?.state;
+  expect(isServerState(state)).toBe(true);
+  expect(isServerState({ ...state, processors: 0 })).toBe(false);
+  expect(isServerState({ ...state, memory: undefined })).toBe(false);
+  expect(isServerState({ ...state, disk_free: -1 })).toBe(false);
+  expect(isServerState({ ...state, waiting: 1.5 })).toBe(false);
+  expect(isServerState({ ...state, system: "" })).toBe(false);
+  expect(isServerLimits({ running_jobs: 1, storage: 0, layer_size: 0 })).toBe(true);
+  expect(isServerLimits({ running_jobs: 0, storage: 0, layer_size: 0 })).toBe(false);
+  expect(isServerLimits({ running_jobs: MOST_RUNNING_JOBS + 1, storage: 0, layer_size: 0 })).toBe(false);
+  expect(isServerLimits({ running_jobs: 2, storage: -1, layer_size: 0 })).toBe(false);
+  expect(isServerLimits({ running_jobs: 2, storage: 10 })).toBe(false);
+});
+
+test("the view of a pairing needs a code of the right form and the three statements of the computer", () => {
+  expect(isPairingView({ ...view, user_code: "wdjb-mjht" })).toBe(false);
+  expect(isPairingView({ ...view, user_code: "WDJA-MJHT" })).toBe(false);
+  expect(isPairingView({ ...view, machine: { name: "PC", system: "Windows 11" } })).toBe(false);
+  expect(isPairingView({ user_code: view.user_code })).toBe(false);
+  expect(isServerName({ id: "3f9a1c0b7e24d658" })).toBe(false);
+  expect(isServerName(null)).toBe(false);
+});
+
+test("the address of a file names the own server that keeps it, and a file of the project server names none", () => {
+  const id = "3f9a1c0b7e24d658";
+  const layer = "fedcba9876543210fedcba9876543210";
+  expect(serverOfAddress(`/api/servers/${id}/files/${layer}/backscatter-hh.tif`)).toBe(id);
+  expect(serverOfAddress(`https://lynkeus.nkua.cloud/api/servers/${id}/files/${layer}/backscatter-hh.json`)).toBe(id);
+  expect(serverOfAddress(`/files/${layer}/backscatter-hh.tif`)).toBeNull();
+  expect(serverOfAddress(`/api/servers/${id}`)).toBeNull();
+  expect(serverOfAddress(`/api/servers/not-a-server/files/${layer}/backscatter-hh.tif`)).toBeNull();
+  expect(serverOfAddress("")).toBeNull();
+});

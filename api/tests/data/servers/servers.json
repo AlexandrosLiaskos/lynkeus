@@ -1,0 +1,59 @@
+{
+  "servers": [
+    {
+      "id": "3f9a1c0b7e24d658",
+      "name": "Office computer",
+      "connected": true,
+      "paired": 1794729600.0,
+      "seen": 1794735612.5,
+      "state": {
+        "processors": 20,
+        "memory": 17179869184,
+        "disk_free": 412000000000,
+        "disk_used": 1250000000,
+        "running": 1,
+        "waiting": 2,
+        "layers": 6,
+        "limits": {
+          "running_jobs": 4,
+          "storage": 100000000000,
+          "layer_size": 10000000000
+        },
+        "system": "Windows 11",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "id": "a84e5d2291c07b3f",
+      "name": "Laboratory server",
+      "connected": false,
+      "paired": 1794493800.0,
+      "seen": 1794679540.25,
+      "state": {
+        "processors": 64,
+        "memory": null,
+        "disk_free": 35000000000,
+        "disk_used": 50000000000,
+        "running": 0,
+        "waiting": 0,
+        "layers": 41,
+        "limits": {
+          "running_jobs": 8,
+          "storage": 50000000000,
+          "layer_size": 5000000000
+        },
+        "system": "Ubuntu 24.04",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "id": "0c6b7d1e94a2f853",
+      "name": "DESKTOP-7Q2LM4K",
+      "connected": false,
+      "paired": 1794735540.0,
+      "seen": 1794735540.0,
+      "state": null
+    }
+  ],
+  "limit": 8
+}
