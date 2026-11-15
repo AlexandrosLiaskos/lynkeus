@@ -253,17 +253,27 @@ def install_servers(app: FastAPI) -> None:
         server = await _server(request)
         # The body is read to its end, so that the end of the connection can be told afterwards.
         await _bytes(request, request.headers.get("content-type", "").split(";")[0].strip().lower(), MAX_LINK_BODY)
-        await servers.wait_for_tasks(server.id, min(int(text), MOST_WAIT))
+        try:
+            await servers.wait_for_tasks(server.id, min(int(text), MOST_WAIT))
+        except ServerRefusedError as error:
+            raise refusal_of(error) from None
         forget = servers.forgotten(key, time.time())
         if forget is not None:
             return _answer(Tasks(tasks=(forget,)))
-        if await request.is_disconnected():
-            # The tasks stay for the next question of the server, which this answer would not reach.
+        if servers.has_left(server.id) or await request.is_disconnected():
+            # The tasks stay for the next question of the server: its program is quit, or the
+            # connection of this question has ended, so this answer would hand them to nobody.
             return _answer(Tasks())
         handed, unanswered = servers.take(server.id)
         for job in unanswered:
             await asyncio.to_thread(_service(request).store.take_server_job, job, time.time())
         return _answer(handed)
+
+    @router.post("/link/leave")
+    async def leave(request: Request) -> Response:
+        """Count an own server as not connected at once, because its program is quit, until its next message."""
+        _service(request).servers.leave(await _server(request))
+        return _nothing()
 
     @router.post("/link/report")
     async def report(request: Request) -> Response:

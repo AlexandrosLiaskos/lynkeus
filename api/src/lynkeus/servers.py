@@ -12,6 +12,11 @@ tasks of a server in memory until the server asks for them, and a question
 for tasks waits without holding a thread. A task that starts a job carries the
 Earthdata token of the visitor, so no task is ever written to a file.
 
+A program that is quit says so (``POST /api/link/leave``), and its server then counts as not connected
+at once, until its next message. When the web service itself is stopped, every request that waits for
+an own server is answered at once with 503: a question for tasks would otherwise stay open for up to
+``MOST_WAIT`` seconds and hold the stop back.
+
 What the record holds about a job whose server stops reporting: the job keeps
 its last state while the server is away, and it continues when the server
 reports again. A job is recorded as failed when its server states that it runs
@@ -24,6 +29,7 @@ method reads and writes the record only and may be called from any thread.
 """
 
 import asyncio
+import contextlib
 import hashlib
 import hmac
 import json
@@ -118,6 +124,7 @@ RESTARTED = "Lynkeus was restarted before your server took the job. Start the jo
 LOST = "Your server no longer holds this job. Start the job again."
 NOT_TAKEN = "Your server did not take the job."
 WRONG_LAYER = "The job failed because your server reported its layer in a form that Lynkeus does not take."
+STOPPING = "Lynkeus is being restarted. Ask again in a moment."
 
 _KEY = re.compile(r"^[A-Za-z0-9_-]{43}$")
 _SERVER_ID = re.compile(r"^[0-9a-f]{16}$")
@@ -249,13 +256,19 @@ class Servers:
         self._links: dict[str, _Link] = {}
         self._answers: dict[str, asyncio.Future[Answer]] = {}
         self._removed: dict[str, tuple[ForgetTask, float]] = {}
+        self._left: set[str] = set()
+        self._loop: asyncio.AbstractEventLoop | None = None
+        self._stopping = False
 
     def start(self) -> None:
         """Bring the record in order after a stop of the project server.
 
         The tasks were held in memory, so a job that its server had not taken can no longer start.
-        It is recorded as failed.
+        It is recorded as failed. When the web service calls this, its event loop is kept, so that
+        ``stop`` can end the waiting requests from another thread.
         """
+        with contextlib.suppress(RuntimeError):
+            self._loop = asyncio.get_running_loop()
         now = time.time()
         self._store.remove_pairings_before(now - PAIRING_TIME)
         for job in self._store.unfinished_server_jobs():
@@ -431,7 +444,13 @@ class Servers:
         return None
 
     def connected(self, server: ServerRecord, now: float) -> bool:
-        """Tell whether an own server sent a message during the last ``CONNECTED_TIME`` seconds."""
+        """Tell whether an own server counts as connected.
+
+        It does when it sent a message during the last ``CONNECTED_TIME`` seconds and its program has
+        not said since then that it is quit.
+        """
+        if server.id in self._left:
+            return False
         seen = self._seen.get(server.id, server.seen)
         return server.key_digest is not None and seen is not None and now - seen <= CONNECTED_TIME
 
@@ -563,6 +582,7 @@ class Servers:
             return None
         with self._lock:
             self._seen[server.id] = now
+            self._left.discard(server.id)
             write = now - self._written.get(server.id, float("-inf")) >= SEEN_PAUSE
             if write:
                 self._written[server.id] = now
@@ -572,6 +592,52 @@ class Servers:
 
     def _link(self, server: str) -> _Link:
         return self._links.setdefault(server, _Link())
+
+    def leave(self, server: ServerRecord) -> None:
+        """Count an own server as not connected from now until its next message, in the web service.
+
+        The program says this when it is quit. Its open question for tasks ends without a task, and
+        every request that waits for an answer of the server is answered as for a server that is not
+        connected. The tasks that wait stay for the return of the server.
+        """
+        with self._lock:
+            self._left.add(server.id)
+        link = self._links.get(server.id)
+        if link is None:
+            return
+        away = self._away(server)
+        for task in (*link.waiting, *(handed.task for handed in link.handed.values())):
+            waiting = self._answers.pop(task.id, None)
+            if waiting is not None and not waiting.done():
+                waiting.set_exception(away)
+        if link.question is not None and not link.question.done():
+            link.question.set_result(None)
+
+    def has_left(self, server: str) -> bool:
+        """Tell whether the program of an own server said that it is quit and has sent no message since."""
+        return server in self._left
+
+    def stop(self) -> None:
+        """End every request that waits for an own server, because the web service stops.
+
+        Each of them is then answered with 503. The method may be called from any thread and from
+        the handler of a signal; the requests are ended on the event loop of the web service.
+        """
+        if self._loop is not None and not self._loop.is_closed():
+            self._loop.call_soon_threadsafe(self._end_waits)
+
+    def _end_waits(self) -> None:
+        self._stopping = True
+        for link in self._links.values():
+            if link.question is not None and not link.question.done():
+                link.question.set_result(None)
+        for waiting in self._answers.values():
+            if not waiting.done():
+                waiting.set_exception(self._stopped())
+        self._answers.clear()
+
+    def _stopped(self) -> ServerRefusedError:
+        return ServerRefusedError(HTTPStatus.SERVICE_UNAVAILABLE, STOPPING, 5)
 
     def holds(self, server: str, task: Task) -> bool:
         """Tell whether a task that asks for the same thing waits or was handed to the server, in the web service."""
@@ -612,10 +678,17 @@ class Servers:
         """Wait until a task is held for an own server, for ``wait`` seconds at most, in the web service.
 
         The wait holds no thread. A server keeps one question open: a newer question ends the older one.
+
+        Raises
+        ------
+        ServerRefusedError
+            With 503 when the web service stops, before the wait or during it.
         """
         link = self._link(server)
         if link.question is not None and not link.question.done():
             link.question.set_result(None)
+        if self._stopping:
+            raise self._stopped()
         if link.waiting or wait <= 0:
             return
         question = link.question = asyncio.get_running_loop().create_future()
@@ -627,6 +700,8 @@ class Servers:
         finally:
             if link.question is question:
                 link.question = None
+        if self._stopping:
+            raise self._stopped()
 
     def take(self, server: str) -> tuple[Tasks, list[str]]:
         """Hand the waiting tasks to an own server, in the web service.
@@ -682,9 +757,11 @@ class Servers:
         Raises
         ------
         ServerRefusedError
-            With 503 when the server is not connected, and with 504 when it does not answer within
-            ``READ_TIME`` seconds.
+            With 503 when the server is not connected or the web service stops, and with 504 when the
+            server does not answer within ``READ_TIME`` seconds.
         """
+        if self._stopping:
+            raise self._stopped()
         if not self.connected(server, time.time()):
             raise self._away(server)
         answer: asyncio.Future[Answer] = asyncio.get_running_loop().create_future()
@@ -738,6 +815,7 @@ class Servers:
         self._store.set_server_state(server.id, report.state.model_dump_json(), now)
         with self._lock:
             self._seen[server.id] = self._written[server.id] = now
+            self._left.discard(server.id)
         tasks: list[Task] = []
         named = set()
         for state in report.jobs:
@@ -933,6 +1011,7 @@ class Servers:
         with self._lock:
             self._seen.pop(server.id, None)
             self._written.pop(server.id, None)
+            self._left.discard(server.id)
         link = self._links.pop(server.id, None)
         if server.key_digest is not None:
             self._removed[server.key_digest] = (ForgetTask(id=_task_id()), time.time() + CONNECTED_TIME)

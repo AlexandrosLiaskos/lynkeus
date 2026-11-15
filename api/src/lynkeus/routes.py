@@ -21,14 +21,16 @@ import asyncio
 import json
 import os
 import re
+import signal
 import tempfile
 import threading
 import time
-from collections.abc import AsyncIterator, Mapping, Sequence
-from contextlib import asynccontextmanager
+from collections.abc import AsyncIterator, Callable, Iterator, Mapping, Sequence
+from contextlib import asynccontextmanager, contextmanager
 from datetime import UTC, datetime
 from http import HTTPStatus
 from pathlib import Path
+from types import FrameType
 from typing import Any
 from urllib.parse import urlencode
 
@@ -178,6 +180,41 @@ class Service:
             self.sessions.remove_unused()
             if self._stop.wait(REMOVAL_PAUSE):
                 return
+
+
+@contextmanager
+def stop_signals(action: Callable[[], None]) -> Iterator[None]:
+    """Call ``action`` when the process is told to stop, before the web server learns of it.
+
+    The web server learns of a stop through the signals SIGINT and SIGTERM. It then takes no new
+    request and waits until the open ones are answered. A question of an own server for tasks stays
+    open for up to 25 seconds, so ``action`` ends such requests first, and the handler that the web
+    server had set is called after it. Python handles a signal in the main thread only: in another
+    thread, as in a test that runs the service beside itself, nothing is set.
+    """
+    if threading.current_thread() is not threading.main_thread():
+        yield
+        return
+    earlier: dict[int, Any] = {}
+
+    def stop(number: int, frame: FrameType | None) -> None:
+        action()
+        handler = earlier[number]
+        if callable(handler):
+            handler(number, frame)
+        elif handler == signal.SIG_DFL:
+            # No handler was set: the signal ends the process, as it would have without this function.
+            signal.signal(number, signal.SIG_DFL)
+            signal.raise_signal(number)
+
+    for sign in (signal.SIGINT, signal.SIGTERM):
+        earlier[sign] = signal.signal(sign, stop)
+    try:
+        yield
+    finally:
+        for number, handler in earlier.items():
+            if signal.getsignal(number) is stop and handler is not None:
+                signal.signal(number, handler)
 
 
 def _service(request: Request) -> Service:
@@ -484,7 +521,8 @@ def install(
             service.start()
             app.state.lynkeus = service
             try:
-                yield
+                with stop_signals(service.servers.stop):
+                    yield
             finally:
                 await asyncio.to_thread(service.stop)
 
