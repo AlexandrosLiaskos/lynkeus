@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { act, fireEvent, render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
-import { HOVER_DELAY, Tooltip } from "./Tooltip";
+import { endDescriptions, enterWithPointer, focusWithKeyboard, restPointerOn, takePointerOff } from "./pointer";
+import { HOVER_DELAY, LEAVE_DELAY, Tooltip } from "./Tooltip";
 
 /** A button with its description, in a row that shows a name under the button, as a group of the ribbon does. */
 function Described({ row = false }: { row?: boolean }) {
@@ -21,124 +21,161 @@ function Described({ row = false }: { row?: boolean }) {
 }
 
 const button = () => screen.getByRole("button", { name: "Zoom in" });
-const tooltip = () => screen.getByRole("tooltip", { hidden: true });
-
-/** Give the button, its row and the description the places and sizes of a browser, in a window of 1440 by 900. */
-function layOut(box: { left: number; top: number; bottom: number }, size: { width: number; height: number }) {
-  vi.spyOn(button(), "getBoundingClientRect").mockReturnValue(box as DOMRect);
-  const row = button().closest("[data-tooltip-row]");
-  if (row) {
-    vi.spyOn(row, "getBoundingClientRect").mockReturnValue({ top: box.top - 20, bottom: box.bottom + 20 } as DOMRect);
-  }
-  vi.spyOn(tooltip(), "offsetWidth", "get").mockReturnValue(size.width);
-  vi.spyOn(tooltip(), "clientHeight", "get").mockReturnValue(size.height);
-}
-
-/** Rest the pointer on the button until its description shows. */
-function rest() {
-  fireEvent.pointerEnter(button());
-  act(() => {
-    vi.advanceTimersByTime(HOVER_DELAY);
-  });
-}
+const tooltip = () => screen.queryByRole("tooltip");
+const shown = () => screen.getByRole("tooltip");
 
 beforeEach(() => {
   vi.useFakeTimers();
-  vi.stubGlobal("innerWidth", 1440);
-  vi.stubGlobal("innerHeight", 900);
 });
 
 afterEach(() => {
+  endDescriptions();
   vi.useRealTimers();
-  vi.unstubAllGlobals();
   vi.restoreAllMocks();
 });
 
-test("the description shows after the pointer has rested on the button, and hides when the pointer leaves", () => {
+test("the description shows after the pointer has rested on the button, and hides after the pointer has left", () => {
   render(<Described />);
-  expect(tooltip().hidden).toBe(true);
-  fireEvent.pointerEnter(button());
+  expect(tooltip()).toBeNull();
+  enterWithPointer(button());
   act(() => {
     vi.advanceTimersByTime(HOVER_DELAY - 1);
   });
-  expect(tooltip().hidden).toBe(true);
+  expect(tooltip()).toBeNull();
   act(() => {
     vi.advanceTimersByTime(1);
   });
-  expect(tooltip().hidden).toBe(false);
-  expect(tooltip().textContent).toBe("Zoom inShows the map at twice the scale.");
-  expect(document.getElementById(button().getAttribute("aria-describedby") ?? "")?.textContent).toBe(
-    "Shows the map at twice the scale.",
+  expect(shown().textContent).toBe("Zoom inShows the map at twice the scale.");
+  // The description stays for the time in which the pointer can cross onto it.
+  fireEvent.pointerLeave(button(), { pointerType: "mouse" });
+  act(() => {
+    vi.advanceTimersByTime(LEAVE_DELAY - 1);
+  });
+  expect(tooltip()).not.toBeNull();
+  act(() => {
+    vi.advanceTimersByTime(1);
+  });
+  expect(tooltip()).toBeNull();
+});
+
+test("the description stays while the pointer is on it", () => {
+  render(<Described />);
+  restPointerOn(button());
+  fireEvent.pointerLeave(button(), { pointerType: "mouse" });
+  fireEvent.pointerEnter(shown(), { pointerType: "mouse" });
+  act(() => {
+    vi.advanceTimersByTime(2 * LEAVE_DELAY);
+  });
+  expect(tooltip()).not.toBeNull();
+  takePointerOff(shown());
+  expect(tooltip()).toBeNull();
+});
+
+test("the sentences are in the page while the description is not shown, and the button is described by them", () => {
+  render(<Described />);
+  const sentences = document.getElementById(button().getAttribute("aria-describedby") ?? "");
+  expect(sentences?.textContent).toBe("Shows the map at twice the scale.");
+  expect(sentences?.hidden).toBe(true);
+  expect(tooltip()).toBeNull();
+  restPointerOn(button());
+  expect(document.getElementById(button().getAttribute("aria-describedby") ?? "")).toBe(sentences);
+});
+
+test("a button whose name says it all has no description, and its name stands alone in its tooltip", () => {
+  render(<Tooltip title="More">{() => <button type="button" aria-label="More" />}</Tooltip>);
+  const more = screen.getByRole("button", { name: "More" });
+  expect(more.hasAttribute("aria-describedby")).toBe(false);
+  restPointerOn(more);
+  expect(shown().textContent).toBe("More");
+  expect(shown().children).toHaveLength(1);
+});
+
+test("a second sentence follows the first one, in the description and in what describes the button", () => {
+  render(
+    <Tooltip title="Clear all" text="Removes everything." note="Nothing is stored.">
+      {(describedBy) => (
+        <button type="button" aria-disabled aria-describedby={describedBy}>
+          Clear all
+        </button>
+      )}
+    </Tooltip>,
   );
-  fireEvent.pointerLeave(button());
-  expect(tooltip().hidden).toBe(true);
+  const clear = screen.getByRole("button", { name: "Clear all" });
+  expect(document.getElementById(clear.getAttribute("aria-describedby") ?? "")?.textContent).toBe(
+    "Removes everything. Nothing is stored.",
+  );
+  restPointerOn(clear);
+  expect(shown().textContent).toBe("Clear allRemoves everything. Nothing is stored.");
 });
 
-test("the description shows when the keyboard brings the focus, and the Escape key hides it", async () => {
-  vi.useRealTimers();
+test("the description shows when the keyboard brings the focus, and the Escape key hides it", () => {
   render(<Described />);
-  await userEvent.tab();
+  focusWithKeyboard(button());
   expect(document.activeElement).toBe(button());
-  expect(tooltip().hidden).toBe(false);
-  await userEvent.keyboard("{Escape}");
-  expect(tooltip().hidden).toBe(true);
+  expect(tooltip()).not.toBeNull();
+  fireEvent.keyDown(button(), { key: "Escape" });
+  expect(tooltip()).toBeNull();
+  expect(document.activeElement).toBe(button());
 });
 
-test("the description stands under its button, with a clear strip of 4 pixels between the two", () => {
+test("the Escape key reaches nothing else while a description shows, and reaches the page while none shows", () => {
+  const onKeyDown = vi.fn();
+  render(
+    <div onKeyDown={onKeyDown}>
+      <Described />
+    </div>,
+  );
+  focusWithKeyboard(button());
+  expect(tooltip()).not.toBeNull();
+  fireEvent.keyDown(button(), { key: "Escape" });
+  expect(onKeyDown).not.toHaveBeenCalled();
+  fireEvent.keyDown(button(), { key: "Escape" });
+  expect(onKeyDown).toHaveBeenCalledTimes(1);
+});
+
+test("the description does not show when a press brings the focus", () => {
   render(<Described />);
-  layOut({ left: 200, top: 100, bottom: 124 }, { width: 180, height: 60 });
-  rest();
-  expect(tooltip().style.left).toBe("200px");
-  expect(tooltip().style.top).toBe("124px");
-  expect(tooltip().style.borderTopWidth).toBe("4px");
-  expect(tooltip().style.borderBottomWidth).toBe("0px");
+  fireEvent.pointerDown(button(), { pointerType: "mouse" });
+  act(() => button().focus());
+  act(() => {
+    vi.advanceTimersByTime(2 * HOVER_DELAY);
+  });
+  expect(document.activeElement).toBe(button());
+  expect(tooltip()).toBeNull();
 });
 
-test("the description stands above a button at the lower edge of the window, with the strip under it", () => {
+test("a press on the button hides its description", () => {
   render(<Described />);
-  layOut({ left: 200, top: 870, bottom: 894 }, { width: 180, height: 60 });
-  rest();
-  // Its lower edge, with the strip, meets the upper edge of the button: 870 - 4 - 60.
-  expect(tooltip().style.top).toBe("806px");
-  expect(tooltip().style.borderTopWidth).toBe("0px");
-  expect(tooltip().style.borderBottomWidth).toBe("4px");
+  restPointerOn(button());
+  expect(tooltip()).not.toBeNull();
+  fireEvent.pointerDown(button(), { pointerType: "mouse" });
+  expect(tooltip()).toBeNull();
 });
 
-test("the description stays under a button near the lower edge while it still has room there", () => {
+test("the description is drawn in a layer beside its button, so that it shows over a dialog that holds the button", () => {
+  render(
+    <dialog open>
+      <Described />
+    </dialog>,
+  );
+  restPointerOn(button());
+  expect(button().parentElement?.querySelector(".bubble-layer")?.contains(shown())).toBe(true);
+  expect(document.querySelector("dialog")?.contains(shown())).toBe(true);
+});
+
+// The page of the test gives every element the place 0, so the button ends at 0.
+test("the description stands 4 pixels under its button", () => {
   render(<Described />);
-  // 824 + 4 + 60 + 8 = 896, inside a window 900 pixels high.
-  layOut({ left: 200, top: 800, bottom: 824 }, { width: 180, height: 60 });
-  rest();
-  expect(tooltip().style.top).toBe("824px");
-  expect(tooltip().style.borderTopWidth).toBe("4px");
+  restPointerOn(button());
+  expect(shown().style.top).toBe("4px");
 });
 
-test("the description stays under a button that has no room above either", () => {
-  vi.stubGlobal("innerHeight", 100);
-  render(<Described />);
-  layOut({ left: 200, top: 40, bottom: 64 }, { width: 180, height: 60 });
-  rest();
-  expect(tooltip().style.top).toBe("64px");
-});
-
-test("the description moves to the left at the right edge of the window", () => {
-  render(<Described />);
-  layOut({ left: 1400, top: 100, bottom: 124 }, { width: 180, height: 60 });
-  rest();
-  // It leaves 8 pixels to the edge: 1440 - 180 - 8.
-  expect(tooltip().style.left).toBe("1252px");
-});
-
-test("in a row the strip reaches over the row, under the button and above it", () => {
+test("the description stands 4 pixels under the row of a button that has a row", () => {
   render(<Described row />);
-  layOut({ left: 200, top: 100, bottom: 124 }, { width: 180, height: 60 });
-  rest();
-  expect(tooltip().style.top).toBe("124px");
-  expect(tooltip().style.borderTopWidth).toBe("24px");
-  fireEvent.pointerLeave(button());
-  layOut({ left: 200, top: 850, bottom: 874 }, { width: 180, height: 60 });
-  rest();
-  // The row begins 20 pixels above the button: 850 - 20 - 4 - 60.
-  expect(tooltip().style.top).toBe("766px");
-  expect(tooltip().style.borderBottomWidth).toBe("24px");
+  const row = button().closest("[data-tooltip-row]");
+  if (row) {
+    vi.spyOn(row, "getBoundingClientRect").mockReturnValue({ bottom: 20 } as DOMRect);
+  }
+  restPointerOn(button());
+  expect(shown().style.top).toBe("24px");
 });
