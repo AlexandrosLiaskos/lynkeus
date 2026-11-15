@@ -1,0 +1,4027 @@
+{
+ "started": "2026-11-15T10:15:42Z",
+ "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+ "python": "3.13.18",
+ "packages": {
+  "earthaccess": "0.19.0",
+  "h5py": "3.16.0",
+  "numpy": "2.5.4",
+  "fsspec": "2026.9.0"
+ },
+ "hdf5": "2.0.0",
+ "products": {
+  "pilot_gunw_v1": {
+   "concept": "G4409879710-ASF",
+   "collection": "C3622247503-ASF",
+   "GranuleUR": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+   "url": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/L2_L_GUNW/NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001/NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+   "AdditionalAttributes": {
+    "ASCENDING_DESCENDING": [
+     "DESCENDING"
+    ],
+    "FRAME_NUMBER": [
+     "67"
+    ],
+    "FREQUENCIES": [
+     "A"
+    ],
+    "FREQUENCY_A_POLARIZATION": [
+     "HH"
+    ],
+    "FREQUENCY_A_POLARIZATION_CONCAT": [
+     "HH"
+    ],
+    "FREQUENCY_A_RANGE_BANDWIDTH": [
+     "40"
+    ],
+    "FULL_FRAME": [
+     "TRUE"
+    ],
+    "JOINT_OBSERVATION": [
+     "TRUE"
+    ],
+    "ORBIT_TYPE": [
+     "MOE"
+    ],
+    "PROCESSING_CENTER": [
+     "JPL"
+    ],
+    "PROCESSING_LEVEL": [
+     "L2"
+    ],
+    "PRODUCTION_PIPELINE": [
+     "PR"
+    ],
+    "PRODUCT_TYPE": [
+     "GUNW"
+    ],
+    "PRODUCT_TYPE_DESC": [
+     "Geocoded Unwrapped Interferogram"
+    ],
+    "PRODUCT_VERSION": [
+     "1.0.20"
+    ],
+    "RANGE_BANDWIDTH_CONCAT": [
+     "40"
+    ],
+    "REFERENCE_ZERO_DOPPLER_END_TIME": [
+     "2026-10-09T23:44:05.999342Z"
+    ],
+    "REFERENCE_ZERO_DOPPLER_START_TIME": [
+     "2026-10-09T23:43:30.000000Z"
+    ],
+    "SECONDARY_ZERO_DOPPLER_END_TIME": [
+     "2026-10-21T23:44:05.999342Z"
+    ],
+    "SECONDARY_ZERO_DOPPLER_START_TIME": [
+     "2026-10-21T23:43:30.000000Z"
+    ],
+    "STACK_ID": [
+     "141_D_067"
+    ],
+    "TRACK_NUMBER": [
+     "141"
+    ]
+   },
+   "InputGranules": [
+    "NISAR_L1_PR_RSLC_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+    "NISAR_L1_PR_RSLC_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+   ],
+   "PGEVersionClass": {
+    "PGEName": "INSAR_L_PGE",
+    "PGEVersion": "R05.03.2"
+   },
+   "frequencyA_members": [
+    "centerFrequency",
+    "listOfPolarizations",
+    "pixelOffsets",
+    "unwrappedInterferogram",
+    "wrappedInterferogram"
+   ],
+   "centerFrequency": {
+    "value": "1239000000.0",
+    "dtype": "float64",
+    "attrs": {
+     "description": "Center frequency of the processed image in hertz",
+     "units": "hertz"
+    }
+   },
+   "grids_members": [
+    "frequencyA"
+   ],
+   "listOfPolarizations": [
+    "HH"
+   ],
+   "identification": {
+    "boundingPolygon": "POLYGON ((-71.7120484688846 43.9773913156454 400.068055474508,-71.8072513518594 43.7683939499289 377.628326415327,-71.9040755390603 43.5598604880858 228.165238600976,-71.9944681396638 43.3498540454393 406.897277229746,-72.0880743730369 43.1406931901131 369.521453858801,-72.1800494823649 42.931210942097 390.593140980869,-72.2726168002794 42.7219418150983 343.926483154997,-72.3637152867613 42.5123890636064 347.608978272658,-72.458792492064 42.3038612070294 89.1099416130057,-72.5497112310981 42.0944012086918 36.0706218379481,-72.6392725569493 41.884681234751 28.6493567678642,-72.3047757311744 41.8039715656482 102.093864441485,-71.9864573024794 41.7260727551119 86.3986676993861,-71.6797711317587 41.6500062494293 120.249588243811,-71.3862262384391 41.5762668502331 -30.8088684143832,-71.0997188541443 41.5034071340668 -30.5690688961045,-70.8212752382522 41.431756537145 -30.165758132778,-70.5499726328657 41.3611426743136 -29.7951663653528,-70.2850476033984 41.2914232113806 -29.8285241415874,-70.0258501040448 41.2224763498764 -29.7936396019891,-69.7718384293716 41.1542014610217 -30.1659823337043,-69.6739016351806 41.361603290355 -29.4307786551508,-69.5753277551497 41.5689159571725 -29.0359473836513,-69.4761057672972 41.7761380682497 -28.7205240549556,-69.3762248461675 41.9832667910569 -28.1975150362703,-69.2756807113884 42.1903028003959 -27.8867392152898,-69.1744626738088 42.3972443562476 -27.5801371039397,-69.0725607038144 42.6040890504093 -27.1128204118497,-68.969968019841 42.8108371872462 -26.7144373879465,-68.866677035566 43.017487485114 -26.4926275479874,-68.7626765109901 43.2240375978243 -26.2223339144675,-69.0241374872887 43.2946767302921 -26.382208232085,-69.2910052251558 43.3659940208429 -26.3568198672172,-69.563852120642 43.4380951240653 -26.4880854832815,-69.8433456734829 43.5111027694277 -26.5394897471304,-70.1302863917695 43.5851647053976 -26.6685180658848,-70.424721793293 43.6602255733128 38.7489702310715,-70.72768132202 43.7364748133946 169.425354001956,-71.0435503583278 43.8149180058648 165.784744262276,-71.3698701667108 43.8948254798049 308.67626926397,-71.7120484688846 43.9773913156454 400.068055474508))",
+    "compositeReleaseId": "P05036",
+    "diagnosticModeFlag": 0,
+    "frameNumber": 67,
+    "granuleId": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "instrumentName": "L-SAR",
+    "isDithered": "True",
+    "isFullFrame": "True",
+    "isGeocoded": "True",
+    "isMixedMode": "False",
+    "isUrgentObservation": "False",
+    "listOfFrequencies": [
+     "A"
+    ],
+    "lookDirection": "Left",
+    "missionId": "NISAR",
+    "orbitPassDirection": "Descending",
+    "platformName": "NISAR",
+    "processingCenter": "JPL",
+    "processingDateTime": "2026-11-12T23:05:07",
+    "processingType": "Nominal",
+    "productDoi": "10.5067/NIL2GUNW-V1",
+    "productLevel": "L2",
+    "productSpecificationVersion": "1.6.0",
+    "productType": "GUNW",
+    "productVersion": "1.0.20",
+    "radarBand": "L",
+    "referenceAbsoluteOrbitNumber": 6295,
+    "referenceHasInputDataException": 0,
+    "referenceIsJointObservation": "True",
+    "referenceListOfObservationModes": [
+     "(NOT SPECIFIED)"
+    ],
+    "referencePlannedDatatakeId": [
+     "dtid_2026282233748"
+    ],
+    "referencePlannedObservationId": [
+     "oid_2026282234248"
+    ],
+    "referenceZeroDopplerEndTime": "2026-10-09T23:44:05.999342105",
+    "referenceZeroDopplerStartTime": "2026-10-09T23:43:30.000000000",
+    "secondaryAbsoluteOrbitNumber": 6468,
+    "secondaryHasInputDataException": 0,
+    "secondaryIsJointObservation": "True",
+    "secondaryListOfObservationModes": [
+     "(NOT SPECIFIED)"
+    ],
+    "secondaryPlannedDatatakeId": [
+     "dtid_2026294233748"
+    ],
+    "secondaryPlannedObservationId": [
+     "oid_2026294234248"
+    ],
+    "secondaryZeroDopplerEndTime": "2026-10-21T23:44:05.999342105",
+    "secondaryZeroDopplerStartTime": "2026-10-21T23:43:30.000000000",
+    "staticLayersDataAccess": "https://nisar-services.earthdata.nasa.gov/redirect/NISAR_L2_STATIC/NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+    "trackNumber": 141
+   },
+   "inputs": {
+    "reference/rangeBandwidth": "40000000.0",
+    "reference/slantRangeSpacing": "3.1228381041666666",
+    "secondary/rangeBandwidth": "40000000.0",
+    "secondary/slantRangeSpacing": "3.1228381041666666"
+   },
+   "parameters": {
+    "common/frequencyA/dopplerBandwidth": {
+     "value": 1264.0756886487645,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Common Doppler bandwidth between reference and secondary RSLCs",
+      "units": "hertz"
+     }
+    },
+    "common/frequencyA/dopplerCentroid": {
+     "shape": [
+      110,
+      108
+     ],
+     "dtype": "float64",
+     "attrs": {
+      "description": "2D LUT of common Doppler centroid between reference and secondary RSLCs",
+      "units": "hertz"
+     }
+    },
+    "geocoding/azimuthIonosphericCorrectionApplied": {
+     "value": "True",
+     "dtype": "|S4",
+     "attrs": {
+      "description": "Flag to indicate if the azimuth ionospheric correction is applied to improve geolocation"
+     }
+    },
+    "geocoding/hydrostaticTroposphericCorrectionApplied": {
+     "value": "True",
+     "dtype": "|S4",
+     "attrs": {
+      "description": "Flag to indicate if the hydrostatic tropospheric correction is applied to improve geolocation"
+     }
+    },
+    "geocoding/rangeIonosphericCorrectionApplied": {
+     "value": "True",
+     "dtype": "|S4",
+     "attrs": {
+      "description": "Flag to indicate if the range ionospheric correction is applied to improve geolocation"
+     }
+    },
+    "geocoding/wetTroposphericCorrectionApplied": {
+     "value": "True",
+     "dtype": "|S4",
+     "attrs": {
+      "description": "Flag to indicate if the wet tropospheric correction is applied to improve geolocation"
+     }
+    },
+    "ionosphere/highBandBandwidth": {
+     "value": NaN,
+     "dtype": "float32",
+     "attrs": {
+      "description": "Slant range bandwidth of the high sub-band image",
+      "units": "hertz"
+     }
+    },
+    "ionosphere/lowBandBandwidth": {
+     "value": NaN,
+     "dtype": "float32",
+     "attrs": {
+      "description": "Slant range bandwidth of the low sub-band image",
+      "units": "hertz"
+     }
+    },
+    "pixelOffsets/frequencyA/alongTrackSearchWindowSize": {
+     "value": 64,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Along-track cross-correlation search window size in pixels",
+      "units": "1"
+     }
+    },
+    "pixelOffsets/frequencyA/alongTrackSkipWindowSize": {
+     "value": 75,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Along-track cross-correlation skip window size in pixels",
+      "units": "1"
+     }
+    },
+    "pixelOffsets/frequencyA/alongTrackWindowSize": {
+     "value": 96,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Along-track cross-correlation window size in pixels",
+      "units": "1"
+     }
+    },
+    "pixelOffsets/frequencyA/correlationSurfaceOversampling": {
+     "value": 16,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Oversampling factor of the cross-correlation surface",
+      "units": "1"
+     }
+    },
+    "pixelOffsets/frequencyA/isOffsetsBlendingApplied": {
+     "value": "False",
+     "dtype": "|S5",
+     "attrs": {
+      "description": "Flag to indicate if pixel offsets are the results of blending multi-resolution layers of pixel offsets"
+     }
+    },
+    "pixelOffsets/frequencyA/slantRangeSearchWindowSize": {
+     "value": 64,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Slant range cross-correlation search window size in pixels",
+      "units": "1"
+     }
+    },
+    "pixelOffsets/frequencyA/slantRangeSkipWindowSize": {
+     "value": 75,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Slant range cross-correlation skip window size in pixels",
+      "units": "1"
+     }
+    },
+    "pixelOffsets/frequencyA/slantRangeWindowSize": {
+     "value": 64,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Slant range cross-correlation window size in pixels",
+      "units": "1"
+     }
+    },
+    "reference/frequencyA/azimuthBandwidth": {
+     "value": 1264.0756886487645,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Processed azimuth bandwidth for reference RSLC",
+      "units": "hertz"
+     }
+    },
+    "reference/frequencyA/dopplerCentroid": {
+     "shape": [
+      110,
+      108
+     ],
+     "dtype": "float64",
+     "attrs": {
+      "description": "2D LUT of Doppler centroid for frequency A",
+      "units": "hertz"
+     }
+    },
+    "reference/frequencyA/numberOfAzimuthLines": {
+     "value": 54720,
+     "dtype": "uint64",
+     "attrs": {
+      "description": "Number of azimuth lines within the reference RSLC",
+      "units": "1"
+     }
+    },
+    "reference/frequencyA/numberOfRangeSamples": {
+     "value": 52713,
+     "dtype": "uint64",
+     "attrs": {
+      "description": "Number of slant range samples for each azimuth line within the reference RSLC",
+      "units": "1"
+     }
+    },
+    "reference/frequencyA/rangeBandwidth": {
+     "value": 40000000.0,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Processed slant range bandwidth for reference RSLC",
+      "units": "hertz"
+     }
+    },
+    "reference/frequencyA/slantRangeSpacing": {
+     "value": 3.1228381041666666,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Slant range spacing of reference RSLC",
+      "units": "meters"
+     }
+    },
+    "reference/frequencyA/slantRangeStart": {
+     "value": 887060.9005171667,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Slant range start distance for the reference RSLC",
+      "units": "meters"
+     }
+    },
+    "reference/frequencyA/zeroDopplerEndTime": {
+     "value": "2026-10-09T23:44:05.999342105",
+     "dtype": "|S29",
+     "attrs": {
+      "description": "Azimuth stop time (in UTC) of the reference RSLC product in the format YYYY-mm-ddTHH:MM:SS.sssssssss"
+     }
+    },
+    "reference/frequencyA/zeroDopplerStartTime": {
+     "value": "2026-10-09T23:43:30.000000000",
+     "dtype": "|S29",
+     "attrs": {
+      "description": "Azimuth start time (in UTC) of the reference RSLC product in the format YYYY-mm-ddTHH:MM:SS.sssssssss"
+     }
+    },
+    "reference/frequencyA/zeroDopplerTimeSpacing": {
+     "value": 0.0006578947368421052,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Time interval in the along-track direction for reference RSLC raster layers",
+      "units": "seconds"
+     }
+    },
+    "reference/isMixedMode": {
+     "value": "False",
+     "dtype": "|S5",
+     "attrs": {
+      "description": "\"True\" if reference RSLC is a composite of data collected in multiple radar modes, \"False\" otherwise"
+     }
+    },
+    "reference/referenceTerrainHeight": {
+     "shape": [
+      110
+     ],
+     "dtype": "float32",
+     "attrs": {
+      "description": "Reference terrain height as a function of map coordinates for reference RSLC",
+      "units": "meters"
+     }
+    },
+    "reference/rfiMitigation": {
+     "value": "tone-rank",
+     "dtype": "|S9",
+     "attrs": {
+      "description": "Algorithm used for radio frequency interference (RFI) mitigation in the reference RSLC, either \"ST-EVD\" or \"FDNF\" (or \"disabled\" if no RFI mitigation was applied)"
+     }
+    },
+    "reference/rfiMitigationApplied": {
+     "value": "True",
+     "dtype": "|S4",
+     "attrs": {
+      "description": "Flag to indicate if radio frequency interference (RFI) mitigation was applied during the generation of the reference RSLC"
+     }
+    },
+    "secondary/frequencyA/azimuthBandwidth": {
+     "value": 1264.0910035420065,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Processed azimuth bandwidth for secondary RSLC",
+      "units": "hertz"
+     }
+    },
+    "secondary/frequencyA/dopplerCentroid": {
+     "shape": [
+      111,
+      108
+     ],
+     "dtype": "float64",
+     "attrs": {
+      "description": "2D LUT of Doppler centroid for frequency A",
+      "units": "hertz"
+     }
+    },
+    "secondary/frequencyA/numberOfAzimuthLines": {
+     "value": 54720,
+     "dtype": "uint64",
+     "attrs": {
+      "description": "Number of azimuth lines within the secondary RSLC",
+      "units": "1"
+     }
+    },
+    "secondary/frequencyA/numberOfRangeSamples": {
+     "value": 52712,
+     "dtype": "uint64",
+     "attrs": {
+      "description": "Number of slant range samples for each azimuth line within the secondary RSLC",
+      "units": "1"
+     }
+    },
+    "secondary/frequencyA/rangeBandwidth": {
+     "value": 40000000.0,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Processed slant range bandwidth for secondary RSLC",
+      "units": "hertz"
+     }
+    },
+    "secondary/frequencyA/slantRangeSpacing": {
+     "value": 3.1228381041666666,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Slant range spacing of secondary RSLC",
+      "units": "meters"
+     }
+    },
+    "secondary/frequencyA/slantRangeStart": {
+     "value": 887060.9005171667,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Slant range start distance for the secondary RSLC",
+      "units": "meters"
+     }
+    },
+    "secondary/frequencyA/zeroDopplerEndTime": {
+     "value": "2026-10-21T23:44:05.999342105",
+     "dtype": "|S29",
+     "attrs": {
+      "description": "Azimuth stop time (in UTC) of the secondary RSLC product in the format YYYY-mm-ddTHH:MM:SS.sssssssss"
+     }
+    },
+    "secondary/frequencyA/zeroDopplerStartTime": {
+     "value": "2026-10-21T23:43:30.000000000",
+     "dtype": "|S29",
+     "attrs": {
+      "description": "Azimuth start time (in UTC) of the secondary RSLC product in the format YYYY-mm-ddTHH:MM:SS.sssssssss"
+     }
+    },
+    "secondary/frequencyA/zeroDopplerTimeSpacing": {
+     "value": 0.0006578947368421052,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Time interval in the along-track direction for secondary RSLC raster layers",
+      "units": "seconds"
+     }
+    },
+    "secondary/isMixedMode": {
+     "value": "False",
+     "dtype": "|S5",
+     "attrs": {
+      "description": "\"True\" if secondary RSLC is a composite of data collected in multiple radar modes, \"False\" otherwise"
+     }
+    },
+    "secondary/referenceTerrainHeight": {
+     "shape": [
+      111
+     ],
+     "dtype": "float32",
+     "attrs": {
+      "description": "Reference terrain height as a function of map coordinates for secondary RSLC",
+      "units": "meters"
+     }
+    },
+    "secondary/rfiMitigation": {
+     "value": "tone-rank",
+     "dtype": "|S9",
+     "attrs": {
+      "description": "Algorithm used for radio frequency interference (RFI) mitigation in the secondary RSLC, either \"ST-EVD\" or \"FDNF\" (or \"disabled\" if no RFI mitigation was applied)"
+     }
+    },
+    "secondary/rfiMitigationApplied": {
+     "value": "True",
+     "dtype": "|S4",
+     "attrs": {
+      "description": "Flag to indicate if radio frequency interference (RFI) mitigation was applied during the generation of the secondary RSLC"
+     }
+    },
+    "unwrappedInterferogram/frequencyA/azimuthBandwidth": {
+     "value": 1264.0756886487645,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Processed azimuth bandwidth for frequency A interferometric layers",
+      "units": "hertz"
+     }
+    },
+    "unwrappedInterferogram/frequencyA/commonBandAzimuthFilterApplied": {
+     "value": "False",
+     "dtype": "|S5",
+     "attrs": {
+      "description": "Flag to indicate if common band azimuth filter has been applied"
+     }
+    },
+    "unwrappedInterferogram/frequencyA/commonBandRangeFilterApplied": {
+     "value": "False",
+     "dtype": "|S5",
+     "attrs": {
+      "description": "Flag to indicate if common band range filter has been applied"
+     }
+    },
+    "unwrappedInterferogram/frequencyA/ellipsoidalFlatteningApplied": {
+     "value": "True",
+     "dtype": "|S4",
+     "attrs": {
+      "description": "Flag to indicate if the interferometric phase has been flattened with respect to a zero height ellipsoid"
+     }
+    },
+    "unwrappedInterferogram/frequencyA/numberOfAzimuthLooks": {
+     "value": 16,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Number of looks applied in the along-track direction to form the unwrapped interferogram",
+      "units": "1"
+     }
+    },
+    "unwrappedInterferogram/frequencyA/numberOfRangeLooks": {
+     "value": 13,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Number of looks applied in the slant range direction to form the unwrapped interferogram",
+      "units": "1"
+     }
+    },
+    "unwrappedInterferogram/frequencyA/rangeBandwidth": {
+     "value": 40000000.0,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Processed slant range bandwidth for frequency A interferometric layers",
+      "units": "hertz"
+     }
+    },
+    "unwrappedInterferogram/frequencyA/topographicFlatteningApplied": {
+     "value": "True",
+     "dtype": "|S4",
+     "attrs": {
+      "description": "Flag to indicate if the interferometric phase has been flattened with respect to topographic height using a DEM"
+     }
+    },
+    "wrappedInterferogram/frequencyA/azimuthBandwidth": {
+     "value": 1264.0756886487645,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Processed azimuth bandwidth for frequency A interferometric layers",
+      "units": "hertz"
+     }
+    },
+    "wrappedInterferogram/frequencyA/commonBandAzimuthFilterApplied": {
+     "value": "False",
+     "dtype": "|S5",
+     "attrs": {
+      "description": "Flag to indicate if common band azimuth filter has been applied"
+     }
+    },
+    "wrappedInterferogram/frequencyA/commonBandRangeFilterApplied": {
+     "value": "False",
+     "dtype": "|S5",
+     "attrs": {
+      "description": "Flag to indicate if common band range filter has been applied"
+     }
+    },
+    "wrappedInterferogram/frequencyA/ellipsoidalFlatteningApplied": {
+     "value": "True",
+     "dtype": "|S4",
+     "attrs": {
+      "description": "Flag to indicate if the interferometric phase has been flattened with respect to a zero height ellipsoid"
+     }
+    },
+    "wrappedInterferogram/frequencyA/numberOfAzimuthLooks": {
+     "value": 6,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Number of looks applied in the along-track direction to form the wrapped interferogram",
+      "units": "1"
+     }
+    },
+    "wrappedInterferogram/frequencyA/numberOfRangeLooks": {
+     "value": 5,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Number of looks applied in the slant range direction to form the wrapped interferogram",
+      "units": "1"
+     }
+    },
+    "wrappedInterferogram/frequencyA/rangeBandwidth": {
+     "value": 40000000.0,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Processed slant range bandwidth for frequency A interferometric layers",
+      "units": "hertz"
+     }
+    },
+    "wrappedInterferogram/frequencyA/topographicFlatteningApplied": {
+     "value": "True",
+     "dtype": "|S4",
+     "attrs": {
+      "description": "Flag to indicate if the interferometric phase has been flattened with respect to topographic height using a DEM"
+     }
+    }
+   },
+   "algorithms": {
+    "coregistration/coregistrationMethod": {
+     "value": "Coarse geometry coregistration with DEM and orbit ephemeris with cross-correlation refinement",
+     "dtype": "|S93",
+     "attrs": {
+      "description": "RSLC coregistration method"
+     }
+    },
+    "coregistration/crossCorrelation": {
+     "value": "frequency",
+     "dtype": "|S9",
+     "attrs": {
+      "description": "Cross-correlation algorithm for sub-pixel offsets computation"
+     }
+    },
+    "coregistration/crossCorrelationFilling": {
+     "value": "fill_smoothed",
+     "dtype": "|S13",
+     "attrs": {
+      "description": "Outliers data filling algorithm for cross-correlation offsets"
+     }
+    },
+    "coregistration/crossCorrelationFilterKernel": {
+     "value": "boxcar",
+     "dtype": "|S6",
+     "attrs": {
+      "description": "Filtering algorithm for cross-correlation offsets"
+     }
+    },
+    "coregistration/crossCorrelationOutliers": {
+     "value": "median_filter",
+     "dtype": "|S13",
+     "attrs": {
+      "description": "Outliers identification algorithm"
+     }
+    },
+    "coregistration/geometryCoregistration": {
+     "value": "Range doppler to geogrid then geogrid to range doppler",
+     "dtype": "|S54",
+     "attrs": {
+      "description": "Geometry coregistration algorithm"
+     }
+    },
+    "coregistration/resampling": {
+     "value": "sinc",
+     "dtype": "|S4",
+     "attrs": {
+      "description": "Secondary RSLC resampling algorithm"
+     }
+    },
+    "geocoding/complexGeocodingInterpolation": {
+     "value": "BILINEAR",
+     "dtype": "|S8",
+     "attrs": {
+      "description": "Geocoding interpolation algorithm for complex-valued datasets"
+     }
+    },
+    "geocoding/demInterpolation": {
+     "value": "biquintic",
+     "dtype": "|S9",
+     "attrs": {
+      "description": "DEM interpolation algorithm"
+     }
+    },
+    "geocoding/floatingGeocodingInterpolation": {
+     "value": "BILINEAR",
+     "dtype": "|S8",
+     "attrs": {
+      "description": "Geocoding interpolation algorithm for floating point datasets"
+     }
+    },
+    "geocoding/integerGeocodingInterpolation": {
+     "value": "nearest",
+     "dtype": "|S7",
+     "attrs": {
+      "description": "Geocoding interpolation algorithm for integer datasets"
+     }
+    },
+    "interferogramFormation/flatteningMethod": {
+     "value": "With geometry offsets",
+     "dtype": "|S21",
+     "attrs": {
+      "description": "Algorithm used to flatten the wrapped interferogram"
+     }
+    },
+    "interferogramFormation/multilooking": {
+     "value": "Spatial moving average with decimation",
+     "dtype": "|S38",
+     "attrs": {
+      "description": "Multilooking algorithm"
+     }
+    },
+    "interferogramFormation/wrappedInterferogramFiltering": {
+     "value": "no_filter",
+     "dtype": "|S9",
+     "attrs": {
+      "description": "Algorithm used to filter the wrapped interferogram prior to phase unwrapping"
+     }
+    },
+    "ionosphereEstimation/ionosphereAlgorithm": {
+     "value": "Range split-spectrum with sub-band interferograms from the main band and the difference of the main and side band of the input RSLCs",
+     "dtype": "|S132",
+     "attrs": {
+      "description": "Algorithm used to estimate ionosphere phase screen"
+     }
+    },
+    "ionosphereEstimation/ionosphereFilling": {
+     "value": "nearest",
+     "dtype": "|S7",
+     "attrs": {
+      "description": "Outliers data filling algorithm for ionosphere phase estimation"
+     }
+    },
+    "ionosphereEstimation/ionosphereFiltering": {
+     "value": "Iterative gaussian filter with 1 filtering",
+     "dtype": "|S42",
+     "attrs": {
+      "description": "Filtering algorithm for ionosphere phase screen computation"
+     }
+    },
+    "ionosphereEstimation/ionosphereOutliers": {
+     "value": "['coherence', 'subswath_mask']",
+     "dtype": "|S30",
+     "attrs": {
+      "description": "Algorithm identifying outliers in unfiltered ionosphere phase screen"
+     }
+    },
+    "ionosphereEstimation/unwrappingErrorCorrection": {
+     "value": "True",
+     "dtype": "|S4",
+     "attrs": {
+      "description": "Algorithm correcting unwrapping errors in sub-band unwrapped interferograms"
+     }
+    },
+    "softwareVersion": {
+     "value": "0.25.21",
+     "dtype": "|S7",
+     "attrs": {
+      "description": "Software version used for processing"
+     }
+    },
+    "unwrapping/costMode": {
+     "value": "smooth",
+     "dtype": "|S6",
+     "attrs": {
+      "description": "Cost mode algorithm for phase unwrapping"
+     }
+    },
+    "unwrapping/preprocessing/wrappedPhaseFilling": {
+     "value": "distance_interpolator",
+     "dtype": "|S21",
+     "attrs": {
+      "description": "Outliers data filling algorithm for phase unwrapping preprocessing"
+     }
+    },
+    "unwrapping/preprocessing/wrappedPhaseOutliers": {
+     "value": [
+      "subswath_mask"
+     ],
+     "dtype": "object",
+     "attrs": {
+      "description": "Algorithm identifying outliers in the wrapped interferogram"
+     }
+    },
+    "unwrapping/unwrappingAlgorithm": {
+     "value": "snaphu",
+     "dtype": "|S6",
+     "attrs": {
+      "description": "Algorithm used for phase unwrapping"
+     }
+    },
+    "unwrapping/unwrappingInitializer": {
+     "value": "mcf",
+     "dtype": "|S3",
+     "attrs": {
+      "description": "Algorithm used to initialize phase unwrapping"
+     }
+    }
+   },
+   "processing_inputs": {
+    "configFiles": {
+     "value": "None",
+     "dtype": "|S4",
+     "attrs": {
+      "description": "List of input config files used"
+     }
+    },
+    "demSource": {
+     "value": "Modified Copernicus Digital Elevation Model for the NASA-ISRO NISAR mission, version 1.3, based on the Copernicus DEM 30-m (2023_1), referenced to the WGS 84 ellipsoid and provided in geographic coordinates (EPSG:4326). This digital elevation model (DEM) was prepared at the Jet Propulsion Laboratory, California Institute of Technology, under contract with the National Aeronautics and Space Administration, using the Copernicus DEM 30-m COP-DEM_GLO-30-DGED/2023_1 model provided by the European Space Agency (ESA). The Copernicus DEM 30-m was produced using Copernicus WorldDEM-30  DLR e.V. 2010-2014 and  Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved. The organizations in charge of the NISAR mission or the Copernicus programme by law or by delegation do not incur any liability for any use of the Copernicus WorldDEM-30. Users, including those who redistribute, adapt, modify, or combine the data contained in this DEM, must comply with the terms of the Copernicus DEM 30-m License Agreement. For additional information, please refer to https://doi.org/10.5067/NIDEM-1 and https://doi.org/10.5270/ESA-c5d3d65.",
+     "dtype": "|S1185",
+     "attrs": {
+      "description": "Description of the input digital elevation model (DEM)"
+     }
+    },
+    "l1ReferenceSlcGranules": {
+     "value": [
+      "NISAR_L1_PR_RSLC_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+     ],
+     "dtype": "|S94",
+     "attrs": {
+      "description": "List of input reference L1 RSLC products used"
+     }
+    },
+    "l1SecondarySlcGranules": {
+     "value": [
+      "NISAR_L1_PR_RSLC_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "dtype": "|S94",
+     "attrs": {
+      "description": "List of input secondary L1 RSLC products used"
+     }
+    },
+    "orbitFiles": {
+     "value": [
+      "used RSLC internal reference orbit file",
+      "used RSLC internal secondary orbit file"
+     ],
+     "dtype": "|S39",
+     "attrs": {
+      "description": "List of input orbit files used"
+     }
+    },
+    "waterMaskSource": {
+     "value": "Water Mask for the NASA-ISRO NISAR mission version 0.5, derived through analysis and processing of multiple input datasets, referenced to the WGS84 ellipsoid. Water mask derived at the Jet Propulsion Laboratory, California Institute of Technology, under contract with NASA, using multiple open datasets: JRC Global Surface Water v1.3 (Pekel et al 2016, Nature 540, 418-422,  EC JRC/Google); ESA WorldCover 10 m 2020 ( ESA WorldCover project 2020 / Contains modified Copernicus Sentinel data (2020) processed by ESA WorldCover consortium); OpenStreetMap Water Polygons ( OpenStreetMap contributors, ODbL 1.0); MEaSUREs GIMP Mask v1 (Howat 2017, doi:10.5067/B8X58MQBFUPA; Howat et al 2014). All trademarks and rights remain with their respective owners; NISAR mission organizations assume no liability for use of this product.",
+     "dtype": "|S824",
+     "attrs": {
+      "description": "Description of the input water mask"
+     }
+    }
+   },
+   "radarGrid_members": [
+    "alongTrackUnitVectorX",
+    "alongTrackUnitVectorY",
+    "elevationAngle",
+    "groundTrackVelocity",
+    "heightAboveEllipsoid",
+    "hydrostaticTroposphericPhaseScreen",
+    "incidenceAngle",
+    "losUnitVectorX",
+    "losUnitVectorY",
+    "parallelBaseline",
+    "perpendicularBaseline",
+    "projection",
+    "referenceSlantRange",
+    "referenceZeroDopplerAzimuthTime",
+    "secondarySlantRange",
+    "secondaryZeroDopplerAzimuthTime",
+    "slantRangeSolidEarthTidesPhase",
+    "wetTroposphericPhaseScreen",
+    "xCoordinates",
+    "yCoordinates"
+   ],
+   "layers": {
+    "pixelOffsets/HH/alongTrackOffset": {
+     "dtype": "float32",
+     "shape": [
+      4455,
+      4509
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Along-track offset",
+      "grid_mapping": "projection",
+      "max_value": 2.591322183609009,
+      "mean_value": 0.5219979882240295,
+      "min_value": -1.686779260635376,
+      "sample_stddev": 0.6840843558311462,
+      "units": "meters"
+     }
+    },
+    "pixelOffsets/HH/correlationSurfacePeak": {
+     "dtype": "float32",
+     "shape": [
+      4455,
+      4509
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Normalized cross-correlation surface peak",
+      "grid_mapping": "projection",
+      "max_value": 1.0266510248184204,
+      "mean_value": 0.30208122730255127,
+      "min_value": -0.024007359519600868,
+      "sample_stddev": 0.2634235620498657,
+      "units": "1"
+     }
+    },
+    "pixelOffsets/HH/slantRangeOffset": {
+     "dtype": "float32",
+     "shape": [
+      4455,
+      4509
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Slant range offset",
+      "grid_mapping": "projection",
+      "max_value": 0.0,
+      "mean_value": -0.9196696877479553,
+      "min_value": -1.3878318071365356,
+      "sample_stddev": 0.19020220637321472,
+      "units": "meters"
+     }
+    },
+    "pixelOffsets/HH/validDataMask": {
+     "dtype": "uint8",
+     "shape": [
+      4455,
+      4509
+     ],
+     "attrs": {
+      "_FillValue": 255,
+      "description": "Valid mask for the HH layers: bit 1 = reference (1=valid, 0=invalid), bit 0 = secondary (1=valid, 0=invalid). Valid represents fully focused data and invalid represents partially focused or missing data",
+      "grid_mapping": "projection",
+      "long_name": "Valid data mask",
+      "units": "1",
+      "valid_min": 0,
+      "valid_pixel_fraction": 0.9632606802683514
+     }
+    },
+    "pixelOffsets/mask": {
+     "dtype": "uint32",
+     "shape": [
+      4455,
+      4509
+     ],
+     "attrs": {
+      "_FillValue": 255,
+      "description": "Combination of a water mask, a mask of subswaths of valid samples, and data anomalies in the reference RSLC and the geometrically coregistered secondary RSLC. Each pixel value is encoded as a 32-bit unsigned integer. Bits 0-7 represent subswath encoding, where the most significant digit represents the water flag of that pixel in the reference RSLC, where 1 is water and 0 is non-water; the second most significant digit corresponds to the subswath number of the reference RSLC, and the least significant digit corresponds to the subswath number of the secondary RSLC; a value of 0 in either digit indicates an invalid sample in the corresponding RSLC. Bits 8-15 represent bitwise anomaly flags for the secondary RSLC, and bits 16-23 represent bitwise anomaly flags for the reference RSLC, with each bit corresponding to a specific anomaly condition. A value of 0 in the anomaly bits indicates that no anomaly is detected in the corresponding RSLC. Bits 24-31 are reserved for future use",
+      "disclaimer": "Water Mask for the NASA-ISRO NISAR mission version 0.5, derived through analysis and processing of multiple input datasets, referenced to the WGS84 ellipsoid. Water mask derived at the Jet Propulsion Laboratory, California Institute of Technology, under contract with NASA, using multiple open datasets: JRC Global Surface Water v1.3 (Pekel et al 2016, Nature 540, 418-422,  EC JRC/Google); ESA WorldCover 10 m 2020 ( ESA WorldCover project 2020 / Contains modified Copernicus Sentinel data (2020) processed by ESA WorldCover consortium); OpenStreetMap Water Polygons ( OpenStreetMap contributors, ODbL 1.0); MEaSUREs GIMP Mask v1 (Howat 2017, doi:10.5067/B8X58MQBFUPA; Howat et al 2014). All trademarks and rights remain with their respective owners; NISAR mission organizations assume no liability for use of this product.",
+      "grid_mapping": "projection",
+      "percentage_water": 48.97960165717444,
+      "valid_min": 0
+     }
+    },
+    "unwrappedInterferogram/HH/coherenceMagnitude": {
+     "dtype": "float32",
+     "shape": [
+      4455,
+      4509
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Coherence magnitude between HH layers",
+      "grid_mapping": "projection",
+      "max_value": 0.9959251880645752,
+      "mean_value": 0.32929009199142456,
+      "min_value": 0.0020553292706608772,
+      "sample_stddev": 0.26087990403175354,
+      "units": "1"
+     }
+    },
+    "unwrappedInterferogram/HH/connectedComponents": {
+     "dtype": "uint16",
+     "shape": [
+      4455,
+      4509
+     ],
+     "attrs": {
+      "_FillValue": 65535,
+      "description": "Connected components for HH layer",
+      "grid_mapping": "projection",
+      "units": "1"
+     }
+    },
+    "unwrappedInterferogram/HH/ionospherePhaseScreen": {
+     "dtype": "float32",
+     "shape": [
+      4455,
+      4509
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Ionosphere phase screen",
+      "grid_mapping": "projection",
+      "max_value": 87.72274780273438,
+      "mean_value": 25.47932243347168,
+      "min_value": -87.93963623046875,
+      "sample_stddev": 19.885326385498047,
+      "units": "radians"
+     }
+    },
+    "unwrappedInterferogram/HH/ionospherePhaseScreenUncertainty": {
+     "dtype": "float32",
+     "shape": [
+      4455,
+      4509
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Uncertainty of the ionosphere phase screen",
+      "grid_mapping": "projection",
+      "max_value": 3.9883980751037598,
+      "mean_value": 1.8276803493499756,
+      "min_value": 0.6519182324409485,
+      "sample_stddev": 1.0448676347732544,
+      "units": "radians"
+     }
+    },
+    "unwrappedInterferogram/HH/unwrappedPhase": {
+     "dtype": "float32",
+     "shape": [
+      4455,
+      4509
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Unwrapped interferogram between HH layers",
+      "grid_mapping": "projection",
+      "max_value": 29.85533332824707,
+      "mean_value": -0.6703072786331177,
+      "min_value": -23.08806610107422,
+      "sample_stddev": 7.439720630645752,
+      "units": "radians"
+     }
+    },
+    "unwrappedInterferogram/HH/validDataMask": {
+     "dtype": "uint8",
+     "shape": [
+      4455,
+      4509
+     ],
+     "attrs": {
+      "_FillValue": 255,
+      "description": "Valid mask for the HH layers: bit 1 = reference (1=valid, 0=invalid), bit 0 = secondary (1=valid, 0=invalid). Valid represents fully focused data and invalid represents partially focused or missing data",
+      "grid_mapping": "projection",
+      "long_name": "Valid data mask",
+      "units": "1",
+      "valid_min": 0,
+      "valid_pixel_fraction": 0.9575935030480014
+     }
+    },
+    "unwrappedInterferogram/mask": {
+     "dtype": "uint32",
+     "shape": [
+      4455,
+      4509
+     ],
+     "attrs": {
+      "_FillValue": 255,
+      "description": "Combination of a water mask, a mask of subswaths of valid samples, and data anomalies in the reference RSLC and the geometrically coregistered secondary RSLC. Each pixel value is encoded as a 32-bit unsigned integer. Bits 0-7 represent subswath encoding, where the most significant digit represents the water flag of that pixel in the reference RSLC, where 1 is water and 0 is non-water; the second most significant digit corresponds to the subswath number of the reference RSLC, and the least significant digit corresponds to the subswath number of the secondary RSLC; a value of 0 in either digit indicates an invalid sample in the corresponding RSLC. Bits 8-15 represent bitwise anomaly flags for the secondary RSLC, and bits 16-23 represent bitwise anomaly flags for the reference RSLC, with each bit corresponding to a specific anomaly condition. A value of 0 in the anomaly bits indicates that no anomaly is detected in the corresponding RSLC. Bit 24 indicates a bit mask for ionospheric phase mask used during filtering of ionospheric phase. This ionospheric phase mask indicates pixels which were masked out and filled with interpolated data. Bits 25-31 are reserved for future use",
+      "disclaimer": "Water Mask for the NASA-ISRO NISAR mission version 0.5, derived through analysis and processing of multiple input datasets, referenced to the WGS84 ellipsoid. Water mask derived at the Jet Propulsion Laboratory, California Institute of Technology, under contract with NASA, using multiple open datasets: JRC Global Surface Water v1.3 (Pekel et al 2016, Nature 540, 418-422,  EC JRC/Google); ESA WorldCover 10 m 2020 ( ESA WorldCover project 2020 / Contains modified Copernicus Sentinel data (2020) processed by ESA WorldCover consortium); OpenStreetMap Water Polygons ( OpenStreetMap contributors, ODbL 1.0); MEaSUREs GIMP Mask v1 (Howat 2017, doi:10.5067/B8X58MQBFUPA; Howat et al 2014). All trademarks and rights remain with their respective owners; NISAR mission organizations assume no liability for use of this product.",
+      "grid_mapping": "projection",
+      "percentage_water": 49.00521674059392,
+      "valid_min": 0
+     }
+    },
+    "wrappedInterferogram/HH/coherenceMagnitude": {
+     "dtype": "float32",
+     "shape": [
+      17820,
+      18036
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Coherence magnitude between HH layers",
+      "grid_mapping": "projection",
+      "max_value": 0.9991191625595093,
+      "mean_value": 0.13703793287277222,
+      "min_value": 0.0,
+      "sample_stddev": 0.21184130012989044,
+      "units": "1"
+     }
+    },
+    "wrappedInterferogram/HH/validDataMask": {
+     "dtype": "uint8",
+     "shape": [
+      17820,
+      18036
+     ],
+     "attrs": {
+      "_FillValue": 255,
+      "description": "Valid mask for the HH layers: bit 1 = reference (1=valid, 0=invalid), bit 0 = secondary (1=valid, 0=invalid). Valid represents fully focused data and invalid represents partially focused or missing data",
+      "grid_mapping": "projection",
+      "long_name": "Valid data mask",
+      "units": "1",
+      "valid_min": 0,
+      "valid_pixel_fraction": 0.9572341564945768
+     }
+    },
+    "wrappedInterferogram/HH/wrappedInterferogram": {
+     "dtype": "complex64",
+     "shape": [
+      17820,
+      18036
+     ],
+     "attrs": {
+      "_FillValue": "(nan+nanj)",
+      "description": "Complex wrapped interferogram between HH layers",
+      "grid_mapping": "projection",
+      "units": "1"
+     }
+    },
+    "wrappedInterferogram/mask": {
+     "dtype": "uint32",
+     "shape": [
+      17820,
+      18036
+     ],
+     "attrs": {
+      "_FillValue": 255,
+      "description": "Combination of a water mask, a mask of subswaths of valid samples, and data anomalies in the reference RSLC and the geometrically coregistered secondary RSLC. Each pixel value is encoded as a 32-bit unsigned integer. Bits 0-7 represent subswath encoding, where the most significant digit represents the water flag of that pixel in the reference RSLC, where 1 is water and 0 is non-water; the second most significant digit corresponds to the subswath number of the reference RSLC, and the least significant digit corresponds to the subswath number of the secondary RSLC; a value of 0 in either digit indicates an invalid sample in the corresponding RSLC. Bits 8-15 represent bitwise anomaly flags for the secondary RSLC, and bits 16-23 represent bitwise anomaly flags for the reference RSLC, with each bit corresponding to a specific anomaly condition. A value of 0 in the anomaly bits indicates that no anomaly is detected in the corresponding RSLC. Bits 24-31 are reserved for future use",
+      "disclaimer": "Water Mask for the NASA-ISRO NISAR mission version 0.5, derived through analysis and processing of multiple input datasets, referenced to the WGS84 ellipsoid. Water mask derived at the Jet Propulsion Laboratory, California Institute of Technology, under contract with NASA, using multiple open datasets: JRC Global Surface Water v1.3 (Pekel et al 2016, Nature 540, 418-422,  EC JRC/Google); ESA WorldCover 10 m 2020 ( ESA WorldCover project 2020 / Contains modified Copernicus Sentinel data (2020) processed by ESA WorldCover consortium); OpenStreetMap Water Polygons ( OpenStreetMap contributors, ODbL 1.0); MEaSUREs GIMP Mask v1 (Howat 2017, doi:10.5067/B8X58MQBFUPA; Howat et al 2014). All trademarks and rights remain with their respective owners; NISAR mission organizations assume no liability for use of this product.",
+      "grid_mapping": "projection",
+      "percentage_water": 49.047779756395656,
+      "valid_min": 0
+     }
+    }
+   },
+   "seconds": 15.1
+  },
+  "pilot_gunw_provisional_20260927_20261009": {
+   "concept": "G4359740150-ASF",
+   "collection": "C2854335566-ASF",
+   "GranuleUR": "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001",
+   "url": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GUNW_PROVISIONAL_V1/NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001/NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+   "AdditionalAttributes": {
+    "ASCENDING_DESCENDING": [
+     "DESCENDING"
+    ],
+    "FRAME_NUMBER": [
+     "67"
+    ],
+    "FREQUENCIES": [
+     "A"
+    ],
+    "FREQUENCY_A_POLARIZATION": [
+     "HH"
+    ],
+    "FREQUENCY_A_POLARIZATION_CONCAT": [
+     "HH"
+    ],
+    "FREQUENCY_A_RANGE_BANDWIDTH": [
+     "40"
+    ],
+    "FULL_FRAME": [
+     "TRUE"
+    ],
+    "JOINT_OBSERVATION": [
+     "TRUE"
+    ],
+    "ORBIT_TYPE": [
+     "MOE"
+    ],
+    "PROCESSING_CENTER": [
+     "JPL"
+    ],
+    "PROCESSING_LEVEL": [
+     "L2"
+    ],
+    "PRODUCTION_PIPELINE": [
+     "PR"
+    ],
+    "PRODUCT_TYPE": [
+     "GUNW"
+    ],
+    "PRODUCT_TYPE_DESC": [
+     "Geocoded Unwrapped Interferogram"
+    ],
+    "PRODUCT_VERSION": [
+     "1.0.11"
+    ],
+    "RANGE_BANDWIDTH_CONCAT": [
+     "40"
+    ],
+    "REFERENCE_ZERO_DOPPLER_END_TIME": [
+     "2026-09-27T23:44:05.999342Z"
+    ],
+    "REFERENCE_ZERO_DOPPLER_START_TIME": [
+     "2026-09-27T23:43:30.000000Z"
+    ],
+    "SECONDARY_ZERO_DOPPLER_END_TIME": [
+     "2026-10-09T23:44:05.999342Z"
+    ],
+    "SECONDARY_ZERO_DOPPLER_START_TIME": [
+     "2026-10-09T23:43:30.000000Z"
+    ],
+    "STACK_ID": [
+     "141_D_067"
+    ],
+    "TRACK_NUMBER": [
+     "141"
+    ]
+   },
+   "InputGranules": [
+    "NISAR_L1_PR_RSLC_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+    "NISAR_L1_PR_RSLC_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+   ],
+   "PGEVersionClass": {
+    "PGEName": "INSAR_L_PGE",
+    "PGEVersion": "R05.02.3"
+   },
+   "frequencyA_members": [
+    "centerFrequency",
+    "listOfPolarizations",
+    "pixelOffsets",
+    "unwrappedInterferogram",
+    "wrappedInterferogram"
+   ],
+   "centerFrequency": {
+    "value": "1239000000.0",
+    "dtype": "float64",
+    "attrs": {
+     "description": "Center frequency of the processed image in hertz",
+     "units": "hertz"
+    }
+   },
+   "grids_members": [
+    "frequencyA"
+   ],
+   "listOfPolarizations": [
+    "HH"
+   ],
+   "identification": {
+    "boundingPolygon": "POLYGON ((-71.7152360856379 43.962390411147 579.752318086384,-71.8138341038653 43.7542146032132 364.120147706141,-71.9090350631326 43.5452959814449 303.633698800665,-72.0010681787993 43.3356890086178 387.199737550294,-72.0939421846545 43.1263570158269 388.860487505062,-72.1878651386452 42.9173481064151 296.418060302438,-72.2792386804729 42.7077967023628 315.265899297694,-72.3696469934696 42.4980827067643 356.024171284178,-72.464243488573 42.2894439170925 122.713449554026,-72.5558221403399 42.080147237705 29.2967164388588,-72.6458805677589 41.8705513625443 -9.2824281109711,-72.3097437847309 41.7894456665478 167.513169756873,-71.9928229772131 41.7118913785364 67.9840404790251,-71.6856920291802 41.6357167210014 136.253617429318,-71.3924344870479 41.5620522969391 -30.8377494878566,-71.1059837737696 41.4892101155546 -30.6043243411906,-70.8275944835995 41.4175768341996 -30.1955642691947,-70.5563445146492 41.3469802106257 -29.8414922233068,-70.2914699468783 41.277277759695 -29.8555465459851,-70.0323215576692 41.2083478800852 -29.8218417255906,-69.7783577123134 41.1400899462686 -30.2120277984613,-69.6804668233967 41.347498526416 -29.4751911603463,-69.5819390070191 41.5548178954755 -29.0393081621092,-69.4827645264394 41.7620470322546 -28.7666933898898,-69.3829310249258 41.96918269802 -28.2231860545931,-69.2824349624703 42.1762257506602 -27.8979752392428,-69.1812659846779 42.3831745120086 -27.6126519179447,-69.0794134845724 42.5900264768723 -27.1490867807476,-68.9768705514013 42.7967819097596 -26.7236653487851,-68.8736302963525 43.0034395903459 -26.503842670183,-68.7696812482509 43.2099972469879 -26.2475641757438,-69.0310904467677 43.2806180657219 -26.4084666304445,-69.2979047311646 43.3519169337866 -26.3780815536512,-69.5706962172899 43.423999450765 -26.4885031660699,-69.8501327431783 43.4969884574404 -26.5463180540952,-70.137014209032 43.5710315669156 -26.6759166702479,-70.4316716955428 43.6461456411602 18.4134191281292,-70.73424469455 43.7222937392883 172.06571460176,-71.0512889569343 43.8010253328689 88.6746748552467,-71.3765845390307 43.8806758424433 293.621093200663,-71.7152360856379 43.962390411147 579.752318086384))",
+    "compositeReleaseId": "P05023",
+    "diagnosticModeFlag": 0,
+    "frameNumber": 67,
+    "granuleId": "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001",
+    "instrumentName": "L-SAR",
+    "isDithered": "True",
+    "isFullFrame": "True",
+    "isGeocoded": "True",
+    "isMixedMode": "False",
+    "isUrgentObservation": "False",
+    "listOfFrequencies": [
+     "A"
+    ],
+    "lookDirection": "Left",
+    "missionId": "NISAR",
+    "orbitPassDirection": "Descending",
+    "platformName": "NISAR",
+    "processingCenter": "JPL",
+    "processingDateTime": "2026-10-12T05:55:21",
+    "processingType": "Nominal",
+    "productDoi": "10.5067/NIL2GUNW-P1",
+    "productLevel": "L2",
+    "productSpecificationVersion": "1.5.0",
+    "productType": "GUNW",
+    "productVersion": "1.0.11",
+    "radarBand": "L",
+    "referenceAbsoluteOrbitNumber": 6122,
+    "referenceHasInputDataException": 0,
+    "referenceIsJointObservation": "True",
+    "referenceListOfObservationModes": [
+     "(NOT SPECIFIED)"
+    ],
+    "referencePlannedDatatakeId": [
+     "dtid_2026270233748"
+    ],
+    "referencePlannedObservationId": [
+     "oid_2026270234248"
+    ],
+    "referenceZeroDopplerEndTime": "2026-09-27T23:44:05.999342105",
+    "referenceZeroDopplerStartTime": "2026-09-27T23:43:30.000000000",
+    "secondaryAbsoluteOrbitNumber": 6295,
+    "secondaryHasInputDataException": 0,
+    "secondaryIsJointObservation": "True",
+    "secondaryListOfObservationModes": [
+     "(NOT SPECIFIED)"
+    ],
+    "secondaryPlannedDatatakeId": [
+     "dtid_2026282233748"
+    ],
+    "secondaryPlannedObservationId": [
+     "oid_2026282234248"
+    ],
+    "secondaryZeroDopplerEndTime": "2026-10-09T23:44:05.999342105",
+    "secondaryZeroDopplerStartTime": "2026-10-09T23:43:30.000000000",
+    "staticLayersDataAccess": "https://nisar-services.earthdata.nasa.gov/redirect/NISAR_L2_STATIC/NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+    "trackNumber": 141
+   },
+   "inputs": {
+    "reference/rangeBandwidth": "40000000.0",
+    "reference/slantRangeSpacing": "3.1228381041666666",
+    "secondary/rangeBandwidth": "40000000.0",
+    "secondary/slantRangeSpacing": "3.1228381041666666"
+   },
+   "seconds": 6.7
+  },
+  "gunw_2000_0": {
+   "concept": "G4409727248-ASF",
+   "collection": "C3622247503-ASF",
+   "GranuleUR": "NISAR_L2_PR_GUNW_032_141_D_085_033_2000_SH_20261009T235335_20261009T235349_20261021T235335_20261021T235349_P05036_N_P_J_001",
+   "url": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/L2_L_GUNW/NISAR_L2_PR_GUNW_032_141_D_085_033_2000_SH_20261009T235335_20261009T235349_20261021T235335_20261021T235349_P05036_N_P_J_001/NISAR_L2_PR_GUNW_032_141_D_085_033_2000_SH_20261009T235335_20261009T235349_20261021T235335_20261021T235349_P05036_N_P_J_001.h5",
+   "AdditionalAttributes": {
+    "ASCENDING_DESCENDING": [
+     "DESCENDING"
+    ],
+    "FRAME_NUMBER": [
+     "85"
+    ],
+    "FREQUENCIES": [
+     "A"
+    ],
+    "FREQUENCY_A_POLARIZATION": [
+     "HH"
+    ],
+    "FREQUENCY_A_POLARIZATION_CONCAT": [
+     "HH"
+    ],
+    "FREQUENCY_A_RANGE_BANDWIDTH": [
+     "20"
+    ],
+    "FULL_FRAME": [
+     "FALSE"
+    ],
+    "JOINT_OBSERVATION": [
+     "FALSE"
+    ],
+    "ORBIT_TYPE": [
+     "MOE"
+    ],
+    "PROCESSING_CENTER": [
+     "JPL"
+    ],
+    "PROCESSING_LEVEL": [
+     "L2"
+    ],
+    "PRODUCTION_PIPELINE": [
+     "PR"
+    ],
+    "PRODUCT_TYPE": [
+     "GUNW"
+    ],
+    "PRODUCT_TYPE_DESC": [
+     "Geocoded Unwrapped Interferogram"
+    ],
+    "PRODUCT_VERSION": [
+     "1.0.20"
+    ],
+    "RANGE_BANDWIDTH_CONCAT": [
+     "20"
+    ],
+    "REFERENCE_ZERO_DOPPLER_END_TIME": [
+     "2026-10-09T23:53:49.999342Z"
+    ],
+    "REFERENCE_ZERO_DOPPLER_START_TIME": [
+     "2026-10-09T23:53:35.000000Z"
+    ],
+    "SECONDARY_ZERO_DOPPLER_END_TIME": [
+     "2026-10-21T23:53:49.999342Z"
+    ],
+    "SECONDARY_ZERO_DOPPLER_START_TIME": [
+     "2026-10-21T23:53:35.000000Z"
+    ],
+    "STACK_ID": [
+     "141_D_085"
+    ],
+    "TRACK_NUMBER": [
+     "141"
+    ]
+   },
+   "InputGranules": [
+    "NISAR_L1_PR_RSLC_032_141_D_085_2005_DHDH_M_20261009T235335_20261009T235349_P05023_N_P_J_001.h5",
+    "NISAR_L1_PR_RSLC_033_141_D_085_2005_DHDH_M_20261021T235335_20261021T235349_P05036_N_P_J_001.h5"
+   ],
+   "PGEVersionClass": {
+    "PGEName": "INSAR_L_PGE",
+    "PGEVersion": "R05.03.2"
+   },
+   "frequencyA_members": [
+    "centerFrequency",
+    "listOfPolarizations",
+    "pixelOffsets",
+    "unwrappedInterferogram",
+    "wrappedInterferogram"
+   ],
+   "centerFrequency": {
+    "value": "1229000000.0",
+    "dtype": "float64",
+    "attrs": {
+     "description": "Center frequency of the processed image in hertz",
+     "units": "hertz"
+    }
+   },
+   "grids_members": [
+    "frequencyA"
+   ],
+   "listOfPolarizations": [
+    "HH"
+   ],
+   "identification": {
+    "boundingPolygon": "POLYGON ((-82.7918904395733 8.24571075585173 13.376395193531,-82.8125720031247 8.15628126009465 13.1440829919173,-82.8332405526377 8.06685082235391 12.7618369876057,-82.853896433633 7.97741960629344 12.2082662537577,-82.8745375628561 7.88798720422837 11.6439972019613,-82.8951618027748 7.79855315177114 11.2345094885474,-82.9157674755442 7.70911688204454 11.1143474852155,-82.9363561776458 7.6196786541073 11.1717243524971,-82.9569296547848 7.53023890417975 11.2812605211246,-82.9774887051936 7.4407978918879 11.3877821329742,-82.9980338134776 7.35135581095625 11.459419275205,-82.7414189270181 7.29277138380064 10.2500095356306,-82.4956234852182 7.236505284392 10.5126428588468,-82.2589225307477 7.18218170593848 11.0167102801059,-82.0299819511795 7.12950997936913 11.1433553676709,-81.8077315730956 7.07825675526915 12.1286878583507,-81.591338444385 7.02824076729401 12.3224067693342,-81.3801042420069 6.97930986640476 12.0051492442899,-81.1734490349685 6.93133770773352 11.573799318231,-80.9708889245342 6.88421892880049 11.0979814150568,-80.7720114447204 6.83786371543885 10.8995892986224,-80.7511326785904 6.92696991514832 11.2483014682186,-80.7302294792031 7.0160732967804 12.1225525026987,-80.709301713835 7.10517374079677 13.5308077557711,-80.6883528403212 7.19427197365495 15.0413058349562,-80.6630311389746 7.28235224312591 550.163146969947,-80.6393877233981 7.37082591308473 877.331848130225,-80.6242071705891 7.46127973176188 163.686095624098,-80.6028578957784 7.55029558307359 204.178617971342,-80.5821972627596 7.63947538243504 157.76914917105,-80.5615547202307 7.72866233904283 106.620415685299,-80.7583033324422 7.77480925719044 389.677490338815,-80.9632213484767 7.82276148756057 142.912077966726,-81.1711086961579 7.87129593755713 38.5470784385714,-81.3815013151955 7.92029949166479 159.989670628595,-81.5992357926716 7.97088746028016 53.6851953273266,-81.8222185091353 8.02256313580525 15.1038341514669,-82.0515299035492 8.07556553934301 14.9365396503543,-82.288615995957 8.13021470589998 14.6292438484177,-82.5348257604697 8.18680424231042 13.7386369670563,-82.7918904395733 8.24571075585173 13.376395193531))",
+    "compositeReleaseId": "P05036",
+    "diagnosticModeFlag": 0,
+    "frameNumber": 85,
+    "granuleId": "NISAR_L2_PR_GUNW_032_141_D_085_033_2000_SH_20261009T235335_20261009T235349_20261021T235335_20261021T235349_P05036_N_P_J_001",
+    "instrumentName": "L-SAR",
+    "isDithered": "True",
+    "isFullFrame": "False",
+    "isGeocoded": "True",
+    "isMixedMode": "False",
+    "isUrgentObservation": "True",
+    "listOfFrequencies": [
+     "A"
+    ],
+    "lookDirection": "Left",
+    "missionId": "NISAR",
+    "orbitPassDirection": "Descending",
+    "platformName": "NISAR",
+    "processingCenter": "JPL",
+    "processingDateTime": "2026-11-12T20:48:05",
+    "processingType": "Nominal",
+    "productDoi": "10.5067/NIL2GUNW-V1",
+    "productLevel": "L2",
+    "productSpecificationVersion": "1.6.0",
+    "productType": "GUNW",
+    "productVersion": "1.0.20",
+    "radarBand": "L",
+    "referenceAbsoluteOrbitNumber": 6295,
+    "referenceHasInputDataException": 0,
+    "referenceIsJointObservation": "False",
+    "referenceListOfObservationModes": [
+     "(NOT SPECIFIED)"
+    ],
+    "referencePlannedDatatakeId": [
+     "dtid_2026282233748",
+     "dtid_2026282233748"
+    ],
+    "referencePlannedObservationId": [
+     "oid_2026282235308",
+     "oid_2026282235348"
+    ],
+    "referenceZeroDopplerEndTime": "2026-10-09T23:53:49.999342105",
+    "referenceZeroDopplerStartTime": "2026-10-09T23:53:35.000000000",
+    "secondaryAbsoluteOrbitNumber": 6468,
+    "secondaryHasInputDataException": 0,
+    "secondaryIsJointObservation": "False",
+    "secondaryListOfObservationModes": [
+     "(NOT SPECIFIED)"
+    ],
+    "secondaryPlannedDatatakeId": [
+     "dtid_2026294233748",
+     "dtid_2026294233748"
+    ],
+    "secondaryPlannedObservationId": [
+     "oid_2026294235308",
+     "oid_2026294235348"
+    ],
+    "secondaryZeroDopplerEndTime": "2026-10-21T23:53:49.999342105",
+    "secondaryZeroDopplerStartTime": "2026-10-21T23:53:35.000000000",
+    "staticLayersDataAccess": "https://nisar-services.earthdata.nasa.gov/redirect/NISAR_L2_STATIC/NISAR_L2_PR_GUNW_032_141_D_085_033_2000_SH_20261009T235335_20261009T235349_20261021T235335_20261021T235349_P05036_N_P_J_001.h5",
+    "trackNumber": 141
+   },
+   "inputs": {
+    "reference/rangeBandwidth": "20000000.0",
+    "reference/slantRangeSpacing": "6.245676208333333",
+    "secondary/rangeBandwidth": "20000000.0",
+    "secondary/slantRangeSpacing": "6.245676208333333"
+   },
+   "seconds": 8.0
+  },
+  "gunw_2000_1": {
+   "concept": "G4409845439-ASF",
+   "collection": "C3622247503-ASF",
+   "GranuleUR": "NISAR_L2_PR_GUNW_032_141_D_078_033_2000_SH_20261009T234941_20261009T235013_20261021T234941_20261021T235013_P05036_N_F_J_001",
+   "url": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/L2_L_GUNW/NISAR_L2_PR_GUNW_032_141_D_078_033_2000_SH_20261009T234941_20261009T235013_20261021T234941_20261021T235013_P05036_N_F_J_001/NISAR_L2_PR_GUNW_032_141_D_078_033_2000_SH_20261009T234941_20261009T235013_20261021T234941_20261021T235013_P05036_N_F_J_001.h5",
+   "AdditionalAttributes": {
+    "ASCENDING_DESCENDING": [
+     "DESCENDING"
+    ],
+    "FRAME_NUMBER": [
+     "78"
+    ],
+    "FREQUENCIES": [
+     "A"
+    ],
+    "FREQUENCY_A_POLARIZATION": [
+     "HH"
+    ],
+    "FREQUENCY_A_POLARIZATION_CONCAT": [
+     "HH"
+    ],
+    "FREQUENCY_A_RANGE_BANDWIDTH": [
+     "20"
+    ],
+    "FULL_FRAME": [
+     "TRUE"
+    ],
+    "JOINT_OBSERVATION": [
+     "FALSE"
+    ],
+    "ORBIT_TYPE": [
+     "MOE"
+    ],
+    "PROCESSING_CENTER": [
+     "JPL"
+    ],
+    "PROCESSING_LEVEL": [
+     "L2"
+    ],
+    "PRODUCTION_PIPELINE": [
+     "PR"
+    ],
+    "PRODUCT_TYPE": [
+     "GUNW"
+    ],
+    "PRODUCT_TYPE_DESC": [
+     "Geocoded Unwrapped Interferogram"
+    ],
+    "PRODUCT_VERSION": [
+     "1.0.20"
+    ],
+    "RANGE_BANDWIDTH_CONCAT": [
+     "20"
+    ],
+    "REFERENCE_ZERO_DOPPLER_END_TIME": [
+     "2026-10-09T23:50:13.999342Z"
+    ],
+    "REFERENCE_ZERO_DOPPLER_START_TIME": [
+     "2026-10-09T23:49:41.000000Z"
+    ],
+    "SECONDARY_ZERO_DOPPLER_END_TIME": [
+     "2026-10-21T23:50:13.999342Z"
+    ],
+    "SECONDARY_ZERO_DOPPLER_START_TIME": [
+     "2026-10-21T23:49:41.000000Z"
+    ],
+    "STACK_ID": [
+     "141_D_078"
+    ],
+    "TRACK_NUMBER": [
+     "141"
+    ]
+   },
+   "InputGranules": [
+    "NISAR_L1_PR_RSLC_032_141_D_078_2005_DHDH_A_20261009T234941_20261009T235013_P05023_N_F_J_001.h5",
+    "NISAR_L1_PR_RSLC_033_141_D_078_2005_DHDH_A_20261021T234941_20261021T235013_P05036_N_F_J_001.h5"
+   ],
+   "PGEVersionClass": {
+    "PGEName": "INSAR_L_PGE",
+    "PGEVersion": "R05.03.2"
+   },
+   "frequencyA_members": [
+    "centerFrequency",
+    "listOfPolarizations",
+    "pixelOffsets",
+    "unwrappedInterferogram",
+    "wrappedInterferogram"
+   ],
+   "centerFrequency": {
+    "value": "1229000000.0",
+    "dtype": "float64",
+    "attrs": {
+     "description": "Center frequency of the processed image in hertz",
+     "units": "hertz"
+    }
+   },
+   "grids_members": [
+    "frequencyA"
+   ],
+   "listOfPolarizations": [
+    "HH"
+   ],
+   "identification": {
+    "boundingPolygon": "POLYGON ((-79.27572657669 22.1601536997921 197.541442992177,-79.3314597489883 21.9648776570831 23.1405539048909,-79.3849175741536 21.7690771216702 -0.389039636874244,-79.4381787540607 21.573247283536 -20.8209839074924,-79.4910044138418 21.3773315938184 -20.9678135158677,-79.5436853946562 21.1813981931567 -21.4404201843642,-79.5962387265394 20.9854515058913 -23.3619480312106,-79.6486280941699 20.789483120032 -24.0325203003092,-79.7008506940013 20.5934913518634 -23.124391561511,-79.7529283625739 20.3974817687812 -22.106515874994,-79.8048684068272 20.2014563347333 -21.4079284772559,-79.540076999959 20.13853830002 -21.5605793015389,-79.2862730088167 20.0778101524551 -21.5846824657058,-79.0417362225121 20.0189101186784 -21.3734741237131,-78.8051394500152 19.9615592924826 -21.3192653653604,-78.575428523132 19.9055361173652 -21.5693778976822,-78.3517472622552 19.8506605108882 -21.7692928312382,-78.1334002044275 19.796786470684 -22.2918237228201,-77.9198046104659 19.7437915389125 -23.0303638471801,-77.7104701264883 19.6915726987329 -23.8792792569676,-77.5049828080283 19.6400431355918 -25.0792034064208,-77.4503524317857 19.8350619912178 -21.7515461618809,-77.3943614435284 20.0297591178423 120.370620070406,-77.3406199544691 20.2250458200507 -21.517673492708,-77.2854922142075 20.420003726922 -21.9473201919502,-77.23018342011 20.6149381947101 -22.2292267039425,-77.1744433800487 20.8097855496327 6.60830883265365,-77.1183202253463 21.0045574957506 58.6890343703599,-77.0628459892706 21.1995170029956 13.7347725899035,-77.0071382746696 21.3944401010062 -25.6297327345917,-76.9509321781155 21.5892590438984 -28.8973149538221,-77.1587999799859 21.6418230468276 -26.507449730017,-77.3705567476948 21.695064365373 -21.9138503774167,-77.5866791744358 21.7490846328265 -21.0027153725428,-77.8075195842635 21.803951315642 -9.07685015956732,-78.0338466606204 21.8598319729402 -4.43442363813967,-78.2662606399904 21.9168473860784 3.67511622845491,-78.5059396249314 21.9752543389578 -12.0330801203314,-78.7528022630693 22.0349962213927 45.344467163965,-79.0080137065729 22.0963149147532 177.612899080402,-79.27572657669 22.1601536997921 197.541442992177))",
+    "compositeReleaseId": "P05036",
+    "diagnosticModeFlag": 0,
+    "frameNumber": 78,
+    "granuleId": "NISAR_L2_PR_GUNW_032_141_D_078_033_2000_SH_20261009T234941_20261009T235013_20261021T234941_20261021T235013_P05036_N_F_J_001",
+    "instrumentName": "L-SAR",
+    "isDithered": "True",
+    "isFullFrame": "True",
+    "isGeocoded": "True",
+    "isMixedMode": "False",
+    "isUrgentObservation": "False",
+    "listOfFrequencies": [
+     "A"
+    ],
+    "lookDirection": "Left",
+    "missionId": "NISAR",
+    "orbitPassDirection": "Descending",
+    "platformName": "NISAR",
+    "processingCenter": "JPL",
+    "processingDateTime": "2026-11-12T22:51:45",
+    "processingType": "Nominal",
+    "productDoi": "10.5067/NIL2GUNW-V1",
+    "productLevel": "L2",
+    "productSpecificationVersion": "1.6.0",
+    "productType": "GUNW",
+    "productVersion": "1.0.20",
+    "radarBand": "L",
+    "referenceAbsoluteOrbitNumber": 6295,
+    "referenceHasInputDataException": 0,
+    "referenceIsJointObservation": "False",
+    "referenceListOfObservationModes": [
+     "(NOT SPECIFIED)"
+    ],
+    "referencePlannedDatatakeId": [
+     "dtid_2026282233748"
+    ],
+    "referencePlannedObservationId": [
+     "oid_2026282234916"
+    ],
+    "referenceZeroDopplerEndTime": "2026-10-09T23:50:13.999342105",
+    "referenceZeroDopplerStartTime": "2026-10-09T23:49:41.000000000",
+    "secondaryAbsoluteOrbitNumber": 6468,
+    "secondaryHasInputDataException": 0,
+    "secondaryIsJointObservation": "False",
+    "secondaryListOfObservationModes": [
+     "(NOT SPECIFIED)"
+    ],
+    "secondaryPlannedDatatakeId": [
+     "dtid_2026294233748"
+    ],
+    "secondaryPlannedObservationId": [
+     "oid_2026294234916"
+    ],
+    "secondaryZeroDopplerEndTime": "2026-10-21T23:50:13.999342105",
+    "secondaryZeroDopplerStartTime": "2026-10-21T23:49:41.000000000",
+    "staticLayersDataAccess": "https://nisar-services.earthdata.nasa.gov/redirect/NISAR_L2_STATIC/NISAR_L2_PR_GUNW_032_141_D_078_033_2000_SH_20261009T234941_20261009T235013_20261021T234941_20261021T235013_P05036_N_F_J_001.h5",
+    "trackNumber": 141
+   },
+   "inputs": {
+    "reference/rangeBandwidth": "20000000.0",
+    "reference/slantRangeSpacing": "6.245676208333333",
+    "secondary/rangeBandwidth": "20000000.0",
+    "secondary/slantRangeSpacing": "6.245676208333333"
+   },
+   "seconds": 7.4
+  },
+  "gunw_2000_2": {
+   "concept": "G4385363848-ASF",
+   "collection": "C2854335566-ASF",
+   "GranuleUR": "NISAR_L2_PR_GUNW_032_139_A_041_033_2000_SH_20261009T200900_20261009T200925_20261021T200900_20261021T200925_P05023_N_F_J_001",
+   "url": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GUNW_PROVISIONAL_V1/NISAR_L2_PR_GUNW_032_139_A_041_033_2000_SH_20261009T200900_20261009T200925_20261021T200900_20261021T200925_P05023_N_F_J_001/NISAR_L2_PR_GUNW_032_139_A_041_033_2000_SH_20261009T200900_20261009T200925_20261021T200900_20261021T200925_P05023_N_F_J_001.h5",
+   "AdditionalAttributes": {
+    "ASCENDING_DESCENDING": [
+     "ASCENDING"
+    ],
+    "FRAME_NUMBER": [
+     "41"
+    ],
+    "FREQUENCIES": [
+     "A"
+    ],
+    "FREQUENCY_A_POLARIZATION": [
+     "HH"
+    ],
+    "FREQUENCY_A_POLARIZATION_CONCAT": [
+     "HH"
+    ],
+    "FREQUENCY_A_RANGE_BANDWIDTH": [
+     "20"
+    ],
+    "FULL_FRAME": [
+     "TRUE"
+    ],
+    "JOINT_OBSERVATION": [
+     "FALSE"
+    ],
+    "ORBIT_TYPE": [
+     "MOE"
+    ],
+    "PROCESSING_CENTER": [
+     "JPL"
+    ],
+    "PROCESSING_LEVEL": [
+     "L2"
+    ],
+    "PRODUCTION_PIPELINE": [
+     "PR"
+    ],
+    "PRODUCT_TYPE": [
+     "GUNW"
+    ],
+    "PRODUCT_TYPE_DESC": [
+     "Geocoded Unwrapped Interferogram"
+    ],
+    "PRODUCT_VERSION": [
+     "1.0.11"
+    ],
+    "RANGE_BANDWIDTH_CONCAT": [
+     "20"
+    ],
+    "REFERENCE_ZERO_DOPPLER_END_TIME": [
+     "2026-10-09T20:09:25.999342Z"
+    ],
+    "REFERENCE_ZERO_DOPPLER_START_TIME": [
+     "2026-10-09T20:09:00.000000Z"
+    ],
+    "SECONDARY_ZERO_DOPPLER_END_TIME": [
+     "2026-10-21T20:09:25.999342Z"
+    ],
+    "SECONDARY_ZERO_DOPPLER_START_TIME": [
+     "2026-10-21T20:09:00.000000Z"
+    ],
+    "STACK_ID": [
+     "139_A_041"
+    ],
+    "TRACK_NUMBER": [
+     "139"
+    ]
+   },
+   "InputGranules": [
+    "NISAR_L1_PR_RSLC_032_139_A_041_2005_DHDH_A_20261009T200900_20261009T200925_P05023_N_F_J_001.h5",
+    "NISAR_L1_PR_RSLC_033_139_A_041_2005_DHDH_A_20261021T200900_20261021T200925_P05023_N_F_J_001.h5"
+   ],
+   "PGEVersionClass": {
+    "PGEName": "INSAR_L_PGE",
+    "PGEVersion": "R05.02.3"
+   },
+   "frequencyA_members": [
+    "centerFrequency",
+    "listOfPolarizations",
+    "pixelOffsets",
+    "unwrappedInterferogram",
+    "wrappedInterferogram"
+   ],
+   "centerFrequency": {
+    "value": "1229000000.0",
+    "dtype": "float64",
+    "attrs": {
+     "description": "Center frequency of the processed image in hertz",
+     "units": "hertz"
+    }
+   },
+   "grids_members": [
+    "frequencyA"
+   ],
+   "listOfPolarizations": [
+    "HH"
+   ],
+   "identification": {
+    "boundingPolygon": "POLYGON ((93.6127397090424 74.8868480850788 153.56361420114,93.1096401554882 74.9759431241709 175.943787331428,92.5978769904485 75.0628146251118 299.26416061811,92.0856328542365 75.1506329885294 237.210174307657,91.5664682796905 75.2369006764638 212.72581546611,91.0428360428588 75.3225823544178 138.314407163739,90.5143398209444 75.4075291668924 26.1621845951465,89.9773497121128 75.4902382913212 6.145692102945,89.4342511367002 75.571655520646 -7.06768375926536,88.8848765574357 75.6516893009903 -7.47667505563947,88.3295707938054 75.7304661596898 -7.89506914662837,87.82689642201 75.5078030123317 -7.22299528650478,87.3585039094451 75.2931280069258 -6.96893119818972,86.9192091354879 75.0851819422559 -6.30029618758596,86.5046657658158 74.8828242636463 12.6997386400818,86.1114535282716 74.6851448166385 67.7088093189199,85.7395905871996 74.492852839266 8.93151855047359,85.3841850193267 74.3040220430595 -8.35301418071611,85.0439692249777 74.118463828232 -8.66998546451565,84.7177416012031 73.9359658144274 -9.20012905849369,84.404233313802 73.7562184628191 -9.67466736539105,84.9121174047835 73.6864672804146 14.8445833581725,85.416172681991 73.6157444395139 9.23125481429084,85.916110452684 73.5439024090918 -4.92904815533454,86.4106226798719 73.4702496409452 68.1285018701048,86.9002834694609 73.3951451471744 182.791273906804,87.3890276936456 73.3206988641799 52.986972458764,87.8717923279163 73.244215877173 47.9253691153243,88.350659505183 73.1668207748964 16.1451953192522,88.8244287626521 73.0879148233905 42.4216039325067,89.2935595444109 73.0077585975552 93.3580167714851,89.6436488494906 73.1802846575121 25.711158624367,90.0061322495609 73.3547556757864 31.0705992712839,90.3816737471864 73.5311878048877 135.522492766032,90.7768413300886 73.7122490675609 45.0265729421183,91.1869212218547 73.8953299538635 130.348053727835,91.6201032179356 74.0835920322238 70.5947799067683,92.0706154805663 74.2739909725297 269.080978605746,92.5500633438461 74.4708102180952 326.813232421002,93.0646850224345 74.6756681141958 191.427597053767,93.6127397090424 74.8868480850788 153.56361420114))",
+    "compositeReleaseId": "P05023",
+    "diagnosticModeFlag": 0,
+    "frameNumber": 41,
+    "granuleId": "NISAR_L2_PR_GUNW_032_139_A_041_033_2000_SH_20261009T200900_20261009T200925_20261021T200900_20261021T200925_P05023_N_F_J_001",
+    "instrumentName": "L-SAR",
+    "isDithered": "True",
+    "isFullFrame": "True",
+    "isGeocoded": "True",
+    "isMixedMode": "False",
+    "isUrgentObservation": "False",
+    "listOfFrequencies": [
+     "A"
+    ],
+    "lookDirection": "Left",
+    "missionId": "NISAR",
+    "orbitPassDirection": "Ascending",
+    "platformName": "NISAR",
+    "processingCenter": "JPL",
+    "processingDateTime": "2026-10-23T14:10:39",
+    "processingType": "Nominal",
+    "productDoi": "10.5067/NIL2GUNW-P1",
+    "productLevel": "L2",
+    "productSpecificationVersion": "1.5.0",
+    "productType": "GUNW",
+    "productVersion": "1.0.11",
+    "radarBand": "L",
+    "referenceAbsoluteOrbitNumber": 6293,
+    "referenceHasInputDataException": 0,
+    "referenceIsJointObservation": "False",
+    "referenceListOfObservationModes": [
+     "(NOT SPECIFIED)"
+    ],
+    "referencePlannedDatatakeId": [
+     "dtid_2026282200856"
+    ],
+    "referencePlannedObservationId": [
+     "oid_2026282200900"
+    ],
+    "referenceZeroDopplerEndTime": "2026-10-09T20:09:25.999342105",
+    "referenceZeroDopplerStartTime": "2026-10-09T20:09:00.000000000",
+    "secondaryAbsoluteOrbitNumber": 6466,
+    "secondaryHasInputDataException": 0,
+    "secondaryIsJointObservation": "False",
+    "secondaryListOfObservationModes": [
+     "(NOT SPECIFIED)"
+    ],
+    "secondaryPlannedDatatakeId": [
+     "dtid_2026294200856"
+    ],
+    "secondaryPlannedObservationId": [
+     "oid_2026294200900"
+    ],
+    "secondaryZeroDopplerEndTime": "2026-10-21T20:09:25.999342105",
+    "secondaryZeroDopplerStartTime": "2026-10-21T20:09:00.000000000",
+    "staticLayersDataAccess": "https://nisar-services.earthdata.nasa.gov/redirect/NISAR_L2_STATIC/NISAR_L2_PR_GUNW_032_139_A_041_033_2000_SH_20261009T200900_20261009T200925_20261021T200900_20261021T200925_P05023_N_F_J_001.h5",
+    "trackNumber": 139
+   },
+   "inputs": {
+    "reference/rangeBandwidth": "20000000.0",
+    "reference/slantRangeSpacing": "6.245676208333333",
+    "secondary/rangeBandwidth": "20000000.0",
+    "secondary/slantRangeSpacing": "6.245676208333333"
+   },
+   "seconds": 7.7
+  },
+  "gunw_4000_0": {
+   "concept": "G4409751037-ASF",
+   "collection": "C3622247503-ASF",
+   "GranuleUR": "NISAR_L2_PR_GUNW_032_141_D_085_033_4000_SH_20261009T235335_20261009T235345_20261021T235335_20261021T235345_P05036_N_P_J_001",
+   "url": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/L2_L_GUNW/NISAR_L2_PR_GUNW_032_141_D_085_033_4000_SH_20261009T235335_20261009T235345_20261021T235335_20261021T235345_P05036_N_P_J_001/NISAR_L2_PR_GUNW_032_141_D_085_033_4000_SH_20261009T235335_20261009T235345_20261021T235335_20261021T235345_P05036_N_P_J_001.h5",
+   "AdditionalAttributes": {
+    "ASCENDING_DESCENDING": [
+     "DESCENDING"
+    ],
+    "FRAME_NUMBER": [
+     "85"
+    ],
+    "FREQUENCIES": [
+     "A"
+    ],
+    "FREQUENCY_A_POLARIZATION": [
+     "HH"
+    ],
+    "FREQUENCY_A_POLARIZATION_CONCAT": [
+     "HH"
+    ],
+    "FREQUENCY_A_RANGE_BANDWIDTH": [
+     "40"
+    ],
+    "FULL_FRAME": [
+     "FALSE"
+    ],
+    "JOINT_OBSERVATION": [
+     "FALSE"
+    ],
+    "ORBIT_TYPE": [
+     "MOE"
+    ],
+    "PROCESSING_CENTER": [
+     "JPL"
+    ],
+    "PROCESSING_LEVEL": [
+     "L2"
+    ],
+    "PRODUCTION_PIPELINE": [
+     "PR"
+    ],
+    "PRODUCT_TYPE": [
+     "GUNW"
+    ],
+    "PRODUCT_TYPE_DESC": [
+     "Geocoded Unwrapped Interferogram"
+    ],
+    "PRODUCT_VERSION": [
+     "1.0.20"
+    ],
+    "RANGE_BANDWIDTH_CONCAT": [
+     "40"
+    ],
+    "REFERENCE_ZERO_DOPPLER_END_TIME": [
+     "2026-10-09T23:53:45.999342Z"
+    ],
+    "REFERENCE_ZERO_DOPPLER_START_TIME": [
+     "2026-10-09T23:53:35.000000Z"
+    ],
+    "SECONDARY_ZERO_DOPPLER_END_TIME": [
+     "2026-10-21T23:53:45.999342Z"
+    ],
+    "SECONDARY_ZERO_DOPPLER_START_TIME": [
+     "2026-10-21T23:53:35.000000Z"
+    ],
+    "STACK_ID": [
+     "141_D_085"
+    ],
+    "TRACK_NUMBER": [
+     "141"
+    ]
+   },
+   "InputGranules": [
+    "NISAR_L1_PR_RSLC_032_141_D_085_4005_DHDH_A_20261009T235335_20261009T235345_P05023_N_P_J_001.h5",
+    "NISAR_L1_PR_RSLC_033_141_D_085_4005_DHDH_A_20261021T235335_20261021T235345_P05036_N_P_J_001.h5"
+   ],
+   "PGEVersionClass": {
+    "PGEName": "INSAR_L_PGE",
+    "PGEVersion": "R05.03.2"
+   },
+   "frequencyA_members": [
+    "centerFrequency",
+    "listOfPolarizations",
+    "pixelOffsets",
+    "unwrappedInterferogram",
+    "wrappedInterferogram"
+   ],
+   "centerFrequency": {
+    "value": "1239000000.0",
+    "dtype": "float64",
+    "attrs": {
+     "description": "Center frequency of the processed image in hertz",
+     "units": "hertz"
+    }
+   },
+   "grids_members": [
+    "frequencyA"
+   ],
+   "listOfPolarizations": [
+    "HH"
+   ],
+   "identification": {
+    "boundingPolygon": "POLYGON ((-82.7918904395733 8.24571075585173 13.376395193531,-82.8070581039988 8.18013030223974 13.2093724881032,-82.8222182505989 8.11454921160655 12.9999322626876,-82.8373721392799 8.04896780466794 12.6555814608468,-82.8525188634763 7.98338590796414 12.2459049159704,-82.8676576687838 7.91780337588486 11.8292284043386,-82.8827880489352 7.85222010577005 11.4455404423953,-82.8979085886451 7.78663576724062 11.2032308790207,-82.9130191459454 7.72105020927465 11.1172180439209,-82.9281204617102 7.65546357019859 11.1349163369061,-82.9432132074546 7.58987601269691 11.2082510334304,-82.6864815246983 7.5312056355882 10.2729206035678,-82.4405722751939 7.4748517790771 11.0988979307475,-82.2037636135054 7.42043950594979 12.1499032932004,-81.9747181185892 7.36767751031316 13.0493860226459,-81.7523787937656 7.31633557107435 13.6942539221675,-81.5358990803923 7.26622937755069 13.6465406429078,-81.3245791541962 7.21720649320954 13.3338847160998,-81.1178372254188 7.16914018943745 13.3672999622372,-80.9151924046671 7.12192584224236 13.4885274593824,-80.716239961644 7.07547547586465 13.057566129394,-80.7008852388275 7.14081397085763 14.0917688177422,-80.685518360503 7.20615107673646 15.2776626073987,-80.6672593228727 7.2708146405189 369.609451366418,-80.6479316931875 7.33522947162253 854.106750290533,-80.6349482205314 7.40112713746618 558.628906251507,-80.6229602819381 7.46725963692083 140.135742743472,-80.6077143026966 7.53263262482866 119.741036179302,-80.5908164881583 7.59762074756315 300.348536346053,-80.5767304854743 7.66326823584231 135.107268565051,-80.5615189007254 7.72865392763938 106.409257241549,-80.7582690757964 7.77480123138909 389.663573835664,-80.9631925722062 7.82275475999793 142.641738439734,-81.1710730414532 7.87128762727122 39.3975611505309,-81.3814803718169 7.92029461784231 159.627275006919,-81.5992179851974 7.97088332664155 53.3796792216379,-81.8222013328736 8.02255916040009 15.1038627630596,-82.0515166106031 8.07556247098165 14.9365396496094,-82.2886068145219 8.13021259251695 14.6292772264604,-82.5348209814019 8.18680314549113 13.7386445965619,-82.7918904395733 8.24571075585173 13.376395193531))",
+    "compositeReleaseId": "P05036",
+    "diagnosticModeFlag": 0,
+    "frameNumber": 85,
+    "granuleId": "NISAR_L2_PR_GUNW_032_141_D_085_033_4000_SH_20261009T235335_20261009T235345_20261021T235335_20261021T235345_P05036_N_P_J_001",
+    "instrumentName": "L-SAR",
+    "isDithered": "True",
+    "isFullFrame": "False",
+    "isGeocoded": "True",
+    "isMixedMode": "False",
+    "isUrgentObservation": "True",
+    "listOfFrequencies": [
+     "A"
+    ],
+    "lookDirection": "Left",
+    "missionId": "NISAR",
+    "orbitPassDirection": "Descending",
+    "platformName": "NISAR",
+    "processingCenter": "JPL",
+    "processingDateTime": "2026-11-12T21:31:45",
+    "processingType": "Nominal",
+    "productDoi": "10.5067/NIL2GUNW-V1",
+    "productLevel": "L2",
+    "productSpecificationVersion": "1.6.0",
+    "productType": "GUNW",
+    "productVersion": "1.0.20",
+    "radarBand": "L",
+    "referenceAbsoluteOrbitNumber": 6295,
+    "referenceHasInputDataException": 0,
+    "referenceIsJointObservation": "False",
+    "referenceListOfObservationModes": [
+     "(NOT SPECIFIED)"
+    ],
+    "referencePlannedDatatakeId": [
+     "dtid_2026282233748"
+    ],
+    "referencePlannedObservationId": [
+     "oid_2026282235308"
+    ],
+    "referenceZeroDopplerEndTime": "2026-10-09T23:53:45.999342105",
+    "referenceZeroDopplerStartTime": "2026-10-09T23:53:35.000000000",
+    "secondaryAbsoluteOrbitNumber": 6468,
+    "secondaryHasInputDataException": 0,
+    "secondaryIsJointObservation": "False",
+    "secondaryListOfObservationModes": [
+     "(NOT SPECIFIED)"
+    ],
+    "secondaryPlannedDatatakeId": [
+     "dtid_2026294233748"
+    ],
+    "secondaryPlannedObservationId": [
+     "oid_2026294235308"
+    ],
+    "secondaryZeroDopplerEndTime": "2026-10-21T23:53:45.999342105",
+    "secondaryZeroDopplerStartTime": "2026-10-21T23:53:35.000000000",
+    "staticLayersDataAccess": "https://nisar-services.earthdata.nasa.gov/redirect/NISAR_L2_STATIC/NISAR_L2_PR_GUNW_032_141_D_085_033_4000_SH_20261009T235335_20261009T235345_20261021T235335_20261021T235345_P05036_N_P_J_001.h5",
+    "trackNumber": 141
+   },
+   "inputs": {
+    "reference/rangeBandwidth": "40000000.0",
+    "reference/slantRangeSpacing": "3.1228381041666666",
+    "secondary/rangeBandwidth": "40000000.0",
+    "secondary/slantRangeSpacing": "3.1228381041666666"
+   },
+   "seconds": 6.7
+  },
+  "gunw_4000_1": {
+   "concept": "G4410096931-ASF",
+   "collection": "C3622247503-ASF",
+   "GranuleUR": "NISAR_L2_PR_GUNW_032_141_D_084_033_4000_SH_20261009T235308_20261009T235336_20261021T235308_20261021T235336_P05036_N_F_J_001",
+   "url": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/L2_L_GUNW/NISAR_L2_PR_GUNW_032_141_D_084_033_4000_SH_20261009T235308_20261009T235336_20261021T235308_20261021T235336_P05036_N_F_J_001/NISAR_L2_PR_GUNW_032_141_D_084_033_4000_SH_20261009T235308_20261009T235336_20261021T235308_20261021T235336_P05036_N_F_J_001.h5",
+   "AdditionalAttributes": {
+    "ASCENDING_DESCENDING": [
+     "DESCENDING"
+    ],
+    "FRAME_NUMBER": [
+     "84"
+    ],
+    "FREQUENCIES": [
+     "A"
+    ],
+    "FREQUENCY_A_POLARIZATION": [
+     "HH"
+    ],
+    "FREQUENCY_A_POLARIZATION_CONCAT": [
+     "HH"
+    ],
+    "FREQUENCY_A_RANGE_BANDWIDTH": [
+     "40"
+    ],
+    "FULL_FRAME": [
+     "TRUE"
+    ],
+    "JOINT_OBSERVATION": [
+     "FALSE"
+    ],
+    "ORBIT_TYPE": [
+     "MOE"
+    ],
+    "PROCESSING_CENTER": [
+     "JPL"
+    ],
+    "PROCESSING_LEVEL": [
+     "L2"
+    ],
+    "PRODUCTION_PIPELINE": [
+     "PR"
+    ],
+    "PRODUCT_TYPE": [
+     "GUNW"
+    ],
+    "PRODUCT_TYPE_DESC": [
+     "Geocoded Unwrapped Interferogram"
+    ],
+    "PRODUCT_VERSION": [
+     "1.0.20"
+    ],
+    "RANGE_BANDWIDTH_CONCAT": [
+     "40"
+    ],
+    "REFERENCE_ZERO_DOPPLER_END_TIME": [
+     "2026-10-09T23:53:36.999342Z"
+    ],
+    "REFERENCE_ZERO_DOPPLER_START_TIME": [
+     "2026-10-09T23:53:08.000000Z"
+    ],
+    "SECONDARY_ZERO_DOPPLER_END_TIME": [
+     "2026-10-21T23:53:36.999342Z"
+    ],
+    "SECONDARY_ZERO_DOPPLER_START_TIME": [
+     "2026-10-21T23:53:08.000000Z"
+    ],
+    "STACK_ID": [
+     "141_D_084"
+    ],
+    "TRACK_NUMBER": [
+     "141"
+    ]
+   },
+   "InputGranules": [
+    "NISAR_L1_PR_RSLC_032_141_D_084_4005_DHDH_A_20261009T235308_20261009T235336_P05023_N_F_J_001.h5",
+    "NISAR_L1_PR_RSLC_033_141_D_084_4005_DHDH_A_20261021T235308_20261021T235336_P05036_N_F_J_001.h5"
+   ],
+   "PGEVersionClass": {
+    "PGEName": "INSAR_L_PGE",
+    "PGEVersion": "R05.03.2"
+   },
+   "frequencyA_members": [
+    "centerFrequency",
+    "listOfPolarizations",
+    "pixelOffsets",
+    "unwrappedInterferogram",
+    "wrappedInterferogram"
+   ],
+   "centerFrequency": {
+    "value": "1239000000.0",
+    "dtype": "float64",
+    "attrs": {
+     "description": "Center frequency of the processed image in hertz",
+     "units": "hertz"
+    }
+   },
+   "grids_members": [
+    "frequencyA"
+   ],
+   "listOfPolarizations": [
+    "HH"
+   ],
+   "identification": {
+    "boundingPolygon": "POLYGON ((-82.4170721542695 9.85529311628884 7.94916868960437,-82.4575717963304 9.6824379347841 9.04309654614824,-82.4978489310997 9.50954021115593 22.148457338378,-82.5379994497371 9.33662122602001 40.1825986709125,-82.5628117561458 9.16019241392403 1202.56367069073,-82.6002375501614 8.98666781484606 1417.05334443464,-82.638553470365 8.8133559635598 1560.430419923,-82.6921297722056 8.64354519481294 552.384631913816,-82.7380918690914 8.47199647299574 113.292090934984,-82.7794661582266 8.29940554022303 13.4704379774426,-82.8194549258924 8.12650516857535 13.0468663914135,-82.5624402331513 8.067638841749 13.931521409811,-82.3162862146688 8.01109208632739 14.683564183297,-82.0792502905962 7.95648561521865 15.1111879335837,-81.8499865204524 7.90352645220625 15.4399795524761,-81.6274345704499 7.85198382667799 15.8156185285895,-81.4092617633478 7.80132889033678 170.842393623993,-81.1990678891336 7.7524065923538 32.9533990539341,-80.9918789999795 7.70407135159174 62.6142363424817,-80.784836232303 7.65566097154565 561.964600996754,-80.5881478618421 7.60956509664971 282.64879017596,-80.5488575465318 7.78214244786391 107.188178780865,-80.5080484781193 7.95437472024157 108.204436770815,-80.4679295913909 8.12678025746666 15.1259641776265,-80.4269697909461 8.29899950258141 15.2293977732783,-80.3855776739927 8.47112746488991 58.4048693709476,-80.3425674647535 8.64288466246593 289.532037865543,-80.301548582902 8.81512223610131 267.160768194112,-80.2602929189648 8.98731482828787 263.728424507091,-80.220692525826 9.15990991472709 48.0725995675978,-80.1795657040721 9.33215594382448 8.75894359751175,-80.3794170022546 9.37953287064761 7.51339050449026,-80.5829853726928 9.42766137524147 6.33258421733313,-80.7906810927295 9.47663030393499 5.44809124129858,-81.0029847505837 9.52654371058548 5.41849565472224,-81.2204882941826 9.57753014075063 4.89099073438153,-81.4438784038869 9.62973827350987 5.0878229148268,-81.6740106469522 9.6833536759899 5.8506269521293,-81.9119527148396 9.73860801081721 6.70997429069962,-82.1590568628265 9.79579467996016 7.34170627846813,-82.4170721542695 9.85529311628884 7.94916868960437))",
+    "compositeReleaseId": "P05036",
+    "diagnosticModeFlag": 0,
+    "frameNumber": 84,
+    "granuleId": "NISAR_L2_PR_GUNW_032_141_D_084_033_4000_SH_20261009T235308_20261009T235336_20261021T235308_20261021T235336_P05036_N_F_J_001",
+    "instrumentName": "L-SAR",
+    "isDithered": "True",
+    "isFullFrame": "True",
+    "isGeocoded": "True",
+    "isMixedMode": "False",
+    "isUrgentObservation": "True",
+    "listOfFrequencies": [
+     "A"
+    ],
+    "lookDirection": "Left",
+    "missionId": "NISAR",
+    "orbitPassDirection": "Descending",
+    "platformName": "NISAR",
+    "processingCenter": "JPL",
+    "processingDateTime": "2026-11-13T05:55:34",
+    "processingType": "Nominal",
+    "productDoi": "10.5067/NIL2GUNW-V1",
+    "productLevel": "L2",
+    "productSpecificationVersion": "1.6.0",
+    "productType": "GUNW",
+    "productVersion": "1.0.20",
+    "radarBand": "L",
+    "referenceAbsoluteOrbitNumber": 6295,
+    "referenceHasInputDataException": 0,
+    "referenceIsJointObservation": "False",
+    "referenceListOfObservationModes": [
+     "(NOT SPECIFIED)"
+    ],
+    "referencePlannedDatatakeId": [
+     "dtid_2026282233748"
+    ],
+    "referencePlannedObservationId": [
+     "oid_2026282235308"
+    ],
+    "referenceZeroDopplerEndTime": "2026-10-09T23:53:36.999342105",
+    "referenceZeroDopplerStartTime": "2026-10-09T23:53:08.000000000",
+    "secondaryAbsoluteOrbitNumber": 6468,
+    "secondaryHasInputDataException": 0,
+    "secondaryIsJointObservation": "False",
+    "secondaryListOfObservationModes": [
+     "(NOT SPECIFIED)"
+    ],
+    "secondaryPlannedDatatakeId": [
+     "dtid_2026294233748"
+    ],
+    "secondaryPlannedObservationId": [
+     "oid_2026294235308"
+    ],
+    "secondaryZeroDopplerEndTime": "2026-10-21T23:53:36.999342105",
+    "secondaryZeroDopplerStartTime": "2026-10-21T23:53:08.000000000",
+    "staticLayersDataAccess": "https://nisar-services.earthdata.nasa.gov/redirect/NISAR_L2_STATIC/NISAR_L2_PR_GUNW_032_141_D_084_033_4000_SH_20261009T235308_20261009T235336_20261021T235308_20261021T235336_P05036_N_F_J_001.h5",
+    "trackNumber": 141
+   },
+   "inputs": {
+    "reference/rangeBandwidth": "40000000.0",
+    "reference/slantRangeSpacing": "3.1228381041666666",
+    "secondary/rangeBandwidth": "40000000.0",
+    "secondary/slantRangeSpacing": "3.1228381041666666"
+   },
+   "seconds": 6.7
+  },
+  "gunw_4000_2": {
+   "concept": "G4385197481-ASF",
+   "collection": "C2854335566-ASF",
+   "GranuleUR": "NISAR_L2_PR_GUNW_032_139_D_091_033_4000_SH_20261009T203740_20261009T203744_20261021T203740_20261021T203744_P05023_N_P_J_001",
+   "url": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GUNW_PROVISIONAL_V1/NISAR_L2_PR_GUNW_032_139_D_091_033_4000_SH_20261009T203740_20261009T203744_20261021T203740_20261021T203744_P05023_N_P_J_001/NISAR_L2_PR_GUNW_032_139_D_091_033_4000_SH_20261009T203740_20261009T203744_20261021T203740_20261021T203744_P05023_N_P_J_001.h5",
+   "AdditionalAttributes": {
+    "ASCENDING_DESCENDING": [
+     "DESCENDING"
+    ],
+    "FRAME_NUMBER": [
+     "91"
+    ],
+    "FREQUENCIES": [
+     "A"
+    ],
+    "FREQUENCY_A_POLARIZATION": [
+     "HH"
+    ],
+    "FREQUENCY_A_POLARIZATION_CONCAT": [
+     "HH"
+    ],
+    "FREQUENCY_A_RANGE_BANDWIDTH": [
+     "40"
+    ],
+    "FULL_FRAME": [
+     "FALSE"
+    ],
+    "JOINT_OBSERVATION": [
+     "FALSE"
+    ],
+    "ORBIT_TYPE": [
+     "MOE"
+    ],
+    "PROCESSING_CENTER": [
+     "JPL"
+    ],
+    "PROCESSING_LEVEL": [
+     "L2"
+    ],
+    "PRODUCTION_PIPELINE": [
+     "PR"
+    ],
+    "PRODUCT_TYPE": [
+     "GUNW"
+    ],
+    "PRODUCT_TYPE_DESC": [
+     "Geocoded Unwrapped Interferogram"
+    ],
+    "PRODUCT_VERSION": [
+     "1.0.11"
+    ],
+    "RANGE_BANDWIDTH_CONCAT": [
+     "40"
+    ],
+    "REFERENCE_ZERO_DOPPLER_END_TIME": [
+     "2026-10-09T20:37:44.999342Z"
+    ],
+    "REFERENCE_ZERO_DOPPLER_START_TIME": [
+     "2026-10-09T20:37:40.000000Z"
+    ],
+    "SECONDARY_ZERO_DOPPLER_END_TIME": [
+     "2026-10-21T20:37:44.999342Z"
+    ],
+    "SECONDARY_ZERO_DOPPLER_START_TIME": [
+     "2026-10-21T20:37:40.000000Z"
+    ],
+    "STACK_ID": [
+     "139_D_091"
+    ],
+    "TRACK_NUMBER": [
+     "139"
+    ]
+   },
+   "InputGranules": [
+    "NISAR_L1_PR_RSLC_032_139_D_091_4005_DHDH_A_20261009T203740_20261009T203744_P05023_N_P_J_001.h5",
+    "NISAR_L1_PR_RSLC_033_139_D_091_4005_DHDH_A_20261021T203740_20261021T203744_P05023_N_P_J_001.h5"
+   ],
+   "PGEVersionClass": {
+    "PGEName": "INSAR_L_PGE",
+    "PGEVersion": "R05.02.3"
+   },
+   "frequencyA_members": [
+    "centerFrequency",
+    "listOfPolarizations",
+    "pixelOffsets",
+    "unwrappedInterferogram",
+    "wrappedInterferogram"
+   ],
+   "centerFrequency": {
+    "value": "1239000000.0",
+    "dtype": "float64",
+    "attrs": {
+     "description": "Center frequency of the processed image in hertz",
+     "units": "hertz"
+    }
+   },
+   "grids_members": [
+    "frequencyA"
+   ],
+   "listOfPolarizations": [
+    "HH"
+   ],
+   "identification": {
+    "boundingPolygon": "POLYGON ((-35.8634258004412 -5.55605018568481 130.369842529344,-35.8699570152336 -5.58584920734077 120.429825514534,-35.876368491496 -5.61567334447758 119.448173863136,-35.8826470152167 -5.64552537037254 128.415328715655,-35.8885012665566 -5.67546674882047 169.217986780992,-35.8949271848862 -5.70528728883878 167.028839389283,-35.9010775254273 -5.73516581805656 185.504593500134,-35.9068660092432 -5.76512049616858 231.128782848578,-35.9125527740077 -5.79509642115622 284.361694335028,-35.9185104747778 -5.82501501973863 317.196594236507,-35.9259262879749 -5.85462611620894 240.42242333657,-35.6707939788417 -5.90866826779245 64.7125842694039,-35.4241370511521 -5.96079314196612 57.9971132334916,-35.1866091840814 -6.0108773038662 39.5749588319459,-34.9570102504084 -6.05918504354085 -4.7366623876709,-34.7335627959315 -6.10609789378489 -5.89719343164803,-34.5159029832536 -6.15170019604922 -7.34647417016224,-34.3033286576222 -6.19614545674065 -7.87357663384121,-34.0952761989901 -6.23955707022004 -8.38274407323552,-33.8912635518189 -6.28204044386157 -8.70478387894756,-33.6908824738328 -6.323684823535 -8.74926917622583,-33.6846587683616 -6.29394576448871 -8.68195964877151,-33.6784338638101 -6.26420672117327 -8.60984934948069,-33.6722077710189 -6.23446769239727 -8.53448710918874,-33.6659805110283 -6.20472867403042 -8.45869010163328,-33.659752104918 -6.17498966103623 -8.38530305015928,-33.6535225776376 -6.14525064663613 -8.31766761580314,-33.6472919329312 -6.11551160524956 -8.25709788379309,-33.6410601615267 -6.08577253407023 -8.20281945649269,-33.6348272435658 -6.0560334361163 -8.15267514324046,-33.6285931665645 -6.02629431378912 -8.10538705668806,-33.8288260482955 -5.98455080652768 -8.18442540563435,-34.032690549441 -5.94197000567299 -8.26366469430751,-34.2405919965637 -5.8984632463915 -8.12839902219738,-34.4530085072836 -5.85392591594475 -7.59030675942664,-34.6705160414701 -5.80823202818573 -7.08622217171399,-34.8937951509956 -5.76123253778554 -5.71561049941756,-35.1237049270586 -5.71273953254956 -4.97375917575293,-35.3607570896986 -5.66263621527578 41.1460682456235,-35.6069838035387 -5.61048427593419 68.2526172491385,-35.8634258004412 -5.55605018568481 130.369842529344))",
+    "compositeReleaseId": "P05023",
+    "diagnosticModeFlag": 0,
+    "frameNumber": 91,
+    "granuleId": "NISAR_L2_PR_GUNW_032_139_D_091_033_4000_SH_20261009T203740_20261009T203744_20261021T203740_20261021T203744_P05023_N_P_J_001",
+    "instrumentName": "L-SAR",
+    "isDithered": "True",
+    "isFullFrame": "False",
+    "isGeocoded": "True",
+    "isMixedMode": "False",
+    "isUrgentObservation": "False",
+    "listOfFrequencies": [
+     "A"
+    ],
+    "lookDirection": "Left",
+    "missionId": "NISAR",
+    "orbitPassDirection": "Descending",
+    "platformName": "NISAR",
+    "processingCenter": "JPL",
+    "processingDateTime": "2026-10-23T12:11:34",
+    "processingType": "Nominal",
+    "productDoi": "10.5067/NIL2GUNW-P1",
+    "productLevel": "L2",
+    "productSpecificationVersion": "1.5.0",
+    "productType": "GUNW",
+    "productVersion": "1.0.11",
+    "radarBand": "L",
+    "referenceAbsoluteOrbitNumber": 6293,
+    "referenceHasInputDataException": 0,
+    "referenceIsJointObservation": "False",
+    "referenceListOfObservationModes": [
+     "(NOT SPECIFIED)"
+    ],
+    "referencePlannedDatatakeId": [
+     "dtid_2026282203724"
+    ],
+    "referencePlannedObservationId": [
+     "oid_2026282203740"
+    ],
+    "referenceZeroDopplerEndTime": "2026-10-09T20:37:44.999342105",
+    "referenceZeroDopplerStartTime": "2026-10-09T20:37:40.000000000",
+    "secondaryAbsoluteOrbitNumber": 6466,
+    "secondaryHasInputDataException": 0,
+    "secondaryIsJointObservation": "False",
+    "secondaryListOfObservationModes": [
+     "(NOT SPECIFIED)"
+    ],
+    "secondaryPlannedDatatakeId": [
+     "dtid_2026294203724"
+    ],
+    "secondaryPlannedObservationId": [
+     "oid_2026294203740"
+    ],
+    "secondaryZeroDopplerEndTime": "2026-10-21T20:37:44.999342105",
+    "secondaryZeroDopplerStartTime": "2026-10-21T20:37:40.000000000",
+    "staticLayersDataAccess": "https://nisar-services.earthdata.nasa.gov/redirect/NISAR_L2_STATIC/NISAR_L2_PR_GUNW_032_139_D_091_033_4000_SH_20261009T203740_20261009T203744_20261021T203740_20261021T203744_P05023_N_P_J_001.h5",
+    "trackNumber": 139
+   },
+   "inputs": {
+    "reference/rangeBandwidth": "40000000.0",
+    "reference/slantRangeSpacing": "3.1228381041666666",
+    "secondary/rangeBandwidth": "40000000.0",
+    "secondary/slantRangeSpacing": "3.1228381041666666"
+   },
+   "seconds": 7.0
+  },
+  "gunw_7700_0": {
+   "concept": "G4410025536-ASF",
+   "collection": "C3622247503-ASF",
+   "GranuleUR": "NISAR_L2_PR_GUNW_032_141_D_055_033_7700_SH_20261009T233633_20261009T233713_20261021T233633_20261021T233713_P05036_N_P_J_001",
+   "url": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/L2_L_GUNW/NISAR_L2_PR_GUNW_032_141_D_055_033_7700_SH_20261009T233633_20261009T233713_20261021T233633_20261021T233713_P05036_N_P_J_001/NISAR_L2_PR_GUNW_032_141_D_055_033_7700_SH_20261009T233633_20261009T233713_20261021T233633_20261021T233713_P05036_N_P_J_001.h5",
+   "AdditionalAttributes": {
+    "ASCENDING_DESCENDING": [
+     "DESCENDING"
+    ],
+    "FRAME_NUMBER": [
+     "55"
+    ],
+    "FREQUENCIES": [
+     "A"
+    ],
+    "FREQUENCY_A_POLARIZATION": [
+     "HH"
+    ],
+    "FREQUENCY_A_POLARIZATION_CONCAT": [
+     "HH"
+    ],
+    "FREQUENCY_A_RANGE_BANDWIDTH": [
+     "77"
+    ],
+    "FULL_FRAME": [
+     "FALSE"
+    ],
+    "JOINT_OBSERVATION": [
+     "FALSE"
+    ],
+    "ORBIT_TYPE": [
+     "MOE"
+    ],
+    "PROCESSING_CENTER": [
+     "JPL"
+    ],
+    "PROCESSING_LEVEL": [
+     "L2"
+    ],
+    "PRODUCTION_PIPELINE": [
+     "PR"
+    ],
+    "PRODUCT_TYPE": [
+     "GUNW"
+    ],
+    "PRODUCT_TYPE_DESC": [
+     "Geocoded Unwrapped Interferogram"
+    ],
+    "PRODUCT_VERSION": [
+     "1.0.20"
+    ],
+    "RANGE_BANDWIDTH_CONCAT": [
+     "77"
+    ],
+    "REFERENCE_ZERO_DOPPLER_END_TIME": [
+     "2026-10-09T23:37:13.999342Z"
+    ],
+    "REFERENCE_ZERO_DOPPLER_START_TIME": [
+     "2026-10-09T23:36:33.000000Z"
+    ],
+    "SECONDARY_ZERO_DOPPLER_END_TIME": [
+     "2026-10-21T23:37:13.999342Z"
+    ],
+    "SECONDARY_ZERO_DOPPLER_START_TIME": [
+     "2026-10-21T23:36:33.000000Z"
+    ],
+    "STACK_ID": [
+     "141_D_055"
+    ],
+    "TRACK_NUMBER": [
+     "141"
+    ]
+   },
+   "InputGranules": [
+    "NISAR_L1_PR_RSLC_032_141_D_055_7700_SHNA_A_20261009T233633_20261009T233713_P05023_N_P_J_001.h5",
+    "NISAR_L1_PR_RSLC_033_141_D_055_7700_SHNA_A_20261021T233633_20261021T233713_P05036_N_P_J_001.h5"
+   ],
+   "PGEVersionClass": {
+    "PGEName": "INSAR_L_PGE",
+    "PGEVersion": "R05.03.2"
+   },
+   "frequencyA_members": [
+    "centerFrequency",
+    "listOfPolarizations",
+    "pixelOffsets",
+    "unwrappedInterferogram",
+    "wrappedInterferogram"
+   ],
+   "centerFrequency": {
+    "value": "1257500000.0",
+    "dtype": "float64",
+    "attrs": {
+     "description": "Center frequency of the processed image in hertz",
+     "units": "hertz"
+    }
+   },
+   "grids_members": [
+    "frequencyA"
+   ],
+   "listOfPolarizations": [
+    "HH"
+   ],
+   "identification": {
+    "boundingPolygon": "POLYGON ((-51.8421822699208 67.0927008546926 668.480407263654,-52.1947478243201 66.8844130476367 724.139099120646,-52.5464771736215 66.6766868066745 602.277038587118,-52.8744686289424 66.4635290770308 1122.9348351282,-53.2420211672421 66.2614055536792 29.2940829208892,-53.5541970604959 66.0456171747162 722.998040570289,-53.8995938853402 65.8391344939587 28.5006866358982,-54.2205015038751 65.6270013734666 28.3552722811566,-54.536328850016 65.4142291348769 27.9338741121305,-54.8472034840721 65.20083617335 26.8512248713755,-55.1532330469879 64.9868379377151 25.2633762041795,-54.9005217442347 64.922001820872 26.0208034337444,-54.6543281736619 64.8581212231845 26.6994762350652,-54.4141317716775 64.7951086433417 27.2467460578225,-54.1794756575593 64.7328871749174 27.6844692223046,-53.9499600122661 64.6713897912166 27.9353580468597,-53.7252273380874 64.6105562576892 28.0809650398566,-53.504960602911 64.5503333136849 28.1480503064711,-53.2888756402551 64.4906731987845 28.1905002575522,-53.0767207931779 64.4315340681694 28.0803699502237,-52.8682620122931 64.3728762612335 28.0402545925747,-52.5509135343919 64.5822284563299 27.5896530169646,-52.2287231623531 64.7909017992727 27.4479331975103,-51.8969005475871 64.9975382386922 261.477020263688,-51.5643263596788 65.2046873208544 280.011138915226,-51.2223216081318 65.4098759669617 509.96179208463,-50.8791881010801 65.6155032506779 533.845948179715,-50.5319139900326 65.820723791143 496.422880844855,-50.1716056902169 66.0229670918078 827.918397427053,-49.8138149461814 66.2267667632377 760.00689843494,-49.4442694588716 66.4279797119845 984.6067504881,-49.6679984263766 66.4931056473821 674.816711967145,-49.8846135538304 66.5555277156987 893.392250283993,-50.1126068938868 66.6205749957026 782.691894531706,-50.3499363475755 66.6875783641257 471.494261929836,-50.5782027041772 66.7513379465811 762.147705165957,-50.8296918232567 66.8208347391676 304.0923467492,-51.0828207169404 66.8899854362747 31.0598430845232,-51.3294981627021 66.956606243682 248.435897119247,-51.5922709078703 67.026762187288 102.783791553389,-51.8421822699208 67.0927008546926 668.480407263654))",
+    "compositeReleaseId": "P05036",
+    "diagnosticModeFlag": 0,
+    "frameNumber": 55,
+    "granuleId": "NISAR_L2_PR_GUNW_032_141_D_055_033_7700_SH_20261009T233633_20261009T233713_20261021T233633_20261021T233713_P05036_N_P_J_001",
+    "instrumentName": "L-SAR",
+    "isDithered": "True",
+    "isFullFrame": "False",
+    "isGeocoded": "True",
+    "isMixedMode": "False",
+    "isUrgentObservation": "False",
+    "listOfFrequencies": [
+     "A"
+    ],
+    "lookDirection": "Left",
+    "missionId": "NISAR",
+    "orbitPassDirection": "Descending",
+    "platformName": "NISAR",
+    "processingCenter": "JPL",
+    "processingDateTime": "2026-11-13T01:56:23",
+    "processingType": "Nominal",
+    "productDoi": "10.5067/NIL2GUNW-V1",
+    "productLevel": "L2",
+    "productSpecificationVersion": "1.6.0",
+    "productType": "GUNW",
+    "productVersion": "1.0.20",
+    "radarBand": "L",
+    "referenceAbsoluteOrbitNumber": 6295,
+    "referenceHasInputDataException": 0,
+    "referenceIsJointObservation": "False",
+    "referenceListOfObservationModes": [
+     "(NOT SPECIFIED)"
+    ],
+    "referencePlannedDatatakeId": [
+     "dtid_2026282233128"
+    ],
+    "referencePlannedObservationId": [
+     "oid_2026282233304"
+    ],
+    "referenceZeroDopplerEndTime": "2026-10-09T23:37:13.999342105",
+    "referenceZeroDopplerStartTime": "2026-10-09T23:36:33.000000000",
+    "secondaryAbsoluteOrbitNumber": 6468,
+    "secondaryHasInputDataException": 0,
+    "secondaryIsJointObservation": "False",
+    "secondaryListOfObservationModes": [
+     "(NOT SPECIFIED)"
+    ],
+    "secondaryPlannedDatatakeId": [
+     "dtid_2026294233128"
+    ],
+    "secondaryPlannedObservationId": [
+     "oid_2026294233304"
+    ],
+    "secondaryZeroDopplerEndTime": "2026-10-21T23:37:13.999342105",
+    "secondaryZeroDopplerStartTime": "2026-10-21T23:36:33.000000000",
+    "staticLayersDataAccess": "https://nisar-services.earthdata.nasa.gov/redirect/NISAR_L2_STATIC/NISAR_L2_PR_GUNW_032_141_D_055_033_7700_SH_20261009T233633_20261009T233713_20261021T233633_20261021T233713_P05036_N_P_J_001.h5",
+    "trackNumber": 141
+   },
+   "inputs": {
+    "reference/rangeBandwidth": "77000000.0",
+    "reference/slantRangeSpacing": "1.5614190520833333",
+    "secondary/rangeBandwidth": "77000000.0",
+    "secondary/slantRangeSpacing": "1.5614190520833333"
+   },
+   "seconds": 5.9
+  },
+  "gunw_7700_1": {
+   "concept": "G4409921171-ASF",
+   "collection": "C3622247503-ASF",
+   "GranuleUR": "NISAR_L2_PR_GUNW_032_141_D_054_033_7700_SH_20261009T233558_20261009T233634_20261021T233558_20261021T233634_P05036_N_P_J_001",
+   "url": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/L2_L_GUNW/NISAR_L2_PR_GUNW_032_141_D_054_033_7700_SH_20261009T233558_20261009T233634_20261021T233558_20261021T233634_P05036_N_P_J_001/NISAR_L2_PR_GUNW_032_141_D_054_033_7700_SH_20261009T233558_20261009T233634_20261021T233558_20261021T233634_P05036_N_P_J_001.h5",
+   "AdditionalAttributes": {
+    "ASCENDING_DESCENDING": [
+     "DESCENDING"
+    ],
+    "FRAME_NUMBER": [
+     "54"
+    ],
+    "FREQUENCIES": [
+     "A"
+    ],
+    "FREQUENCY_A_POLARIZATION": [
+     "HH"
+    ],
+    "FREQUENCY_A_POLARIZATION_CONCAT": [
+     "HH"
+    ],
+    "FREQUENCY_A_RANGE_BANDWIDTH": [
+     "77"
+    ],
+    "FULL_FRAME": [
+     "FALSE"
+    ],
+    "JOINT_OBSERVATION": [
+     "FALSE"
+    ],
+    "ORBIT_TYPE": [
+     "MOE"
+    ],
+    "PROCESSING_CENTER": [
+     "JPL"
+    ],
+    "PROCESSING_LEVEL": [
+     "L2"
+    ],
+    "PRODUCTION_PIPELINE": [
+     "PR"
+    ],
+    "PRODUCT_TYPE": [
+     "GUNW"
+    ],
+    "PRODUCT_TYPE_DESC": [
+     "Geocoded Unwrapped Interferogram"
+    ],
+    "PRODUCT_VERSION": [
+     "1.0.20"
+    ],
+    "RANGE_BANDWIDTH_CONCAT": [
+     "77"
+    ],
+    "REFERENCE_ZERO_DOPPLER_END_TIME": [
+     "2026-10-09T23:36:34.999342Z"
+    ],
+    "REFERENCE_ZERO_DOPPLER_START_TIME": [
+     "2026-10-09T23:35:58.000000Z"
+    ],
+    "SECONDARY_ZERO_DOPPLER_END_TIME": [
+     "2026-10-21T23:36:34.999342Z"
+    ],
+    "SECONDARY_ZERO_DOPPLER_START_TIME": [
+     "2026-10-21T23:35:58.000000Z"
+    ],
+    "STACK_ID": [
+     "141_D_054"
+    ],
+    "TRACK_NUMBER": [
+     "141"
+    ]
+   },
+   "InputGranules": [
+    "NISAR_L1_PR_RSLC_032_141_D_054_7700_SHNA_A_20261009T233558_20261009T233634_P05023_N_P_J_001.h5",
+    "NISAR_L1_PR_RSLC_033_141_D_054_7700_SHNA_A_20261021T233558_20261021T233634_P05036_N_P_J_001.h5"
+   ],
+   "PGEVersionClass": {
+    "PGEName": "INSAR_L_PGE",
+    "PGEVersion": "R05.03.2"
+   },
+   "frequencyA_members": [
+    "centerFrequency",
+    "listOfPolarizations",
+    "pixelOffsets",
+    "unwrappedInterferogram",
+    "wrappedInterferogram"
+   ],
+   "centerFrequency": {
+    "value": "1257500000.0",
+    "dtype": "float64",
+    "attrs": {
+     "description": "Center frequency of the processed image in hertz",
+     "units": "hertz"
+    }
+   },
+   "grids_members": [
+    "frequencyA"
+   ],
+   "listOfPolarizations": [
+    "HH"
+   ],
+   "identification": {
+    "boundingPolygon": "POLYGON ((-48.5411015449194 68.8284641101034 1306.13720703004,-48.9134059057414 68.6480441697494 1244.66479492117,-49.2822706194478 68.4674919041048 1100.8729248052,-49.6440988875556 68.2858197977773 1001.25732421799,-50.0072373315068 68.1052530756914 663.717163087606,-50.3734425210693 67.9262242789093 30.3264466744963,-50.7072201797348 67.7392745238513 326.143554375279,-51.0418508298933 67.5532720955773 413.021545410833,-51.3711771864717 67.3665628946445 506.456084760726,-51.6936698237996 67.1787329678943 663.945329378224,-52.0335259665214 66.9961232040403 38.6701316943702,-51.7648008146287 66.9253494672383 157.863494204654,-51.5036617195826 66.8557401790461 267.200989555476,-51.245414435024 66.786082581615 526.611022947794,-51.0015825879082 66.7195638628236 462.690948486558,-50.7540548681475 66.6512745757487 783.170593261658,-50.5299386236953 66.5887900881604 334.872163159931,-50.2931527157693 66.5220691127417 639.725219726782,-50.0567300471875 66.4547297638722 1155.68188520085,-49.8416288619305 66.3928444335001 893.376705542132,-49.622515056367 66.3291767443449 1006.20465087863,-49.2895485431349 66.5112696881361 1063.92846766663,-48.9497993171573 66.6920838880169 1216.08422851522,-48.6046274674644 66.8720266025172 1391.67571704444,-48.2552680363063 67.0514738027026 1526.51501521097,-47.9023419555429 67.2306266337179 1586.40673806378,-47.5428267193305 67.4085963587092 1711.88098249189,-47.1790916131862 67.5861026347484 1784.53967158249,-46.8097627550121 67.7627478306363 1865.22534188771,-46.4348980552133 67.938560092344 1946.23022443294,-46.0547621485118 68.1136333674299 2009.94921751836,-46.2793529989116 68.1816307159037 1951.58093261673,-46.5085228955826 68.2502900331371 1884.28173807573,-46.7415807902006 68.3193714929269 1850.45971679709,-46.9797361037556 68.3891994450485 1808.8343497933,-47.2238062522481 68.4599692827272 1740.28662260199,-47.4728731078052 68.5313699234844 1698.05212402491,-47.7286802110753 68.6038535237346 1629.14367675453,-47.9917457129793 68.6775069723096 1534.55297932852,-48.2631797859176 68.7525726616395 1396.949706098,-48.5411015449194 68.8284641101034 1306.13720703004))",
+    "compositeReleaseId": "P05036",
+    "diagnosticModeFlag": 0,
+    "frameNumber": 54,
+    "granuleId": "NISAR_L2_PR_GUNW_032_141_D_054_033_7700_SH_20261009T233558_20261009T233634_20261021T233558_20261021T233634_P05036_N_P_J_001",
+    "instrumentName": "L-SAR",
+    "isDithered": "True",
+    "isFullFrame": "False",
+    "isGeocoded": "True",
+    "isMixedMode": "False",
+    "isUrgentObservation": "False",
+    "listOfFrequencies": [
+     "A"
+    ],
+    "lookDirection": "Left",
+    "missionId": "NISAR",
+    "orbitPassDirection": "Descending",
+    "platformName": "NISAR",
+    "processingCenter": "JPL",
+    "processingDateTime": "2026-11-12T23:08:40",
+    "processingType": "Nominal",
+    "productDoi": "10.5067/NIL2GUNW-V1",
+    "productLevel": "L2",
+    "productSpecificationVersion": "1.6.0",
+    "productType": "GUNW",
+    "productVersion": "1.0.20",
+    "radarBand": "L",
+    "referenceAbsoluteOrbitNumber": 6295,
+    "referenceHasInputDataException": 0,
+    "referenceIsJointObservation": "False",
+    "referenceListOfObservationModes": [
+     "(NOT SPECIFIED)"
+    ],
+    "referencePlannedDatatakeId": [
+     "dtid_2026282233128"
+    ],
+    "referencePlannedObservationId": [
+     "oid_2026282233304"
+    ],
+    "referenceZeroDopplerEndTime": "2026-10-09T23:36:34.999342105",
+    "referenceZeroDopplerStartTime": "2026-10-09T23:35:58.000000000",
+    "secondaryAbsoluteOrbitNumber": 6468,
+    "secondaryHasInputDataException": 0,
+    "secondaryIsJointObservation": "False",
+    "secondaryListOfObservationModes": [
+     "(NOT SPECIFIED)"
+    ],
+    "secondaryPlannedDatatakeId": [
+     "dtid_2026294233128"
+    ],
+    "secondaryPlannedObservationId": [
+     "oid_2026294233304"
+    ],
+    "secondaryZeroDopplerEndTime": "2026-10-21T23:36:34.999342105",
+    "secondaryZeroDopplerStartTime": "2026-10-21T23:35:58.000000000",
+    "staticLayersDataAccess": "https://nisar-services.earthdata.nasa.gov/redirect/NISAR_L2_STATIC/NISAR_L2_PR_GUNW_032_141_D_054_033_7700_SH_20261009T233558_20261009T233634_20261021T233558_20261021T233634_P05036_N_P_J_001.h5",
+    "trackNumber": 141
+   },
+   "inputs": {
+    "reference/rangeBandwidth": "77000000.0",
+    "reference/slantRangeSpacing": "1.5614190520833333",
+    "secondary/rangeBandwidth": "77000000.0",
+    "secondary/slantRangeSpacing": "1.5614190520833333"
+   },
+   "seconds": 8.7
+  },
+  "gunw_7700_2": {
+   "concept": "G4384428454-ASF",
+   "collection": "C2854335566-ASF",
+   "GranuleUR": "NISAR_L2_PR_GUNW_032_131_A_038_033_7700_SH_20261009T064807_20261009T064813_20261021T064807_20261021T064813_P05023_N_P_J_001",
+   "url": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GUNW_PROVISIONAL_V1/NISAR_L2_PR_GUNW_032_131_A_038_033_7700_SH_20261009T064807_20261009T064813_20261021T064807_20261021T064813_P05023_N_P_J_001/NISAR_L2_PR_GUNW_032_131_A_038_033_7700_SH_20261009T064807_20261009T064813_20261021T064807_20261021T064813_P05023_N_P_J_001.h5",
+   "AdditionalAttributes": {
+    "ASCENDING_DESCENDING": [
+     "ASCENDING"
+    ],
+    "FRAME_NUMBER": [
+     "38"
+    ],
+    "FREQUENCIES": [
+     "A"
+    ],
+    "FREQUENCY_A_POLARIZATION": [
+     "HH"
+    ],
+    "FREQUENCY_A_POLARIZATION_CONCAT": [
+     "HH"
+    ],
+    "FREQUENCY_A_RANGE_BANDWIDTH": [
+     "77"
+    ],
+    "FULL_FRAME": [
+     "FALSE"
+    ],
+    "JOINT_OBSERVATION": [
+     "FALSE"
+    ],
+    "ORBIT_TYPE": [
+     "MOE"
+    ],
+    "PROCESSING_CENTER": [
+     "JPL"
+    ],
+    "PROCESSING_LEVEL": [
+     "L2"
+    ],
+    "PRODUCTION_PIPELINE": [
+     "PR"
+    ],
+    "PRODUCT_TYPE": [
+     "GUNW"
+    ],
+    "PRODUCT_TYPE_DESC": [
+     "Geocoded Unwrapped Interferogram"
+    ],
+    "PRODUCT_VERSION": [
+     "1.0.11"
+    ],
+    "RANGE_BANDWIDTH_CONCAT": [
+     "77"
+    ],
+    "REFERENCE_ZERO_DOPPLER_END_TIME": [
+     "2026-10-09T06:48:13.999342Z"
+    ],
+    "REFERENCE_ZERO_DOPPLER_START_TIME": [
+     "2026-10-09T06:48:07.000000Z"
+    ],
+    "SECONDARY_ZERO_DOPPLER_END_TIME": [
+     "2026-10-21T06:48:13.999342Z"
+    ],
+    "SECONDARY_ZERO_DOPPLER_START_TIME": [
+     "2026-10-21T06:48:07.000000Z"
+    ],
+    "STACK_ID": [
+     "131_A_038"
+    ],
+    "TRACK_NUMBER": [
+     "131"
+    ]
+   },
+   "InputGranules": [
+    "NISAR_L1_PR_RSLC_032_131_A_038_7700_SHNA_A_20261009T064807_20261009T064813_P05023_N_P_J_001.h5",
+    "NISAR_L1_PR_RSLC_033_131_A_038_7700_SHNA_A_20261021T064807_20261021T064813_P05023_N_P_J_001.h5"
+   ],
+   "PGEVersionClass": {
+    "PGEName": "INSAR_L_PGE",
+    "PGEVersion": "R05.02.3"
+   },
+   "frequencyA_members": [
+    "centerFrequency",
+    "listOfPolarizations",
+    "pixelOffsets",
+    "unwrappedInterferogram",
+    "wrappedInterferogram"
+   ],
+   "centerFrequency": {
+    "value": "1257500000.0",
+    "dtype": "float64",
+    "attrs": {
+     "description": "Center frequency of the processed image in hertz",
+     "units": "hertz"
+    }
+   },
+   "grids_members": [
+    "frequencyA"
+   ],
+   "listOfPolarizations": [
+    "HH"
+   ],
+   "identification": {
+    "boundingPolygon": "POLYGON ((-50.1235511239746 70.4089201041001 733.956055552647,-50.2006949201915 70.4428836700912 580.475951530866,-50.2795469085091 70.4764026694486 474.616027416685,-50.3660000861517 70.5078034934962 608.497619970252,-50.4464989458593 70.5409314374482 539.47894287248,-50.5298719007616 70.5732809145573 555.736754367734,-50.6156979568771 70.6049695140147 643.403929442123,-50.6802257993726 70.6427642553162 29.3240395328227,-50.7714484802488 70.6729941721727 275.08608874099,-50.8638876170813 70.7029098083329 551.907207337497,-50.9540659703571 70.7335048120621 746.583189623897,-51.217420215275 70.6578034951027 28.1312770072881,-51.4945459921426 70.5771024031518 27.4665718121899,-51.7640349020752 70.4975954467731 27.3249328920084,-52.0634458758606 70.4080350407 1429.98339843666,-52.2921489699877 70.3387805146635 412.379791353083,-52.5734985824588 70.2525051425552 1710.21325683661,-52.7760819660803 70.1896895658664 26.2410869691768,-53.014775136366 70.1148638756371 26.0898987869584,-53.2802331841397 70.0306144670972 1443.91125488321,-53.5080704785017 69.9574547954893 1435.91119329345,-53.4241268319777 69.9259586194886 1487.87437651232,-53.3338692973935 69.8965411448118 1237.24902342379,-53.2483518218309 69.865632619051 1193.59667962074,-53.1607494275482 69.8354345220302 1042.44104003944,-53.0818567363777 69.8024750470657 1281.21411132831,-52.9974655161778 69.7713245500019 1255.22167967159,-52.9144689991093 69.7397662430493 1282.218994142,-52.8280293037002 69.7093506818655 1139.05798339777,-52.748206818777 69.6768556341176 1289.93664550863,-52.6608171049562 69.6468199632886 1080.35437011583,-52.4104426453608 69.7261949687978 65.1850963002899,-52.1907366002391 69.7950512416308 640.5782470799,-51.9385431274845 69.8732198247147 24.5449313979045,-51.6953202198575 69.9477159408041 25.4504680814964,-51.4628395453239 70.0181124519071 670.093933104371,-51.2131996802388 70.0928499163846 848.460693359542,-50.938356655176 70.1741235678752 324.962280272801,-50.6789719494468 70.2498511656779 630.785705568094,-50.4018952147387 70.3297278185819 567.421569824528,-50.1235511239746 70.4089201041001 733.956055552647))",
+    "compositeReleaseId": "P05023",
+    "diagnosticModeFlag": 0,
+    "frameNumber": 38,
+    "granuleId": "NISAR_L2_PR_GUNW_032_131_A_038_033_7700_SH_20261009T064807_20261009T064813_20261021T064807_20261021T064813_P05023_N_P_J_001",
+    "instrumentName": "L-SAR",
+    "isDithered": "True",
+    "isFullFrame": "False",
+    "isGeocoded": "True",
+    "isMixedMode": "False",
+    "isUrgentObservation": "False",
+    "listOfFrequencies": [
+     "A"
+    ],
+    "lookDirection": "Left",
+    "missionId": "NISAR",
+    "orbitPassDirection": "Ascending",
+    "platformName": "NISAR",
+    "processingCenter": "JPL",
+    "processingDateTime": "2026-10-23T02:01:48",
+    "processingType": "Nominal",
+    "productDoi": "10.5067/NIL2GUNW-P1",
+    "productLevel": "L2",
+    "productSpecificationVersion": "1.5.0",
+    "productType": "GUNW",
+    "productVersion": "1.0.11",
+    "radarBand": "L",
+    "referenceAbsoluteOrbitNumber": 6285,
+    "referenceHasInputDataException": 0,
+    "referenceIsJointObservation": "False",
+    "referenceListOfObservationModes": [
+     "(NOT SPECIFIED)"
+    ],
+    "referencePlannedDatatakeId": [
+     "dtid_2026282064532"
+    ],
+    "referencePlannedObservationId": [
+     "oid_2026282064552"
+    ],
+    "referenceZeroDopplerEndTime": "2026-10-09T06:48:13.999342105",
+    "referenceZeroDopplerStartTime": "2026-10-09T06:48:07.000000000",
+    "secondaryAbsoluteOrbitNumber": 6458,
+    "secondaryHasInputDataException": 0,
+    "secondaryIsJointObservation": "False",
+    "secondaryListOfObservationModes": [
+     "(NOT SPECIFIED)"
+    ],
+    "secondaryPlannedDatatakeId": [
+     "dtid_2026294064532"
+    ],
+    "secondaryPlannedObservationId": [
+     "oid_2026294064552"
+    ],
+    "secondaryZeroDopplerEndTime": "2026-10-21T06:48:13.999342105",
+    "secondaryZeroDopplerStartTime": "2026-10-21T06:48:07.000000000",
+    "staticLayersDataAccess": "https://nisar-services.earthdata.nasa.gov/redirect/NISAR_L2_STATIC/NISAR_L2_PR_GUNW_032_131_A_038_033_7700_SH_20261009T064807_20261009T064813_20261021T064807_20261021T064813_P05023_N_P_J_001.h5",
+    "trackNumber": 131
+   },
+   "inputs": {
+    "reference/rangeBandwidth": "77000000.0",
+    "reference/slantRangeSpacing": "1.5614190520833333",
+    "secondary/rangeBandwidth": "77000000.0",
+    "secondary/slantRangeSpacing": "1.5614190520833333"
+   },
+   "seconds": 6.9
+  },
+  "goff_v1_example": {
+   "concept": "G4409730512-ASF",
+   "collection": "C3622250865-ASF",
+   "GranuleUR": "NISAR_L2_PR_GOFF_032_141_D_055_033_7700_SH_20261009T233633_20261009T233713_20261021T233633_20261021T233713_P05036_N_P_J_001",
+   "url": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GOFF_V1/NISAR_L2_PR_GOFF_032_141_D_055_033_7700_SH_20261009T233633_20261009T233713_20261021T233633_20261021T233713_P05036_N_P_J_001/NISAR_L2_PR_GOFF_032_141_D_055_033_7700_SH_20261009T233633_20261009T233713_20261021T233633_20261021T233713_P05036_N_P_J_001.h5",
+   "AdditionalAttributes": {
+    "ASCENDING_DESCENDING": [
+     "DESCENDING"
+    ],
+    "FRAME_NUMBER": [
+     "55"
+    ],
+    "FREQUENCIES": [
+     "A"
+    ],
+    "FREQUENCY_A_POLARIZATION": [
+     "HH"
+    ],
+    "FREQUENCY_A_POLARIZATION_CONCAT": [
+     "HH"
+    ],
+    "FREQUENCY_A_RANGE_BANDWIDTH": [
+     "77"
+    ],
+    "FULL_FRAME": [
+     "FALSE"
+    ],
+    "JOINT_OBSERVATION": [
+     "FALSE"
+    ],
+    "ORBIT_TYPE": [
+     "MOE"
+    ],
+    "PROCESSING_CENTER": [
+     "JPL"
+    ],
+    "PROCESSING_LEVEL": [
+     "L2"
+    ],
+    "PRODUCTION_PIPELINE": [
+     "PR"
+    ],
+    "PRODUCT_TYPE": [
+     "GOFF"
+    ],
+    "PRODUCT_TYPE_DESC": [
+     "Geocoded Pixel Offsets"
+    ],
+    "PRODUCT_VERSION": [
+     "1.0.20"
+    ],
+    "RANGE_BANDWIDTH_CONCAT": [
+     "77"
+    ],
+    "REFERENCE_ZERO_DOPPLER_END_TIME": [
+     "2026-10-09T23:37:13.999342Z"
+    ],
+    "REFERENCE_ZERO_DOPPLER_START_TIME": [
+     "2026-10-09T23:36:33.000000Z"
+    ],
+    "SECONDARY_ZERO_DOPPLER_END_TIME": [
+     "2026-10-21T23:37:13.999342Z"
+    ],
+    "SECONDARY_ZERO_DOPPLER_START_TIME": [
+     "2026-10-21T23:36:33.000000Z"
+    ],
+    "STACK_ID": [
+     "141_D_055"
+    ],
+    "TRACK_NUMBER": [
+     "141"
+    ]
+   },
+   "InputGranules": [
+    "NISAR_L1_PR_RSLC_032_141_D_055_7700_SHNA_A_20261009T233633_20261009T233713_P05023_N_P_J_001.h5",
+    "NISAR_L1_PR_RSLC_033_141_D_055_7700_SHNA_A_20261021T233633_20261021T233713_P05036_N_P_J_001.h5"
+   ],
+   "PGEVersionClass": {
+    "PGEName": "INSAR_L_PGE",
+    "PGEVersion": "R05.03.2"
+   },
+   "frequencyA_members": [
+    "centerFrequency",
+    "listOfLayers",
+    "listOfPolarizations",
+    "pixelOffsets"
+   ],
+   "centerFrequency": {
+    "value": "1257500000.0",
+    "dtype": "float64",
+    "attrs": {
+     "description": "Center frequency of the processed image in hertz",
+     "units": "hertz"
+    }
+   },
+   "grids_members": [
+    "frequencyA"
+   ],
+   "listOfPolarizations": [
+    "HH"
+   ],
+   "identification": {
+    "boundingPolygon": "POLYGON ((-51.8421822699208 67.0927008546926 668.480407263654,-52.1947478243201 66.8844130476367 724.139099120646,-52.5464771736215 66.6766868066745 602.277038587118,-52.8744686289424 66.4635290770308 1122.9348351282,-53.2420211672421 66.2614055536792 29.2940829208892,-53.5541970604959 66.0456171747162 722.998040570289,-53.8995938853402 65.8391344939587 28.5006866358982,-54.2205015038751 65.6270013734666 28.3552722811566,-54.536328850016 65.4142291348769 27.9338741121305,-54.8472034840721 65.20083617335 26.8512248713755,-55.1532330469879 64.9868379377151 25.2633762041795,-54.9005217442347 64.922001820872 26.0208034337444,-54.6543281736619 64.8581212231845 26.6994762350652,-54.4141317716775 64.7951086433417 27.2467460578225,-54.1794756575593 64.7328871749174 27.6844692223046,-53.9499600122661 64.6713897912166 27.9353580468597,-53.7252273380874 64.6105562576892 28.0809650398566,-53.504960602911 64.5503333136849 28.1480503064711,-53.2888756402551 64.4906731987845 28.1905002575522,-53.0767207931779 64.4315340681694 28.0803699502237,-52.8682620122931 64.3728762612335 28.0402545925747,-52.5509135343919 64.5822284563299 27.5896530169646,-52.2287231623531 64.7909017992727 27.4479331975103,-51.8969005475871 64.9975382386922 261.477020263688,-51.5643263596788 65.2046873208544 280.011138915226,-51.2223216081318 65.4098759669617 509.96179208463,-50.8791881010801 65.6155032506779 533.845948179715,-50.5319139900326 65.820723791143 496.422880844855,-50.1716056902169 66.0229670918078 827.918397427053,-49.8138149461814 66.2267667632377 760.00689843494,-49.4442694588716 66.4279797119845 984.6067504881,-49.6679984263766 66.4931056473821 674.816711967145,-49.8846135538304 66.5555277156987 893.392250283993,-50.1126068938868 66.6205749957026 782.691894531706,-50.3499363475755 66.6875783641257 471.494261929836,-50.5782027041772 66.7513379465811 762.147705165957,-50.8296918232567 66.8208347391676 304.0923467492,-51.0828207169404 66.8899854362747 31.0598430845232,-51.3294981627021 66.956606243682 248.435897119247,-51.5922709078703 67.026762187288 102.783791553389,-51.8421822699208 67.0927008546926 668.480407263654))",
+    "compositeReleaseId": "P05036",
+    "diagnosticModeFlag": 0,
+    "frameNumber": 55,
+    "granuleId": "NISAR_L2_PR_GOFF_032_141_D_055_033_7700_SH_20261009T233633_20261009T233713_20261021T233633_20261021T233713_P05036_N_P_J_001",
+    "instrumentName": "L-SAR",
+    "isDithered": "True",
+    "isFullFrame": "False",
+    "isGeocoded": "True",
+    "isMixedMode": "False",
+    "isUrgentObservation": "False",
+    "listOfFrequencies": [
+     "A"
+    ],
+    "lookDirection": "Left",
+    "missionId": "NISAR",
+    "orbitPassDirection": "Descending",
+    "platformName": "NISAR",
+    "processingCenter": "JPL",
+    "processingDateTime": "2026-11-12T21:02:25",
+    "processingType": "Nominal",
+    "productDoi": "10.5067/NIL2GOFF-V1",
+    "productLevel": "L2",
+    "productSpecificationVersion": "1.6.0",
+    "productType": "GOFF",
+    "productVersion": "1.0.20",
+    "radarBand": "L",
+    "referenceAbsoluteOrbitNumber": 6295,
+    "referenceHasInputDataException": 0,
+    "referenceIsJointObservation": "False",
+    "referenceListOfObservationModes": [
+     "(NOT SPECIFIED)"
+    ],
+    "referencePlannedDatatakeId": [
+     "dtid_2026282233128"
+    ],
+    "referencePlannedObservationId": [
+     "oid_2026282233304"
+    ],
+    "referenceZeroDopplerEndTime": "2026-10-09T23:37:13.999342105",
+    "referenceZeroDopplerStartTime": "2026-10-09T23:36:33.000000000",
+    "secondaryAbsoluteOrbitNumber": 6468,
+    "secondaryHasInputDataException": 0,
+    "secondaryIsJointObservation": "False",
+    "secondaryListOfObservationModes": [
+     "(NOT SPECIFIED)"
+    ],
+    "secondaryPlannedDatatakeId": [
+     "dtid_2026294233128"
+    ],
+    "secondaryPlannedObservationId": [
+     "oid_2026294233304"
+    ],
+    "secondaryZeroDopplerEndTime": "2026-10-21T23:37:13.999342105",
+    "secondaryZeroDopplerStartTime": "2026-10-21T23:36:33.000000000",
+    "staticLayersDataAccess": "https://nisar-services.earthdata.nasa.gov/redirect/NISAR_L2_STATIC/NISAR_L2_PR_GOFF_032_141_D_055_033_7700_SH_20261009T233633_20261009T233713_20261021T233633_20261021T233713_P05036_N_P_J_001.h5",
+    "trackNumber": 141
+   },
+   "inputs": {
+    "reference/rangeBandwidth": "77000000.0",
+    "reference/slantRangeSpacing": "1.5614190520833333",
+    "secondary/rangeBandwidth": "77000000.0",
+    "secondary/slantRangeSpacing": "1.5614190520833333"
+   },
+   "parameters": {
+    "common/frequencyA/dopplerBandwidth": {
+     "value": 1260.8610880424746,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Common Doppler bandwidth between reference and secondary RSLCs",
+      "units": "hertz"
+     }
+    },
+    "common/frequencyA/dopplerCentroid": {
+     "shape": [
+      275,
+      66
+     ],
+     "dtype": "float64",
+     "attrs": {
+      "description": "2D LUT of common Doppler centroid between reference and secondary RSLCs",
+      "units": "hertz"
+     }
+    },
+    "geocoding/azimuthIonosphericCorrectionApplied": {
+     "value": "True",
+     "dtype": "|S4",
+     "attrs": {
+      "description": "Flag to indicate if the azimuth ionospheric correction is applied to improve geolocation"
+     }
+    },
+    "geocoding/hydrostaticTroposphericCorrectionApplied": {
+     "value": "True",
+     "dtype": "|S4",
+     "attrs": {
+      "description": "Flag to indicate if the hydrostatic tropospheric correction is applied to improve geolocation"
+     }
+    },
+    "geocoding/rangeIonosphericCorrectionApplied": {
+     "value": "True",
+     "dtype": "|S4",
+     "attrs": {
+      "description": "Flag to indicate if the range ionospheric correction is applied to improve geolocation"
+     }
+    },
+    "geocoding/wetTroposphericCorrectionApplied": {
+     "value": "True",
+     "dtype": "|S4",
+     "attrs": {
+      "description": "Flag to indicate if the wet tropospheric correction is applied to improve geolocation"
+     }
+    },
+    "pixelOffsets/frequencyA/alongTrackSkipWindowSize": {
+     "value": 15,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Along-track cross-correlation skip window size in pixels",
+      "units": "1"
+     }
+    },
+    "pixelOffsets/frequencyA/alongTrackStartPixel": {
+     "value": 266,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Reference RSLC start pixel in along-track",
+      "units": "1"
+     }
+    },
+    "pixelOffsets/frequencyA/azimuthBandwidth": {
+     "value": 1260.8610880424746,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Processed azimuth bandwidth for frequency A pixel offsets layers",
+      "units": "hertz"
+     }
+    },
+    "pixelOffsets/frequencyA/correlationSurfaceOversampling": {
+     "value": 32,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Oversampling factor of the cross-correlation surface",
+      "units": "1"
+     }
+    },
+    "pixelOffsets/frequencyA/layer1/alongTrackSearchWindowSize": {
+     "value": 64,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Along-track cross-correlation search window size in pixels",
+      "units": "1"
+     }
+    },
+    "pixelOffsets/frequencyA/layer1/alongTrackWindowSize": {
+     "value": 32,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Along-track cross-correlation window size in pixels",
+      "units": "1"
+     }
+    },
+    "pixelOffsets/frequencyA/layer1/slantRangeSearchWindowSize": {
+     "value": 128,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Slant range cross-correlation search window size in pixels",
+      "units": "1"
+     }
+    },
+    "pixelOffsets/frequencyA/layer1/slantRangeWindowSize": {
+     "value": 64,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Slant range cross-correlation window size in pixels",
+      "units": "1"
+     }
+    },
+    "pixelOffsets/frequencyA/layer2/alongTrackSearchWindowSize": {
+     "value": 64,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Along-track cross-correlation search window size in pixels",
+      "units": "1"
+     }
+    },
+    "pixelOffsets/frequencyA/layer2/alongTrackWindowSize": {
+     "value": 64,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Along-track cross-correlation window size in pixels",
+      "units": "1"
+     }
+    },
+    "pixelOffsets/frequencyA/layer2/slantRangeSearchWindowSize": {
+     "value": 128,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Slant range cross-correlation search window size in pixels",
+      "units": "1"
+     }
+    },
+    "pixelOffsets/frequencyA/layer2/slantRangeWindowSize": {
+     "value": 96,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Slant range cross-correlation window size in pixels",
+      "units": "1"
+     }
+    },
+    "pixelOffsets/frequencyA/layer3/alongTrackSearchWindowSize": {
+     "value": 32,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Along-track cross-correlation search window size in pixels",
+      "units": "1"
+     }
+    },
+    "pixelOffsets/frequencyA/layer3/alongTrackWindowSize": {
+     "value": 128,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Along-track cross-correlation window size in pixels",
+      "units": "1"
+     }
+    },
+    "pixelOffsets/frequencyA/layer3/slantRangeSearchWindowSize": {
+     "value": 64,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Slant range cross-correlation search window size in pixels",
+      "units": "1"
+     }
+    },
+    "pixelOffsets/frequencyA/layer3/slantRangeWindowSize": {
+     "value": 196,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Slant range cross-correlation window size in pixels",
+      "units": "1"
+     }
+    },
+    "pixelOffsets/frequencyA/margin": {
+     "value": 250,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Margin in pixels around reference RSLC edges excluded during cross-correlation computation",
+      "units": "1"
+     }
+    },
+    "pixelOffsets/frequencyA/rangeBandwidth": {
+     "value": 77000000.0,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Processed slant range bandwidth for frequency A pixel offsets layers",
+      "units": "hertz"
+     }
+    },
+    "pixelOffsets/frequencyA/slantRangeSkipWindowSize": {
+     "value": 30,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Slant range cross-correlation skip window size in pixels",
+      "units": "1"
+     }
+    },
+    "pixelOffsets/frequencyA/slantRangeStartPixel": {
+     "value": 282,
+     "dtype": "uint32",
+     "attrs": {
+      "description": "Reference RSLC start pixel in slant range",
+      "units": "1"
+     }
+    },
+    "reference/frequencyA/azimuthBandwidth": {
+     "value": 1260.8610880424746,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Processed azimuth bandwidth for reference RSLC",
+      "units": "hertz"
+     }
+    },
+    "reference/frequencyA/dopplerCentroid": {
+     "shape": [
+      275,
+      66
+     ],
+     "dtype": "float64",
+     "attrs": {
+      "description": "2D LUT of Doppler centroid for frequency A",
+      "units": "hertz"
+     }
+    },
+    "reference/frequencyA/numberOfAzimuthLines": {
+     "value": 62320,
+     "dtype": "uint64",
+     "attrs": {
+      "description": "Number of azimuth lines within the reference RSLC",
+      "units": "1"
+     }
+    },
+    "reference/frequencyA/numberOfRangeSamples": {
+     "value": 50298,
+     "dtype": "uint64",
+     "attrs": {
+      "description": "Number of slant range samples for each azimuth line within the reference RSLC",
+      "units": "1"
+     }
+    },
+    "reference/frequencyA/rangeBandwidth": {
+     "value": 77000000.0,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Processed slant range bandwidth for reference RSLC",
+      "units": "hertz"
+     }
+    },
+    "reference/frequencyA/slantRangeSpacing": {
+     "value": 1.5614190520833333,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Slant range spacing of reference RSLC",
+      "units": "meters"
+     }
+    },
+    "reference/frequencyA/slantRangeStart": {
+     "value": 895005.4006541667,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Slant range start distance for the reference RSLC",
+      "units": "meters"
+     }
+    },
+    "reference/frequencyA/zeroDopplerEndTime": {
+     "value": "2026-10-09T23:37:13.999342105",
+     "dtype": "|S29",
+     "attrs": {
+      "description": "Azimuth stop time (in UTC) of the reference RSLC product in the format YYYY-mm-ddTHH:MM:SS.sssssssss"
+     }
+    },
+    "reference/frequencyA/zeroDopplerStartTime": {
+     "value": "2026-10-09T23:36:33.000000000",
+     "dtype": "|S29",
+     "attrs": {
+      "description": "Azimuth start time (in UTC) of the reference RSLC product in the format YYYY-mm-ddTHH:MM:SS.sssssssss"
+     }
+    },
+    "reference/frequencyA/zeroDopplerTimeSpacing": {
+     "value": 0.0006578947368421052,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Time interval in the along-track direction for reference RSLC raster layers",
+      "units": "seconds"
+     }
+    },
+    "reference/isMixedMode": {
+     "value": "False",
+     "dtype": "|S5",
+     "attrs": {
+      "description": "\"True\" if reference RSLC is a composite of data collected in multiple radar modes, \"False\" otherwise"
+     }
+    },
+    "reference/referenceTerrainHeight": {
+     "shape": [
+      275
+     ],
+     "dtype": "float32",
+     "attrs": {
+      "description": "Reference terrain height as a function of map coordinates for reference RSLC",
+      "units": "meters"
+     }
+    },
+    "reference/rfiMitigation": {
+     "value": "tone-rank",
+     "dtype": "|S9",
+     "attrs": {
+      "description": "Algorithm used for radio frequency interference (RFI) mitigation in the reference RSLC, either \"ST-EVD\" or \"FDNF\" (or \"disabled\" if no RFI mitigation was applied)"
+     }
+    },
+    "reference/rfiMitigationApplied": {
+     "value": "True",
+     "dtype": "|S4",
+     "attrs": {
+      "description": "Flag to indicate if radio frequency interference (RFI) mitigation was applied during the generation of the reference RSLC"
+     }
+    },
+    "secondary/frequencyA/azimuthBandwidth": {
+     "value": 1260.866108128295,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Processed azimuth bandwidth for secondary RSLC",
+      "units": "hertz"
+     }
+    },
+    "secondary/frequencyA/dopplerCentroid": {
+     "shape": [
+      275,
+      66
+     ],
+     "dtype": "float64",
+     "attrs": {
+      "description": "2D LUT of Doppler centroid for frequency A",
+      "units": "hertz"
+     }
+    },
+    "secondary/frequencyA/numberOfAzimuthLines": {
+     "value": 62320,
+     "dtype": "uint64",
+     "attrs": {
+      "description": "Number of azimuth lines within the secondary RSLC",
+      "units": "1"
+     }
+    },
+    "secondary/frequencyA/numberOfRangeSamples": {
+     "value": 50298,
+     "dtype": "uint64",
+     "attrs": {
+      "description": "Number of slant range samples for each azimuth line within the secondary RSLC",
+      "units": "1"
+     }
+    },
+    "secondary/frequencyA/rangeBandwidth": {
+     "value": 77000000.0,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Processed slant range bandwidth for secondary RSLC",
+      "units": "hertz"
+     }
+    },
+    "secondary/frequencyA/slantRangeSpacing": {
+     "value": 1.5614190520833333,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Slant range spacing of secondary RSLC",
+      "units": "meters"
+     }
+    },
+    "secondary/frequencyA/slantRangeStart": {
+     "value": 895005.4006541667,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Slant range start distance for the secondary RSLC",
+      "units": "meters"
+     }
+    },
+    "secondary/frequencyA/zeroDopplerEndTime": {
+     "value": "2026-10-21T23:37:13.999342105",
+     "dtype": "|S29",
+     "attrs": {
+      "description": "Azimuth stop time (in UTC) of the secondary RSLC product in the format YYYY-mm-ddTHH:MM:SS.sssssssss"
+     }
+    },
+    "secondary/frequencyA/zeroDopplerStartTime": {
+     "value": "2026-10-21T23:36:33.000000000",
+     "dtype": "|S29",
+     "attrs": {
+      "description": "Azimuth start time (in UTC) of the secondary RSLC product in the format YYYY-mm-ddTHH:MM:SS.sssssssss"
+     }
+    },
+    "secondary/frequencyA/zeroDopplerTimeSpacing": {
+     "value": 0.0006578947368421052,
+     "dtype": "float64",
+     "attrs": {
+      "description": "Time interval in the along-track direction for secondary RSLC raster layers",
+      "units": "seconds"
+     }
+    },
+    "secondary/isMixedMode": {
+     "value": "False",
+     "dtype": "|S5",
+     "attrs": {
+      "description": "\"True\" if secondary RSLC is a composite of data collected in multiple radar modes, \"False\" otherwise"
+     }
+    },
+    "secondary/referenceTerrainHeight": {
+     "shape": [
+      275
+     ],
+     "dtype": "float32",
+     "attrs": {
+      "description": "Reference terrain height as a function of map coordinates for secondary RSLC",
+      "units": "meters"
+     }
+    },
+    "secondary/rfiMitigation": {
+     "value": "tone-rank",
+     "dtype": "|S9",
+     "attrs": {
+      "description": "Algorithm used for radio frequency interference (RFI) mitigation in the secondary RSLC, either \"ST-EVD\" or \"FDNF\" (or \"disabled\" if no RFI mitigation was applied)"
+     }
+    },
+    "secondary/rfiMitigationApplied": {
+     "value": "True",
+     "dtype": "|S4",
+     "attrs": {
+      "description": "Flag to indicate if radio frequency interference (RFI) mitigation was applied during the generation of the secondary RSLC"
+     }
+    }
+   },
+   "algorithms": {
+    "coregistration/coregistrationMethod": {
+     "value": "Coarse geometry coregistration with DEM and orbit ephemeris",
+     "dtype": "|S59",
+     "attrs": {
+      "description": "RSLC coregistration method"
+     }
+    },
+    "coregistration/geometryCoregistration": {
+     "value": "Range doppler to geogrid then geogrid to range doppler",
+     "dtype": "|S54",
+     "attrs": {
+      "description": "Geometry coregistration algorithm"
+     }
+    },
+    "coregistration/resampling": {
+     "value": "sinc",
+     "dtype": "|S4",
+     "attrs": {
+      "description": "Secondary RSLC resampling algorithm"
+     }
+    },
+    "crossCorrelation/layer1/crossCorrelationAlgorithm": {
+     "value": "frequency",
+     "dtype": "|S9",
+     "attrs": {
+      "description": "Cross-correlation algorithm for layer 1"
+     }
+    },
+    "crossCorrelation/layer2/crossCorrelationAlgorithm": {
+     "value": "frequency",
+     "dtype": "|S9",
+     "attrs": {
+      "description": "Cross-correlation algorithm for layer 2"
+     }
+    },
+    "crossCorrelation/layer3/crossCorrelationAlgorithm": {
+     "value": "frequency",
+     "dtype": "|S9",
+     "attrs": {
+      "description": "Cross-correlation algorithm for layer 3"
+     }
+    },
+    "geocoding/complexGeocodingInterpolation": {
+     "value": "BILINEAR",
+     "dtype": "|S8",
+     "attrs": {
+      "description": "Geocoding interpolation algorithm for complex-valued datasets"
+     }
+    },
+    "geocoding/demInterpolation": {
+     "value": "biquintic",
+     "dtype": "|S9",
+     "attrs": {
+      "description": "DEM interpolation algorithm"
+     }
+    },
+    "geocoding/floatingGeocodingInterpolation": {
+     "value": "BILINEAR",
+     "dtype": "|S8",
+     "attrs": {
+      "description": "Geocoding interpolation algorithm for floating point datasets"
+     }
+    },
+    "geocoding/integerGeocodingInterpolation": {
+     "value": "nearest",
+     "dtype": "|S7",
+     "attrs": {
+      "description": "Geocoding interpolation algorithm for integer datasets"
+     }
+    },
+    "softwareVersion": {
+     "value": "0.25.21",
+     "dtype": "|S7",
+     "attrs": {
+      "description": "Software version used for processing"
+     }
+    }
+   },
+   "processing_inputs": {
+    "configFiles": {
+     "value": "None",
+     "dtype": "|S4",
+     "attrs": {
+      "description": "List of input config files used"
+     }
+    },
+    "demSource": {
+     "value": "Modified Copernicus Digital Elevation Model for the NASA-ISRO NISAR mission, version 1.3, based on the Copernicus DEM 30-m (2023_1), referenced to the WGS 84 ellipsoid and provided in geographic coordinates (EPSG:4326). This digital elevation model (DEM) was prepared at the Jet Propulsion Laboratory, California Institute of Technology, under contract with the National Aeronautics and Space Administration, using the Copernicus DEM 30-m COP-DEM_GLO-30-DGED/2023_1 model provided by the European Space Agency (ESA). The Copernicus DEM 30-m was produced using Copernicus WorldDEM-30  DLR e.V. 2010-2014 and  Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved. The organizations in charge of the NISAR mission or the Copernicus programme by law or by delegation do not incur any liability for any use of the Copernicus WorldDEM-30. Users, including those who redistribute, adapt, modify, or combine the data contained in this DEM, must comply with the terms of the Copernicus DEM 30-m License Agreement. For additional information, please refer to https://doi.org/10.5067/NIDEM-1 and https://doi.org/10.5270/ESA-c5d3d65.",
+     "dtype": "|S1185",
+     "attrs": {
+      "description": "Description of the input digital elevation model (DEM)"
+     }
+    },
+    "l1ReferenceSlcGranules": {
+     "value": [
+      "NISAR_L1_PR_RSLC_032_141_D_055_7700_SHNA_A_20261009T233633_20261009T233713_P05023_N_P_J_001.h5"
+     ],
+     "dtype": "|S94",
+     "attrs": {
+      "description": "List of input reference L1 RSLC products used"
+     }
+    },
+    "l1SecondarySlcGranules": {
+     "value": [
+      "NISAR_L1_PR_RSLC_033_141_D_055_7700_SHNA_A_20261021T233633_20261021T233713_P05036_N_P_J_001.h5"
+     ],
+     "dtype": "|S94",
+     "attrs": {
+      "description": "List of input secondary L1 RSLC products used"
+     }
+    },
+    "orbitFiles": {
+     "value": [
+      "used RSLC internal reference orbit file",
+      "used RSLC internal secondary orbit file"
+     ],
+     "dtype": "|S39",
+     "attrs": {
+      "description": "List of input orbit files used"
+     }
+    },
+    "waterMaskSource": {
+     "value": "Water Mask for the NASA-ISRO NISAR mission version 0.5, derived through analysis and processing of multiple input datasets, referenced to the WGS84 ellipsoid. Water mask derived at the Jet Propulsion Laboratory, California Institute of Technology, under contract with NASA, using multiple open datasets: JRC Global Surface Water v1.3 (Pekel et al 2016, Nature 540, 418-422,  EC JRC/Google); ESA WorldCover 10 m 2020 ( ESA WorldCover project 2020 / Contains modified Copernicus Sentinel data (2020) processed by ESA WorldCover consortium); OpenStreetMap Water Polygons ( OpenStreetMap contributors, ODbL 1.0); MEaSUREs GIMP Mask v1 (Howat 2017, doi:10.5067/B8X58MQBFUPA; Howat et al 2014). All trademarks and rights remain with their respective owners; NISAR mission organizations assume no liability for use of this product.",
+     "dtype": "|S824",
+     "attrs": {
+      "description": "Description of the input water mask"
+     }
+    }
+   },
+   "radarGrid_members": [
+    "alongTrackUnitVectorX",
+    "alongTrackUnitVectorY",
+    "elevationAngle",
+    "groundTrackVelocity",
+    "heightAboveEllipsoid",
+    "incidenceAngle",
+    "losUnitVectorX",
+    "losUnitVectorY",
+    "parallelBaseline",
+    "perpendicularBaseline",
+    "projection",
+    "referenceSlantRange",
+    "referenceZeroDopplerAzimuthTime",
+    "secondarySlantRange",
+    "secondaryZeroDopplerAzimuthTime",
+    "xCoordinates",
+    "yCoordinates"
+   ],
+   "layers": {
+    "pixelOffsets/HH/layer1/alongTrackOffset": {
+     "dtype": "float32",
+     "shape": [
+      5103,
+      5094
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Raw (unculled, unfiltered) along-track pixel offsets",
+      "grid_mapping": "projection",
+      "max_value": 140.34915161132812,
+      "mean_value": -1.8026084899902344,
+      "min_value": -141.6621856689453,
+      "sample_stddev": 38.706939697265625,
+      "units": "meters"
+     }
+    },
+    "pixelOffsets/HH/layer1/alongTrackOffsetVariance": {
+     "dtype": "float32",
+     "shape": [
+      5103,
+      5094
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Along-track pixel offsets variance",
+      "grid_mapping": "projection",
+      "max_value": 110026712.0,
+      "mean_value": 89.97030639648438,
+      "min_value": 0.001576301408931613,
+      "sample_stddev": 53592.34375,
+      "units": "meters^2"
+     }
+    },
+    "pixelOffsets/HH/layer1/correlationSurfacePeak": {
+     "dtype": "float32",
+     "shape": [
+      5103,
+      5094
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Normalized correlation surface peak",
+      "grid_mapping": "projection",
+      "max_value": 0.9668996334075928,
+      "mean_value": 0.27707451581954956,
+      "min_value": 0.007617514580488205,
+      "sample_stddev": 0.22611655294895172,
+      "units": "1"
+     }
+    },
+    "pixelOffsets/HH/layer1/crossOffsetVariance": {
+     "dtype": "float32",
+     "shape": [
+      5103,
+      5094
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Off-diagonal term of the pixel offsets covariance matrix",
+      "grid_mapping": "projection",
+      "max_value": 3531610.5,
+      "mean_value": -0.6145805716514587,
+      "min_value": -13033336.0,
+      "sample_stddev": 6337.5498046875,
+      "units": "meters^2"
+     }
+    },
+    "pixelOffsets/HH/layer1/slantRangeOffset": {
+     "dtype": "float32",
+     "shape": [
+      5103,
+      5094
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Raw (unculled, unfiltered) slant range pixel offsets",
+      "grid_mapping": "projection",
+      "max_value": 99.55741882324219,
+      "mean_value": 0.14372333884239197,
+      "min_value": -99.93081665039062,
+      "sample_stddev": 26.939990997314453,
+      "units": "meters"
+     }
+    },
+    "pixelOffsets/HH/layer1/slantRangeOffsetVariance": {
+     "dtype": "float32",
+     "shape": [
+      5103,
+      5094
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Slant range pixel offsets variance",
+      "grid_mapping": "projection",
+      "max_value": 1543878.125,
+      "mean_value": 6.043881893157959,
+      "min_value": 0.00012141274055466056,
+      "sample_stddev": 749.6602783203125,
+      "units": "meters^2"
+     }
+    },
+    "pixelOffsets/HH/layer1/snr": {
+     "dtype": "float32",
+     "shape": [
+      5103,
+      5094
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Pixel offsets signal-to-noise ratio",
+      "grid_mapping": "projection",
+      "max_value": 675.141357421875,
+      "mean_value": 24.609607696533203,
+      "min_value": 1.3455173969268799,
+      "sample_stddev": 25.584787368774414,
+      "units": "1"
+     }
+    },
+    "pixelOffsets/HH/layer2/alongTrackOffset": {
+     "dtype": "float32",
+     "shape": [
+      5103,
+      5094
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Raw (unculled, unfiltered) along-track pixel offsets",
+      "grid_mapping": "projection",
+      "max_value": 141.4918212890625,
+      "mean_value": -1.937333106994629,
+      "min_value": -141.78335571289062,
+      "sample_stddev": 38.768699645996094,
+      "units": "meters"
+     }
+    },
+    "pixelOffsets/HH/layer2/alongTrackOffsetVariance": {
+     "dtype": "float32",
+     "shape": [
+      5103,
+      5094
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Along-track pixel offsets variance",
+      "grid_mapping": "projection",
+      "max_value": 12966177.0,
+      "mean_value": 43.65021514892578,
+      "min_value": 0.0007820365717634559,
+      "sample_stddev": 5995.54248046875,
+      "units": "meters^2"
+     }
+    },
+    "pixelOffsets/HH/layer2/correlationSurfacePeak": {
+     "dtype": "float32",
+     "shape": [
+      5103,
+      5094
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Normalized correlation surface peak",
+      "grid_mapping": "projection",
+      "max_value": 0.9642900228500366,
+      "mean_value": 0.28606635332107544,
+      "min_value": 0.0037940293550491333,
+      "sample_stddev": 0.25095421075820923,
+      "units": "1"
+     }
+    },
+    "pixelOffsets/HH/layer2/crossOffsetVariance": {
+     "dtype": "float32",
+     "shape": [
+      5103,
+      5094
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Off-diagonal term of the pixel offsets covariance matrix",
+      "grid_mapping": "projection",
+      "max_value": 21575.93359375,
+      "mean_value": -1.6710940599441528,
+      "min_value": -6035658.5,
+      "sample_stddev": 2789.50732421875,
+      "units": "meters^2"
+     }
+    },
+    "pixelOffsets/HH/layer2/slantRangeOffset": {
+     "dtype": "float32",
+     "shape": [
+      5103,
+      5094
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Raw (unculled, unfiltered) slant range pixel offsets",
+      "grid_mapping": "projection",
+      "max_value": 99.38349914550781,
+      "mean_value": 0.18197418749332428,
+      "min_value": -99.93082427978516,
+      "sample_stddev": 26.970726013183594,
+      "units": "meters"
+     }
+    },
+    "pixelOffsets/HH/layer2/slantRangeOffsetVariance": {
+     "dtype": "float32",
+     "shape": [
+      5103,
+      5094
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Slant range pixel offsets variance",
+      "grid_mapping": "projection",
+      "max_value": 2809555.0,
+      "mean_value": 5.755649566650391,
+      "min_value": 4.7300432925112545e-05,
+      "sample_stddev": 1291.2259521484375,
+      "units": "meters^2"
+     }
+    },
+    "pixelOffsets/HH/layer2/snr": {
+     "dtype": "float32",
+     "shape": [
+      5103,
+      5094
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Pixel offsets signal-to-noise ratio",
+      "grid_mapping": "projection",
+      "max_value": 1208.2552490234375,
+      "mean_value": 24.541284561157227,
+      "min_value": 1.2080820798873901,
+      "sample_stddev": 37.88466262817383,
+      "units": "1"
+     }
+    },
+    "pixelOffsets/HH/layer3/alongTrackOffset": {
+     "dtype": "float32",
+     "shape": [
+      5103,
+      5094
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Raw (unculled, unfiltered) along-track pixel offsets",
+      "grid_mapping": "projection",
+      "max_value": 70.66659545898438,
+      "mean_value": -2.112039089202881,
+      "min_value": -70.89049530029297,
+      "sample_stddev": 20.82798194885254,
+      "units": "meters"
+     }
+    },
+    "pixelOffsets/HH/layer3/alongTrackOffsetVariance": {
+     "dtype": "float32",
+     "shape": [
+      5103,
+      5094
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Along-track pixel offsets variance",
+      "grid_mapping": "projection",
+      "max_value": 33940408.0,
+      "mean_value": 83.00831604003906,
+      "min_value": 0.00026559701655060053,
+      "sample_stddev": 16182.0126953125,
+      "units": "meters^2"
+     }
+    },
+    "pixelOffsets/HH/layer3/correlationSurfacePeak": {
+     "dtype": "float32",
+     "shape": [
+      5103,
+      5094
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Normalized correlation surface peak",
+      "grid_mapping": "projection",
+      "max_value": 0.939235270023346,
+      "mean_value": 0.30733245611190796,
+      "min_value": 0.0,
+      "sample_stddev": 0.2748347222805023,
+      "units": "1"
+     }
+    },
+    "pixelOffsets/HH/layer3/crossOffsetVariance": {
+     "dtype": "float32",
+     "shape": [
+      5103,
+      5094
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Off-diagonal term of the pixel offsets covariance matrix",
+      "grid_mapping": "projection",
+      "max_value": 9349209.0,
+      "mean_value": 2.8366730213165283,
+      "min_value": -100957.8046875,
+      "sample_stddev": 4456.94873046875,
+      "units": "meters^2"
+     }
+    },
+    "pixelOffsets/HH/layer3/slantRangeOffset": {
+     "dtype": "float32",
+     "shape": [
+      5103,
+      5094
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Raw (unculled, unfiltered) slant range pixel offsets",
+      "grid_mapping": "projection",
+      "max_value": 49.898494720458984,
+      "mean_value": 0.19756855070590973,
+      "min_value": -49.96541213989258,
+      "sample_stddev": 14.371187210083008,
+      "units": "meters"
+     }
+    },
+    "pixelOffsets/HH/layer3/slantRangeOffsetVariance": {
+     "dtype": "float32",
+     "shape": [
+      5103,
+      5094
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Slant range pixel offsets variance",
+      "grid_mapping": "projection",
+      "max_value": 2575330.25,
+      "mean_value": 9.82906723022461,
+      "min_value": 2.2414435079554096e-05,
+      "sample_stddev": 1222.3402099609375,
+      "units": "meters^2"
+     }
+    },
+    "pixelOffsets/HH/layer3/snr": {
+     "dtype": "float32",
+     "shape": [
+      5103,
+      5094
+     ],
+     "attrs": {
+      "_FillValue": NaN,
+      "description": "Pixel offsets signal-to-noise ratio",
+      "grid_mapping": "projection",
+      "max_value": 1609.36962890625,
+      "mean_value": 20.325632095336914,
+      "min_value": 0.0001254670787602663,
+      "sample_stddev": 51.50911331176758,
+      "units": "1"
+     }
+    },
+    "pixelOffsets/HH/validDataMask": {
+     "dtype": "uint8",
+     "shape": [
+      5103,
+      5094
+     ],
+     "attrs": {
+      "_FillValue": 255,
+      "description": "Valid mask for the HH layers: bit 1 = reference (1=valid, 0=invalid), bit 0 = secondary (1=valid, 0=invalid). Valid represents fully focused data and invalid represents partially focused or missing data",
+      "grid_mapping": "projection",
+      "long_name": "Valid data mask",
+      "units": "1",
+      "valid_min": 0,
+      "valid_pixel_fraction": 0.9478631330275433
+     }
+    },
+    "pixelOffsets/mask": {
+     "dtype": "uint32",
+     "shape": [
+      5103,
+      5094
+     ],
+     "attrs": {
+      "_FillValue": 255,
+      "description": "Combination of a water mask, a mask of subswaths of valid samples, and data anomalies in the reference RSLC and the geometrically coregistered secondary RSLC. Each pixel value is encoded as a 32-bit unsigned integer. Bits 0-7 represent subswath encoding, where the most significant digit represents the water flag of that pixel in the reference RSLC, where 1 is water and 0 is non-water; the second most significant digit corresponds to the subswath number of the reference RSLC, and the least significant digit corresponds to the subswath number of the secondary RSLC; a value of 0 in either digit indicates an invalid sample in the corresponding RSLC. Bits 8-15 represent bitwise anomaly flags for the secondary RSLC, and bits 16-23 represent bitwise anomaly flags for the reference RSLC, with each bit corresponding to a specific anomaly condition. A value of 0 in the anomaly bits indicates that no anomaly is detected in the corresponding RSLC. Bits 24-31 are reserved for future use",
+      "disclaimer": "Water Mask for the NASA-ISRO NISAR mission version 0.5, derived through analysis and processing of multiple input datasets, referenced to the WGS84 ellipsoid. Water mask derived at the Jet Propulsion Laboratory, California Institute of Technology, under contract with NASA, using multiple open datasets: JRC Global Surface Water v1.3 (Pekel et al 2016, Nature 540, 418-422,  EC JRC/Google); ESA WorldCover 10 m 2020 ( ESA WorldCover project 2020 / Contains modified Copernicus Sentinel data (2020) processed by ESA WorldCover consortium); OpenStreetMap Water Polygons ( OpenStreetMap contributors, ODbL 1.0); MEaSUREs GIMP Mask v1 (Howat 2017, doi:10.5067/B8X58MQBFUPA; Howat et al 2014). All trademarks and rights remain with their respective owners; NISAR mission organizations assume no liability for use of this product.",
+      "grid_mapping": "projection",
+      "percentage_water": 44.81685967620666,
+      "valid_min": 0
+     }
+    }
+   },
+   "seconds": 11.7
+  }
+ },
+ "errors": [],
+ "elapsed_s": 105.6,
+ "codes": {
+  "2000": [
+   "NISAR_L2_PR_GUNW_032_141_D_085_033_2000_SH_20261009T235335_20261009T235349_20261021T235335_20261021T235349_P05036_N_P_J_001",
+   "NISAR_L2_PR_GUNW_032_141_D_078_033_2000_SH_20261009T234941_20261009T235013_20261021T234941_20261021T235013_P05036_N_F_J_001",
+   "NISAR_L2_PR_GUNW_032_139_A_041_033_2000_SH_20261009T200900_20261009T200925_20261021T200900_20261021T200925_P05023_N_F_J_001",
+   "NISAR_L2_PR_GUNW_032_139_A_039_033_2000_SH_20261009T200747_20261009T200753_20261021T200747_20261021T200753_P05023_N_P_J_001"
+  ],
+  "2020": [],
+  "4000": [
+   "NISAR_L2_PR_GUNW_032_141_D_085_033_4000_SH_20261009T235335_20261009T235345_20261021T235335_20261021T235345_P05036_N_P_J_001",
+   "NISAR_L2_PR_GUNW_032_141_D_084_033_4000_SH_20261009T235308_20261009T235336_20261021T235308_20261021T235336_P05036_N_F_J_001",
+   "NISAR_L2_PR_GUNW_032_139_D_091_033_4000_SH_20261009T203740_20261009T203744_20261021T203740_20261021T203744_P05023_N_P_J_001",
+   "NISAR_L2_PR_GUNW_032_139_D_092_033_4000_SH_20261009T203740_20261009T203818_20261021T203740_20261021T203818_P05023_N_F_J_001"
+  ],
+  "7700": [
+   "NISAR_L2_PR_GUNW_032_141_D_055_033_7700_SH_20261009T233633_20261009T233713_20261021T233633_20261021T233713_P05036_N_P_J_001",
+   "NISAR_L2_PR_GUNW_032_141_D_054_033_7700_SH_20261009T233558_20261009T233634_20261021T233558_20261021T233634_P05036_N_P_J_001",
+   "NISAR_L2_PR_GUNW_032_131_A_038_033_7700_SH_20261009T064807_20261009T064813_20261021T064807_20261021T064813_P05023_N_P_J_001",
+   "NISAR_L2_PR_GUNW_032_131_A_037_033_7700_SH_20261009T064731_20261009T064808_20261021T064731_20261021T064808_P05023_N_P_J_001"
+  ],
+  "0500": [],
+  "0505": [],
+  "2005": [],
+  "4005": []
+ },
+ "ended": "2026-11-15T10:17:28Z",
+ "note": "The field runConfigurationContents of each product was left out of this copy."
+}

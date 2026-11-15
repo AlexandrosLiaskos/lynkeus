@@ -1,0 +1,27 @@
+{
+ "tried": "2026-11-15T10:13:39Z",
+ "file": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5.iso.xml",
+ "related_url_type": "EXTENDED METADATA",
+ "ways": {
+  "environment": {
+   "bytes": 113240,
+   "sha256": "10b0cf58f4ebe69710e891ba3da9576c6cd1b64b104a9e8cf18e7f16208420a2",
+   "starts": "<?xml version='1.0' encoding='utf-8'?>",
+   "attributes": 23,
+   "description": "center frequency of the processed image - frequency A",
+   "unit": "Hz",
+   "value": "1239000000.0",
+   "seconds": 5.1
+  },
+  "token": {
+   "bytes": 113240,
+   "sha256": "10b0cf58f4ebe69710e891ba3da9576c6cd1b64b104a9e8cf18e7f16208420a2",
+   "starts": "<?xml version='1.0' encoding='utf-8'?>",
+   "attributes": 23,
+   "description": "center frequency of the processed image - frequency A",
+   "unit": "Hz",
+   "value": "1239000000.0",
+   "seconds": 3.0
+  }
+ }
+}
