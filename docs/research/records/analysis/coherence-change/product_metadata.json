@@ -1,0 +1,445 @@
+{
+ "read": "2026-11-15T10:19:34Z",
+ "packages": {
+  "earthaccess": "0.19.0",
+  "h5py": "3.16.0",
+  "numpy": "2.5.4",
+  "fsspec": "2026.9.0"
+ },
+ "note": "Selected fields of the HDF5 product files, read over HTTPS, and of their records in the NASA catalogue. The field runConfigurationContents and the outlines of the frames were read and are not kept here.",
+ "paths": {
+  "identification": "/science/LSAR/identification",
+  "algorithms": "/science/LSAR/GUNW/metadata/processingInformation/algorithms",
+  "wrappedInterferogram and unwrappedInterferogram": "/science/LSAR/GUNW/metadata/processingInformation/parameters/[wrappedInterferogram or unwrappedInterferogram]",
+  "reference_and_secondary": "/science/LSAR/GUNW/metadata/processingInformation/parameters/[reference or secondary]",
+  "perpendicularBaseline_m": "/science/LSAR/GUNW/metadata/radarGrid/perpendicularBaseline (lowest, highest and mean value of the cube)",
+  "coherenceMagnitude": "attributes of /science/LSAR/GUNW/grids/frequencyA/[wrappedInterferogram or unwrappedInterferogram]/HH/coherenceMagnitude"
+ },
+ "products": {
+  "20261009-20261021": {
+   "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+   "concept": "G4409879710-ASF",
+   "collection": "C3622247503-ASF",
+   "pge_version": "R05.03.2",
+   "production": "2026-11-12T23:05:07.000000Z",
+   "identification": {
+    "compositeReleaseId": "P05036",
+    "productVersion": "1.0.20",
+    "productSpecificationVersion": "1.6.0",
+    "processingType": "Nominal",
+    "isMixedMode": "False",
+    "isDithered": "True",
+    "isFullFrame": "True",
+    "radarBand": "L",
+    "trackNumber": 141,
+    "frameNumber": 67,
+    "orbitPassDirection": "Descending",
+    "lookDirection": "Left",
+    "productDoi": "10.5067/NIL2GUNW-V1",
+    "referenceZeroDopplerStartTime": "2026-10-09T23:43:30.000000000",
+    "secondaryZeroDopplerStartTime": "2026-10-21T23:43:30.000000000"
+   },
+   "algorithms": {
+    "interferogramFormation/flatteningMethod": "With geometry offsets",
+    "interferogramFormation/multilooking": "Spatial moving average with decimation",
+    "interferogramFormation/wrappedInterferogramFiltering": "no_filter",
+    "softwareVersion": "0.25.21"
+   },
+   "wrappedInterferogram": {
+    "frequencyA/azimuthBandwidth": 1264.0756886487645,
+    "frequencyA/commonBandAzimuthFilterApplied": "False",
+    "frequencyA/commonBandRangeFilterApplied": "False",
+    "frequencyA/ellipsoidalFlatteningApplied": "True",
+    "frequencyA/numberOfAzimuthLooks": 6,
+    "frequencyA/numberOfRangeLooks": 5,
+    "frequencyA/rangeBandwidth": 40000000.0,
+    "frequencyA/topographicFlatteningApplied": "True"
+   },
+   "unwrappedInterferogram": {
+    "frequencyA/azimuthBandwidth": 1264.0756886487645,
+    "frequencyA/commonBandAzimuthFilterApplied": "False",
+    "frequencyA/commonBandRangeFilterApplied": "False",
+    "frequencyA/ellipsoidalFlatteningApplied": "True",
+    "frequencyA/numberOfAzimuthLooks": 16,
+    "frequencyA/numberOfRangeLooks": 13,
+    "frequencyA/rangeBandwidth": 40000000.0,
+    "frequencyA/topographicFlatteningApplied": "True"
+   },
+   "reference_and_secondary": {
+    "reference/frequencyA/azimuthBandwidth": 1264.0756886487645,
+    "reference/frequencyA/rangeBandwidth": 40000000.0,
+    "reference/isMixedMode": "False",
+    "secondary/frequencyA/azimuthBandwidth": 1264.0910035420065,
+    "secondary/frequencyA/rangeBandwidth": 40000000.0,
+    "secondary/isMixedMode": "False"
+   },
+   "perpendicularBaseline_m": {
+    "min": 25.198640823364258,
+    "max": 37.5937385559082,
+    "mean": 31.116615295410156
+   },
+   "coherenceMagnitude_20m_whole_frame": {
+    "shape": [
+     17820,
+     18036
+    ],
+    "units": "1",
+    "_FillValue": NaN,
+    "min_value": 0.0,
+    "max_value": 0.9991191625595093,
+    "mean_value": 0.13703793287277222
+   },
+   "coherenceMagnitude_80m_whole_frame": {
+    "shape": [
+     4455,
+     4509
+    ],
+    "units": "1",
+    "_FillValue": NaN,
+    "min_value": 0.0020553292706608772,
+    "max_value": 0.9959251880645752,
+    "mean_value": 0.32929009199142456
+   }
+  },
+  "20260927-20261009": {
+   "granule": "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001",
+   "concept": "G4359740150-ASF",
+   "collection": "C2854335566-ASF",
+   "pge_version": "R05.02.3",
+   "production": "2026-10-12T05:55:21.000000Z",
+   "identification": {
+    "compositeReleaseId": "P05023",
+    "productVersion": "1.0.11",
+    "productSpecificationVersion": "1.5.0",
+    "processingType": "Nominal",
+    "isMixedMode": "False",
+    "isDithered": "True",
+    "isFullFrame": "True",
+    "radarBand": "L",
+    "trackNumber": 141,
+    "frameNumber": 67,
+    "orbitPassDirection": "Descending",
+    "lookDirection": "Left",
+    "productDoi": "10.5067/NIL2GUNW-P1",
+    "referenceZeroDopplerStartTime": "2026-09-27T23:43:30.000000000",
+    "secondaryZeroDopplerStartTime": "2026-10-09T23:43:30.000000000"
+   },
+   "algorithms": {
+    "interferogramFormation/flatteningMethod": "With geometry offsets",
+    "interferogramFormation/multilooking": "Spatial moving average with decimation",
+    "interferogramFormation/wrappedInterferogramFiltering": "no_filter",
+    "softwareVersion": "0.25.16"
+   },
+   "wrappedInterferogram": {
+    "frequencyA/azimuthBandwidth": 1264.0786503781158,
+    "frequencyA/commonBandAzimuthFilterApplied": "False",
+    "frequencyA/commonBandRangeFilterApplied": "False",
+    "frequencyA/ellipsoidalFlatteningApplied": "True",
+    "frequencyA/numberOfAzimuthLooks": 6,
+    "frequencyA/numberOfRangeLooks": 5,
+    "frequencyA/rangeBandwidth": 40000000.0,
+    "frequencyA/topographicFlatteningApplied": "True"
+   },
+   "unwrappedInterferogram": {
+    "frequencyA/azimuthBandwidth": 1264.0786503781158,
+    "frequencyA/commonBandAzimuthFilterApplied": "False",
+    "frequencyA/commonBandRangeFilterApplied": "False",
+    "frequencyA/ellipsoidalFlatteningApplied": "True",
+    "frequencyA/numberOfAzimuthLooks": 16,
+    "frequencyA/numberOfRangeLooks": 13,
+    "frequencyA/rangeBandwidth": 40000000.0,
+    "frequencyA/topographicFlatteningApplied": "True"
+   },
+   "reference_and_secondary": {
+    "reference/frequencyA/azimuthBandwidth": 1264.0786503781158,
+    "reference/frequencyA/rangeBandwidth": 40000000.0,
+    "reference/isMixedMode": "False",
+    "secondary/frequencyA/azimuthBandwidth": 1264.0756886487645,
+    "secondary/frequencyA/rangeBandwidth": 40000000.0,
+    "secondary/isMixedMode": "False"
+   },
+   "perpendicularBaseline_m": {
+    "min": -9.454217910766602,
+    "max": -6.640299320220947,
+    "mean": -7.959167957305908
+   },
+   "coherenceMagnitude_20m_whole_frame": {
+    "shape": [
+     17820,
+     18036
+    ],
+    "units": "1",
+    "_FillValue": NaN,
+    "min_value": 0.0,
+    "max_value": 0.9980645179748535,
+    "mean_value": 0.06986913084983826
+   },
+   "coherenceMagnitude_80m_whole_frame": {
+    "shape": [
+     4455,
+     4509
+    ],
+    "units": "1",
+    "_FillValue": NaN,
+    "min_value": 0.002256272593513131,
+    "max_value": 0.9938659071922302,
+    "mean_value": 0.1707872897386551
+   }
+  },
+  "20260915-20260927": {
+   "granule": "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001",
+   "concept": "G4328856513-ASF",
+   "collection": "C2854335566-ASF",
+   "pge_version": "R05.02.3",
+   "production": "2026-09-30T02:14:00.000000Z",
+   "identification": {
+    "compositeReleaseId": "P05023",
+    "productVersion": "1.0.11",
+    "productSpecificationVersion": "1.5.0",
+    "processingType": "Nominal",
+    "isMixedMode": "False",
+    "isDithered": "True",
+    "isFullFrame": "True",
+    "radarBand": "L",
+    "trackNumber": 141,
+    "frameNumber": 67,
+    "orbitPassDirection": "Descending",
+    "lookDirection": "Left",
+    "productDoi": "10.5067/NIL2GUNW-P1",
+    "referenceZeroDopplerStartTime": "2026-09-15T23:43:30.000000000",
+    "secondaryZeroDopplerStartTime": "2026-09-27T23:43:30.000000000"
+   },
+   "algorithms": {
+    "interferogramFormation/flatteningMethod": "With geometry offsets",
+    "interferogramFormation/multilooking": "Spatial moving average with decimation",
+    "interferogramFormation/wrappedInterferogramFiltering": "no_filter",
+    "softwareVersion": "0.25.16"
+   },
+   "wrappedInterferogram": {
+    "frequencyA/azimuthBandwidth": 1264.0818960850077,
+    "frequencyA/commonBandAzimuthFilterApplied": "False",
+    "frequencyA/commonBandRangeFilterApplied": "False",
+    "frequencyA/ellipsoidalFlatteningApplied": "True",
+    "frequencyA/numberOfAzimuthLooks": 6,
+    "frequencyA/numberOfRangeLooks": 5,
+    "frequencyA/rangeBandwidth": 40000000.0,
+    "frequencyA/topographicFlatteningApplied": "True"
+   },
+   "unwrappedInterferogram": {
+    "frequencyA/azimuthBandwidth": 1264.0818960850077,
+    "frequencyA/commonBandAzimuthFilterApplied": "False",
+    "frequencyA/commonBandRangeFilterApplied": "False",
+    "frequencyA/ellipsoidalFlatteningApplied": "True",
+    "frequencyA/numberOfAzimuthLooks": 16,
+    "frequencyA/numberOfRangeLooks": 13,
+    "frequencyA/rangeBandwidth": 40000000.0,
+    "frequencyA/topographicFlatteningApplied": "True"
+   },
+   "reference_and_secondary": {
+    "reference/frequencyA/azimuthBandwidth": 1264.0818960850077,
+    "reference/frequencyA/rangeBandwidth": 40000000.0,
+    "reference/isMixedMode": "False",
+    "secondary/frequencyA/azimuthBandwidth": 1264.0786503781158,
+    "secondary/frequencyA/rangeBandwidth": 40000000.0,
+    "secondary/isMixedMode": "False"
+   },
+   "perpendicularBaseline_m": {
+    "min": -55.30193328857422,
+    "max": -42.56927490234375,
+    "mean": -48.72730255126953
+   },
+   "coherenceMagnitude_20m_whole_frame": {
+    "shape": [
+     17820,
+     18036
+    ],
+    "units": "1",
+    "_FillValue": NaN,
+    "min_value": 0.0,
+    "max_value": 0.9980157017707825,
+    "mean_value": 0.05581001564860344
+   },
+   "coherenceMagnitude_80m_whole_frame": {
+    "shape": [
+     4455,
+     4509
+    ],
+    "units": "1",
+    "_FillValue": NaN,
+    "min_value": 0.0013822487089782953,
+    "max_value": 0.9944469332695007,
+    "mean_value": 0.19265484809875488
+   }
+  },
+  "20260810-20260822": {
+   "granule": "NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001",
+   "concept": "G4289042265-ASF",
+   "collection": "C2854335566-ASF",
+   "pge_version": "R05.02.3",
+   "production": "2026-08-26T22:33:51.000000Z",
+   "identification": {
+    "compositeReleaseId": "P05023",
+    "productVersion": "1.0.11",
+    "productSpecificationVersion": "1.5.0",
+    "processingType": "Nominal",
+    "isMixedMode": "False",
+    "isDithered": "True",
+    "isFullFrame": "True",
+    "radarBand": "L",
+    "trackNumber": 141,
+    "frameNumber": 67,
+    "orbitPassDirection": "Descending",
+    "lookDirection": "Left",
+    "productDoi": "10.5067/NIL2GUNW-P1",
+    "referenceZeroDopplerStartTime": "2026-08-10T23:43:31.000000000",
+    "secondaryZeroDopplerStartTime": "2026-08-22T23:43:30.000000000"
+   },
+   "algorithms": {
+    "interferogramFormation/flatteningMethod": "With geometry offsets",
+    "interferogramFormation/multilooking": "Spatial moving average with decimation",
+    "interferogramFormation/wrappedInterferogramFiltering": "no_filter",
+    "softwareVersion": "0.25.16"
+   },
+   "wrappedInterferogram": {
+    "frequencyA/azimuthBandwidth": 1264.0816790570616,
+    "frequencyA/commonBandAzimuthFilterApplied": "False",
+    "frequencyA/commonBandRangeFilterApplied": "False",
+    "frequencyA/ellipsoidalFlatteningApplied": "True",
+    "frequencyA/numberOfAzimuthLooks": 6,
+    "frequencyA/numberOfRangeLooks": 5,
+    "frequencyA/rangeBandwidth": 40000000.0,
+    "frequencyA/topographicFlatteningApplied": "True"
+   },
+   "unwrappedInterferogram": {
+    "frequencyA/azimuthBandwidth": 1264.0816790570616,
+    "frequencyA/commonBandAzimuthFilterApplied": "False",
+    "frequencyA/commonBandRangeFilterApplied": "False",
+    "frequencyA/ellipsoidalFlatteningApplied": "True",
+    "frequencyA/numberOfAzimuthLooks": 16,
+    "frequencyA/numberOfRangeLooks": 13,
+    "frequencyA/rangeBandwidth": 40000000.0,
+    "frequencyA/topographicFlatteningApplied": "True"
+   },
+   "reference_and_secondary": {
+    "reference/frequencyA/azimuthBandwidth": 1264.0816790570616,
+    "reference/frequencyA/rangeBandwidth": 40000000.0,
+    "reference/isMixedMode": "False",
+    "secondary/frequencyA/azimuthBandwidth": 1264.081770974132,
+    "secondary/frequencyA/rangeBandwidth": 40000000.0,
+    "secondary/isMixedMode": "False"
+   },
+   "perpendicularBaseline_m": {
+    "min": 85.70767974853516,
+    "max": 99.02120971679688,
+    "mean": 92.27066040039062
+   },
+   "coherenceMagnitude_20m_whole_frame": {
+    "shape": [
+     17820,
+     18036
+    ],
+    "units": "1",
+    "_FillValue": NaN,
+    "min_value": 0.0,
+    "max_value": 0.9993178844451904,
+    "mean_value": 0.30394259095191956
+   },
+   "coherenceMagnitude_80m_whole_frame": {
+    "shape": [
+     4455,
+     4509
+    ],
+    "units": "1",
+    "_FillValue": NaN,
+    "min_value": 0.0012261569499969482,
+    "max_value": 0.9948787689208984,
+    "mean_value": 0.31964361667633057
+   }
+  },
+  "20260717-20260810": {
+   "granule": "NISAR_L2_PR_GUNW_025_141_D_067_027_4000_SH_20260717T234332_20260717T234407_20260810T234331_20260810T234406_P05023_N_F_J_001",
+   "concept": "G4279902284-ASF",
+   "collection": "C2854335566-ASF",
+   "pge_version": "R05.02.3",
+   "production": "2026-08-15T01:12:37.000000Z",
+   "identification": {
+    "compositeReleaseId": "P05023",
+    "productVersion": "1.0.11",
+    "productSpecificationVersion": "1.5.0",
+    "processingType": "Nominal",
+    "isMixedMode": "False",
+    "isDithered": "True",
+    "isFullFrame": "True",
+    "radarBand": "L",
+    "trackNumber": 141,
+    "frameNumber": 67,
+    "orbitPassDirection": "Descending",
+    "lookDirection": "Left",
+    "productDoi": "10.5067/NIL2GUNW-P1",
+    "referenceZeroDopplerStartTime": "2026-07-17T23:43:32.000000000",
+    "secondaryZeroDopplerStartTime": "2026-08-10T23:43:31.000000000"
+   },
+   "algorithms": {
+    "interferogramFormation/flatteningMethod": "With geometry offsets",
+    "interferogramFormation/multilooking": "Spatial moving average with decimation",
+    "interferogramFormation/wrappedInterferogramFiltering": "no_filter",
+    "softwareVersion": "0.25.16"
+   },
+   "wrappedInterferogram": {
+    "frequencyA/azimuthBandwidth": 1264.088679385834,
+    "frequencyA/commonBandAzimuthFilterApplied": "False",
+    "frequencyA/commonBandRangeFilterApplied": "False",
+    "frequencyA/ellipsoidalFlatteningApplied": "True",
+    "frequencyA/numberOfAzimuthLooks": 6,
+    "frequencyA/numberOfRangeLooks": 5,
+    "frequencyA/rangeBandwidth": 40000000.0,
+    "frequencyA/topographicFlatteningApplied": "True"
+   },
+   "unwrappedInterferogram": {
+    "frequencyA/azimuthBandwidth": 1264.088679385834,
+    "frequencyA/commonBandAzimuthFilterApplied": "False",
+    "frequencyA/commonBandRangeFilterApplied": "False",
+    "frequencyA/ellipsoidalFlatteningApplied": "True",
+    "frequencyA/numberOfAzimuthLooks": 16,
+    "frequencyA/numberOfRangeLooks": 13,
+    "frequencyA/rangeBandwidth": 40000000.0,
+    "frequencyA/topographicFlatteningApplied": "True"
+   },
+   "reference_and_secondary": {
+    "reference/frequencyA/azimuthBandwidth": 1264.088679385834,
+    "reference/frequencyA/rangeBandwidth": 40000000.0,
+    "reference/isMixedMode": "False",
+    "secondary/frequencyA/azimuthBandwidth": 1264.0816790570616,
+    "secondary/frequencyA/rangeBandwidth": 40000000.0,
+    "secondary/isMixedMode": "False"
+   },
+   "perpendicularBaseline_m": {
+    "min": -50.46929931640625,
+    "max": -43.92377853393555,
+    "mean": -47.168861389160156
+   },
+   "coherenceMagnitude_20m_whole_frame": {
+    "shape": [
+     17820,
+     18036
+    ],
+    "units": "1",
+    "_FillValue": NaN,
+    "min_value": 0.0,
+    "max_value": 0.9994156360626221,
+    "mean_value": 0.10902366042137146
+   },
+   "coherenceMagnitude_80m_whole_frame": {
+    "shape": [
+     4455,
+     4509
+    ],
+    "units": "1",
+    "_FillValue": NaN,
+    "min_value": 0.0019764991011470556,
+    "max_value": 0.9973138570785522,
+    "mean_value": 0.3495787978172302
+   }
+  }
+ }
+}

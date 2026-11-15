@@ -198,7 +198,7 @@ def test_layers_on_different_grids_are_refused(tmp_path: Path) -> None:
 
 def test_unknown_tool_or_layer_is_refused(tmp_path: Path) -> None:
     with pytest.raises(LayerError, match="no analysis tool of this name"):
-        run(tmp_path, tool="coherence-change")
+        run(tmp_path, tool="coherence-forecast")
     with pytest.raises(LayerError, match="no longer exists"):
         run(tmp_path, inputs=("first", "removed"))
 

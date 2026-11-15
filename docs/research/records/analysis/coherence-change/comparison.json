@@ -1,0 +1,214 @@
+{
+ "compared": "2026-11-15T10:39:08Z",
+ "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+ "python": "3.13.18",
+ "numpy": "2.5.4",
+ "rasterio": "1.5.2",
+ "gdal_of_rasterio": "3.12.2",
+ "source_program": {
+  "program": "gdal raster calc",
+  "version_line": "GDAL 3.12.2 \"Chicoutimi\", released 2026/02/03",
+  "image": "ghcr.io/osgeo/gdal@sha256:3775c7530eb68f95b8c67853da1e1e99a607e32a87f3d433440b8b562079f645 sha256:3775c7530eb68f95b8c67853da1e1e99a607e32a87f3d433440b8b562079f645",
+  "commands": [
+   "gdal raster calc -i A=gunw-wrappedinterferogram-hh-coherencemagnitude-20260927-20261009.tif -i B=gunw-wrappedinterferogram-hh-coherencemagnitude-20261009-20261021.tif --calc B-A --output-data-type Float32 -o gdal-20m-0927-1009-to-1009-1021.tif",
+   "gdal raster calc -i A=gunw-wrappedinterferogram-hh-coherencemagnitude-20260915-20260927.tif -i B=gunw-wrappedinterferogram-hh-coherencemagnitude-20260927-20261009.tif --calc B-A --output-data-type Float32 -o gdal-20m-0915-0927-to-0927-1009.tif",
+   "gdal raster calc -i A=gunw-wrappedinterferogram-hh-coherencemagnitude-20260915-20260927.tif -i B=gunw-wrappedinterferogram-hh-coherencemagnitude-20261009-20261021.tif --calc B-A --output-data-type Float32 -o gdal-20m-0915-0927-to-1009-1021.tif",
+   "gdal raster calc -i A=gunw-wrappedinterferogram-hh-coherencemagnitude-20260810-20260822.tif -i B=gunw-wrappedinterferogram-hh-coherencemagnitude-20260915-20260927.tif --calc B-A --output-data-type Float32 -o gdal-20m-0810-0822-to-0915-0927.tif",
+   "gdal raster calc -i A=gunw-unwrappedinterferogram-hh-coherencemagnitude-20260927-20261009.tif -i B=gunw-unwrappedinterferogram-hh-coherencemagnitude-20261009-20261021.tif --calc B-A --output-data-type Float32 -o gdal-80m-0927-1009-to-1009-1021.tif"
+  ],
+  "exit_codes": [
+   "0",
+   "0",
+   "0",
+   "0",
+   "0"
+  ]
+ },
+ "runs": {
+  "20m-0927-1009-to-1009-1021": {
+   "inputs": [
+    "gunw-wrappedinterferogram-hh-coherencemagnitude-20260927-20261009.tif",
+    "gunw-wrappedinterferogram-hh-coherencemagnitude-20261009-20261021.tif"
+   ],
+   "sha256_of_inputs": [
+    "218e249a090fbb6dbfee23ada1d298071cc587c3b5b00fc6a31fc7235d86858b",
+    "93b623fe0563dbdc34ccce3e9db22aa6f57dca4763429ae93fac8d9bf5117b69"
+   ],
+   "source_file": "gdal-20m-0927-1009-to-1009-1021.tif",
+   "source_sha256": "2f5666f8de10a4f67c9771a72c55fc581a41433024a3d7846c026c470490379d",
+   "source_grid": {
+    "dtype": "float32",
+    "nodata": "nan",
+    "crs": "EPSG:32619",
+    "transform": [
+     20.0,
+     0.0,
+     319520.0,
+     0.0,
+     -20.0,
+     4757600.0
+    ],
+    "width": 1886,
+    "height": 1985
+   },
+   "same_shape": true,
+   "same_grid_as_the_first_input": true,
+   "cells": 3743710,
+   "value_in_both": 3579092,
+   "nan_in_both": 164618,
+   "value_in_lynkeus_only": 0,
+   "value_in_source_only": 0,
+   "cells_that_differ": 0,
+   "largest_absolute_difference": 0.0,
+   "bit_identical": true
+  },
+  "20m-0915-0927-to-0927-1009": {
+   "inputs": [
+    "gunw-wrappedinterferogram-hh-coherencemagnitude-20260915-20260927.tif",
+    "gunw-wrappedinterferogram-hh-coherencemagnitude-20260927-20261009.tif"
+   ],
+   "sha256_of_inputs": [
+    "ca3f576585ac53aa5088ec05b057d30d1da03720b3048b0e6d1ba045dbdf5dbe",
+    "218e249a090fbb6dbfee23ada1d298071cc587c3b5b00fc6a31fc7235d86858b"
+   ],
+   "source_file": "gdal-20m-0915-0927-to-0927-1009.tif",
+   "source_sha256": "b16200b684bbb73b569354e80dba8b69536b303fda1a5d5c7bcc3c07a2d82031",
+   "source_grid": {
+    "dtype": "float32",
+    "nodata": "nan",
+    "crs": "EPSG:32619",
+    "transform": [
+     20.0,
+     0.0,
+     319520.0,
+     0.0,
+     -20.0,
+     4757600.0
+    ],
+    "width": 1886,
+    "height": 1985
+   },
+   "same_shape": true,
+   "same_grid_as_the_first_input": true,
+   "cells": 3743710,
+   "value_in_both": 3579092,
+   "nan_in_both": 164618,
+   "value_in_lynkeus_only": 0,
+   "value_in_source_only": 0,
+   "cells_that_differ": 0,
+   "largest_absolute_difference": 0.0,
+   "bit_identical": true
+  },
+  "20m-0915-0927-to-1009-1021": {
+   "inputs": [
+    "gunw-wrappedinterferogram-hh-coherencemagnitude-20260915-20260927.tif",
+    "gunw-wrappedinterferogram-hh-coherencemagnitude-20261009-20261021.tif"
+   ],
+   "sha256_of_inputs": [
+    "ca3f576585ac53aa5088ec05b057d30d1da03720b3048b0e6d1ba045dbdf5dbe",
+    "93b623fe0563dbdc34ccce3e9db22aa6f57dca4763429ae93fac8d9bf5117b69"
+   ],
+   "source_file": "gdal-20m-0915-0927-to-1009-1021.tif",
+   "source_sha256": "9c9a54fe8aeeb47f5135bf530fbe19e265dedc319dc9588e7e045be18cc26eb3",
+   "source_grid": {
+    "dtype": "float32",
+    "nodata": "nan",
+    "crs": "EPSG:32619",
+    "transform": [
+     20.0,
+     0.0,
+     319520.0,
+     0.0,
+     -20.0,
+     4757600.0
+    ],
+    "width": 1886,
+    "height": 1985
+   },
+   "same_shape": true,
+   "same_grid_as_the_first_input": true,
+   "cells": 3743710,
+   "value_in_both": 3579092,
+   "nan_in_both": 164618,
+   "value_in_lynkeus_only": 0,
+   "value_in_source_only": 0,
+   "cells_that_differ": 0,
+   "largest_absolute_difference": 0.0,
+   "bit_identical": true
+  },
+  "20m-0810-0822-to-0915-0927": {
+   "inputs": [
+    "gunw-wrappedinterferogram-hh-coherencemagnitude-20260810-20260822.tif",
+    "gunw-wrappedinterferogram-hh-coherencemagnitude-20260915-20260927.tif"
+   ],
+   "sha256_of_inputs": [
+    "2d33f96db6c007145472e17e1d9438c5d6535742372d1741edcd7b3b592ba5a8",
+    "ca3f576585ac53aa5088ec05b057d30d1da03720b3048b0e6d1ba045dbdf5dbe"
+   ],
+   "source_file": "gdal-20m-0810-0822-to-0915-0927.tif",
+   "source_sha256": "ae9149cb9ce30af87b7bce18c8a6062caaa92256eac6753820ae5d77968971c5",
+   "source_grid": {
+    "dtype": "float32",
+    "nodata": "nan",
+    "crs": "EPSG:32619",
+    "transform": [
+     20.0,
+     0.0,
+     319520.0,
+     0.0,
+     -20.0,
+     4757600.0
+    ],
+    "width": 1886,
+    "height": 1985
+   },
+   "same_shape": true,
+   "same_grid_as_the_first_input": true,
+   "cells": 3743710,
+   "value_in_both": 3579092,
+   "nan_in_both": 164618,
+   "value_in_lynkeus_only": 0,
+   "value_in_source_only": 0,
+   "cells_that_differ": 0,
+   "largest_absolute_difference": 0.0,
+   "bit_identical": true
+  },
+  "80m-0927-1009-to-1009-1021": {
+   "inputs": [
+    "gunw-unwrappedinterferogram-hh-coherencemagnitude-20260927-20261009.tif",
+    "gunw-unwrappedinterferogram-hh-coherencemagnitude-20261009-20261021.tif"
+   ],
+   "sha256_of_inputs": [
+    "963a02eb5aff5230902a19078dc74d1cb7556ceeafbe66cfc5ef2f2ebe563e52",
+    "5d1b5e8c5153acdbcdeff9b24885165db39ed73b158781ad4bf0c7a2f048f368"
+   ],
+   "source_file": "gdal-80m-0927-1009-to-1009-1021.tif",
+   "source_sha256": "3f5d5d6570ce738ed0a6e5195182b416af737f857de263337d70172cc94b61c3",
+   "source_grid": {
+    "dtype": "float32",
+    "nodata": "nan",
+    "crs": "EPSG:32619",
+    "transform": [
+     80.0,
+     0.0,
+     319520.0,
+     0.0,
+     -80.0,
+     4757600.0
+    ],
+    "width": 471,
+    "height": 496
+   },
+   "same_shape": true,
+   "same_grid_as_the_first_input": true,
+   "cells": 233616,
+   "value_in_both": 223693,
+   "nan_in_both": 9923,
+   "value_in_lynkeus_only": 0,
+   "value_in_source_only": 0,
+   "cells_that_differ": 0,
+   "largest_absolute_difference": 0.0,
+   "bit_identical": true
+  }
+ }
+}
