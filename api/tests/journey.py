@@ -208,7 +208,7 @@ def _jobs_and_layers(site: Project, web: Any, data: Path, server: str, measured:
     measured["cancel"] = round(time.monotonic() - asked, 1)
     assert [event["job"] for event in cancelled] == [web.seen("submit")[1]["job"]]
     site.until(lambda: len(list(files.iterdir())) == 1 or None, "the removal of the folder of the dismissed job", 30)
-    # The token is in no file of the data folder. Windows lets no other program read the file that the program holds locked.
+    # The token is in no file of the data folder. Windows lets no other program read the file that is held locked.
     kept = [path for path in data.rglob("*") if path.is_file() and path.name != computer.LOCK]
     assert len(kept) >= 5
     assert all(TOKEN.encode() not in path.read_bytes() for path in kept)
