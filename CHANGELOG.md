@@ -99,10 +99,11 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   the search and the layers of the map return when the page opens again. The pane Browser storage, which
   the button Storage of the tab Options opens, switches each part on and off, states the size of its stored
   copy and clears it.
-- The welcome window of the application page, shown when the page opens: the name and a description of the
-  platform, three facts of the NISAR satellite, the team, the developer of the site, the total of recorded page
+- The welcome screen of the application page, which covers the page when it opens: an illustration of the NISAR
+  satellite with the name of the platform, the team, the developer of the site, the total of recorded page
   visits, and the event with the logos of NASA, the NASA Space Apps Challenge and the universities of the team.
-- The mark of the team as the black silhouette of a lynx, in the title bar and the welcome window.
+  The visitor slides it up to enter.
+- The mark of the team as the black silhouette of a lynx, in the title bar.
 
 ### Changed
 
