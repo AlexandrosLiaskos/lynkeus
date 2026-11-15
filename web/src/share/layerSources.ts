@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { LayerDescription } from "../shared/layer";
 import { dataSources, type DataSource } from "./citation";
 import { readRecord } from "./record";
+import { layerMissing } from "./selection";
 
 /** The datasets of the layers that were asked for, by the address of the record of the layer. */
 const read = new Map<string, Promise<DataSource[]>>();
@@ -47,4 +48,23 @@ export function useDataSources(layer: LayerDescription | null): readonly DataSou
 /** Forget the datasets that were read. The tests start from this state. */
 export function forgetDataSources(): void {
   read.clear();
+}
+
+/**
+ * Return the sentence that states what the citation of the selected layer lacks, or undefined when the layer can
+ * be cited. It lacks, in this order: a selected layer, the end of the reading of its record, and a record that
+ * names the DOI of a NISAR collection. `sources` is the value of `useDataSources` for the layer.
+ */
+export function citationMissing(
+  layer: LayerDescription | null,
+  hasLayers: boolean,
+  sources: readonly DataSource[] | null,
+): string | undefined {
+  if (!layer) {
+    return layerMissing(hasLayers);
+  }
+  if (sources === null) {
+    return "The record of the layer is being read.";
+  }
+  return sources.length > 0 ? undefined : "The record of the layer names no DOI of a NISAR collection.";
 }
