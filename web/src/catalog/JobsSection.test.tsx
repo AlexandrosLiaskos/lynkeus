@@ -77,7 +77,7 @@ const commandsOf = (title: string) => within(screen.getByRole("group", { name: `
 
 /** Open the menu "More" of a job and return the names of its commands. */
 async function moreOf(title: string): Promise<string[]> {
-  await userEvent.click(commandsOf(title).getByRole("button", { name: "More" }));
+  await userEvent.click(commandsOf(title).getByRole("button", { name: `More commands of ${title}` }));
   return screen.getAllByRole("menuitem").map((command) => command.textContent);
 }
 
@@ -138,9 +138,12 @@ test("a job shows the one command that fits its state, and its other commands in
     commandsOf(title)
       .getAllByRole("button")
       .map((button) => button.getAttribute("aria-label") ?? button.textContent);
-  expect(shown("Backscatter HH, 21 Oct 2026")).toEqual(["Cancel", "More"]);
-  expect(shown("Azimuth offset, 9 and 21 Oct 2026")).toEqual(["Run again", "More"]);
-  expect(shown("Soil moisture, 2 Nov 2026")).toEqual(["Show layer", "More"]);
+  expect(shown("Backscatter HH, 21 Oct 2026")).toEqual(["Cancel", "More commands of Backscatter HH, 21 Oct 2026"]);
+  expect(shown("Azimuth offset, 9 and 21 Oct 2026")).toEqual([
+    "Run again",
+    "More commands of Azimuth offset, 9 and 21 Oct 2026",
+  ]);
+  expect(shown("Soil moisture, 2 Nov 2026")).toEqual(["Show layer", "More commands of Soil moisture, 2 Nov 2026"]);
   expect(await moreOf("Backscatter HH, 21 Oct 2026")).toEqual(["Details"]);
   await userEvent.keyboard("{Escape}");
   expect(await moreOf("Azimuth offset, 9 and 21 Oct 2026")).toEqual(["Details", "Remove"]);

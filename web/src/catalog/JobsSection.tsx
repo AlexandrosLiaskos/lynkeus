@@ -170,7 +170,7 @@ function JobItem({ job, onDetails, onGone }: JobItemProps) {
             {main.label}
           </button>
         ) : null}
-        <MenuButton icon="more_vert" label="More" items={more} />
+        <MenuButton icon="more_vert" label="More" name={`More commands of ${job.title}`} items={more} />
       </div>
     </li>
   );

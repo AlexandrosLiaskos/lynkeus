@@ -109,6 +109,16 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The explanations of the fields of the Map tab stand behind the "i" beside each title and no longer under
   it, and are written in complete sentences.
 - The description of a ribbon button appears with a short fade.
+- The Catalog pane is open from the start and, while it lists nothing, leads to the search. Its sections
+  Products, Jobs and Layers carry their commands in toolbars and menus, a selected product offers Get layer,
+  Details and Zoom to, and the details of a product are a view of their own, in groups with readable names.
+- The tool panes of the Share tab keep their explanations behind the "i", state the conditions of a result
+  as notices and say what a tool needs before it runs. A Share button of the ribbon that lacks something is
+  inactive and says what it needs.
+- The row of tabs under the stacked panes is darker than a pane, and the tab of the pane in front carries
+  the tint of a chosen element.
+- The messages of the Share tab say basemap, and the More button of a job and of a layer in the Catalog pane
+  is named after its item.
 
 ### Removed
 
