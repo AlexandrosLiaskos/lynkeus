@@ -15,8 +15,14 @@ GUNW_9_21_OCT = (
 )
 
 
+COHERENCE = "wrappedInterferogram/HH/coherenceMagnitude"
+
+
 def layer(granule: str, *dates: str, **changes: Any) -> LayerDescription:
-    """Describe a layer received from a product file, with the unit that the product declares."""
+    """Describe a layer received from a product file, with the unit that the product declares.
+
+    The layer is the term ``HHHH`` of its product, unless ``changes`` name another layer.
+    """
     name = "-".join(day.replace("-", "") for day in dates)
     description = {
         "id": f"layer-{name}",
@@ -29,6 +35,7 @@ def layer(granule: str, *dates: str, **changes: Any) -> LayerDescription:
         "colours": "grey",
         "dates": dates,
         "inputs": [f"{granule}.h5"],
+        "layer": "HHHH",
         "program": "Lynkeus 0.1.0",
         "method": None,
         "record": f"/files/layer-{name}.json",
@@ -43,4 +50,4 @@ def grid(*rows: list[float]) -> NDArray[np.float32]:
 
 EARLIER = layer(GCOV_21_OCT, "2026-10-21")
 LATER = layer(GCOV_2_NOV, "2026-11-02")
-PAIR = layer(GUNW_9_21_OCT, "2026-10-09", "2026-10-21")
+PAIR = layer(GUNW_9_21_OCT, "2026-10-09", "2026-10-21", layer=COHERENCE)

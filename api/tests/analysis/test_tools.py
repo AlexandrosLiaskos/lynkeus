@@ -34,6 +34,7 @@ def test_result_of_every_tool_fits_a_layer_description_and_the_grid_of_its_input
         description = {
             **layers[0].model_dump(),
             "kind": "result",
+            "layer": None,
             "quantity": result.quantity,
             "unit": result.unit,
             "range": result.range,

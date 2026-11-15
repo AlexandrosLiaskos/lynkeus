@@ -3,6 +3,7 @@
 The method sheet is ``docs/methods/coherence-state.md``.
 """
 
+import re
 from collections.abc import Sequence
 
 import numpy as np
@@ -11,6 +12,11 @@ from numpy.typing import NDArray
 from lynkeus.analysis.inputs import check_inputs
 from lynkeus.layers import AnalysisResult, LayerDescription
 from lynkeus.writing import LayerError
+
+# The four layers coherenceMagnitude of a GUNW product, by their paths inside the group ``frequencyA`` (NASA SDS
+# Product Specification, L2 GUNW, JPL D-102272 Rev E, pages 35 to 37), which are the names that
+# ``lynkeus.harmony.layers_of`` gives them.
+_COHERENCE = re.compile(r"(?:unwrappedInterferogram|wrappedInterferogram)/(?:HH|VV)/coherenceMagnitude")
 
 _STATE_METHOD = (
     "Layer coherenceMagnitude of the product, unchanged "
@@ -38,10 +44,12 @@ def coherence_state(arrays: Sequence[NDArray[np.float32]], layers: Sequence[Laye
     Raises
     ------
     LayerError
-        If the input is not one layer of a GUNW product (see ``check_inputs``), holds no value, or holds a
-        value outside 0 to 1.
+        If the input is not one layer ``coherenceMagnitude`` of a GUNW product (see ``check_inputs``), holds
+        no value, or holds a value outside 0 to 1.
     """
-    check_inputs(arrays, layers, count=1, product="GUNW", dates=2)
+    check_inputs(
+        arrays, layers, count=1, product="GUNW", names=_COHERENCE, reads="the layer coherenceMagnitude", dates=2
+    )
     coherence = arrays[0]
     valid = coherence[~np.isnan(coherence)]
     if valid.size == 0:

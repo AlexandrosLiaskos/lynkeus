@@ -5,6 +5,7 @@ of one polarisation channel, in linear power. The method sheets are ``docs/metho
 ``docs/methods/backscatter-change.md``.
 """
 
+import re
 from collections.abc import Sequence
 
 import numpy as np
@@ -13,6 +14,11 @@ from numpy.typing import NDArray
 from lynkeus.analysis.inputs import check_inputs
 from lynkeus.layers import AnalysisResult, LayerDescription
 from lynkeus.writing import LayerError
+
+# The diagonal terms of the covariance matrix that a GCOV product can hold (NASA SDS Product Specification, L2 GCOV,
+# JPL D-102274 Rev F, Table 5-3).
+_TERMS = re.compile(r"HHHH|HVHV|VHVH|VVVV|RHRH|RVRV")
+_READS = "a diagonal covariance term (HHHH, HVHV, VHVH, VVVV, RHRH or RVRV)"
 
 _STATE_METHOD = (
     "10*log10 of the covariance term, the conversion that the product states in its field "
@@ -80,10 +86,10 @@ def backscatter_state(arrays: Sequence[NDArray[np.float32]], layers: Sequence[La
     Raises
     ------
     LayerError
-        If the input is not one layer of a GCOV product (see ``check_inputs``), holds no value above zero, or
-        gives a legend without a range.
+        If the input is not one diagonal covariance term of a GCOV product (see ``check_inputs``), holds no
+        value above zero, or gives a legend without a range.
     """
-    check_inputs(arrays, layers, count=1, product="GCOV", dates=1)
+    check_inputs(arrays, layers, count=1, product="GCOV", names=_TERMS, reads=_READS, dates=1)
     decibels = _decibels(arrays[0])
     lowest, highest = np.quantile(_valid(decibels), [0.05, 0.95])
     return _result(decibels, "Radar backscatter gamma0", float(lowest), float(highest), "grey", _STATE_METHOD)
@@ -95,8 +101,9 @@ def backscatter_change(arrays: Sequence[NDArray[np.float32]], layers: Sequence[L
     Parameters
     ----------
     arrays : sequence of numpy.ndarray
-        Two arrays on the same grid: the same diagonal covariance term of two GCOV products of the same track,
-        direction and frame, gamma0 in linear power (unit ``1``). The earlier date comes first.
+        Two arrays on the same grid: the same diagonal covariance term of two GCOV products of the same
+        instrument, track, direction and frame, gamma0 in linear power (unit ``1``). The earlier date comes
+        first.
     layers : sequence of LayerDescription
         The descriptions of the two layers, in the same order.
 
@@ -111,13 +118,18 @@ def backscatter_change(arrays: Sequence[NDArray[np.float32]], layers: Sequence[L
     Raises
     ------
     LayerError
-        If the inputs are not two layers of GCOV products (see ``check_inputs``), are not of the same track,
-        direction and frame, or do not have the earlier date first; if no cell holds a value above zero on both
-        dates; or if the legend has no range.
+        If the inputs are not two diagonal covariance terms of GCOV products (see ``check_inputs``), are not
+        the same term, are not of the same instrument, track, direction and frame, or do not have the earlier
+        date first; if no cell holds a value above zero on both dates; or if the legend has no range.
     """
-    earlier, later = check_inputs(arrays, layers, count=2, product="GCOV", dates=1)
+    earlier, later = check_inputs(arrays, layers, count=2, product="GCOV", names=_TERMS, reads=_READS, dates=1)
+    if layers[0].layer != layers[1].layer:
+        raise LayerError(
+            f"The two layers are not the same covariance term: "
+            f"the first is {layers[0].layer} and the second is {layers[1].layer}."
+        )
     if earlier != later:
-        raise LayerError("The two layers are not of the same track, direction and frame.")
+        raise LayerError("The two layers are not of the same instrument, track, direction and frame.")
     if not layers[0].dates[0] < layers[1].dates[0]:
         raise LayerError("The first layer must be of an earlier date than the second.")
     before, after = arrays

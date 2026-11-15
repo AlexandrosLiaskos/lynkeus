@@ -13,13 +13,15 @@ from lynkeus.writing import LayerError
 # The start of the name of a NISAR product file: instrument and level, processing type, product type, cycle,
 # track, direction and frame (SDS Product File Naming Conventions, JPL D-102255 Rev C, sections 3.7 and 3.8).
 _PRODUCT_FILE = re.compile(
-    r"NISAR_[LS]\d_(?:PR|UR|OD)_(?P<product>[A-Z0-9]{4})_\d{3}_(?P<track>\d{3})_(?P<direction>[AD])_(?P<frame>\d{3})_"
+    r"NISAR_(?P<instrument>[LS])\d_(?:PR|UR|OD)_(?P<product>[A-Z0-9]{4})_\d{3}_"
+    r"(?P<track>\d{3})_(?P<direction>[AD])_(?P<frame>\d{3})_"
 )
 
 
 class Acquisition(NamedTuple):
-    """Where a product was acquired: its track, the direction of the orbit (``A`` or ``D``) and its frame."""
+    """How a product was acquired: its instrument (``L`` or ``S``), track, direction (``A`` or ``D``) and frame."""
 
+    instrument: str
     track: int
     direction: str
     frame: int
@@ -31,6 +33,8 @@ def check_inputs(
     *,
     count: int,
     product: ProductType,
+    names: re.Pattern[str],
+    reads: str,
     dates: int,
 ) -> tuple[Acquisition, ...]:
     """Check the input layers of a tool.
@@ -45,20 +49,25 @@ def check_inputs(
         Number of layers that the tool takes.
     product : {"GCOV", "GUNW", "GOFF", "SME2"}
         Product type that the tool reads.
+    names : re.Pattern
+        Pattern that the whole name of a layer inside its product (``LayerDescription.layer``) must match.
+    reads : str
+        The layers that ``names`` accepts, in words that end the sentence of a refusal.
     dates : int
         Number of dates of each layer: 1 for an acquisition, 2 for a pair.
 
     Returns
     -------
     tuple of Acquisition
-        Where the product of each layer was acquired, read from the name of its product file.
+        How the product of each layer was acquired, read from the name of its product file.
 
     Raises
     ------
     LayerError
         If the number of layers is not ``count``; if the grids differ in size; if a layer was not received from
-        one product file of the type ``product``, does not carry the unit ``1`` that the product declares, or
-        does not have ``dates`` dates.
+        one product file of the type ``product``, does not record the name of its layer inside the product,
+        records a name that ``names`` does not match, does not carry the unit ``1`` that the product declares,
+        or does not have ``dates`` dates.
     ValueError
         If the arrays and the descriptions differ in number, or an array is not as described above. These are
         faults of the caller.
@@ -77,11 +86,22 @@ def check_inputs(
         found = _PRODUCT_FILE.match(name)
         if found is None or found["product"] != product:
             raise LayerError(f'The layer "{layer.title}" is not a layer received from one NISAR {product} product.')
+        if layer.layer is None:
+            raise LayerError(
+                f'The layer "{layer.title}" does not record which layer of its product it is; '
+                "receive it again with Get layer."
+            )
+        if not names.fullmatch(layer.layer):
+            raise LayerError(
+                f'The layer "{layer.title}" is the layer {layer.layer} of its product, and the tool reads {reads}.'
+            )
         if layer.unit != "1":
             raise LayerError(f'The layer "{layer.title}" has the unit {layer.unit}, and the tool reads the unit 1.')
         if len(layer.dates) != dates:
             raise LayerError(
                 f'The number of dates of the layer "{layer.title}" must be {dates}, and it is {len(layer.dates)}.'
             )
-        acquisitions.append(Acquisition(int(found["track"]), found["direction"], int(found["frame"])))
+        acquisitions.append(
+            Acquisition(found["instrument"], int(found["track"]), found["direction"], int(found["frame"]))
+        )
     return tuple(acquisitions)
