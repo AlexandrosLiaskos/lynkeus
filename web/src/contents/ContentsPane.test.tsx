@@ -105,11 +105,43 @@ test("the basemap is listed under the other layers", () => {
   [OCTOBER, COHERENCE].forEach(addToMap);
   show();
   const items = within(screen.getByRole("list", { name: "Layers, the top layer first" })).getAllByRole("listitem");
-  expect(items.map((item) => item.textContent)).toEqual([
-    expect.stringContaining("Coherence HH, 20 m"),
-    expect.stringContaining("Backscatter HH"),
+  expect(items.map((item) => item.querySelector(".item-title")?.textContent)).toEqual([
+    "Coherence HH, 20 m",
+    "Backscatter HH",
     "Blue Marble",
   ]);
+});
+
+test("every row has the same columns, so that the boxes and the names stand in line", () => {
+  addToMap(COHERENCE);
+  show();
+  const rows = [...document.querySelectorAll(".contents-row")];
+  expect(rows).toHaveLength(2);
+  for (const row of rows) {
+    const [fold, box, name, menu] = [...row.children];
+    expect(fold?.className).toBe("contents-fold");
+    expect(box?.className).toBe("contents-visible");
+    expect(name?.querySelector(".item-title") ?? name).toHaveProperty(
+      "className",
+      expect.stringContaining("item-title"),
+    );
+    expect(menu?.querySelector("button")?.getAttribute("aria-haspopup")).toBe("menu");
+  }
+  // The dates of a layer are the secondary line under its title.
+  expect(rows[0]?.querySelector(".item-line")?.textContent).toBe("9 Oct 2026 and 21 Oct 2026");
+});
+
+test("the arrow of the map and of a legend is one icon, which the style turns when the row is folded", async () => {
+  addToMap(COHERENCE);
+  show();
+  const arrows = () =>
+    [
+      screen.getByRole("button", { name: "Map" }),
+      screen.getByRole("button", { name: "Legend of Coherence HH, 20 m" }),
+    ].map((button) => button.querySelector("use")?.getAttribute("href")?.split("#")[1]);
+  expect(arrows()).toEqual(["expand_more", "expand_more"]);
+  await userEvent.click(screen.getByRole("button", { name: "Legend of Coherence HH, 20 m" }));
+  expect(arrows()).toEqual(["expand_more", "expand_more"]);
 });
 
 test("the layers are listed in drawing order, the top layer first, each with its dates", () => {
@@ -361,6 +393,30 @@ test("the menu opens at the pointer with the right mouse button", () => {
   expect(screen.getByRole("menu", { name: "Commands of Coherence HH, 20 m" })).toBeTruthy();
 });
 
+test("the menu at the pointer has the commands of the menu button, and Escape returns the focus to the name", async () => {
+  [OCTOBER, COHERENCE].forEach(addToMap);
+  show();
+  await userEvent.click(screen.getByRole("button", { name: "Commands of Coherence HH, 20 m" }));
+  const ofButton = screen.getAllByRole("menuitem").map((command) => command.textContent);
+  await userEvent.keyboard("{Escape}");
+  fireEvent.contextMenu(nameOf("Coherence HH, 20 m 9 Oct 2026 and 21 Oct 2026"), { clientX: 40, clientY: 60 });
+  expect(screen.getAllByRole("menuitem").map((command) => command.textContent)).toEqual(ofButton);
+  await userEvent.keyboard("{Escape}");
+  expect(screen.queryByRole("menu")).toBeNull();
+  expect(document.activeElement).toBe(nameOf("Coherence HH, 20 m 9 Oct 2026 and 21 Oct 2026"));
+});
+
+test("only one menu of a layer is open at a time", async () => {
+  addToMap(COHERENCE);
+  show();
+  await userEvent.click(screen.getByRole("button", { name: "Commands of Coherence HH, 20 m" }));
+  expect(screen.getAllByRole("menu")).toHaveLength(1);
+  // A press of the right mouse button outside the open menu closes it, and the menu at the pointer opens.
+  fireEvent.pointerDown(nameOf("Coherence HH, 20 m 9 Oct 2026 and 21 Oct 2026"), { button: 2 });
+  fireEvent.contextMenu(nameOf("Coherence HH, 20 m 9 Oct 2026 and 21 Oct 2026"), { clientX: 40, clientY: 60 });
+  expect(screen.getAllByRole("menu")).toHaveLength(1);
+});
+
 test("a layer dragged onto another one takes the place below it", () => {
   [OCTOBER, NOVEMBER, COHERENCE].forEach(addToMap);
   show();
@@ -404,10 +460,29 @@ test("the Remove command of the basemap takes it off the map and out of the list
   expect(screen.getByRole("checkbox", { name: "Show Imagery of a date" })).toHaveProperty("checked", true);
 });
 
-test("a layer whose file could not be read says so in place of its legend", () => {
+test("a layer whose file could not be read says so in a notice in place of its legend", () => {
   addToMap(COHERENCE);
   layerProblemsStore.set({ coherence: "The file of the layer could not be read." });
   show();
-  expect(screen.getByText("The file of the layer could not be read.")).toBeTruthy();
+  expect(screen.getByRole("alert").textContent).toBe("The file of the layer could not be read.");
   expect(screen.queryByRole("slider")).toBeNull();
+});
+
+test("the notice of a layer that could not be read offers to remove the layer", async () => {
+  [OCTOBER, COHERENCE].forEach(addToMap);
+  layerProblemsStore.set({ coherence: "The file of the layer could not be read." });
+  show();
+  await userEvent.click(screen.getByRole("button", { name: "Remove layer" }));
+  expect(mapLayersStore.get().map(({ id }) => id)).toEqual(["october"]);
+  expect(document.activeElement).toBe(nameOf("Backscatter HH 21 Oct 2026"));
+});
+
+test("the basemap has its menu at the pointer too, and Escape returns the focus to its menu button", async () => {
+  show();
+  fireEvent.contextMenu(screen.getByText("Blue Marble", { selector: ".item-title" }), { clientX: 40, clientY: 60 });
+  expect(within(screen.getByRole("menu", { name: "Commands of Blue Marble" })).getAllByRole("menuitem")).toHaveLength(
+    1,
+  );
+  await userEvent.keyboard("{Escape}");
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: "Commands of Blue Marble" }));
 });
