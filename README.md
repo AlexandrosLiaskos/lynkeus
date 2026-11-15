@@ -23,9 +23,9 @@ use of its server and the limits that follow, each with its reason. The reposito
 holds the formats that connect the interface and the server, the program that publishes the team log as a
 web page, and the service that counts page visits. A button of the ribbon is grey until its function is finished.
 
-When the page opens, a welcome screen covers it: an illustration of the NISAR satellite with the name of the
-platform, the team, the developer of the site, the total of recorded page visits and the event for which Lynkeus
-was started. The visitor slides the screen up to enter.
+When the page opens, a welcome screen covers it: an illustration of the NISAR satellite with the mark and the
+name of the platform, the team and the event for which Lynkeus was started. The visitor slides the screen up to
+enter.
 
 ## Repository
 
@@ -142,9 +142,8 @@ satellite ([PIA26611](https://photojournal.jpl.nasa.gov/catalog/PIA26611), an ar
 NASA/JPL-Caltech), without the label that the original carries in its corner; the screen names it as an artist's
 concept in its credit line.
 
-The mark of the team (`web/public/assets/lynkeus-mark.svg`) is the silhouette of a Eurasian lynx (*Lynx lynx*) by
-Margot Michaud, from [PhyloPic](https://www.phylopic.org/images/27a2173a-5903-46fc-83c5-29ed7f421046), dedicated to
-the public domain (CC0 1.0).
+The mark of Lynkeus is a drawing of the NISAR satellite: `web/public/assets/lynkeus-mark.svg` in black, for a light
+ground, and `lynkeus-mark-white.svg` in white, for a dark one.
 
 ## Third-party software
 

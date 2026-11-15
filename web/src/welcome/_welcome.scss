@@ -68,8 +68,8 @@ $slide: 0.7s;
   pointer-events: none;
 }
 
-// The texts: one wide block in the lower right part of the window, above the arrow. Its three rows are the name,
-// the credits side by side, and the event with its logos.
+// The texts: one wide block in the lower right part of the window, above the arrow. Its three rows are the mark
+// with the name, the team beside the event, and the button that opens the page.
 .welcome-content {
   position: absolute;
   z-index: 2;
@@ -101,13 +101,29 @@ $slide: 0.7s;
   border-top: 1px solid rgb(255 255 255 / 20%);
 }
 
-// The team, the developer of the site and the visits, side by side.
+// The mark stands at the left of the name.
+.welcome-head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.9rem, 2vw, 1.5rem);
+  text-align: left;
+}
+
+.welcome-mark {
+  display: block;
+  flex: none;
+  width: auto;
+  height: clamp(5rem, 8.4vw, 7rem);
+}
+
+// The team and the event, side by side.
 .welcome-credits {
   display: grid;
-  grid-template-columns: repeat(3, auto);
-  align-items: start;
+  grid-template-columns: repeat(2, auto);
+  align-items: center;
   justify-content: center;
-  gap: 1rem clamp(2rem, 6vw, 5rem);
+  gap: 1.25rem clamp(2rem, 5vw, 4rem);
 }
 
 .welcome a,
@@ -136,12 +152,12 @@ $slide: 0.7s;
   font-family: $serif;
   font-size: clamp(3.2rem, 5.4vw, 4.5rem);
   font-weight: 500;
-  line-height: 1;
+  line-height: 1.1;
   letter-spacing: -0.012em;
 }
 
 .welcome-subtitle {
-  margin: 0.45rem 0 0;
+  margin: 0.8rem 0 0;
   color: rgb(255 255 255 / 84%);
   font-family: $serif;
   font-size: 1.3rem;
@@ -160,7 +176,7 @@ $slide: 0.7s;
   text-transform: uppercase;
 }
 
-.welcome-credits a {
+.welcome-team a {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -196,28 +212,8 @@ $slide: 0.7s;
   line-height: 1.15;
 }
 
-.welcome-developer img {
-  display: block;
-  width: auto;
-  height: 2.5rem;
-}
-
-.welcome-developer .welcome-name {
-  font-style: italic;
-}
-
-.welcome-developer a:hover,
 .welcome-event li a:hover {
   opacity: 0.75;
-}
-
-.welcome-visits [role="status"] {
-  margin: 0;
-  font-family: $serif;
-  font-size: 1.5rem;
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
 }
 
 .welcome-event p {
@@ -258,6 +254,38 @@ $slide: 0.7s;
 // The logo of the challenge is round with its words inside, so it stands taller than the others.
 .welcome-event img[src$="space-apps.png"] {
   height: 2.6rem;
+}
+
+// The button that opens the page: words and an arrow, without a frame.
+.welcome-start {
+  align-self: center;
+  padding: 0.3rem 0.6rem;
+  border: 0;
+  background: none;
+  color: #fff;
+  font-family: $serif;
+  font-size: 1.2rem;
+  font-style: italic;
+  cursor: pointer;
+}
+
+.welcome-start span {
+  display: inline-block;
+  margin-left: 0.35rem;
+  font-style: normal;
+  transition: transform 0.2s $ease;
+}
+
+.welcome-start:hover span {
+  transform: translateX(0.3rem);
+}
+
+// The keyboard focus underlines the words instead of drawing a frame around them.
+.welcome .welcome-start:focus-visible {
+  outline: none;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
 }
 
 // The credit of the image, in the lower left corner.
