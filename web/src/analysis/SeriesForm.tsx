@@ -56,8 +56,8 @@ export const RECEIVE_SERIES: Record<SeriesTool, string> = {
  */
 export function ownServerSentence(count: number): string {
   return count === 1
-    ? "1 layer is kept on your own server and cannot be used. A series is computed on the project server, so get the layer there."
-    : `${String(count)} layers are kept on your own servers and cannot be used. A series is computed on the project server, so get the layers there.`;
+    ? "1 layer is kept on your server and cannot be used. A series is computed on the project server, so get the layer there."
+    : `${String(count)} layers are kept on your servers and cannot be used. A series is computed on the project server, so get the layers there.`;
 }
 
 /** Bring the Catalog pane to the front of its side. */

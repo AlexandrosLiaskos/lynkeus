@@ -171,6 +171,10 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The title bar stands on a dark strip of the image of the welcome screen, with the mark, the name and the
   version in white. The Earthdata account at its right end shows the picture of an account alone, and its
   name shows while the pointer or the keyboard focus rests on it.
+- The interface writes the month of a date as the server does, from one fixed table (Sep for September),
+  whatever the language of the browser.
+- The bubble of a field in the form of a tool is one sentence.
+- The citation of the provisional GUNW collection gives the DOI 10.5067/NIL2GUNW-P1, which doi.org resolves.
 
 ### Removed
 

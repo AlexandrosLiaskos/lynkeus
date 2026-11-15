@@ -13,7 +13,8 @@ is a job, whose result is a series description. A series result is what the
 function of such a tool returns to the server.
 
 The interface holds the formats of the layers as TypeScript types, in
-``web/src/shared/layer.ts``. It does not hold the formats of the series yet.
+``web/src/shared/layer.ts``. It holds the formats of the series in
+``web/src/shared/series.ts``.
 """
 
 from dataclasses import dataclass

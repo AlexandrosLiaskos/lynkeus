@@ -228,10 +228,10 @@ test("layers that an own server keeps are not offered, and the pane says why", (
   expect(screen.getByText("No layers to use")).toBeDefined();
   expect(screen.getByText(ownServerSentence(3))).toBeDefined();
   expect(ownServerSentence(1)).toBe(
-    "1 layer is kept on your own server and cannot be used. A series is computed on the project server, so get the layer there.",
+    "1 layer is kept on your server and cannot be used. A series is computed on the project server, so get the layer there.",
   );
   expect(ownServerSentence(3)).toBe(
-    "3 layers are kept on your own servers and cannot be used. A series is computed on the project server, so get the layers there.",
+    "3 layers are kept on your servers and cannot be used. A series is computed on the project server, so get the layers there.",
   );
 });
 
