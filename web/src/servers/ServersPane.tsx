@@ -25,7 +25,7 @@ export const PURPOSE =
  * not, its system, processors and memory, its free and used disk space, its running and waiting jobs and the
  * layers that it keeps. Without a server the list says what an own server is for and offers the button that
  * connects one. When a server runs the older Lynkeus Server, GitHub is asked once for the latest release, and
- * such a server offers its file for the computer of the visitor.
+ * such a server offers its file for its computer.
  */
 function ServerList() {
   const id = useId();

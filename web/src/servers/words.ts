@@ -12,7 +12,7 @@ import {
   type ServerLimits,
   type ServerState,
 } from "../shared/servers";
-import { systemOfAgent, type Download, type Downloads } from "./downloads";
+import { systemOfAgent, systemOfServer, type Download, type Downloads } from "./downloads";
 import { jobMemory, jobsInMemory } from "./memory";
 
 /** What the interface writes about an own server, in the words and the units that a person reads. */
@@ -230,25 +230,27 @@ export const OLDER_PROGRAM = `This server runs an older Lynkeus Server, which re
 
 /** What the pane offers to a server that runs the older Lynkeus Server, as far as GitHub tells it. */
 export type Upgrade =
-  /** The file of the latest release for the system of the computer of the visitor. */
+  /** The file of the latest release for the system of the computer of the server. */
   | { state: "download"; download: Download }
   /** GitHub has not answered yet. */
   | { state: "asking" }
   /** No release is published, so there is nothing to download. */
   | { state: "none" }
   /**
-   * GitHub gave no answer that could be read, or the latest release holds no file for the system of the computer
-   * of the visitor: the pane leads to the page of the releases.
+   * GitHub gave no answer that could be read, or the latest release holds no file for that system: the pane leads
+   * to the page of the releases.
    */
   | { state: "page" };
 
 /**
  * Return what the pane offers to a server that runs the older Lynkeus Server, or null for a server that does
- * not run it (`runsOlderProgram`). The download is the file of the latest release for the system of the
- * computer of the visitor (`agent`, as the browser names itself).
+ * not run it (`runsOlderProgram`). The download is the file of the latest release for the system that the
+ * server reports, because the program is installed on that computer. Only when the server names no system of
+ * the three is it the file for the system of the visitor (`agent`, as the browser names itself).
  */
 export function upgradeOf(server: Server, downloads: Downloads | null, agent: string): Upgrade | null {
-  if (!runsOlderProgram(server)) {
+  const { state } = server;
+  if (state === null || !runsOlderProgram(server)) {
     return null;
   }
   if (downloads === null) {
@@ -257,7 +259,7 @@ export function upgradeOf(server: Server, downloads: Downloads | null, agent: st
   if (downloads.state === "none") {
     return { state: "none" };
   }
-  const system = systemOfAgent(agent);
+  const system = systemOfServer(state.system) ?? systemOfAgent(agent);
   const files = downloads.state === "published" ? downloads.release.downloads : [];
   const download = files.find((file) => file.system === system);
   return download ? { state: "download", download } : { state: "page" };

@@ -98,6 +98,21 @@ export function systemOfAgent(agent: string): System | null {
 }
 
 /**
+ * Return the system of the computer of a server, from the name of the system that the server reports
+ * (`lynkeus.computer.system_name`: "Windows 11", "macOS 15.1", or the name of a Linux system), or null when the
+ * server could not name its system.
+ */
+export function systemOfServer(system: string): System | null {
+  if (system === "Unknown system") {
+    return null;
+  }
+  if (system.startsWith("Windows")) {
+    return "windows";
+  }
+  return system.startsWith("macOS") ? "macos" : "linux";
+}
+
+/**
  * Read the latest release of a repository from the answer of the REST API of GitHub, or return null for an
  * answer of another form. Only a file whose address is one of the release files of that repository is kept, so
  * that a link of the page leads nowhere else.

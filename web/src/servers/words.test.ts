@@ -1,4 +1,5 @@
 import { expect, test } from "vitest";
+import type { Server } from "../shared/servers";
 import { REPOSITORY, type Downloads } from "./downloads";
 import { CHANGE_LIMITS, LABORATORY, NEW, OFFICE, SERVERS } from "./testServers";
 import {
@@ -191,19 +192,42 @@ const RELEASE: Downloads = {
 const WINDOWS_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36";
 const MAC_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 15_1) AppleWebKit/605.1.15";
 
-test("a server whose last report lacked the cells of a layer is offered the file for the computer of the visitor", () => {
+/** The Laboratory server, which runs the older program, with another system in its last report. */
+function laboratoryOn(system: string): Server {
+  if (LABORATORY.state === null) {
+    throw new Error("The Laboratory server of the example reports its state.");
+  }
+  return { ...LABORATORY, state: { ...LABORATORY.state, system } };
+}
+
+test("a server with the older program is offered the file for the system of its own computer", () => {
   expect(OLDER_PROGRAM).toBe(
     "This server runs an older Lynkeus Server, which receives at most 25 million cells of one layer.",
   );
   // The Laboratory server runs the older program on Ubuntu, and the visitor reads the page on Windows.
   expect(upgradeOf(LABORATORY, RELEASE, WINDOWS_AGENT)).toEqual({
     state: "download",
+    download: RELEASE.release.downloads[1],
+  });
+  // A server on Windows, seen from a Mac, is offered the file for Windows.
+  expect(upgradeOf(laboratoryOn("Windows 11"), RELEASE, MAC_AGENT)).toEqual({
+    state: "download",
     download: RELEASE.release.downloads[0],
   });
-  // A release without a file for the system of the visitor, and an answer of GitHub that could not be read,
-  // lead to the page of the releases.
-  expect(upgradeOf(LABORATORY, RELEASE, MAC_AGENT)).toEqual({ state: "page" });
+  // A server on macOS is led to the page of the releases when the release holds no file for macOS, whatever the
+  // system of the visitor, and so is every server when GitHub gave no answer that could be read.
+  expect(upgradeOf(laboratoryOn("macOS 15.1"), RELEASE, WINDOWS_AGENT)).toEqual({ state: "page" });
   expect(upgradeOf(LABORATORY, { state: "unknown" }, WINDOWS_AGENT)).toEqual({ state: "page" });
+});
+
+test("a server with the older program that names no system is offered the file for the system of the visitor", () => {
+  const unnamed = laboratoryOn("Unknown system");
+  expect(upgradeOf(unnamed, RELEASE, WINDOWS_AGENT)).toEqual({
+    state: "download",
+    download: RELEASE.release.downloads[0],
+  });
+  // Without a file for the system of the visitor either, the pane leads to the page of the releases.
+  expect(upgradeOf(unnamed, RELEASE, MAC_AGENT)).toEqual({ state: "page" });
 });
 
 test("without a published release the notice of the older program says so in plain words", () => {

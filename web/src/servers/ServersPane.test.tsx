@@ -405,18 +405,19 @@ test("limits of a server with the older program whose cells stay at 25 million a
 
 const WINDOWS_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36";
 
-test("a server whose last report lacked the cells of a layer says that it runs an older Lynkeus Server, with the download for the computer of the visitor", async () => {
+test("a server whose last report lacked the cells of a layer says that it runs an older Lynkeus Server, with the download for its computer", async () => {
   server.release = { status: 200, content: RELEASE };
   vi.spyOn(navigator, "userAgent", "get").mockReturnValue(WINDOWS_AGENT);
   await showList();
   const notice = await itemOf("Laboratory server").findByText(OLDER_PROGRAM, { exact: false });
-  // The visitor reads the page on Windows, so the download is the one for Windows.
+  // The Laboratory server runs Ubuntu, so the download is the one for Linux, although the visitor reads the page
+  // on Windows.
   const link = await within(notice).findByRole<HTMLAnchorElement>("link");
-  expect(link.textContent).toBe("Download Lynkeus-Server-0.2.0-Windows.exe (76.5 MB)");
+  expect(link.textContent).toBe("Download Lynkeus-Server-0.2.0-Linux.tar.gz (81.2 MB)");
   expect(link.getAttribute("href")).toBe(
-    "https://github.com/AlexandrosLiaskos/lynkeus/releases/download/v0.2.0/Lynkeus-Server-0.2.0-Windows.exe",
+    "https://github.com/AlexandrosLiaskos/lynkeus/releases/download/v0.2.0/Lynkeus-Server-0.2.0-Linux.tar.gz",
   );
-  expect(notice.textContent).toBe(`${OLDER_PROGRAM} Download Lynkeus-Server-0.2.0-Windows.exe (76.5 MB)`);
+  expect(notice.textContent).toBe(`${OLDER_PROGRAM} Download Lynkeus-Server-0.2.0-Linux.tar.gz (81.2 MB)`);
   // The Office computer reported the cells, and the new server has not reported yet: neither is told anything.
   expect(itemOf("Office computer").queryByText(OLDER_PROGRAM, { exact: false })).toBeNull();
   expect(itemOf("DESKTOP-7Q2LM4K").queryByText(OLDER_PROGRAM, { exact: false })).toBeNull();

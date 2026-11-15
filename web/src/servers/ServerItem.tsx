@@ -325,8 +325,9 @@ function RemoveForm({ server, onEnd }: FormProps) {
 
 /**
  * The notice of a server that runs the older Lynkeus Server: the sentence that says so, and the file of the latest
- * release for the computer of the visitor. While no release is published it says so; when GitHub could not be
- * read or the release holds no file for that system, it leads to the page of the releases.
+ * release for the computer of the server, or for that of the visitor when the server names no system of the
+ * three. While no release is published it says so; when GitHub could not be read or the release holds no file
+ * for that system, it leads to the page of the releases.
  */
 function UpgradeNotice({ upgrade }: { upgrade: Upgrade }) {
   return (
@@ -357,7 +358,7 @@ function UpgradeNotice({ upgrade }: { upgrade: Upgrade }) {
  * place of the report, and the form ends with its button or with Cancel. A server whose layers use the space
  * that its limit allows says so, and so does a server that does not report yet the limits that were set here.
  * A server that runs the older Lynkeus Server, whose last report lacked the limit on the cells of a layer, says
- * so in one sentence and offers the file of the latest release for the computer of the visitor (`upgrade`).
+ * so in one sentence and offers the file of the latest release for its computer (`upgrade`).
  */
 export function ServerItem({ server, upgrade = null }: { server: Server; upgrade?: Upgrade | null }) {
   const item = useRef<HTMLLIElement>(null);
