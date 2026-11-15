@@ -4,6 +4,7 @@ The addresses of the web service use the jobs with the limits of the project ser
 (``tests/test_routes.py``). These tests give other limits, as an own server does.
 """
 
+import dataclasses
 import multiprocessing
 import signal
 import threading
@@ -15,10 +16,31 @@ import pytest
 
 from lynkeus import jobs
 from lynkeus.jobs import Jobs, LimitError, Limits
+from lynkeus.layers import LayerDescription
+from lynkeus.processes import ProcessError, Work
 from lynkeus.store import JobRecord, Store
+from tests import standin
 from tests.standin import STAND_IN, StandInInputs
 
 SESSION = "a-session"
+
+
+def _state_cells(inputs: StandInInputs, work: Work) -> LayerDescription:
+    """End with the cells of a layer that the server gave to the job."""
+    raise ProcessError(f"The job may receive a layer of {work.layer_cells} cells.")
+
+
+def _write_through_a_larger_file(inputs: StandInInputs, work: Work) -> LayerDescription:
+    """Hold a temporary file of 5000 bytes for longer than the pause between two measurements, then write the layer."""
+    temporary = work.folder / ".temporary"
+    temporary.write_bytes(bytes(5000))
+    time.sleep(2 * jobs.SIZE_PAUSE + 1)
+    temporary.unlink()
+    return standin.run(inputs, work)
+
+
+STATES_CELLS = dataclasses.replace(STAND_IN, id="states-cells", run=_state_cells)
+WRITES_THROUGH = dataclasses.replace(STAND_IN, id="writes-through", run=_write_through_a_larger_file)
 
 
 @pytest.fixture
@@ -77,11 +99,70 @@ def test_jobs_without_given_limits_follow_the_constants_as_they_are(
 
 @pytest.mark.parametrize(
     "values",
-    [{"running_jobs": 0}, {"layer_size": -1}, {"total_size": -1}, {"waiting_jobs": -1}, {"session_layers": -5}],
+    [
+        {"running_jobs": 0},
+        {"layer_size": -1},
+        {"total_size": -1},
+        {"waiting_jobs": -1},
+        {"session_layers": -5},
+        {"layer_cells": 0},
+        {"work_size": -1},
+        {"job_time": 0},
+    ],
 )
 def test_limits_that_no_server_can_have_are_refused(values: dict[str, int]) -> None:
-    with pytest.raises(ValueError, match=r"at least one job must be able to run|a limit cannot be negative"):
+    sentences = (
+        "at least one job must be able to run",
+        "a limit cannot be negative",
+        "a layer must be able to hold a cell",
+        "a job must have time to run",
+    )
+    with pytest.raises(ValueError, match="|".join(sentences)):
         Limits(**values)
+
+
+def test_limits_of_the_project_server_leave_the_cells_to_the_process_and_keep_its_times() -> None:
+    assert (Limits().layer_cells, Limits().work_size, Limits().job_time) == (None, None, jobs.JOB_TIME)
+
+
+def test_job_is_given_the_cells_of_a_layer_that_the_server_receives(store: Store, tmp_path: Path) -> None:
+    (tmp_path / "files").mkdir()
+    running = Jobs(store, tmp_path / "files", {STATES_CELLS.id: STATES_CELLS}, "/files", Limits(layer_cells=90_000_000))
+    try:
+        job = running.submit(SESSION, STATES_CELLS, StandInInputs(name="a"), "document", None)
+        assert _wait(store, job.id).message == "The job may receive a layer of 90000000 cells."
+        # Without a limit of the server, the process applies its own.
+        running.set_limits(Limits())
+        job = running.submit(SESSION, STATES_CELLS, StandInInputs(name="a"), "document", None)
+        assert _wait(store, job.id).message == "The job may receive a layer of None cells."
+    finally:
+        running.stop()
+
+
+def test_folder_of_a_running_job_may_hold_more_than_the_layer_when_the_limits_say_so(
+    store: Store, tmp_path: Path
+) -> None:
+    (tmp_path / "files").mkdir()
+    processes = {WRITES_THROUGH.id: WRITES_THROUGH}
+    running = Jobs(store, tmp_path / "files", processes, "/files", Limits(layer_size=3_000, work_size=8_000))
+    try:
+        job = running.submit(SESSION, WRITES_THROUGH, StandInInputs(name="a"), "document", None)
+        assert _wait(store, job.id).status == "successful"
+        # Without that limit the folder may hold the size of a layer, as on the project server.
+        running.set_limits(Limits(layer_size=3_000))
+        job = running.submit(SESSION, WRITES_THROUGH, StandInInputs(name="b"), "document", None)
+        assert _wait(store, job.id).message == "The job was ended because its layer is larger than 0.003 megabytes."
+    finally:
+        running.stop()
+
+
+def test_job_runs_for_the_time_of_the_limits(store: Store, tmp_path: Path) -> None:
+    running = _jobs(store, tmp_path, Limits(job_time=1.5))
+    try:
+        job = running.submit(SESSION, STAND_IN, StandInInputs(name="a", seconds=30), "document", None)
+        assert _wait(store, job.id).message == "The job was ended because it ran for more than 0.025 minutes."
+    finally:
+        running.stop()
 
 
 def test_given_limits_decide_how_many_jobs_run_and_wait(store: Store, tmp_path: Path) -> None:

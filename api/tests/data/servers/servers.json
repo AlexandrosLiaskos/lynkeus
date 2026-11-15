@@ -17,11 +17,13 @@
         "limits": {
           "running_jobs": 4,
           "storage": 100000000000,
-          "layer_size": 10000000000
+          "layer_size": 10000000000,
+          "layer_cells": 100000000
         },
         "system": "Windows 11",
         "version": "0.1.0"
-      }
+      },
+      "knows_cells": true
     },
     {
       "id": "a84e5d2291c07b3f",
@@ -44,7 +46,8 @@
         },
         "system": "Ubuntu 24.04",
         "version": "0.1.0"
-      }
+      },
+      "knows_cells": false
     },
     {
       "id": "0c6b7d1e94a2f853",
@@ -52,7 +55,8 @@
       "connected": false,
       "paired": 1794735540.0,
       "seen": 1794735540.0,
-      "state": null
+      "state": null,
+      "knows_cells": false
     }
   ],
   "limit": 8

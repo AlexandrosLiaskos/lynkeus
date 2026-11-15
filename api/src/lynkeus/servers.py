@@ -23,6 +23,15 @@ reports again. A job is recorded as failed when its server states that it runs
 and holds no job at all although it confirmed the job earlier, and when the
 project server was restarted before the server took the job.
 
+Every own server has a limit of its own on the cells of a layer (``layer_cells``), which its owner
+sets with its other limits. The number of the project server (``lynkeus.harmony.MOST_CELLS``) is not
+applied to a job of an own server. An older program does not know the limit, and the limits of its
+reports lack the field: it receives the other limits only, and a change of the cells of a layer for it is
+refused. The record keeps the state of a server with the fields that the server reported, so that it
+tells whether the last report carried the field. A task ``limits`` is handed to a server only after a
+report that the server sent since it connected has been recorded, because only a report tells which
+program the server runs.
+
 The methods of ``Servers`` whose description says "in the web service" run on
 the event loop of the web service and touch the tasks in memory. Every other
 method reads and writes the record only and may be called from any thread.
@@ -33,6 +42,7 @@ import contextlib
 import hashlib
 import hmac
 import json
+import math
 import re
 import secrets
 import threading
@@ -44,9 +54,11 @@ from http import HTTPStatus
 
 from pydantic import BaseModel, ValidationError
 
+from lynkeus.computer import job_memory
 from lynkeus.layers import LayerDescription
 from lynkeus.linking import (
     CONNECTED_TIME,
+    FIRST_LAYER_CELLS,
     MAX_USER_SERVERS,
     MOST_BYTES,
     PAIRING_INTERVAL,
@@ -200,8 +212,87 @@ def _same_work(first: Task, second: Task) -> bool:
 
 
 def state_of(server: ServerRecord) -> ServerState | None:
-    """Return the last state that an own server reported, or None before its first report."""
+    """Return the last state that an own server reported, or None before its first report.
+
+    A state that was recorded before the limit on the cells of a layer existed states
+    ``FIRST_LAYER_CELLS`` cells, because the format gives that number to a message without the field.
+    """
     return None if server.state is None else ServerState.model_validate_json(server.state)
+
+
+def knows_cells(state: ServerState | None) -> bool:
+    """Tell whether the program of an own server knows the limit on the cells of a layer.
+
+    It does when the limits of the state carry the field ``layer_cells``: an older program reports its
+    limits without it, and the record keeps a state with the fields that the server reported
+    (``recorded_state``). Both programs state the version 0.1.0, so the version does not tell them
+    apart. A server that has not reported yet counts as an older program, because that program refuses
+    a message with a field that it does not know.
+    """
+    return state is not None and "layer_cells" in state.limits.model_fields_set
+
+
+def recorded_state(state: ServerState, knows: bool) -> str:
+    """Return the state of an own server as the record keeps it.
+
+    Parameters
+    ----------
+    state : ServerState
+        The state.
+    knows : bool
+        Whether the report of the state carried the field ``layer_cells`` in its limits
+        (``knows_cells`` of that report).
+
+    Returns
+    -------
+    str
+        The state in the format ``ServerState``. When ``knows`` is false the limits are written without
+        ``layer_cells``, as the server reported them, so that the state read back tells the same.
+    """
+    return state.model_dump_json(exclude=None if knows else {"limits": {"layer_cells"}})
+
+
+def layer_cells(server: ServerRecord) -> int:
+    """Return the most cells of a layer that a job of an own server receives, as the server last reported it."""
+    state = state_of(server)
+    return FIRST_LAYER_CELLS if state is None else state.limits.layer_cells
+
+
+def written_tasks(tasks: Tasks, state: ServerState | None) -> str:
+    """Return the tasks of an own server as the JSON text that its program reads.
+
+    Parameters
+    ----------
+    tasks : Tasks
+        The tasks.
+    state : ServerState or None
+        Last state that the server reported, which tells whether its program knows the limit on the cells
+        of a layer.
+
+    Returns
+    -------
+    str
+        The tasks in the format ``Tasks``. For a program that does not know the limit on the cells of a
+        layer (``knows_cells``), the limits of a task ``limits`` are written without ``layer_cells``.
+    """
+    if knows_cells(state):
+        return tasks.model_dump_json()
+    return tasks.model_dump_json(exclude={"tasks": {"__all__": {"limits": {"layer_cells"}}}})
+
+
+def owner_cells(limits: ServerLimits | None) -> int | None:
+    """Return the limit on the cells of a layer that the owner set, or None when he set none.
+
+    The record keeps ``layer_cells`` in the limits that the owner set only when he named it, and never
+    for an older program, which applies ``FIRST_LAYER_CELLS`` whatever is set. Limits recorded without
+    the field, also those recorded before the limit existed, leave the number that the server reports.
+    """
+    return limits.layer_cells if limits is not None and "layer_cells" in limits.model_fields_set else None
+
+
+def _millions(cells: int) -> str:
+    """Write a number of cells in millions, with one decimal when it is not a whole number of millions."""
+    return f"{cells / 1e6:.1f}".removesuffix(".0")
 
 
 def name_of(server: ServerRecord) -> ServerName:
@@ -257,6 +348,7 @@ class Servers:
         self._answers: dict[str, asyncio.Future[Answer]] = {}
         self._removed: dict[str, tuple[ForgetTask, float]] = {}
         self._left: set[str] = set()
+        self._reported: set[str] = set()
         self._loop: asyncio.AbstractEventLoop | None = None
         self._stopping = False
 
@@ -457,13 +549,15 @@ class Servers:
     def described(self, server: ServerRecord, now: float) -> Server:
         """Return an own server as the interface receives it."""
         seen = self._seen.get(server.id, server.seen)
+        state = state_of(server)
         return Server(
             id=server.id,
             name=server.name,
             connected=self.connected(server, now),
             paired=server.paired,
             seen=server.paired if seen is None else seen,
-            state=state_of(server),
+            state=state,
+            knows_cells=knows_cells(state),
         )
 
     def place(
@@ -581,6 +675,9 @@ class Servers:
         if server is None or server.key_digest is None or not hmac.compare_digest(server.key_digest, digest):
             return None
         with self._lock:
+            if now - self._seen.get(server.id, float("-inf")) > CONNECTED_TIME:
+                # The server was away, so another program may run there now: its next report tells.
+                self._reported.discard(server.id)
             self._seen[server.id] = now
             self._left.discard(server.id)
             write = now - self._written.get(server.id, float("-inf")) >= SEEN_PAUSE
@@ -598,10 +695,12 @@ class Servers:
 
         The program says this when it is quit. Its open question for tasks ends without a task, and
         every request that waits for an answer of the server is answered as for a server that is not
-        connected. The tasks that wait stay for the return of the server.
+        connected. The tasks that wait stay for the return of the server, and a task ``limits`` waits
+        until its next report (``take``).
         """
         with self._lock:
             self._left.add(server.id)
+            self._reported.discard(server.id)
         link = self._links.get(server.id)
         if link is None:
             return
@@ -616,6 +715,34 @@ class Servers:
     def has_left(self, server: str) -> bool:
         """Tell whether the program of an own server said that it is quit and has sent no message since."""
         return server in self._left
+
+    def has_reported(self, server: str) -> bool:
+        """Tell whether a report that an own server sent since it connected has been recorded.
+
+        A server connects with its first message after a start of the project server, after a pause of
+        more than ``CONNECTED_TIME`` seconds, or after its program said that it is quit. Its program may
+        then be another one, and only a report tells whether it knows the limit on the cells of a layer.
+        """
+        with self._lock:
+            return server in self._reported
+
+    def keep_reported(self, server: str, tasks: Sequence[Task]) -> None:
+        """Keep the tasks that follow from a recorded report of an own server, in the web service.
+
+        After the first report since the server connected, a task ``limits`` that waits from before is
+        dropped, because it was made before the project server knew which program the server runs; the
+        report has decided about the limits again (``record_report``). From then on a task ``limits`` is
+        handed to the server.
+        """
+        with self._lock:
+            first = server not in self._reported
+            self._reported.add(server)
+        link = self._link(server)
+        if first:
+            link.waiting = deque(task for task in link.waiting if not isinstance(task, LimitsTask))
+        self.send_once(server, tasks)
+        if self._ready(server, link) and link.question is not None and not link.question.done():
+            link.question.set_result(None)
 
     def stop(self) -> None:
         """End every request that waits for an own server, because the web service stops.
@@ -661,8 +788,14 @@ class Servers:
             sentence = "Too many requests wait for your server at present. Try again in a moment."
             raise ServerRefusedError(HTTPStatus.SERVICE_UNAVAILABLE, sentence, 5)
         link.waiting.append(task)
-        if link.question is not None and not link.question.done():
+        if self._ready(server, link) and link.question is not None and not link.question.done():
             link.question.set_result(None)
+
+    def _ready(self, server: str, link: _Link) -> bool:
+        """Tell whether a task waits that may be handed to an own server now (``take``)."""
+        return any(not isinstance(task, LimitsTask) for task in link.waiting) or (
+            bool(link.waiting) and self.has_reported(server)
+        )
 
     def send_once(self, server: str, tasks: Sequence[Task]) -> None:
         """Keep each task for an own server unless a task that asks for the same thing is held, in the web service."""
@@ -689,7 +822,7 @@ class Servers:
             link.question.set_result(None)
         if self._stopping:
             raise self._stopped()
-        if link.waiting or wait <= 0:
+        if self._ready(server, link) or wait <= 0:
             return
         question = link.question = asyncio.get_running_loop().create_future()
         try:
@@ -706,6 +839,10 @@ class Servers:
     def take(self, server: str) -> tuple[Tasks, list[str]]:
         """Hand the waiting tasks to an own server, in the web service.
 
+        A task ``limits`` stays until a report that the server sent since it connected has been recorded
+        (``has_reported``): the program sends its first report and its first question for tasks
+        together, and the task is written for the program that the report shows.
+
         Returns
         -------
         tasks : Tasks
@@ -721,8 +858,12 @@ class Servers:
             task = link.handed.pop(name).task
             if isinstance(task, StartTask):
                 unanswered.append(task.job)
-        tasks = tuple(link.waiting)
-        link.waiting.clear()
+        if self.has_reported(server):
+            tasks = tuple(link.waiting)
+            link.waiting.clear()
+        else:
+            tasks = tuple(task for task in link.waiting if not isinstance(task, LimitsTask))
+            link.waiting = deque(task for task in link.waiting if isinstance(task, LimitsTask))
         for task in tasks:
             link.handed[task.id] = _Handed(task, now)
         return Tasks(tasks=tasks), unanswered
@@ -795,7 +936,7 @@ class Servers:
                 self._store.set_server_limits(server.id, None)
             elif state is not None:
                 applied = state.model_copy(update={"limits": task.limits})
-                self._store.change_server_state(server.id, applied.model_dump_json())
+                self._store.change_server_state(server.id, recorded_state(applied, knows_cells(state)))
 
     def record_report(self, server: ServerRecord, report: Report, now: float) -> tuple[Task, ...]:
         """Record the state of an own server and of the jobs that its report names.
@@ -811,8 +952,11 @@ class Servers:
             Tasks for the server that follow from the report: to end a job that the record does not hold
             or holds as dismissed, to delete the layer of such a job when the record holds no such layer,
             and to apply the limits that the owner set on the site when the server states other limits.
+            Those limits keep the number of cells that the server reports when the owner set none
+            (``owner_cells``) and when its program does not know the limit (``knows_cells``).
         """
-        self._store.set_server_state(server.id, report.state.model_dump_json(), now)
+        knows = knows_cells(report.state)
+        self._store.set_server_state(server.id, recorded_state(report.state, knows), now)
         with self._lock:
             self._seen[server.id] = self._written[server.id] = now
             self._left.discard(server.id)
@@ -834,6 +978,10 @@ class Servers:
                     self._store.fail_server_job(job.id, LOST, now)
         self._store.keep_latest_server_jobs(server.id, MAX_SERVER_FINISHED_JOBS, MAX_SERVER_DISMISSED_JOBS)
         wanted = None if server.limits is None else ServerLimits.model_validate_json(server.limits)
+        if wanted is not None and (not knows or owner_cells(wanted) is None):
+            # An older program applies FIRST_LAYER_CELLS and states no other number, and limits that name no
+            # number of cells leave the number that the server reports.
+            wanted = wanted.model_copy(update={"layer_cells": report.state.limits.layer_cells})
         if wanted is not None and wanted != report.state.limits:
             tasks.append(LimitsTask(id=_task_id(), limits=wanted))
         return tuple(tasks)
@@ -990,15 +1138,61 @@ class Servers:
     def change(self, server: ServerRecord, change: ServerChange) -> ServerRecord:
         """Record a new name or new limits of an own server, in the web service.
 
-        The limits are sent to the server at once when it is connected. A report that states other
-        limits makes them be sent again, so a server that is away receives them when it returns.
+        The limits are sent to the server at once when it is connected and has reported its state since
+        it connected (``has_reported``), because the report tells which program it runs. A report that
+        states other limits makes them be sent again, so a server that is away, or that has not reported
+        yet, receives them after its next report.
+
+        Limits that do not name ``layer_cells`` leave that limit as it is: an interface that does not
+        know the limit must not set it to ``FIRST_LAYER_CELLS`` by leaving it out. The record keeps the
+        number only when the owner named it or named it before (``owner_cells``), and never for an older
+        program; otherwise the number that the server reports holds.
+
+        Raises
+        ------
+        ServerRefusedError
+            With 409 when the limits change ``layer_cells`` and the program of the server does not know
+            that limit, and with 422 when ``running_jobs`` jobs of ``layer_cells`` cells need more than
+            the memory that the server last reported. ``lynkeus.computer.job_memory`` gives the memory
+            of a job, as it does for the first limits of a server. Nothing is recorded then, the name
+            included.
         """
+        limits = change.limits
+        recorded: str | None = None
+        if limits is not None:
+            state = state_of(server)
+            older = state is not None and not knows_cells(state)
+            named = "layer_cells" in limits.model_fields_set
+            if older and named and limits.layer_cells != FIRST_LAYER_CELLS:
+                sentence = (
+                    f"To change the cells of a layer of your server {server.name}, download Lynkeus Server"
+                    " again and install it on that computer: the program that runs there now receives at most"
+                    f" {_millions(FIRST_LAYER_CELLS)} million cells."
+                )
+                raise ServerRefusedError(HTTPStatus.CONFLICT, sentence)
+            before = None if server.limits is None else ServerLimits.model_validate_json(server.limits)
+            # The number that the record keeps: none for an older program, which applies FIRST_LAYER_CELLS.
+            kept = None if older else (limits.layer_cells if named else owner_cells(before))
+            reported = FIRST_LAYER_CELLS if state is None else state.limits.layer_cells
+            limits = limits.model_copy(update={"layer_cells": reported if kept is None else kept})
+            recorded = limits.model_dump_json(exclude=None if kept is not None else {"layer_cells"})
+            memory = None if state is None else state.memory
+            needed = limits.running_jobs * job_memory(limits.layer_cells)
+            if memory is not None and needed > memory:
+                one = limits.running_jobs == 1
+                sentence = (
+                    f"{limits.running_jobs} running {'job with a layer' if one else 'jobs with layers'} of"
+                    f" {_millions(limits.layer_cells)} million cells {'needs' if one else 'need'} about"
+                    f" {math.ceil(needed / 1e8) / 10:.1f} gigabytes of memory, and your server {server.name}"
+                    f" has {math.floor(memory / 1e8) / 10:.1f} gigabytes."
+                )
+                raise ServerRefusedError(HTTPStatus.UNPROCESSABLE_CONTENT, sentence)
         if change.name is not None:
             self._store.rename_server(server.id, change.name)
-        if change.limits is not None:
-            self._store.set_server_limits(server.id, change.limits.model_dump_json())
-            if self.connected(server, time.time()):
-                self.send_once(server.id, [LimitsTask(id=_task_id(), limits=change.limits)])
+        if limits is not None and recorded is not None:
+            self._store.set_server_limits(server.id, recorded)
+            if self.connected(server, time.time()) and self.has_reported(server.id):
+                self.send_once(server.id, [LimitsTask(id=_task_id(), limits=limits)])
         return self._store.server(server.id) or server
 
     def remove(self, server: ServerRecord) -> None:
@@ -1012,6 +1206,7 @@ class Servers:
             self._seen.pop(server.id, None)
             self._written.pop(server.id, None)
             self._left.discard(server.id)
+            self._reported.discard(server.id)
         link = self._links.pop(server.id, None)
         if server.key_digest is not None:
             self._removed[server.key_digest] = (ForgetTask(id=_task_id()), time.time() + CONNECTED_TIME)

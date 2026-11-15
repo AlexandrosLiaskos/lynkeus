@@ -40,9 +40,9 @@ from fastapi.responses import JSONResponse
 
 from lynkeus.earthdata import KEYS_ADDRESS, KeysUnavailableError, TokenChecker, TokenRefusedError
 from lynkeus.jobs import Jobs, LimitError
-from lynkeus.processes import JSON, OUTPUT, SERIES_OUTPUT, InputError, OutputName, Process
+from lynkeus.processes import CELLS_PARAMETER, JSON, OUTPUT, SERIES_OUTPUT, InputError, OutputName, Process
 from lynkeus.references import Reader, UnreadableReferenceError, read_reference
-from lynkeus.servers import SITE, ServerRefusedError, Servers, name_of
+from lynkeus.servers import SITE, ServerRefusedError, Servers, layer_cells, name_of
 from lynkeus.sessions import COOKIE, COOKIE_PATH, SESSION_IDLE_TIME, Sessions, TooManySessionsError
 from lynkeus.store import (
     JobRecord,
@@ -279,6 +279,21 @@ def _own_servers(request: Request) -> dict[str, ServerRecord]:
     """Return the own servers of the signed-in visitor of a request, by name."""
     user = _user(request)
     return {server.id: server for server in _service(request).store.servers_of(user)} if user else {}
+
+
+def _with_cells(described: dict[str, Any], cells: int) -> dict[str, Any]:
+    """Return the description of a process with the most cells of a layer of an own server.
+
+    A description that does not state the most cells of a layer is returned as it is.
+    """
+    parameters = described.get("additionalParameters", {}).get("parameters", [])
+    if not any(parameter["name"] == CELLS_PARAMETER for parameter in parameters):
+        return described
+    changed = [
+        {**parameter, "value": [cells]} if parameter["name"] == CELLS_PARAMETER else parameter
+        for parameter in parameters
+    ]
+    return {**described, "additionalParameters": {"parameters": changed}}
 
 
 def refusal_of(refusal: ServerRefusedError) -> RefusedError:
@@ -647,11 +662,32 @@ def install(
         summaries = [{**process.summary(), "links": process_links(process.id)} for process in processes]
         return _answer(request, {"processes": summaries, "links": links}, headers=_link_header(links))
 
+    def wanted_server(request: Request) -> str | None:
+        """Return the parameter ``server`` of the address: the name of an own server, ``project``, or None."""
+        wanted = request.query_params.get("server")
+        if wanted is not None and not _SERVER.fullmatch(wanted):
+            detail = "The parameter server must be the name of one of your servers or the word project."
+            raise RefusedError(HTTPStatus.BAD_REQUEST, detail)
+        return wanted
+
     @router.get("/processes/{name}")
     def process_description(request: Request, name: str) -> Response:
-        """Return the description of a process, with its inputs and its output."""
+        """Return the description of a process, with its inputs and its output.
+
+        The parameter ``most-cells`` of a description is the number of the project server. With the
+        parameter ``server`` of the address, which names an own server of the visitor, it is the limit
+        on the cells of a layer that this server last reported, because the number of the project
+        server does not apply to a job of an own server.
+        """
         links = process_links(name)
-        return _answer(request, {**process_of(request, name).describe(), "links": links}, headers=_link_header(links))
+        described = process_of(request, name).describe()
+        wanted = wanted_server(request)
+        if wanted is not None and wanted != "project":
+            server = _service(request).servers.owned(_user(request), wanted)
+            if server is None:
+                raise RefusedError(HTTPStatus.NOT_FOUND, "You have no server of this name.")
+            described = _with_cells(described, layer_cells(server))
+        return _answer(request, {**described, "links": links}, headers=_link_header(links))
 
     @router.post("/processes/{name}/execution")
     async def execution(request: Request, name: str) -> Response:
@@ -660,14 +696,13 @@ def install(
         The parameter ``server`` of the address is the name of an own server of the visitor, the word
         ``project``, or absent. When it is absent, the job goes to the connected own server of the
         visitor with the fewest unfinished jobs that keeps every input layer, and to the project
-        server when there is none. The limits of the project server are applied to its own jobs only.
+        server when there is none. The limits of the project server are applied to its own jobs only:
+        the inputs of a job of an own server are checked against their format here, and the limit on
+        the cells of a layer is applied by the server that runs the job.
         """
         service = _service(request)
         process = process_of(request, name)
-        wanted = request.query_params.get("server")
-        if wanted is not None and not _SERVER.fullmatch(wanted):
-            detail = "The parameter server must be the name of one of your servers or the word project."
-            raise RefusedError(HTTPStatus.BAD_REQUEST, detail)
+        wanted = wanted_server(request)
         body = await _body(request)
         form = body.get("response", "raw")
         if not set(body) <= {"inputs", "outputs", "response", "subscriber"} or form not in ("raw", "document"):

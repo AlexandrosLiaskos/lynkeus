@@ -47,7 +47,11 @@ from lynkeus.products import BETA_COLLECTIONS, COLLECTIONS, CatalogueError, Prod
 from lynkeus.writing import PROGRAM, LayerError, Rule, grid_of, read_layer, write_layer
 
 MOST_CELLS = 25_000_000
-"""The largest number of cells of a layer that Lynkeus receives. ``cells_of`` estimates the cells of an area."""
+"""The largest number of cells of a layer that the project server receives. ``cells_of`` estimates the cells of an area.
+
+An own server receives as many cells as its owner set (``lynkeus.linking.ServerLimits.layer_cells``);
+its jobs hand that limit to ``get_layer``.
+"""
 
 MOST_WAIT = 1800.0
 """The longest time that Lynkeus waits for a job of Harmony, in seconds."""
@@ -193,6 +197,7 @@ def get_layer(
     folder: Path,
     address: str,
     report: Report,
+    most_cells: int | None = None,
 ) -> LayerDescription:
     """Receive a layer of a NISAR product, clipped to an area, and write its files.
 
@@ -211,6 +216,9 @@ def get_layer(
         The address of the folder for the browser.
     report : callable
         Called with the progress, from 0 to 100, and a sentence about it.
+    most_cells : int or None
+        The largest number of cells of the layer: the limit of the server that runs the job. ``None``
+        is ``MOST_CELLS``, the limit of the project server.
 
     Returns
     -------
@@ -229,7 +237,7 @@ def get_layer(
         visitor, and it never holds the token.
     """
     try:
-        return _get_layer(request, token, layer_id, folder, address, report)
+        return _get_layer(request, token, layer_id, folder, address, report, most_cells)
     except LayerError:
         raise
     except Exception as error:
@@ -237,7 +245,13 @@ def get_layer(
 
 
 def _get_layer(
-    request: LayerRequest, token: str | None, layer_id: str, folder: Path, address: str, report: Report
+    request: LayerRequest,
+    token: str | None,
+    layer_id: str,
+    folder: Path,
+    address: str,
+    report: Report,
+    most_cells: int | None,
 ) -> LayerDescription:
     """Receive a layer and write its files."""
     report(0, "Finding the product in NASA's catalogue.")
@@ -248,16 +262,16 @@ def _get_layer(
     area = request.area
     if not _overlaps(area, product.footprint):
         raise LayerError("The area lies outside the product.")
-    if cells_of(area, layer.spacing) > MOST_CELLS:
-        raise LayerError(_too_large(cells_of(area, layer.spacing)))
+    if cells_of(area, layer.spacing) > (MOST_CELLS if most_cells is None else most_cells):
+        raise LayerError(_too_large(cells_of(area, layer.spacing), most_cells))
     variable = _GROUPS[product.product] + layer.name
     with _folder_for_received_file(folder) as received:
         report(5, "Asking NASA Harmony for the layer.")
         client = _client(token)
         file, job = _receive(client, collection, product.id, variable, area, received, report)
         grid = grid_of(file)
-        if grid.width * grid.height > MOST_CELLS:
-            raise LayerError(_too_large(grid.width * grid.height))
+        if grid.width * grid.height > (MOST_CELLS if most_cells is None else most_cells):
+            raise LayerError(_too_large(grid.width * grid.height, most_cells))
         values, grid = read_layer(file)
         frequency = _centre_frequency(client, metadata, received) if layer.frequency else None
     if np.isnan(values).all():
@@ -603,11 +617,17 @@ def _cross(
     return side(a, b, c) * side(a, b, d) < 0 and side(c, d, a) * side(c, d, b) < 0
 
 
-def _too_large(cells: float) -> str:
-    """Return the sentence for an area whose layer has too many cells."""
+def _too_large(cells: float, most_cells: int | None = None) -> str:
+    """Return the sentence for an area whose layer has too many cells. It names the limit in force.
+
+    The cells of the layer are rounded up to a whole million, so that the sentence never states the
+    same number twice.
+    """
+    limit = MOST_CELLS if most_cells is None else most_cells
+    receiver = "Lynkeus receives" if most_cells is None else "this server receives"
     return (
-        f"The area is too large: the layer would have about {cells / 1e6:.0f} million cells, "
-        f"and Lynkeus receives at most {MOST_CELLS / 1e6:.0f} million."
+        f"The area is too large: the layer would have about {math.ceil(cells / 1e6)} million cells, "
+        f"and {receiver} at most {limit / 1e6:.0f} million."
     )
 
 

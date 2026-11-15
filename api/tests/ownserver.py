@@ -6,6 +6,12 @@ answers each task, and reports its state and the jobs whose state changed. It
 connects to the web service over HTTP, as the program does, and nothing
 connects to it.
 
+A stand-in without the limit on the cells of a layer speaks as the older program
+does: its limits have no field ``layer_cells``, in its reports and in the tasks
+that it takes. A stand-in with the limit takes no task ``limits`` without the
+field, because the program would apply 25 million cells then. Both state the
+version 0.1.0, as both programs do.
+
 The layer of a job is a real file. The stand-in reads a sample of the NISAR
 backscatter HH of 21 October 2026 from ``tests/data/layers`` and writes it with
 ``lynkeus.writing``, as a job of the program writes the layer that it received.
@@ -20,6 +26,7 @@ from collections.abc import Iterator
 from contextlib import contextmanager
 from datetime import date
 from pathlib import Path
+from typing import Any
 
 import httpx2
 
@@ -53,6 +60,9 @@ SMALL = LAYERS / "gcov-hhhh-20261021-small.tif"
 LARGE = LAYERS / "gcov-hhhh-20261021.tif"
 """600 by 560 cells of the same product. Its layer file is larger than one part of a file (``MOST_BYTES``)."""
 
+VERSION = "0.1.0"
+"""The version that the program states, with the limit on the cells of a layer and without it."""
+
 GRANULE = "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
 JSON = {"Content-Type": "application/json"}
 
@@ -70,9 +80,18 @@ class OwnServer:
         Name of the computer.
     sample : pathlib.Path
         The GeoTIFF whose values every job writes as its layer.
+    cells : bool
+        Whether the program knows the limit on the cells of a layer.
 
     Attributes
     ----------
+    cells : bool
+        Whether the program knows the limit on the cells of a layer. A test sets it to true when the
+        newer program is installed.
+    memory : int or None
+        Memory of the computer that the server reports, in bytes.
+    received : list of dict
+        Every task that the server received, as the JSON value of the answer, in order.
     manual : bool
         When true, a started job runs until the test calls ``finish``.
     silent, refused : set of str
@@ -85,11 +104,21 @@ class OwnServer:
         The Earthdata token that arrived with the task of each job.
     """
 
-    def __init__(self, client: httpx2.Client, folder: Path, name: str = "Field laptop", sample: Path = SMALL) -> None:
+    def __init__(
+        self,
+        client: httpx2.Client,
+        folder: Path,
+        name: str = "Field laptop",
+        sample: Path = SMALL,
+        cells: bool = True,
+    ) -> None:
         self.client = client
         self.folder = folder
         self.sample = sample
-        self.machine = Machine(name=name, system="Stand-in 1", version="0.1.0")
+        self.cells = cells
+        self.machine = Machine(name=name, system="Stand-in 1", version=VERSION)
+        self.memory: int | None = None
+        self.received: list[dict[str, Any]] = []
         self.server = ""
         self.key = ""
         self.limits = ServerLimits(running_jobs=2, storage=10**10, layer_size=10**9)
@@ -149,7 +178,7 @@ class OwnServer:
             used = sum(path.stat().st_size for path in (self.folder / "files").rglob("*") if path.is_file())
             return ServerState(
                 processors=os.cpu_count() or 1,
-                memory=None,
+                memory=self.memory,
                 disk_free=shutil.disk_usage(self.folder).free,
                 disk_used=used,
                 running=sum(job.status == "running" for job in self.jobs.values()),
@@ -165,7 +194,8 @@ class OwnServer:
         with self._lock:
             changed = list(dict.fromkeys(self._changed))
             jobs = named or tuple(self.jobs[job] for job in changed if job in self.jobs)
-            body = Report(state=self.state(), jobs=jobs).model_dump_json()
+            report = Report(state=self.state(), jobs=jobs)
+            body = report.model_dump_json(exclude=None if self.cells else {"state": {"limits": {"layer_cells"}}})
             response = self.client.post("/api/link/report", content=body, headers={**self.headers, **JSON})
             if response.status_code == 204 and not named:
                 # A report names a job until the project server has answered it with 204.
@@ -189,6 +219,13 @@ class OwnServer:
             self.forgotten = True
             return []
         assert response.status_code == 200, response.text
+        answer = response.json()["tasks"]
+        self.received.extend(answer)
+        # The formats of the older program take no unknown field, and the newer program applies 25 million
+        # cells to limits without the field.
+        fields = {"running_jobs", "storage", "layer_size"} | ({"layer_cells"} if self.cells else set())
+        for limits in (task["limits"] for task in answer if task["kind"] == "limits"):
+            assert set(limits) == fields, limits
         tasks = list(Tasks.model_validate_json(response.content).tasks)
         for task in tasks:
             self.handle(task)

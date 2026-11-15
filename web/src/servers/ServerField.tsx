@@ -8,7 +8,7 @@ import { Notice } from "../shared/notice/Notice";
 import { PropertyList, type Property } from "../shared/properties/PropertyList";
 import { PROJECT_SERVER, PROJECT_SERVER_WORDS, serversStore } from "../shared/servers";
 import { useStore } from "../shared/store";
-import { chosenOf, holdersOf, type Chosen } from "./choice";
+import { cellsLimitOf, chosenOf, holdersOf, type CellsLimit, type Chosen } from "./choice";
 import { loadServers } from "./requests";
 import { AUTOMATIC, serverChoiceStore } from "./state";
 import { limitRows, storageProblem } from "./words";
@@ -22,6 +22,7 @@ export function projectRows({ limits }: ServiceLimits): Property[] {
   return [
     { name: "Jobs at the same time", value: `${countWords(limits.running_jobs)} for all visitors` },
     { name: "Largest layer", value: sizeWords(limits.layer_size) },
+    { name: "Most cells of a layer", value: countWords(limits.layer_cells) },
     {
       name: "Space for layers",
       value: `${sizeWords(limits.session_size)} and ${amount(limits.session_layers, "layer", "layers")} for one session`,
@@ -55,6 +56,16 @@ function useChosen(inputs: readonly string[]): Chosen | null {
 export function useServerChoice(inputs: readonly string[] = []): ServerChoice {
   const chosen = useChosen(inputs);
   return { parameter: chosen?.parameter, missing: chosen?.missing ?? null };
+}
+
+/**
+ * Read the limit on the cells of a layer for the job that a form would start: the limit of the server chosen,
+ * of the server that Automatic names, or the number of the project server, which the form gives in `project`.
+ * `inputs` holds the ids of the input layers of a tool, as for `useServerChoice`.
+ */
+export function useCellsLimit(project: number | null, inputs: readonly string[] = []): CellsLimit {
+  const servers = useStore(serversStore)?.servers ?? [];
+  return cellsLimitOf(useChosen(inputs), servers, project);
 }
 
 /**

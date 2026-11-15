@@ -2,16 +2,21 @@ import { afterEach, expect, test, vi } from "vitest";
 import {
   latestRelease,
   latestReleaseAddress,
+  loadRelease,
   releaseOf,
   releasesPage,
+  releaseStore,
   REPOSITORY,
+  resetRelease,
   systemOfAgent,
   systemOfName,
+  systemOfServer,
 } from "./downloads";
 import real from "./testdata/release-cli.json";
 import { RELEASE, site } from "./testServers";
 
 afterEach(() => {
+  resetRelease();
   vi.unstubAllGlobals();
 });
 
@@ -125,4 +130,31 @@ test("a published release gives its downloads", async () => {
     "macos",
     "linux",
   ]);
+});
+
+test("the name of the system that a server reports tells the download for its computer", () => {
+  expect(systemOfServer("Windows 11")).toBe("windows");
+  expect(systemOfServer("macOS 15.1")).toBe("macos");
+  expect(systemOfServer("Ubuntu 24.04.1 LTS")).toBe("linux");
+  expect(systemOfServer("Debian GNU/Linux 13 (trixie)")).toBe("linux");
+  expect(systemOfServer("Linux 6.8.0")).toBe("linux");
+  expect(systemOfServer("Unknown system")).toBeNull();
+});
+
+test("the list of the servers asks GitHub once, and again only after an answer that could not be read", async () => {
+  const server = site();
+  server.release = { status: 200, content: RELEASE };
+  expect(releaseStore.get()).toBeNull();
+  await Promise.all([loadRelease(), loadRelease()]);
+  await loadRelease();
+  expect(server.sent("GET", latestReleaseAddress(REPOSITORY))).toHaveLength(1);
+  expect(releaseStore.get()).toMatchObject({ state: "published", release: { version: "v0.2.0" } });
+  resetRelease();
+  server.release = { status: 500, content: {} };
+  await loadRelease();
+  expect(releaseStore.get()).toEqual({ state: "unknown" });
+  server.release = { status: 200, content: RELEASE };
+  await loadRelease();
+  expect(releaseStore.get()?.state).toBe("published");
+  expect(server.sent("GET", latestReleaseAddress(REPOSITORY))).toHaveLength(3);
 });

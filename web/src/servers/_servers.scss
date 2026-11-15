@@ -49,6 +49,11 @@
   margin-top: tokens.$space-2;
 }
 
+// The line under the field of the cells: the memory that a job of that size needs.
+.server-field .server-memory {
+  margin: tokens.$space-1 0 0;
+}
+
 .server-field + .server-field {
   margin-top: tokens.$field-gap;
 }

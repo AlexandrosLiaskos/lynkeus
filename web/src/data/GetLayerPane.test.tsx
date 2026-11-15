@@ -10,7 +10,7 @@ import { MapContext } from "../shared/map";
 import { mapLayersStore } from "../shared/mapLayers";
 import { messagesStore } from "../shared/messages/messages";
 import { Pane } from "../shared/pane/Pane";
-import { serversStore } from "../shared/servers";
+import { serversStore, type Servers } from "../shared/servers";
 import { panesStore, resetPanes, setPaneOpen } from "../shared/panes";
 import { useStore } from "../shared/store";
 import { addWhenReadyStore } from "./follow";
@@ -798,6 +798,7 @@ test("the job is started on the server that the visitor chose, and the limits sh
   expect(serverRows()).toEqual([
     "Jobs at the same time: 4 (1 running, 2 waiting)",
     "Largest layer: 10 GB",
+    "Most cells of a layer: 100 million",
     "Space for layers: 1.3 GB of 100 GB used",
     "Free disk space: 412 GB",
   ]);
@@ -817,6 +818,7 @@ test("the choice of the project server shows the limits of the project server an
     expect(serverRows()).toEqual([
       "Jobs at the same time: 2 for all visitors",
       "Largest layer: 500 MB",
+      "Most cells of a layer: 25 million",
       "Space for layers: 2 GB and 50 layers for one session",
     ]),
   );
@@ -844,6 +846,73 @@ test("a chosen server that is not connected is the last thing that the foot name
       'The server "Laboratory server" is not connected. Start Lynkeus Server on that computer, or choose another server.',
     ),
   ).toBeDefined();
+});
+
+/** Give the project server a limit of 10 million cells, under the 14 million of the layer of the test area. */
+function withProjectLimit() {
+  server.process = {
+    id: GET_LAYER_PANE,
+    additionalParameters: { parameters: [{ name: "most-cells", value: [10_000_000] }] },
+  };
+}
+
+/** The servers of the examples, the first with another limit on the cells of a layer. */
+function serversWith(cells: number): Servers {
+  const [office, ...others] = SERVERS.servers;
+  if (!office?.state) {
+    throw new Error("The first server of the example reports its state.");
+  }
+  const limits = { ...office.state.limits, layer_cells: cells };
+  return { ...SERVERS, servers: [{ ...office, state: { ...office.state, limits } }, ...others] };
+}
+
+test("the area is checked against the limit of the server that Automatic names, and not of the project server", async () => {
+  withProjectLimit();
+  withServers();
+  show();
+  await vi.waitFor(() => expect(cellLimitStore.get()).toBe(10_000_000));
+  await userEvent.click(layerBox("Backscatter HH"));
+  await typeArea();
+  // Automatic names the Office computer, which receives 100 million cells: the 14 million of the layer pass.
+  expect(serverRows()[0]).toBe("At present: Office computer");
+  expect(screen.queryByRole("alert")).toBeNull();
+  expect(missing()).toBeNull();
+  expect(isActive(runButton())).toBe(true);
+});
+
+test("on the project server the area is refused with the limit of the project server, and the server of the visitor that receives more is named", async () => {
+  withProjectLimit();
+  withServers();
+  show();
+  await vi.waitFor(() => expect(cellLimitStore.get()).toBe(10_000_000));
+  await userEvent.selectOptions(serverChoice(), "project");
+  await userEvent.click(layerBox("Backscatter HH"));
+  await typeArea();
+  expect(screen.getByRole("alert").textContent).toBe(
+    'The area is too large for the layer "Backscatter HH" on the project server: the layer would have about 14 million cells, and the project server receives at most 10 million. Choose a smaller area, or your server "Office computer", which receives at most 100 million.',
+  );
+  expect(missing()).toBe("Choose a smaller area.");
+  expect(isActive(runButton())).toBe(false);
+  await userEvent.selectOptions(serverChoice(), OFFICE.id);
+  expect(screen.queryByRole("alert")).toBeNull();
+  expect(isActive(runButton())).toBe(true);
+});
+
+test("on a server of the visitor the area is refused with the name and the limit of that server", async () => {
+  const servers = serversWith(12_000_000);
+  server.servers = servers;
+  server.limits = SAMPLE;
+  serversStore.set(servers);
+  show();
+  await userEvent.selectOptions(serverChoice(), OFFICE.id);
+  await userEvent.click(layerBox("Backscatter HH"));
+  await typeArea();
+  expect(screen.getByRole("alert").textContent).toBe(
+    'The area is too large for the layer "Backscatter HH" on your server "Office computer": the layer would have about 14 million cells, and that server receives at most 12 million. Choose a smaller area.',
+  );
+  expect(serverRows()).toContain("Most cells of a layer: 12 million");
+  expect(isActive(runButton())).toBe(false);
+  expect(server.sent("POST")).toEqual([]);
 });
 
 test("an execution that the server refuses is stated in the words of the server", async () => {

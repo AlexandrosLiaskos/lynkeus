@@ -35,6 +35,13 @@ MAX_REFERENCES = 8
 
 JSON = "application/json"
 
+CELLS_PARAMETER = "most-cells"
+"""The name of the parameter with which a process states the most cells of a layer that it receives.
+
+The description of a process gives the number of the project server, and for an own server of the
+visitor the limit of that server (``docs/Own_Servers.md``, Cells of a layer).
+"""
+
 _NAME = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 
 _KEPT = frozenset(
@@ -114,6 +121,9 @@ class Work:
         the path of its GeoTIFF file.
     report : callable
         Reports the progress, in percent, and one sentence about the present step.
+    layer_cells : int or None
+        Largest number of cells of a layer that the server receives, or None when the server sets
+        none: the constant of the process then holds (``lynkeus.harmony.MOST_CELLS``).
     """
 
     layer_id: str
@@ -122,6 +132,7 @@ class Work:
     token: str | None
     layers: Mapping[str, tuple[LayerDescription, Path]]
     report: Callable[[int, str], None]
+    layer_cells: int | None = None
 
 
 def no_layers(inputs: BaseModel) -> tuple[str, ...]:
