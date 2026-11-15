@@ -632,14 +632,14 @@ class AnalysisResult:
         Words that name the lowest and the highest end of the legend, for
         example ``("decrease", "increase")``, or None when the two values of
         ``range`` say enough.
+    note : str or None
+        One sentence for the visitor about the result, for example how many
+        cells the tool left out, or None.
     classes : tuple of LayerClass or None
         The classes of a result of classes, in the order of their values, or
         None for a result of a quantity. The cells of each class hold its
         value in ``values``. A result has classes when, and only when, its
         reduction is ``mode``.
-    note : str or None
-        One sentence for the visitor about the result, for example how many
-        cells the tool left out, or None.
 
     Raises
     ------
@@ -656,8 +656,8 @@ class AnalysisResult:
     method: str
     reduction: ResultReduction = "mean"
     ends: tuple[str, str] | None = None
-    classes: tuple[LayerClass, ...] | None = None
     note: str | None = None
+    classes: tuple[LayerClass, ...] | None = None
 
     def __post_init__(self) -> None:
         """Check that the classes and the reduction agree."""

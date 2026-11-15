@@ -237,8 +237,7 @@ test("the explanations of the titles of the form are short", () => {
     components:
       "The Connected components layer of the same product, channel and area, which marks the cells where the unwrapped phase is unreliable.",
     hh: "A Backscatter HH layer of a GCOV product, which holds the radar echo sent and received horizontally.",
-    hv:
-      "The Backscatter HV layer of the same product and area, which holds the echo sent horizontally and received vertically.",
+    hv: "The Backscatter HV layer of the same product and area, which holds the echo sent horizontally and received vertically.",
     title: "The name of the result in the Catalog and Contents panes.",
   });
   // Each explanation is one sentence.
