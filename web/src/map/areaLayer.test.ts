@@ -1,7 +1,10 @@
 import type Point from "ol/geom/Point";
 import { expect, test } from "vitest";
 import {
+  AREA_EDIT_Z_INDEX,
   AREA_LAYER_ID,
+  AREA_STYLE,
+  AREA_SYMBOL,
   BOX,
   createAreaLayer,
   drawArea,
@@ -13,10 +16,31 @@ import {
 
 const EXTENT = [10, 20, 30, 60];
 
-test("the layer of the area carries its name and is drawn above the layers of the map", () => {
+test("the layer of the area carries its name and has no z-index of its own", () => {
   const layer = createAreaLayer();
   expect(layer.get("id")).toBe(AREA_LAYER_ID);
-  expect(layer.getZIndex()).toBeGreaterThanOrEqual(1000);
+  expect(layer.getZIndex()).toBeUndefined();
+  expect(layer.getVisible()).toBe(true);
+  expect(layer.getOpacity()).toBe(1);
+});
+
+test("the z-index of the layer while the Rectangle tool is in use is 1010", () => {
+  expect(AREA_EDIT_Z_INDEX).toBe(1010);
+});
+
+test("the symbol of the legend is the dashed ink line over the white line", () => {
+  expect(AREA_SYMBOL).toEqual({ label: "Area", line: "#1b1b1b", width: 2, dash: [8, 6], casing: "#ffffff" });
+});
+
+test("the symbol of the legend has the colours, the width and the dashes of the rectangle at rest", () => {
+  const [casing, line] = AREA_STYLE.map((style) => style.getStroke());
+  expect(AREA_STYLE).toHaveLength(2);
+  expect(line?.getColor()).toBe(AREA_SYMBOL.line);
+  expect(line?.getWidth()).toBe(AREA_SYMBOL.width);
+  expect(line?.getLineDash()).toEqual(AREA_SYMBOL.dash);
+  expect(casing?.getColor()).toBe(AREA_SYMBOL.casing);
+  expect(casing?.getLineDash()).toBeNull();
+  expect(casing?.getWidth()).toBeGreaterThan(AREA_SYMBOL.width);
 });
 
 test("the handles stand on the corners and on the middle of the sides", () => {
