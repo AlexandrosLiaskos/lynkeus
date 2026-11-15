@@ -12,6 +12,7 @@ const LAYER: LayerDescription = {
   colours: "grey",
   dates: ["2026-10-20"],
   inputs: ["product-file.h5"],
+  layer: "HHHH",
   program: "Lynkeus 0.1.0",
   method: null,
   record: "/files/gcov-hhhh-20261020.json",
@@ -29,8 +30,22 @@ test("a complete layer description is accepted", () => {
 });
 
 test("a result is accepted only with the reference of its method", () => {
-  expect(isLayerDescription({ ...LAYER, kind: "result" })).toBe(false);
-  expect(isLayerDescription({ ...LAYER, kind: "result", method: "Reference of the method" })).toBe(true);
+  expect(isLayerDescription({ ...LAYER, kind: "result", layer: null })).toBe(false);
+  expect(isLayerDescription({ ...LAYER, kind: "result", layer: null, method: "Reference of the method" })).toBe(true);
+});
+
+test("a layer stored without the name of its layer inside the product is accepted", () => {
+  const stored: Record<string, unknown> = { ...LAYER };
+  delete stored.layer;
+  expect(isLayerDescription(stored)).toBe(true);
+  expect(isLayerDescription({ ...stored, layer: null })).toBe(true);
+});
+
+test("a result is accepted only without the name of a layer inside a product", () => {
+  const result = { ...LAYER, kind: "result", method: "Reference of the method" };
+  expect(isLayerDescription(result)).toBe(false);
+  expect(isLayerDescription({ ...result, layer: null })).toBe(true);
+  expect(isLayerDescription({ ...result, layer: undefined })).toBe(true);
 });
 
 test.each([
@@ -42,6 +57,8 @@ test.each([
   ["a date is not year-month-day", { dates: ["20 Oct 2026"] }],
   ["there is no date", { dates: [] }],
   ["there is no input file", { inputs: [] }],
+  ["the name of the layer inside the product is empty", { layer: "" }],
+  ["the name of the layer inside the product is not text", { layer: 1 }],
   ["a layer carries a method", { method: "Reference of the method" }],
 ])("a layer description is rejected when %s", (_reason, change) => {
   expect(isLayerDescription({ ...LAYER, ...change })).toBe(false);
