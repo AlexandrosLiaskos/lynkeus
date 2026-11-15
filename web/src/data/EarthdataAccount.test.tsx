@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
-import { render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { dockStore, resetDock } from "../shared/dock/dock";
@@ -51,7 +51,9 @@ test("while nobody is signed in the title bar says so, and a press opens the pan
   // The button shows the picture of an account alone, and its name stands in its tooltip.
   expect(button.textContent).toBe("");
   expect(button.querySelectorAll("svg")).toHaveLength(1);
-  expect(screen.getByRole("tooltip", { hidden: true }).textContent).toBe("Earthdata: not signed in");
+  fireEvent.keyDown(document.body, { key: "Tab" });
+  act(() => button.focus());
+  expect(screen.getByRole("tooltip").textContent).toBe("Earthdata: not signed in");
   expect(button.getAttribute("aria-expanded")).toBeNull();
   await userEvent.click(button);
   expect(dockStore.get().tools).toEqual(["sign-in"]);

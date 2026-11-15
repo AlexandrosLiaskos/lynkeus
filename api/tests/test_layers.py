@@ -45,6 +45,7 @@ def test_layer_description_is_read_and_written_in_the_same_form() -> None:
         "ends": None,
         "frequency": None,
         "note": None,
+        "statistics": None,
         "range": [-25.0, 0.0],
     }
 
@@ -59,6 +60,7 @@ def test_layer_stored_without_the_name_of_its_layer_is_read() -> None:
         "ends": None,
         "frequency": None,
         "note": None,
+        "statistics": None,
         "range": [-25.0, 0.0],
     }
     assert LayerDescription.model_validate_json(layer.model_dump_json()) == layer

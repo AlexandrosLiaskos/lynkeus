@@ -132,7 +132,7 @@ test("the fields of the map image stand in two groups, and the explanation of a 
   expect(elements.contains(screen.getByLabelText("North arrow"))).toBe(true);
   expect(screen.getByRole("button", { name: "Information about Size" })).toBeDefined();
   const explanation = screen.getByText(/^With the size of the screen, the picture shows the whole map/);
-  expect(explanation.closest(".info-bubble")).not.toBeNull();
+  expect(explanation.closest(".info")).not.toBeNull();
   expect(screen.getByLabelText("Size").getAttribute("aria-describedby")).toBe(explanation.id);
   expect(screen.getByText(/^The north arrow is drawn only when the map is rotated\./).id).toBe(
     elements.getAttribute("aria-describedby"),
@@ -283,7 +283,7 @@ test("the layout states in a notice what every page carries, and explains the re
   );
   expect(notice.closest(".notice--info")).not.toBeNull();
   const explanation = screen.getByText(/^With the pixels of the screen, the page shows the largest part of the map/);
-  expect(explanation.closest(".info-bubble")).not.toBeNull();
+  expect(explanation.closest(".info")).not.toBeNull();
   expect(screen.getByLabelText("Map resolution").getAttribute("aria-describedby")).toBe(explanation.id);
 });
 
@@ -317,7 +317,7 @@ test("the link shows the address of the map and follows the view, the basemap an
 test("the link explains behind its i what the address holds, and states in a notice what it does not hold", () => {
   open("link-to-map");
   const explanation = screen.getByText(/^The address opens Lynkeus with the same view of the map/);
-  expect(explanation.closest(".info-bubble")).not.toBeNull();
+  expect(explanation.closest(".info")).not.toBeNull();
   expect(screen.getByLabelText("Address").getAttribute("aria-describedby")).toBe(explanation.id);
   const notice = screen.getByText(/^The address does not hold the layers of the map\./);
   expect(notice.closest(".notice--info")).not.toBeNull();
@@ -416,7 +416,7 @@ test("the STAC record of the selected layer is saved beside the name of its data
   expect(screen.getByText("Layer").closest(".property-row")?.textContent).toContain("Backscatter HH, 21 Oct 2026");
   const format = screen.getByRole("group", { name: "Format" });
   const explanation = screen.getByText(/^A STAC record is a JSON file in the form of a STAC Item/);
-  expect(explanation.closest(".info-bubble")).not.toBeNull();
+  expect(explanation.closest(".info")).not.toBeNull();
   expect(format.getAttribute("aria-describedby")).toBe(explanation.id);
   expect(screen.getByLabelText<HTMLInputElement>("STAC record").checked).toBe(true);
   await userEvent.click(screen.getByRole("button", { name: "Save record" }));
@@ -475,7 +475,7 @@ test("the citation of the selected layer is shown and copied", async () => {
   expect(citation.readOnly).toBe(true);
   expect(screen.getByText("Layer").closest(".property-row")?.textContent).toContain("Backscatter HH, 21 Oct 2026");
   const explanation = screen.getByText(/^The data are cited as NASA's catalogue cites a NISAR collection/);
-  expect(explanation.closest(".info-bubble")).not.toBeNull();
+  expect(explanation.closest(".info")).not.toBeNull();
   expect(citation.getAttribute("aria-describedby")).toBe(explanation.id);
   expect(citation.value).toContain(
     "NASA/JPL/NISAR. NISAR Validated Geocoded Polarimetric Covariance Product (Version 1) [Dataset]. " +

@@ -144,6 +144,29 @@ def test_backscatter_series_at_a_point_is_the_value_of_the_cell_on_each_date() -
     assert [entry.value for entry in other.entries] == [pytest.approx(decibels(2)), pytest.approx(decibels(20))]
 
 
+def test_series_of_an_area_takes_the_cells_inside_it() -> None:
+    inside = np.array([[True, False], [True, False]])
+    result = backscatter_series([grid([1, 2], [4, 100]), grid([NAN, 3], [5, 7])], [SECOND, THIRD], inside)
+    assert values_of(result) == [
+        ((date(2026, 10, 21),), pytest.approx(decibels(2.5), abs=1e-12), 2),
+        ((date(2026, 11, 2),), pytest.approx(decibels(5), abs=1e-12), 1),
+    ]
+    coherence = coherence_series([grid([0.2, 0.9], [0.4, 0.1]), grid([NAN, 0.5], [0.6, 0.3])], [PAIR_2, PAIR_3], inside)
+    assert [entry.cells for entry in coherence.entries] == [2, 1]
+    assert [entry.value for entry in coherence.entries] == [pytest.approx(0.3, abs=1e-7), pytest.approx(0.6, abs=1e-7)]
+    # A coherence layer is checked in all its cells, inside the area or not.
+    wrong = grid([0.5, 2.0], [0.5, 0.5])
+    assert coherence_refusal([PAIR_2, PAIR_3], [grid([0.5, 0.5], [0.5, 0.5]), wrong], place=inside).endswith(
+        "holds values outside 0 to 1, so it is not a coherence magnitude."
+    )
+    nowhere = np.zeros((1, 2), np.bool_)
+    assert refusal_of([SECOND, THIRD], [grid([1, 2]), grid([1, 2])], place=nowhere) == (
+        "No layer of the series holds a value in the area."
+    )
+    with pytest.raises(ValueError, match="not marked on the grid"):
+        backscatter_series([grid([1, 2]), grid([1, 2])], [SECOND, THIRD], np.ones((2, 2), np.bool_))
+
+
 def test_backscatter_series_at_a_point_agrees_with_the_tool_one_date() -> None:
     rng = np.random.default_rng(7)
     power = rng.gamma(2.0, 0.1, (4, 5)).astype(np.float32)
@@ -270,7 +293,7 @@ def test_backscatter_series_refuses_grids_of_different_sizes() -> None:
 def test_backscatter_series_refuses_layers_without_any_value() -> None:
     empty = [grid([NAN, 0]), grid([-1, NAN])]
     assert refusal_of([SECOND, THIRD], empty) == "No layer of the series holds a value in any cell."
-    assert refusal_of([SECOND, THIRD], [grid([NAN, 1]), grid([0, 1])], cell=(0, 0)) == (
+    assert refusal_of([SECOND, THIRD], [grid([NAN, 1]), grid([0, 1])], place=(0, 0)) == (
         "No layer of the series holds a value at the point."
     )
 
@@ -375,7 +398,7 @@ def test_coherence_series_accepts_two_pairs_that_share_one_date() -> None:
 @pytest.mark.parametrize("wrong", [grid([0.5, 1.5]), grid([-0.5, 0.5]), grid([0.5, INF])])
 def test_coherence_series_refuses_a_layer_with_a_value_outside_0_to_1(wrong: Any) -> None:
     for cell in (None, (0, 0)):
-        assert coherence_refusal([PAIR_2, PAIR_3], [grid([0.5, 0.5]), wrong], cell=cell) == (
+        assert coherence_refusal([PAIR_2, PAIR_3], [grid([0.5, 0.5]), wrong], place=cell) == (
             'The layer "Layer of 2026-10-09 and 2026-10-21" holds values outside 0 to 1, '
             "so it is not a coherence magnitude."
         )
@@ -385,7 +408,7 @@ def test_coherence_series_refuses_layers_without_any_value_and_grids_of_differen
     assert coherence_refusal([PAIR_2, PAIR_3], [grid([NAN]), grid([NAN])]) == (
         "No layer of the series holds a value in any cell."
     )
-    assert coherence_refusal([PAIR_2, PAIR_3], [grid([NAN, 1]), grid([NAN, 0])], cell=(0, 0)) == (
+    assert coherence_refusal([PAIR_2, PAIR_3], [grid([NAN, 1]), grid([NAN, 0])], place=(0, 0)) == (
         "No layer of the series holds a value at the point."
     )
     assert coherence_refusal([PAIR_2, PAIR_3], [grid([0.5]), grid([0.5, 0.5])]) == (

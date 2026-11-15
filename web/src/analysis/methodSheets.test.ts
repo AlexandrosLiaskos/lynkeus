@@ -3,12 +3,11 @@
 import { readFileSync } from "node:fs";
 import { expect, test } from "vitest";
 import { COLOUR_TABLES } from "../contents/colourTables";
-import { ROW_NAMES, rowOf } from "./methods";
+import { ROW_NAMES, rowOf, SHEETS, type Sheet } from "./methods";
 import { METHODS } from "./methodSheets";
-import { SHEET_TOOLS, type SheetTool } from "./series";
 
-/** The method sheet of a tool, as the repository holds it. */
-function sheet(tool: SheetTool): string {
+/** The method sheet of a tool, or of the statistics in an area, as the repository holds it. */
+function sheet(tool: Sheet): string {
   return readFileSync(`../docs/methods/${tool}.md`, "utf8");
 }
 
@@ -44,16 +43,16 @@ function inBrief(text: string): { name: string; text: string }[] {
     .map(([name = "", cell = ""]) => ({ name, text: cell }));
 }
 
-test.each(SHEET_TOOLS)("the title and the rows of %s are those of the section In brief of its sheet", (tool) => {
+test.each(SHEETS)("the title and the rows of %s are those of the section In brief of its sheet", (tool) => {
   const text = sheet(tool);
   expect(METHODS[tool]).toEqual({ title: outlineOf(text).title, rows: inBrief(text) });
 });
 
-test.each(SHEET_TOOLS)("the section In brief of %s is the first section of the sheet", (tool) => {
+test.each(SHEETS)("the section In brief of %s is the first section of the sheet", (tool) => {
   expect(outlineOf(sheet(tool)).sections[0]).toBe("In brief");
 });
 
-test.each(SHEET_TOOLS)("the summary of %s has every row once, in the order of the page Methods", (tool) => {
+test.each(SHEETS)("the summary of %s has every row once, in the order of the page Methods", (tool) => {
   const method = METHODS[tool];
   expect(method.title).not.toBe("");
   expect(method.rows.map(({ name }) => name)).toEqual([...ROW_NAMES]);
@@ -74,7 +73,7 @@ function plain(text: string): string {
   return text.replace(/`[^`]+`/g, "code").replace(/\[[^\]]+\]\([^)]+\)/g, "link");
 }
 
-test.each(SHEET_TOOLS)("every row of the summary of %s has one to three sentences", (tool) => {
+test.each(SHEETS)("every row of the summary of %s has one to three sentences", (tool) => {
   for (const { name, text } of METHODS[tool].rows) {
     const sentences = plain(text).match(/[.!?](?=\s|$)/g)?.length ?? 0;
     // A formula alone, written as code, ends without a full stop.
@@ -83,12 +82,12 @@ test.each(SHEET_TOOLS)("every row of the summary of %s has one to three sentence
   }
 });
 
-test.each(SHEET_TOOLS)("the row What it shows of %s, which the i of its form shows, is one sentence", (tool) => {
+test.each(SHEETS)("the row What it shows of %s, which the i of its form shows, is one sentence", (tool) => {
   expect(rowOf(METHODS[tool], "What it shows")).toMatch(/^[A-Z][^.`]*\.$/);
 });
 
 test("no summary uses the words corridor or route", () => {
-  for (const tool of SHEET_TOOLS) {
+  for (const tool of SHEETS) {
     for (const { text } of METHODS[tool].rows) {
       expect(text).not.toMatch(/corridor|route/i);
     }
