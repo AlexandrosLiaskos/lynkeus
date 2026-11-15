@@ -162,6 +162,26 @@ test("the page of the team log says of itself what the dialog says of it, and it
 
 test("the web server turns its request log off for the counter of visits only", () => {
   const settings = readFileSync("nginx.conf", "utf8");
-  expect(settings.match(/^\s*access_log\b.*$/gm)?.map((line) => line.trim())).toEqual(["access_log off;"]);
+  const lines = settings.match(/^\s*access_log\b.*$/gm)?.map((line) => line.trim()) ?? [];
+  expect(lines.filter((line) => line === "access_log off;")).toHaveLength(1);
   expect(/location = \/api\/visit \{\s*access_log off;/.test(settings)).toBe(true);
+});
+
+test("the log of the web server holds what the statement says, without the random part of the address of a layer file", () => {
+  const settings = readFileSync("nginx.conf", "utf8");
+  // The one log of the requests has a format of its own, which writes "-" in the place of the 32 random characters.
+  expect(settings).toContain("access_log /var/log/nginx/access.log lynkeus;");
+  const format = /^log_format lynkeus ((?:'[^']*'\s*)+);/m.exec(settings)?.[1] ?? "";
+  for (const part of ["$remote_addr", "$time_local", "$lynkeus_request", "$lynkeus_referer", "$http_user_agent"]) {
+    expect(format, part).toContain(part);
+  }
+  expect(format).not.toContain('"$request"');
+  expect(settings).toContain(
+    '"~^(?<lynkeus_method>[A-Z]+) /files/[0-9a-f]{32}(?<lynkeus_rest>[/? ].*)$" "$lynkeus_method /files/-$lynkeus_rest";',
+  );
+  // The log of a container is kept in a number of files of one size, which together are the megabytes of the statement.
+  const compose = readFileSync("../compose.yaml", "utf8");
+  const size = Number(/max-size: "(\d+)m"/.exec(compose)?.[1]);
+  const count = Number(/max-file: "(\d+)"/.exec(compose)?.[1]);
+  expect(statementOf("log")).toContain(`it keeps at most ${String(size * count)} megabytes of log`);
 });
