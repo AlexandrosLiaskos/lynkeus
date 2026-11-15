@@ -1,4 +1,117 @@
 import type { Source } from "../shared/sources";
 
-/** The methods, programs and datasets that the Analysis and Help tabs use. */
-export const SOURCES: readonly Source[] = [];
+/**
+ * The methods, programs and datasets that the Analysis and Help tabs use. The entries are those of part 6 of
+ * `docs/research/analysis.md`. NumPy, Rasterio and harmony-py stand in the list of the Data part, which the page
+ * Sources shows beside this one, because a name stands in the lists once.
+ */
+export const SOURCES: readonly Source[] = [
+  {
+    name: "NASA SDS Product Specification, Level-2 Geocoded Polarimetric Covariance (L2 GCOV), JPL D-102274",
+    version: "Rev F, version 1.5.0, 8 July 2026",
+    licence: "Copyright 2024 California Institute of Technology. Government sponsorship acknowledged",
+    url: "https://nisar-docs.asf.alaska.edu/product-specification/",
+    use: "The layers of a GCOV product, their units, the mask and the field of the conversion to decibels, for the two backscatter tools.",
+  },
+  {
+    name: "NASA SDS Product Specification, Level-2 Geocoded Unwrapped Interferogram (L2 GUNW), JPL D-102272",
+    version: "Rev E, version 1.2.1, 8 November 2024",
+    licence: "Copyright 2024 California Institute of Technology. Government sponsorship acknowledged",
+    url: "https://nisar-docs.asf.alaska.edu/product-specification/",
+    use: "The layers coherenceMagnitude of a GUNW product, for Coherence, One pair.",
+  },
+  {
+    name: "NISAR product specification files nisar_L2_GCOV.xml and nisar_L2_GUNW.xml",
+    version: "1.6.0, in nisarqa at commit a8bc425",
+    licence: "BSD-3-Clause OR Apache-2.0",
+    url: "https://github.com/isce-framework/nisarqa/tree/a8bc425f5e8873174471d6a12fe622df338623d1/src/nisarqa/product_specs/1.6.0",
+    use: "The layers of the products of the pilot area, which follow version 1.6.0 of the specifications.",
+  },
+  {
+    name: "Science Data Systems (SDS) L-SAR Product File Naming Conventions, JPL D-102255",
+    version: "Rev C, 19 October 2025",
+    licence: "All rights reserved (section 1.5 of the document)",
+    url: "https://nisar-docs.asf.alaska.edu/naming-conventions/",
+    use: "The fields of the name of a product file from which the tools and their forms read the instrument, the product type, the track, the direction and the frame.",
+  },
+  {
+    name: "ASF NISAR Cookbook",
+    version: "Commit 17b69c8, 3 November 2026",
+    licence: "Apache-2.0",
+    url: "https://github.com/ASFOpenSARlab/NISAR_Cookbook",
+    use: "Source program of Backscatter, One date and of Backscatter, Change (notebook NISAR_GCOV_SARChangeDetectionMethods.ipynb), and their legends.",
+  },
+  {
+    name: "ISCE3",
+    version: "0.25.21",
+    licence: "Apache-2.0",
+    url: "https://github.com/isce-framework/isce3",
+    use: "The program of the mission that computes the layer coherenceMagnitude, and the formula of the coherence.",
+  },
+  {
+    name: "nisarqa",
+    version: "Commit a8bc425, 30 September 2026",
+    licence: "BSD-3-Clause OR Apache-2.0",
+    url: "https://github.com/isce-framework/nisarqa",
+    use: "The legends of the backscatter in decibels and of the coherence.",
+  },
+  {
+    name: "Rignot and van Zyl (1993), Change detection techniques for ERS-1 SAR data",
+    licence: "IEEE licence for its publications, named in the Crossref record of the article",
+    url: "https://doi.org/10.1109/36.239913",
+    use: "Method of Backscatter, Change.",
+  },
+  {
+    name: "Shiroma, Lavalle and Buckley (2022), An Area-Based Projection Algorithm for SAR Radiometric Terrain Correction and Geocoding",
+    licence: "IEEE licence for its publications, named in the Crossref record of the article",
+    url: "https://doi.org/10.1109/TGRS.2022.3147472",
+    use: "The terrain correction and the geocoding of a GCOV product.",
+  },
+  {
+    name: "Touzi, Lopes, Bruniquel and Vachon (1999), Coherence estimation for SAR imagery",
+    licence: "IEEE licence for its publications, named in the Crossref record of the article",
+    url: "https://doi.org/10.1109/36.739146",
+    use: "How to read the coherence.",
+  },
+  {
+    name: "Zebker and Villasenor (1992), Decorrelation in interferometric radar echoes",
+    licence: "IEEE licence for its publications, named in the Crossref record of the article",
+    url: "https://doi.org/10.1109/36.175330",
+    use: "How to read the coherence.",
+  },
+  {
+    name: "Crameri, Shephard and Heron (2020), The misuse of colour in science communication",
+    licence: "CC-BY-4.0",
+    url: "https://doi.org/10.1038/s41467-020-19160-7",
+    use: "The research on colour scales and colour-blind readers.",
+  },
+  {
+    name: "NISAR Validated Geocoded Polarimetric Covariance Product (Version 1)",
+    version: "Collection NISAR_L2_GCOV_V1",
+    licence: "NASA ESDIS Data Use and Citation Guidance; free and open data",
+    url: "https://doi.org/10.5067/NIL2GCOV-V1",
+    use: "The two GCOV products of the pilot area on which the two backscatter tools were measured and compared.",
+  },
+  {
+    name: "NISAR Validated Geocoded Unwrapped Interferogram Product (Version 1)",
+    version: "Collection NISAR_L2_GUNW_V1",
+    licence: "NASA ESDIS Data Use and Citation Guidance; free and open data",
+    url: "https://doi.org/10.5067/NIL2GUNW-V1",
+    use: "The GUNW product of the pilot area on which Coherence, One pair was measured and compared.",
+  },
+  {
+    name: "Environment of the source program in the comparison: numpy, xarray, dask, rioxarray and rasterio",
+    version: "2.5.3, 2026.7.0, 2025.12.0, 0.22.0 and 1.4.4",
+    licence:
+      "As the packages state on PyPI: BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0; Apache-2.0; BSD-3-Clause; Apache; BSD",
+    url: "https://github.com/ASFOpenSARlab/NISAR_Cookbook/blob/17b69c87a7320610740be7f2c7e605601cb7fe43/pixi.lock",
+    use: "The versions of the lock file of the Cookbook with which the source program was run for the comparison. Lynkeus does not use them.",
+  },
+  {
+    name: "Matplotlib",
+    version: "3.11.2",
+    licence: "License agreement for matplotlib versions 1.3.0 and later",
+    url: "https://matplotlib.org",
+    use: "The order of the colours of the scale RdBu and the documentation of colour maps, in the research. The tools do not use it.",
+  },
+];

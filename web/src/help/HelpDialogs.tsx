@@ -1,5 +1,6 @@
 import { AboutDialog } from "./AboutDialog";
 import { GettingStartedPane } from "./GettingStarted";
+import { MethodsDialog } from "./MethodsDialog";
 import { SourcesDialog } from "./SourcesDialog";
 
 /**
@@ -10,6 +11,7 @@ export function HelpDialogs() {
   return (
     <>
       <GettingStartedPane />
+      <MethodsDialog />
       <SourcesDialog />
       <AboutDialog />
     </>
