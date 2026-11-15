@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
+@use "uswds-core" as uswds;
 @use "../shared/tokens/tokens";
 
 // The style of the elements of the Options tab.
 
-// A part of the work in the pane Browser storage: its check box with the explanation beside it, and under them
+// A part of the work in the pane Storage: its check box with the explanation beside it, and under them
 // the size of its stored copy, which starts where the name of the part starts.
 .storage-parts {
   margin-top: tokens.$space-2;
@@ -22,4 +23,60 @@
 // The button Clear all stands under the parts, at a distance of two fields.
 .storage-actions {
   margin-top: tokens.$field-gap;
+}
+
+// A row of what is kept: its title with the "i" of its statement, and under them its size and until when it is
+// kept. The list of such rows stands at the distance of two fields from what is above it.
+.storage-rows {
+  margin-top: tokens.$field-gap;
+  border-top: 1px solid tokens.$border;
+}
+
+.storage-row-title {
+  display: flex;
+  align-items: center;
+}
+
+.storage-row .item-line {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.storage-row .item-actions .usa-button {
+  white-space: nowrap;
+}
+
+// A sentence of a section: the free space of the project server, or how many servers keep layers.
+.storage-note {
+  margin: tokens.$space-2 0 0;
+  color: tokens.$secondary;
+  font-size: tokens.$text-small;
+  line-height: tokens.$line-small;
+}
+
+// The buttons of a section stand side by side and pass to a second row in a narrow pane.
+.storage-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: tokens.$space-2 tokens.$space-3;
+}
+
+// The bar of a limit: a line of 4 pixels whose filled part is the share used. A limit that is reached shows in
+// the colour of a warning; the words beside the bar state the same numbers.
+.storage-bar {
+  display: block;
+  height: tokens.$space-1;
+  margin: tokens.$space-1 0;
+  background: tokens.$border;
+}
+
+.storage-bar-fill {
+  display: block;
+  height: 100%;
+  background: tokens.$link;
+}
+
+.storage-bar--full > .storage-bar-fill {
+  background: uswds.color("warning-dark");
 }

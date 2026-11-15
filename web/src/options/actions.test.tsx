@@ -11,7 +11,7 @@ beforeEach(() => {
   resetDock();
 });
 
-test("the Storage button opens the pane Browser storage, and the pane carries the name of the button", () => {
+test("the Storage button opens the pane Storage, and the pane carries the name of the button", () => {
   const { result } = renderHook(() => useOptionsActions());
   expect(OPTIONS_TAB.groups[0].tools[0]).toMatchObject({ id: STORAGE_PANE, label: "Storage", icon: "settings" });
   expect(result.current[STORAGE_PANE]?.missing).toBeUndefined();
