@@ -23,13 +23,21 @@ export interface RibbonTab {
   groups: readonly ToolGroup[];
 }
 
-/** What a finished button does. `pressed` marks a button that stays switched on, such as the chosen background map. */
+/**
+ * What a finished button does. `pressed` marks a button that stays switched on, such as the chosen basemap.
+ * `missing` states in one sentence what the button needs before it can run, for example "Select a layer in the
+ * Contents pane." The button is then inactive, and its description ends with this sentence.
+ */
 export interface ToolAction {
   run: () => void;
   pressed?: boolean;
+  missing?: string;
 }
 
-/** The actions of the finished buttons, by the name of the button. A button without an action is shown in grey. */
+/**
+ * The actions of the finished buttons, by the name of the button. A button without an action is not finished: it
+ * is shown in grey, and its description ends with "Not yet available."
+ */
 export type ToolActions<Id extends string = string> = Partial<Record<Id, ToolAction>>;
 
 /** The names of the buttons that a tab declares. */

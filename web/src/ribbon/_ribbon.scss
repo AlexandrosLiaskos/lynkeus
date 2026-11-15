@@ -1,23 +1,27 @@
 @use "uswds-core" as uswds;
+@use "../shared/tokens/tokens";
 
+// The ribbon takes the sizes, the distances and the colours of text that the panes take, from `shared/tokens`.
+// It stands on the light grey of the frame of the page, and its panel is white.
 .ribbon {
   position: relative;
   background: uswds.color("base-lightest");
-  font-size: 0.8125rem;
+  color: tokens.$ink;
+  font-size: tokens.$text;
 }
 
 .ribbon-tabs {
   display: flex;
-  padding: 0 0.25rem;
+  padding: 0 tokens.$space-1;
 }
 
 .ribbon-tabs button {
-  height: 1.75rem;
-  padding: 0 0.75rem;
+  height: tokens.$row;
+  padding: 0 tokens.$space-3;
   border: 0;
   border-bottom: 0.125rem solid transparent;
   background: none;
-  color: uswds.color("ink");
+  color: tokens.$ink;
   font: inherit;
   cursor: pointer;
 }
@@ -26,15 +30,16 @@
   background: uswds.color("base-lighter");
 }
 
+// The selected tab is marked by a line under its name and by the colour of its text, and is not filled.
 .ribbon-tabs button[aria-selected="true"] {
-  border-bottom-color: uswds.color("primary");
-  color: uswds.color("primary");
+  border-bottom-color: tokens.$selected-bar;
+  color: tokens.$link;
 }
 
 .ribbon-panel {
-  margin: 0 0.25rem 0.25rem;
+  margin: 0 tokens.$space-1 tokens.$space-1;
   border: 1px solid uswds.color("base-light");
-  border-radius: 0.25rem;
+  border-radius: tokens.$space-1;
   background: uswds.color("white");
 }
 
@@ -43,7 +48,7 @@
   display: flex;
   overflow-x: auto;
   scrollbar-width: thin;
-  padding: 0.125rem 0;
+  padding: tokens.$space-1 0;
 }
 
 // A collapsed ribbon holds no groups, and its empty panel takes no room.
@@ -61,21 +66,29 @@
   box-shadow: 0 0.125rem 0.375rem uswds.color("black-transparent-20");
 }
 
-// The button that collapses the ribbon stands over the right end of the row of tabs.
+// The button that collapses the ribbon stands over the right end of the row of tabs. It is 24 pixels wide, the
+// smallest target that criterion 2.5.8 of the Web Content Accessibility Guidelines 2.2 accepts, and as high as
+// a tab.
 .ribbon-collapse {
   position: absolute;
   top: 0;
-  right: 0.25rem;
+  right: tokens.$space-1;
   display: flex;
   align-items: center;
-  height: 1.75rem;
-  padding: 0 0.375rem;
+  justify-content: center;
+  width: tokens.$target;
+  height: tokens.$row;
+  padding: 0;
   border: 1px solid transparent;
   border-radius: 0.125rem;
   background: none;
-  color: uswds.color("ink");
-  font-size: 1rem;
+  color: tokens.$ink;
   cursor: pointer;
+}
+
+.ribbon-collapse .usa-icon {
+  width: tokens.$icon;
+  height: tokens.$icon;
 }
 
 .ribbon-collapse:hover {
@@ -84,18 +97,18 @@
 
 // While the ribbon is collapsed the button looks as a pressed tool does.
 .ribbon-collapse[aria-pressed="true"] {
-  border-color: uswds.color("primary");
-  background: uswds.color("primary-lighter");
+  border-color: tokens.$selected-bar;
+  background: tokens.$selected;
 }
 
 .ribbon-group {
   display: flex;
   flex-direction: column;
-  padding: 0 0.375rem;
+  padding: 0 tokens.$space-1;
 }
 
 .ribbon-group + .ribbon-group {
-  border-left: 1px solid uswds.color("base-lighter");
+  border-left: 1px solid tokens.$border;
 }
 
 .ribbon-tools {
@@ -103,9 +116,10 @@
   flex: 1;
 }
 
+// The name of a group, in the small text of the page and in one line of 14 pixels.
 .ribbon-group-label {
-  color: uswds.color("base-dark");
-  font-size: 0.6875rem;
+  color: tokens.$muted;
+  font-size: tokens.$text-small;
   line-height: 0.875rem;
   text-align: center;
   white-space: nowrap;
@@ -113,23 +127,23 @@
 
 // A tool is a button with its icon above its label. The label takes one line
 // for each word, so that the tools stay narrow. Every tool has room for a label
-// of two lines, so that the ribbon keeps its height from one tab to the next.
+// of two lines, so that the ribbon keeps its height from one tab to the next:
+// an icon of 32 pixels, two lines of 14 pixels, the padding and the border.
 // The heights are whole pixels, so that the lines under the ribbon stay sharp.
 .ribbon-tool {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.125rem;
   width: min-content;
   min-width: 3.25rem;
-  min-height: calc(2rem + 2 * 0.875rem + 0.625rem + 2px);
-  padding: 0.25rem 0.375rem;
+  min-height: calc(2rem + 2 * 0.875rem + 2 * #{tokens.$space-1} + 2px);
+  padding: tokens.$space-1;
   border: 1px solid transparent;
   border-radius: 0.125rem;
   background: none;
-  color: uswds.color("ink");
+  color: tokens.$ink;
   font: inherit;
-  font-size: 0.75rem;
+  font-size: tokens.$text-small;
   line-height: 0.875rem;
   cursor: pointer;
 }
@@ -140,18 +154,19 @@
 }
 
 .ribbon-tool:not([aria-disabled="true"]):hover {
-  background: uswds.color("base-lighter");
+  background: tokens.$hover;
 }
 
-// The border of a pressed tool has a contrast of more than 3 to 1 with the panel, as criterion 1.4.11 of the
-// Web Content Accessibility Guidelines asks of the sign of a state.
+// A pressed tool carries the fill of a chosen element. Its border has a contrast of more than 3 to 1 with the
+// panel, as criterion 1.4.11 of the Web Content Accessibility Guidelines asks of the sign of a state.
 .ribbon-tool[aria-pressed="true"] {
-  border-color: uswds.color("primary");
-  background: uswds.color("primary-lighter");
+  border-color: tokens.$selected-bar;
+  background: tokens.$selected;
 }
 
-// The label of an unfinished tool stays readable, because its description can be read.
+// An inactive tool is written in the grey of an inactive command, which stays readable on the white panel,
+// because the description of the tool can be read.
 .ribbon-tool[aria-disabled="true"] {
-  color: uswds.color("disabled");
+  color: uswds.color("base");
   cursor: default;
 }
