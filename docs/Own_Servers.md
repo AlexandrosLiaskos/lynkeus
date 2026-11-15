@@ -167,7 +167,7 @@ reaches them. The addresses answer for an own server as follows.
 | `DELETE /api/jobs/{id}` | As before, at once. The server receives `dismiss`, unless it has not received the job yet |
 | `PATCH /api/layers/{id}`, `DELETE /api/layers/{id}` | As before, after the server has answered the task `rename` or `remove`; 503 when the server is not connected; 504 when it does not answer within `READ_TIME` seconds; 409 with the sentence of the server when it answers with `ok` false |
 | `GET /api/processes/{name}` | 404 when the visitor has no server of the name in `server` |
-| `PATCH /api/servers/{id}` | The name changes at once. The limits are recorded, and the server receives `limits` at once when it is connected and has reported its state, and otherwise after its next report. Limits without the field `layer_cells` leave that limit as it is. 422 and 409 as the section Cells of a layer gives them; nothing is recorded then, the name included. `state.limits` shows the limits that the server applies |
+| `PATCH /api/servers/{id}` | The name changes at once. The limits are recorded, and the server receives `limits` at once when it is connected and has reported its state since it connected, and otherwise after its next report. Limits without the field `layer_cells` leave that limit as it is. 422 and 409 as the section Cells of a layer gives them; nothing is recorded then, the name included. `state.limits` shows the limits that the server applies |
 | `GET /api/servers/{id}/files/{layer}/{file}` | 404 when the server keeps no such file; 416 when the range starts after the end of the file; 502 when the server could not read the file. A request for several ranges receives the whole file. When a part fails after the answer has begun, the answer ends before the length that it stated |
 
 ## Web servers
@@ -246,12 +246,23 @@ apply to a job of an own server.
 4. A program that does not know this limit receives at most 25 million cells. Its messages lack the field,
    which then counts as 25 million (`FIRST_LAYER_CELLS`). A server counts as such a program when the limits
    of its last report lack the field. The project server sends such a server the task `limits` without the
-   field, and it refuses a change of `layer_cells` for it with 409 and one sentence that asks to install the
-   newer version of Lynkeus Server on that computer. A server that has not reported yet receives nothing
+   field, and it refuses a change of `layer_cells` for it with 409 and one sentence that asks to download
+   Lynkeus Server again and install it on that computer. A server that has not reported yet receives nothing
    with the field either. Every `Server` in an answer of the project server carries the member
    `knows_cells`: true when the limits of the last report of the server carried the field, and false when
    they lacked it and before the first report (`state` is then `null`). The interface shows that a server
-   needs the newer program only when `state` is not `null` and `knows_cells` is false.
+   needs the newer program only when `state` is not `null` and `knows_cells` is false. Both programs state
+   the version 0.1.0, so the version does not tell them apart.
+
+   A server receives a task `limits` only after the project server has recorded a report that the server
+   sent since it connected: after a start of the project server, after a pause of more than
+   `CONNECTED_TIME` seconds and after its program said that it is quit, another program may run there,
+   and a program sends its first report and its first question for tasks together. A task `limits` that
+   waited from before is then dropped, and the limits that the owner set are compared with those of the
+   report. The record keeps `layer_cells` among the limits that the owner set only when he named it, and
+   never for a program that does not know the limit; limits without the field, also those recorded before
+   the field existed, keep the number that the server reports. A program that knows the limit therefore
+   always receives the task with the field.
 5. The interface checks the area of a form against the limit of the server on which the job would run, and
    its sentence names that server.
 

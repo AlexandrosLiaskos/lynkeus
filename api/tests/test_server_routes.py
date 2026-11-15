@@ -92,10 +92,10 @@ class Site:
             assert visitor.post("/api/session/earthdata", json={"token": token(user)}).status_code == 200
         return visitor
 
-    def machine(self, name: str = "Field laptop", sample: Path = SMALL, version: str = "0.2.0") -> OwnServer:
+    def machine(self, name: str = "Field laptop", sample: Path = SMALL, cells: bool = True) -> OwnServer:
         """Return a stand-in own server with a data folder of its own."""
         self.machines += 1
-        return OwnServer(self.client(), self.folder / f"machine-{self.machines}", name, sample, version)
+        return OwnServer(self.client(), self.folder / f"machine-{self.machines}", name, sample, cells)
 
 
 @contextmanager
@@ -202,7 +202,7 @@ def test_program_is_paired_after_the_visitor_confirms_its_code(site: Site, monke
     assert view.status_code == 200
     assert view.json() == {
         "user_code": pairing.user_code,
-        "machine": {"name": "Field laptop", "system": "Stand-in 1", "version": "0.2.0"},
+        "machine": {"name": "Field laptop", "system": "Stand-in 1", "version": "0.1.0"},
     }
     assert listed(visitor) == []
     confirmed = visitor.post("/api/servers", json={"user_code": pairing.user_code})
@@ -1334,6 +1334,38 @@ def test_limits_that_need_more_memory_than_the_server_reported_are_refused(site:
     assert visitor.patch(address, json={"limits": {**large, "running_jobs": 64}}).status_code == 200
 
 
+def test_state_is_recorded_with_the_fields_that_the_server_reported() -> None:
+    limits: dict[str, Any] = {"running_jobs": 2, "storage": 7, "layer_size": 5}
+    reported: dict[str, Any] = {
+        "processors": 4,
+        "memory": None,
+        "disk_free": 1,
+        "disk_used": 0,
+        "running": 0,
+        "waiting": 0,
+        "layers": 0,
+        "limits": limits,
+        "system": "Stand-in 1",
+        "version": "0.1.0",
+    }
+    older = ServerState.model_validate(reported)
+    newer = ServerState.model_validate({**reported, "limits": {**limits, "layer_cells": 40_000_000}})
+    assert (servers.knows_cells(older), servers.knows_cells(newer), servers.knows_cells(None)) == (False, True, False)
+    # Both programs state the version 0.1.0. The record keeps the limits as they were reported, so the
+    # state read back tells the two apart in the same way.
+    assert json.loads(servers.recorded_state(older, False)) == reported
+    for state in (older, newer):
+        kept = ServerState.model_validate_json(servers.recorded_state(state, servers.knows_cells(state)))
+        assert (kept, servers.knows_cells(kept)) == (state, servers.knows_cells(state))
+    # Limits that the server applied on a task keep the field out for the older program.
+    applied = older.model_copy(update={"limits": ServerLimits(**limits, layer_cells=25_000_000)})
+    assert "layer_cells" not in json.loads(servers.recorded_state(applied, servers.knows_cells(older)))["limits"]
+    # The owner set a number of cells only when the recorded limits name it.
+    assert servers.owner_cells(ServerLimits.model_validate_json(json.dumps(limits))) is None
+    assert servers.owner_cells(newer.limits) == 40_000_000
+    assert servers.owner_cells(None) is None
+
+
 def test_tasks_are_written_without_the_cells_for_a_program_that_does_not_know_them() -> None:
     limits = ServerLimits(running_jobs=2, storage=7, layer_size=5, layer_cells=40_000_000)
     start = StartTask(id="s" * 43, job="0" * 32, process="stand-in", title="A job", inputs="{}")
@@ -1348,26 +1380,31 @@ def test_tasks_are_written_without_the_cells_for_a_program_that_does_not_know_th
         layers=0,
         limits=limits,
         system="Stand-in 1",
-        version="0.2.0",
+        version="0.1.0",
     )
     whole = json.loads(tasks.model_dump_json())
     assert json.loads(servers.written_tasks(tasks, state)) == whole
     assert whole["tasks"][1]["limits"]["layer_cells"] == 40_000_000
-    # A program of version 0.1.0, and a server that has not reported yet, receive every other field.
+    # A program whose report lacked the field, of the same version, and a server that has not reported
+    # yet receive every other field.
     del whole["tasks"][1]["limits"]["layer_cells"]
-    first = state.model_copy(update={"version": "0.1.0"})
-    assert json.loads(servers.written_tasks(tasks, first)) == whole
+    older = state.model_copy(update={"limits": ServerLimits(running_jobs=2, storage=7, layer_size=5)})
+    assert json.loads(servers.written_tasks(tasks, older)) == whole
     assert json.loads(servers.written_tasks(tasks, None)) == whole
 
 
-def test_program_of_version_0_1_0_receives_its_limits_without_the_cells_of_a_layer(site: Site) -> None:
-    visitor, machine = site.visit("a_user"), site.machine(version="0.1.0")
+def test_program_that_does_not_know_the_cells_receives_its_limits_without_them(site: Site) -> None:
+    visitor, machine = site.visit("a_user"), site.machine(cells=False)
     server = machine.pair(visitor)
     address = f"/api/servers/{server}"
     machine.memory = 16 * 10**9
+    [found] = listed(visitor)
+    assert (found["state"], found["knows_cells"]) == (None, False)
     assert machine.report().status_code == 204
-    # Its report states no cells, which counts as 25 million.
-    assert listed(visitor)[0]["state"]["limits"] == {
+    # Its report states no cells, which counts as 25 million, and the same version as the newer program.
+    [found] = listed(visitor)
+    assert (found["state"]["version"], found["knows_cells"]) == ("0.1.0", False)
+    assert found["state"]["limits"] == {
         "running_jobs": 2,
         "storage": 10**10,
         "layer_size": 10**9,
@@ -1379,17 +1416,22 @@ def test_program_of_version_0_1_0_receives_its_limits_without_the_cells_of_a_lay
     problem(
         refused,
         409,
-        "To change the cells of a layer of your server Field laptop, install the newer version of Lynkeus Server"
-        " on that computer: version 0.1.0 receives at most 25 million cells.",
+        "To change the cells of a layer of your server Field laptop, download Lynkeus Server again and install it"
+        " on that computer: the program that runs there now receives at most 25 million cells.",
     )
     assert machine.step() == []
     assert listed(visitor)[0]["name"] == "Field laptop"
-    # The other limits change, with the cells left out or stated as 25 million.
+    # The other limits change, with the cells left out or stated as 25 million, and the record keeps no
+    # number of cells for such a program.
     for sent in (limits, {**limits, "running_jobs": 4, "layer_cells": 25_000_000}):
-        assert visitor.patch(address, json={"limits": sent}).status_code == 200
+        changed = visitor.patch(address, json={"limits": sent})
+        assert (changed.status_code, changed.json()["knows_cells"]) == (200, False)
         assert [task.kind for task in machine.step()] == ["limits"]
         assert machine.received[-1]["limits"] == {name: sent[name] for name in limits}
         assert listed(visitor)[0]["state"]["limits"] == {**sent, "layer_cells": 25_000_000}
+        record = site.service.store.server(server)
+        assert record is not None and record.limits is not None
+        assert json.loads(record.limits) == {name: sent[name] for name in limits}
     # Limits that wait for the next report of the server reach it without the cells as well.
     assert machine.leave().status_code == 204
     later = {**limits, "running_jobs": 1}
@@ -1399,13 +1441,16 @@ def test_program_of_version_0_1_0_receives_its_limits_without_the_cells_of_a_lay
     assert machine.received[-1]["limits"] == later
     assert machine.report().status_code == 204
     assert machine.step() == []
-    # After the newer version is installed, the server states its cells and takes a change of them.
-    machine.machine = machine.machine.model_copy(update={"version": "0.2.0"})
+    # The newer program, installed in its place, reads the settings of the older one and states its cells.
+    assert machine.leave().status_code == 204
+    machine.cells = True
     machine.limits = machine.limits.model_copy(update={"layer_cells": 250_000_000})
     assert machine.report().status_code == 204
-    # The limits that the owner set earlier are sent again, and they hold 25 million cells.
-    assert [task.kind for task in machine.step()] == ["limits"]
-    assert machine.received[-1]["limits"] == {**later, "layer_cells": 25_000_000}
+    # The limits that the owner set name no cells, so the number of the server stays and nothing is sent.
+    assert machine.step() == []
+    [found] = listed(visitor)
+    assert (found["knows_cells"], found["state"]["limits"]) == (True, {**later, "layer_cells": 250_000_000})
+    assert most_cells(visitor, server) == [250_000_000]
     wider = {**later, "layer_cells": 100_000_000}
     assert visitor.patch(address, json={"limits": wider}).status_code == 200
     assert [task.kind for task in machine.step()] == ["limits"]
@@ -1413,7 +1458,34 @@ def test_program_of_version_0_1_0_receives_its_limits_without_the_cells_of_a_lay
     assert (listed(visitor)[0]["state"]["limits"], most_cells(visitor, server)) == (wider, [100_000_000])
 
 
-def test_record_of_a_server_written_before_the_cells_of_a_layer_reads_as_25_million(site: Site) -> None:
+def test_limits_wait_for_the_first_report_that_tells_which_program_the_server_runs(site: Site) -> None:
+    visitor, machine = site.visit("a_user"), site.machine(cells=False)
+    server = machine.pair(visitor)
+    assert machine.report().status_code == 204
+    # The owner sets limits while the older program runs, and the program is quit before it takes them.
+    limits = {"running_jobs": 3, "storage": 5 * 10**10, "layer_size": 2 * 10**9}
+    assert visitor.patch(f"/api/servers/{server}", json={"limits": limits}).status_code == 200
+    assert machine.leave().status_code == 204
+    # The newer program starts in its place. It reads the settings of the older one and finds room for
+    # 237 million cells. Its first question for tasks comes before its first report and receives no limits.
+    machine.cells = True
+    machine.limits = machine.limits.model_copy(update={"layer_cells": 237_000_000})
+    assert machine.step() == []
+    assert machine.report().status_code == 204
+    # The report decides: the limits that the owner set, with the number of cells of the server.
+    assert [task.kind for task in machine.step()] == ["limits"]
+    assert machine.received[-1]["limits"] == {**limits, "layer_cells": 237_000_000}
+    [found] = listed(visitor)
+    assert (found["knows_cells"], found["state"]["limits"]) == (True, {**limits, "layer_cells": 237_000_000})
+    # The limits are in force now, so the program receives none after it starts again.
+    assert machine.leave().status_code == 204
+    assert machine.step() == []
+    assert machine.report().status_code == 204
+    assert machine.step() == []
+    assert [task["kind"] for task in machine.received] == ["limits"]
+
+
+def test_record_written_before_the_cells_of_a_layer_keeps_the_number_that_the_server_reports(site: Site) -> None:
     visitor, machine = site.visit("a_user"), site.machine()
     server = machine.pair(visitor)
     assert machine.report().status_code == 204
@@ -1424,17 +1496,21 @@ def test_record_of_a_server_written_before_the_cells_of_a_layer_reads_as_25_mill
     del state_then["limits"]["layer_cells"]
     store.change_server_state(server, json.dumps(state_then))
     store.set_server_limits(server, json.dumps({"running_jobs": 2, "storage": 7, "layer_size": 5}))
-    assert listed(visitor)[0]["state"]["limits"]["layer_cells"] == 25_000_000
+    [found] = listed(visitor)
+    assert (found["state"]["limits"]["layer_cells"], found["knows_cells"]) == (25_000_000, False)
     assert most_cells(visitor, server) == [25_000_000]
-    # The limits of that record are sent with 25 million cells to a program that knows the cells.
+    # The newer program reports the number that it applies, and the limits of that record keep it.
+    machine.limits = machine.limits.model_copy(update={"layer_cells": 237_000_000})
     assert machine.report().status_code == 204
     assert [task.kind for task in machine.step()] == ["limits"]
     assert machine.received[-1]["limits"] == {
         "running_jobs": 2,
         "storage": 7,
         "layer_size": 5,
-        "layer_cells": 25_000_000,
+        "layer_cells": 237_000_000,
     }
+    [found] = listed(visitor)
+    assert (found["knows_cells"], found["state"]["limits"]["layer_cells"]) == (True, 237_000_000)
 
 
 def test_removed_server_is_told_to_forget_its_pairing_and_keeps_its_files(site: Site) -> None:

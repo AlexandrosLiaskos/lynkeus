@@ -271,7 +271,8 @@ def install_servers(app: FastAPI) -> None:
             await asyncio.to_thread(store.take_server_job, job, time.time())
         if not any(isinstance(task, LimitsTask) for task in handed.tasks):
             return _answer(handed)
-        # The limits are written as the version of the program reads them, which its last report names.
+        # The limits are written as the program reads them. A task limits is handed out only after a report
+        # that the server sent since it connected, and that report tells whether the program knows the cells.
         latest = await asyncio.to_thread(store.server, server.id)
         return Response(written_tasks(handed, state_of(latest or server)), HTTPStatus.OK, media_type=JSON)
 
@@ -287,7 +288,7 @@ def install_servers(app: FastAPI) -> None:
         server = await _server(request)
         message = await _message(request, Report, MAX_LINK_BODY, HTTPStatus.UNPROCESSABLE_CONTENT)
         servers = _service(request).servers
-        servers.send_once(server.id, await asyncio.to_thread(servers.record_report, server, message, time.time()))
+        servers.keep_reported(server.id, await asyncio.to_thread(servers.record_report, server, message, time.time()))
         return _nothing()
 
     @router.post("/link/tasks/{task}/done")

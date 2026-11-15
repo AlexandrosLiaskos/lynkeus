@@ -6,8 +6,11 @@ answers each task, and reports its state and the jobs whose state changed. It
 connects to the web service over HTTP, as the program does, and nothing
 connects to it.
 
-A stand-in of version 0.1.0 speaks as the first program did: its limits have no
-field ``layer_cells``, in its reports and in the tasks that it takes.
+A stand-in without the limit on the cells of a layer speaks as the older program
+does: its limits have no field ``layer_cells``, in its reports and in the tasks
+that it takes. A stand-in with the limit takes no task ``limits`` without the
+field, because the program would apply 25 million cells then. Both state the
+version 0.1.0, as both programs do.
 
 The layer of a job is a real file. The stand-in reads a sample of the NISAR
 backscatter HH of 21 October 2026 from ``tests/data/layers`` and writes it with
@@ -57,8 +60,8 @@ SMALL = LAYERS / "gcov-hhhh-20261021-small.tif"
 LARGE = LAYERS / "gcov-hhhh-20261021.tif"
 """600 by 560 cells of the same product. Its layer file is larger than one part of a file (``MOST_BYTES``)."""
 
-FIRST_VERSION = "0.1.0"
-"""The version of the program that knows no limit on the cells of a layer."""
+VERSION = "0.1.0"
+"""The version that the program states, with the limit on the cells of a layer and without it."""
 
 GRANULE = "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
 JSON = {"Content-Type": "application/json"}
@@ -77,11 +80,14 @@ class OwnServer:
         Name of the computer.
     sample : pathlib.Path
         The GeoTIFF whose values every job writes as its layer.
-    version : str
-        Version of the program that the server states.
+    cells : bool
+        Whether the program knows the limit on the cells of a layer.
 
     Attributes
     ----------
+    cells : bool
+        Whether the program knows the limit on the cells of a layer. A test sets it to true when the
+        newer program is installed.
     memory : int or None
         Memory of the computer that the server reports, in bytes.
     received : list of dict
@@ -104,12 +110,13 @@ class OwnServer:
         folder: Path,
         name: str = "Field laptop",
         sample: Path = SMALL,
-        version: str = "0.2.0",
+        cells: bool = True,
     ) -> None:
         self.client = client
         self.folder = folder
         self.sample = sample
-        self.machine = Machine(name=name, system="Stand-in 1", version=version)
+        self.cells = cells
+        self.machine = Machine(name=name, system="Stand-in 1", version=VERSION)
         self.memory: int | None = None
         self.received: list[dict[str, Any]] = []
         self.server = ""
@@ -188,8 +195,7 @@ class OwnServer:
             changed = list(dict.fromkeys(self._changed))
             jobs = named or tuple(self.jobs[job] for job in changed if job in self.jobs)
             report = Report(state=self.state(), jobs=jobs)
-            first = self.machine.version == FIRST_VERSION
-            body = report.model_dump_json(exclude={"state": {"limits": {"layer_cells"}}} if first else None)
+            body = report.model_dump_json(exclude=None if self.cells else {"state": {"limits": {"layer_cells"}}})
             response = self.client.post("/api/link/report", content=body, headers={**self.headers, **JSON})
             if response.status_code == 204 and not named:
                 # A report names a job until the project server has answered it with 204.
@@ -215,10 +221,11 @@ class OwnServer:
         assert response.status_code == 200, response.text
         answer = response.json()["tasks"]
         self.received.extend(answer)
-        if self.machine.version == FIRST_VERSION:
-            # The formats of the first program take no unknown field.
-            for limits in (task["limits"] for task in answer if task["kind"] == "limits"):
-                assert set(limits) == {"running_jobs", "storage", "layer_size"}, limits
+        # The formats of the older program take no unknown field, and the newer program applies 25 million
+        # cells to limits without the field.
+        fields = {"running_jobs", "storage", "layer_size"} | ({"layer_cells"} if self.cells else set())
+        for limits in (task["limits"] for task in answer if task["kind"] == "limits"):
+            assert set(limits) == fields, limits
         tasks = list(Tasks.model_validate_json(response.content).tasks)
         for task in tasks:
             self.handle(task)
