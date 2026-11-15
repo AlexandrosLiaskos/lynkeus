@@ -57,10 +57,12 @@ and its message is one sentence for the visitor.
 |---|---|---|
 | 1 | the number of input layers is not one | `The number of input layers must be 1, and it is <number>.` |
 | 2 | the layer was not received from one product file of the type GCOV: its `kind` is not `layer`, its `inputs` do not hold exactly one name, or that name does not begin as the name of a NISAR product file of the type GCOV | `The layer "<title>" is not a layer received from one NISAR GCOV product.` |
-| 3 | the unit of the layer is not `1` | `The layer "<title>" has the unit <unit>, and the tool reads the unit 1.` |
-| 4 | the layer does not have one date | `The number of dates of the layer "<title>" must be 1, and it is <number>.` |
-| 5 | no cell of the result would hold a value | `The result would hold no value in any cell.` |
-| 6 | the 5th percentile of the result is not below the 95th, so the legend has no range | `The values of the result are too alike to give the legend a range.` |
+| 3 | the layer description does not hold the name of the layer inside the product (field `layer`); this is the case of a layer that was received before Lynkeus recorded that name | `The layer "<title>" does not record which layer of its product it is; receive it again with Get layer.` |
+| 4 | the name of the layer inside the product is not one of the six diagonal covariance terms `HHHH`, `HVHV`, `VHVH`, `VVVV`, `RHRH` and `RVRV` | `The layer "<title>" is the layer <name> of its product, and the tool reads a diagonal covariance term (HHHH, HVHV, VHVH, VVVV, RHRH or RVRV).` |
+| 5 | the unit of the layer is not `1` | `The layer "<title>" has the unit <unit>, and the tool reads the unit 1.` |
+| 6 | the layer does not have one date | `The number of dates of the layer "<title>" must be 1, and it is <number>.` |
+| 7 | no cell of the result would hold a value | `The result would hold no value in any cell.` |
+| 8 | the 5th percentile of the result is not below the 95th, so the legend has no range | `The values of the result are too alike to give the legend a range.` |
 
 The product type is read from the beginning of the file name: `NISAR_`, the instrument (`L` or `S`)
 and the level, the processing type (`PR`, `UR` or `OD`), the product type, the cycle, the track, the
@@ -68,14 +70,18 @@ direction (`A` or `D`) and the frame (naming conventions, sections 3.7 and 3.8).
 not two-dimensional Float32 is a fault of the calling program and raises `ValueError`, which is not
 a refusal for the visitor.
 
-The layer description has no field for the name of the layer inside the product. The tool therefore
-cannot verify that its input is a backscatter term: the choice of the visitor decides. In `main` at
-commit `0ad795b` the Data part offers three further layers of a GCOV product with the unit `1`:
-`rtcGammaToSigmaFactor`, `numberOfLooks` and `mask` (`api/src/lynkeus/harmony.py`, lines 277 to
-291). Each carries the kind, the product file, the unit and the one date that checks 1 to 4 expect.
-In a trial the tool accepted each of the three and returned it as radar backscatter in decibels
-(`docs/research/analysis.md`, part 3.4). The trial called the function directly, on a local copy and
-with made-up arrays; it was not made on the server.
+The name of the layer inside the product is the field `layer` of the layer description. The Data
+part writes into it the name that the layer request gave (`LayerRequest.layer`), for every layer
+that it receives, and a result of a tool has none. The six names of check 4 are the diagonal terms
+of Table 5-3 of the specification, which have the type Float32. The seven other terms of the table
+(`HHHV`, `HHVH`, `HHVV`, `HVVH`, `HVVV`, `VHVV` and `RHRV`) have the type CFloat32, and check 4
+refuses them. It also refuses the layers `rtcGammaToSigmaFactor`, `numberOfLooks` and `mask`, which
+the Data part offers with the unit `1` and which the tool accepted before it read the name
+(`docs/research/analysis.md`, part 3.4).
+
+The Data part receives the layers of the group `frequencyA` only (`_GROUPS` in
+`api/src/lynkeus/harmony.py`), and the field `layer` does not name the frequency. Of the six terms,
+the Data part offers `HHHH`, `HVHV`, `VHVH` and `VVVV` (`_layers` in the same file).
 
 ### The mask of the product
 
@@ -85,7 +91,9 @@ of value (specification, section 4.3.3): `0` for a cell that is invalid or parti
 `5` for a valid cell (the number of the sub-swath from which most of its radar samples came), and
 `255` for a cell outside the acquisition.
 
-The tool does not read the mask. Its only input is the term.
+The tool does not read the mask and applies none. Its only input is the term. The statements of the
+source program apply no mask either: no cell of the notebook reads the layer `mask` of a product
+(notebook at commit `17b69c8`, read on 15 Nov 2026).
 
 The mask of the two sample products was received from NASA Harmony on 14 Nov 2026, clipped to the
 box of the pilot area. Harmony delivered it on the grid of the term (3772 by 3972 cells of 10 m).
@@ -211,10 +219,9 @@ The exact numbers of the comparison are in `docs/research/analysis.md`, part 4.
 ## Not yet confirmed
 
 1. Whether the mask is needed in other areas (section The mask of the product). Andreas measures it
-   on the next area. The Data part now offers the mask as a layer; whether the tool takes it as a
-   further input is to be decided (Alexandros and Andreas).
-2. One field of the layer description for the name of the layer inside the product, without which
-   the tool cannot verify its input (Alexandros; it changes a shared format).
+   on the next area. The tool applies no mask, as the source program applies none.
+2. The terms `RHRH` and `RVRV`: the tool accepts them because the specification lists them, and no
+   layer of a compact channel was received or computed.
 3. The parts of the comparison that were not reached (table above, row Not reached) (Andreas).
 4. The name `grey` of the colour scale in the Contents pane, and which end of it is black (Stelios).
    A later commit of `main`, `5095ee0`, holds a scale `grey` that runs from black at the lowest

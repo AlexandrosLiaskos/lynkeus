@@ -54,10 +54,12 @@ and its message is one sentence for the visitor.
 |---|---|---|
 | 1 | the number of input layers is not one | `The number of input layers must be 1, and it is <number>.` |
 | 2 | the layer was not received from one product file of the type GUNW: its `kind` is not `layer`, its `inputs` do not hold exactly one name, or that name does not begin as the name of a NISAR product file of the type GUNW | `The layer "<title>" is not a layer received from one NISAR GUNW product.` |
-| 3 | the unit of the layer is not `1` | `The layer "<title>" has the unit <unit>, and the tool reads the unit 1.` |
-| 4 | the layer does not have two dates | `The number of dates of the layer "<title>" must be 2, and it is <number>.` |
-| 5 | no cell of the layer holds a value | `The input layer holds no value in any cell.` |
-| 6 | a cell holds a value below 0 or above 1, or an infinite value | `The input layer holds values outside 0 to 1, so it is not a coherence magnitude.` |
+| 3 | the layer description does not hold the name of the layer inside the product (field `layer`); this is the case of a layer that was received before Lynkeus recorded that name | `The layer "<title>" does not record which layer of its product it is; receive it again with Get layer.` |
+| 4 | the name of the layer inside the product is not one of the four names of the table Input layer: `unwrappedInterferogram/HH/coherenceMagnitude`, `unwrappedInterferogram/VV/coherenceMagnitude`, `wrappedInterferogram/HH/coherenceMagnitude` and `wrappedInterferogram/VV/coherenceMagnitude` | `The layer "<title>" is the layer <name> of its product, and the tool reads the layer coherenceMagnitude.` |
+| 5 | the unit of the layer is not `1` | `The layer "<title>" has the unit <unit>, and the tool reads the unit 1.` |
+| 6 | the layer does not have two dates | `The number of dates of the layer "<title>" must be 2, and it is <number>.` |
+| 7 | no cell of the layer holds a value | `The input layer holds no value in any cell.` |
+| 8 | a cell holds a value below 0 or above 1, or an infinite value | `The input layer holds values outside 0 to 1, so it is not a coherence magnitude.` |
 
 The product type is read from the beginning of the file name (naming conventions, sections 3.7 and
 3.8). An array that is not two-dimensional Float32 is a fault of the calling program and raises
@@ -66,16 +68,14 @@ The product type is read from the beginning of the file name (naming conventions
 One cell outside 0 to 1 refuses the whole layer. The sample layer of the pilot area lies inside the
 range: its lowest value is 0.0046, its highest value is 0.9965, and 0 cells lie above 1.
 
-The layer description has no field for the name of the layer inside the product. The tool therefore
-cannot verify that its input is the layer `coherenceMagnitude`: the choice of the visitor decides.
-Another layer of a GUNW product that carries the unit `1` and lies between 0 and 1 passes the checks
-above. In `main` at commit `0ad795b` the Data part offers two further layers of a GUNW product with
-the unit `1`: `connectedComponents` (`api/src/lynkeus/harmony.py`, lines 323 to 332) and
-`correlationSurfacePeak` of the pixel offsets, to which it gives the legend 0 to 1 (lines 381 to
-389). In a trial the tool accepted a layer of correlation peaks and a layer of connected components
-with the values 0 and 1, and refused by check 6 a layer of connected components with the values 0, 1
-and 2 (`docs/research/analysis.md`, part 3.4). The trial called the function directly, on a local
-copy and with made-up arrays; it was not made on the server.
+The name of the layer inside the product is the field `layer` of the layer description. The Data
+part writes into it the name that the layer request gave (`LayerRequest.layer`), for every layer
+that it receives, and a result of a tool has none. The four names of check 4 are the four layers
+`coherenceMagnitude` that the specification lists (pages 35 to 37), under the names that the Data
+part gives them (`_interferogram_layers` in `api/src/lynkeus/harmony.py`). Check 4 refuses every
+other layer of a GUNW product. Among them are `connectedComponents` and `correlationSurfacePeak` of
+the pixel offsets, which carry the unit `1` and which the tool accepted, when their values lay
+between 0 and 1, before it read the name (`docs/research/analysis.md`, part 3.4).
 
 ## Formula
 
@@ -146,9 +146,9 @@ The exact numbers of the comparison are in `docs/research/analysis.md`, part 4.5
    `isce3.signal.Crossmul`, the class of the formula above, or `isce3.cuda.signal.Crossmul`. Which
    of the two the mission runs, and how the 80 m layer is derived, was not traced. The point is with
    Andreas.
-3. One field of the layer description for the name of the layer inside the product, without which
-   the tool cannot verify that its input is the layer `coherenceMagnitude` (Alexandros; it changes a
-   shared format).
+3. The layers `coherenceMagnitude` of the channel VV and of the unwrapped interferogram (80 m): the
+   tool accepts them by their names, and only the layer of the channel HH of the wrapped
+   interferogram (20 m) was received and computed.
 4. The name `grey` of the colour scale in the Contents pane, and which end of it is black (Stelios).
    A later commit of `main`, `5095ee0`, holds a scale `grey` that runs from black at the lowest
    value to white (`web/src/contents/colours.ts`, lines 54 to 57); the file was read and nothing was
