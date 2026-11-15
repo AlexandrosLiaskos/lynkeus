@@ -176,8 +176,8 @@ The catalogue was searched on 15 Nov 2026 with the address
 `page_size=200` and `sort_key=start_date` (`catalogue.json`). It gave one product in
 `NISAR_L2_GUNW_V1` (9 and 21 Oct 2026, `P05036`), eight in `NISAR_L2_GUNW_PROVISIONAL_V1` (23 Jun to
 9 Oct 2026, `P05023`) and one in `NISAR_L2_GUNW_BETA_V1` (13 and 25 Dec 2025, `X05010`), which a series
-of the other eight would refuse by its release. The nine pairs of 12 days, and one of 24 days (17 Jul
-to 10 Aug 2026; no product of 29 Jul 2026 exists), link the ten dates from 23 Jun to 21 Oct 2026 into
+of the other eight would refuse by its release. Eight pairs of 12 days and one of 24 days (17 Jul
+to 10 Aug 2026; no product of 29 Jul 2026 exists) link the ten dates from 23 Jun to 21 Oct 2026 into
 one chain. All are of the bandwidth mode `4000`, channel HH.
 
 | Pair | Product | Cells with the label 0 | Cells with the label 1 | SHA-256 of the phase file | SHA-256 of the file of the labels |

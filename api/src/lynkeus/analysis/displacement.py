@@ -181,10 +181,12 @@ def displacement_state(arrays: Sequence[NDArray[np.float32]], layers: Sequence[L
 _SERIES_METHOD = (
     "Small-baseline inversion of the unwrapped phase of the pairs at the cell of the point, each pair referenced to "
     "the cell of the reference point, with equal weights and the minimum-norm velocity, the first date being zero, "
-    "times -wavelength/(4*pi); relative to the reference point, not corrected for the ionosphere, the troposphere or "
-    "the solid Earth tides (Berardino et al., 2002, https://doi.org/10.1109/TGRS.2002.803792; Yunjun et al., 2019, "
-    "https://doi.org/10.1016/j.cageo.2019.104331; MintPy 1.6.4, reference_point and ifgram_inversion with "
-    "--weight-func no and --mask-dset connectComponent)"
+    "times -wavelength/(4*pi); a pair is left out where the point has no phase or the connected component 0, as "
+    "MintPy does with --mask-dset connectComponent, and also where the point lies in another connected component "
+    "than the reference point, which MintPy does not do; relative to the reference point, not corrected for the "
+    "ionosphere, the troposphere or the solid Earth tides (Berardino et al., 2002, "
+    "https://doi.org/10.1109/TGRS.2002.803792; Yunjun et al., 2019, https://doi.org/10.1016/j.cageo.2019.104331; "
+    "MintPy 1.6.4, reference_point and ifgram_inversion with --weight-func no and --mask-dset connectComponent)"
 )
 
 
