@@ -15,6 +15,8 @@ import { createMap } from "./map/map";
 import { MapDialogs } from "./map/MapDialogs";
 import { MapView } from "./map/MapView";
 import { keepMapView } from "./map/storedView";
+import { useOptionsActions } from "./options/actions";
+import { OptionsDialogs } from "./options/OptionsDialogs";
 import { Ribbon } from "./ribbon/Ribbon";
 import { TABS } from "./ribbon/tabs";
 import type { ToolActions } from "./ribbon/types";
@@ -56,6 +58,7 @@ function Page() {
     ...useAnalysisActions(),
     ...useViewActions(),
     ...useShareActions(),
+    ...useOptionsActions(),
     ...useHelpActions(),
   };
 
@@ -80,6 +83,7 @@ function Page() {
           <AnalysisDialogs />
           <ViewDialogs />
           <ShareDialogs />
+          <OptionsDialogs />
           <HelpDialogs />
         </Dock>
       </div>

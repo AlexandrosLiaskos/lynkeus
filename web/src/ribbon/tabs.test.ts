@@ -8,8 +8,8 @@ const tools = TABS.flatMap(({ groups }) => groups.flatMap((group) => group.tools
 const sprite = readFileSync("node_modules/@uswds/uswds/dist/img/sprite.svg", "utf8");
 const icons = new Set(Array.from(sprite.matchAll(/<symbol[^>]*\bid="([^"]+)"/g), (match) => match[1]));
 
-test("the ribbon has its six tabs, in order", () => {
-  expect(TABS.map(({ label }) => label)).toEqual(["Map", "Data", "Analysis", "View", "Share", "Help"]);
+test("the ribbon has its seven tabs, in order", () => {
+  expect(TABS.map(({ label }) => label)).toEqual(["Map", "Data", "Analysis", "View", "Share", "Options", "Help"]);
 });
 
 test("every tab and every button has its own name", () => {

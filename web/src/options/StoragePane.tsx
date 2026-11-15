@@ -20,7 +20,7 @@ import { InfoPane } from "../shared/toolpane/InfoPane";
 import { Tooltip } from "../shared/tooltip/Tooltip";
 
 /** The name of the pane Browser storage, which is also the name of the ribbon button that opens it. */
-export const STORAGE_PANE = "view-storage";
+export const STORAGE_PANE = "options-storage";
 
 /**
  * The cookie of the session, as the server sets it: its name is `COOKIE` in `api/src/lynkeus/sessions.py`, and
@@ -326,7 +326,7 @@ function StorageOptions() {
 }
 
 /**
- * The pane Browser storage of the View tab: the options of what Lynkeus keeps in the local storage of the
+ * The pane Browser storage of the Options tab: the options of what Lynkeus keeps in the local storage of the
  * browser. Its first section holds the main switch and a row for each part of the work, with the size of the
  * stored copy of the part and the command that clears it. The second states the space that the browser reports
  * for the site, and the third what the browser and the server keep apart from these parts. The pane stands in

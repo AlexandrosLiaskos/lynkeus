@@ -36,17 +36,6 @@ export const VIEW_TAB = {
         },
       ],
     },
-    {
-      label: "Options",
-      tools: [
-        {
-          id: "view-storage",
-          label: "Storage",
-          icon: "settings",
-          description: "Opens the options of what Lynkeus keeps in this browser.",
-        },
-      ],
-    },
   ],
 } as const satisfies RibbonTab;
 
