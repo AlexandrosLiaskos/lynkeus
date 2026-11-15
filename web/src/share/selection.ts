@@ -17,3 +17,16 @@ export function useSelectedLayer(): LayerDescription | null {
 
 /** The sentence that asks the user to select a layer. */
 export const SELECT_A_LAYER = "No layer is selected. Select a layer in the Contents pane first.";
+
+/** Return whether the map has a layer, and follow the layers of the map. */
+export function useHasLayers(): boolean {
+  return useStore(mapLayersStore).length > 0;
+}
+
+/**
+ * Return the sentence that states what a tool of the selected layer lacks while no layer is selected: a layer on
+ * the map, or the selection of one.
+ */
+export function layerMissing(hasLayers: boolean): string {
+  return hasLayers ? "Select a layer in the Contents pane." : "Get a layer first.";
+}
