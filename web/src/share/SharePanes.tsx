@@ -9,7 +9,7 @@ import { CitationFields } from "./CitationFields";
 import { copyText } from "./clipboard";
 import { saveFile, timeStamp } from "./download";
 import { layerFileName } from "./layerFile";
-import { useDataSources } from "./layerSources";
+import { citationMissing, useDataSources } from "./layerSources";
 import { LayoutFields } from "./LayoutFields";
 import { FIRST_LAYOUT_FORM } from "./layout";
 import { pictureLegend, useVisibleLayers } from "./legend";
@@ -272,11 +272,6 @@ function CitationPane() {
             state: "warning",
             text: "The browser did not allow the copy. The citation is selected; copy it with the keyboard.",
           };
-  const missing = !layer
-    ? layerMissing(hasLayers)
-    : reading
-      ? "The record of the layer is being read."
-      : "The record of the layer names no DOI of a NISAR collection.";
 
   return (
     <ToolPane
@@ -286,7 +281,7 @@ function CitationPane() {
       runLabel="Copy citation"
       onRun={copy}
       ready={citation !== null}
-      missing={missing}
+      missing={citationMissing(layer, hasLayers, sources)}
       run={run}
     >
       <CitationFields layer={layer} citation={citation} reading={reading} field={field} />

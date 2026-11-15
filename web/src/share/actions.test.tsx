@@ -64,6 +64,13 @@ test("the Area button saves the area as a GeoJSON file and reports it", async ()
   expect(messages()).toEqual([["success", "The area was saved as lynkeus-area.geojson."]]);
 });
 
+test("the Area button states that it needs an area until one is set", () => {
+  const { result } = renderHook(() => useShareActions());
+  expect(result.current["export-area"]?.missing).toBe("Set an area in the Map tab.");
+  act(() => areaStore.set({ west: -71.2, south: 42.6, east: -70.75, north: 42.95 }));
+  expect(result.current["export-area"]?.missing).toBeUndefined();
+});
+
 test("without an area the Area button saves nothing and tells the user to set one", () => {
   renderHook(() => useShareActions()).result.current["export-area"]?.run();
   expect(saveFile).not.toHaveBeenCalled();
@@ -80,6 +87,18 @@ test("the Layer button saves the file of the selected layer under a name of its 
   );
   expect(messages()).toEqual([["success", "The browser saves the file of the layer as backscatter-hh-20261021.tif."]]);
 });
+
+test.each(["export-layer", "export-record"] as const)(
+  "the button %s states that it needs a layer on the map and then a selected layer",
+  (id) => {
+    const { result } = renderHook(() => useShareActions());
+    expect(result.current[id]?.missing).toBe("Get a layer first.");
+    act(() => mapLayersStore.set([BACKSCATTER]));
+    expect(result.current[id]?.missing).toBe("Select a layer in the Contents pane.");
+    act(() => selectedLayerStore.set(BACKSCATTER.id));
+    expect(result.current[id]?.missing).toBeUndefined();
+  },
+);
 
 test("without a selected layer the Layer button saves nothing and tells the user to select one", () => {
   mapLayersStore.set([BACKSCATTER]);
@@ -104,33 +123,47 @@ test.each(["export-map-image", "export-record", "print-layout", "link-to-map"] a
   },
 );
 
-test("the Citation button has no action without a selected layer", () => {
-  const actions = renderHook(() => useShareActions()).result.current;
-  expect(actions.citation).toBeUndefined();
+test.each(["export-map-image", "print-layout", "link-to-map"] as const)("the button %s needs nothing first", (id) => {
+  expect(renderHook(() => useShareActions()).result.current[id]?.missing).toBeUndefined();
 });
 
-test("the Citation button has an action when the record of the selected layer names a DOI", async () => {
+test("the Citation button states that it needs a layer", () => {
+  const { result } = renderHook(() => useShareActions());
+  expect(result.current.citation?.missing).toBe("Get a layer first.");
+  act(() => mapLayersStore.set([BACKSCATTER]));
+  expect(result.current.citation?.missing).toBe("Select a layer in the Contents pane.");
+});
+
+test("the Citation button is active when the record of the selected layer names a DOI", async () => {
   vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve(received) }));
   mapLayersStore.set([BACKSCATTER]);
   const { result } = renderHook(() => useShareActions());
   act(() => selectedLayerStore.set(BACKSCATTER.id));
-  await waitFor(() => expect(result.current.citation).toBeDefined());
+  expect(result.current.citation?.missing).toBe("The record of the layer is being read.");
+  await waitFor(() => expect(result.current.citation?.missing).toBeUndefined());
   act(() => result.current.citation?.run());
   expect(dockStore.get().tools).toEqual(["citation"]);
   act(() => selectedLayerStore.set(null));
-  expect(result.current.citation).toBeUndefined();
+  expect(result.current.citation?.missing).toBe("Select a layer in the Contents pane.");
 });
 
-test("the Citation button has no action when the record names no DOI or cannot be read", async () => {
+test("the Citation button states that the record names no DOI, also when the record cannot be read", async () => {
   const withoutDoi = { ...received, properties: { ...received.properties, "sci:doi": undefined } };
   const fetched = vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve(withoutDoi) });
   vi.stubGlobal("fetch", fetched);
   mapLayersStore.set([BACKSCATTER]);
   selectedLayerStore.set(BACKSCATTER.id);
   const { result } = renderHook(() => useShareActions());
-  await waitFor(() => expect(fetched).toHaveBeenCalled());
+  const noDoi = "The record of the layer names no DOI of a NISAR collection.";
+  await waitFor(() => expect(result.current.citation?.missing).toBe(noDoi));
+  const asked = fetched.mock.calls.length;
+  fetched.mockRejectedValue(new Error("The record cannot be read."));
+  forgetDataSources();
+  act(() => selectedLayerStore.set(null));
+  act(() => selectedLayerStore.set(BACKSCATTER.id));
+  await waitFor(() => expect(fetched.mock.calls.length).toBeGreaterThan(asked));
   await act(async () => {
     await Promise.resolve();
   });
-  expect(result.current.citation).toBeUndefined();
+  expect(result.current.citation?.missing).toBe(noDoi);
 });
