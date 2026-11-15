@@ -32,9 +32,9 @@ from typing import Any
 
 from pydantic import BaseModel, ValidationError
 
-from lynkeus.layers import LayerDescription
-from lynkeus.processes import Process, Work
-from lynkeus.store import JobRecord, LayerRecord, Store
+from lynkeus.layers import LayerDescription, SeriesDescription
+from lynkeus.processes import SERIES_OUTPUT, Process, Work
+from lynkeus.store import JobRecord, LayerRecord, SeriesRecord, Store
 
 MAX_RUNNING_JOBS = 2
 """The largest number of jobs that run at once. It equals the number of processors of the machine.
@@ -56,6 +56,9 @@ MAX_SESSION_DISMISSED_JOBS = 100
 
 MAX_SESSION_LAYERS = 50
 """The largest number of layers of one session."""
+
+MAX_SESSION_SERIES = 50
+"""The largest number of series of one session. It is the number of ``MAX_SESSION_LAYERS``."""
 
 MAX_LAYER_SIZE = 500_000_000
 """The largest size of the files of one layer, in bytes."""
@@ -94,6 +97,7 @@ SIZE_PAUSE = 2.0
 WAITING = "The job waits for its turn."
 STARTED = "The job has started."
 READY = "The layer is ready."
+SERIES_READY = "The series is ready."
 DISMISSED = "The job was dismissed."
 RESTARTED = "The server was restarted before the job finished. Start the job again."
 FAULT = "The job failed because of an error in Lynkeus. The error was recorded."
@@ -180,7 +184,7 @@ class _Running:
 
 def _work(
     connection: Connection,
-    run: Callable[[Any, Work], LayerDescription],
+    run: Callable[[Any, Work], LayerDescription | SeriesDescription],
     inputs_format: type[BaseModel],
     inputs: str,
     errors: tuple[type[Exception], ...],
@@ -214,9 +218,12 @@ def _work(
     try:
         work = Work(layer_id=layer, folder=folder, address=address, token=token, layers=layers, report=report)
         description = run(inputs_format.model_validate_json(inputs), work)
-        if not isinstance(description, LayerDescription):
-            raise TypeError("the function of the process did not return a layer description")
-        connection.send(("layer", description.model_dump_json()))
+        if isinstance(description, SeriesDescription):
+            connection.send(("series", description.model_dump_json()))
+        elif isinstance(description, LayerDescription):
+            connection.send(("layer", description.model_dump_json()))
+        else:
+            raise TypeError("the function of the process returned neither a layer description nor a series description")
     except Exception as error:
         sentence = shown(str(error))[:MAX_MESSAGE_LENGTH] if isinstance(error, errors) else None
         connection.send(("error", sentence, shown(traceback.format_exc())))
@@ -279,7 +286,7 @@ def _end(process: BaseProcess, ending: Semaphore) -> None:
 
 
 class Jobs:
-    """Starts, watches and ends the jobs, and keeps the layers that they produce.
+    """Starts, watches and ends the jobs, and keeps the layers and the series that they produce.
 
     Parameters
     ----------
@@ -396,7 +403,11 @@ class Jobs:
                 raise LimitError(
                     HTTPStatus.SERVICE_UNAVAILABLE, "Too many jobs wait at present. Try again in a few minutes.", 120
                 )
-            if limits.session_layers is not None and layers + unfinished >= limits.session_layers:
+            if process.output == SERIES_OUTPUT:
+                if len(self._store.series_of(session)) + unfinished >= MAX_SESSION_SERIES:
+                    sentence = f"A session holds at most {MAX_SESSION_SERIES} series. Remove a series and try again."
+                    raise LimitError(HTTPStatus.INSUFFICIENT_STORAGE, sentence)
+            elif limits.session_layers is not None and layers + unfinished >= limits.session_layers:
                 sentence = f"A session holds at most {limits.session_layers} layers. Remove a layer and try again."
                 raise LimitError(HTTPStatus.INSUFFICIENT_STORAGE, sentence)
             if self._store.size_of_layers(session) >= limits.session_size:
@@ -492,8 +503,38 @@ class Jobs:
         shutil.rmtree(self._files / layer, ignore_errors=True)
         return True
 
+    def rename_series(self, session: str, series: str, title: str) -> SeriesRecord | None:
+        """Give a series of a session a new title.
+
+        Returns
+        -------
+        SeriesRecord or None
+            The series with its new title, or None when the session has no series of this name.
+        """
+        with self._lock:
+            record = self._store.series(series)
+            if record is None or record.session != session:
+                return None
+            description = SeriesDescription.model_validate({**json.loads(record.description), "title": title})
+            self._store.change_series(series, description.model_dump_json())
+            return self._store.series(series)
+
+    def remove_series(self, session: str, series: str) -> bool:
+        """Remove a series of a session and the record of the job that produced it.
+
+        Returns
+        -------
+        bool
+            False when the session has no series of this name.
+        """
+        record = self._store.series(series)
+        if record is None or record.session != session:
+            return False
+        self._store.remove_series(series)
+        return True
+
     def end_session(self, session: str) -> None:
-        """End the jobs of a session and remove the session with its layers and their files."""
+        """End the jobs of a session and remove the session with its layers, their files and its series."""
         with self._lock:
             for job in self._store.jobs_of(session):
                 if job.status in ("accepted", "running"):
@@ -626,13 +667,42 @@ class Jobs:
             self._store.fail_job(job.id, result[1] or FAULT, now)
             logger.error("Job %s of the process %s failed.\n%s", job.id, job.process, result[2])
         else:
-            failure = self._keep_layer(running, str(result[1]), now)
+            keep = self._keep_series if result[0] == "series" else self._keep_layer
+            failure = keep(running, str(result[1]), now)
             if failure is not None:
                 self._store.fail_job(job.id, failure, now)
+
+    def _keep_series(self, running: _Running, text: str, now: float) -> str | None:
+        """Record the series of a job, and return a sentence when the series cannot be kept.
+
+        A series has no files: its description holds all its values. The folder of the job stays empty and is
+        removed when the job has ended.
+        """
+        job = running.job
+        process = self._processes.get(job.process)
+        try:
+            description = SeriesDescription.model_validate_json(text)
+        except ValidationError:
+            logger.exception("Job %s of the process %s returned a wrong series description.", job.id, job.process)
+            return FAULT
+        if process is None or process.output != SERIES_OUTPUT or description.id != running.layer:
+            logger.error("Job %s of the process %s named its series wrongly: %s", job.id, job.process, text)
+            return FAULT
+        if len(self._store.series_of(job.session)) >= MAX_SESSION_SERIES:
+            return f"A session holds at most {MAX_SESSION_SERIES} series. Remove a series and start again."
+        series = SeriesRecord(
+            id=running.layer, session=job.session, description=description.model_dump_json(), created=now
+        )
+        self._store.succeed_job_with_series(job.id, SERIES_READY, series)
+        return None
 
     def _keep_layer(self, running: _Running, text: str, now: float) -> str | None:
         """Record the layer of a job, and return a sentence when the layer cannot be kept."""
         job, address = running.job, f"{self._address}/{running.layer}/"
+        process = self._processes.get(job.process)
+        if process is not None and process.output == SERIES_OUTPUT:
+            logger.error("Job %s of the process %s returned a layer in the place of a series.", job.id, job.process)
+            return FAULT
         try:
             description = LayerDescription.model_validate_json(text)
         except ValidationError:

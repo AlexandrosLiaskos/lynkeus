@@ -4,6 +4,8 @@
 Every analysis tool of ``lynkeus.analysis.TOOLS`` is a process under the name
 of the tool. ``processes`` lists them, and ``lynkeus.server`` installs the
 list, so a tool that enters ``TOOLS`` is offered without a change here.
+Every tool of ``lynkeus.analysis.SERIES_TOOLS`` is offered in the same way,
+as a process whose one output is ``series`` and not ``layer``.
 
 The server runs the function of a process in the operating-system process of
 a job, in its main thread.
@@ -16,13 +18,22 @@ from typing import Annotated, Any
 
 from pydantic import Field, StringConstraints, field_validator
 
-from lynkeus.analysis import TOOLS, AnalysisFunction
+from lynkeus.analysis import SERIES_TOOLS, TOOLS, AnalysisFunction, SeriesFunction
 from lynkeus.harmony import MOST_CELLS, get_layer, layers_of
 from lynkeus.jobs import MAX_SESSION_LAYERS
-from lynkeus.layers import Format, LayerDescription, LayerRequest, Text, ToolRun
-from lynkeus.processes import Process, Work
+from lynkeus.layers import (
+    Format,
+    LayerDescription,
+    LayerRequest,
+    Point,
+    SeriesDescription,
+    SeriesRun,
+    Text,
+    ToolRun,
+)
+from lynkeus.processes import SERIES_OUTPUT, Process, Work
 from lynkeus.routes import MAX_TITLE_LENGTH
-from lynkeus.tools import run_tool
+from lynkeus.tools import run_series, run_tool
 from lynkeus.writing import LayerError
 
 _CHANNELS = ("HH", "HV", "VH", "VV")
@@ -50,6 +61,46 @@ class ToolInputs(Format):
     )
     title: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=MAX_TITLE_LENGTH)] = Field(
         description="Name of the result."
+    )
+
+    @field_validator("inputs")
+    @classmethod
+    def _gives_each_layer_once(cls, inputs: tuple[str, ...]) -> tuple[str, ...]:
+        if len(set(inputs)) != len(inputs):
+            raise ValueError("a layer is given more than once")
+        return inputs
+
+
+class SeriesInputs(Format):
+    """The inputs of the process of an analysis tool of the kind Series.
+
+    Attributes
+    ----------
+    inputs : tuple of str
+        The ``id`` of each input layer, in any order.
+    title : str
+        Name of the series.
+    point : Point or None
+        The point of the series, in degrees of longitude and latitude
+        (WGS 84). Without it the series is that of the whole area of the
+        layers.
+    """
+
+    inputs: tuple[Text, ...] = Field(
+        min_length=2,
+        max_length=MAX_SESSION_LAYERS,
+        title="Input layers",
+        description="The id of each input layer, in any order. A layer is given once.",
+    )
+    title: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=MAX_TITLE_LENGTH)] = Field(
+        description="Name of the series."
+    )
+    point: Point | None = Field(
+        default=None,
+        description=(
+            "The point of the series, in degrees of longitude and latitude (WGS 84). "
+            "Without it the series is that of the whole area of the layers."
+        ),
     )
 
     @field_validator("inputs")
@@ -103,6 +154,29 @@ def input_layers(inputs: ToolInputs) -> tuple[str, ...]:
     return inputs.inputs
 
 
+def run_series_analysis(tool: str, inputs: SeriesInputs, work: Work) -> SeriesDescription:
+    """Run an analysis tool of the kind Series on layers of the session for a job.
+
+    This is the function of the process of such a tool. The series receives the ``id`` that the work gives.
+    """
+    return run_series(
+        SeriesRun(tool=tool, inputs=inputs.inputs, title=inputs.title, point=inputs.point),
+        layers=work.layers,
+        series_id=work.layer_id,
+        report=work.report,
+    )
+
+
+def series_job_title(inputs: SeriesInputs) -> str:
+    """Return the name of a job of an analysis tool of the kind Series, which is the name of its series."""
+    return inputs.title
+
+
+def series_layers(inputs: SeriesInputs) -> tuple[str, ...]:
+    """Return the names of the layers that a job of an analysis tool of the kind Series reads."""
+    return inputs.inputs
+
+
 GET_LAYER = Process(
     id="get-layer",
     title="Get layer",
@@ -153,6 +227,48 @@ def tool_process(name: str, function: AnalysisFunction) -> Process[ToolInputs]:
     )
 
 
+def series_process(name: str, function: SeriesFunction) -> Process[SeriesInputs]:
+    """Return the process of an analysis tool of the kind Series.
+
+    Parameters
+    ----------
+    name : str
+        Name of the tool in ``lynkeus.analysis.SERIES_TOOLS``. It is the name
+        of the process, and with spaces for its hyphens it is the title of
+        the process.
+    function : callable
+        Function of the tool. The first paragraph of its documentation
+        string is the description of the process.
+
+    Raises
+    ------
+    ValueError
+        When the name holds other characters than lower-case letters, digits
+        and hyphens, or the function has no documentation string.
+    """
+    words = inspect.getdoc(function)
+    if not words:
+        raise ValueError(f"the function of the analysis tool {name} has no documentation string")
+    return Process(
+        id=name,
+        title=name.replace("-", " ").capitalize(),
+        description=" ".join(words.split("\n\n")[0].split()),
+        inputs=SeriesInputs,
+        run=partial(run_series_analysis, name),
+        job_title=series_job_title,
+        errors=(LayerError,),
+        layers=series_layers,
+        output=SERIES_OUTPUT,
+    )
+
+
 def processes() -> list[Process[Any]]:
-    """Return the processes that the server offers: ``get-layer``, then one for every tool of ``TOOLS``."""
-    return [GET_LAYER, *(tool_process(name, function) for name, function in TOOLS.items())]
+    """Return the processes that the server offers.
+
+    They are ``get-layer``, then one for every tool of ``TOOLS``, then one for every tool of ``SERIES_TOOLS``.
+    """
+    return [
+        GET_LAYER,
+        *(tool_process(name, function) for name, function in TOOLS.items()),
+        *(series_process(name, function) for name, function in SERIES_TOOLS.items()),
+    ]

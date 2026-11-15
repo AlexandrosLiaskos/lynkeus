@@ -1,0 +1,428 @@
+{
+ "cookbook_commit": "17b69c87a7320610740be7f2c7e605601cb7fe43",
+ "notebooks": {
+  "NISAR_GCOV_Time_Series_Example.ipynb": {
+   "sha256": "b5250ef5c9e9b644a39e4b6c394c7a2ee7b13faabaf5b29b7910e52f3fd25101",
+   "cells": 61
+  },
+  "NISAR_Pixel_Conversion.ipynb": {
+   "sha256": "95211d791f2bd6e2b314e1cb9c512704d915dec411cf21fc7312ffa0c7a47ae2",
+   "cells": 26
+  }
+ },
+ "executed": [
+  {
+   "notebook": "NISAR_GCOV_Time_Series_Example.ipynb",
+   "cell": 14,
+   "statement": "import re\nfrom urllib.parse import urlparse\nfrom datetime import datetime\nfrom pathlib import PurePosixPath\n\nNISAR_TS_RE = re.compile(r\"_(\\d{8}T\\d{6})_\")\n\ndef nisar_start_time_from_url(url: str) -> datetime:\n    path = urlparse(url).path\n    name = PurePosixPath(path).name\n    \n    m = NISAR_TS_RE.search(name)\n    if not m:\n        raise ValueError(f\"No NISAR timestamp found in: {url}\")\n    \n    return datetime.strptime(m.group(1), \"%Y%m%dT%H%M%S\")\n\ndts = [nisar_start_time_from_url(url) for url in hdf5_urls]\ndts"
+  },
+  {
+   "notebook": "NISAR_GCOV_Time_Series_Example.ipynb",
+   "cell": 16,
+   "statement": "dataarrays = [\n    tree.ds.assign_coords(time=dt).expand_dims(time=1)\n    for dt, tree in zip(dts, datatrees)\n]"
+  },
+  {
+   "notebook": "NISAR_GCOV_Time_Series_Example.ipynb",
+   "cell": 19,
+   "statement": "ts = xr.concat(hhhh_subset, dim=\"time\")"
+  },
+  {
+   "notebook": "NISAR_GCOV_Time_Series_Example.ipynb",
+   "cell": 31,
+   "statement": "import numpy as np"
+  },
+  {
+   "notebook": "NISAR_GCOV_Time_Series_Example.ipynb",
+   "cell": 31,
+   "statement": "ts_db = db = 10 * np.log10(ts.where(ts > 0))"
+  },
+  {
+   "notebook": "NISAR_GCOV_Time_Series_Example.ipynb",
+   "cell": 31,
+   "statement": "ts_db.load()"
+  },
+  {
+   "notebook": "NISAR_GCOV_Time_Series_Example.ipynb",
+   "cell": 35,
+   "statement": "ts_pwr = np.power(10.0, ts_db/10.0)"
+  },
+  {
+   "notebook": "NISAR_GCOV_Time_Series_Example.ipynb",
+   "cell": 47,
+   "statement": "means_pwr = np.mean(ts_pwr, axis=(1, 2))"
+  },
+  {
+   "notebook": "NISAR_GCOV_Time_Series_Example.ipynb",
+   "cell": 49,
+   "statement": "means_db = 10 * np.log10(means_pwr.where(means_pwr > 0))"
+  },
+  {
+   "notebook": "NISAR_Pixel_Conversion.ipynb",
+   "cell": 20,
+   "statement": "from pyproj import Transformer\nimport numpy as np\n\n#use transformer to convert ground truth data (EPSG 4326) coordinate system to GCOV coordinate system (EPSG 32637)\ntransformer = Transformer.from_crs(\n    \"EPSG:4326\",\n    f\"EPSG:{epsg}\",\n    always_xy=True\n)\n\nsite_pixels = {}\n\nfor name, (lat, lon) in sites.items():\n    #convert the site location into GCOV map coordinates\n    x_site, y_site = transformer.transform(lon, lat)\n\n    #find the nearest GCOV pixel by comparing with the grid coordinates\n    col = int(np.argmin(np.abs(x - x_site)))\n    row = int(np.argmin(np.abs(y - y_site)))\n\n    #store the GCOV pixel index for this site\n    site_pixels[name] = (row, col)\n\n#GCOV pixel indices corresponding to each site\nsite_pixels"
+  }
+ ],
+ "replaced_statements": [
+  {
+   "notebook": "NISAR_GCOV_Time_Series_Example.ipynb",
+   "cell": 12,
+   "as_written": "datatrees = [xr.open_datatree(f, engine=\"h5netcdf\", ..., group=group_path) for f in files]",
+   "executed": "rioxarray.open_rasterio(<GeoTIFF of the layer>, masked=False), band dropped, dimensions renamed to yCoordinates and xCoordinates, as one variable of a dataset",
+   "reason": "the inputs are the layers that the web service received through NASA Harmony, not HDF5 product files"
+  },
+  {
+   "notebook": "NISAR_GCOV_Time_Series_Example.ipynb",
+   "cell": 14,
+   "as_written": "hdf5_urls (addresses of the product files)",
+   "executed": "addresses made of the names of the product files of the layers",
+   "reason": "cell 14 reads the time from the name of the product file"
+  },
+  {
+   "notebook": "NISAR_GCOV_Time_Series_Example.ipynb",
+   "cell": 18,
+   "as_written": "hhhh = [da.HHHH.rio.write_crs(...) for da in dataarrays]; hhhh_subset = [da.rio.clip_box(**bbox4326) for da in hhhh]",
+   "executed": "hhhh_subset = [da[<variable>] for da in dataarrays]",
+   "reason": "NASA Harmony clipped the layers to the box of the pilot area already"
+  },
+  {
+   "notebook": "NISAR_GCOV_Time_Series_Example.ipynb",
+   "cell": 47,
+   "as_written": "means_pwr = np.mean(ts_pwr, axis=(1, 2))",
+   "executed": "for the coherence: means = np.mean(ts, axis=(1, 2)), on the cube of the coherence layers",
+   "reason": "the notebook has no series of coherence; the same statement is applied to the coherence magnitude, which needs no conversion"
+  },
+  {
+   "notebook": "NISAR_Pixel_Conversion.ipynb",
+   "cell": 15,
+   "as_written": "epsg, x, y read from the datasets projection, xCoordinates and yCoordinates of the HDF5 product file",
+   "executed": "epsg from the projection of the GeoTIFF; x and y from the coordinates of the centres of its cells",
+   "reason": "the inputs are GeoTIFF layers"
+  },
+  {
+   "notebook": "NISAR_Pixel_Conversion.ipynb",
+   "cell": 18,
+   "as_written": "sites = {... seven places at Lake Afrera ...}",
+   "executed": "sites = the five points of the pilot area, each as (latitude, longitude)",
+   "reason": "points of the pilot area"
+  }
+ ],
+ "added_statements": [
+  {
+   "statement": "int(np.isfinite(ts_db.isel(time=i).values).sum())",
+   "purpose": "number of cells that enter the mean of each date (backscatter)"
+  },
+  {
+   "statement": "int(np.isfinite(ts.isel(time=i).values).sum())",
+   "purpose": "number of cells that enter the mean of each pair (coherence)"
+  },
+  {
+   "statement": "ts_db.isel(time=i).values[row, col] and ts.isel(time=i).values[row, col]",
+   "purpose": "value at the pixel that cell 20 of the pixel notebook gives"
+  },
+  {
+   "statement": "da = da.astype(\"float64\") before cell 16, one date at a time",
+   "purpose": "the statements of the time series notebook on 64-bit numbers, to show what part of a difference is 32-bit arithmetic"
+  },
+  {
+   "statement": "np.nanmean of each coherence layer as 64-bit numbers",
+   "purpose": "the same for the coherence"
+  }
+ ],
+ "backscatter": {
+  "as_written_32_bit": {
+   "granules": [
+    "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001",
+    "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001",
+    "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001"
+   ],
+   "times": [
+    "2026-09-27T23:43:30.000000",
+    "2026-10-09T23:43:30.000000",
+    "2026-10-21T23:43:30.000000",
+    "2026-11-02T23:43:30.000000"
+   ],
+   "ts_dtype": "float32",
+   "ts_db_dtype": "float32",
+   "ts_pwr_dtype": "float32",
+   "means_db_dtype": "float32",
+   "epsg": 32619,
+   "means_db": [
+    "-4.315112113952637",
+    "-4.8325347900390625",
+    "-4.83304500579834",
+    "-4.736233711242676"
+   ],
+   "means_pwr": [
+    "0.3702446520328522",
+    "0.3286597728729248",
+    "0.32862114906311035",
+    "0.33602893352508545"
+   ],
+   "cells": [
+    14316415,
+    14316411,
+    14316413,
+    14316416
+   ],
+   "pixels": {
+    "p1": [
+     1706,
+     1693
+    ],
+    "p2": [
+     2835,
+     2486
+    ],
+    "p3": [
+     3352,
+     834
+    ],
+    "p4": [
+     632,
+     3352
+    ],
+    "p5": [
+     1590,
+     2738
+    ]
+   },
+   "at_points": {
+    "p1": [
+     "-7.610060691833496",
+     "-5.936009883880615",
+     "-7.364716053009033",
+     "-10.232091903686523"
+    ],
+    "p2": [
+     "-8.844058990478516",
+     "-12.453392028808594",
+     "-10.474213600158691",
+     "-14.201335906982422"
+    ],
+    "p3": [
+     "-7.128985404968262",
+     "-6.029024124145508",
+     "-8.95470142364502",
+     "-3.7509119510650635"
+    ],
+    "p4": [
+     "-16.068267822265625",
+     "-19.46735191345215",
+     "-16.98830795288086",
+     "-18.58491325378418"
+    ],
+    "p5": [
+     "8.019782066345215",
+     "4.8997087478637695",
+     "5.478684425354004",
+     "6.056764125823975"
+    ]
+   }
+  },
+  "in_64_bit_numbers_hh_0927": {
+   "granules": [
+    "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001"
+   ],
+   "times": [
+    "2026-09-27T23:43:30.000000"
+   ],
+   "ts_dtype": "float64",
+   "ts_db_dtype": "float64",
+   "ts_pwr_dtype": "float64",
+   "means_db_dtype": "float64",
+   "epsg": 32619,
+   "means_db": [
+    "-4.315111978395169"
+   ],
+   "means_pwr": [
+    "0.37024465889679464"
+   ],
+   "cells": [
+    14316415
+   ]
+  },
+  "in_64_bit_numbers_hh_1009": {
+   "granules": [
+    "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001"
+   ],
+   "times": [
+    "2026-10-09T23:43:30.000000"
+   ],
+   "ts_dtype": "float64",
+   "ts_db_dtype": "float64",
+   "ts_pwr_dtype": "float64",
+   "means_db_dtype": "float64",
+   "epsg": 32619,
+   "means_db": [
+    "-4.832534317123461"
+   ],
+   "means_pwr": [
+    "0.32865978611797814"
+   ],
+   "cells": [
+    14316411
+   ]
+  },
+  "in_64_bit_numbers_hh_1021": {
+   "granules": [
+    "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001"
+   ],
+   "times": [
+    "2026-10-21T23:43:30.000000"
+   ],
+   "ts_dtype": "float64",
+   "ts_db_dtype": "float64",
+   "ts_pwr_dtype": "float64",
+   "means_db_dtype": "float64",
+   "epsg": 32619,
+   "means_db": [
+    "-4.833044960998819"
+   ],
+   "means_pwr": [
+    "0.32862114454005925"
+   ],
+   "cells": [
+    14316413
+   ]
+  },
+  "in_64_bit_numbers_hh_1102": {
+   "granules": [
+    "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001"
+   ],
+   "times": [
+    "2026-11-02T23:43:30.000000"
+   ],
+   "ts_dtype": "float64",
+   "ts_db_dtype": "float64",
+   "ts_pwr_dtype": "float64",
+   "means_db_dtype": "float64",
+   "epsg": 32619,
+   "means_db": [
+    "-4.73623294188971"
+   ],
+   "means_pwr": [
+    "0.3360289584417228"
+   ],
+   "cells": [
+    14316416
+   ]
+  }
+ },
+ "coherence": {
+  "as_written_32_bit": {
+   "granules": [
+    "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001",
+    "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001",
+    "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001"
+   ],
+   "times": [
+    "2026-09-15T23:43:30.000000",
+    "2026-09-27T23:43:30.000000",
+    "2026-10-09T23:43:30.000000"
+   ],
+   "ts_dtype": "float32",
+   "means_dtype": "float32",
+   "epsg": 32619,
+   "means": [
+    "0.3193679451942444",
+    "0.3067074418067932",
+    "0.5062995553016663"
+   ],
+   "cells": [
+    3579092,
+    3579092,
+    3579092
+   ],
+   "pixels": {
+    "p1": [
+     852,
+     846
+    ],
+    "p2": [
+     1417,
+     1243
+    ],
+    "p3": [
+     1675,
+     417
+    ],
+    "p4": [
+     315,
+     1676
+    ],
+    "p5": [
+     794,
+     1369
+    ]
+   },
+   "at_points": {
+    "p1": [
+     "0.36974722146987915",
+     "0.3215233087539673",
+     "0.6482067108154297"
+    ],
+    "p2": [
+     "0.332411527633667",
+     "0.22321242094039917",
+     "0.5040841698646545"
+    ],
+    "p3": [
+     "0.14651069045066833",
+     "0.34934714436531067",
+     "0.5242114663124084"
+    ],
+    "p4": [
+     "0.28476378321647644",
+     "0.281078577041626",
+     "0.3181857764720917"
+    ],
+    "p5": [
+     "0.7239977121353149",
+     "0.7051378488540649",
+     "0.8103115558624268"
+    ]
+   },
+   "means_in_64_bit_numbers": [
+    "0.31936795717771277",
+    "0.3067074436510622",
+    "0.5062995480591644"
+   ]
+  }
+ },
+ "warnings": [
+  "DeprecationWarning: Setting the shape on a NumPy array has been deprecated in NumPy 2.5.\nAs an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+  "PendingDeprecationWarning: Use `@` matmul instead of `*` mul operator for matrix multiplication"
+ ],
+ "environment": {
+  "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+  "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+  "packages": {
+   "affine": "3.0.1",
+   "attrs": "26.1.0",
+   "certifi": "2026.10.23",
+   "click": "8.5.1",
+   "click-plugins": "1.1.1.2",
+   "cligj": "0.7.2",
+   "cloudpickle": "3.1.2",
+   "dask": "2025.12.0",
+   "fsspec": "2026.9.0",
+   "locket": "1.0.0",
+   "numpy": "2.5.3",
+   "packaging": "26.3",
+   "pandas": "3.1.1",
+   "partd": "1.4.2",
+   "pyparsing": "3.3.3",
+   "pyproj": "3.8.0",
+   "python-dateutil": "4.0.0",
+   "PyYAML": "6.0.3",
+   "rasterio": "1.4.4",
+   "rioxarray": "0.22.0",
+   "toolz": "1.2.0",
+   "tzdata": "2026.6",
+   "xarray": "2026.7.0"
+  },
+  "gdal_in_rasterio": "3.10.3",
+  "proj_in_pyproj": "9.8.1"
+ }
+}

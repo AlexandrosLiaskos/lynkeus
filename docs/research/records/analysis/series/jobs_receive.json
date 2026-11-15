@@ -1,0 +1,805 @@
+{
+ "started": "2026-11-15T10:43:22Z",
+ "phase": "receive",
+ "area": {
+  "west": -71.2,
+  "south": 42.6,
+  "east": -70.75,
+  "north": 42.95
+ },
+ "layers": {
+  "hh_0927": {
+   "process": "get-layer",
+   "inputs": {
+    "product": "GCOV",
+    "granule": "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001",
+    "layer": "HHHH",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T10:43:23Z",
+   "http_status": 201,
+   "job": "87100970089c07a3712a91b986a53e5c",
+   "job_title": "Backscatter HH of NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001",
+   "status_info": {
+    "processID": "get-layer",
+    "type": "process",
+    "jobID": "87100970089c07a3712a91b986a53e5c",
+    "title": "Backscatter HH of NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001",
+    "status": "successful",
+    "message": "The layer is ready.",
+    "created": "2026-11-15T10:43:23Z",
+    "started": "2026-11-15T10:43:23Z",
+    "finished": "2026-11-15T10:45:52Z",
+    "updated": "2026-11-15T10:45:52Z",
+    "progress": 100,
+    "inputs": {
+     "product": "GCOV",
+     "granule": "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001",
+     "layer": "HHHH",
+     "area": {
+      "west": -71.2,
+      "south": 42.6,
+      "east": -70.75,
+      "north": 42.95
+     }
+    },
+    "layer": "ab08c2a0ebb107e2238acde5fb8a329e",
+    "links": [
+     {
+      "href": "/api/jobs/87100970089c07a3712a91b986a53e5c",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/87100970089c07a3712a91b986a53e5c/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   },
+   "status": "successful",
+   "results_http_status": 200,
+   "result": {
+    "id": "ab08c2a0ebb107e2238acde5fb8a329e",
+    "title": "Backscatter HH, 27 Sep 2026",
+    "kind": "layer",
+    "url": "/files/ab08c2a0ebb107e2238acde5fb8a329e/gcov-hhhh-20260927.tif",
+    "quantity": "Radar backscatter gamma nought, HH, linear power",
+    "unit": "1",
+    "range": [
+     0.015601158142089844,
+     1.271820068359375
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-09-27"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": "HHHH",
+    "ends": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/ab08c2a0ebb107e2238acde5fb8a329e/gcov-hhhh-20260927.json"
+   }
+  },
+  "hh_1009": {
+   "process": "get-layer",
+   "inputs": {
+    "product": "GCOV",
+    "granule": "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001",
+    "layer": "HHHH",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T10:43:23Z",
+   "http_status": 201,
+   "job": "4efa0a459108fb2eef6d5a319b894acf",
+   "job_title": "Backscatter HH of NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001",
+   "status_info": {
+    "processID": "get-layer",
+    "type": "process",
+    "jobID": "4efa0a459108fb2eef6d5a319b894acf",
+    "title": "Backscatter HH of NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001",
+    "status": "successful",
+    "message": "The layer is ready.",
+    "created": "2026-11-15T10:43:23Z",
+    "started": "2026-11-15T10:43:23Z",
+    "finished": "2026-11-15T10:46:14Z",
+    "updated": "2026-11-15T10:46:14Z",
+    "progress": 100,
+    "inputs": {
+     "product": "GCOV",
+     "granule": "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001",
+     "layer": "HHHH",
+     "area": {
+      "west": -71.2,
+      "south": 42.6,
+      "east": -70.75,
+      "north": 42.95
+     }
+    },
+    "layer": "ffbfd0c3360f0be55fe4f6453412b415",
+    "links": [
+     {
+      "href": "/api/jobs/4efa0a459108fb2eef6d5a319b894acf",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/4efa0a459108fb2eef6d5a319b894acf/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   },
+   "status": "successful",
+   "results_http_status": 200,
+   "result": {
+    "id": "ffbfd0c3360f0be55fe4f6453412b415",
+    "title": "Backscatter HH, 9 Oct 2026",
+    "kind": "layer",
+    "url": "/files/ffbfd0c3360f0be55fe4f6453412b415/gcov-hhhh-20261009.tif",
+    "quantity": "Radar backscatter gamma nought, HH, linear power",
+    "unit": "1",
+    "range": [
+     0.010074853897094727,
+     1.171112060546875
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-10-09"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": "HHHH",
+    "ends": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/ffbfd0c3360f0be55fe4f6453412b415/gcov-hhhh-20261009.json"
+   }
+  },
+  "hh_1021": {
+   "process": "get-layer",
+   "inputs": {
+    "product": "GCOV",
+    "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "layer": "HHHH",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T10:43:23Z",
+   "http_status": 201,
+   "job": "292b778e0b6a10e45b45c6d817c0dd83",
+   "job_title": "Backscatter HH of NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+   "status_info": {
+    "processID": "get-layer",
+    "type": "process",
+    "jobID": "292b778e0b6a10e45b45c6d817c0dd83",
+    "title": "Backscatter HH of NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "status": "successful",
+    "message": "The layer is ready.",
+    "created": "2026-11-15T10:43:23Z",
+    "started": "2026-11-15T10:45:52Z",
+    "finished": "2026-11-15T10:48:30Z",
+    "updated": "2026-11-15T10:48:30Z",
+    "progress": 100,
+    "inputs": {
+     "product": "GCOV",
+     "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+     "layer": "HHHH",
+     "area": {
+      "west": -71.2,
+      "south": 42.6,
+      "east": -70.75,
+      "north": 42.95
+     }
+    },
+    "layer": "e7045ec025f8a7a2397fca7a99902276",
+    "links": [
+     {
+      "href": "/api/jobs/292b778e0b6a10e45b45c6d817c0dd83",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/292b778e0b6a10e45b45c6d817c0dd83/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   },
+   "status": "successful",
+   "results_http_status": 200,
+   "result": {
+    "id": "e7045ec025f8a7a2397fca7a99902276",
+    "title": "Backscatter HH, 21 Oct 2026",
+    "kind": "layer",
+    "url": "/files/e7045ec025f8a7a2397fca7a99902276/gcov-hhhh-20261021.tif",
+    "quantity": "Radar backscatter gamma nought, HH, linear power",
+    "unit": "1",
+    "range": [
+     0.011646270751953125,
+     1.185333251953125
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "HHHH",
+    "ends": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/e7045ec025f8a7a2397fca7a99902276/gcov-hhhh-20261021.json"
+   }
+  },
+  "hh_1102": {
+   "process": "get-layer",
+   "inputs": {
+    "product": "GCOV",
+    "granule": "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001",
+    "layer": "HHHH",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T10:43:23Z",
+   "http_status": 201,
+   "job": "ca007311af6d772cd96afe10b2790055",
+   "job_title": "Backscatter HH of NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001",
+   "status_info": {
+    "processID": "get-layer",
+    "type": "process",
+    "jobID": "ca007311af6d772cd96afe10b2790055",
+    "title": "Backscatter HH of NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001",
+    "status": "successful",
+    "message": "The layer is ready.",
+    "created": "2026-11-15T10:43:23Z",
+    "started": "2026-11-15T10:46:14Z",
+    "finished": "2026-11-15T10:48:45Z",
+    "updated": "2026-11-15T10:48:45Z",
+    "progress": 100,
+    "inputs": {
+     "product": "GCOV",
+     "granule": "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001",
+     "layer": "HHHH",
+     "area": {
+      "west": -71.2,
+      "south": 42.6,
+      "east": -70.75,
+      "north": 42.95
+     }
+    },
+    "layer": "e7084528cd2fbdabe0da018099e8ba69",
+    "links": [
+     {
+      "href": "/api/jobs/ca007311af6d772cd96afe10b2790055",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/ca007311af6d772cd96afe10b2790055/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   },
+   "status": "successful",
+   "results_http_status": 200,
+   "result": {
+    "id": "e7084528cd2fbdabe0da018099e8ba69",
+    "title": "Backscatter HH, 2 Nov 2026",
+    "kind": "layer",
+    "url": "/files/e7084528cd2fbdabe0da018099e8ba69/gcov-hhhh-20261102.tif",
+    "quantity": "Radar backscatter gamma nought, HH, linear power",
+    "unit": "1",
+    "range": [
+     0.009898543357849121,
+     1.214141845703125
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-11-02"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "HHHH",
+    "ends": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/e7084528cd2fbdabe0da018099e8ba69/gcov-hhhh-20261102.json"
+   }
+  },
+  "coh_0915_0927": {
+   "process": "get-layer",
+   "inputs": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001",
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T10:48:46Z",
+   "http_status": 201,
+   "job": "eb5a1bb74e68884104018cb793c2ea3e",
+   "job_title": "Coherence HH, 20 m of NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001",
+   "status_info": {
+    "processID": "get-layer",
+    "type": "process",
+    "jobID": "eb5a1bb74e68884104018cb793c2ea3e",
+    "title": "Coherence HH, 20 m of NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001",
+    "status": "successful",
+    "message": "The layer is ready.",
+    "created": "2026-11-15T10:48:46Z",
+    "started": "2026-11-15T10:48:46Z",
+    "finished": "2026-11-15T10:49:46Z",
+    "updated": "2026-11-15T10:49:46Z",
+    "progress": 100,
+    "inputs": {
+     "product": "GUNW",
+     "granule": "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001",
+     "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+     "area": {
+      "west": -71.2,
+      "south": 42.6,
+      "east": -70.75,
+      "north": 42.95
+     }
+    },
+    "layer": "8f9eb9a99bf63efa50af31a061da3265",
+    "links": [
+     {
+      "href": "/api/jobs/eb5a1bb74e68884104018cb793c2ea3e",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/eb5a1bb74e68884104018cb793c2ea3e/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   },
+   "status": "successful",
+   "results_http_status": 200,
+   "result": {
+    "id": "8f9eb9a99bf63efa50af31a061da3265",
+    "title": "Coherence HH, 20 m, 15 Sep 2026 to 27 Sep 2026",
+    "kind": "layer",
+    "url": "/files/8f9eb9a99bf63efa50af31a061da3265/gunw-wrappedinterferogram-hh-coherencemagnitude-20260915-20260927.tif",
+    "quantity": "Interferometric coherence magnitude, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-09-15",
+     "2026-09-27"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "ends": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/8f9eb9a99bf63efa50af31a061da3265/gunw-wrappedinterferogram-hh-coherencemagnitude-20260915-20260927.json"
+   }
+  },
+  "coh_0927_1009": {
+   "process": "get-layer",
+   "inputs": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001",
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T10:48:46Z",
+   "http_status": 201,
+   "job": "974c4bbb5309941ccbef95ad08323409",
+   "job_title": "Coherence HH, 20 m of NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001",
+   "status_info": {
+    "processID": "get-layer",
+    "type": "process",
+    "jobID": "974c4bbb5309941ccbef95ad08323409",
+    "title": "Coherence HH, 20 m of NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001",
+    "status": "successful",
+    "message": "The layer is ready.",
+    "created": "2026-11-15T10:48:46Z",
+    "started": "2026-11-15T10:48:46Z",
+    "finished": "2026-11-15T10:49:54Z",
+    "updated": "2026-11-15T10:49:54Z",
+    "progress": 100,
+    "inputs": {
+     "product": "GUNW",
+     "granule": "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001",
+     "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+     "area": {
+      "west": -71.2,
+      "south": 42.6,
+      "east": -70.75,
+      "north": 42.95
+     }
+    },
+    "layer": "2df74db4382a6aeed2164231bcc9d0e8",
+    "links": [
+     {
+      "href": "/api/jobs/974c4bbb5309941ccbef95ad08323409",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/974c4bbb5309941ccbef95ad08323409/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   },
+   "status": "successful",
+   "results_http_status": 200,
+   "result": {
+    "id": "2df74db4382a6aeed2164231bcc9d0e8",
+    "title": "Coherence HH, 20 m, 27 Sep 2026 to 9 Oct 2026",
+    "kind": "layer",
+    "url": "/files/2df74db4382a6aeed2164231bcc9d0e8/gunw-wrappedinterferogram-hh-coherencemagnitude-20260927-20261009.tif",
+    "quantity": "Interferometric coherence magnitude, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-09-27",
+     "2026-10-09"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "ends": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/2df74db4382a6aeed2164231bcc9d0e8/gunw-wrappedinterferogram-hh-coherencemagnitude-20260927-20261009.json"
+   }
+  },
+  "coh_1009_1021": {
+   "process": "get-layer",
+   "inputs": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T10:48:46Z",
+   "http_status": 201,
+   "job": "871284b28c3bd700b4db8a253f58c88f",
+   "job_title": "Coherence HH, 20 m of NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+   "status_info": {
+    "processID": "get-layer",
+    "type": "process",
+    "jobID": "871284b28c3bd700b4db8a253f58c88f",
+    "title": "Coherence HH, 20 m of NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "status": "successful",
+    "message": "The layer is ready.",
+    "created": "2026-11-15T10:48:46Z",
+    "started": "2026-11-15T10:49:46Z",
+    "finished": "2026-11-15T10:50:36Z",
+    "updated": "2026-11-15T10:50:36Z",
+    "progress": 100,
+    "inputs": {
+     "product": "GUNW",
+     "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+     "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+     "area": {
+      "west": -71.2,
+      "south": 42.6,
+      "east": -70.75,
+      "north": 42.95
+     }
+    },
+    "layer": "d34069fb70f91b284adc41acab5e765e",
+    "links": [
+     {
+      "href": "/api/jobs/871284b28c3bd700b4db8a253f58c88f",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/871284b28c3bd700b4db8a253f58c88f/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   },
+   "status": "successful",
+   "results_http_status": 200,
+   "result": {
+    "id": "d34069fb70f91b284adc41acab5e765e",
+    "title": "Coherence HH, 20 m, 9 Oct 2026 to 21 Oct 2026",
+    "kind": "layer",
+    "url": "/files/d34069fb70f91b284adc41acab5e765e/gunw-wrappedinterferogram-hh-coherencemagnitude-20261009-20261021.tif",
+    "quantity": "Interferometric coherence magnitude, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-10-09",
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "ends": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/d34069fb70f91b284adc41acab5e765e/gunw-wrappedinterferogram-hh-coherencemagnitude-20261009-20261021.json"
+   }
+  }
+ },
+ "series": {},
+ "refusals": {},
+ "notes": [],
+ "signed_in": true,
+ "layers_of_the_session": {
+  "layers": [
+   {
+    "layer": {
+     "id": "d34069fb70f91b284adc41acab5e765e",
+     "title": "Coherence HH, 20 m, 9 Oct 2026 to 21 Oct 2026",
+     "kind": "layer",
+     "url": "/files/d34069fb70f91b284adc41acab5e765e/gunw-wrappedinterferogram-hh-coherencemagnitude-20261009-20261021.tif",
+     "quantity": "Interferometric coherence magnitude, HH",
+     "unit": "1",
+     "range": [
+      0.0,
+      1.0
+     ],
+     "colours": "grey",
+     "dates": [
+      "2026-10-09",
+      "2026-10-21"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+     "ends": null,
+     "program": "Lynkeus 0.1.0",
+     "method": null,
+     "record": "/files/d34069fb70f91b284adc41acab5e765e/gunw-wrappedinterferogram-hh-coherencemagnitude-20261009-20261021.json"
+    },
+    "size": 15199116,
+    "created": "2026-11-15T10:50:36Z"
+   },
+   {
+    "layer": {
+     "id": "2df74db4382a6aeed2164231bcc9d0e8",
+     "title": "Coherence HH, 20 m, 27 Sep 2026 to 9 Oct 2026",
+     "kind": "layer",
+     "url": "/files/2df74db4382a6aeed2164231bcc9d0e8/gunw-wrappedinterferogram-hh-coherencemagnitude-20260927-20261009.tif",
+     "quantity": "Interferometric coherence magnitude, HH",
+     "unit": "1",
+     "range": [
+      0.0,
+      1.0
+     ],
+     "colours": "grey",
+     "dates": [
+      "2026-09-27",
+      "2026-10-09"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+     ],
+     "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+     "ends": null,
+     "program": "Lynkeus 0.1.0",
+     "method": null,
+     "record": "/files/2df74db4382a6aeed2164231bcc9d0e8/gunw-wrappedinterferogram-hh-coherencemagnitude-20260927-20261009.json"
+    },
+    "size": 15018056,
+    "created": "2026-11-15T10:49:54Z"
+   },
+   {
+    "layer": {
+     "id": "8f9eb9a99bf63efa50af31a061da3265",
+     "title": "Coherence HH, 20 m, 15 Sep 2026 to 27 Sep 2026",
+     "kind": "layer",
+     "url": "/files/8f9eb9a99bf63efa50af31a061da3265/gunw-wrappedinterferogram-hh-coherencemagnitude-20260915-20260927.tif",
+     "quantity": "Interferometric coherence magnitude, HH",
+     "unit": "1",
+     "range": [
+      0.0,
+      1.0
+     ],
+     "colours": "grey",
+     "dates": [
+      "2026-09-15",
+      "2026-09-27"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5"
+     ],
+     "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+     "ends": null,
+     "program": "Lynkeus 0.1.0",
+     "method": null,
+     "record": "/files/8f9eb9a99bf63efa50af31a061da3265/gunw-wrappedinterferogram-hh-coherencemagnitude-20260915-20260927.json"
+    },
+    "size": 15023186,
+    "created": "2026-11-15T10:49:46Z"
+   },
+   {
+    "layer": {
+     "id": "e7084528cd2fbdabe0da018099e8ba69",
+     "title": "Backscatter HH, 2 Nov 2026",
+     "kind": "layer",
+     "url": "/files/e7084528cd2fbdabe0da018099e8ba69/gcov-hhhh-20261102.tif",
+     "quantity": "Radar backscatter gamma nought, HH, linear power",
+     "unit": "1",
+     "range": [
+      0.009898543357849121,
+      1.214141845703125
+     ],
+     "colours": "grey",
+     "dates": [
+      "2026-11-02"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "HHHH",
+     "ends": null,
+     "program": "Lynkeus 0.1.0",
+     "method": null,
+     "record": "/files/e7084528cd2fbdabe0da018099e8ba69/gcov-hhhh-20261102.json"
+    },
+    "size": 52025309,
+    "created": "2026-11-15T10:48:45Z"
+   },
+   {
+    "layer": {
+     "id": "e7045ec025f8a7a2397fca7a99902276",
+     "title": "Backscatter HH, 21 Oct 2026",
+     "kind": "layer",
+     "url": "/files/e7045ec025f8a7a2397fca7a99902276/gcov-hhhh-20261021.tif",
+     "quantity": "Radar backscatter gamma nought, HH, linear power",
+     "unit": "1",
+     "range": [
+      0.011646270751953125,
+      1.185333251953125
+     ],
+     "colours": "grey",
+     "dates": [
+      "2026-10-21"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "HHHH",
+     "ends": null,
+     "program": "Lynkeus 0.1.0",
+     "method": null,
+     "record": "/files/e7045ec025f8a7a2397fca7a99902276/gcov-hhhh-20261021.json"
+    },
+    "size": 52051748,
+    "created": "2026-11-15T10:48:30Z"
+   },
+   {
+    "layer": {
+     "id": "ffbfd0c3360f0be55fe4f6453412b415",
+     "title": "Backscatter HH, 9 Oct 2026",
+     "kind": "layer",
+     "url": "/files/ffbfd0c3360f0be55fe4f6453412b415/gcov-hhhh-20261009.tif",
+     "quantity": "Radar backscatter gamma nought, HH, linear power",
+     "unit": "1",
+     "range": [
+      0.010074853897094727,
+      1.171112060546875
+     ],
+     "colours": "grey",
+     "dates": [
+      "2026-10-09"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+     ],
+     "layer": "HHHH",
+     "ends": null,
+     "program": "Lynkeus 0.1.0",
+     "method": null,
+     "record": "/files/ffbfd0c3360f0be55fe4f6453412b415/gcov-hhhh-20261009.json"
+    },
+    "size": 52048017,
+    "created": "2026-11-15T10:46:14Z"
+   },
+   {
+    "layer": {
+     "id": "ab08c2a0ebb107e2238acde5fb8a329e",
+     "title": "Backscatter HH, 27 Sep 2026",
+     "kind": "layer",
+     "url": "/files/ab08c2a0ebb107e2238acde5fb8a329e/gcov-hhhh-20260927.tif",
+     "quantity": "Radar backscatter gamma nought, HH, linear power",
+     "unit": "1",
+     "range": [
+      0.015601158142089844,
+      1.271820068359375
+     ],
+     "colours": "grey",
+     "dates": [
+      "2026-09-27"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5"
+     ],
+     "layer": "HHHH",
+     "ends": null,
+     "program": "Lynkeus 0.1.0",
+     "method": null,
+     "record": "/files/ab08c2a0ebb107e2238acde5fb8a329e/gcov-hhhh-20260927.json"
+    },
+    "size": 52105700,
+    "created": "2026-11-15T10:45:52Z"
+   }
+  ]
+ },
+ "sign_out_http_status": 204,
+ "ended": "2026-11-15T10:50:37Z"
+}
