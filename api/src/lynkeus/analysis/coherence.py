@@ -78,7 +78,9 @@ def coherence_state(arrays: Sequence[NDArray[np.float32]], layers: Sequence[Laye
         If the input is not one layer ``coherenceMagnitude`` of a GUNW product (see ``check_inputs``), holds
         no value, or holds a value outside 0 to 1.
     """
-    check_inputs(arrays, layers, count=1, product="GUNW", names=_COHERENCE, reads=_READS, dates=2)
+    check_inputs(
+        arrays, layers, count=1, product="GUNW", names=_COHERENCE, reads="the layer coherenceMagnitude", dates=2
+    )
     coherence = arrays[0]
     valid = coherence[~np.isnan(coherence)]
     if valid.size == 0:
