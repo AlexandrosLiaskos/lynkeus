@@ -192,6 +192,10 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 
 - The scale bar of the map and its button in the View tab. The status bar shows the scale.
 - The footer of the application page.
+- The buttons Change and Thematic map of Surface displacement and Thematic map of Coherence and Soil moisture
+  in the Analysis tab, because no published method gives their results: the phase of each GUNW pair is
+  measured from its own arbitrary reference, so two pairs cannot be subtracted, and no algorithm of the NISAR
+  science team derives classes from coherence, displacement or soil moisture.
 
 ### Fixed
 
