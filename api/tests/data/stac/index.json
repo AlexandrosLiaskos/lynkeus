@@ -3,6 +3,7 @@
   "https://stac-extensions.github.io/projection/v2.0.0/schema.json": "projection.json",
   "https://stac-extensions.github.io/raster/v2.0.0/schema.json": "raster.json",
   "https://stac-extensions.github.io/processing/v1.2.0/schema.json": "processing.json",
+  "https://stac-extensions.github.io/classification/v2.0.0/schema.json": "classification.json",
   "https://geojson.org/schema/Feature.json": "geojson-feature.json",
   "https://geojson.org/schema/Geometry.json": "geojson-geometry.json",
   "https://schemas.stacspec.org/v1.1.0/item-spec/json-schema/common.json": "stac-common.json",

@@ -34,8 +34,18 @@ from rasterio.warp import transform
 from rio_cogeo.cogeo import cog_validate
 
 from lynkeus import __version__
-from lynkeus.layers import LayerDescription
-from lynkeus.writing import Grid, LayerError, grid_of, legend_range, read_layer, statistics_of, write_layer
+from lynkeus.layers import LayerClass, LayerDescription
+from lynkeus.writing import (
+    CLASSIFICATION_EXTENSION,
+    STAC_EXTENSIONS,
+    Grid,
+    LayerError,
+    grid_of,
+    legend_range,
+    read_layer,
+    statistics_of,
+    write_layer,
+)
 from tests.records import LAYERS, stac_faults
 
 BACKSCATTER = LAYERS / "gcov-hhhh-20261021.tif"
@@ -158,6 +168,92 @@ def test_reduced_copy_of_classes_takes_the_most_frequent_value(tmp_path: Path) -
     same = (parts == parts[:, :, :1]).all(axis=2)
     assert same.sum() > 100_000
     assert np.array_equal(copy[same], parts[:, :, 0][same])
+
+
+CLASSES = (
+    LayerClass(value=1, name="Not inundated", colour="#ececee"),
+    LayerClass(value=2, name="Open water", colour="#151b73"),
+    LayerClass(value=3, name="Inundated vegetation", colour="#42e9f5"),
+)
+
+
+def write_classes(folder: Path, **changes: Any) -> tuple[LayerDescription, NDArray[np.float32]]:
+    """Write a result of the three classes on the grid of the backscatter of 21 October 2026.
+
+    The backscatter is cut into three classes at 0.05 and 0.2; a cell above 1 holds no data.
+    """
+    power, grid = read_layer(BACKSCATTER)
+    values = (np.digitize(power, [0.05, 0.2]) + 1).astype(np.float32)
+    values[power > 1] = np.nan
+    fields: dict[str, Any] = {
+        "kind": "result",
+        "layer": None,
+        "name": "backscatter-map",
+        "title": "Wetland inundation, 21 Oct 2026",
+        "quantity": "Wetland inundation class",
+        "legend": (1.0, 3.0),
+        "colours": "classes",
+        "method": "Reference of the method",
+        "level": None,
+        "classes": CLASSES,
+        "averaged": False,
+    }
+    return write(folder, values, grid, **{**fields, **changes}), values
+
+
+def test_result_of_classes_carries_its_table_in_its_description_its_record_and_its_file(tmp_path: Path) -> None:
+    description, values = write_classes(tmp_path)
+    assert {1.0, 2.0, 3.0} <= set(np.unique(values[~np.isnan(values)]))
+    assert np.isnan(values).any()
+    assert (description.classes, description.range, description.colours) == (CLASSES, (1.0, 3.0), "classes")
+    record = json.loads((tmp_path / "backscatter-map.json").read_text(encoding="utf-8"))
+    assert stac_faults(record) == []
+    assert record["stac_extensions"] == [*STAC_EXTENSIONS, CLASSIFICATION_EXTENSION]
+    assert record["assets"]["data"]["classification:classes"] == [
+        {"value": 1, "name": "not-inundated", "title": "Not inundated", "color_hint": "ececee"},
+        {"value": 2, "name": "open-water", "title": "Open water", "color_hint": "151b73"},
+        {"value": 3, "name": "inundated-vegetation", "title": "Inundated vegetation", "color_hint": "42e9f5"},
+    ]
+    # A class that the extension does not accept is found by the check of the record.
+    broken = json.loads(json.dumps(record))
+    broken["assets"]["data"]["classification:classes"][0]["name"] = "Not inundated"
+    assert stac_faults(broken)
+    with rasterio.open(tmp_path / "backscatter-map.tif") as source:
+        assert source.tags()["classes"] == (
+            "1: Not inundated (#ececee); 2: Open water (#151b73); 3: Inundated vegetation (#42e9f5)"
+        )
+    written, _ = read_layer(tmp_path / "backscatter-map.tif")
+    assert written.tobytes() == values.tobytes()
+
+
+def test_reduced_copy_of_a_result_of_classes_holds_classes_and_takes_the_most_frequent_one(tmp_path: Path) -> None:
+    _, values = write_classes(tmp_path)
+    copy = reduced_copy(tmp_path / "backscatter-map.tif")
+    assert copy.shape == (280, 300)
+    assert set(np.unique(copy[~np.isnan(copy)])) == {1.0, 2.0, 3.0}
+    parts = blocks(values)
+    counted = np.stack([(parts == value).sum(axis=2) for value in (1, 2, 3)], axis=2)
+    most = counted.max(axis=2)
+    # Where one class fills more cells of a block of two by two than any other, the reduced copy holds it.
+    alone = (most >= 3) | ((most == 2) & ((counted == 2).sum(axis=2) == 1))
+    assert alone.sum() > 50_000
+    assert np.array_equal(copy[alone], (counted.argmax(axis=2) + 1).astype(np.float32)[alone])
+
+
+def test_layer_without_classes_has_the_record_that_it_had(tmp_path: Path) -> None:
+    description = write(tmp_path, *read_layer(BACKSCATTER))
+    record = json.loads((tmp_path / "gcov-hhhh-20261021.json").read_text(encoding="utf-8"))
+    assert description.classes is None
+    assert record["stac_extensions"] == list(STAC_EXTENSIONS)
+    assert "classification:classes" not in json.dumps(record)
+    with rasterio.open(tmp_path / "gcov-hhhh-20261021.tif") as source:
+        assert "classes" not in source.tags()
+
+
+def test_classes_are_not_reduced_by_averaging(tmp_path: Path) -> None:
+    with pytest.raises(ValueError, match="most frequent value, not by averaging"):
+        write_classes(tmp_path, averaged=True)
+    assert list(tmp_path.iterdir()) == []
 
 
 def test_file_carries_what_a_gis_program_reads(tmp_path: Path) -> None:
