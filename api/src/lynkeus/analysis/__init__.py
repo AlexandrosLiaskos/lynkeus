@@ -18,7 +18,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 from lynkeus.analysis.backscatter import backscatter_change, backscatter_state
-from lynkeus.analysis.coherence import coherence_state
+from lynkeus.analysis.coherence import coherence_change, coherence_state
 from lynkeus.layers import AnalysisResult, LayerDescription
 
 type AnalysisFunction = Callable[[Sequence[NDArray[np.float32]], Sequence[LayerDescription]], AnalysisResult]
@@ -27,4 +27,5 @@ TOOLS: dict[str, AnalysisFunction] = {
     "backscatter-state": backscatter_state,
     "backscatter-change": backscatter_change,
     "coherence-state": coherence_state,
+    "coherence-change": coherence_change,
 }
