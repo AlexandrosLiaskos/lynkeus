@@ -17,11 +17,9 @@ import { report } from "../shared/messages/messages";
 import { Notice } from "../shared/notice/Notice";
 import { setPaneOpen } from "../shared/panes";
 import { PropertyList } from "../shared/properties/PropertyList";
-import { Section } from "../shared/section/Section";
 import { useStore } from "../shared/store";
 import { ToolPane, type ToolPaneRun } from "../shared/toolpane/ToolPane";
-import { Marked, plain } from "./Marked";
-import { copiesOf, readingOf, referenceOf, summaryOf } from "./methods";
+import { rowOf } from "./methods";
 import { METHODS } from "./methodSheets";
 import {
   accepted,
@@ -38,40 +36,31 @@ import {
   type FinishedTool,
 } from "./tools";
 
-/**
- * The explanations of the form and of its titles. Each one shows from the button beside its title. They state
- * how the form works; what a tool computes and how its result is read stands in the section Method, in the
- * words of the method sheet.
- */
+/** The explanations of the titles of the form. Each one shows from the button beside its title. */
 export const ABOUT = {
-  tool: "The tool computes its result on the server of Lynkeus, as a job, from layers that the session has received. The Catalog pane lists the job in its section Jobs and the result in its section Layers. The section Method gives the reference of the method and how to read the result.",
-  input:
-    "The list holds the layers of the session that the tool reads. A layer is received from a NISAR product with Get layer.",
-  first:
-    "The list holds the layers of the session that the tool reads. The tool takes the layer of the earlier date first, in whichever of the two fields it stands.",
-  second:
-    "The list holds the layers of the same term as the first layer, from products of the same instrument, track, direction and frame. The server refuses two layers that are not on the same grid.",
-  title:
-    "The name under which the Catalog pane and the Contents pane list the result, of 1 to 200 characters. The form proposes a name from the input layers until the name is changed.",
-  method: "What the method sheet of the tool states. The button under the list opens the sheet in the Help tab.",
+  layer: "A layer that this session received with Get layer.",
+  pair: "The same layer of two dates of one track and frame. The earlier date is taken first.",
+  title: "The name of the result in the Catalog and Contents panes.",
 } as const;
 
-/** The layer that each tool reads, by the name that the Get layer form gives to it, in one sentence. */
+/** The layer to get for each tool, by the name that the Get layer form gives to it. */
 export const RECEIVE: Record<FinishedTool, string> = {
-  "backscatter-state": "Receive a layer Backscatter of a GCOV product with Get layer.",
-  "backscatter-change":
-    "Receive a layer Backscatter of two GCOV products of the same track, direction and frame with Get layer.",
-  "coherence-state": "Receive a layer Coherence of a GUNW product with Get layer.",
+  "backscatter-state": "Get a Backscatter layer of a GCOV product.",
+  "backscatter-change": "Get the same Backscatter layer of two GCOV products of one track and frame.",
+  "coherence-state": "Get a Coherence layer of a GUNW product.",
 };
 
+/** What the form states when no layer of the session can stand beside the first layer of Backscatter, Change. */
+export const GET_PARTNER = `${NO_PARTNER} Get the same layer of another date of the same track and frame.`;
+
 /**
- * State that layers of the session do not record which layer of their product they are, and how they become
- * usable, in the words with which the server refuses such a layer.
+ * State that layers of the session cannot be used, and how they become usable. They are the layers whose
+ * description does not record which layer of their product they are; the server refuses such a layer.
  */
 export function unnamedSentence(count: number): string {
   return count === 1
-    ? "1 layer of the session does not record which layer of its product it is, so the tool does not read it. Receive it again with Get layer."
-    : `${String(count)} layers of the session do not record which layer of their product they are, so the tool does not read them. Receive them again with Get layer.`;
+    ? "1 older layer of this session cannot be used. Get it again with Get layer."
+    : `${String(count)} older layers of this session cannot be used. Get them again with Get layer.`;
 }
 
 /** The job that the last press of the run button started. */
@@ -132,11 +121,11 @@ export function runOf(
   }
   const place =
     typeof job.layer === "string" && onMap.has(job.layer)
-      ? "It is on the map and in the section Layers of the Catalog pane."
-      : "The section Layers of the Catalog pane lists it.";
+      ? "It is on the map and under Layers in the Catalog pane."
+      : "It is under Layers in the Catalog pane.";
   return {
     state: "success",
-    text: `The result was computed. ${place}`,
+    text: `The result is ready. ${place}`,
     action: { label: "Show the Catalog pane", onClick: showCatalog },
     details,
   };
@@ -189,55 +178,20 @@ function LayerField({ id, title, about, layers, chosen, fault, inactive = false,
   );
 }
 
-/** Open the method sheet of a tool in the page Methods of the Help tab. */
-function showSheet(tool: FinishedTool): void {
+/** Open the page Methods of the Help tab at a tool. */
+function showMethod(tool: FinishedTool): void {
   methodsStore.set({ open: true, tool });
 }
 
 /**
- * What the method sheet of a tool states, in the form of the tool: the result, with the first sentences on how
- * to read it behind the "i", the reference of the method, what the tool does with the mask of the product, and
- * what the map shows of the result when it is zoomed out.
- */
-export function MethodSummary({ tool }: { tool: FinishedTool }) {
-  const method = METHODS[tool];
-  return (
-    <Section title="Method" info={ABOUT.method}>
-      <PropertyList
-        groups={[
-          {
-            rows: [
-              {
-                name: "Result",
-                value: <Marked text={summaryOf(method, "Result")} />,
-                info: plain(readingOf(method)),
-              },
-              { name: "Reference", value: <Marked text={referenceOf(method)} /> },
-              { name: "Mask", value: <Marked text={method.mask} /> },
-              { name: "Reduced copies", value: <Marked text={copiesOf(method)} /> },
-            ],
-          },
-        ]}
-      />
-      <button
-        type="button"
-        className="usa-button usa-button--unstyled analysis-sheet-link"
-        onClick={() => showSheet(tool)}
-      >
-        Show the method sheet
-      </button>
-    </Section>
-  );
-}
-
-/**
- * The form of a finished analysis tool, in the tool pane: one form for all tools. The visitor chooses the input
- * layer among the layers of the session that the tool reads, or the two layers of Backscatter, Change, and the
- * name of the result, for which the form proposes one. While a choice is missing or impossible, the foot of the
- * pane states the first fault, and a field that was left states its own, with the shared `FieldError`. Without a
- * layer that the tool reads, the pane names the layer to receive and offers the Get layer form, and its foot
- * states why the run button is inactive. The run button starts the tool as a job of
- * the server; the Catalog pane lists the job and its result, and the foot shows the progress and the outcome.
+ * The form of a finished analysis tool, in the tool pane: one form for all tools. It shows the field of the
+ * layer, or the two fields of Backscatter, Change with the two dates in their order, the name of the result,
+ * for which the form proposes one, and the box that adds the result to the map. The "i" of the pane states what
+ * the tool shows, and the link Method at the foot opens the page Methods at the tool. While a choice is missing
+ * or impossible, the foot of the pane states the first fault, and a field that was left states its own, with the
+ * shared `FieldError`. Without a layer that the tool reads, the pane names the layer to get and offers the Get
+ * layer form. The run button starts the tool as a job of the server, and the foot shows the progress and the
+ * outcome.
  */
 export function ToolForm({ tool }: { tool: FinishedTool }) {
   const id = useId();
@@ -305,7 +259,8 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
     <ToolPane
       id={tool}
       title={method.title}
-      info={ABOUT.tool}
+      info={rowOf(method, "What it shows")}
+      secondary={{ label: "Method", onClick: () => showMethod(tool) }}
       onRun={start}
       ready={inputs !== null}
       missing={missing ?? undefined}
@@ -314,7 +269,7 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
     >
       {offered.length === 0 ? (
         <EmptyState
-          title="No input layer"
+          title="No layer to use"
           text={RECEIVE[tool]}
           action={{ label: "Get layer", onClick: openGetLayer }}
         />
@@ -322,8 +277,8 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
         <>
           <LayerField
             id={`${id}-first`}
-            title={two ? "First layer" : "Input layer"}
-            about={two ? ABOUT.first : ABOUT.input}
+            title="Layer"
+            about={two ? ABOUT.pair : ABOUT.layer}
             layers={offered}
             chosen={first}
             fault={faults.first}
@@ -332,8 +287,8 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
           {two ? (
             <LayerField
               id={`${id}-second`}
-              title="Second layer"
-              about={ABOUT.second}
+              title="Layer of the other date"
+              about={ABOUT.pair}
               layers={beside}
               chosen={second}
               fault={faults.second}
@@ -343,23 +298,28 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
           ) : null}
           {one && two && beside.length === 0 ? (
             <Notice kind="info" action={{ label: "Get layer", onClick: openGetLayer }}>
-              {NO_PARTNER} Receive the same layer of a product of another date, of the same track, direction and frame.
+              {GET_PARTNER}
             </Notice>
           ) : null}
           {chosen.length === 2 ? (
             <PropertyList
               groups={[
                 {
-                  rows: chosen.map((layer, index) => ({
-                    name: index === 0 ? "Earlier date" : "Later date",
-                    value: layer.dates.map(formatDay).join(" and "),
-                  })),
+                  rows: [
+                    {
+                      name: "Dates",
+                      value: chosen
+                        .flatMap((layer) => layer.dates)
+                        .map(formatDay)
+                        .join(" to "),
+                    },
+                  ],
                 },
               ]}
             />
           ) : null}
 
-          <FieldTitle field={`${id}-title`} title="Name of the result">
+          <FieldTitle field={`${id}-title`} title="Result name">
             {ABOUT.title}
           </FieldTitle>
           <input
@@ -390,7 +350,6 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
         </>
       )}
       {without > 0 ? <Notice kind="info">{unnamedSentence(without)}</Notice> : null}
-      <MethodSummary tool={tool} />
     </ToolPane>
   );
 }

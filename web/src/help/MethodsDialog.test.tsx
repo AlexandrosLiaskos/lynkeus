@@ -1,7 +1,7 @@
 import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, expect, test } from "vitest";
-import { plain } from "../analysis/Marked";
+import { ROW_NAMES } from "../analysis/methods";
 import { METHODS } from "../analysis/methodSheets";
 import { FINISHED_TOOLS } from "../analysis/tools";
 import { Ribbon } from "../ribbon/Ribbon";
@@ -9,15 +9,7 @@ import { resetDock } from "../shared/dock/dock";
 import { ABOUT } from "./about";
 import { useHelpActions } from "./actions";
 import { HelpDialogs } from "./HelpDialogs";
-import {
-  BlockView,
-  LEGEND_NAMES,
-  MethodsDialog,
-  MethodSheet,
-  MethodsList,
-  sheetAddress,
-  SHEET_INFO,
-} from "./MethodsDialog";
+import { MethodsDialog, MethodSheet, MethodsList, sheetAddress, SHEET_INFO } from "./MethodsDialog";
 import { methodsStore } from "./state";
 import { HELP_TAB } from "./tab";
 
@@ -44,7 +36,7 @@ beforeEach(() => {
   methodsStore.set({ open: false, tool: null });
 });
 
-test("the button Methods of the Help tab is active and opens the dialog with every sheet open", async () => {
+test("the button Methods of the Help tab is active and opens the dialog with every section open", async () => {
   render(<HelpTab />);
   const button = screen.getByRole("button", { name: /^Methods/ });
   expect(button.getAttribute("aria-disabled")).toBeNull();
@@ -71,7 +63,7 @@ test("the page shows one section for each finished tool, under the title of its 
   );
 });
 
-test("the sheet that the form of a tool asked for is open, and the others are closed", () => {
+test("the section of the tool that a form asked for is open, and the others are closed", () => {
   render(<MethodsDialog />);
   act(() => methodsStore.set({ open: true, tool: "backscatter-change" }));
   const expanded = FINISHED_TOOLS.map((tool) =>
@@ -80,7 +72,7 @@ test("the sheet that the form of a tool asked for is open, and the others are cl
   expect(expanded).toEqual(["false", "true", "false"]);
 });
 
-test("the dialog closes, and keeps no sheet drawn while it is closed", () => {
+test("the dialog closes, and keeps no section drawn while it is closed", () => {
   render(<MethodsDialog />);
   act(() => methodsStore.set({ open: true, tool: null }));
   act(() => screen.getByRole<HTMLDialogElement>("dialog", { name: "Methods" }).close());
@@ -88,96 +80,41 @@ test("the dialog closes, and keeps no sheet drawn while it is closed", () => {
   expect(document.querySelector(".methods")).toBeNull();
 });
 
+/** A text without the marks of a sheet: the grave accents of a name in code, and the address of a link. */
+function words(text: string): string {
+  return text.replace(/`([^`]+)`/g, "$1").replace(/\[([^\]]+)\]\([^)]+\)/g, "$1");
+}
+
 test.each(FINISHED_TOOLS)(
-  "the sheet of %s shows its table, every section and the address of the whole sheet",
+  "the section of %s shows one list: the rows of the summary, and the address of the full sheet",
   (tool) => {
     const { container } = render(<MethodSheet tool={tool} />);
-    const method = METHODS[tool];
-    expect(rows(container).slice(0, 4)).toEqual(method.summary.map(([name = "", value = ""]) => [name, plain(value)]));
-    expect(screen.getAllByRole("heading", { level: 4 }).map((heading) => heading.textContent)).toEqual([
-      ...method.sections.map(({ title }) => title),
-      ...(tool === "coherence-state" ? [] : ["Mask of the product"]),
-    ]);
-    expect(container.textContent).toContain(plain(method.mask));
-    for (const { blocks } of method.sections) {
-      for (const block of blocks) {
-        const texts =
-          block.kind === "text"
-            ? [block.text]
-            : block.kind === "code"
-              ? [block.code]
-              : block.kind === "list"
-                ? block.items
-                : block.rows.flat().filter((cell) => !(plain(cell) in LEGEND_NAMES));
-        for (const text of texts) {
-          expect(container.textContent).toContain(plain(text));
-        }
-      }
-    }
     const address = `https://github.com/AlexandrosLiaskos/lynkeus/blob/main/docs/methods/${tool}.md`;
     expect(sheetAddress(tool)).toBe(address);
     expect(address.startsWith(ABOUT.citation.repository)).toBe(true);
+    expect(container.querySelectorAll(".property-list")).toHaveLength(1);
+    expect(rows(container)).toEqual([
+      ...METHODS[tool].rows.map(({ name, text }) => [name, words(text)]),
+      ["Full method sheet", address],
+    ]);
+    expect(rows(container).map(([name]) => name)).toEqual([...ROW_NAMES, "Full method sheet"]);
+    expect(container.querySelector("h4, table, pre, ol")).toBeNull();
     expect(screen.getByRole("link", { name: address }).getAttribute("href")).toBe(address);
   },
 );
 
-test("the table Legend names its rows in plain words, with the name of the field behind the i", () => {
-  const { container } = render(
-    <BlockView
-      block={{
-        kind: "table",
-        head: ["Field of the layer description", "Value"],
-        rows: [
-          ["`quantity`", "Radar backscatter gamma0"],
-          ["`unit`", "dB"],
-          ["`range`", "0 to 1"],
-          ["`colours`", "`grey`"],
-        ],
-      }}
-    />,
-  );
-  expect(rows(container).map(([name]) => name)).toEqual(["Quantity", "Unit", "Range", "Colour scale"]);
-  expect(container.textContent).toContain("The field colours of the layer description.");
-  expect(screen.getByRole("button", { name: "Information about Colour scale" })).toBeDefined();
-});
-
-test("a table of more than two columns gives one list for each row, with the heads of the columns as names", () => {
-  const { container } = render(
-    <BlockView
-      block={{
-        kind: "table",
-        head: ["Spacing", "Path in the product", "Unit"],
-        rows: [
-          ["80 m", "`/science/a`", "`1`"],
-          ["20 m", "`/science/b`", "`1`"],
-        ],
-      }}
-    />,
-  );
-  expect(container.querySelectorAll(".property-group")).toHaveLength(2);
-  expect(rows(container)).toEqual([
-    ["Spacing", "80 m"],
-    ["Path in the product", "/science/a"],
-    ["Unit", "1"],
-    ["Spacing", "20 m"],
-    ["Path in the product", "/science/b"],
-    ["Unit", "1"],
+test("the rows show a name in code as code and a reference as a link that opens in a new tab", () => {
+  const { container } = render(<MethodSheet tool="backscatter-change" />);
+  expect(Array.from(container.querySelectorAll("code"), (code) => code.textContent)).toEqual([
+    "10 * log10(gamma0_later / gamma0_earlier)",
   ]);
+  const link = screen.getByRole("link", { name: "Rignot and van Zyl (1993)" });
+  expect(link.getAttribute("href")).toBe("https://doi.org/10.1109/36.239913");
+  expect(link.getAttribute("target")).toBe("_blank");
 });
 
-test("a formula is shown as written, and a numbered list keeps its order", () => {
-  const { container } = render(
-    <>
-      <BlockView block={{ kind: "code", code: "change_dB = 10 * log10(gamma0_later / gamma0_earlier)" }} />
-      <BlockView block={{ kind: "list", items: ["`nan`;", "zero or negative;"] }} />
-    </>,
-  );
-  expect(container.querySelector("pre code")?.textContent).toBe(
-    "change_dB = 10 * log10(gamma0_later / gamma0_earlier)",
-  );
-  expect(screen.getAllByRole("listitem").map((item) => item.textContent)).toEqual(["nan;", "zero or negative;"]);
-});
-
-test("the explanation of a sheet has at most three sentences", () => {
-  expect(SHEET_INFO.split(/(?<=\.)\s+/).length).toBeLessThanOrEqual(3);
+test("the explanation of a section states that it is a summary", () => {
+  expect(SHEET_INFO).toBe("A summary of the method. The full sheet is in the repository.");
+  const { container } = render(<MethodsList asked={null} />);
+  expect(container.textContent).toContain(SHEET_INFO);
 });

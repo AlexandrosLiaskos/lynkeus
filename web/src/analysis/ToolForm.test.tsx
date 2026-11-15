@@ -13,11 +13,10 @@ import { mapLayersStore } from "../shared/mapLayers";
 import { messagesStore } from "../shared/messages/messages";
 import { resetPanes } from "../shared/panes";
 import { AnalysisDialogs } from "./AnalysisDialogs";
-import { plain } from "./Marked";
-import { copiesOf, readingOf, referenceOf, summaryOf } from "./methods";
+import { rowOf } from "./methods";
 import { METHODS } from "./methodSheets";
 import { coherence, GCOV_NOV, laterTerm, term } from "./testLayers";
-import { ABOUT, RECEIVE, runOf, ToolForm, unnamedSentence, type Started } from "./ToolForm";
+import { ABOUT, GET_PARTNER, RECEIVE, runOf, ToolForm, unnamedSentence, type Started } from "./ToolForm";
 import { FINISHED_TOOLS, NO_INPUT, NO_PARTNER, type FinishedTool } from "./tools";
 
 let server: StandIn;
@@ -96,7 +95,7 @@ test("the foot shows the progress and the sentence of a job that waits or runs",
   });
 });
 
-test("the foot states that the result was computed, and where it is", () => {
+test("the foot states that the result is ready, and where it is", () => {
   const done = job({
     jobID: "job-1",
     status: "successful",
@@ -107,12 +106,12 @@ test("the foot states that the result was computed, and where it is", () => {
   const listed = runOf(STARTED, [done]);
   expect(listed).toMatchObject({
     state: "success",
-    text: "The result was computed. The section Layers of the Catalog pane lists it.",
+    text: "The result is ready. It is under Layers in the Catalog pane.",
   });
   expect(listed && "action" in listed ? listed.action?.label : null).toBe("Show the Catalog pane");
   expect(runOf(STARTED, [done], new Set(["result-1"]))).toMatchObject({
     state: "success",
-    text: "The result was computed. It is on the map and in the section Layers of the Catalog pane.",
+    text: "The result is ready. It is on the map and under Layers in the Catalog pane.",
   });
 });
 
@@ -127,11 +126,19 @@ test("the foot states that a job was cancelled or has left the list", () => {
   expect(runOf(STARTED, [])).toEqual({ state: "warning", text: "The job is no longer in the list of jobs." });
 });
 
-test("every explanation of the form has at most three sentences", () => {
-  for (const text of Object.values(ABOUT)) {
-    expect(text.split(/(?<=\.)\s+/).length).toBeLessThanOrEqual(3);
-    expect(text.endsWith(".")).toBe(true);
-  }
+test("the explanations of the titles of the form are short", () => {
+  expect(ABOUT).toEqual({
+    layer: "A layer that this session received with Get layer.",
+    pair: "The same layer of two dates of one track and frame. The earlier date is taken first.",
+    title: "The name of the result in the Catalog and Contents panes.",
+  });
+});
+
+test.each(FINISHED_TOOLS)("the i of the pane of %s states what the tool shows, in the words of its sheet", (tool) => {
+  show(tool);
+  const shows = rowOf(METHODS[tool], "What it shows");
+  expect(shows).not.toBe("");
+  expect(screen.getByRole("complementary", { name: METHODS[tool].title }).textContent).toContain(shows);
 });
 
 test.each(FINISHED_TOOLS)(
@@ -144,15 +151,15 @@ test.each(FINISHED_TOOLS)(
 );
 
 test.each(FINISHED_TOOLS)(
-  "without a layer that %s reads, the pane names the layer to receive and offers Get layer",
+  "without a layer that %s reads, the pane names the layer to get and offers Get layer",
   async (tool) => {
     show(tool, tool === "coherence-state" ? [term()] : [coherence()]);
-    expect(screen.getByText("No input layer")).toBeDefined();
+    expect(screen.getByText("No layer to use")).toBeDefined();
     // The empty state names the next step, and the foot says why the run button is inactive: each thing once.
     expect(screen.getAllByText(RECEIVE[tool])).toHaveLength(1);
     expect(screen.getByRole("status").textContent).toBe(NO_INPUT);
-    expect(NO_INPUT).toBe("The session holds no layer that the tool reads.");
-    expect(screen.queryByLabelText("Name of the result")).toBeNull();
+    expect(NO_INPUT).toBe("No layer of this session can be used by the tool.");
+    expect(screen.queryByLabelText("Result name")).toBeNull();
     expect(runButton().getAttribute("aria-disabled")).toBe("true");
     await userEvent.click(runButton());
     expect(server.sent("POST")).toEqual([]);
@@ -161,23 +168,22 @@ test.each(FINISHED_TOOLS)(
   },
 );
 
-test("the layer to receive is named as the Get layer form names it", () => {
+test("the layer to get is named as the Get layer form names it", () => {
   expect(RECEIVE).toEqual({
-    "backscatter-state": "Receive a layer Backscatter of a GCOV product with Get layer.",
-    "backscatter-change":
-      "Receive a layer Backscatter of two GCOV products of the same track, direction and frame with Get layer.",
-    "coherence-state": "Receive a layer Coherence of a GUNW product with Get layer.",
+    "backscatter-state": "Get a Backscatter layer of a GCOV product.",
+    "backscatter-change": "Get the same Backscatter layer of two GCOV products of one track and frame.",
+    "coherence-state": "Get a Coherence layer of a GUNW product.",
   });
 });
 
-test("the field Input layer offers the layers that the tool reads, and no other", () => {
+test("the field Layer offers the layers that the tool reads, and no other", () => {
   show("backscatter-state", [
     laterTerm(),
     term(),
     coherence(),
     term({ id: "looks", title: "Number of looks", layer: "numberOfLooks" }),
   ]);
-  expect(options("Input layer")).toEqual([
+  expect(options("Layer")).toEqual([
     "Select a layer",
     "Backscatter HH, 2 Nov 2026 (track 141, frame 67, descending)",
     "Backscatter HH, 21 Oct 2026 (track 141, frame 67, descending)",
@@ -186,7 +192,7 @@ test("the field Input layer offers the layers that the tool reads, and no other"
 
 test("Coherence, One pair offers the coherence layers of the session", () => {
   show("coherence-state", [term(), coherence()]);
-  expect(options("Input layer")).toEqual([
+  expect(options("Layer")).toEqual([
     "Select a layer",
     "Coherence HH, 80 m, 9 Oct 2026 to 21 Oct 2026 (track 141, frame 67, descending)",
   ]);
@@ -194,7 +200,7 @@ test("Coherence, One pair offers the coherence layers of the session", () => {
 
 test("while no layer is chosen, the foot states it and the run button is inactive", async () => {
   show("backscatter-state", [term()]);
-  expect(screen.getByText("Choose the input layer.")).toBeDefined();
+  expect(screen.getByText("Choose a layer.")).toBeDefined();
   expect(runButton().getAttribute("aria-disabled")).toBe("true");
   await userEvent.click(runButton());
   expect(server.sent("POST")).toEqual([]);
@@ -202,21 +208,21 @@ test("while no layer is chosen, the foot states it and the run button is inactiv
 
 test("the form proposes the name of the result from the chosen layer, until the visitor changes the name", async () => {
   show("backscatter-state", [term(), laterTerm()]);
-  const name = screen.getByLabelText<HTMLInputElement>("Name of the result");
+  const name = screen.getByLabelText<HTMLInputElement>("Result name");
   expect(name.value).toBe("");
-  await userEvent.selectOptions(screen.getByLabelText("Input layer"), "hh-oct");
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "hh-oct");
   expect(name.value).toBe("Backscatter HH in dB, 21 Oct 2026");
-  await userEvent.selectOptions(screen.getByLabelText("Input layer"), "hh-nov");
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "hh-nov");
   expect(name.value).toBe("Backscatter HH in dB, 2 Nov 2026");
   await userEvent.clear(name);
   await userEvent.type(name, "My result");
-  await userEvent.selectOptions(screen.getByLabelText("Input layer"), "hh-oct");
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "hh-oct");
   expect(name.value).toBe("My result");
 });
 
 test("a tool of one input starts as a job of the process of its name, with the layer and the name of the result", async () => {
   show("backscatter-state", [term()]);
-  await userEvent.selectOptions(screen.getByLabelText("Input layer"), "hh-oct");
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "hh-oct");
   expect(runButton().getAttribute("aria-disabled")).toBeNull();
   await userEvent.click(runButton());
   expect(server.sent("POST")).toEqual([
@@ -232,7 +238,7 @@ test("a tool of one input starts as a job of the process of its name, with the l
 
 test("Coherence, One pair starts as a job of its process", async () => {
   show("coherence-state", [coherence()]);
-  await userEvent.selectOptions(screen.getByLabelText("Input layer"), "coherence-80");
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "coherence-80");
   await userEvent.click(runButton());
   expect(server.sent("POST")).toEqual([
     {
@@ -247,11 +253,11 @@ test("Coherence, One pair starts as a job of its process", async () => {
 
 test("the second field of Backscatter, Change is inactive until the first layer is chosen", async () => {
   show("backscatter-change", [term(), laterTerm()]);
-  expect(screen.getByLabelText<HTMLSelectElement>("Second layer").disabled).toBe(true);
-  expect(screen.getByText("Choose the first layer.")).toBeDefined();
-  await userEvent.selectOptions(screen.getByLabelText("First layer"), "hh-oct");
-  expect(screen.getByLabelText<HTMLSelectElement>("Second layer").disabled).toBe(false);
-  expect(screen.getByText("Choose the second layer.")).toBeDefined();
+  expect(screen.getByLabelText<HTMLSelectElement>("Layer of the other date").disabled).toBe(true);
+  expect(screen.getByText("Choose a layer.")).toBeDefined();
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "hh-oct");
+  expect(screen.getByLabelText<HTMLSelectElement>("Layer of the other date").disabled).toBe(false);
+  expect(screen.getByText("Choose the layer of the other date.")).toBeDefined();
 });
 
 test("the second field offers only the layers of the same term, track, direction and frame as the first", async () => {
@@ -264,14 +270,14 @@ test("the second field offers only the layers of the same term, track, direction
     laterTerm({ id: "track-142", inputs: [GCOV_NOV.replace("_141_D_067_", "_142_D_067_")] }),
     coherence(),
   ]);
-  expect(options("First layer")).toHaveLength(7);
-  await userEvent.selectOptions(screen.getByLabelText("First layer"), "hh-oct");
-  expect(options("Second layer")).toEqual([
+  expect(options("Layer")).toHaveLength(7);
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "hh-oct");
+  expect(options("Layer of the other date")).toEqual([
     "Select a layer",
     "Backscatter HH, 2 Nov 2026 (track 141, frame 67, descending)",
   ]);
-  await userEvent.selectOptions(screen.getByLabelText("First layer"), "hv-nov");
-  expect(options("Second layer")).toEqual(["Select a layer"]);
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "hv-nov");
+  expect(options("Layer of the other date")).toEqual(["Select a layer"]);
 });
 
 test.each([
@@ -279,11 +285,10 @@ test.each([
   ["hh-nov", "hh-oct"],
 ])("Backscatter, Change sends the layer of the earlier date first (fields %s and %s)", async (first, second) => {
   show("backscatter-change", [laterTerm(), term()]);
-  await userEvent.selectOptions(screen.getByLabelText("First layer"), first);
-  await userEvent.selectOptions(screen.getByLabelText("Second layer"), second);
-  expect(valueOf(document.body, "Earlier date")).toBe("21 Oct 2026");
-  expect(valueOf(document.body, "Later date")).toBe("2 Nov 2026");
-  expect(screen.getByLabelText<HTMLInputElement>("Name of the result").value).toBe(
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), first);
+  await userEvent.selectOptions(screen.getByLabelText("Layer of the other date"), second);
+  expect(valueOf(document.body, "Dates")).toBe("21 Oct 2026 to 2 Nov 2026");
+  expect(screen.getByLabelText<HTMLInputElement>("Result name").value).toBe(
     "Change of backscatter HH in dB, 21 Oct 2026 to 2 Nov 2026",
   );
   await userEvent.click(runButton());
@@ -300,13 +305,13 @@ test.each([
 
 test("two layers of the same date are refused at the second field, and the tool does not run", async () => {
   show("backscatter-change", [term(), term({ id: "again", title: "Backscatter HH, 21 Oct 2026, second copy" })]);
-  await userEvent.selectOptions(screen.getByLabelText("First layer"), "hh-oct");
-  await userEvent.selectOptions(screen.getByLabelText("Second layer"), "again");
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "hh-oct");
+  await userEvent.selectOptions(screen.getByLabelText("Layer of the other date"), "again");
   await userEvent.tab();
-  const sentence = "The two layers have the same date. Choose a layer of another date.";
+  const sentence = "Choose a layer of another date.";
   const fault = screen.getByRole("alert");
   expect(fault.textContent).toBe(sentence);
-  const field = screen.getByLabelText("Second layer");
+  const field = screen.getByLabelText("Layer of the other date");
   expect(field.getAttribute("aria-invalid")).toBe("true");
   expect(field.classList.contains("usa-input--error")).toBe(true);
   expect(field.getAttribute("aria-describedby")?.split(" ")).toContain(fault.id);
@@ -318,13 +323,12 @@ test("two layers of the same date are refused at the second field, and the tool 
 
 test("a first layer without a matching layer is stated, with the way to the Get layer form", async () => {
   show("backscatter-change", [term(), laterTerm({ layer: "HVHV" })]);
-  await userEvent.selectOptions(screen.getByLabelText("First layer"), "hh-oct");
-  expect(screen.getByLabelText<HTMLSelectElement>("Second layer").disabled).toBe(true);
-  expect(
-    screen.getByText(
-      `${NO_PARTNER} Receive the same layer of a product of another date, of the same track, direction and frame.`,
-    ),
-  ).toBeDefined();
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "hh-oct");
+  expect(screen.getByLabelText<HTMLSelectElement>("Layer of the other date").disabled).toBe(true);
+  expect(GET_PARTNER).toBe(
+    "No other date of this layer is in the session. Get the same layer of another date of the same track and frame.",
+  );
+  expect(screen.getByText(GET_PARTNER)).toBeDefined();
   expect(screen.getAllByText(NO_PARTNER, { exact: false })).toHaveLength(2);
   await userEvent.click(screen.getByRole("button", { name: "Get layer" }));
   expect(dockStore.get().tools).toContain(GET_LAYER_PANE);
@@ -332,13 +336,13 @@ test("a first layer without a matching layer is stated, with the way to the Get 
 
 test("an empty name of the result is refused at its field after the field is left", async () => {
   show("backscatter-state", [term()]);
-  await userEvent.selectOptions(screen.getByLabelText("Input layer"), "hh-oct");
-  const name = screen.getByLabelText("Name of the result");
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "hh-oct");
+  const name = screen.getByLabelText("Result name");
   await userEvent.clear(name);
   expect(screen.queryByRole("alert")).toBeNull();
   await userEvent.tab();
   const fault = screen.getByRole("alert");
-  expect(fault.textContent).toBe("Give the name of the result.");
+  expect(fault.textContent).toBe("Give a name.");
   expect(name.getAttribute("aria-invalid")).toBe("true");
   expect(name.classList.contains("usa-input--error")).toBe(true);
   expect(name.getAttribute("aria-describedby")?.split(" ")).toContain(fault.id);
@@ -351,17 +355,10 @@ test("an empty name of the result is refused at its field after the field is lef
 });
 
 test("layers that do not record which layer of their product they are, are counted, with what to do", () => {
-  expect(unnamedSentence(1)).toBe(
-    "1 layer of the session does not record which layer of its product it is, so the tool does not read it. Receive it again with Get layer.",
-  );
-  expect(unnamedSentence(2)).toBe(
-    "2 layers of the session do not record which layer of their product they are, so the tool does not read them. Receive them again with Get layer.",
-  );
+  expect(unnamedSentence(1)).toBe("1 older layer of this session cannot be used. Get it again with Get layer.");
+  expect(unnamedSentence(2)).toBe("2 older layers of this session cannot be used. Get them again with Get layer.");
   show("backscatter-state", [term({ layer: null }), term({ id: "older", layer: undefined }), laterTerm()]);
-  expect(options("Input layer")).toEqual([
-    "Select a layer",
-    "Backscatter HH, 2 Nov 2026 (track 141, frame 67, descending)",
-  ]);
+  expect(options("Layer")).toEqual(["Select a layer", "Backscatter HH, 2 Nov 2026 (track 141, frame 67, descending)"]);
   expect(screen.getByText(unnamedSentence(2))).toBeDefined();
 });
 
@@ -369,7 +366,7 @@ test("a refusal of the request is shown in the sentence of the server", async ()
   const sentence = "Your session holds as many layers as it may. Remove a layer and try again.";
   server.refuse("POST", "/api/processes/backscatter-state/execution", 507, sentence);
   show("backscatter-state", [term()]);
-  await userEvent.selectOptions(screen.getByLabelText("Input layer"), "hh-oct");
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "hh-oct");
   await userEvent.click(runButton());
   expect(screen.getByRole("alert").textContent).toBe(sentence);
   expect(jobsStore.get()).toEqual([]);
@@ -377,8 +374,8 @@ test("a refusal of the request is shown in the sentence of the server", async ()
 
 test("the refusal of a tool is shown in the sentence of the server when its job has failed", async () => {
   show("backscatter-change", [term(), laterTerm()]);
-  await userEvent.selectOptions(screen.getByLabelText("First layer"), "hh-oct");
-  await userEvent.selectOptions(screen.getByLabelText("Second layer"), "hh-nov");
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "hh-oct");
+  await userEvent.selectOptions(screen.getByLabelText("Layer of the other date"), "hh-nov");
   await userEvent.click(runButton());
   const sentence = "The layers of the analysis do not have the same grid.";
   server.change("job-1", { status: "failed", message: sentence, progress: 0 });
@@ -388,18 +385,18 @@ test("the refusal of a tool is shown in the sentence of the server when its job 
 
 test("a finished job is stated at the foot, with the link to the Catalog pane", async () => {
   show("backscatter-state", [term()]);
-  await userEvent.selectOptions(screen.getByLabelText("Input layer"), "hh-oct");
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "hh-oct");
   await userEvent.click(runButton());
   server.change("job-1", { status: "successful", message: "The result is ready.", progress: 100, layer: "result-1" });
   await act(loadJobs);
-  expect(screen.getByText("The result was computed. The section Layers of the Catalog pane lists it.")).toBeDefined();
+  expect(screen.getByText("The result is ready. It is under Layers in the Catalog pane.")).toBeDefined();
   expect(screen.getByRole("button", { name: "Show the Catalog pane" })).toBeDefined();
   expect(screen.getByRole("button", { name: "View details" })).toBeDefined();
 });
 
 test("a job that waits can be cancelled from the form", async () => {
   show("backscatter-state", [term()]);
-  await userEvent.selectOptions(screen.getByLabelText("Input layer"), "hh-oct");
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "hh-oct");
   await userEvent.click(runButton());
   await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
   expect(server.sent("DELETE")).toEqual([{ method: "DELETE", address: "/api/jobs/job-1", content: undefined }]);
@@ -415,25 +412,31 @@ test("the check box of the form decides whether the result is added to the map w
   expect(addWhenReadyStore.get()).toBe(false);
 });
 
-test.each(FINISHED_TOOLS)(
-  "the form of %s shows the result, the reference, the mask and the reduced copies of its sheet",
-  (tool) => {
-    show(tool);
-    const method = METHODS[tool];
-    const section = screen.getByRole("group", { name: "Method" });
-    expect(valueOf(section, "Result")).toBe(plain(summaryOf(method, "Result")));
-    expect(valueOf(section, "Reference")).toBe(plain(referenceOf(method)));
-    expect(valueOf(section, "Mask")).toBe(plain(method.mask));
-    expect(valueOf(section, "Reduced copies")).toBe(plain(copiesOf(method)));
-    expect(copiesOf(method).startsWith("For the reader: when the map is zoomed out, a cell shows ")).toBe(true);
-    expect(section.textContent).toContain(plain(readingOf(method)));
-    expect(within(section).getByRole("button", { name: "Information about Result" })).toBeDefined();
-  },
-);
+test.each(FINISHED_TOOLS)("the form of %s shows no section and no list of its method", (tool) => {
+  show(tool);
+  expect(screen.queryByRole("group", { name: "Method" })).toBeNull();
+  expect(document.querySelector(".property-list")).toBeNull();
+});
 
-test("the link of the section Method opens the method sheet of the tool in the Help tab", async () => {
+test("a form with a layer shows its fields in their order, and nothing else", async () => {
+  show("backscatter-change", [term(), laterTerm()]);
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "hh-oct");
+  await userEvent.selectOptions(screen.getByLabelText("Layer of the other date"), "hh-nov");
+  const body = document.querySelector(".tool-pane-body");
+  expect(Array.from(body?.querySelectorAll("label") ?? [], (label) => label.textContent)).toEqual([
+    "Layer",
+    "Layer of the other date",
+    "Result name",
+    "Add to the map when ready",
+  ]);
+  expect(body?.querySelectorAll(".property-row")).toHaveLength(1);
+});
+
+test("the link Method at the foot opens the page Methods at the tool", async () => {
   show("backscatter-change");
-  await userEvent.click(screen.getByRole("button", { name: "Show the method sheet" }));
+  const link = screen.getByRole("button", { name: "Method" });
+  expect(link.closest(".tool-pane-secondary")).not.toBeNull();
+  await userEvent.click(link);
   expect(methodsStore.get()).toEqual({ open: true, tool: "backscatter-change" });
 });
 

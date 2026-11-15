@@ -286,15 +286,15 @@ test("Backscatter, Change sends the layer of the earlier date first, whichever f
 test("a missing layer is refused in one sentence", () => {
   const layers = [term(), laterTerm()];
   const none = check({ tool: "backscatter-state", layers, first: null, second: null, title: "Name" });
-  expect(none.faults).toEqual({ ...SOUND, first: "Choose the input layer." });
+  expect(none.faults).toEqual({ ...SOUND, first: "Choose a layer." });
   expect(none.inputs).toBeNull();
   expect(check({ tool: "backscatter-change", layers, first: null, second: null, title: "Name" }).faults).toEqual({
     ...SOUND,
-    first: "Choose the first layer.",
+    first: "Choose a layer.",
   });
   expect(check({ tool: "backscatter-change", layers, first: "hh-oct", second: null, title: "Name" }).faults).toEqual({
     ...SOUND,
-    second: "Choose the second layer.",
+    second: "Choose the layer of the other date.",
   });
 });
 
@@ -302,9 +302,9 @@ test("a layer that the tool does not read, or that has left the session, counts 
   const layers = [term(), coherence()];
   expect(
     check({ tool: "backscatter-state", layers, first: "coherence-80", second: null, title: "Name" }).faults.first,
-  ).toBe("Choose the input layer.");
+  ).toBe("Choose a layer.");
   expect(check({ tool: "backscatter-state", layers, first: "removed", second: null, title: "Name" }).faults.first).toBe(
-    "Choose the input layer.",
+    "Choose a layer.",
   );
   expect(
     check({
@@ -314,14 +314,14 @@ test("a layer that the tool does not read, or that has left the session, counts 
       second: "removed",
       title: "Name",
     }).faults.second,
-  ).toBe("Choose the second layer.");
+  ).toBe("Choose the layer of the other date.");
 });
 
 test("a first layer without a matching layer in the session is refused in one sentence", () => {
   const layers = [term(), laterTerm({ layer: "HVHV" })];
   const checked = check({ tool: "backscatter-change", layers, first: "hh-oct", second: "hh-nov", title: "Name" });
   expect(checked.faults).toEqual({ ...SOUND, second: NO_PARTNER });
-  expect(NO_PARTNER).toBe("No other layer of the session matches the first layer.");
+  expect(NO_PARTNER).toBe("No other date of this layer is in the session.");
   expect(checked.inputs).toBeNull();
 });
 
@@ -330,7 +330,7 @@ test("two layers of the same date are refused in one sentence", () => {
   const checked = check({ tool: "backscatter-change", layers, first: "hh-oct", second: "again", title: "Name" });
   expect(checked.faults).toEqual({
     ...SOUND,
-    second: "The two layers have the same date. Choose a layer of another date.",
+    second: "Choose a layer of another date.",
   });
   expect(checked.layers).toEqual([]);
   expect(checked.inputs).toBeNull();
@@ -339,12 +339,12 @@ test("two layers of the same date are refused in one sentence", () => {
 test("a name of the result that is empty or too long is refused in one sentence", () => {
   const layers = [term()];
   const choices = { tool: "backscatter-state", layers, first: "hh-oct", second: null } as const;
-  expect(check({ ...choices, title: "   " }).faults).toEqual({ ...SOUND, title: "Give the name of the result." });
+  expect(check({ ...choices, title: "   " }).faults).toEqual({ ...SOUND, title: "Give a name." });
   expect(check({ ...choices, title: "a".repeat(MOST_TITLE) }).faults).toEqual(SOUND);
   const long = check({ ...choices, title: "a".repeat(MOST_TITLE + 1) });
   expect(long.faults).toEqual({
     ...SOUND,
-    title: "The name of the result has 201 characters, and at most 200 are accepted.",
+    title: "The name is longer than 200 characters.",
   });
   expect(long.inputs).toBeNull();
 });
