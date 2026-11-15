@@ -1,0 +1,355 @@
+{
+ "searched": "2026-11-15T09:39:53Z",
+ "GUNW_V1": {
+  "url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=C3622247503-ASF&bounding_box=-71.20%2C42.60%2C-70.75%2C42.95&page_size=2000",
+  "hits": 1,
+  "granules": [
+   {
+    "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "concept": "G4409879710-ASF",
+    "track": 141,
+    "frame": 67,
+    "direction": "DESCENDING",
+    "reference": "2026-10-09",
+    "secondary": "2026-10-21",
+    "revision": "2026-11-13T01:10:09.792Z"
+   }
+  ]
+ },
+ "GUNW_PROV": {
+  "url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=C2854335566-ASF&bounding_box=-71.20%2C42.60%2C-70.75%2C42.95&page_size=2000",
+  "hits": 33,
+  "granules": [
+   {
+    "granule": "NISAR_L2_PR_GUNW_024_032_A_023_025_4000_SH_20260628T095054_20260628T095129_20260710T095054_20260710T095129_P05023_N_F_J_001",
+    "concept": "G4250063937-ASF",
+    "track": 32,
+    "frame": 23,
+    "direction": "ASCENDING",
+    "reference": "2026-06-28",
+    "secondary": "2026-07-10",
+    "revision": "2026-08-13T17:10:21.888Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_025_032_A_023_026_4000_SH_20260710T095054_20260710T095129_20260722T095053_20260722T095128_P05023_N_F_J_001",
+    "concept": "G4261340729-ASF",
+    "track": 32,
+    "frame": 23,
+    "direction": "ASCENDING",
+    "reference": "2026-07-10",
+    "secondary": "2026-07-22",
+    "revision": "2026-08-14T03:50:43.355Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_026_032_A_023_028_4000_SH_20260722T095053_20260722T095128_20260815T095052_20260815T095127_P05023_N_F_J_001",
+    "concept": "G4284178254-ASF",
+    "track": 32,
+    "frame": 23,
+    "direction": "ASCENDING",
+    "reference": "2026-07-22",
+    "secondary": "2026-08-15",
+    "revision": "2026-08-21T04:14:52.848Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_028_032_A_023_029_4000_SH_20260815T095052_20260815T095127_20260827T095052_20260827T095127_P05023_N_F_J_001",
+    "concept": "G4291686034-ASF",
+    "track": 32,
+    "frame": 23,
+    "direction": "ASCENDING",
+    "reference": "2026-08-15",
+    "secondary": "2026-08-27",
+    "revision": "2026-08-29T14:15:46.518Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_029_032_A_023_030_4000_SH_20260827T095052_20260827T095127_20260908T095052_20260908T095127_P05023_N_F_J_001",
+    "concept": "G4306647619-ASF",
+    "track": 32,
+    "frame": 23,
+    "direction": "ASCENDING",
+    "reference": "2026-08-27",
+    "secondary": "2026-09-08",
+    "revision": "2026-09-11T08:08:34.324Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_030_032_A_023_031_4000_SH_20260908T095052_20260908T095127_20260920T095052_20260920T095127_P05023_F_F_J_001",
+    "concept": "G4320037950-ASF",
+    "track": 32,
+    "frame": 23,
+    "direction": "ASCENDING",
+    "reference": "2026-09-08",
+    "secondary": "2026-09-20",
+    "revision": "2026-09-22T19:09:25.045Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_031_032_A_023_032_4000_SH_20260920T095052_20260920T095127_20261002T095052_20261002T095127_P05023_N_F_J_001",
+    "concept": "G4339053844-ASF",
+    "track": 32,
+    "frame": 23,
+    "direction": "ASCENDING",
+    "reference": "2026-09-20",
+    "secondary": "2026-10-02",
+    "revision": "2026-10-04T11:12:18.012Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_032_032_A_023_033_4000_SH_20261002T095052_20261002T095127_20261014T095052_20261014T095127_P05023_N_F_J_001",
+    "concept": "G4370025575-ASF",
+    "track": 32,
+    "frame": 23,
+    "direction": "ASCENDING",
+    "reference": "2026-10-02",
+    "secondary": "2026-10-14",
+    "revision": "2026-10-16T11:27:17.935Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_031_069_D_066_032_4000_SH_20260922T235115_20260922T235154_20261004T235115_20261004T235150_P05023_N_F_J_001",
+    "concept": "G4345934141-ASF",
+    "track": 69,
+    "frame": 66,
+    "direction": "DESCENDING",
+    "reference": "2026-09-22",
+    "secondary": "2026-10-04",
+    "revision": "2026-10-07T01:54:31.072Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_023_069_D_067_024_4000_SH_20260618T235153_20260618T235228_20260630T235152_20260630T235227_P05023_N_F_J_001",
+    "concept": "G4257202828-ASF",
+    "track": 69,
+    "frame": 67,
+    "direction": "DESCENDING",
+    "reference": "2026-06-18",
+    "secondary": "2026-06-30",
+    "revision": "2026-08-12T09:02:24.991Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_024_069_D_067_025_4000_SH_20260630T235152_20260630T235227_20260712T235152_20260712T235226_P05023_N_F_J_001",
+    "concept": "G4250759521-ASF",
+    "track": 69,
+    "frame": 67,
+    "direction": "DESCENDING",
+    "reference": "2026-06-30",
+    "secondary": "2026-07-12",
+    "revision": "2026-08-13T07:06:12.929Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_025_069_D_067_028_4000_SH_20260712T235152_20260712T235226_20260817T235150_20260817T235225_P05023_N_F_J_001",
+    "concept": "G4285909710-ASF",
+    "track": 69,
+    "frame": 67,
+    "direction": "DESCENDING",
+    "reference": "2026-07-12",
+    "secondary": "2026-08-17",
+    "revision": "2026-08-23T06:47:07.572Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_028_069_D_067_029_4000_SH_20260817T235150_20260817T235225_20260829T235149_20260829T235224_P05023_N_F_J_001",
+    "concept": "G4294322149-ASF",
+    "track": 69,
+    "frame": 67,
+    "direction": "DESCENDING",
+    "reference": "2026-08-17",
+    "secondary": "2026-08-29",
+    "revision": "2026-09-01T02:35:19.700Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_029_069_D_067_030_4000_SH_20260829T235149_20260829T235224_20260910T235149_20260910T235224_P05023_N_F_J_001",
+    "concept": "G4310210171-ASF",
+    "track": 69,
+    "frame": 67,
+    "direction": "DESCENDING",
+    "reference": "2026-08-29",
+    "secondary": "2026-09-10",
+    "revision": "2026-09-14T02:15:18.795Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_030_069_D_067_031_4000_SH_20260910T235149_20260910T235224_20260922T235149_20260922T235224_P05023_N_F_J_001",
+    "concept": "G4322863337-ASF",
+    "track": 69,
+    "frame": 67,
+    "direction": "DESCENDING",
+    "reference": "2026-09-10",
+    "secondary": "2026-09-22",
+    "revision": "2026-09-25T02:00:19.505Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_031_069_D_067_032_4000_SH_20260922T235149_20260922T235224_20261004T235149_20261004T235224_P05023_N_F_J_001",
+    "concept": "G4345916310-ASF",
+    "track": 69,
+    "frame": 67,
+    "direction": "DESCENDING",
+    "reference": "2026-09-22",
+    "secondary": "2026-10-04",
+    "revision": "2026-10-07T01:46:33.243Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_032_069_D_067_033_4000_SH_20261004T235149_20261004T235224_20261016T235149_20261016T235224_P05023_N_F_J_001",
+    "concept": "G4376558417-ASF",
+    "track": 69,
+    "frame": 67,
+    "direction": "DESCENDING",
+    "reference": "2026-10-04",
+    "secondary": "2026-10-16",
+    "revision": "2026-10-19T02:10:17.941Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_023_104_A_023_024_4000_SH_20260621T094236_20260621T094311_20260703T094235_20260703T094310_P05023_N_F_J_001",
+    "concept": "G4248254674-ASF",
+    "track": 104,
+    "frame": 23,
+    "direction": "ASCENDING",
+    "reference": "2026-06-21",
+    "secondary": "2026-07-03",
+    "revision": "2026-08-12T10:41:27.324Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_024_104_A_023_025_4000_SH_20260703T094235_20260703T094310_20260715T094234_20260715T094309_P05023_N_F_J_001",
+    "concept": "G4254238299-ASF",
+    "track": 104,
+    "frame": 23,
+    "direction": "ASCENDING",
+    "reference": "2026-07-03",
+    "secondary": "2026-07-15",
+    "revision": "2026-08-13T21:54:19.410Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_025_104_A_023_026_4000_SH_20260715T094234_20260715T094309_20260727T094234_20260727T094309_P05023_N_F_J_001",
+    "concept": "G4264674518-ASF",
+    "track": 104,
+    "frame": 23,
+    "direction": "ASCENDING",
+    "reference": "2026-07-15",
+    "secondary": "2026-07-27",
+    "revision": "2026-08-13T11:01:51.956Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_026_104_A_023_028_4000_SH_20260727T094234_20260727T094309_20260820T094232_20260820T094307_P05023_N_F_J_001",
+    "concept": "G4287156150-ASF",
+    "track": 104,
+    "frame": 23,
+    "direction": "ASCENDING",
+    "reference": "2026-07-27",
+    "secondary": "2026-08-20",
+    "revision": "2026-08-24T23:27:38.176Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_028_104_A_023_029_4000_SH_20260820T094232_20260820T094307_20260901T094232_20260901T094307_P05023_N_F_J_001",
+    "concept": "G4297358245-ASF",
+    "track": 104,
+    "frame": 23,
+    "direction": "ASCENDING",
+    "reference": "2026-08-20",
+    "secondary": "2026-09-01",
+    "revision": "2026-09-03T11:06:32.855Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_029_104_A_023_031_4000_SH_20260901T094232_20260901T094307_20260925T094232_20260925T094307_P05023_N_F_J_001",
+    "concept": "G4325880029-ASF",
+    "track": 104,
+    "frame": 23,
+    "direction": "ASCENDING",
+    "reference": "2026-09-01",
+    "secondary": "2026-09-25",
+    "revision": "2026-09-27T16:12:31.542Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_031_104_A_023_032_4000_SH_20260925T094232_20260925T094307_20261007T094232_20261007T094307_P05023_N_F_J_001",
+    "concept": "G4352021997-ASF",
+    "track": 104,
+    "frame": 23,
+    "direction": "ASCENDING",
+    "reference": "2026-09-25",
+    "secondary": "2026-10-07",
+    "revision": "2026-10-09T10:04:22.368Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_032_104_A_023_033_4000_SH_20261007T094232_20261007T094307_20261019T094232_20261019T094307_P05023_N_F_J_001",
+    "concept": "G4381200783-ASF",
+    "track": 104,
+    "frame": 23,
+    "direction": "ASCENDING",
+    "reference": "2026-10-07",
+    "secondary": "2026-10-19",
+    "revision": "2026-10-21T10:57:08.304Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_023_141_D_067_024_4000_SH_20260623T234333_20260623T234408_20260705T234333_20260705T234408_P05023_N_F_J_001",
+    "concept": "G4247628567-ASF",
+    "track": 141,
+    "frame": 67,
+    "direction": "DESCENDING",
+    "reference": "2026-06-23",
+    "secondary": "2026-07-05",
+    "revision": "2026-08-12T07:42:24.920Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_024_141_D_067_025_4000_SH_20260705T234333_20260705T234408_20260717T234332_20260717T234407_P05023_N_F_J_001",
+    "concept": "G4255469284-ASF",
+    "track": 141,
+    "frame": 67,
+    "direction": "DESCENDING",
+    "reference": "2026-07-05",
+    "secondary": "2026-07-17",
+    "revision": "2026-08-13T06:12:26.489Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_025_141_D_067_027_4000_SH_20260717T234332_20260717T234407_20260810T234331_20260810T234406_P05023_N_F_J_001",
+    "concept": "G4279902284-ASF",
+    "track": 141,
+    "frame": 67,
+    "direction": "DESCENDING",
+    "reference": "2026-07-17",
+    "secondary": "2026-08-10",
+    "revision": "2026-08-15T04:26:25.778Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001",
+    "concept": "G4289042265-ASF",
+    "track": 141,
+    "frame": 67,
+    "direction": "DESCENDING",
+    "reference": "2026-08-10",
+    "secondary": "2026-08-22",
+    "revision": "2026-08-27T01:53:26.184Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_028_141_D_067_029_4000_SH_20260822T234330_20260822T234405_20260903T234330_20260903T234405_P05023_N_F_J_001",
+    "concept": "G4299649727-ASF",
+    "track": 141,
+    "frame": 67,
+    "direction": "DESCENDING",
+    "reference": "2026-08-22",
+    "secondary": "2026-09-03",
+    "revision": "2026-09-06T00:34:26.746Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_029_141_D_067_030_4000_SH_20260903T234330_20260903T234405_20260915T234330_20260915T234405_P05023_N_F_J_001",
+    "concept": "G4314912627-ASF",
+    "track": 141,
+    "frame": 67,
+    "direction": "DESCENDING",
+    "reference": "2026-09-03",
+    "secondary": "2026-09-15",
+    "revision": "2026-09-18T01:16:33.887Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001",
+    "concept": "G4328856513-ASF",
+    "track": 141,
+    "frame": 67,
+    "direction": "DESCENDING",
+    "reference": "2026-09-15",
+    "secondary": "2026-09-27",
+    "revision": "2026-09-30T04:55:22.553Z"
+   },
+   {
+    "granule": "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001",
+    "concept": "G4359740150-ASF",
+    "track": 141,
+    "frame": 67,
+    "direction": "DESCENDING",
+    "reference": "2026-09-27",
+    "secondary": "2026-10-09",
+    "revision": "2026-10-12T09:23:05.231Z"
+   }
+  ]
+ }
+}
