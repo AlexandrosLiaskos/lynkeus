@@ -2,6 +2,7 @@
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { useEffect, useRef, type CSSProperties, type KeyboardEvent, type PointerEvent, type ReactNode } from "react";
 import { Icon } from "../icon/Icon";
+import { MotionRoot } from "../motion/MotionRoot";
 import { PANE_WIDTH, panesStore, setPaneWidth, widthAfterKey, widthHolder, type PaneSide } from "../panes";
 import { useStore } from "../store";
 import {
@@ -39,6 +40,9 @@ interface DockProps {
  * the stack and the map, and a second click hides it. The pane also hides when the pointer is pressed, or the
  * keyboard focus moves, in the map, and when a pane of the stack is opened or brought to the front. Work in the
  * ribbon or in the panes of the other side leaves it in place.
+ *
+ * The panes of the side enter and leave with the Motion library (see `DockPane`), and at once for a visitor who
+ * has asked for less motion.
  */
 export function Dock({ side, icons, children }: DockProps) {
   const dock = useStore(dockStore);
@@ -121,62 +125,64 @@ export function Dock({ side, icons, children }: DockProps) {
       : `dock dock--${side}${stack.length === 0 ? " dock--bare" : ""}`;
 
   return (
-    <div className={className} style={{ "--dock-width": `${String(width)}px` } as CSSProperties}>
-      {strip.length > 0 ? (
-        <div className="dock-rail" role="group" aria-label={`Hidden panes ${place}`}>
-          {strip.map(({ id, title }) => (
-            <button
-              key={id}
-              type="button"
-              id={tabElementId(id)}
-              aria-expanded={id === revealed}
-              aria-controls={paneElementId(id)}
-              onClick={() => togglePane(id)}
-            >
-              {icons?.[id] ? <Icon name={icons[id]} /> : null}
-              <span className="dock-rail-name">{title}</span>
-            </button>
-          ))}
-        </div>
-      ) : null}
-      <div className="dock-stack">
-        <div className="dock-panes">{children}</div>
-        {stack.length > 1 ? (
-          <div className="dock-tabs" role="tablist" aria-label={`Panes ${place}`} onKeyDown={onTabKeyDown}>
-            {stack.map(({ id, title }) => (
+    <MotionRoot>
+      <div className={className} style={{ "--dock-width": `${String(width)}px` } as CSSProperties}>
+        {strip.length > 0 ? (
+          <div className="dock-rail" role="group" aria-label={`Hidden panes ${place}`}>
+            {strip.map(({ id, title }) => (
               <button
                 key={id}
                 type="button"
-                role="tab"
                 id={tabElementId(id)}
-                aria-selected={id === front}
+                aria-expanded={id === revealed}
                 aria-controls={paneElementId(id)}
-                tabIndex={id === front ? 0 : -1}
-                onClick={() => showPane(id)}
+                onClick={() => togglePane(id)}
               >
-                {title}
+                {icons?.[id] ? <Icon name={icons[id]} /> : null}
+                <span className="dock-rail-name">{title}</span>
               </button>
             ))}
           </div>
         ) : null}
+        <div className="dock-stack">
+          <div className="dock-panes">{children}</div>
+          {stack.length > 1 ? (
+            <div className="dock-tabs" role="tablist" aria-label={`Panes ${place}`} onKeyDown={onTabKeyDown}>
+              {stack.map(({ id, title }) => (
+                <button
+                  key={id}
+                  type="button"
+                  role="tab"
+                  id={tabElementId(id)}
+                  aria-selected={id === front}
+                  aria-controls={paneElementId(id)}
+                  tabIndex={id === front ? 0 : -1}
+                  onClick={() => showPane(id)}
+                >
+                  {title}
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </div>
+        {stack.length > 0 || revealed !== null ? (
+          <div
+            className="dock-edge"
+            role="separator"
+            tabIndex={0}
+            aria-orientation="vertical"
+            aria-label={`Width of the panes ${place}`}
+            aria-valuenow={width}
+            aria-valuemin={PANE_WIDTH.smallest}
+            aria-valuemax={PANE_WIDTH.largest}
+            onKeyDown={onEdgeKeyDown}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={endDrag}
+            onPointerCancel={endDrag}
+          />
+        ) : null}
       </div>
-      {stack.length > 0 || revealed !== null ? (
-        <div
-          className="dock-edge"
-          role="separator"
-          tabIndex={0}
-          aria-orientation="vertical"
-          aria-label={`Width of the panes ${place}`}
-          aria-valuenow={width}
-          aria-valuemin={PANE_WIDTH.smallest}
-          aria-valuemax={PANE_WIDTH.largest}
-          onKeyDown={onEdgeKeyDown}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={endDrag}
-          onPointerCancel={endDrag}
-        />
-      ) : null}
-    </div>
+    </MotionRoot>
   );
 }

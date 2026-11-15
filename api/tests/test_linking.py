@@ -6,8 +6,10 @@ import pytest
 from pydantic import TypeAdapter, ValidationError
 
 from lynkeus.layers import LayerDescription
+from lynkeus.link import MOST_REPORTED_JOBS
 from lynkeus.linking import (
     MOST_BYTES,
+    MOST_REPORT_JOBS,
     USER_CODE_LETTERS,
     DismissTask,
     ForgetTask,
@@ -17,6 +19,7 @@ from lynkeus.linking import (
     ReadTask,
     RemoveTask,
     RenameTask,
+    Report,
     ServerLimits,
     StartTask,
     Task,
@@ -103,3 +106,9 @@ def test_report_of_a_job_carries_the_centre_frequency_of_its_layer() -> None:
     before = JobState.model_validate_json(earlier)
     assert before.layer is not None
     assert before.layer.frequency is None
+
+
+def test_report_names_a_limited_number_of_jobs_and_the_program_stays_far_below_it() -> None:
+    jobs = Report.model_json_schema()["properties"]["jobs"]
+    assert jobs["maxItems"] == MOST_REPORT_JOBS
+    assert 5 * MOST_REPORTED_JOBS <= MOST_REPORT_JOBS

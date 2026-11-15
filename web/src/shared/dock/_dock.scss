@@ -62,6 +62,13 @@
   display: none;
 }
 
+// A pane of the stack never moves: it only fades in (see `DockPane`). A pane that returns from the edge of the
+// window to the stack still carries, for one frame, the transform with which it left, and it would reach
+// outside the window. The rule is marked important, because that transform is written on the element itself.
+.dock-pane:not(.dock-pane--over) {
+  transform: none !important;
+}
+
 // A pane that hides automatically shows beside the strip, over the stack and the map.
 .dock-pane--over {
   position: absolute;
@@ -72,6 +79,15 @@
   width: var(--dock-flyout);
   background: uswds.color("white");
   box-shadow: 0 0 0.5rem uswds.color("black-transparent-20");
+}
+
+// A pane that hides automatically and does not show stays on the page while it fades and moves to the edge of
+// the window, inert and out of the way of the pointer. When that motion has ended, `DockPane` sets the variable
+// to none through the Motion library, and the pane is taken from the page. A pane that shows again no longer
+// matches this rule, so it is on the page at once, before it fades in.
+.dock-pane--over[hidden] {
+  display: var(--dock-pane-display, flex);
+  pointer-events: none;
 }
 
 .dock--left .dock-pane--over {

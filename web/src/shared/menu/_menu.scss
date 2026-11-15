@@ -14,6 +14,21 @@
   background: uswds.color("white");
   font-size: tokens.$text;
   list-style: none;
+  // The menu enters with a change of its opacity and a move of 4 pixels from the side of its button, two
+  // properties that the graphics card draws. A user who has asked the operating system for less motion sees it
+  // at once. The menu leaves at once: its own code removes it from the page as soon as it closes.
+  animation: menu-enter tokens.$motion-enter tokens.$ease-enter;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes menu-enter {
+  from {
+    transform: translateY(-0.25rem);
+    opacity: 0;
+  }
 }
 
 .menu button {

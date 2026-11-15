@@ -42,7 +42,11 @@ EARTHDATA_TIME = 8 * 3600.0
 """The longest time for which the Earthdata token of a session is kept, in seconds."""
 
 MAX_SESSIONS = 5000
-"""The largest number of sessions. Beyond it, a session without jobs and layers is removed for each new one."""
+"""The largest number of sessions.
+
+Beyond it, a session without layers and series, whose jobs all failed or were dismissed, is removed for
+each new one.
+"""
 
 USE_PAUSE = 60.0
 """The shortest time between two records of the last use of a session, in seconds."""
@@ -126,7 +130,7 @@ class Sessions:
         ------
         TooManySessionsError
             When the server holds ``MAX_SESSIONS`` sessions and each of them
-            holds a job, a layer or an Earthdata token.
+            holds a layer, a series, an Earthdata token or a job that waits, runs or ended successfully.
         """
         with self._lock:
             if self._store.count_sessions() >= MAX_SESSIONS:

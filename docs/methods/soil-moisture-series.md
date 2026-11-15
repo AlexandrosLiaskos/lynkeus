@@ -12,7 +12,7 @@
 | | |
 |---|---|
 | What it shows | The soil moisture of many dates against time, at a point or as the mean of the area, in the cells whose retrieval NISAR recommends on each date. |
-| Input | The layer `soilMoisture` of 2 to 25 SME2 products of one track, direction and frame, each with the layer `retrievalQualityFlag` of its product, which the form takes by itself. A point is given by its latitude and longitude. |
+| Input | The layer `soilMoisture` of 2 to 25 SME2 products of one track, direction and frame, each with the layer `retrievalQualityFlag` of its product, which the form takes by itself. A point is given by its latitude and longitude, and an area is drawn on the map or is the whole layer. |
 | Formula | On each date, the mean of the soil moisture of the cells whose flag has the lowest bit 0. At a point it is the one cell that holds the point, when NISAR recommends its retrieval. |
 | Result | A series in cubic metres of water in a cubic metre of soil (m3 m-3): one value for each date, with the number of cells behind it. It is shown as a chart and a table, has no file, and states which cells were left out. |
 | How to read | A higher value is a wetter soil. A date without a value has no recommended cell at the point, or in the area. The mean of the area is that of the recommended cells of each date, which may lie in other places on other dates. |
@@ -192,3 +192,6 @@ The exact numbers of the comparison are in `docs/research/analysis-soil-moisture
    of the flag was added.
 3. How the chart of a series looks on a screen. This was run in the tests of the interface only; it
    was not seen in a browser.
+4. A series for an area drawn on the map. It uses the code of the other Series tools, whose means over a
+   drawn polygon were compared with `gdal raster zonal-stats`; for the soil moisture this case was not
+   compared.

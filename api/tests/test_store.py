@@ -118,6 +118,13 @@ def test_dismissed_job_is_not_listed_and_keeps_its_name(store: Store) -> None:
     assert store.sessions_without_content() == ["s1", "s2"]
 
 
+def test_session_whose_only_job_failed_holds_no_content(store: Store) -> None:
+    store.add_job(_job("j1"))
+    assert store.sessions_without_content() == ["s2"]
+    store.fail_job("j1", "Failed.", 2.0)
+    assert store.sessions_without_content() == ["s1", "s2"]
+
+
 def test_oldest_records_of_finished_and_dismissed_jobs_are_removed(store: Store) -> None:
     for number in range(6):
         store.add_job(_job(f"j{number}", created=float(number)))

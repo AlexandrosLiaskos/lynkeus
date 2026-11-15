@@ -2,7 +2,7 @@
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { formatDay } from "../data/products";
 import { parseAngle } from "../map/coordinates";
-import type { LayerDescription } from "../shared/layer";
+import type { LayerDescription, Shape } from "../shared/layer";
 import type { SeriesInputs } from "../shared/series";
 import {
   accepted,
@@ -148,8 +148,11 @@ export function seriesTitle(tool: SeriesTool, layers: readonly LayerDescription[
   return `Series of ${head.charAt(0).toLowerCase()}${head.slice(1)}, ${from} to ${to}`;
 }
 
-/** Where a series is computed: the mean of the whole area of the layers, or the cell that holds a point. */
-export const PLACES = { area: "Whole area", point: "At a point" } as const;
+/**
+ * Where a series is computed: the mean of an area, which is the area drawn on the map or, without one, the whole
+ * area of the layers, or the cell that holds a point.
+ */
+export const PLACES = { area: "For the area", point: "At a point" } as const;
 export type Place = keyof typeof PLACES;
 
 /**
@@ -174,6 +177,8 @@ export interface SeriesChoices {
   /** The latitude and the longitude of the point, as the fields hold them. */
   latitude: string;
   longitude: string;
+  /** The area drawn on the map, which a series for the area takes, or null for the whole area of the layers. */
+  area: Shape | null;
   /** The name of the series, as the field holds it. */
   title: string;
   /**
@@ -214,7 +219,7 @@ export interface SeriesChecked {
  * dates, or 2 to 25 when the tool takes the retrieval quality flag of each product, which must then be in the
  * session; the form sends each flag after its layer. At a point, the latitude and the longitude must be angles in
  * degrees. The name of the series must have 1 to 200 characters. Whether the point lies inside the area of the
- * layers is checked by the server.
+ * layers is checked by the server. A series for the area sends the area drawn on the map, when there is one.
  */
 export function checkSeries({
   group,
@@ -222,6 +227,7 @@ export function checkSeries({
   place,
   latitude,
   longitude,
+  area,
   title,
   flagOf,
   most = MOST_LAYERS,
@@ -259,6 +265,7 @@ export function checkSeries({
         }),
         title: name,
         ...(north !== null && east !== null ? { point: { longitude: east, latitude: north } } : {}),
+        ...(place === "area" && area ? { area } : {}),
       }
     : null;
   return { layers, faults, inputs };

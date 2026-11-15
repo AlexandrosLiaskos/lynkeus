@@ -109,3 +109,23 @@ test("a point lies on the Earth, and a cell has a row and a column counted from 
   expect(isCell({ row: 1.5, column: 0, longitude: 0, latitude: 0 })).toBe(false);
   expect(isCell({ column: 0, longitude: 0, latitude: 0 })).toBe(false);
 });
+
+test("a series of an area drawn on the map carries the area, and a series at a point carries none", () => {
+  const shape = {
+    crs: "EPSG:3857",
+    kind: "rectangle",
+    points: [
+      [0, 0],
+      [10, 0],
+      [10, 10],
+      [0, 10],
+      [0, 0],
+    ],
+  } as const;
+  expect(isSeriesDescription(series({ shape }))).toBe(true);
+  expect(isSeriesDescription(pairSeries({ shape }))).toBe(false);
+  expect(isSeriesDescription(series({ shape: { ...shape, points: shape.points.slice(0, 3) } }))).toBe(false);
+  expect(SERVER).toContain(
+    'raise ValueError("a series is made at a point or for an area drawn on the map, not for both")',
+  );
+});

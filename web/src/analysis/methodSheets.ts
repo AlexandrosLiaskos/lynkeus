@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
-import type { Method } from "./methods";
-import type { SheetTool } from "./series";
+import type { Method, Sheet } from "./methods";
 
 /**
  * The summary of the method of each finished tool: the title of its method sheet in `docs/methods/` and the rows
@@ -9,7 +8,7 @@ import type { SheetTool } from "./series";
  * here, and the test `methodSheets.test.ts` requires each row to equal the row of its sheet. A change of a sheet
  * is repeated here.
  */
-export const METHODS: Record<SheetTool, Method> = {
+export const METHODS: Record<Sheet, Method> = {
   "backscatter-state": {
     title: "Backscatter, One date",
     rows: [
@@ -278,11 +277,11 @@ export const METHODS: Record<SheetTool, Method> = {
       },
       {
         name: "Input",
-        text: "The same backscatter layer of 2 to 50 GCOV products of one track, direction and frame, one for each date. A point is given by its latitude and longitude.",
+        text: "The same backscatter layer of 2 to 50 GCOV products of one track, direction and frame, one for each date. A point is given by its latitude and longitude, and an area is drawn on the map or is the whole layer.",
       },
       {
         name: "Formula",
-        text: "`10 * log10(mean(gamma0))` over the cells of each date. At a point it is the one cell that holds the point.",
+        text: "`10 * log10(mean(gamma0))` over the cells of each date inside the area. At a point it is the one cell that holds the point.",
       },
       {
         name: "Result",
@@ -298,7 +297,7 @@ export const METHODS: Record<SheetTool, Method> = {
       },
       {
         name: "Checked",
-        text: "For the mean of the area and at five points, the values differ from those of the notebooks of the ASF NISAR Cookbook by less than 0.00001 dB (lower Merrimack River, 27 Sep to 2 Nov 2026).",
+        text: "For the mean of the area and at five points, the values differ from those of the notebooks of the ASF NISAR Cookbook by less than 0.00001 dB (lower Merrimack River, 27 Sep to 2 Nov 2026). For a polygon drawn on the map, the value and the number of cells of every date equal those that the mean of `gdal raster zonal-stats` of GDAL 3.12.2 gives.",
       },
       {
         name: "References",
@@ -315,11 +314,11 @@ export const METHODS: Record<SheetTool, Method> = {
       },
       {
         name: "Input",
-        text: "The same coherence layer (`coherenceMagnitude`) of 2 to 50 GUNW products of one track, direction and frame, one for each pair. A point is given by its latitude and longitude.",
+        text: "The same coherence layer (`coherenceMagnitude`) of 2 to 50 GUNW products of one track, direction and frame, one for each pair. A point is given by its latitude and longitude, and an area is drawn on the map or is the whole layer.",
       },
       {
         name: "Formula",
-        text: "The mean of the layer of the product over the cells of each pair. At a point it is the one cell that holds the point.",
+        text: "The mean of the layer of the product over the cells of each pair inside the area. At a point it is the one cell that holds the point.",
       },
       {
         name: "Result",
@@ -335,7 +334,7 @@ export const METHODS: Record<SheetTool, Method> = {
       },
       {
         name: "Checked",
-        text: "For the mean of the area, the values differ by less than 0.0000001 from the mean that the code of a notebook of the ASF NISAR Cookbook gives on the same layers, and at five points they are equal (lower Merrimack River, 15 Sep to 21 Oct 2026).",
+        text: "For the mean of the area, the values differ by less than 0.0000001 from the mean that the code of a notebook of the ASF NISAR Cookbook gives on the same layers, and at five points they are equal (lower Merrimack River, 15 Sep to 21 Oct 2026). For a polygon drawn on the map, the value and the number of cells of every date equal those that the mean of `gdal raster zonal-stats` of GDAL 3.12.2 gives.",
       },
       {
         name: "References",
@@ -352,7 +351,7 @@ export const METHODS: Record<SheetTool, Method> = {
       },
       {
         name: "Input",
-        text: "The layer `soilMoisture` of 2 to 25 SME2 products of one track, direction and frame, each with the layer `retrievalQualityFlag` of its product, which the form takes by itself. A point is given by its latitude and longitude.",
+        text: "The layer `soilMoisture` of 2 to 25 SME2 products of one track, direction and frame, each with the layer `retrievalQualityFlag` of its product, which the form takes by itself. A point is given by its latitude and longitude, and an area is drawn on the map or is the whole layer.",
       },
       {
         name: "Formula",
@@ -377,6 +376,43 @@ export const METHODS: Record<SheetTool, Method> = {
       {
         name: "References",
         text: "[NISAR L3 SME2 Product Specification, JPL D-107677 Rev C](https://nisar-docs.asf.alaska.edu/product-specification/). [NISAR L3 Soil Moisture ATBD, JPL D-107679 Release 3.3](https://nisar-docs.asf.alaska.edu/atbd/). [ASF NISAR Cookbook](https://github.com/ASFOpenSARlab/NISAR_Cookbook).",
+      },
+    ],
+  },
+  "area-statistics": {
+    title: "Statistics in an area",
+    rows: [
+      {
+        name: "What it shows",
+        text: "The number of cells with data of a result inside a rectangle or polygon drawn on the map, with their mean, standard deviation, lowest value, median and highest value.",
+      },
+      {
+        name: "Input",
+        text: "The result of a tool that maps, at full resolution, and an area drawn on the map: a rectangle or a polygon of at most 250 corners whose sides do not cross.",
+      },
+      {
+        name: "Formula",
+        text: "A cell counts when its centre lies inside the area and it holds a value; then `mean = sum(x) / n` and `deviation = sqrt(sum((x - mean)^2) / n)`.",
+      },
+      {
+        name: "Result",
+        text: "Numbers in the unit of the result, shown in its Properties and stored in its description and its STAC record. The median of an even number of cells is the mean of the two in the middle.",
+      },
+      {
+        name: "How to read",
+        text: "The numbers describe only the cells inside the area. For a result in decibels the mean is that of the decibel values, and not the decibels of the mean power, which Backscatter, Series gives.",
+      },
+      {
+        name: "Limits",
+        text: "A cell that a side cuts counts only when its centre lies inside. Each side, a straight line on the map, is followed on the grid of the result in pieces of at most one cell. The statistics belong to the area of the run, so an area drawn later needs a new run.",
+      },
+      {
+        name: "Checked",
+        text: "With three areas on a backscatter result and a coherence result of the pilot area, `gdal raster zonal-stats` of GDAL 3.12.2 counts the same cells, with the same values, and gives the same lowest and highest value. The median of the values that it lists is the same, and the mean and the standard deviation agree to 12 decimal places (lower Merrimack River, Oct 2026).",
+      },
+      {
+        name: "References",
+        text: "[GDAL, gdal raster zonal-stats](https://gdal.org/en/stable/programs/gdal_raster_zonal_stats.html). [GDAL, gdal_rasterize](https://gdal.org/en/stable/programs/gdal_rasterize.html), for the rule of the cell centre.",
       },
     ],
   },

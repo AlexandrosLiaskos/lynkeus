@@ -3,9 +3,8 @@
 import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, expect, test } from "vitest";
-import { ROW_NAMES } from "../analysis/methods";
+import { ROW_NAMES, SHEETS } from "../analysis/methods";
 import { METHODS } from "../analysis/methodSheets";
-import { SHEET_TOOLS } from "../analysis/series";
 import { Ribbon } from "../ribbon/Ribbon";
 import { resetDock } from "../shared/dock/dock";
 import { ABOUT } from "./about";
@@ -47,13 +46,13 @@ test("the button Methods of the Help tab is active and opens the dialog with eve
   expect(methodsStore.get()).toEqual({ open: true, tool: null });
   const dialog = screen.getByRole<HTMLDialogElement>("dialog", { name: "Methods" });
   expect(dialog.open).toBe(true);
-  for (const tool of SHEET_TOOLS) {
+  for (const tool of SHEETS) {
     const toggle = within(dialog).getByRole("button", { name: METHODS[tool].title });
     expect(toggle.getAttribute("aria-expanded")).toBe("true");
   }
 });
 
-test("the page shows one section for each finished tool, under the title of its sheet", () => {
+test("the page shows one section for each finished tool and one for the statistics in an area, under the title of its sheet", () => {
   render(<MethodsList asked={null} />);
   expect(screen.getAllByRole("heading", { level: 3 }).map((heading) => heading.textContent)).toEqual([
     "Backscatter, One date",
@@ -66,19 +65,32 @@ test("the page shows one section for each finished tool, under the title of its 
     "Backscatter, Series",
     "Coherence, Series",
     "Soil moisture, Series",
+    "Statistics in an area",
   ]);
   expect(screen.getAllByRole("heading", { level: 3 }).map((heading) => heading.textContent)).toEqual(
-    SHEET_TOOLS.map((tool) => METHODS[tool].title),
+    SHEETS.map((tool) => METHODS[tool].title),
   );
 });
 
 test("the section of the tool that a form asked for is open, and the others are closed", () => {
   render(<MethodsDialog />);
   act(() => methodsStore.set({ open: true, tool: "backscatter-change" }));
-  const expanded = SHEET_TOOLS.map((tool) =>
+  const expanded = SHEETS.map((tool) =>
     screen.getByRole("button", { name: METHODS[tool].title, hidden: true }).getAttribute("aria-expanded"),
   );
-  expect(expanded).toEqual(["false", "true", "false", "false", "false", "false", "false", "false", "false", "false"]);
+  expect(expanded).toEqual([
+    "false",
+    "true",
+    "false",
+    "false",
+    "false",
+    "false",
+    "false",
+    "false",
+    "false",
+    "false",
+    "false",
+  ]);
 });
 
 test.each([
@@ -92,7 +104,7 @@ test.each([
 ] as const)("the link Method of %s opens its section alone", (asked) => {
   render(<MethodsDialog />);
   act(() => methodsStore.set({ open: true, tool: asked }));
-  for (const tool of SHEET_TOOLS) {
+  for (const tool of SHEETS) {
     const toggle = screen.getByRole("button", { name: METHODS[tool].title, hidden: true });
     expect(toggle.getAttribute("aria-expanded")).toBe(tool === asked ? "true" : "false");
   }
@@ -111,7 +123,7 @@ function words(text: string): string {
   return text.replace(/`([^`]+)`/g, "$1").replace(/\[([^\]]+)\]\([^)]+\)/g, "$1");
 }
 
-test.each(SHEET_TOOLS)(
+test.each(SHEETS)(
   "the section of %s shows one list: the rows of the summary, and the address of the full sheet",
   (tool) => {
     const { container } = render(<MethodSheet tool={tool} />);

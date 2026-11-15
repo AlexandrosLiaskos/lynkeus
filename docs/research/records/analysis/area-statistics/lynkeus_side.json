@@ -1,0 +1,603 @@
+{
+ "program": "Lynkeus 0.1.0",
+ "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+ "python": "3.13.18",
+ "numpy": "2.5.4",
+ "rasterio": "1.5.2",
+ "gdal_of_rasterio": "3.12.2",
+ "areas": {
+  "rectangle": {
+   "degrees": [
+    [
+     -71.05,
+     42.7
+    ],
+    [
+     -70.9,
+     42.7
+    ],
+    [
+     -70.9,
+     42.82
+    ],
+    [
+     -71.05,
+     42.82
+    ]
+   ],
+   "shape": {
+    "crs": "EPSG:3857",
+    "kind": "rectangle",
+    "points": [
+     [
+      -7909249.82,
+      5266419.7
+     ],
+     [
+      -7892551.9,
+      5266419.7
+     ],
+     [
+      -7892551.9,
+      5284614.02
+     ],
+     [
+      -7909249.82,
+      5284614.02
+     ],
+     [
+      -7909249.82,
+      5266419.7
+     ]
+    ]
+   }
+  },
+  "polygon": {
+   "degrees": [
+    [
+     -70.95,
+     42.78
+    ],
+    [
+     -70.86,
+     42.76
+    ],
+    [
+     -70.8,
+     42.8
+    ],
+    [
+     -70.83,
+     42.84
+    ],
+    [
+     -70.88,
+     42.81
+    ],
+    [
+     -70.92,
+     42.86
+    ],
+    [
+     -70.97,
+     42.83
+    ]
+   ],
+   "shape": {
+    "crs": "EPSG:3857",
+    "kind": "polygon",
+    "points": [
+     [
+      -7898117.87,
+      5278545.33
+     ],
+     [
+      -7888099.12,
+      5275512.45
+     ],
+     [
+      -7881419.95,
+      5281579.18
+     ],
+     [
+      -7884759.53,
+      5287649.84
+     ],
+     [
+      -7890325.51,
+      5283096.48
+     ],
+     [
+      -7894778.29,
+      5290686.64
+     ],
+     [
+      -7900344.26,
+      5286131.81
+     ],
+     [
+      -7898117.87,
+      5278545.33
+     ]
+    ]
+   }
+  },
+  "across-the-edge": {
+   "degrees": [
+    [
+     -70.85,
+     42.88
+    ],
+    [
+     -70.7,
+     42.86
+    ],
+    [
+     -70.68,
+     42.99
+    ],
+    [
+     -70.8,
+     43.0
+    ],
+    [
+     -70.86,
+     42.93
+    ]
+   ],
+   "shape": {
+    "crs": "EPSG:3857",
+    "kind": "polygon",
+    "points": [
+     [
+      -7886985.92,
+      5293724.42
+     ],
+     [
+      -7870288.0,
+      5290686.64
+     ],
+     [
+      -7868061.61,
+      5310449.87
+     ],
+     [
+      -7881419.95,
+      5311971.85
+     ],
+     [
+      -7888099.12,
+      5301323.2
+     ],
+     [
+      -7886985.92,
+      5293724.42
+     ]
+    ]
+   }
+  }
+ },
+ "inputs": {
+  "ab08c2a0ebb107e2238acde5fb8a329e": {
+   "file": "files/ab08c2a0ebb107e2238acde5fb8a329e/gcov-hhhh-20260927.tif",
+   "product": "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+   "layer": "HHHH",
+   "dates": [
+    "2026-09-27"
+   ],
+   "sha256": "f3184485fdeac534b436d670bf3d4a5a8a324360e230399ae710ba1274e8dadf"
+  },
+  "ffbfd0c3360f0be55fe4f6453412b415": {
+   "file": "files/ffbfd0c3360f0be55fe4f6453412b415/gcov-hhhh-20261009.tif",
+   "product": "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+   "layer": "HHHH",
+   "dates": [
+    "2026-10-09"
+   ],
+   "sha256": "bfba2bfa3488451f0972df3dbc34242162ae00a5a7adc9ee85826f5ce7d539f0"
+  },
+  "e7045ec025f8a7a2397fca7a99902276": {
+   "file": "files/e7045ec025f8a7a2397fca7a99902276/gcov-hhhh-20261021.tif",
+   "product": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+   "layer": "HHHH",
+   "dates": [
+    "2026-10-21"
+   ],
+   "sha256": "19d013fbe63fb2501893681e9d865b3f5aa93afeaf3cbce6949d0ed7ea0ff262"
+  },
+  "e7084528cd2fbdabe0da018099e8ba69": {
+   "file": "files/e7084528cd2fbdabe0da018099e8ba69/gcov-hhhh-20261102.tif",
+   "product": "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5",
+   "layer": "HHHH",
+   "dates": [
+    "2026-11-02"
+   ],
+   "sha256": "9ea6c973f9e79c39bf5881a75ccede4b50f5875b394c0330981b311884884b34"
+  },
+  "8f9eb9a99bf63efa50af31a061da3265": {
+   "file": "files/8f9eb9a99bf63efa50af31a061da3265/gunw-wrappedinterferogram-hh-coherencemagnitude-20260915-20260927.tif",
+   "product": "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+   "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+   "dates": [
+    "2026-09-15",
+    "2026-09-27"
+   ],
+   "sha256": "605dd1a6e8bb17341e6c8815d569039e454c93ef8c7d29b79eb546f4ea3589b8"
+  },
+  "2df74db4382a6aeed2164231bcc9d0e8": {
+   "file": "files/2df74db4382a6aeed2164231bcc9d0e8/gunw-wrappedinterferogram-hh-coherencemagnitude-20260927-20261009.tif",
+   "product": "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+   "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+   "dates": [
+    "2026-09-27",
+    "2026-10-09"
+   ],
+   "sha256": "adf53bf40f856f216a372c98974aefb2697e0b505017dac1f15433c871079f3e"
+  },
+  "d34069fb70f91b284adc41acab5e765e": {
+   "file": "files/d34069fb70f91b284adc41acab5e765e/gunw-wrappedinterferogram-hh-coherencemagnitude-20261009-20261021.tif",
+   "product": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+   "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+   "dates": [
+    "2026-10-09",
+    "2026-10-21"
+   ],
+   "sha256": "458a0065fbef17f23c755e27545ca00049348bce18ef03bdd974ce2557162e10"
+  }
+ },
+ "runs": {
+  "backscatter-state-rectangle": {
+   "tool": "backscatter-state",
+   "input": "e7045ec025f8a7a2397fca7a99902276",
+   "area": "rectangle",
+   "seconds": 9.3,
+   "statistics": {
+    "cells": 1636536,
+    "mean": -6.561588559447672,
+    "deviation": 4.1465576447307,
+    "minimum": -27.58378791809082,
+    "median": -5.996809005737305,
+    "maximum": 28.929813385009766
+   },
+   "record": {
+    "rule": "A cell is counted when its centre lies inside the area and it holds a value.",
+    "count": 1636536,
+    "mean": -6.561588559447672,
+    "stddev": 4.1465576447307,
+    "minimum": -27.58378791809082,
+    "median": -5.996809005737305,
+    "maximum": 28.929813385009766
+   },
+   "record_area_equals_request": true,
+   "grid": {
+    "crs": "EPSG:32619",
+    "transform": [
+     10.0,
+     0.0,
+     319520.0,
+     0.0,
+     -10.0,
+     4757610.0
+    ],
+    "width": 3772,
+    "height": 3972
+   },
+   "outline_points": 5123,
+   "cells_inside_grid": 1636546,
+   "cells_inside_without_data": 10,
+   "cells_digest": "363fe3499e934cd68b923c57f814bc22058f78598e10c111910e2a62ca360006",
+   "values_digest": "23e65f46719f77e01390fd9740095e94a39cc6127855f1c1f3bcae6b87cb444c",
+   "result_sha256": "db5f723ad1b24b7da03527520834295b91e13eecd2b9ec0295a512f473608bc8",
+   "result_unit": "dB"
+  },
+  "backscatter-state-polygon": {
+   "tool": "backscatter-state",
+   "input": "e7045ec025f8a7a2397fca7a99902276",
+   "area": "polygon",
+   "seconds": 8.8,
+   "statistics": {
+    "cells": 844889,
+    "mean": -8.980855716722765,
+    "deviation": 5.369301405067645,
+    "minimum": -27.893733978271484,
+    "median": -8.215362548828125,
+    "maximum": 30.715600967407227
+   },
+   "record": {
+    "rule": "A cell is counted when its centre lies inside the area and it holds a value.",
+    "count": 844889,
+    "mean": -8.980855716722765,
+    "stddev": 5.369301405067645,
+    "minimum": -27.893733978271484,
+    "median": -8.215362548828125,
+    "maximum": 30.715600967407227
+   },
+   "record_area_equals_request": true,
+   "grid": {
+    "crs": "EPSG:32619",
+    "transform": [
+     10.0,
+     0.0,
+     319520.0,
+     0.0,
+     -10.0,
+     4757610.0
+    ],
+    "width": 3772,
+    "height": 3972
+   },
+   "outline_points": 4222,
+   "cells_inside_grid": 844903,
+   "cells_inside_without_data": 14,
+   "cells_digest": "fa048cc31af6be6e673554f574d98b26f7cc0dcd111ef72717dec3644bdd987a",
+   "values_digest": "2461733b3eca0dc2995bb30e251e9d052dfc0ad4356718a81d56ff1b6f5391e9",
+   "result_sha256": "28a22cd170c498e4a3d4e32547d372d28c75fb6e524b2b4953229855828bb296",
+   "result_unit": "dB"
+  },
+  "backscatter-state-across-the-edge": {
+   "tool": "backscatter-state",
+   "input": "e7045ec025f8a7a2397fca7a99902276",
+   "area": "across-the-edge",
+   "seconds": 8.1,
+   "statistics": {
+    "cells": 720547,
+    "mean": -13.788936097075057,
+    "deviation": 5.169261430280264,
+    "minimum": -29.06432342529297,
+    "median": -14.979406356811523,
+    "maximum": 28.258670806884766
+   },
+   "record": {
+    "rule": "A cell is counted when its centre lies inside the area and it holds a value.",
+    "count": 720547,
+    "mean": -13.788936097075057,
+    "stddev": 5.169261430280264,
+    "minimum": -29.06432342529297,
+    "median": -14.979406356811523,
+    "maximum": 28.258670806884766
+   },
+   "record_area_equals_request": true,
+   "grid": {
+    "crs": "EPSG:32619",
+    "transform": [
+     10.0,
+     0.0,
+     319520.0,
+     0.0,
+     -10.0,
+     4757610.0
+    ],
+    "width": 3772,
+    "height": 3972
+   },
+   "outline_points": 5167,
+   "cells_inside_grid": 786774,
+   "cells_inside_without_data": 66227,
+   "cells_digest": "ecdec1fa443a4c5f0b305691f99b28c4e45a3b9bc59087268e142f147d7dc136",
+   "values_digest": "d6d484374951d9b29c4ea176788345f5c2e7c09a97ab32b9aec59171b0bd9b42",
+   "result_sha256": "73a9d48c27e711209c2f6b859b306235ae710b8171117f8be0ced1a99f238fdb",
+   "result_unit": "dB"
+  },
+  "coherence-state-rectangle": {
+   "tool": "coherence-state",
+   "input": "d34069fb70f91b284adc41acab5e765e",
+   "area": "rectangle",
+   "seconds": 1.2,
+   "statistics": {
+    "cells": 409132,
+    "mean": 0.5377536318456524,
+    "deviation": 0.14473926018347813,
+    "minimum": 0.008911311626434326,
+    "median": 0.5491892993450165,
+    "maximum": 0.9939855933189392
+   },
+   "record": {
+    "rule": "A cell is counted when its centre lies inside the area and it holds a value.",
+    "count": 409132,
+    "mean": 0.5377536318456524,
+    "stddev": 0.14473926018347813,
+    "minimum": 0.008911311626434326,
+    "median": 0.5491892993450165,
+    "maximum": 0.9939855933189392
+   },
+   "record_area_equals_request": true,
+   "grid": {
+    "crs": "EPSG:32619",
+    "transform": [
+     20.0,
+     0.0,
+     319520.0,
+     0.0,
+     -20.0,
+     4757600.0
+    ],
+    "width": 1886,
+    "height": 1985
+   },
+   "outline_points": 2564,
+   "cells_inside_grid": 409132,
+   "cells_inside_without_data": 0,
+   "cells_digest": "3e2ce327557769689b4a126495a837666603068eed773726dc2fb426208a7a1a",
+   "values_digest": "f70788b86891cf7cae6a2699c558836410d8604dbb4d24bfd95b97c7ffa57093",
+   "result_sha256": "badf57fe1bc631e9f5f08b9637b2d06964ac1d124dba11b03dcb68f1531dc3ad",
+   "result_unit": "1"
+  },
+  "coherence-state-polygon": {
+   "tool": "coherence-state",
+   "input": "d34069fb70f91b284adc41acab5e765e",
+   "area": "polygon",
+   "seconds": 0.9,
+   "statistics": {
+    "cells": 211222,
+    "mean": 0.502163065967921,
+    "deviation": 0.19485275309961456,
+    "minimum": 0.01701328344643116,
+    "median": 0.5312507450580597,
+    "maximum": 0.9901248812675476
+   },
+   "record": {
+    "rule": "A cell is counted when its centre lies inside the area and it holds a value.",
+    "count": 211222,
+    "mean": 0.502163065967921,
+    "stddev": 0.19485275309961456,
+    "minimum": 0.01701328344643116,
+    "median": 0.5312507450580597,
+    "maximum": 0.9901248812675476
+   },
+   "record_area_equals_request": true,
+   "grid": {
+    "crs": "EPSG:32619",
+    "transform": [
+     20.0,
+     0.0,
+     319520.0,
+     0.0,
+     -20.0,
+     4757600.0
+    ],
+    "width": 1886,
+    "height": 1985
+   },
+   "outline_points": 2113,
+   "cells_inside_grid": 211222,
+   "cells_inside_without_data": 0,
+   "cells_digest": "98345c025579c325cc80ab52d965803b1b28a62deb181c4a56ac6ee03d285b2f",
+   "values_digest": "518bb5fb5b98d41e179077c9c5ce614dc3b47cc6caa59f018511af3fa967ebba",
+   "result_sha256": "41405cead024459d375e78384dbff9be1a46276cb7a9ca88682688b149ad895d",
+   "result_unit": "1"
+  },
+  "coherence-state-across-the-edge": {
+   "tool": "coherence-state",
+   "input": "d34069fb70f91b284adc41acab5e765e",
+   "area": "across-the-edge",
+   "seconds": 0.8,
+   "statistics": {
+    "cells": 180139,
+    "mean": 0.31144953471714387,
+    "deviation": 0.2011459063691948,
+    "minimum": 0.007777792401611805,
+    "median": 0.23657092452049255,
+    "maximum": 0.9935879111289978
+   },
+   "record": {
+    "rule": "A cell is counted when its centre lies inside the area and it holds a value.",
+    "count": 180139,
+    "mean": 0.31144953471714387,
+    "stddev": 0.2011459063691948,
+    "minimum": 0.007777792401611805,
+    "median": 0.23657092452049255,
+    "maximum": 0.9935879111289978
+   },
+   "record_area_equals_request": true,
+   "grid": {
+    "crs": "EPSG:32619",
+    "transform": [
+     20.0,
+     0.0,
+     319520.0,
+     0.0,
+     -20.0,
+     4757600.0
+    ],
+    "width": 1886,
+    "height": 1985
+   },
+   "outline_points": 2585,
+   "cells_inside_grid": 196514,
+   "cells_inside_without_data": 16375,
+   "cells_digest": "281159924b11e0f2ed06679094e98e1ce0d51b8e84fce5eb8a495db77ce300f5",
+   "values_digest": "cdc325309e3dc8f073ecef87435134dbf1a9c1fb7d85c22f4ec1d2786e6aa26d",
+   "result_sha256": "5628dcc3fb5ecd1e72d99df9d3b9cd1c3141374ad200d431a2b5be3608c6a857",
+   "result_unit": "1"
+  }
+ },
+ "series": {
+  "backscatter-series": {
+   "reduction": "mean-power",
+   "unit": "dB",
+   "shape_equals_request": true,
+   "entries": [
+    {
+     "dates": [
+      "2026-09-27"
+     ],
+     "value": -5.000344991140121,
+     "cells": 844889,
+     "input": "ab08c2a0ebb107e2238acde5fb8a329e",
+     "cells_with_data": 844889,
+     "cells_zero_or_below": 0
+    },
+    {
+     "dates": [
+      "2026-10-09"
+     ],
+     "value": -5.437217610885132,
+     "cells": 844888,
+     "input": "ffbfd0c3360f0be55fe4f6453412b415",
+     "cells_with_data": 844888,
+     "cells_zero_or_below": 0
+    },
+    {
+     "dates": [
+      "2026-10-21"
+     ],
+     "value": -5.405973677611534,
+     "cells": 844889,
+     "input": "e7045ec025f8a7a2397fca7a99902276",
+     "cells_with_data": 844889,
+     "cells_zero_or_below": 0
+    },
+    {
+     "dates": [
+      "2026-11-02"
+     ],
+     "value": -5.425515800865233,
+     "cells": 844892,
+     "input": "e7084528cd2fbdabe0da018099e8ba69",
+     "cells_with_data": 844892,
+     "cells_zero_or_below": 0
+    }
+   ]
+  },
+  "coherence-series": {
+   "reduction": "mean",
+   "unit": "1",
+   "shape_equals_request": true,
+   "entries": [
+    {
+     "dates": [
+      "2026-09-15",
+      "2026-09-27"
+     ],
+     "value": 0.3395684230586152,
+     "cells": 211222,
+     "input": "8f9eb9a99bf63efa50af31a061da3265",
+     "cells_with_data": 211222,
+     "cells_zero_or_below": 0
+    },
+    {
+     "dates": [
+      "2026-09-27",
+      "2026-10-09"
+     ],
+     "value": 0.32869125230700297,
+     "cells": 211222,
+     "input": "2df74db4382a6aeed2164231bcc9d0e8",
+     "cells_with_data": 211222,
+     "cells_zero_or_below": 0
+    },
+    {
+     "dates": [
+      "2026-10-09",
+      "2026-10-21"
+     ],
+     "value": 0.502163065967921,
+     "cells": 211222,
+     "input": "d34069fb70f91b284adc41acab5e765e",
+     "cells_with_data": 211222,
+     "cells_zero_or_below": 0
+    }
+   ]
+  }
+ }
+}

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, expect, test, vi } from "vitest";
 import { MenuButton } from "./MenuButton";
@@ -108,7 +108,10 @@ test("with an icon the button shows the icon alone and is named by its label", a
   render(<MenuButton icon="more_vert" label="More" items={[{ label: "Remove", onSelect: remove }]} />);
   expect(button("More").textContent).toBe("");
   expect(button("More").classList.contains("icon-button")).toBe(true);
-  expect(screen.getByRole("tooltip", { hidden: true }).textContent).toBe("More");
+  // The label shows in the tooltip when the keyboard brings the focus to the button.
+  fireEvent.keyDown(document.body, { key: "Tab" });
+  act(() => button("More").focus());
+  expect(screen.getByRole("tooltip").textContent).toBe("More");
   fireEvent.click(button("More"));
   await userEvent.click(command("Remove"));
   expect(remove).toHaveBeenCalledTimes(1);
@@ -140,10 +143,11 @@ test("a button with a name of its own is named by it, and so is its menu, while 
     </>,
   );
   expect(screen.queryByRole("button", { name: "More" })).toBeNull();
-  expect(screen.getAllByRole("tooltip", { hidden: true }).map((tooltip) => tooltip.textContent)).toEqual([
-    "More",
-    "More",
-  ]);
+  fireEvent.keyDown(document.body, { key: "Tab" });
+  for (const name of ["More commands of Athens", "More commands of Patras"]) {
+    act(() => button(name).focus());
+    expect(screen.getByRole("tooltip").textContent).toBe("More");
+  }
   await userEvent.click(button("More commands of Patras"));
   expect(screen.getByRole("menu", { name: "More commands of Patras" })).toBeDefined();
 });

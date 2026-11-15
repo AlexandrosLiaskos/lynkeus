@@ -90,10 +90,16 @@ cd web
 npm ci
 npm run format
 npm run lint
+npm run style
 npm run types
 npm test
 npm run build
 ```
+
+The style files are checked with Stylelint, which also refuses the animation of a property other than
+transform and opacity. The workflow `Browser checks` opens the built site in Chromium, Firefox and WebKit
+with Playwright, scans each state with axe-core and measures the loading with Lighthouse. `npm run browsers`
+runs the same flows on a computer that has the browsers of Playwright (`npx playwright install`).
 
 ## Deployment
 
@@ -163,6 +169,8 @@ ground, and `lynkeus-mark-white.svg` in white, for a dark one.
 | [Node.js](https://nodejs.org/) | 22 | MIT | Builds the interface |
 | [React](https://react.dev/) | 19.3.1 | MIT | Interface |
 | [OpenLayers](https://openlayers.org/) | 10.11.0 | BSD-2-Clause | Map |
+| [React Aria Components](https://react-spectrum.adobe.com/react-aria/) | 1.22.1 | Apache-2.0 | Descriptions of the buttons and bubbles of the "i" buttons |
+| [Motion](https://motion.dev/) | 14.14.0 | MIT | Motion of the panes, the messages and the notices |
 | [U.S. Web Design System](https://designsystem.digital.gov/) | 3.14.0 | CC0-1.0 | Base styles, colours, icons, forms, dialog and alerts |
 | [TypeScript](https://www.typescriptlang.org/) | 6.0.3 | Apache-2.0 | Language of the interface |
 | [Vite](https://vite.dev/) | 8.3.8 | MIT | Builds the interface |
@@ -182,6 +190,13 @@ ground, and `lynkeus-mark-white.svg` in white, for a dark one.
 | [ESLint](https://eslint.org/) | 10.15.0 | MIT | Code check |
 | [typescript-eslint](https://typescript-eslint.io/) | 8.72.2 | MIT | Code check |
 | [eslint-plugin-react-hooks](https://react.dev/reference/eslint-plugin-react-hooks) | 7.1.1 | MIT | Code check |
+| [Stylelint](https://stylelint.io/) | 18.0.0 | MIT | Check of the style files |
+| [stylelint-config-standard-scss](https://github.com/stylelint-scss/stylelint-config-standard-scss) | 18.0.0 | MIT | Rules of the check of the style files |
+| [stylelint-high-performance-animation](https://github.com/kristerkari/stylelint-high-performance-animation) | 2.1.0 | MIT | Refuses the animation of a property other than transform and opacity |
+| [Playwright](https://playwright.dev/) | 1.65.1 | Apache-2.0 | Flows of the interface in Chromium, Firefox and WebKit |
+| [axe-core](https://github.com/dequelabs/axe-core), through @axe-core/playwright | 4.14.0 | MPL-2.0 | Accessibility scan in the flows |
+| [Lighthouse CI](https://github.com/GoogleChrome/lighthouse-ci) | 0.16.1 | Apache-2.0 | Measures the loading of the built site |
+| [rollup-plugin-visualizer](https://github.com/btd/rollup-plugin-visualizer) | 7.1.3 | MIT | Map of the parts of the script |
 
 ## Data
 
