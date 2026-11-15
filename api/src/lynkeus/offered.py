@@ -20,7 +20,7 @@ from lynkeus.analysis import TOOLS, AnalysisFunction
 from lynkeus.harmony import MOST_CELLS, get_layer, layers_of
 from lynkeus.jobs import MAX_SESSION_LAYERS
 from lynkeus.layers import Format, LayerDescription, LayerRequest, Text, ToolRun
-from lynkeus.processes import Process, Work
+from lynkeus.processes import CELLS_PARAMETER, Process, Work
 from lynkeus.routes import MAX_TITLE_LENGTH
 from lynkeus.tools import run_tool
 from lynkeus.writing import LayerError
@@ -115,9 +115,13 @@ GET_LAYER = Process(
     job_title=layer_job_title,
     needs_earthdata=True,
     errors=(LayerError,),
-    parameters={"most-cells": [MOST_CELLS]},
+    parameters={CELLS_PARAMETER: [MOST_CELLS]},
 )
-"""The process that receives a layer. Its parameter ``most-cells`` is the largest number of cells of a layer."""
+"""The process that receives a layer.
+
+Its parameter ``most-cells`` is the largest number of cells of a layer on the project server. The
+description of the process for an own server gives the limit of that server in its place.
+"""
 
 
 def tool_process(name: str, function: AnalysisFunction) -> Process[ToolInputs]:

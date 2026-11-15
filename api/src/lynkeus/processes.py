@@ -29,6 +29,13 @@ MAX_REFERENCES = 8
 
 JSON = "application/json"
 
+CELLS_PARAMETER = "most-cells"
+"""The name of the parameter with which a process states the most cells of a layer that it receives.
+
+The description of a process gives the number of the project server, and for an own server of the
+visitor the limit of that server (``docs/Own_Servers.md``, Cells of a layer).
+"""
+
 _NAME = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 
 _KEPT = frozenset(

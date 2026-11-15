@@ -23,13 +23,15 @@ import pytest
 import uvicorn
 from fastapi import FastAPI
 
-from lynkeus import jobs, server_routes, servers
+from lynkeus import harmony, jobs, server_routes, servers
+from lynkeus.layers import Area
 from lynkeus.linking import MAX_USER_SERVERS, MOST_BYTES, DismissTask, ReadTask, RemoveTask, StartTask
+from lynkeus.offered import GET_LAYER
 from lynkeus.processes import Process
 from lynkeus.routes import Service, install
 from lynkeus.server_routes import byte_range, install_servers
 from tests import standin
-from tests.ownserver import LARGE, SMALL, OwnServer
+from tests.ownserver import GRANULE, LARGE, SMALL, OwnServer
 from tests.standin import SIGNED_IN, STAND_IN, KeyServer, StandInInputs, key_server, token
 
 OGC = "http://www.opengis.net/def/"
@@ -78,17 +80,23 @@ class Site:
             assert visitor.post("/api/session/earthdata", json={"token": token(user)}).status_code == 200
         return visitor
 
-    def machine(self, name: str = "Field laptop", sample: Path = SMALL) -> OwnServer:
+    def machine(self, name: str = "Field laptop", sample: Path = SMALL, version: str = "0.2.0") -> OwnServer:
         """Return a stand-in own server with a data folder of its own."""
         self.machines += 1
-        return OwnServer(self.client(), self.folder / f"machine-{self.machines}", name, sample)
+        return OwnServer(self.client(), self.folder / f"machine-{self.machines}", name, sample, version)
 
 
 @contextmanager
 def running(folder: Path, keys: KeyServer) -> Iterator[Site]:
     """Run the web service on a folder until the block ends."""
     app = FastAPI()
-    install(app, [STAND_IN, SIGNED_IN, USES], folder=folder / "project", keys_address=keys.address, secure_cookie=False)
+    install(
+        app,
+        [STAND_IN, SIGNED_IN, USES, GET_LAYER],
+        folder=folder / "project",
+        keys_address=keys.address,
+        secure_cookie=False,
+    )
     install_servers(app)
     listener = socket.socket()
     listener.bind(("127.0.0.1", 0))
@@ -182,7 +190,7 @@ def test_program_is_paired_after_the_visitor_confirms_its_code(site: Site, monke
     assert view.status_code == 200
     assert view.json() == {
         "user_code": pairing.user_code,
-        "machine": {"name": "Field laptop", "system": "Stand-in 1", "version": "0.1.0"},
+        "machine": {"name": "Field laptop", "system": "Stand-in 1", "version": "0.2.0"},
     }
     assert listed(visitor) == []
     confirmed = visitor.post("/api/servers", json={"user_code": pairing.user_code})
@@ -637,7 +645,12 @@ def test_job_runs_on_the_own_server_and_its_layer_is_read_through_the_project_se
         [found] = listed(visitor)
         assert found["connected"] is True
         assert (found["state"]["running"], found["state"]["waiting"], found["state"]["layers"]) == (1, 0, 0)
-        assert found["state"]["limits"] == {"running_jobs": 2, "storage": 10**10, "layer_size": 10**9}
+        assert found["state"]["limits"] == {
+            "running_jobs": 2,
+            "storage": 10**10,
+            "layer_size": 10**9,
+            "layer_cells": 25_000_000,
+        }
         assert found["paired"] <= found["seen"] <= time.time()
         problem(visitor.get(f"/api/jobs/{job}/results"), 404, "The job has not finished yet.")
         written = machine.finish(job)
@@ -1173,7 +1186,7 @@ def test_layer_that_a_server_reports_in_a_wrong_form_is_not_recorded(site: Site)
 def test_owner_renames_a_server_and_sets_its_limits(site: Site, monkeypatch: pytest.MonkeyPatch) -> None:
     visitor, machine = site.visit("a_user"), site.machine()
     server = machine.pair(visitor)
-    limits = {"running_jobs": 4, "storage": 5 * 10**10, "layer_size": 2 * 10**9}
+    limits = {"running_jobs": 4, "storage": 5 * 10**10, "layer_size": 2 * 10**9, "layer_cells": 40_000_000}
     with machine.serving():
         job = state(visitor, started(visitor, server=server)["jobID"])
         changed = visitor.patch(f"/api/servers/{server}", json={"name": "Office computer"})
@@ -1205,6 +1218,187 @@ def test_owner_renames_a_server_and_sets_its_limits(site: Site, monkeypatch: pyt
     assert machine.report().status_code == 204
     assert machine.step() == []
     assert listed(visitor)[0]["state"]["limits"] == later
+
+
+def most_cells(visitor: httpx2.Client, server: str | None = None) -> Any:
+    """Return the most cells of a layer that the description of the process get-layer states."""
+    described = visitor.get("/api/processes/get-layer" + (f"?server={server}" if server else ""))
+    assert described.status_code == 200, described.text
+    [parameter] = described.json()["additionalParameters"]["parameters"]
+    assert parameter["name"] == "most-cells"
+    return parameter["value"]
+
+
+def test_owner_sets_the_cells_of_a_layer_of_a_server_with_its_other_limits(site: Site) -> None:
+    visitor, machine = site.visit("a_user"), site.machine()
+    server = machine.pair(visitor)
+    machine.memory = 16 * 10**9
+    limits = {"running_jobs": 2, "storage": 5 * 10**10, "layer_size": 2 * 10**9, "layer_cells": 250_000_000}
+    # Before the first report the server counts as one of 25 million cells.
+    assert most_cells(visitor, server) == [25_000_000]
+    with machine.serving():
+        until(lambda: listed(visitor)[0]["state"])
+        changed = visitor.patch(f"/api/servers/{server}", json={"limits": limits})
+        assert changed.status_code == 200, changed.text
+        until(lambda: listed(visitor)[0]["state"]["limits"] == limits)
+        # The task carries the cells, and the record keeps them with the other limits.
+        [task] = [task for task in machine.received if task["kind"] == "limits"]
+        assert task["limits"] == limits
+        assert machine.limits.layer_cells == 250_000_000
+        record = site.service.store.server(server)
+        assert record is not None and record.limits is not None
+        assert json.loads(record.limits) == limits
+        # Limits that do not name the cells leave them as they are.
+        fewer = {"running_jobs": 1, "storage": 10**10, "layer_size": 10**9}
+        assert visitor.patch(f"/api/servers/{server}", json={"limits": fewer}).status_code == 200
+        until(lambda: listed(visitor)[0]["state"]["limits"] == {**fewer, "layer_cells": 250_000_000})
+        assert machine.received[-1]["limits"] == {**fewer, "layer_cells": 250_000_000}
+        # The description of the process gives the number of the server on which the job would run.
+        assert most_cells(visitor) == most_cells(visitor, "project") == [harmony.MOST_CELLS] == [25_000_000]
+        assert most_cells(visitor, server) == [250_000_000]
+        assert visitor.get(f"/api/processes/stand-in?server={server}").status_code == 200
+    other = site.visit("another_user")
+    problem(other.get(f"/api/processes/get-layer?server={server}"), 404, "You have no server of this name.")
+    problem(site.visit().get(f"/api/processes/get-layer?server={server}"), 404, "You have no server of this name.")
+    problem(visitor.get("/api/processes/get-layer?server=mine"), 400, "The parameter server must be the name")
+
+
+def test_number_of_cells_of_the_project_server_is_not_applied_to_a_job_of_an_own_server(site: Site) -> None:
+    visitor, machine = site.visit("a_user"), site.machine()
+    server = machine.pair(visitor)
+    # 2 degrees by 2 degrees at the equator hold about 123 million cells of 20 metres.
+    area = {"west": 20.0, "south": -1.0, "east": 22.0, "north": 1.0}
+    assert harmony.cells_of(Area(**area), 20.0) > 4 * harmony.MOST_CELLS
+    inputs = {"product": "GCOV", "granule": GRANULE, "layer": "HHHH", "area": area}
+    with machine.serving():
+        response = visitor.post(f"/api/processes/get-layer/execution?server={server}", json={"inputs": inputs})
+        assert response.status_code == 201, response.text
+        info = state(visitor, response.json()["jobID"])
+        assert (info["status"], info["server"]["id"]) == ("successful", server)
+        [task] = [task for task in machine.tasks if isinstance(task, StartTask)]
+        assert (task.process, json.loads(task.inputs)) == ("get-layer", inputs)
+
+
+def test_limits_that_need_more_memory_than_the_server_reported_are_refused(site: Site) -> None:
+    visitor, machine = site.visit("a_user"), site.machine()
+    server = machine.pair(visitor)
+    address = f"/api/servers/{server}"
+    large = {"running_jobs": 4, "storage": 10**10, "layer_size": 10**9, "layer_cells": 250_000_000}
+    # A server that has not reported yet states no memory, and its limits wait for its first report.
+    assert visitor.patch(address, json={"limits": large}).status_code == 200
+    assert machine.step() == []
+    machine.memory = 8 * 10**9
+    assert machine.report().status_code == 204
+    assert [task.kind for task in machine.step()] == ["limits"]
+    assert machine.received[-1]["limits"] == large
+    assert listed(visitor)[0]["state"]["limits"] == large
+    # 4 jobs of 250 million cells hold 4 times 3995.5 megabytes, and the server reported 8 gigabytes.
+    refused = visitor.patch(address, json={"limits": {**large, "storage": 1}, "name": "Other name"})
+    problem(
+        refused,
+        422,
+        "4 running jobs with layers of 250 million cells need about 16.0 gigabytes of memory,"
+        " and your server Field laptop has 8.0 gigabytes.",
+    )
+    one = visitor.patch(address, json={"limits": {**large, "running_jobs": 1, "layer_cells": 600_500_000}})
+    problem(one, 422, "1 running job with a layer of 600.5 million cells needs about 9.5 gigabytes of memory,")
+    [found] = listed(visitor)
+    assert (found["name"], found["state"]["limits"]) == ("Field laptop", large)
+    assert machine.report().status_code == 204
+    assert machine.step() == []
+    # Limits without the cells keep 250 million, so more jobs of that size are refused as well.
+    problem(visitor.patch(address, json={"limits": {"running_jobs": 3, "storage": 1, "layer_size": 1}}), 422)
+    # 2 jobs of 250 million cells hold 7991 megabytes, which the 8 gigabytes hold.
+    fits = {**large, "running_jobs": 2}
+    assert visitor.patch(address, json={"limits": fits}).status_code == 200
+    assert [task.kind for task in machine.step()] == ["limits"]
+    assert listed(visitor)[0]["state"]["limits"] == fits
+    # A server that cannot read its memory is not refused.
+    machine.memory = None
+    assert machine.report().status_code == 204
+    assert visitor.patch(address, json={"limits": {**large, "running_jobs": 64}}).status_code == 200
+
+
+def test_memory_of_a_job_passes_through_the_two_measured_values() -> None:
+    assert servers.job_memory(15_000_000) == 353_000_000
+    assert servers.job_memory(25_000_000) == 508_000_000
+
+
+def test_program_of_version_0_1_0_receives_its_limits_without_the_cells_of_a_layer(site: Site) -> None:
+    visitor, machine = site.visit("a_user"), site.machine(version="0.1.0")
+    server = machine.pair(visitor)
+    address = f"/api/servers/{server}"
+    machine.memory = 16 * 10**9
+    assert machine.report().status_code == 204
+    # Its report states no cells, which counts as 25 million.
+    assert listed(visitor)[0]["state"]["limits"] == {
+        "running_jobs": 2,
+        "storage": 10**10,
+        "layer_size": 10**9,
+        "layer_cells": 25_000_000,
+    }
+    assert most_cells(visitor, server) == [25_000_000]
+    limits = {"running_jobs": 3, "storage": 5 * 10**10, "layer_size": 2 * 10**9}
+    refused = visitor.patch(address, json={"limits": {**limits, "layer_cells": 100_000_000}, "name": "Other name"})
+    problem(
+        refused,
+        409,
+        "To change the cells of a layer of your server Field laptop, install the newer version of Lynkeus Server"
+        " on that computer: version 0.1.0 receives at most 25 million cells.",
+    )
+    assert machine.step() == []
+    assert listed(visitor)[0]["name"] == "Field laptop"
+    # The other limits change, with the cells left out or stated as 25 million.
+    for sent in (limits, {**limits, "running_jobs": 4, "layer_cells": 25_000_000}):
+        assert visitor.patch(address, json={"limits": sent}).status_code == 200
+        assert [task.kind for task in machine.step()] == ["limits"]
+        assert machine.received[-1]["limits"] == {name: sent[name] for name in limits}
+        assert listed(visitor)[0]["state"]["limits"] == {**sent, "layer_cells": 25_000_000}
+    # Limits that wait for the next report of the server reach it without the cells as well.
+    assert machine.leave().status_code == 204
+    later = {**limits, "running_jobs": 1}
+    assert visitor.patch(address, json={"limits": later}).status_code == 200
+    assert machine.report().status_code == 204
+    assert [task.kind for task in machine.step()] == ["limits"]
+    assert machine.received[-1]["limits"] == later
+    assert machine.report().status_code == 204
+    assert machine.step() == []
+    # After the newer version is installed, the server states its cells and takes a change of them.
+    machine.machine = machine.machine.model_copy(update={"version": "0.2.0"})
+    machine.limits = machine.limits.model_copy(update={"layer_cells": 250_000_000})
+    assert machine.report().status_code == 204
+    # The limits that the owner set earlier are sent again, and they hold 25 million cells.
+    assert [task.kind for task in machine.step()] == ["limits"]
+    assert machine.received[-1]["limits"] == {**later, "layer_cells": 25_000_000}
+    wider = {**later, "layer_cells": 100_000_000}
+    assert visitor.patch(address, json={"limits": wider}).status_code == 200
+    assert [task.kind for task in machine.step()] == ["limits"]
+    assert machine.received[-1]["limits"] == wider
+    assert (listed(visitor)[0]["state"]["limits"], most_cells(visitor, server)) == (wider, [100_000_000])
+
+
+def test_record_of_a_server_written_before_the_cells_of_a_layer_reads_as_25_million(site: Site) -> None:
+    visitor, machine = site.visit("a_user"), site.machine()
+    server = machine.pair(visitor)
+    assert machine.report().status_code == 204
+    store = site.service.store
+    kept = store.server(server)
+    assert kept is not None and kept.state is not None
+    state_then = json.loads(kept.state)
+    del state_then["limits"]["layer_cells"]
+    store.change_server_state(server, json.dumps(state_then))
+    store.set_server_limits(server, json.dumps({"running_jobs": 2, "storage": 7, "layer_size": 5}))
+    assert listed(visitor)[0]["state"]["limits"]["layer_cells"] == 25_000_000
+    assert most_cells(visitor, server) == [25_000_000]
+    # The limits of that record are sent with 25 million cells to a program that knows the cells.
+    assert machine.report().status_code == 204
+    assert [task.kind for task in machine.step()] == ["limits"]
+    assert machine.received[-1]["limits"] == {
+        "running_jobs": 2,
+        "storage": 7,
+        "layer_size": 5,
+        "layer_cells": 25_000_000,
+    }
 
 
 def test_removed_server_is_told_to_forget_its_pairing_and_keeps_its_files(site: Site) -> None:
