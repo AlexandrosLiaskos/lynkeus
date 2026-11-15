@@ -1,9 +1,18 @@
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { messagesStore } from "../shared/messages/messages";
 import { panesStore, resetPanes, setPaneOpen } from "../shared/panes";
+import { setShapeDisplay, shapeDisplayOf, shapeDisplayStore, shapeLayersStore } from "../shared/shapeLayers";
 import { canLoadMore, findStack, loadMore, MOST_LISTED, runSearch, sortProducts, stackSearch, stopSearch } from "./run";
 import { firstDraft, searchOfDraft, type ProductSearch } from "./search";
-import { clearProducts, productsStore, searchDraftStore, searchingStore, selectedProductStore } from "./state";
+import {
+  clearProducts,
+  hiddenProductsStore,
+  outlinesStore,
+  productsStore,
+  searchDraftStore,
+  searchingStore,
+  selectedProductStore,
+} from "./state";
 import { realProduct, serverWith, someProducts } from "./testProducts";
 
 const BOX = { kind: "rectangle", west: "-71.2", south: "42.6", east: "-70.75", north: "42.95" } as const;
@@ -24,6 +33,9 @@ function messages(): [string, string][] {
 beforeEach(() => {
   vi.useFakeTimers({ toFake: ["Date"], now: TODAY });
   clearProducts();
+  outlinesStore.set(true);
+  shapeLayersStore.set([]);
+  shapeDisplayStore.set({});
   searchDraftStore.set(null);
   messagesStore.set([]);
   resetPanes();
@@ -75,6 +87,39 @@ test("a search states one product, no product, and more products than one answer
     state: "success",
     text: "13,172 products were found. The Catalog pane lists the first 200 and loads more.",
   });
+});
+
+test("a new search puts the outlines on the map again, shows their layer and hides no product", async () => {
+  const { fetch } = serverWith({ found: 2, products: someProducts(2) });
+  vi.stubGlobal("fetch", fetch);
+  await runSearch(search());
+  expect(outlinesStore.get()).toBe(true);
+  expect(shapeDisplayOf("products").visible).toBe(true);
+  // The user removes the layer of the outlines, after hiding it and one product, and searches again.
+  setShapeDisplay("products", { visible: false, opacity: 0.5 });
+  hiddenProductsStore.set(["G1-ASF"]);
+  outlinesStore.set(false);
+  await runSearch(search());
+  expect(outlinesStore.get()).toBe(true);
+  expect(shapeDisplayOf("products")).toEqual({ visible: true, opacity: 0.5 });
+  expect(hiddenProductsStore.get()).toEqual([]);
+});
+
+test("a failed search and more products of the same search leave the outlines as the user set them", async () => {
+  const { fetch } = serverWith(
+    { found: 3, products: someProducts(2) },
+    { status: 504, detail: "NASA's catalogue did not answer in time." },
+    { found: 3, products: someProducts(1, 2) },
+  );
+  vi.stubGlobal("fetch", fetch);
+  await runSearch(search());
+  setShapeDisplay("products", { visible: false });
+  hiddenProductsStore.set(["G1-ASF"]);
+  await expect(runSearch(search())).rejects.toThrow();
+  await loadMore();
+  expect(productsStore.get()?.products).toHaveLength(3);
+  expect(shapeDisplayOf("products").visible).toBe(false);
+  expect(hiddenProductsStore.get()).toEqual(["G1-ASF"]);
 });
 
 test("a failed search keeps the earlier list and gives the words of the server", async () => {

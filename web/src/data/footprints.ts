@@ -8,13 +8,40 @@ import { wrapX, type Coordinate } from "ol/coordinate";
 import { get as getProjection, type ProjectionLike } from "ol/proj";
 import VectorSource from "ol/source/Vector";
 import { Fill, Stroke, Style } from "ol/style";
+import type { ShapeSymbol } from "../shared/shapeLayers";
 import type { Product } from "./products";
 
-// The primary colour of the U.S. Web Design System. An outline has no visible fill, so that many outlines over
-// one place do not hide the map; the fill without colour lets the pointer find an outline by its inside.
+/** The id of the shape layer of the outlines of the products found. The layer of the map carries it. */
+export const PRODUCTS_LAYER_ID = "products";
+
+// The primary colour of the U.S. Web Design System.
 const OUTLINE = "#005ea2";
+
+/**
+ * How the map draws the outline of a product, which is also its symbol in the legend of the layer. An outline
+ * has no visible fill, so that many outlines over one place do not hide the map.
+ */
+export const OUTLINE_SYMBOL = { label: "Outline of a product", line: OUTLINE, width: 1 } satisfies ShapeSymbol;
+
+/**
+ * How the map draws the outline of the selected product, which is also its symbol in the legend of the layer:
+ * in cyan, the colour of a selection in ArcGIS Pro, over a casing in the colour of the text, so that the line
+ * shows on a dark background and on a light one alike.
+ */
+export const SELECTED_SYMBOL = {
+  label: "Selected product",
+  line: "#00ffff",
+  width: 3,
+  casing: "#1b1b1b",
+  fill: "rgba(0, 255, 255, 0.2)",
+} satisfies ShapeSymbol;
+
+/** The width of the casing under the line of the selected outline, in pixels. */
+export const CASING_WIDTH = 5;
+
+// The fill without colour lets the pointer find an outline by its inside.
 const PLAIN = new Style({
-  stroke: new Stroke({ color: OUTLINE, width: 1 }),
+  stroke: new Stroke({ color: OUTLINE_SYMBOL.line, width: OUTLINE_SYMBOL.width }),
   fill: new Fill({ color: "rgba(0, 94, 162, 0)" }),
 });
 const HOVERED = new Style({
@@ -22,11 +49,15 @@ const HOVERED = new Style({
   fill: new Fill({ color: "rgba(0, 94, 162, 0.1)" }),
   zIndex: 1,
 });
-const SELECTED = new Style({
-  stroke: new Stroke({ color: "#1a4480", width: 3 }),
-  fill: new Fill({ color: "rgba(0, 94, 162, 0.2)" }),
-  zIndex: 2,
-});
+// The selected outline is drawn above the others: its casing first, then its line and its fill.
+const SELECTED = [
+  new Style({ stroke: new Stroke({ color: SELECTED_SYMBOL.casing, width: CASING_WIDTH }), zIndex: 2 }),
+  new Style({
+    stroke: new Stroke({ color: SELECTED_SYMBOL.line, width: SELECTED_SYMBOL.width }),
+    fill: new Fill({ color: SELECTED_SYMBOL.fill }),
+    zIndex: 3,
+  }),
+];
 
 /**
  * Return the outline of each product as a feature of the map, in the projection of the map. A feature carries
@@ -47,17 +78,29 @@ export function footprintFeatures(products: readonly Product[], projection: Proj
 
 /**
  * The layer of the outlines. Its properties "selected" and "hovered" name the products whose outlines are
- * drawn stronger.
+ * drawn stronger, and its property "hidden" holds the set of the products whose outlines are not drawn.
  */
 export type FootprintLayer = VectorLayer<VectorSource<Feature<MultiPolygon>>>;
 
-/** Create the layer that draws the outlines above every other layer. */
+/** Tell whether the outline of a product is hidden on the layer. */
+function isHidden(layer: FootprintLayer, id: string | number | undefined): boolean {
+  const hidden: unknown = layer.get("hidden");
+  return hidden instanceof Set && hidden.has(id);
+}
+
+/**
+ * Create the layer that draws the outlines. It carries the id of its shape layer, and takes its place in the
+ * drawing order from the Contents pane. A hidden outline has no style, so it is not drawn.
+ */
 export function createFootprintLayer(): FootprintLayer {
   const layer: FootprintLayer = new VectorLayer({
     source: new VectorSource<Feature<MultiPolygon>>(),
-    zIndex: 1000,
+    properties: { id: PRODUCTS_LAYER_ID },
     style: (feature) => {
       const id = feature.getId();
+      if (isHidden(layer, id)) {
+        return undefined;
+      }
       return id === layer.get("selected") ? SELECTED : id === layer.get("hovered") ? HOVERED : PLAIN;
     },
   });
@@ -67,13 +110,14 @@ export function createFootprintLayer(): FootprintLayer {
 /**
  * Return the identifiers of the products whose outlines hold a place of the map, in the order of the list. The
  * place is given in the projection of the map; a place on a repeated copy of the world counts as the same place
- * on the first one.
+ * on the first one. A hidden outline is not found.
  */
 export function productsAt(layer: FootprintLayer, place: Coordinate, projection: ProjectionLike): string[] {
   const known = getProjection(projection);
   const inWorld = known ? wrapX([...place], known) : place;
   const features = layer.getSource()?.getFeaturesAtCoordinate(inWorld) ?? [];
   return features
+    .filter((feature) => !isHidden(layer, feature.getId()))
     .sort((one, other) => Number(one.get("order")) - Number(other.get("order")))
     .map((feature) => String(feature.getId()));
 }
