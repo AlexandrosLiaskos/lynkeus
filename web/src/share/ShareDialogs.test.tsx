@@ -65,7 +65,7 @@ test("a wrong part of a link is reported and ignored, and the other parts are ap
   expect(messagesStore.get().map(({ kind, text }) => [kind, text])).toEqual([
     [
       "warning",
-      "The address of the page gives a background map and an area that Lynkeus cannot read. These parts were ignored.",
+      "The address of the page gives a basemap and an area that Lynkeus cannot read. These parts were ignored.",
     ],
   ]);
 });
