@@ -233,10 +233,11 @@ apply to a job of an own server.
    bytes a cell, and a third more for the reduced copies), or the storage when that is smaller.
 3. The project server refuses a change of the limits with 422 and one sentence when `running_jobs` jobs of
    `layer_cells` cells need more than the memory that the server last reported.
-4. A program of version 0.1.0 does not know this limit and receives at most 25 million cells. Its messages
-   lack the field, which then counts as 25 million (`FIRST_LAYER_CELLS`). The project server sends such a
-   server the task `limits` without the field, and it refuses a change of `layer_cells` for it with 409 and
-   one sentence that asks to install the newer version of Lynkeus Server on that computer.
+4. A program that does not know this limit receives at most 25 million cells. Its messages lack the field,
+   which then counts as 25 million (`FIRST_LAYER_CELLS`). A server counts as such a program when the limits
+   of its last report lack the field. The project server sends such a server the task `limits` without the
+   field, and it refuses a change of `layer_cells` for it with 409 and one sentence that asks to install the
+   newer version of Lynkeus Server on that computer.
 5. The interface checks the area of a form against the limit of the server on which the job would run, and
    its sentence names that server.
 
