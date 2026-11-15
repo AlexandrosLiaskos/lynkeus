@@ -4,6 +4,7 @@ The addresses of the web service use the jobs with the limits of the project ser
 (``tests/test_routes.py``). These tests give other limits, as an own server does.
 """
 
+import multiprocessing
 import signal
 import threading
 import time
@@ -158,12 +159,12 @@ def test_thread_of_a_job_raises_the_signal_that_ends_it_when_the_server_asks() -
         signal.SIGTERM, lambda number, frame: received.append((number, threading.current_thread().name))
     )
     try:
-        ending = threading.Event()
-        thread = threading.Thread(target=jobs._raise_when_set, args=(ending,))
+        ending = multiprocessing.get_context("spawn").Semaphore(0)
+        thread = threading.Thread(target=jobs._raise_when_asked, args=(ending,))
         thread.start()
         time.sleep(0.2)
         assert received == []
-        ending.set()
+        ending.release()
         thread.join(10)
         limit = time.monotonic() + 10
         while not received and time.monotonic() < limit:
@@ -172,3 +173,14 @@ def test_thread_of_a_job_raises_the_signal_that_ends_it_when_the_server_asks() -
         assert received == [(signal.SIGTERM, "MainThread")]
     finally:
         signal.signal(signal.SIGTERM, before)
+
+
+def test_server_that_asks_a_job_to_end_does_not_wait_for_a_job_that_has_ended() -> None:
+    ending = multiprocessing.get_context("spawn").Semaphore(0)
+    process = multiprocessing.get_context("spawn").Process(target=time.sleep, args=(0,))
+    process.start()
+    process.join(60)
+    start = time.monotonic()
+    jobs._end(process, ending)
+    assert time.monotonic() - start < jobs.END_TIME
+    assert process.exitcode == 0

@@ -26,7 +26,7 @@ from dataclasses import dataclass, field
 from http import HTTPStatus
 from multiprocessing.connection import Connection
 from multiprocessing.process import BaseProcess
-from multiprocessing.synchronize import Event
+from multiprocessing.synchronize import Semaphore
 from pathlib import Path
 from typing import Any
 
@@ -78,8 +78,8 @@ END_TIME = 5.0
 """The time that a job has to end after it is asked to, in seconds. It is then ended at once.
 
 A job is asked to end with the signal SIGTERM, and ended at once with SIGKILL. Windows has neither for
-a process: there the server sets the event ``ending`` of the job, on which a thread of the job raises
-SIGTERM inside the job, and it ends the job at once with ``TerminateProcess``.
+a process: there the server releases the semaphore ``ending`` of the job, on which a thread of the job
+raises SIGTERM inside the job, and it ends the job at once with ``TerminateProcess``.
 """
 
 MAX_MESSAGE_LENGTH = 500
@@ -172,7 +172,7 @@ class _Running:
     folder: Path
     process: BaseProcess
     connection: Connection
-    ending: Event
+    ending: Semaphore
     watcher: threading.Thread | None = None
     dismissed: bool = False
     ended: threading.Event = field(default_factory=threading.Event)
@@ -189,7 +189,7 @@ def _work(
     address: str,
     token: str | None,
     layers: Mapping[str, tuple[LayerDescription, Path]],
-    ending: Event,
+    ending: Semaphore,
 ) -> None:
     """Run the function of a process and send its reports and its result to the server.
 
@@ -198,12 +198,12 @@ def _work(
     every program that it started. The function runs in the main thread of
     the process, so it can set a handler for the signal that ends the job.
     Where the operating system has no process groups, a thread of the job
-    raises that signal when the server sets ``ending``.
+    raises that signal when the server releases ``ending``.
     """
     if hasattr(os, "setsid"):
         os.setsid()
     if not hasattr(os, "killpg"):
-        threading.Thread(target=_raise_when_set, args=(ending,), name="lynkeus-ending", daemon=True).start()
+        threading.Thread(target=_raise_when_asked, args=(ending,), name="lynkeus-ending", daemon=True).start()
 
     def shown(text: str) -> str:
         return text.replace(token, _HIDDEN) if token else text
@@ -224,13 +224,16 @@ def _work(
         connection.close()
 
 
-def _raise_when_set(ending: Event) -> None:
+def _raise_when_asked(ending: Semaphore) -> None:
     """Wait until the server asks the job to end, and raise the signal SIGTERM inside the job.
 
     A handler that the function of the process set then runs in the main thread, as it does for a
     signal of the server. Without a handler the signal ends the operating-system process.
+
+    The server asks by releasing a semaphore, which never waits for the job. An event would: the
+    server would wait for ever on a job that had ended by itself a moment before.
     """
-    ending.wait()
+    ending.acquire()
     signal.raise_signal(signal.SIGTERM)
 
 
@@ -260,7 +263,7 @@ def _signal(process: BaseProcess, sign: signal.Signals) -> None:
         process.kill()
 
 
-def _end(process: BaseProcess, ending: Event) -> None:
+def _end(process: BaseProcess, ending: Semaphore) -> None:
     """End the operating-system process of a job and every program that it started.
 
     Where the operating system has no process groups, the job is asked to end through ``ending``, and
@@ -269,7 +272,7 @@ def _end(process: BaseProcess, ending: Event) -> None:
     if hasattr(os, "killpg"):
         _signal(process, signal.SIGTERM)
     else:
-        ending.set()
+        ending.release()
     process.join(END_TIME)
     _signal(process, getattr(signal, "SIGKILL", signal.SIGTERM))
     process.join()
@@ -524,7 +527,7 @@ class Jobs:
             for description in [LayerDescription.model_validate_json(record.description)]
         }
         receiving, sending = self._spawn.Pipe(duplex=False)
-        ending = self._spawn.Event()
+        ending = self._spawn.Semaphore(0)
         address = f"{self._address}/{layer}"
         arguments = (
             sending,
