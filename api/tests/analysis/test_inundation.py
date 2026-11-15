@@ -77,8 +77,9 @@ def test_open_water_is_a_sum_above_zero_and_at_most_its_threshold() -> None:
 
 
 def test_cell_without_a_sum_above_zero_holds_no_class() -> None:
-    values = classify((0, 0), (-0.1, 0.05), (0.5, NAN), (NAN, 0.1), (NAN, NAN))
-    assert np.isnan(values).all()
+    values = classify((0, 0), (-0.1, 0.05), (0.5, NAN), (NAN, 0.1), (NAN, NAN), (0.2, 0.1))
+    assert np.isnan(values[:5]).all()
+    assert values[5] == 1
 
 
 def test_inundated_vegetation_is_bright_in_hh_and_brighter_in_hh_than_in_hv() -> None:

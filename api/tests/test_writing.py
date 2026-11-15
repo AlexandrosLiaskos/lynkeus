@@ -180,11 +180,12 @@ CLASSES = (
 def write_classes(folder: Path, **changes: Any) -> tuple[LayerDescription, NDArray[np.float32]]:
     """Write a result of the three classes on the grid of the backscatter of 21 October 2026.
 
-    The backscatter is cut into three classes at 0.05 and 0.2; a cell above 1 holds no data.
+    The backscatter is cut into three classes at its 30th and 70th percentile; a cell above its 99th percentile
+    holds no data.
     """
     power, grid = read_layer(BACKSCATTER)
-    values = (np.digitize(power, [0.05, 0.2]) + 1).astype(np.float32)
-    values[power > 1] = np.nan
+    values = (np.digitize(power, np.quantile(power, [0.3, 0.7])) + 1).astype(np.float32)
+    values[power > np.quantile(power, 0.99)] = np.nan
     fields: dict[str, Any] = {
         "kind": "result",
         "layer": None,

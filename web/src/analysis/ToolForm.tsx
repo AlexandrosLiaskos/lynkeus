@@ -32,6 +32,7 @@ import {
   missingOf,
   MOST_TITLE,
   NO_COMPONENTS,
+  NO_CROSS_TERM,
   NO_INPUT,
   NO_OTHER_PAIR,
   NO_PARTNER,
@@ -51,6 +52,8 @@ export const ABOUT = {
     "An Unwrapped phase layer of a GUNW product, which holds the change of the distance to the radar between the two dates as an angle.",
   components:
     "The Connected components layer of the same product, channel and area, which marks the cells where the unwrapped phase is unreliable.",
+  hh: "A Backscatter HH layer of a GCOV product, which holds the radar echo sent and received horizontally.",
+  hv: "The Backscatter HV layer of the same product and area, which holds the echo sent horizontally and received vertically.",
   title: "The name of the result in the Catalog and Contents panes.",
 } as const;
 
@@ -58,6 +61,7 @@ export const ABOUT = {
 export const RECEIVE: Record<FinishedTool, string> = {
   "backscatter-state": "Get a Backscatter layer of a GCOV product.",
   "backscatter-change": "Get the same Backscatter layer of two GCOV products of one track and frame.",
+  "backscatter-map": "Get the Backscatter HH layer and the Backscatter HV layer of one GCOV product, for the same area.",
   "coherence-state": "Get a Coherence layer of a GUNW product.",
   "coherence-change": "Get the same Coherence layer of two GUNW products of one track and frame.",
   "displacement-state":
@@ -75,20 +79,37 @@ export const GET_OTHER_PAIR = `${NO_OTHER_PAIR} Get the same layer of another pa
 /** What the form states when the session holds no layer that can stand beside the first of Surface displacement, One pair. */
 export const GET_COMPONENTS = `${NO_COMPONENTS} Get the Connected components layer of the same product, channel and area.`;
 
+/** What the form states when the session holds no layer that can stand beside the first of Backscatter, Thematic map. */
+export const GET_CROSS_TERM = `${NO_CROSS_TERM} Get the Backscatter HV layer of the same product and area.`;
+
 /** The words of the second field of a tool that compares, by what the tool compares. */
 export const SECOND: Record<Comparison, { title: string; about: string; get: string }> = {
   dates: { title: "Layer of the other date", about: ABOUT.pair, get: GET_PARTNER },
   pairs: { title: "Layer of the other pair", about: ABOUT.pairs, get: GET_OTHER_PAIR },
 };
 
+/** The words of the two fields of a tool whose inputs are two layers of one product. */
+interface FieldsOfOneProduct {
+  /** The title and the explanation of the first field. */
+  first: { title: string; about: string };
+  /** The title and the explanation of the second field, and what the form states when it offers no layer. */
+  second: { title: string; about: string; get: string };
+}
+
 /**
- * The words of the two fields of Surface displacement, One pair, whose inputs are two layers of one product: the
- * title and the explanation of the first field, and the words of the second.
+ * The words of the two fields of each tool whose inputs are two layers of one product: Surface displacement, One
+ * pair and Backscatter, Thematic map.
  */
-export const OF_ONE_PRODUCT = {
-  first: { title: "Unwrapped phase", about: ABOUT.phase },
-  second: { title: "Connected components", about: ABOUT.components, get: GET_COMPONENTS },
-} as const;
+export const OF_ONE_PRODUCT: Partial<Record<FinishedTool, FieldsOfOneProduct>> = {
+  "displacement-state": {
+    first: { title: "Unwrapped phase", about: ABOUT.phase },
+    second: { title: "Connected components", about: ABOUT.components, get: GET_COMPONENTS },
+  },
+  "backscatter-map": {
+    first: { title: "Backscatter HH", about: ABOUT.hh },
+    second: { title: "Backscatter HV", about: ABOUT.hv, get: GET_CROSS_TERM },
+  },
+};
 
 /**
  * State that layers of the session cannot be used, and how they become usable. They are the layers whose
@@ -225,8 +246,8 @@ function showMethod(tool: FinishedTool): void {
  * layer, or the two fields of a tool that compares two dates or two pairs of dates, with the dates in their
  * order, the name of the result, for which the form proposes one, and the box that adds the result to the map.
  * The second field offers the layers that can stand beside the first, and states in one sentence why the tool
- * does not compare the two layers that are chosen. Surface displacement, One pair has two fields as well, for
- * two layers of one product, and no row of dates. The "i" of the pane states what
+ * does not compare the two layers that are chosen. Surface displacement, One pair and Backscatter, Thematic map
+ * have two fields as well, for two layers of one product, and no row of dates. The "i" of the pane states what
  * the tool shows, and the link Method at the foot opens the page Methods at the tool. While a choice is missing
  * or impossible, the foot of the pane states the first fault, and a field that was left states its own, with the
  * shared `FieldError`. Without a layer that the tool reads, the pane names the layer to get and offers the Get
@@ -249,9 +270,10 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
 
   const method = METHODS[tool];
   const comparison = comparisonOf(tool);
-  // The two inputs of the tool are two layers of one product, and not one layer of two dates or pairs.
-  const ofOneProduct = READS[tool].beside !== undefined;
-  const words = ofOneProduct ? OF_ONE_PRODUCT.second : comparison === null ? null : SECOND[comparison];
+  // The words of the two fields of a tool whose inputs are two layers of one product, and not one layer of two
+  // dates or pairs.
+  const ofOneProduct = READS[tool].beside === undefined ? undefined : OF_ONE_PRODUCT[tool];
+  const words = ofOneProduct ? ofOneProduct.second : comparison === null ? null : SECOND[comparison];
   const layers = entries.map((entry) => entry.layer);
   const offered = accepted(tool, layers);
   const one = offered.find((layer) => layer.id === first);
@@ -324,8 +346,8 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
         <>
           <LayerField
             id={`${id}-first`}
-            title={ofOneProduct ? OF_ONE_PRODUCT.first.title : "Layer"}
-            about={ofOneProduct ? OF_ONE_PRODUCT.first.about : words ? words.about : ABOUT.layer}
+            title={ofOneProduct ? ofOneProduct.first.title : "Layer"}
+            about={ofOneProduct ? ofOneProduct.first.about : words ? words.about : ABOUT.layer}
             layers={offered}
             chosen={first}
             fault={faults.first}

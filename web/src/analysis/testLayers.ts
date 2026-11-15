@@ -31,6 +31,11 @@ export function term(change: Partial<LayerDescription> = {}): LayerDescription {
   });
 }
 
+/** The layer Backscatter HV of the product of 21 October 2026, which Backscatter, Thematic map reads beside HHHH. */
+export function crossTerm(change: Partial<LayerDescription> = {}): LayerDescription {
+  return term({ id: "hv-oct", title: "Backscatter HV, 21 Oct 2026", layer: "HVHV", ...change });
+}
+
 /** The same term of the product of 2 November 2026. */
 export function laterTerm(change: Partial<LayerDescription> = {}): LayerDescription {
   return term({

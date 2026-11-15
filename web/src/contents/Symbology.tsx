@@ -129,7 +129,9 @@ function Histogram({ values, summary, lowest, highest, unit }: HistogramProps) {
 /**
  * The Symbology pane of one layer. It starts again each time it opens. Its fields stand in five groups: the
  * colours, the range of the colour scale, the statistics of the values with their histogram, the cells without
- * data and the mask. The Apply button is the one filled button, and the link under the groups returns the layer
+ * data and the mask. A layer of classes has two groups instead: its classes with their colours, which the pane
+ * shows and does not change, and the cells without data; a scale, a range, statistics and a mask by value have no
+ * meaning for classes. The Apply button is the one filled button, and the link under the groups returns the layer
  * to its first display.
  */
 function SymbologyOf({ layer }: { layer: LayerDescription }) {
@@ -151,6 +153,8 @@ function SymbologyOf({ layer }: { layer: LayerDescription }) {
   const unit = inDb ? "dB" : formatUnit(layer.unit);
   const inUnit = unit && ` (${unit})`;
   const classes = scaleKind(draft.colours) === "classes";
+  // The table of a layer of classes, whose cells take the colours of their classes.
+  const table = layer.classes ?? null;
 
   useEffect(() => {
     let current = true;
@@ -279,7 +283,11 @@ function SymbologyOf({ layer }: { layer: LayerDescription }) {
     <ToolPane
       id={SYMBOLOGY_PANE}
       title="Symbology"
-      info="The pane sets how the layer is drawn: its colour scale, the range of the scale, the colour of the cells without data and a mask. The Apply button changes the display of the layer on the map."
+      info={
+        table
+          ? "The pane shows the classes of the layer with their colours and sets the colour of the cells without data. The Apply button changes the display of the layer on the map."
+          : "The pane sets how the layer is drawn: its colour scale, the range of the scale, the colour of the cells without data and a mask. The Apply button changes the display of the layer on the map."
+      }
       runLabel="Apply"
       onRun={apply}
       run={run}
@@ -294,6 +302,21 @@ function SymbologyOf({ layer }: { layer: LayerDescription }) {
         <p className="item-line">{formatDates(layer.dates)}</p>
       </div>
 
+      {table ? (
+        <Section title="Classes" info="Each class has the colour that the method of the layer gives it." {...group("colours")}>
+          <ul className="legend-classes">
+            {table.map(({ value, name, colour }) => (
+              <li key={value}>
+                <span className="legend-swatch" style={{ background: colour }} aria-hidden="true" />
+                {name}
+              </li>
+            ))}
+          </ul>
+        </Section>
+      ) : null}
+
+      {table ? null : (
+        <>
       <Section title="Colours" {...group("colours")}>
         <FieldTitle field={`${id}-colours`} title="Colour scale">
           The colours that the values of the layer receive, from the lowest value of the range to the highest. The list
@@ -474,6 +497,8 @@ function SymbologyOf({ layer }: { layer: LayerDescription }) {
           </>
         ) : null}
       </Section>
+        </>
+      )}
 
       <Section
         title="Cells without data"
@@ -506,6 +531,7 @@ function SymbologyOf({ layer }: { layer: LayerDescription }) {
         {message("noDataColour")}
       </Section>
 
+      {table ? null : (
       <Section
         title="Mask"
         info="The mask hides the cells whose value lies below the first limit or above the second one. The limits are typed in the unit of the range."
@@ -548,6 +574,7 @@ function SymbologyOf({ layer }: { layer: LayerDescription }) {
         {message("maskLowest")}
         {message("maskHighest")}
       </Section>
+      )}
     </ToolPane>
   );
 }

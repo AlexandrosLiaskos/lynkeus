@@ -79,7 +79,8 @@ export async function fitLayer(map: OlMap, id: string): Promise<void> {
 /**
  * Return the value of a layer of the Contents pane at a pixel of the map, in the unit of the layer. The result is
  * null where the layer has no data, where its file has not yet been read, and when the layer is hidden or is not
- * on the map. The value is the one drawn: at a small scale it is the mean of the cells that one drawn cell covers.
+ * on the map. The value is the one drawn: at a small scale it is the mean of the cells that one drawn cell covers,
+ * and for a layer of classes the most frequent class of those cells.
  */
 export function valueAt(map: OlMap, id: string, pixel: Pixel): number | null {
   if (!mapLayersStore.get().some((layer) => layer.id === id)) {

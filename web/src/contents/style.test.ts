@@ -64,6 +64,37 @@ test("a scale of classes gives each whole number one of its ten colours in turn"
   expect(parts(style).at(-1)).toEqual(["palette", ["%", ["round", ["band", 1]], 10], [...colourScale("tab10")]]);
 });
 
+test("a layer of classes gives the cells of each class the colour of the class, whatever its scale", () => {
+  const classes = [
+    { value: 1, name: "Not inundated", colour: "#ececee" },
+    { value: 2, name: "Open water", colour: "#151b73" },
+    { value: 3, name: "Inundated vegetation", colour: "#42e9f5" },
+  ];
+  const style = layerStyle({ colours: "viridis", inverted: true, noDataColour: "#ff8800", classes }, 2);
+  expect(parts(style)).toEqual([
+    "case",
+    ["==", ["band", 2], 0],
+    ["color", 0, 0, 0, 0],
+    ["<", ["band", 2], 1],
+    ["color", 255, 136, 0, 1],
+    [
+      "match",
+      ["round", ["band", 1]],
+      1,
+      ["color", 236, 236, 238, 1],
+      2,
+      ["color", 21, 27, 115, 1],
+      3,
+      ["color", 66, 233, 245, 1],
+      ["color", 0, 0, 0, 0],
+    ],
+  ]);
+  // A layer without classes keeps the colours of its scale.
+  expect(parts(layerStyle({ colours: "viridis", ...PLAIN, classes: null }, 2))).toEqual(
+    parts(layerStyle({ colours: "viridis", ...PLAIN }, 2)),
+  );
+});
+
 test("a colour of six hexadecimal digits is read, and another text is not", () => {
   expect(colourParts("#FF8800")).toEqual([255, 136, 0]);
   expect(colourParts("red")).toBeNull();

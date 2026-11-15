@@ -46,15 +46,20 @@ interface Drawn {
   asking: boolean;
 }
 
-/** Return the choices of a display that give a layer its style. */
-function choicesOf(display: LayerDisplay): StyleChoices {
-  return { colours: display.colours, inverted: display.inverted ?? false, noDataColour: display.noDataColour ?? null };
+/** Return the choices of a layer and of its display that give the layer its style. */
+function choicesOf(description: LayerDescription, display: LayerDisplay): StyleChoices {
+  return {
+    colours: display.colours,
+    inverted: display.inverted ?? false,
+    noDataColour: display.noDataColour ?? null,
+    classes: description.classes ?? null,
+  };
 }
 
 /**
  * The layers of the Contents pane on the map. For every layer description the map receives one layer, which
  * carries the id of the description, reads the Cloud Optimized GeoTIFF of the description and draws it as the
- * display of the layer says. The address of the file is the one of the description, whichever server keeps the
+ * display of the layer says. A layer of classes is drawn in the colours of its classes. The address of the file is the one of the description, whichever server keeps the
  * file: `/files/...` on the project server and `/api/servers/.../files/...` for an own server.
  *
  * A file that cannot be read, or whose tiles stop arriving, is not left as an empty layer: the site is asked
@@ -109,7 +114,7 @@ export class LayerDrawing {
     layers.forEach((description, index) => {
       const display = displays[description.id] ?? firstDisplay(description);
       const decibels = inDecibels(description, display);
-      const choices = choicesOf(display);
+      const choices = choicesOf(description, display);
       const style = JSON.stringify(choices);
       const drawn =
         this.drawn.get(description.id) ?? this.add(description, decibels, choices, again[description.id] ?? 0);
