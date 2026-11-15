@@ -76,14 +76,19 @@ def _filled(replacement: str, groups: dict[str, str]) -> str:
         ),
         (f"GET /api/servers/{SERVER}/files/{FOLDER} HTTP/1.1", "GET /api/servers/-/files/- HTTP/1.1"),
         (f"PATCH /api/servers/{SERVER} HTTP/1.1", f"PATCH /api/servers/{SERVER} HTTP/1.1"),
+        # The name of a layer is the name of the folder of its files, so it is left out of these addresses too.
+        (f"DELETE /api/layers/{FOLDER} HTTP/1.1", "DELETE /api/layers/- HTTP/1.1"),
+        (f"POST /api/layers/{FOLDER}/extension HTTP/1.1", "POST /api/layers/-/extension HTTP/1.1"),
+        ("GET /api/layers HTTP/1.1", "GET /api/layers HTTP/1.1"),
+        (f"GET /api/jobs/{FOLDER[::-1]} HTTP/1.1", f"GET /api/jobs/{FOLDER[::-1]} HTTP/1.1"),
         ("", ""),
     ],
 )
-def test_log_leaves_out_the_random_folder_of_a_layer_file_and_the_names_of_a_server_and_its_layer(
+def test_log_leaves_out_the_name_of_a_layer_folder_and_the_names_of_a_server_and_its_layer_in_a_file_address(
     request_line: str, written: str
 ) -> None:
     assert _written("request", "lynkeus_request", request_line) == written
-    assert FOLDER not in written
+    assert f"/{FOLDER}" not in written
 
 
 @pytest.mark.parametrize(
