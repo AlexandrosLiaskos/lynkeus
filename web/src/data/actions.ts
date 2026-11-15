@@ -1,4 +1,5 @@
 import type { ToolActions } from "../ribbon/types";
+import { openServers } from "../servers/state";
 import { openToolPane } from "../shared/dock/dock";
 import { signOutWithMessage } from "./session";
 import { SIGN_IN_PANE } from "./SignInPane";
@@ -10,6 +11,7 @@ export function useDataActions(): ToolActions<DataToolId> {
   return {
     "sign-in": { run: () => openToolPane(SIGN_IN_PANE) },
     "sign-out": { run: () => void signOutWithMessage() },
+    servers: { run: openServers },
     [SEARCH_PANE]: { run: () => openToolPane(SEARCH_PANE) },
     [GET_LAYER_PANE]: { run: () => openToolPane(GET_LAYER_PANE) },
   };

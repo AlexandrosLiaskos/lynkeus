@@ -3,6 +3,7 @@ import { formatMoment, type Job } from "../data/jobs";
 import { KIND_WORDS, unitWords, type LayerEntry } from "../data/layers";
 import { formatDay, formatSize } from "../data/products";
 import type { Property, PropertyGroup } from "../shared/properties/PropertyList";
+import { PROJECT_SERVER_WORDS } from "../shared/servers";
 
 /**
  * Return every field of a job in groups: its state and its times, the inputs with which it was started, and its
@@ -31,9 +32,11 @@ function fileName(address: string): string {
 
 /**
  * Return every field of the description of a layer in groups, with the size and the time that the server
- * records and the links to its two files. A field that the server does not state has no row.
+ * records, the server that keeps its files and the links to its two files. A field that the server does not
+ * state has no row. `kept` says where the layer is kept, as the list of layers says it; without it the row
+ * names the server alone.
  */
-export function layerGroups({ layer, size, created }: LayerEntry): PropertyGroup[] {
+export function layerGroups({ layer, size, created, server }: LayerEntry, kept: string | null = null): PropertyGroup[] {
   const stated = (name: string, value: string | null): Property[] => (value === null ? [] : [{ name, value }]);
   return [
     {
@@ -80,6 +83,7 @@ export function layerGroups({ layer, size, created }: LayerEntry): PropertyGroup
       rows: [
         ...stated("Size", size === null ? null : formatSize(size)),
         ...stated("Made", created === null ? null : formatMoment(created)),
+        { name: "Kept", value: kept ?? `On ${server ? server.name : `the ${PROJECT_SERVER_WORDS.toLowerCase()}`}` },
         {
           name: "GeoTIFF file",
           value: (

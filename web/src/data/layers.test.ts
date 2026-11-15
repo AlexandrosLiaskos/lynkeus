@@ -33,9 +33,18 @@ test("an entry of the list carries the description, the size and the time of a l
     layer: layer(),
     size: 4_200_000,
     created: "2026-11-14T16:25:00Z",
+    server: null,
   });
-  expect(layerEntry({ layer: layer() })).toEqual({ layer: layer(), size: null, created: null });
-  expect(layerEntry(layer())).toEqual({ layer: layer(), size: null, created: null });
+  expect(layerEntry({ layer: layer() })).toEqual({ layer: layer(), size: null, created: null, server: null });
+  expect(layerEntry(layer())).toEqual({ layer: layer(), size: null, created: null, server: null });
+});
+
+test("an entry names the own server that keeps the layer, and the project server by null", () => {
+  const server = { id: "3f9a1c0b7e24d658", name: "Office computer" };
+  expect(layerEntry({ layer: layer(), server })?.server).toEqual(server);
+  expect(layerEntry({ layer: layer(), server: null })?.server).toBeNull();
+  expect(layerEntry({ layer: layer(), server: { id: "office", name: "Office computer" } })).toBeNull();
+  expect(layerEntry({ layer: layer(), server: "Office computer" })).toBeNull();
 });
 
 test.each([
@@ -67,7 +76,7 @@ test("a list of bare descriptions is read as well", async () => {
   const server = standIn();
   server.layers = [layer()] as never;
   await loadLayers();
-  expect(layersStore.get()).toEqual([{ layer: layer(), size: null, created: null }]);
+  expect(layersStore.get()).toEqual([{ layer: layer(), size: null, created: null, server: null }]);
 });
 
 test("a reading that fails states the sentence of the server and keeps the list", async () => {
@@ -180,12 +189,19 @@ const ENTRIES: LayerEntry[] = [
     layer: layer({ id: "c", title: "Coherence", dates: ["2026-10-09", "2026-10-21"], quantity: "Coherence" }),
     size: 500,
     created: "2026-11-14T16:30:00Z",
+    server: null,
   },
-  { layer: layer({ id: "a", title: "Alpha", dates: ["2026-11-02"] }), size: 9000, created: "2026-11-14T16:10:00Z" },
+  {
+    layer: layer({ id: "a", title: "Alpha", dates: ["2026-11-02"] }),
+    size: 9000,
+    created: "2026-11-14T16:10:00Z",
+    server: null,
+  },
   {
     layer: layer({ id: "b", title: "Change", kind: "result", method: "Method sheet", dates: ["2026-10-21"] }),
     size: null,
     created: "2026-11-14T16:20:00Z",
+    server: null,
   },
 ];
 
@@ -228,4 +244,27 @@ test("the layers are grouped by kind, quantity and date", () => {
 test("the unit 1 is written as no unit", () => {
   expect(unitWords("1")).toBe("no unit");
   expect(unitWords("m3 m-3")).toBe("m3 m-3");
+});
+
+test("the layers are grouped by the server that keeps them", () => {
+  const office = { id: "3f9a1c0b7e24d658", name: "Office computer" };
+  const [first, second, third] = ENTRIES;
+  const entries = [{ ...first, server: office }, second, { ...third, server: office }] as LayerEntry[];
+  expect(
+    groupLayers(entries, "server", formatDay).map((group) => [group.title, titles(group.layers).join(", ")]),
+  ).toEqual([
+    ["Office computer", "Coherence, Change"],
+    ["Project server", "Alpha"],
+  ]);
+});
+
+test("the list of the server names the own server of each layer", async () => {
+  const server = standIn();
+  const office = { id: "3f9a1c0b7e24d658", name: "Office computer" };
+  server.layers = [
+    { layer: layer({ id: "own" }), server: office },
+    { layer: layer({ id: "site" }), server: null },
+  ];
+  await loadLayers();
+  expect(layersStore.get().map((entry) => entry.server)).toEqual([office, null]);
 });

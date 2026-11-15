@@ -1,4 +1,5 @@
 import { isLayerDescription, type LayerDescription } from "../shared/layer";
+import { isServerName, type ServerName } from "../shared/servers";
 import { createStore } from "../shared/store";
 import { call, checked, Refusal, wordsOf } from "./service";
 
@@ -33,6 +34,8 @@ export interface Job {
   inputs?: Record<string, unknown> | null;
   /** The id of the layer that a successful job produced. */
   layer?: string | null;
+  /** The own server of the visitor on which the job runs, or null or absent for the project server. */
+  server?: ServerName | null;
 }
 
 /** The words that name each state in the interface. */
@@ -100,7 +103,7 @@ export function isJob(value: unknown): value is Job {
   if (!isRecord(value)) {
     return false;
   }
-  const { progress, inputs, layer } = value;
+  const { progress, inputs, layer, server } = value;
   return (
     [value.jobID, value.processID, value.title].every(isText) &&
     value.type === "process" &&
@@ -113,7 +116,8 @@ export function isJob(value: unknown): value is Job {
     progress >= 0 &&
     progress <= 100 &&
     (isAbsent(inputs) || isRecord(inputs)) &&
-    (isAbsent(layer) || isText(layer))
+    (isAbsent(layer) || isText(layer)) &&
+    (isAbsent(server) || isServerName(server))
   );
 }
 
@@ -332,13 +336,19 @@ export function watchJobs(): () => void {
 }
 
 /**
- * Start a job that runs a process with the given inputs, and return it. The promise is rejected with an error
- * whose message can be shown to the visitor: the sentence of the server when a limit does not allow the job
- * (`Refusal`, with the status 429, 503 or 507) or when the visitor is not signed in to Earthdata (401).
+ * Start a job that runs a process with the given inputs, and return it. `server` is the parameter `server` of
+ * the execution: the name of an own server of the visitor, or the word `project` for the project server.
+ * Without it the project server chooses: the connected own server with the fewest unfinished jobs that keeps
+ * every input layer, or itself when there is none.
+ *
+ * The promise is rejected with an error whose message can be shown to the visitor: the sentence of the server
+ * when a limit does not allow the job (`Refusal`, with the status 429, 503 or 507), when the visitor is not
+ * signed in to Earthdata (401), or when the input layers are not kept on the server of the job (422).
  */
-export async function startJob(process: string, inputs: Record<string, unknown>): Promise<Job> {
+export async function startJob(process: string, inputs: Record<string, unknown>, server?: string): Promise<Job> {
+  const choice = server === undefined ? "" : `?server=${encodeURIComponent(server)}`;
   const job = checked(
-    await call(`/api/processes/${encodeURIComponent(process)}/execution`, {
+    await call(`/api/processes/${encodeURIComponent(process)}/execution${choice}`, {
       method: "POST",
       content: { inputs },
       failure: "The job could not be started",

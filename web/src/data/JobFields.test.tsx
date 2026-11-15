@@ -10,6 +10,7 @@ test("a job that waits has no time of start, of end or of work", () => {
   expect(rows.map(([name]) => name)).toEqual([
     "Name",
     "Process",
+    "Server",
     "Status",
     "Message",
     "Requested",
@@ -19,7 +20,8 @@ test("a job that waits has no time of start, of end or of work", () => {
     "Area",
     "Identifier of the job",
   ]);
-  expect(rows[2]).toEqual(["Status", "Waiting, 0 %"]);
+  expect(rows[2]).toEqual(["Server", "Project server"]);
+  expect(rows[3]).toEqual(["Status", "Waiting, 0 %"]);
 });
 
 test("the inputs of an analysis tool are named in words, and any other input by its own name", () => {
@@ -40,6 +42,7 @@ test("a job whose inputs the server does not state shows its other fields", () =
   expect(rows.map(([name]) => name)).toEqual([
     "Name",
     "Process",
+    "Server",
     "Status",
     "Requested",
     "Started",
@@ -52,4 +55,9 @@ test("the fields stand in a table that carries the name of the job", () => {
   render(<JobFields job={job()} />);
   expect(screen.getByRole("table", { name: "Fields of the job Backscatter HH, 21 Oct 2026" })).toBeDefined();
   expect(screen.getAllByRole("rowheader").map((header) => header.textContent)).toContain("Time of the work");
+});
+
+test("a job of an own server of the visitor names that server", () => {
+  const rows = jobRows(job({ server: { id: "3f9a1c0b7e24d658", name: "Office computer" } }));
+  expect(rows).toContainEqual(["Server", "Office computer"]);
 });

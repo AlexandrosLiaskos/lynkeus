@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState, type FocusEvent, type KeyboardEvent } from "react";
+import { openServers } from "../servers/state";
 import { openToolPane } from "../shared/dock/dock";
 import { Icon } from "../shared/icon/Icon";
 import { loadSession, signOutWithMessage, useSession } from "./session";
@@ -8,7 +9,8 @@ import { SIGN_IN_PANE } from "./SignInPane";
  * The sign-in to Earthdata at the right end of the title bar, where the Sign In menu of ArcGIS Pro stands at the
  * top corner of its window. While nobody is signed in it says so, and a press opens the pane of the sign-in.
  * While the visitor is signed in it shows the user name of the account, and a press opens a small menu with the
- * command Sign out. Nothing is shown before the server has answered.
+ * commands Servers, which opens the list of the own servers of the account, and Sign out. Nothing is shown
+ * before the server has answered.
  */
 export function EarthdataAccount() {
   const session = useSession();
@@ -62,6 +64,11 @@ export function EarthdataAccount() {
     }
   };
 
+  const onServers = () => {
+    setOpen(false);
+    openServers();
+  };
+
   const onSignOut = () => {
     setOpen(false);
     button.current?.focus();
@@ -87,6 +94,10 @@ export function EarthdataAccount() {
       {menuOpen ? (
         <div className="account-menu" id={`${id}-menu`}>
           <p className="account-menu-text">Signed in to Earthdata as {user}</p>
+          <button type="button" className="account-menu-command" onClick={onServers}>
+            <Icon name="electrical_services" />
+            Servers
+          </button>
           <button type="button" className="account-menu-command" onClick={onSignOut}>
             <Icon name="logout" />
             Sign out
