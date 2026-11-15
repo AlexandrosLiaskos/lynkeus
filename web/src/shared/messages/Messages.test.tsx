@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { Messages, MESSAGE_TIME } from "./Messages";
@@ -116,4 +116,14 @@ test("a warning stays until it is closed", () => {
   expect(screen.getByRole("status").textContent).toBe("The layer is drawn without its last band.");
   fireEvent.click(screen.getByRole("button", { name: "Close this message" }));
   expect(screen.queryByRole("status")).toBeNull();
+});
+
+test("a message that leaves is inert at once, and it is taken from the page when its motion has ended", async () => {
+  render(<Messages />);
+  act(() => report("error", "The request failed."));
+  const message = screen.getByRole("alert");
+  expect(message.hasAttribute("inert")).toBe(false);
+  await userEvent.click(screen.getByRole("button", { name: "Close this message" }));
+  expect(message.hasAttribute("inert")).toBe(true);
+  await waitFor(() => expect(message.isConnected).toBe(false));
 });

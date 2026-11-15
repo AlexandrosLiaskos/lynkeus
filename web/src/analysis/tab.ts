@@ -57,8 +57,9 @@ export const DISPLACEMENT_STATE =
  * The Analysis tab: one group for each quantity that NISAR measures. A group holds a button only for a tool that a
  * published method gives. Surface displacement has no Change, because the phase of each pair is measured from its
  * own arbitrary reference, so two pairs cannot be subtracted (`docs/research/analysis-displacement.md`, part 3.3).
- * Only Backscatter has a Thematic map, because the NISAR science team publishes no algorithm that derives classes
- * from coherence, surface displacement or soil moisture (`docs/research/analysis-thematic-maps.md`).
+ * Only Backscatter has a Thematic map, because no published algorithm of the NISAR science team that derives
+ * classes from coherence, surface displacement or soil moisture was found
+ * (`docs/research/analysis-thematic-maps.md`).
  */
 export const ANALYSIS_TAB = {
   id: "analysis",

@@ -115,6 +115,7 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   from the ISO XML file of the product.
 - The sources of Surface displacement, One pair in the dialog Sources of the Help tab.
 - The analysis tools Backscatter, Series and Coherence, Series: the values of many dates against time, at a point or for the area, shown as a chart with a table in the pane Series and listed under Series in the Catalog pane.
+- The workflow that measures the loading of the running site with Lighthouse on a machine of GitHub.
 - Statistics in an area: the last field of the form of every analysis tool that maps takes a rectangle or a
   polygon drawn on the map, and the Properties of the result give the number of its cells with data inside
   it, with their mean, standard deviation, lowest value, median and highest value. A Series tool takes the
@@ -191,6 +192,9 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - A notice in a pane and the outcome at the foot of a tool pane, such as those of Get layer and Search products,
   have an X that closes them. A closed notice returns when its text changes or its pane opens again, and a closed
   outcome with the next run.
+- The web server compresses the text files more strongly, and a browser keeps the files that the build names
+  after their content for a year without asking for them again. The logos and the photos of the welcome screen
+  are stored at four times the size at which the screen shows them.
 
 ### Removed
 
@@ -198,8 +202,8 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The footer of the application page.
 - The buttons Change and Thematic map of Surface displacement and Thematic map of Coherence and Soil moisture
   in the Analysis tab, because no published method gives their results: the phase of each GUNW pair is
-  measured from its own arbitrary reference, so two pairs cannot be subtracted, and no algorithm of the NISAR
-  science team derives classes from coherence, displacement or soil moisture.
+  measured from its own arbitrary reference, so two pairs cannot be subtracted, and no published algorithm of
+  the NISAR science team that derives classes from coherence, displacement or soil moisture was found.
 
 ### Fixed
 

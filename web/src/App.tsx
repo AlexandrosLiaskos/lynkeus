@@ -1,125 +1,94 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
-import { useCallback, useState } from "react";
-import { useAnalysisActions } from "./analysis/actions";
-import { AnalysisDialogs } from "./analysis/AnalysisDialogs";
-import { CatalogPane } from "./catalog/CatalogPane";
-import { ContentsPane } from "./contents/ContentsPane";
-import { ContentsTools } from "./contents/ContentsTools";
-import { useDataActions } from "./data/actions";
-import { DataDialogs } from "./data/DataDialogs";
-import { EarthdataAccount } from "./data/EarthdataAccount";
-import { Header } from "./header/Header";
-import { useHelpActions } from "./help/actions";
-import { HelpDialogs } from "./help/HelpDialogs";
-import { useMapActions } from "./map/actions";
-import { createMap } from "./map/map";
-import { MapDialogs } from "./map/MapDialogs";
-import { MapView } from "./map/MapView";
-import { keepMapView } from "./map/storedView";
-import { useOptionsActions } from "./options/actions";
-import { OptionsDialogs } from "./options/OptionsDialogs";
-import { Ribbon } from "./ribbon/Ribbon";
-import { TABS } from "./ribbon/tabs";
-import type { ToolActions } from "./ribbon/types";
-import { Credits } from "./shared/credits/Credits";
-import { Dock } from "./shared/dock/Dock";
-import { MapContext, useMap } from "./shared/map";
-import { Messages } from "./shared/messages/Messages";
-import { useShareActions } from "./share/actions";
-import { ShareDialogs } from "./share/ShareDialogs";
-import { StatusBar } from "./statusbar/StatusBar";
-import { useViewActions } from "./view/actions";
-import { ViewDialogs } from "./view/ViewDialogs";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
+import type { Platform } from "./Platform";
 import { Welcome } from "./welcome/Welcome";
 
-/**
- * The icon of each pane on its tab at the edge of the window, where a side that hides its panes shows them. A
- * tool pane carries the name of the ribbon button that opens it, so it takes the icon of that button. The
- * Contents pane and the Catalog pane take the icons of their buttons of the View tab.
- */
-const PANE_ICONS: Readonly<Record<string, string>> = {
-  ...Object.fromEntries(
-    TABS.flatMap((tab) => tab.groups.flatMap((group) => group.tools.map(({ id, icon }) => [id, icon] as const))),
-  ),
-  contents: "list",
-  catalog: "folder",
-};
+/** The file of the platform, as the browser hands it over. */
+interface PlatformFile {
+  Platform: typeof Platform;
+}
 
 /**
- * The elements of the page, in their places: the header, the ribbon, the map between the panes of its two sides,
- * and the status bar. The credits that must stand on the map itself are drawn over its lower right corner. Each
- * element comes from the folder of its owner, and the ribbon receives the actions of every tab. The dialogs and
- * the tool panes of every tab are declared inside the right side, where a tool pane is drawn; a dialog is drawn
- * over the page wherever it is declared.
+ * Call a function when the browser has painted the document as it stands now, which is at the frame after the
+ * next one. The function that is returned withdraws the call.
  */
-function Page() {
-  const map = useMap();
-  const actions: ToolActions = {
-    ...useMapActions(),
-    ...useDataActions(),
-    ...useAnalysisActions(),
-    ...useViewActions(),
-    ...useShareActions(),
-    ...useOptionsActions(),
-    ...useHelpActions(),
+function afterPaint(call: () => void): () => void {
+  let frame = window.requestAnimationFrame(() => {
+    frame = window.requestAnimationFrame(call);
+  });
+  return () => {
+    window.cancelAnimationFrame(frame);
   };
-
-  return (
-    <>
-      <Header account={<EarthdataAccount />} />
-      <Ribbon tabs={TABS} actions={actions} />
-      <div className="workspace">
-        <Dock side="left" icons={PANE_ICONS}>
-          <ContentsPane />
-        </Dock>
-        <div className="workspace-map">
-          <MapView map={map} />
-          <Credits place="map" />
-          <Messages />
-        </div>
-        <Dock side="right" icons={PANE_ICONS}>
-          <CatalogPane />
-          <ContentsTools />
-          <MapDialogs />
-          <DataDialogs />
-          <AnalysisDialogs />
-          <ViewDialogs />
-          <ShareDialogs />
-          <OptionsDialogs />
-          <HelpDialogs />
-        </Dock>
-      </div>
-      <StatusBar />
-    </>
-  );
 }
 
 /**
- * Create the map of the page. Its view is kept in the browser from this moment, and the stored view is restored
- * before the page is drawn.
+ * Answer a file of the platform that did not arrive: load the page again, once, because some browsers do not
+ * fetch again a file that has failed. A page that was loaded again already keeps its welcome screen. The promise
+ * never resolves, so React keeps waiting for the platform in both cases.
  */
-function createPageMap() {
-  const map = createMap();
-  keepMapView(map);
-  return map;
+function loadPageAgain(): Promise<never> {
+  const [navigation] = performance.getEntriesByType("navigation") as PerformanceNavigationTiming[];
+  if (navigation?.type !== "reload") {
+    window.location.reload();
+  }
+  return new Promise<never>(() => undefined);
 }
 
 /**
- * The page of the application. It creates the map once and gives it to every element.
+ * Make the page of the application for one way of fetching the file of the platform. The site uses `App`, and a
+ * test gives its own way.
  *
- * The welcome screen covers the page when it opens. The elements of the page are drawn only when the screen has
- * settled or the visitor enters, whichever comes first, so that the start of the map and of the panes does not
- * take time from the appearance of the screen.
+ * The welcome screen covers the page when it opens, and the first script of the site holds nothing else. The
+ * platform is a file of its own. The browser is asked for it when the welcome screen has been painted, so it
+ * arrives while the visitor reads.
+ *
+ * The platform is never drawn while the welcome screen slides away, because the start of the map and of the panes
+ * would take time from the slide. It is drawn when the entrance of the screen has ended. For a visitor who enters
+ * before that, or before the file has arrived, it is drawn first and the browser paints it, and only then does
+ * the screen start to slide. The screen stays as it is until then.
  */
-export function App() {
-  const [map] = useState(createPageMap);
-  const [started, setStarted] = useState(false);
-  const start = useCallback(() => setStarted(true), []);
-  return (
-    <MapContext value={map}>
-      {started ? <Page /> : null}
-      <Welcome onSettled={start} />
-    </MapContext>
-  );
+export function createApp(load: () => Promise<PlatformFile>) {
+  const LazyPlatform = lazy(() => load().then((file) => ({ default: file.Platform }), loadPageAgain));
+
+  return function App() {
+    // Whether the page is wanted under the screen: the entrance has ended, or the visitor has pressed the screen.
+    const [wanted, setWanted] = useState(false);
+    // Whether the elements of the platform stand in the document.
+    const [mounted, setMounted] = useState(false);
+    // Whether the browser has also painted them, so that the screen may lift and slide away over them.
+    const [standing, setStanding] = useState(false);
+    const want = useCallback(() => setWanted(true), []);
+    const mount = useCallback(() => setMounted(true), []);
+
+    // The file of the platform is asked for when the welcome screen has been painted. A file that does not arrive
+    // is asked for again when the platform is drawn.
+    useEffect(
+      () =>
+        afterPaint(() => {
+          load().catch(() => undefined);
+        }),
+      [],
+    );
+
+    useEffect(() => {
+      if (mounted) {
+        return afterPaint(() => setStanding(true));
+      }
+    }, [mounted]);
+
+    return (
+      <>
+        {wanted ? (
+          <Suspense fallback={null}>
+            <LazyPlatform onMounted={mount} />
+          </Suspense>
+        ) : null}
+        <Welcome onSettled={want} standing={standing} />
+      </>
+    );
+  };
 }
+
+/** The page of the application. */
+export const App = createApp(() => import("./Platform"));

@@ -58,7 +58,8 @@ $slide: 0.7s;
 }
 
 // Until the visitor touches the screen, it lifts a little now and then and shows the edge of the page under it. The
-// first lift comes 8 seconds after the screen has appeared, and the next ones every 8 seconds.
+// screen carries the class of the lift only while the page stands under it. The first lift comes 8 seconds after
+// the screen has appeared in full and the page stands, and the next ones every 8 seconds.
 .welcome-ready.welcome-hinting {
   animation: welcome-peek 8s cubic-bezier(0.3, 0, 0.2, 1) 8s infinite;
 }

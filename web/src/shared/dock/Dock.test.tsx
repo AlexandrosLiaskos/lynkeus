@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
-import { act, render, screen, within } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import { beforeEach, expect, test, vi } from "vitest";
 import { PANE_WIDTH, panesStore, resetPanes } from "../panes";
 import { useStore } from "../store";
 import { Dock } from "./Dock";
-import { dockStore, frontOf, isHidden, openToolPane, resetDock, setAutoHide, showPane } from "./dock";
+import { dockStore, frontOf, isHidden, openToolPane, paneElementId, resetDock, setAutoHide, showPane } from "./dock";
 import { DockPane } from "./DockPane";
 
 beforeEach(() => {
@@ -309,4 +309,61 @@ test("a pane that showed from its tab and is closed no longer shows", async () =
   await userEvent.click(screen.getByRole("button", { name: "Close the Get layer pane" }));
   expect(onClose).toHaveBeenCalledTimes(1);
   expect(dockStore.get().revealed.right).toBeNull();
+});
+
+test("a pane that hides to the edge is inert at once, and it is taken from the page when its motion has ended", async () => {
+  render(
+    <Dock side="right">
+      <Notes id="catalog" title="Catalog" />
+    </Dock>,
+  );
+  const pane = document.getElementById(paneElementId("catalog")) as HTMLElement;
+  await waitFor(() => expect(pane.style.opacity).toBe("1"));
+  expect(pane.hasAttribute("inert")).toBe(false);
+  await userEvent.click(screen.getByRole("button", { name: "Auto-hide the Catalog pane" }));
+  expect(pane.hidden).toBe(true);
+  expect(pane.hasAttribute("inert")).toBe(true);
+  await waitFor(() => expect(pane.style.opacity).toBe("0"));
+  expect(pane.style.transform).toBe("translateX(12px)");
+  await waitFor(() => expect(pane.style.getPropertyValue("--dock-pane-display")).toBe("none"));
+  await userEvent.click(screen.getByRole("button", { name: "Catalog" }));
+  expect(pane.hidden).toBe(false);
+  expect(pane.hasAttribute("inert")).toBe(false);
+  await waitFor(() => expect(pane.style.opacity).toBe("1"));
+  await waitFor(() => expect(pane.style.getPropertyValue("--dock-pane-display")).toBe("flex"));
+});
+
+test("a pane at rest has no transform, so that a menu or a bubble inside it is placed against the window", async () => {
+  render(
+    <Dock side="left">
+      <Notes id="contents" title="Contents" />
+    </Dock>,
+  );
+  const pane = document.getElementById(paneElementId("contents")) as HTMLElement;
+  await waitFor(() => expect(pane.style.opacity).toBe("1"));
+  expect(pane.style.transform).toBe("none");
+  act(() => setAutoHide("contents", true));
+  await waitFor(() => expect(pane.style.transform).toBe("translateX(-12px)"));
+  await userEvent.click(screen.getByRole("button", { name: "Contents" }));
+  await waitFor(() => expect(pane.style.transform).toBe("none"));
+  expect(pane.style.opacity).toBe("1");
+});
+
+test("a pane of the stack that goes behind another one is inert and does not move", async () => {
+  render(
+    <Dock side="right">
+      <Notes id="catalog" title="Catalog" />
+      <Notes id="get-layer" title="Get layer" />
+    </Dock>,
+  );
+  const catalog = document.getElementById(paneElementId("catalog")) as HTMLElement;
+  const layer = document.getElementById(paneElementId("get-layer")) as HTMLElement;
+  expect(catalog.hidden).toBe(true);
+  expect(catalog.hasAttribute("inert")).toBe(true);
+  await userEvent.click(screen.getByRole("tab", { name: "Catalog" }));
+  expect(layer.hidden).toBe(true);
+  expect(layer.hasAttribute("inert")).toBe(true);
+  await waitFor(() => expect(catalog.style.opacity).toBe("1"));
+  await waitFor(() => expect(layer.style.opacity).toBe("0"));
+  expect(layer.style.transform).toBe("none");
 });
