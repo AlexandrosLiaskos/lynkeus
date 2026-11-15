@@ -74,7 +74,7 @@ $slide: 0.7s;
   position: absolute;
   z-index: 2;
   right: clamp(1.5rem, 4vw, 4rem);
-  bottom: 5rem;
+  bottom: clamp(6.75rem, 15vh, 9.5rem);
   display: flex;
   flex-direction: column;
   width: min(54rem, calc(100vw - 3rem));
@@ -94,11 +94,12 @@ $slide: 0.7s;
   }
 }
 
-// A thin line parts each row from the one above it.
+// A thin line parts each row from the one above it. The line is as wide as the texts and not as the block.
 .welcome-content > * + * {
   margin-top: clamp(0.7rem, 2vh, 1.2rem);
   padding-top: clamp(0.7rem, 2vh, 1.2rem);
-  border-top: 1px solid rgb(255 255 255 / 20%);
+  background: linear-gradient(rgb(255 255 255 / 22%), rgb(255 255 255 / 22%)) top center / min(30rem, 100%) 1px
+    no-repeat;
 }
 
 // The mark stands at the left of the name.
