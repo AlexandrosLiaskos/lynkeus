@@ -165,7 +165,7 @@ const kept = keepInBrowser<SearchDraft>({
   key: SEARCH_KEY,
   title: "Search form",
   description:
-    "The choices of the form of the search, with its area. They return when the search pane or the pane Get layer is first opened.",
+    "The choices of the form of the search with its area, which return when the search pane or the pane Get layer is first opened.",
   read: () => searchDraftStore.get() ?? undefined,
   check: (stored) => (isSearchDraft(stored) ? stored : undefined),
   subscribe: searchDraftStore.subscribe,

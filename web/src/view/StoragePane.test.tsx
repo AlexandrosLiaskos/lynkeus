@@ -52,8 +52,8 @@ function row(name: string): HTMLElement {
   return item;
 }
 
-function section(title: string): Element {
-  const element = screen.getByRole("button", { name: title }).closest(".section");
+function section(title: string): HTMLElement {
+  const element = screen.getByRole("button", { name: title }).closest<HTMLElement>(".section");
   if (!element) {
     throw new Error(`The pane has no section ${title}.`);
   }
