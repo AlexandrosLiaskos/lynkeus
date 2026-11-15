@@ -214,3 +214,8 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 
 - The web service refuses an input value that a request gives as a link. A few requests with links to a
   host that answers very slowly could stop the sign-in, the search and the start of jobs for every visitor.
+- A session whose jobs all failed or were dismissed makes place for a new session when the server holds the
+  largest number of sessions. Requests that only start jobs that fail could fill the server with sessions,
+  after which every new visitor was refused for up to seven days.
+- A report of a server of a visitor names at most 100 jobs. Longer reports could keep the web service busy
+  and make the other requests wait.
