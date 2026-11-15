@@ -3,7 +3,7 @@
 import type { ToolActions } from "../ribbon/types";
 import { openServers } from "../servers/state";
 import { openToolPane } from "../shared/dock/dock";
-import { signOutWithMessage } from "./session";
+import { askSignOut } from "./session";
 import { SIGN_IN_PANE } from "./SignInPane";
 import { GET_LAYER_PANE, SEARCH_PANE } from "./state";
 import type { DataToolId } from "./tab";
@@ -12,7 +12,7 @@ import type { DataToolId } from "./tab";
 export function useDataActions(): ToolActions<DataToolId> {
   return {
     "sign-in": { run: () => openToolPane(SIGN_IN_PANE) },
-    "sign-out": { run: () => void signOutWithMessage() },
+    "sign-out": { run: askSignOut },
     servers: { run: openServers },
     [SEARCH_PANE]: { run: () => openToolPane(SEARCH_PANE) },
     [GET_LAYER_PANE]: { run: () => openToolPane(GET_LAYER_PANE) },

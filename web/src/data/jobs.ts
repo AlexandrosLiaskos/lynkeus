@@ -5,6 +5,7 @@ import { isLayerDescription, type LayerDescription } from "../shared/layer";
 import { isServerName, type ServerName } from "../shared/servers";
 import { createStore } from "../shared/store";
 import { call, checked, Refusal, wordsOf } from "./service";
+import { accountOf } from "./session";
 
 /** The states of a job, as OGC API - Processes, Part 1: Core (OGC 18-062r2) names them. */
 export const JOB_STATUSES = ["accepted", "running", "successful", "failed", "dismissed"] as const;
@@ -226,6 +227,13 @@ export const jobsStore = createStore<readonly Job[]>([]);
 /** Why the last reading of the jobs failed, in a sentence for the visitor, or null when it succeeded. */
 export const jobsFaultStore = createStore<string | null>(null);
 
+/**
+ * For whom the list of `jobsStore` was read: the Earthdata account of the sign-in at that reading, or null in
+ * `account` for a visitor who was not signed in. The store holds null before the first answer of the server and
+ * after the sign-in has changed, while the list of the new account is on its way.
+ */
+export const jobsReadStore = createStore<{ account: string | null } | null>(null);
+
 const listeners = new Set<(job: Job) => void>();
 
 /**
@@ -264,6 +272,7 @@ function keep(jobs: readonly Job[]): void {
 
 async function readJobs(): Promise<void> {
   const turn = changes;
+  const account = accountOf();
   try {
     const jobs: Job[] = [];
     let address: string | null = JOBS;
@@ -273,9 +282,13 @@ async function readJobs(): Promise<void> {
       address = nextPage(answer.links);
     }
     failures = 0;
-    if (turn === changes) {
+    // A list that was asked for under another sign-in is the list of nobody who is here now.
+    if (turn === changes && account === accountOf()) {
       jobsFaultStore.set(null);
       keep(jobs);
+      if (jobsReadStore.get()?.account !== account) {
+        jobsReadStore.set({ account });
+      }
     }
   } catch (error) {
     failures += 1;
@@ -340,9 +353,15 @@ export function watchJobs(): () => void {
  * Without it the project server chooses: the connected own server with the fewest unfinished jobs that keeps
  * every input layer, or itself when there is none.
  *
+ * When the server answers 401 because the job needs the token of the sign-in, the request waits: the pane of
+ * the sign-in opens with the sentence of the server, and after the sign-in the same request is sent again with
+ * the same inputs (see `call`). This holds for every caller: Get layer, the analysis tools, the series, Run
+ * again and Get again, on the project server and on a server of the visitor.
+ *
  * The promise is rejected with an error whose message can be shown to the visitor: the sentence of the server
- * when a limit does not allow the job (`Refusal`, with the status 429, 503 or 507), when the visitor is not
- * signed in to Earthdata (401), or when the input layers are not kept on the server of the job (422).
+ * when a limit does not allow the job (`Refusal`, with the status 429, 503 or 507) or when the input layers are
+ * not kept on the server of the job (422), and `SignInCancelled` when the visitor closed the pane of the sign-in
+ * without signing in.
  */
 export async function startJob(process: string, inputs: Record<string, unknown>, server?: string): Promise<Job> {
   const choice = server === undefined ? "" : `?server=${encodeURIComponent(server)}`;
@@ -394,6 +413,23 @@ export async function jobResult(id: string): Promise<LayerDescription> {
   return checked(answer, isLayerDescription);
 }
 
+/**
+ * Forget the jobs of the list and the readings on their way, and read the list again while the page watches
+ * the jobs. The page calls this when the sign-in changes to another account or ends, because the jobs belong to
+ * an account. No job is announced as finished by this.
+ */
+export function forgetJobs(): void {
+  changes += 1;
+  reading = null;
+  failures = 0;
+  jobsStore.set([]);
+  jobsFaultStore.set(null);
+  jobsReadStore.set(null);
+  if (watching) {
+    refresh();
+  }
+}
+
 /** Forget the jobs, the listeners and the readings on their way. The tests start from this state. */
 export function resetJobs(): void {
   window.clearTimeout(timer);
@@ -406,4 +442,5 @@ export function resetJobs(): void {
   listeners.clear();
   jobsStore.set([]);
   jobsFaultStore.set(null);
+  jobsReadStore.set(null);
 }

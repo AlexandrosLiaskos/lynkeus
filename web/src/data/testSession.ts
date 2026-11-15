@@ -4,6 +4,7 @@ import { vi } from "vitest";
 import type { LayerDescription } from "../shared/layer";
 import type { ServerName, Servers } from "../shared/servers";
 import type { Job } from "./jobs";
+import type { LayerSource } from "./layers";
 import type { SeriesItem } from "./series";
 
 /** A job as the server describes it, for the tests. */
@@ -69,6 +70,8 @@ export interface SentLayer {
   size?: number;
   created?: string;
   server?: ServerName | null;
+  /** The request that made the layer (`source` of `docs/Storage.md`). */
+  source?: LayerSource | null;
 }
 
 /**

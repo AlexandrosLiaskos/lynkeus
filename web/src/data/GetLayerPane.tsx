@@ -35,7 +35,7 @@ import { JobFields } from "./JobFields";
 import { dismissJob, isUnfinished, jobsStore, startJob, STATUS_WORDS, type Job } from "./jobs";
 import { formatDay, formatSize, type Product } from "./products";
 import type { SearchDraft } from "./search";
-import { wordsOf } from "./service";
+import { SignInCancelled, wordsOf } from "./service";
 import { useSession, type Session } from "./session";
 import { SIGN_IN_PANE } from "./SignInPane";
 import { GET_LAYER_PANE, productsStore, SEARCH_PANE, searchDraftStore, selectedProductStore } from "./state";
@@ -414,14 +414,22 @@ export function GetLayerForm({ found, selected, products, session, onSignIn, onS
 
   const start = () => {
     const requests = planned.map(({ request }) => request);
+    const before = started;
     setStarted({ ids: [], sending: requests.length, fault: null, cancelled: false });
     void (async () => {
       const ids: string[] = [];
       let fault: string | null = null;
       for (const request of requests) {
         try {
+          // A request that the server refuses because it needs the token waits here for the sign-in, and is
+          // then sent again with the same values.
           ids.push((await startJob(GET_LAYER_PANE, { ...request }, server.parameter)).jobID);
         } catch (error) {
+          if (error instanceof SignInCancelled && ids.length === 0) {
+            // The visitor gave the sign-in up before any job was started: the form is as it was.
+            setStarted(before);
+            return;
+          }
           fault = wordsOf(error, "The job could not be started.");
           break;
         }

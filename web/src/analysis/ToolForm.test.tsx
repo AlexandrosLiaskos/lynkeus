@@ -7,7 +7,9 @@ import { addWhenReadyStore } from "../data/follow";
 import { jobsStore, loadJobs, resetJobs } from "../data/jobs";
 import { layersStore, resetLayers } from "../data/layers";
 import { GET_LAYER_PANE } from "../data/state";
+import { onSignInNeeded } from "../data/service";
 import { job, standIn, type StandIn } from "../data/testSession";
+import { waitingSignIn } from "../data/testSignIn";
 import { SAMPLE } from "../header/notice/testLimits";
 import { methodsStore } from "../help/state";
 import { resetServersState } from "../servers/state";
@@ -84,6 +86,7 @@ beforeEach(() => {
 afterEach(() => {
   resetJobs();
   resetLayers();
+  onSignInNeeded(null);
   vi.unstubAllGlobals();
 });
 
@@ -749,6 +752,43 @@ test("a refusal of the request is shown in the sentence of the server", async ()
   await userEvent.click(runButton());
   expect(screen.getByRole("alert").textContent).toBe(sentence);
   expect(jobsStore.get()).toEqual([]);
+});
+
+const NEEDS_TOKEN = "The job needs your Earthdata token, which the server no longer holds. Sign in again to start it.";
+
+test("a tool whose start needs the token waits for the sign-in and continues by itself with the same inputs", async () => {
+  const signIn = waitingSignIn();
+  server.refuse("POST", "/api/processes/backscatter-state/execution", 401, NEEDS_TOKEN);
+  show("backscatter-state", [term()]);
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "hh-oct");
+  await userEvent.click(runButton());
+  await vi.waitFor(() => expect(signIn.sentences).toEqual([NEEDS_TOKEN]));
+  expect(screen.queryByRole("alert")).toBeNull();
+  expect(jobsStore.get()).toEqual([]);
+  server.accept();
+  act(() => signIn.signIn());
+  await vi.waitFor(() => expect(jobsStore.get()).toHaveLength(1));
+  const starts = server.sent("POST");
+  expect(starts).toHaveLength(2);
+  expect(starts[1]).toEqual(starts[0]);
+  expect(screen.getByLabelText<HTMLSelectElement>("Layer").value).toBe("hh-oct");
+  expect(screen.queryByRole("alert")).toBeNull();
+});
+
+test("a sign-in that the visitor gives up leaves the form of the tool as it was", async () => {
+  const signIn = waitingSignIn();
+  server.refuse("POST", "/api/processes/backscatter-state/execution", 401, NEEDS_TOKEN);
+  show("backscatter-state", [term()]);
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "hh-oct");
+  await userEvent.click(runButton());
+  await vi.waitFor(() => expect(signIn.sentences).toHaveLength(1));
+  act(() => signIn.giveUp());
+  await vi.waitFor(() => expect(runButton().getAttribute("aria-disabled")).toBeNull());
+  expect(screen.queryByRole("alert")).toBeNull();
+  expect(messagesStore.get()).toEqual([]);
+  expect(jobsStore.get()).toEqual([]);
+  expect(server.sent("POST")).toHaveLength(1);
+  expect(screen.getByLabelText<HTMLSelectElement>("Layer").value).toBe("hh-oct");
 });
 
 test("the refusal of a tool is shown in the sentence of the server when its job has failed", async () => {

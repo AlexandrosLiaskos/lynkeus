@@ -61,12 +61,17 @@ function choicesOf(display: LayerDisplay): StyleChoices {
  *
  * A file that cannot be read, or whose tiles stop arriving, is not left as an empty layer: the site is asked
  * for the reason (see `fileProblem`), and the Contents pane states it in one sentence under the layer.
+ *
+ * A file that no longer exists is first taken to the list of the server (`gone`): when the server has removed
+ * the layer, because its date passed while the page was open or because it was removed elsewhere, the layer
+ * leaves the map for the state "removed from the server", and the map states no error.
  */
 export class LayerDrawing {
   private readonly map: OlMap;
   private readonly open: (url: string) => Promise<Cog>;
   private readonly workers: boolean;
   private readonly explain: (url: string) => Promise<LayerProblem | null>;
+  private readonly gone: ((id: string) => Promise<boolean>) | null;
   private readonly drawn = new Map<string, Drawn>();
 
   /**
@@ -74,17 +79,21 @@ export class LayerDrawing {
    * @param open Opens the file at an address. The tests give their own.
    * @param workers False decompresses the tiles in the page itself.
    * @param explain Asks why the file at an address cannot be read. The tests give their own.
+   * @param gone Tells whether the server has removed the layer of an id whose file no longer exists, and takes
+   *   such a layer off the map. Without it every file that no longer exists is stated under its layer.
    */
   constructor(
     map: OlMap,
     open: (url: string) => Promise<Cog> = fileOf,
     workers = true,
     explain: (url: string) => Promise<LayerProblem | null> = fileProblem,
+    gone: ((id: string) => Promise<boolean>) | null = null,
   ) {
     this.map = map;
     this.open = open;
     this.workers = workers;
     this.explain = explain;
+    this.gone = gone;
   }
 
   /**
@@ -161,9 +170,23 @@ export class LayerDrawing {
   private source({ id, title }: LayerDescription, cog: Promise<Cog>, decibels: boolean): CogSource {
     const source = new CogSource({ cog, decibels, workers: this.workers });
     const isCurrent = () => this.drawn.get(id)?.layer.getSource() === source;
-    const state = (problem: LayerProblem) => {
+    const tell = (problem: LayerProblem) => {
       layerProblemsStore.set({ ...layerProblemsStore.get(), [id]: problem });
       report("error", `${title}: ${problem.text}`);
+    };
+    const state = (problem: LayerProblem) => {
+      const { gone } = this;
+      if (problem.gone !== true || gone === null) {
+        tell(problem);
+        return;
+      }
+      // The list of the server says whether the layer was removed. A layer that the list still holds states
+      // the problem of its file.
+      void gone(id).then((removed) => {
+        if (!removed && isCurrent()) {
+          tell(problem);
+        }
+      });
     };
     // The file could not be opened. A file that Lynkeus cannot draw says why itself; for every other failure
     // the site is asked.

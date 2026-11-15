@@ -3,8 +3,8 @@
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { jobsStore, resetJobs } from "../data/jobs";
 import { layersStore, resetLayers } from "../data/layers";
-import { onSignInEnded, Refusal } from "../data/service";
-import { resetSession, sessionStore, signInEnded } from "../data/session";
+import { onSignInNeeded, Refusal } from "../data/service";
+import { resetSession, sessionStore, signInNeeded } from "../data/session";
 import { job, layer, showPage } from "../data/testSession";
 import { closeToolPane, dockStore, openToolPane, resetDock } from "../shared/dock/dock";
 import { mapLayersStore } from "../shared/mapLayers";
@@ -55,7 +55,7 @@ beforeEach(() => {
   mapLayersStore.set([]);
   messagesStore.set([]);
   showPage(true);
-  onSignInEnded(signInEnded);
+  onSignInNeeded(signInNeeded);
   server = site();
   server.servers = [...SERVERS.servers];
   sessionStore.set(SIGNED_IN);
@@ -64,7 +64,7 @@ beforeEach(() => {
 afterEach(() => {
   resetServers();
   resetJobs();
-  onSignInEnded(() => undefined);
+  onSignInNeeded(null);
   vi.useRealTimers();
   vi.unstubAllGlobals();
 });
@@ -107,13 +107,15 @@ test("an answer of another form is reported as unreadable", async () => {
   expect(serversFaultStore.get()).toBe("The answer of the server could not be read.");
 });
 
-test("an answer 401 ends the sign-in on the page, and the servers are forgotten", async () => {
+test("an answer 401 forgets the servers, and the session is read again and found ended", async () => {
   await loadServers();
   server.user = null;
   await loadServers();
-  expect(sessionStore.get()).toEqual({ state: "signed-out" });
   expect(serversStore.get()).toBeNull();
   expect(serversFaultStore.get()).toBeNull();
+  // The answer 401 does not say whether the session has ended or only the token went: the server is asked.
+  await vi.waitFor(() => expect(sessionStore.get()).toEqual({ state: "signed-out" }));
+  expect(server.sent("GET", "/api/session")).toHaveLength(1);
   expect(messagesStore.get().map(({ kind }) => kind)).toEqual(["warning"]);
 });
 

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
-import { act, render, screen } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { resetServers } from "../servers/requests";
 import { openServers, resetServersState } from "../servers/state";
@@ -11,8 +12,8 @@ import { messagesStore } from "../shared/messages/messages";
 import { DataDialogs } from "./DataDialogs";
 import { jobsStore, POLL_TIME, resetJobs } from "./jobs";
 import { layersStore, resetLayers } from "./layers";
-import { call, onSignInEnded } from "./service";
-import { resetSession, sessionStore } from "./session";
+import { call, onSignInNeeded, SignInCancelled } from "./service";
+import { resetSession, sessionStore, signInRequestStore } from "./session";
 import { clearProducts, GET_LAYER_PANE, searchDraftStore } from "./state";
 import { testMap } from "./testProducts";
 import { job, layer, showPage, standIn } from "./testSession";
@@ -34,7 +35,7 @@ beforeEach(() => {
 afterEach(() => {
   resetServers();
   resetJobs();
-  onSignInEnded(() => undefined);
+  onSignInNeeded(null);
   vi.useRealTimers();
   vi.unstubAllGlobals();
 });
@@ -68,14 +69,46 @@ test("the jobs and the layers of the session are read when the page loads, and a
   expect(jobsStore.get()).toHaveLength(1);
 });
 
-test("an answer 401 to a request about a job ends the sign-in on the page", async () => {
+test("a start of a job that is answered 401 opens the pane of the sign-in with the sentence of the server", async () => {
   const server = standIn();
   show();
   await act(() => Promise.resolve());
-  act(() => sessionStore.set({ state: "signed-in", user: "a_user" }));
-  server.refuse("POST", "/api/processes", 401, "Sign in to Earthdata to start this job.");
-  await act(() => call("/api/processes/get-layer/execution", { method: "POST", content: {} }).catch(() => undefined));
-  expect(sessionStore.get()).toEqual({ state: "signed-out" });
+  act(() => sessionStore.set({ state: "signed-in", user: "a_user", token: true }));
+  server.refuse("POST", "/api/processes", 401, "The job needs your Earthdata token. Sign in again to start it.");
+  let outcome: unknown = null;
+  act(() => {
+    call("/api/processes/get-layer/execution", { method: "POST", content: { inputs: {} } }).then(
+      (answer) => {
+        outcome = answer;
+      },
+      (error: unknown) => {
+        outcome = error;
+      },
+    );
+  });
+  const pane = await screen.findByRole("complementary", { name: "Sign in to Earthdata" });
+  expect(pane.querySelector('[role="status"]')?.textContent).toBe(
+    "The job needs your Earthdata token. Sign in again to start it. The request continues by itself after the sign-in.",
+  );
+  // The visitor stays signed in: the loss of the token ends no sign-in and is not reported.
+  expect(sessionStore.get().state).toBe("signed-in");
+  expect(messagesStore.get()).toEqual([]);
+  expect(outcome).toBeNull();
+  // Closing the pane gives the request up, with the sentence of the server, and nothing is sent again.
+  await userEvent.click(within(pane).getByRole("button", { name: "Close the Sign in to Earthdata pane" }));
+  await vi.waitFor(() => expect(outcome).toBeInstanceOf(SignInCancelled));
+  expect(outcome).toMatchObject({ message: "The job needs your Earthdata token. Sign in again to start it." });
+  expect(signInRequestStore.get()).toBeNull();
+  expect(server.sent("POST")).toHaveLength(1);
+});
+
+test("the lists of the account are read again when the visitor signs in", async () => {
+  const server = standIn();
+  show();
+  await vi.waitFor(() => expect(server.sent("GET", "/api/layers")).toHaveLength(1));
+  server.layers = [{ layer: layer({ id: "mine", title: "Layer of a_user" }) }];
+  act(() => sessionStore.set({ state: "signed-in", user: "a_user", token: true }));
+  await vi.waitFor(() => expect(layersStore.get().map((entry) => entry.layer.id)).toEqual(["mine"]));
 });
 
 test("the page holds the pane of Get layer", () => {

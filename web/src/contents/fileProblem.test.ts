@@ -60,15 +60,21 @@ test("an own server that does not answer in time, and a visitor who is not signe
   });
 });
 
-test("a file that no longer exists cannot be tried again", () => {
+test("a file that no longer exists cannot be tried again, and is marked as gone", () => {
   expect(problemOfAnswer(SITE_FILE, 404, null)).toEqual({
     text: "The file of the layer no longer exists.",
     again: false,
+    gone: true,
   });
   expect(problemOfAnswer(OWN_FILE, 404, "The server holds no such layer.")).toEqual({
     text: "The server holds no such layer.",
     again: false,
+    gone: true,
   });
+  expect(problemOfAnswer(SITE_FILE, 410, null)?.gone).toBe(true);
+  // No other answer says that the server may have removed the layer.
+  expect(problemOfAnswer(SITE_FILE, 503, null)?.gone).toBeUndefined();
+  expect(problemOfAnswer(OWN_FILE, 401, null)?.gone).toBeUndefined();
 });
 
 test("any other answer names its status, or shows the sentence of the server", () => {

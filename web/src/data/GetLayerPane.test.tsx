@@ -28,7 +28,7 @@ import {
   type Needs,
 } from "./GetLayerPane";
 import { jobsStore, loadJobs, resetJobs } from "./jobs";
-import { onSignInEnded } from "./service";
+import { onSignInNeeded } from "./service";
 import { resetSession, sessionStore, type Session } from "./session";
 import type { Product } from "./products";
 import {
@@ -42,6 +42,7 @@ import {
 import { realProduct, someProducts, testMap } from "./testProducts";
 import { AREA, HH, product } from "./testRequest";
 import { job, layer, standIn, type StandIn } from "./testSession";
+import { waitingSignIn } from "./testSignIn";
 
 let server: StandIn;
 
@@ -64,7 +65,7 @@ beforeEach(() => {
 
 afterEach(() => {
   resetJobs();
-  onSignInEnded(() => undefined);
+  onSignInNeeded(null);
   vi.unstubAllGlobals();
 });
 
@@ -623,16 +624,69 @@ test("a limit that is met after some jobs were started says how many were starte
   expect(screen.getByText("Waiting. The job waits for its turn. (0 %)")).toBeDefined();
 });
 
-test("the answer 401 records the end of the sign-in and is shown in the words of the server", async () => {
-  const ended = vi.fn();
-  onSignInEnded(ended);
+const NEEDS_TOKEN = "The job needs your Earthdata token, which the server no longer holds. Sign in again to start it.";
+
+test("where the page names no function for the sign-in, the answer 401 is shown in the words of the server", async () => {
   server.refuse("POST", "/api/processes", 401, "Sign in to Earthdata to start this job.");
   show();
   await userEvent.click(layerBox("Frequency A HHHH"));
   await typeArea();
   await userEvent.click(runButton());
   expect((await screen.findByRole("alert")).textContent).toBe("Sign in to Earthdata to start this job.");
-  expect(ended).toHaveBeenCalledTimes(1);
+});
+
+test("a start that needs the token waits for the sign-in and continues by itself with the same values", async () => {
+  const signIn = waitingSignIn();
+  server.refuse("POST", "/api/processes", 401, NEEDS_TOKEN);
+  show();
+  await userEvent.click(layerBox("Frequency A HHHH"));
+  await userEvent.click(layerBox("Frequency A HVHV"));
+  await typeArea();
+  const typed = sides();
+  await userEvent.click(runButton("Get 2 layers"));
+  await vi.waitFor(() => expect(signIn.sentences).toEqual([NEEDS_TOKEN]));
+  // The form waits for the sign-in: it shows that it is starting the jobs, and states no error.
+  expect(screen.getByText("Starting 2 jobs")).toBeDefined();
+  expect(screen.queryByRole("alert")).toBeNull();
+  expect(jobsStore.get()).toEqual([]);
+
+  // The visitor signs in, and the server holds the token again. Nothing is typed twice.
+  server.accept();
+  act(() => signIn.signIn());
+  await vi.waitFor(() => expect(jobsStore.get()).toHaveLength(2));
+  const starts = server.sent("POST");
+  expect(starts).toHaveLength(3);
+  expect(starts[1]).toEqual(starts[0]);
+  expect(starts.map(({ content }) => (content as { inputs: { layer: string } }).inputs.layer)).toEqual([
+    "HHHH",
+    "HHHH",
+    "HVHV",
+  ]);
+  expect(sides()).toEqual(typed);
+  expect(layerBox("Frequency A HHHH").checked).toBe(true);
+  expect(screen.queryByRole("alert")).toBeNull();
+  expect(messagesStore.get()).toEqual([]);
+});
+
+test("a sign-in that the visitor gives up leaves the form as it was", async () => {
+  const signIn = waitingSignIn();
+  server.refuse("POST", "/api/processes", 401, NEEDS_TOKEN);
+  show();
+  await userEvent.click(layerBox("Frequency A HHHH"));
+  await typeArea();
+  const typed = sides();
+  await userEvent.click(runButton());
+  await vi.waitFor(() => expect(signIn.sentences).toHaveLength(1));
+  act(() => signIn.giveUp());
+  await vi.waitFor(() => expect(screen.queryByText("Starting the job")).toBeNull());
+  // No error, no message and no job: the fields hold what the visitor chose, and the button can be pressed again.
+  expect(screen.queryByRole("alert")).toBeNull();
+  expect(messagesStore.get()).toEqual([]);
+  expect(jobsStore.get()).toEqual([]);
+  expect(server.sent("POST")).toHaveLength(1);
+  expect(layerBox("Frequency A HHHH").checked).toBe(true);
+  expect(sides()).toEqual(typed);
+  expect(isActive(runButton())).toBe(true);
 });
 
 test("the Cancel button ends the jobs that the form started", async () => {

@@ -8,7 +8,9 @@ import { layersStore, resetLayers } from "../data/layers";
 import { loadSeries, resetSeries, SERIES_PANE, shownSeriesStore } from "../data/series";
 import { GET_LAYER_PANE } from "../data/state";
 import { series, seriesItem } from "../data/testSeries";
+import { onSignInNeeded } from "../data/service";
 import { job, standIn, type StandIn } from "../data/testSession";
+import { waitingSignIn } from "../data/testSignIn";
 import { methodsStore } from "../help/state";
 import { dockStore, openToolPane, resetDock } from "../shared/dock/dock";
 import type { LayerDescription } from "../shared/layer";
@@ -39,6 +41,7 @@ afterEach(() => {
   resetJobs();
   resetLayers();
   resetSeries();
+  onSignInNeeded(null);
   vi.unstubAllGlobals();
 });
 
@@ -223,6 +226,41 @@ test("with layers of two kinds that cannot stand in one series, the field Layer 
   );
   await userEvent.click(runButton());
   expect(server.sent("POST")[0]?.content).toMatchObject({ inputs: { inputs: ["hv-oct", "hv-nov"] } });
+});
+
+const NEEDS_TOKEN = "The job needs your Earthdata token, which the server no longer holds. Sign in again to start it.";
+
+test("a series whose start needs the token waits for the sign-in and continues by itself with the same inputs", async () => {
+  const signIn = waitingSignIn();
+  server.refuse("POST", "/api/processes", 401, NEEDS_TOKEN);
+  show("backscatter-series", THREE);
+  await userEvent.click(runButton());
+  await vi.waitFor(() => expect(signIn.sentences).toEqual([NEEDS_TOKEN]));
+  expect(screen.queryByRole("alert")).toBeNull();
+  expect(jobsStore.get()).toEqual([]);
+  server.accept();
+  act(() => signIn.signIn());
+  await vi.waitFor(() => expect(jobsStore.get()).toHaveLength(1));
+  const starts = server.sent("POST");
+  expect(starts).toHaveLength(2);
+  expect(starts[1]).toEqual(starts[0]);
+  expect(screen.queryByRole("alert")).toBeNull();
+});
+
+test("a sign-in that the visitor gives up leaves the form of the series as it was", async () => {
+  const signIn = waitingSignIn();
+  server.refuse("POST", "/api/processes", 401, NEEDS_TOKEN);
+  show("backscatter-series", THREE);
+  const chosen = boxes();
+  await userEvent.click(runButton());
+  await vi.waitFor(() => expect(signIn.sentences).toHaveLength(1));
+  act(() => signIn.giveUp());
+  await vi.waitFor(() => expect(runButton().getAttribute("aria-disabled")).toBeNull());
+  expect(screen.queryByRole("alert")).toBeNull();
+  expect(messagesStore.get()).toEqual([]);
+  expect(jobsStore.get()).toEqual([]);
+  expect(server.sent("POST")).toHaveLength(1);
+  expect(boxes()).toEqual(chosen);
 });
 
 test("layers that an own server keeps are not offered, and the pane says why", () => {

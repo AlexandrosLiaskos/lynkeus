@@ -5,7 +5,7 @@ import { addWhenReadyStore } from "../data/follow";
 import { JobFields } from "../data/JobFields";
 import { dismissJob, isUnfinished, jobsStore, startJob, STATUS_WORDS, type Job } from "../data/jobs";
 import { layersStore } from "../data/layers";
-import { wordsOf } from "../data/service";
+import { SignInCancelled, wordsOf } from "../data/service";
 import { GET_LAYER_PANE } from "../data/state";
 import { methodsStore } from "../help/state";
 import { ServerField, useServerChoice } from "../servers/ServerField";
@@ -273,7 +273,10 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
     if (!inputs || server.missing !== null) {
       return;
     }
+    const before = started;
     setStarted({ id: null, sending: true, fault: null, cancelled: false });
+    // A request that the server refuses because it needs the token waits for the sign-in, and is then sent
+    // again with the same values.
     startJob(tool, { ...inputs }, server.parameter).then(
       (job) => {
         setStarted({ id: job.jobID, sending: false, fault: null, cancelled: false });
@@ -283,12 +286,12 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
         }
       },
       (error: unknown) =>
-        setStarted({
-          id: null,
-          sending: false,
-          fault: wordsOf(error, "The job could not be started."),
-          cancelled: false,
-        }),
+        // A visitor who gave the sign-in up finds the form as it was.
+        setStarted(
+          error instanceof SignInCancelled
+            ? before
+            : { id: null, sending: false, fault: wordsOf(error, "The job could not be started."), cancelled: false },
+        ),
     );
   };
 

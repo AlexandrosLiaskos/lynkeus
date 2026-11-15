@@ -2,7 +2,12 @@
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, expect, test, vi } from "vitest";
+import { afterEach, beforeEach, expect, test, vi } from "vitest";
+import { againStore, resetAgain } from "../data/again";
+import { jobsReadStore, jobsStore, resetJobs } from "../data/jobs";
+import { layersReadStore, layersStore, resetLayers, type LayerSource } from "../data/layers";
+import { resetSession, sessionStore } from "../data/session";
+import { job, standIn } from "../data/testSession";
 import { baseMapStore } from "../map/baseMaps";
 import { createMap } from "../map/map";
 import type { LayerDescription } from "../shared/layer";
@@ -13,8 +18,9 @@ import { resetPanes, setPaneOpen } from "../shared/panes";
 import { serversStore } from "../shared/servers";
 import { LABORATORY, OFFICE, SERVERS } from "../servers/testServers";
 import { listedBasemapStore } from "./BasemapItem";
-import { ContentsPane } from "./ContentsPane";
+import { ContentsPane, withRemoved } from "./ContentsPane";
 import { drawAgainStore, layerProblemsStore } from "./drawing";
+import { keptStore, resetKept, restoreKept, statesStore } from "./kept";
 import {
   copiedDisplayStore,
   displayOf,
@@ -70,6 +76,11 @@ function listed(): (string | null)[] {
 const nameOf = (text: string) => screen.getByRole("button", { name: text });
 
 beforeEach(() => {
+  resetKept();
+  resetSession();
+  resetLayers();
+  resetJobs();
+  resetAgain();
   baseMapStore.set("blue-marble");
   listedBasemapStore.set("blue-marble");
   resetDock();
@@ -79,6 +90,7 @@ beforeEach(() => {
   symbologyStore.set(null);
   propertiesStore.set(null);
   mapLayersStore.set([]);
+  resetKept();
   displayStore.set({});
   foldedStore.set([]);
   selectedLayerStore.set(null);
@@ -302,7 +314,7 @@ test("the Remove command takes the layer off the map and moves the focus to the 
   expect(mapLayersStore.get().map(({ id }) => id)).toEqual(["october"]);
   expect(selectedLayerStore.get()).toBeNull();
   expect(document.activeElement).toBe(nameOf("Backscatter HH 21 Oct 2026"));
-  expect(screen.getByRole("status").textContent).toBe("The layer was removed.");
+  expect(document.querySelector("p.usa-sr-only")?.textContent).toBe("The layer was removed.");
 });
 
 test("the Delete key on the name removes the layer, and after the last layer the focus moves to the map", async () => {
@@ -528,4 +540,243 @@ test("the notice of a layer whose file may be readable later offers to try again
   await userEvent.click(screen.getByRole("button", { name: "Try again" }));
   expect(drawAgainStore.get()).toEqual({ far: 1 });
   expect(mapLayersStore.get().map(({ id }) => id)).toEqual(["far"]);
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
+
+/** The request that made a received layer, as the list of the server states it. */
+const REQUEST: LayerSource = {
+  process: "get-layer",
+  inputs: {
+    product: "GCOV",
+    granule: "NISAR_L2_PR_GCOV",
+    layer: "HHHH",
+    area: { west: 1, south: 2, east: 3, north: 4 },
+  },
+};
+
+/** A result that an analysis tool made from the two backscatter layers. */
+const CHANGE: LayerDescription = {
+  ...layer("change", "Backscatter change", ["2026-10-21", "2026-11-02"]),
+  kind: "result",
+  method: "docs/methods/backscatter-change.md",
+};
+
+/** Give the page the sign-in of an account and the list of its layers on the server. */
+function signedIn(user: string, layers: readonly LayerDescription[]): void {
+  sessionStore.set({ state: "signed-in", user, token: true });
+  layersStore.set(layers.map((described) => ({ layer: described, size: null, created: null, server: null })));
+  layersReadStore.set({ account: user });
+}
+
+/** Bring layers into the page as the browser stored them for the account a_user, with the request of each. */
+function storedFor(layers: readonly LayerDescription[], account: string | null = "a_user"): void {
+  restoreKept(
+    layers.map((described) => ({
+      layer: described,
+      account,
+      source:
+        described.kind === "result"
+          ? { process: "backscatter-change", inputs: { inputs: ["october", "november"], title: described.title } }
+          : REQUEST,
+    })),
+  );
+}
+
+const notices = () =>
+  [...document.querySelectorAll(".contents-notices .notice-text")].map((notice) => notice.textContent);
+const rowOf = (title: string) => {
+  const row = [...document.querySelectorAll<HTMLElement>(".contents-layer")].find((item) =>
+    item.querySelector(".contents-name")?.textContent?.startsWith(title),
+  );
+  if (!row) {
+    throw new Error(`The list has no layer ${title}.`);
+  }
+  return row;
+};
+
+test("layers that wait for the sign-in are not listed: one notice names their account and offers the sign-in", async () => {
+  sessionStore.set({ state: "signed-out" });
+  storedFor([OCTOBER, NOVEMBER]);
+  show();
+  expect(listed()).toEqual([]);
+  expect(notices()).toEqual([
+    "2 layers of this map belong to the Earthdata account a_user and are not shown. Sign in to that account to show them again.",
+  ]);
+  // The notice is a state of the pane and no error.
+  expect(document.querySelector(".contents-notices .notice--info")).not.toBeNull();
+  expect(screen.queryByRole("alert")).toBeNull();
+  await userEvent.click(screen.getByRole("button", { name: "Sign in" }));
+  expect(dockStore.get().tools).toEqual(["sign-in"]);
+});
+
+test("after the sign-in to their account the layers are listed again, in their order", () => {
+  sessionStore.set({ state: "signed-out" });
+  storedFor([OCTOBER, COHERENCE, NOVEMBER]);
+  show();
+  expect(listed()).toEqual([]);
+  act(() => signedIn("a_user", [NOVEMBER, COHERENCE, OCTOBER]));
+  expect(notices()).toEqual([]);
+  expect(listed()).toEqual([
+    "Backscatter HH 2 Nov 2026",
+    "Coherence HH, 20 m 9 Oct 2026 and 21 Oct 2026",
+    "Backscatter HH 21 Oct 2026",
+  ]);
+});
+
+test("signed in to another account, the notice names the first account and removes its layers from this browser", async () => {
+  signedIn("b_user", [COHERENCE]);
+  restoreKept([
+    { layer: OCTOBER, account: "a_user", source: REQUEST },
+    { layer: COHERENCE, account: "b_user", source: REQUEST },
+  ]);
+  show();
+  expect(listed()).toEqual(["Coherence HH, 20 m 9 Oct 2026 and 21 Oct 2026"]);
+  expect(notices()).toEqual([
+    "1 layer of this map belongs to the Earthdata account a_user, and you are signed in as b_user. It is shown again after a sign-in as a_user.",
+  ]);
+  expect(screen.queryByRole("button", { name: "Sign in" })).toBeNull();
+  await userEvent.click(screen.getByRole("button", { name: "Remove from this browser" }));
+  expect(notices()).toEqual([]);
+  expect(keptStore.get().map((entry) => entry.layer.id)).toEqual(["coherence"]);
+  expect(listed()).toEqual(["Coherence HH, 20 m 9 Oct 2026 and 21 Oct 2026"]);
+});
+
+test("while the project server does not answer, one notice says so and no layer is listed", () => {
+  sessionStore.set({ state: "unreachable" });
+  storedFor([OCTOBER, NOVEMBER]);
+  show();
+  expect(listed()).toEqual([]);
+  expect(notices()).toEqual([
+    "The project server does not answer, so 2 layers of this map are not shown. The page asks again by itself.",
+  ]);
+  expect(document.querySelector(".contents-notices .notice--warning")).not.toBeNull();
+  expect(screen.queryByRole("alert")).toBeNull();
+  expect(document.querySelector(".contents-notices .usa-button")).toBeNull();
+});
+
+test("before the first answers the pane says nothing about the stored layers", () => {
+  storedFor([OCTOBER]);
+  show();
+  expect(listed()).toEqual([]);
+  expect(notices()).toEqual([]);
+});
+
+test("a layer that the server removed has a row at its place, which says so and draws nothing", () => {
+  signedIn("a_user", [OCTOBER, COHERENCE]);
+  storedFor([OCTOBER, NOVEMBER, COHERENCE]);
+  show();
+  expect(statesStore.get().november).toBe("removed");
+  expect(mapLayersStore.get().map(({ id }) => id)).toEqual(["october", "coherence"]);
+  expect(listed()).toEqual([
+    "Coherence HH, 20 m 9 Oct 2026 and 21 Oct 2026",
+    "Backscatter HH 2 Nov 2026 · removed from the server",
+    "Backscatter HH 21 Oct 2026",
+  ]);
+  const row = rowOf("Backscatter HH 2 Nov");
+  // The layer is not drawn: its row has no box, no legend and no opacity, and it is no error.
+  expect(within(row).queryByRole("checkbox")).toBeNull();
+  expect(within(row).queryByRole("slider")).toBeNull();
+  expect(within(row).queryByRole("alert")).toBeNull();
+  expect(within(row).getByRole("status").textContent).toBe(
+    "The project server no longer keeps this layer: it removed the layer after the keeping time, or the layer was removed elsewhere. Get again requests it from NASA with the same choices and gives it this place.",
+  );
+  expect(within(row).getByRole("button", { name: "Get again" })).toBeDefined();
+  expect(within(row).getByRole("button", { name: "Remove from the map" })).toBeDefined();
+  // The layers of the map keep their commands, and their places count the layers of the map only.
+  expect(screen.getByRole("checkbox", { name: "Show Coherence HH, 20 m" })).toBeDefined();
+});
+
+test("Get again sends the request that made the layer, and the row then says that the layer was requested", async () => {
+  const server = standIn();
+  signedIn("a_user", [OCTOBER]);
+  jobsReadStore.set({ account: "a_user" });
+  storedFor([OCTOBER, NOVEMBER]);
+  show();
+  await userEvent.click(screen.getByRole("button", { name: "Get again" }));
+  await vi.waitFor(() => expect(againStore.get()).toEqual({ november: "job-1" }));
+  expect(server.sent("POST")).toEqual([
+    { method: "POST", address: "/api/processes/get-layer/execution", content: { inputs: REQUEST.inputs } },
+  ]);
+  const row = rowOf("Backscatter HH 2 Nov");
+  expect(within(row).getByRole("status").textContent).toBe(
+    "This layer was requested again, and its job is waiting. The new layer takes this place when the job ends.",
+  );
+  expect(within(row).queryByRole("button", { name: "Get again" })).toBeNull();
+  expect(within(row).getByRole("button", { name: "Remove from the map" })).toBeDefined();
+});
+
+test("when the job of Get again ends, the new layer takes the place and the display of the removed one", () => {
+  const again = layer("november-again", "Backscatter HH", ["2026-11-02"]);
+  signedIn("a_user", [OCTOBER, COHERENCE]);
+  restoreKept([
+    { layer: OCTOBER, account: "a_user", source: REQUEST },
+    { layer: NOVEMBER, account: "a_user", source: REQUEST, display: { ...displayOf(NOVEMBER), opacity: 0.3 } },
+    { layer: COHERENCE, account: "a_user", source: REQUEST },
+  ]);
+  jobsStore.set([job({ jobID: "again", status: "running" })]);
+  jobsReadStore.set({ account: "a_user" });
+  againStore.set({ november: "again" });
+  show();
+  // The job ends, and the list of the server holds its layer.
+  act(() => {
+    signedIn("a_user", [again, OCTOBER, COHERENCE]);
+    jobsStore.set([job({ jobID: "again", status: "successful", layer: "november-again" })]);
+  });
+  expect(listed()).toEqual([
+    "Coherence HH, 20 m 9 Oct 2026 and 21 Oct 2026",
+    "Backscatter HH 2 Nov 2026",
+    "Backscatter HH 21 Oct 2026",
+  ]);
+  expect(mapLayersStore.get().map(({ id }) => id)).toEqual(["october", "november-again", "coherence"]);
+  expect(displayStore.get()["november-again"]?.opacity).toBe(0.3);
+  expect(within(rowOf("Backscatter HH 2 Nov")).getByRole("slider").getAttribute("aria-valuetext")).toBe("30 percent");
+});
+
+test("a result that the server removed names its tool and its inputs, and Remove from the map takes it out", async () => {
+  signedIn("a_user", [OCTOBER, NOVEMBER]);
+  storedFor([OCTOBER, NOVEMBER, CHANGE]);
+  show();
+  const row = rowOf("Backscatter change");
+  expect(within(row).getByRole("status").textContent).toBe(
+    'The project server no longer keeps this result: it removed the result after the keeping time, or the result was removed elsewhere. The tool Backscatter, Change made it from the layers "Backscatter HH" and "Backscatter HH".',
+  );
+  expect(within(row).queryByRole("button", { name: "Get again" })).toBeNull();
+  // The notice and the row both offer the command.
+  const commands = within(row).getAllByRole("button", { name: "Remove from the map" });
+  expect(commands).toHaveLength(2);
+  await userEvent.click(commands[1] as HTMLElement);
+  expect(listed()).toEqual(["Backscatter HH 2 Nov 2026", "Backscatter HH 21 Oct 2026"]);
+  expect(keptStore.get().map((entry) => entry.layer.id)).toEqual(["october", "november"]);
+  // The focus goes to the layer that took the place of the removed row.
+  expect(document.activeElement?.textContent).toBe("Backscatter HH 2 Nov 2026");
+  expect(document.querySelector("p.usa-sr-only")?.textContent).toBe("The layer was removed.");
+});
+
+test("a removed layer stands above the nearest kept layer under it that the list shows", () => {
+  const row = (id: string) => ({ id, title: id, layer: layer(id, id, ["2026-10-21"]) });
+  const kept = ["a", "b", "c", "d"].map((id) => ({
+    layer: layer(id, id, ["2026-10-21"]),
+    account: "a_user",
+    source: null,
+    aside: id === "b" || id === "a",
+  }));
+  // The list shows the top layer first: d over c. The removed b stood between c and a, and a at the bottom.
+  expect(
+    withRemoved([row("d"), row("c")], kept, { a: "removed", b: "removed", c: "ready", d: "ready" }).map(({ id }) => id),
+  ).toEqual(["d", "c", "b", "a"]);
+  expect(withRemoved([row("d"), row("c")], kept, { a: "waits", b: "removed" }).map(({ id }) => id)).toEqual([
+    "d",
+    "c",
+    "b",
+  ]);
+  const middle = kept.map((entry) => ({ ...entry, aside: entry.layer.id === "c" }));
+  expect(withRemoved([row("d"), row("b"), row("a")], middle, { c: "removed" }).map(({ id }) => id)).toEqual([
+    "d",
+    "c",
+    "b",
+    "a",
+  ]);
 });

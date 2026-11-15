@@ -8,6 +8,11 @@ export interface LayerProblem {
   text: string;
   /** Whether the same file may be readable later, so that the layer offers to try again. */
   again: boolean;
+  /**
+   * Whether the site answered that the file does not exist. The server may then have removed the layer, after
+   * its date or at a request made elsewhere, and the list of the server tells whether it has.
+   */
+  gone?: boolean;
 }
 
 /** The sentence for a file that cannot be read for a reason that the page does not know. */
@@ -39,7 +44,7 @@ export function problemOfAnswer(address: string, status: number, detail: string 
   }
   const server = serverOfAddress(address);
   if (status === 404 || status === 410) {
-    return { text: detail ?? "The file of the layer no longer exists.", again: false };
+    return { text: detail ?? "The file of the layer no longer exists.", again: false, gone: true };
   }
   if (server !== null && status === 401) {
     return {

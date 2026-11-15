@@ -1,24 +1,42 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
+import { againStore } from "../data/again";
+import { isLayerSource, type LayerSource } from "../data/layers";
 import { isLayerDescription, type LayerDescription } from "../shared/layer";
-import { mapLayersStore } from "../shared/mapLayers";
 import { keepInBrowser } from "../shared/storage/storage";
+import { keptStore, restoreKept } from "./kept";
 import { displayStore, type LayerDisplay, type Stretch } from "./state";
 
 /** The name under which the layers of the map are kept in the local storage of the browser. */
 export const LAYERS_KEY = "lynkeus.layers";
 
-/** The layers of the map as the browser keeps them. */
+/**
+ * The layers of the map as the browser keeps them (`docs/Storage.md`, States of a stored layer). The layers
+ * that wait for the sign-in and those that the server removed are kept with the others, at their places.
+ */
 export interface StoredLayers {
   /** The descriptions of the layers, in drawing order: the first one is drawn at the bottom. */
   layers: readonly LayerDescription[];
   /** The display of each layer that has one, by the id of the layer. */
   displays: Readonly<Record<string, LayerDisplay>>;
+  /**
+   * The Earthdata account that owns each layer, by the id of the layer. A map that was stored before the owner
+   * was recorded has no such field, and a layer without an entry has no known owner.
+   */
+  accounts?: Readonly<Record<string, string>>;
+  /** The request that made each layer whose request is known, by the id of the layer. */
+  sources?: Readonly<Record<string, LayerSource>>;
+  /** For each removed layer that was requested again, by its id: the id of the job that makes it again. */
+  again?: Readonly<Record<string, string>>;
 }
 
-/** The largest number of layers of a stored map, and the largest number of characters of the name of a scale. */
+/**
+ * The largest number of layers of a stored map, the largest number of characters of the name of a scale, and
+ * the largest number of characters of the name of an account or of a job.
+ */
 const MOST_LAYERS = 500;
 const NAME_LENGTH = 64;
+const TEXT_LENGTH = 256;
 
 const COLOUR = /^#[0-9a-f]{6}$/i;
 
@@ -104,10 +122,46 @@ function isSitePath(address: string): boolean {
   return address.startsWith("/") && !address.startsWith("//") && !address.includes("\\");
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function isName(value: unknown): value is string {
+  return typeof value === "string" && value !== "" && value.length <= TEXT_LENGTH;
+}
+
+/**
+ * Check a field that holds one value for some of the layers, by the id of the layer. An absent field is an
+ * empty one. Return undefined when the field is not such a record, names a layer that is not stored, or holds a
+ * value that the check refuses.
+ */
+function byLayer<Value>(
+  field: unknown,
+  ids: ReadonlySet<string>,
+  isValue: (value: unknown) => value is Value,
+): Record<string, Value> | undefined {
+  if (field === undefined) {
+    return {};
+  }
+  if (!isRecord(field)) {
+    return undefined;
+  }
+  const checked: Record<string, Value> = {};
+  for (const [id, value] of Object.entries(field)) {
+    if (!ids.has(id) || !isValue(value)) {
+      return undefined;
+    }
+    checked[id] = value;
+  }
+  return checked;
+}
+
 /**
  * Check the layers that were read from the storage. Each layer is a layer description whose file is a file of
- * this site, no two layers have one id, and each display is the valid display of one of the layers. A layer or
- * a display that is wrong refuses the whole, so that the map never shows half of what was stored.
+ * this site, no two layers have one id, and each display is the valid display of one of the layers. The account
+ * of a layer is a name, the request that made it names a process and its inputs, and a job of Get again is
+ * named for a stored layer. A map of the older form, without accounts, is read as it is. A layer, a display or
+ * another field that is wrong refuses the whole, so that the map never shows half of what was stored.
  */
 export function storedLayers(stored: unknown): StoredLayers | undefined {
   if (typeof stored !== "object" || stored === null) {
@@ -133,35 +187,67 @@ export function storedLayers(stored: unknown): StoredLayers | undefined {
     }
     checked[id] = valid;
   }
-  return { layers, displays: checked };
+  const ids = new Set(layers.map(({ id }) => id));
+  const fields = stored as Record<string, unknown>;
+  const accounts = byLayer(fields.accounts, ids, isName);
+  const sources = byLayer(fields.sources, ids, isLayerSource);
+  const again = byLayer(fields.again, ids, isName);
+  if (!accounts || !sources || !again) {
+    return undefined;
+  }
+  return { layers, displays: checked, accounts, sources, again };
 }
 
-// The layers of the map are a part of the work that the browser keeps. They return when the page opens. A layer
-// whose file the server no longer has is listed in the Contents pane with a notice that offers to remove it.
+/** Return the layers of the map as the browser stores them now: those on the map and those that are set aside. */
+export function layersToStore(): StoredLayers {
+  const kept = keptStore.get();
+  const shown = displayStore.get();
+  const displays: Record<string, LayerDisplay> = {};
+  const accounts: Record<string, string> = {};
+  const sources: Record<string, LayerSource> = {};
+  for (const { layer, account, source, aside, display } of kept) {
+    const drawn = aside ? display : shown[layer.id];
+    if (drawn) {
+      displays[layer.id] = drawn;
+    }
+    if (account !== null) {
+      accounts[layer.id] = account;
+    }
+    if (source !== null) {
+      sources[layer.id] = source;
+    }
+  }
+  return { layers: kept.map(({ layer }) => layer), displays, accounts, sources, again: againStore.get() };
+}
+
+// The layers of the map are a part of the work that the browser keeps: those on the map, and those that wait for
+// the sign-in or that the server removed, each with its account, the request that made it and its display. They
+// return when the page opens, and each one then takes its state (`kept.ts`). The windows of one browser share
+// this map: a change that one window stores reaches the others.
 keepInBrowser<StoredLayers>({
   key: LAYERS_KEY,
   title: "Layers of the map",
-  description: "The layers on the map, in their order, with the display of each.",
-  read: () => {
-    const layers = mapLayersStore.get();
-    const displays = displayStore.get();
-    return {
-      layers,
-      displays: Object.fromEntries(
-        layers.flatMap(({ id }) => {
-          const display = displays[id];
-          return display ? [[id, display] as const] : [];
-        }),
-      ),
-    };
-  },
+  description: "The layers on the map, in their order, with the display, the account and the request of each.",
+  shared: true,
+  read: layersToStore,
   check: storedLayers,
-  restore: ({ layers, displays }) => {
-    displayStore.set({ ...displayStore.get(), ...displays });
-    mapLayersStore.set(layers);
+  restore: ({ layers, displays, accounts = {}, sources = {}, again = {} }) => {
+    restoreKept(
+      layers.map((layer) => {
+        const display = displays[layer.id];
+        return {
+          layer,
+          account: accounts[layer.id] ?? null,
+          source: sources[layer.id] ?? null,
+          ...(display ? { display } : {}),
+        };
+      }),
+    );
+    // The jobs of Get again are named for layers that the page now holds.
+    againStore.set(again);
   },
   subscribe: (listener) => {
-    const ends = [mapLayersStore.subscribe(listener), displayStore.subscribe(listener)];
+    const ends = [keptStore.subscribe(listener), displayStore.subscribe(listener), againStore.subscribe(listener)];
     return () => ends.forEach((end) => end());
   },
 });

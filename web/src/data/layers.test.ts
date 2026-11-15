@@ -4,9 +4,11 @@ import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { addToMap, mapLayersStore } from "../shared/mapLayers";
 import {
   groupLayers,
+  isLayerSource,
   layerEntry,
   layerExtent,
   layersFaultStore,
+  layersReadStore,
   layersStore,
   loadLayers,
   removeLayer,
@@ -17,9 +19,22 @@ import {
   type LayerEntry,
 } from "./layers";
 import { formatDay } from "./products";
+import { resetSession, sessionStore } from "./session";
 import { layer, standIn } from "./testSession";
 
+/** The request that made a layer, as `GET /api/layers` states it (docs/Storage.md, Addresses). */
+const SOURCE = {
+  process: "get-layer",
+  inputs: {
+    product: "GCOV",
+    granule: "NISAR_L2_PR_GCOV_001",
+    layer: "HHHH",
+    area: { west: 1, south: 2, east: 3, north: 4 },
+  },
+};
+
 beforeEach(() => {
+  resetSession();
   resetLayers();
   mapLayersStore.set([]);
 });
@@ -39,6 +54,58 @@ test("an entry of the list carries the description, the size and the time of a l
   });
   expect(layerEntry({ layer: layer() })).toEqual({ layer: layer(), size: null, created: null, server: null });
   expect(layerEntry(layer())).toEqual({ layer: layer(), size: null, created: null, server: null });
+});
+
+test("an entry carries the request that made the layer, when the server states it", () => {
+  expect(layerEntry({ layer: layer(), source: SOURCE })?.source).toEqual(SOURCE);
+  // An answer of the older server has no such field, and a layer whose request is not known has null.
+  expect(layerEntry({ layer: layer() })).not.toHaveProperty("source");
+  expect(layerEntry({ layer: layer(), source: null })).not.toHaveProperty("source");
+  expect(isLayerSource(SOURCE)).toBe(true);
+});
+
+test.each([
+  ["it is a text", "get-layer"],
+  ["it names no process", { inputs: {} }],
+  ["the name of the process is empty", { process: "", inputs: {} }],
+  ["it has no inputs", { process: "get-layer" }],
+  ["the inputs are a list", { process: "get-layer", inputs: [] }],
+])("an entry is rejected when the request that made the layer is wrong: %s", (_reason, source) => {
+  expect(isLayerSource(source)).toBe(false);
+  expect(layerEntry({ layer: layer(), source })).toBeNull();
+});
+
+test("the page records for which account the list was read", async () => {
+  const server = standIn();
+  server.layers = [{ layer: layer(), source: SOURCE }];
+  expect(layersReadStore.get()).toBeNull();
+  await loadLayers();
+  expect(layersReadStore.get()).toEqual({ account: null });
+  expect(layersStore.get()[0]?.source).toEqual(SOURCE);
+  sessionStore.set({ state: "signed-in", user: "a_user", token: true });
+  await loadLayers();
+  expect(layersReadStore.get()).toEqual({ account: "a_user" });
+  resetLayers();
+  expect(layersReadStore.get()).toBeNull();
+});
+
+test("a list that arrives after the sign-in has changed is the list of nobody and is dropped", async () => {
+  const server = standIn();
+  server.layers = [{ layer: layer() }];
+  sessionStore.set({ state: "signed-in", user: "a_user", token: true });
+  const reading = loadLayers();
+  sessionStore.set({ state: "signed-in", user: "b_user", token: true });
+  await reading;
+  expect(layersStore.get()).toEqual([]);
+  expect(layersReadStore.get()).toBeNull();
+});
+
+test("a reading that fails leaves the record of the last list as it is", async () => {
+  const server = standIn();
+  await loadLayers();
+  server.refuse("GET", "/api/layers", 500, null);
+  await loadLayers();
+  expect(layersReadStore.get()).toEqual({ account: null });
 });
 
 test("an entry names the own server that keeps the layer, and the project server by null", () => {

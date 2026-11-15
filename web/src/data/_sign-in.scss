@@ -90,6 +90,15 @@
   overflow-wrap: anywhere;
 }
 
+// The sentence about the token stands under the user name, on lines of a readable length.
+.account-menu-note {
+  display: block;
+  max-width: 18rem;
+  margin-top: tokens.$space-1;
+  font-size: tokens.$text-small;
+  line-height: tokens.$line-small;
+}
+
 .account-menu-command {
   display: flex;
   align-items: center;

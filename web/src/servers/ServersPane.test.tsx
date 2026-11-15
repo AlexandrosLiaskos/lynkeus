@@ -5,8 +5,8 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { resetJobs } from "../data/jobs";
 import { layersStore, resetLayers } from "../data/layers";
-import { onSignInEnded } from "../data/service";
-import { resetSession, sessionStore, signIn, signInEnded } from "../data/session";
+import { onSignInNeeded } from "../data/service";
+import { resetSession, sessionStore, signIn, signInNeeded } from "../data/session";
 import { SignInPane } from "../data/SignInPane";
 import { layer, showPage } from "../data/testSession";
 import { dockStore, frontOf, resetDock } from "../shared/dock/dock";
@@ -50,7 +50,7 @@ beforeEach(() => {
   messagesStore.set([]);
   showPage(true);
   window.history.replaceState(null, "", "/");
-  onSignInEnded(signInEnded);
+  onSignInNeeded(signInNeeded);
   server = site();
   server.servers = [...SERVERS.servers];
   server.pairings = { [CODE]: VIEW };
@@ -60,7 +60,7 @@ beforeEach(() => {
 afterEach(() => {
   resetServers();
   resetJobs();
-  onSignInEnded(() => undefined);
+  onSignInNeeded(null);
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
 });

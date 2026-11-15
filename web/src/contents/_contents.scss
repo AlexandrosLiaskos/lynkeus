@@ -149,6 +149,20 @@ button.contents-fold {
   cursor: pointer;
 }
 
+// The name of a layer that the server removed selects nothing: the layer is not on the map. It begins where the
+// names of the other layers begin, after the columns of the arrow and of the box.
+.contents-name--removed {
+  margin-left: 2 * tokens.$target;
+  cursor: default;
+}
+
+// The notices about the layers that are not shown stand over the list, inside the padding of the pane.
+.contents-notices {
+  display: grid;
+  gap: tokens.$space-2;
+  padding: tokens.$space-2 tokens.$pane-padding;
+}
+
 // The field for a new name takes the place of the name.
 .contents-rename {
   flex: 1;

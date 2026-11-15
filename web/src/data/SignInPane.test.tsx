@@ -2,14 +2,15 @@
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { act, render, screen } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { Dock } from "../shared/dock/Dock";
 import { dockStore, openToolPane, resetDock } from "../shared/dock/dock";
 import { messagesStore } from "../shared/messages/messages";
-import { resetSession, sessionStore } from "./session";
-import { ABOUT, IDLE_MINUTES, LONGEST_HOURS, SIGN_IN_PANE, SignInPane, TOKEN_PAGE } from "./SignInPane";
+import { resetSession, sessionStore, signInNeeded, signInRequestStore } from "./session";
+import { ABOUT, IDLE_MINUTES, LONGEST_HOURS, SIGN_IN_PANE, SignInPane, TOKEN_PAGE, TOKEN_STATE } from "./SignInPane";
+import { SignOutDialog } from "./SignOutDialog";
 import { earthdata, REFUSAL, TOKEN, type Earthdata } from "./testSignIn";
 
 /** The page around the pane: a button that opens it, the map, and the right side of the map. */
@@ -23,6 +24,7 @@ function Page() {
       <Dock side="right">
         <SignInPane />
       </Dock>
+      <SignOutDialog reload={vi.fn()} />
     </>
   );
 }
@@ -50,6 +52,12 @@ function run(): HTMLButtonElement {
     throw new Error("The pane is closed.");
   }
   return button;
+}
+
+/** Press Sign out in the dialog that says what stays where. */
+async function confirmSignOut(): Promise<void> {
+  const dialog = await screen.findByRole("dialog", { name: "Sign out of Earthdata" });
+  await userEvent.click(within(dialog).getByRole("button", { name: "Sign out" }));
 }
 
 function messages(): [string, string][] {
@@ -177,7 +185,7 @@ test("a sign-in sends the token, empties the field, names the user in a message 
   act(() => server.release());
   await vi.waitFor(() => expect(pane()).toBeNull());
   expect(messages()).toEqual([["success", "You are signed in to Earthdata as a_user."]]);
-  expect(sessionStore.get()).toEqual({ state: "signed-in", user: "a_user" });
+  expect(sessionStore.get()).toEqual({ state: "signed-in", user: "a_user", token: true });
   expect(document.activeElement).toBe(opener());
 });
 
@@ -339,7 +347,7 @@ test("the keyboard alone opens the pane, reaches its elements in order, signs in
   await userEvent.keyboard("{Enter}");
   await vi.waitFor(() => expect(pane()).toBeNull());
   expect(server.sent("POST")[0]?.content).toEqual({ token: TOKEN });
-  expect(sessionStore.get()).toEqual({ state: "signed-in", user: "a_user" });
+  expect(sessionStore.get()).toEqual({ state: "signed-in", user: "a_user", token: true });
   expect(document.activeElement).toBe(opener());
 });
 
@@ -348,7 +356,7 @@ test("a visitor who is signed in sees the user name and can sign out", async () 
   await open(server);
   expect(screen.queryByLabelText("User token")).toBeNull();
   expect(status()).toBe(
-    "You are signed in to Earthdata as a_user. The sign-in ends when you sign out, after 30 minutes without use and after 8 hours.",
+    "You are signed in to Earthdata as a_user. The project server forgets your token when you sign out, after 30 minutes without use and after 8 hours, and asks for it again when a request to NASA needs it.",
   );
   expect(pane()?.querySelector(".notice--success")).not.toBeNull();
   expect(about()).toBe(
@@ -356,6 +364,9 @@ test("a visitor who is signed in sees the user name and can sign out", async () 
   );
   expect(run().textContent).toBe("Sign out");
   await userEvent.click(run());
+  // The button opens the dialog that says what stays where, and nothing is sent before the visitor confirms.
+  expect(server.sent("DELETE")).toEqual([]);
+  await confirmSignOut();
   await vi.waitFor(() => expect(sessionStore.get()).toEqual({ state: "signed-out" }));
   expect(server.sent("DELETE")).toEqual([{ method: "DELETE", address: "/api/session/earthdata", content: undefined }]);
   expect(messages()).toEqual([["success", "You are signed out of Earthdata. Jobs that were already started go on."]]);
@@ -368,6 +379,7 @@ test("a sign-out that fails keeps the visitor signed in and reports the words of
   server.refusal.DELETE = { status: 500, content: { detail: "The sign-out could not be recorded." } };
   await open(server);
   await userEvent.click(run());
+  await confirmSignOut();
   await vi.waitFor(() => expect(messages()).toEqual([["error", "The sign-out could not be recorded."]]));
   await vi.waitFor(() => expect(run().getAttribute("aria-disabled")).toBeNull());
   expect(sessionStore.get().state).toBe("signed-in");
@@ -405,4 +417,137 @@ test("the page asks again when the visitor returns to it, and reports a sign-in 
   expect(server.sent("GET")).toHaveLength(2);
   expect(messages()).toEqual([["warning", "Your sign-in to Earthdata has ended. Sign in again to continue."]]);
   expect(await screen.findByLabelText("User token")).toBeTruthy();
+});
+
+test("the page asks again when its window takes the focus, as after a sign-out in another window", async () => {
+  const server = earthdata("a_user");
+  await open(server);
+  server.user = null;
+  act(() => {
+    window.dispatchEvent(new Event("focus"));
+  });
+  await vi.waitFor(() => expect(sessionStore.get()).toEqual({ state: "signed-out" }));
+  expect(server.sent("GET")).toHaveLength(2);
+});
+
+test("a visitor who is signed in without the token sees the account and the field for the token", async () => {
+  const server = earthdata("a_user");
+  server.token = false;
+  await open(server);
+  expect(sessionStore.get()).toEqual({ state: "signed-in", user: "a_user", token: false });
+  expect(status()).toBe(`You are signed in to Earthdata as a_user. ${TOKEN_STATE.notHeld}`);
+  expect(status()).toBe(
+    "You are signed in to Earthdata as a_user. The project server does not hold your token now. Give a user token to request data from NASA.",
+  );
+  expect(pane()?.querySelector(".notice--info")).not.toBeNull();
+  // The loss of the token is no end of the sign-in: nothing is reported.
+  expect(messages()).toEqual([]);
+  expect(run().textContent).toBe("Sign in");
+  // Sign out is the one secondary command of the pane, a link at the left end of its foot.
+  expect(within(pane() as HTMLElement).getByRole("button", { name: "Sign out" }).className).toContain("unstyled");
+
+  await userEvent.type(field(), TOKEN);
+  await userEvent.click(run());
+  await vi.waitFor(() => expect(pane()).toBeNull());
+  expect(sessionStore.get()).toEqual({ state: "signed-in", user: "a_user", token: true });
+  expect(messages()).toEqual([["success", "You are signed in to Earthdata as a_user."]]);
+});
+
+test("the secondary command Sign out of a visitor without the token opens the dialog of Sign out", async () => {
+  const server = earthdata("a_user");
+  server.token = false;
+  await open(server);
+  await userEvent.click(within(pane() as HTMLElement).getByRole("button", { name: "Sign out" }));
+  await confirmSignOut();
+  await vi.waitFor(() => expect(sessionStore.get()).toEqual({ state: "signed-out" }));
+  expect(server.sent("DELETE")).toHaveLength(1);
+});
+
+test("a request that needs the token opens the pane with the sentence of the server and continues after the sign-in", async () => {
+  const server = earthdata("a_user");
+  server.token = true;
+  render(<Page />);
+  await vi.waitFor(() => expect(sessionStore.get().state).toBe("signed-in"));
+  expect(pane()).toBeNull();
+  // The server has forgotten the token since the page last asked, and refuses a request that needs it.
+  server.token = false;
+  let outcome: boolean | null = null;
+  act(() => {
+    void signInNeeded("The job needs your Earthdata token, which the server no longer holds.", true).then(
+      (signedIn) => {
+        outcome = signedIn;
+      },
+    );
+  });
+  // The pane opens by itself, with the keyboard focus on its title, and states the sentence and what follows.
+  await vi.waitFor(() => expect(pane()).not.toBeNull());
+  expect(document.activeElement).toBe(screen.getByRole("heading", { name: "Sign in to Earthdata" }));
+  expect(status()).toBe(
+    "The job needs your Earthdata token, which the server no longer holds. The request continues by itself after the sign-in.",
+  );
+  expect(pane()?.querySelector(".notice--warning")).not.toBeNull();
+  await vi.waitFor(() => expect(sessionStore.get()).toEqual({ state: "signed-in", user: "a_user", token: false }));
+  expect(messages()).toEqual([]);
+
+  await userEvent.type(field(), TOKEN);
+  await userEvent.click(run());
+  await vi.waitFor(() => expect(outcome).toBe(true));
+  await vi.waitFor(() => expect(pane()).toBeNull());
+  expect(signInRequestStore.get()).toBeNull();
+  expect(sessionStore.get()).toEqual({ state: "signed-in", user: "a_user", token: true });
+});
+
+test("the pane shows the field also when the page believed that the token was held", async () => {
+  const server = earthdata("a_user");
+  server.token = true;
+  server.slow = true;
+  sessionStore.set({ state: "signed-in", user: "a_user", token: true });
+  render(<Page />);
+  act(() => {
+    void signInNeeded("The job needs your Earthdata token.", true);
+  });
+  await vi.waitFor(() => expect(pane()).not.toBeNull());
+  expect(field()).toBeTruthy();
+  expect(run().textContent).toBe("Sign in");
+  act(() => server.release());
+});
+
+test("closing the pane gives the waiting request up, and the next opening shows no sentence of it", async () => {
+  const server = earthdata("a_user");
+  server.token = false;
+  render(<Page />);
+  await vi.waitFor(() => expect(sessionStore.get().state).toBe("signed-in"));
+  let outcome: boolean | null = null;
+  act(() => {
+    void signInNeeded("The job needs your Earthdata token.", true).then((signedIn) => {
+      outcome = signedIn;
+    });
+  });
+  await vi.waitFor(() => expect(pane()).not.toBeNull());
+  await userEvent.click(screen.getByRole("button", { name: "Close the Sign in to Earthdata pane" }));
+  await vi.waitFor(() => expect(outcome).toBe(false));
+  expect(signInRequestStore.get()).toBeNull();
+  expect(server.sent("POST")).toEqual([]);
+  expect(messages()).toEqual([]);
+  await userEvent.click(opener());
+  expect(status()).toBe(`You are signed in to Earthdata as a_user. ${TOKEN_STATE.notHeld}`);
+});
+
+test("a second request that needs the token while the pane is open joins the first", async () => {
+  const server = earthdata("a_user");
+  server.token = false;
+  render(<Page />);
+  await vi.waitFor(() => expect(sessionStore.get().state).toBe("signed-in"));
+  const outcomes: boolean[] = [];
+  act(() => {
+    void signInNeeded("First sentence.", true).then((signedIn) => outcomes.push(signedIn));
+  });
+  await vi.waitFor(() => expect(pane()).not.toBeNull());
+  act(() => {
+    void signInNeeded("Second sentence.", true).then((signedIn) => outcomes.push(signedIn));
+  });
+  expect(status()).toBe(`First sentence. ${TOKEN_STATE.continues}`);
+  await userEvent.type(field(), TOKEN);
+  await userEvent.click(run());
+  await vi.waitFor(() => expect(outcomes).toEqual([true, true]));
 });

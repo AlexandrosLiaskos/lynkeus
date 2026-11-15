@@ -187,6 +187,57 @@ test("a file that cannot be read is reported once, and the problem leaves with t
   expect(layerProblemsStore.get()).toEqual({});
 });
 
+const GONE: LayerProblem = { text: "The file of the layer no longer exists.", again: false, gone: true };
+
+test("a file that no longer exists, of a layer that the server has removed, states no error on the map", async () => {
+  const map = new OlMap({ view: new View({ center: [0, 0], zoom: 2 }) });
+  const explain = vi.fn((): Promise<LayerProblem | null> => Promise.resolve(GONE));
+  // The list of the server no longer holds the layer: the Contents pane says so in the row of the layer.
+  const gone = vi.fn((_id: string) => Promise.resolve(true));
+  const drawing = new LayerDrawing(map, () => Promise.reject(new Error("404")), false, explain, gone);
+  drawing.update([COHERENCE], {});
+  await vi.waitFor(() => expect(gone).toHaveBeenCalledExactlyOnceWith("coherence"));
+  await Promise.resolve();
+  expect(layerProblemsStore.get()).toEqual({});
+  expect(messagesStore.get()).toEqual([]);
+});
+
+test("a file that no longer exists, of a layer that the list of the server still holds, states its problem", async () => {
+  const map = new OlMap({ view: new View({ center: [0, 0], zoom: 2 }) });
+  const explain = vi.fn((): Promise<LayerProblem | null> => Promise.resolve(GONE));
+  const gone = vi.fn((_id: string) => Promise.resolve(false));
+  const drawing = new LayerDrawing(map, () => Promise.reject(new Error("404")), false, explain, gone);
+  drawing.update([COHERENCE], {});
+  await vi.waitFor(() => expect(layerProblemsStore.get()).toEqual({ coherence: GONE }));
+  expect(gone).toHaveBeenCalledExactlyOnceWith("coherence");
+  expect(messagesStore.get().map(({ kind, text }) => [kind, text])).toEqual([
+    ["error", "Coherence HH, 20 m: The file of the layer no longer exists."],
+  ]);
+});
+
+test("without a reading of the list, a file that no longer exists is stated under its layer at once", async () => {
+  const map = new OlMap({ view: new View({ center: [0, 0], zoom: 2 }) });
+  const explain = vi.fn((): Promise<LayerProblem | null> => Promise.resolve(GONE));
+  const drawing = new LayerDrawing(map, () => Promise.reject(new Error("404")), false, explain);
+  drawing.update([COHERENCE], {});
+  await vi.waitFor(() => expect(layerProblemsStore.get()).toEqual({ coherence: GONE }));
+});
+
+test("the tiles of a layer that the server removes while the page is open state no error on the map", async () => {
+  const map = new OlMap({ view: new View({ center: [0, 0], zoom: 2 }) });
+  const explain = vi.fn((): Promise<LayerProblem | null> => Promise.resolve(GONE));
+  const gone = vi.fn((_id: string) => Promise.resolve(true));
+  const drawing = new LayerDrawing(map, open, false, explain, gone);
+  drawing.update([BACKSCATTER], {});
+  expect(await extentOf(map, "backscatter")).toHaveLength(4);
+  // The date of the layer passes, the server removes its file, and the next tile does not arrive.
+  layerOf(map, "backscatter").getSource()?.dispatchEvent("tileloaderror");
+  await vi.waitFor(() => expect(gone).toHaveBeenCalledExactlyOnceWith("backscatter"));
+  await Promise.resolve();
+  expect(layerProblemsStore.get()).toEqual({});
+  expect(messagesStore.get()).toEqual([]);
+});
+
 const OWN: LayerDescription = {
   ...COHERENCE,
   id: "own",

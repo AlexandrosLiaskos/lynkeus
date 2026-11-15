@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { afterEach, expect, test, vi } from "vitest";
-import { call, checked, onSignInEnded, Refusal, UNREADABLE, wordsOf } from "./service";
+import { call, checked, onSignInNeeded, Refusal, SignInCancelled, UNREADABLE, wordsOf } from "./service";
 
 function answerWith(status: number, body: unknown, headers: Record<string, string> = {}) {
   return vi.fn<typeof fetch>(() =>
@@ -11,8 +11,20 @@ function answerWith(status: number, body: unknown, headers: Record<string, strin
 
 afterEach(() => {
   vi.unstubAllGlobals();
-  onSignInEnded(() => undefined);
+  onSignInNeeded(null);
 });
+
+/** A stand-in that answers the first requests with the given answers, in their order, and the later ones with the last. */
+function answersWith(...answers: [number, unknown][]) {
+  let turn = 0;
+  return vi.fn<typeof fetch>(() => {
+    const [status, body] = answers[Math.min(turn, answers.length - 1)] ?? [500, null];
+    turn += 1;
+    return Promise.resolve(new Response(body === null ? null : JSON.stringify(body), { status }));
+  });
+}
+
+const NEEDS_TOKEN = "The job needs your Earthdata token, which the server no longer holds. Sign in again.";
 
 test("a reading asks for JSON, sends the cookie to this site only and uses no stored answer", async () => {
   const fetch = answerWith(200, { jobs: [] });
@@ -68,17 +80,93 @@ test("a refusal without a sentence is reported with its number, and without a ti
   });
 });
 
-test("the answer 401 is passed to the function that records the end of the sign-in", async () => {
-  const ended = vi.fn();
-  onSignInEnded(ended);
+test("without a function for the sign-in, the answer 401 is a refusal as any other", async () => {
   vi.stubGlobal("fetch", answerWith(401, { detail: "Sign in to Earthdata to start this job." }));
-  await expect(call("/api/processes/get-layer/execution", { method: "POST", content: {} })).rejects.toThrow(
-    "Sign in to Earthdata to start this job.",
+  const refusal = await call("/api/processes/get-layer/execution", { method: "POST", content: {} }).catch(
+    (error: unknown) => error,
   );
-  expect(ended).toHaveBeenCalledTimes(1);
+  expect(refusal).toBeInstanceOf(Refusal);
+  expect(refusal).not.toBeInstanceOf(SignInCancelled);
+  expect(refusal).toMatchObject({ message: "Sign in to Earthdata to start this job.", status: 401 });
+});
+
+test("a request answered 401 waits for the sign-in and is then sent again with the same content", async () => {
+  const needed = vi.fn((_sentence: string, _waits: boolean) => Promise.resolve(true));
+  onSignInNeeded(needed);
+  const fetch = answersWith([401, { detail: NEEDS_TOKEN }], [201, { jobID: "a" }]);
+  vi.stubGlobal("fetch", fetch);
+  const content = { inputs: { product: "GCOV", layer: "HHHH" } };
+  await expect(call("/api/processes/get-layer/execution?server=project", { method: "POST", content })).resolves.toEqual(
+    { jobID: "a" },
+  );
+  expect(needed).toHaveBeenCalledExactlyOnceWith(NEEDS_TOKEN, true);
+  expect(fetch).toHaveBeenCalledTimes(2);
+  const [first, second] = fetch.mock.calls;
+  expect(second).toEqual(first);
+  expect(second?.[0]).toBe("/api/processes/get-layer/execution?server=project");
+  expect(second?.[1]?.body).toBe(JSON.stringify(content));
+});
+
+test.each(["POST", "PATCH", "DELETE"] as const)("a %s request answered 401 waits for the sign-in", async (method) => {
+  const needed = vi.fn(() => Promise.resolve(true));
+  onSignInNeeded(needed);
+  vi.stubGlobal("fetch", answersWith([401, { detail: NEEDS_TOKEN }], [200, { done: true }]));
+  await expect(call("/api/layers/a", { method, content: { title: "A" } })).resolves.toEqual({ done: true });
+  expect(needed).toHaveBeenCalledExactlyOnceWith(NEEDS_TOKEN, true);
+});
+
+test("a sign-in that the visitor gives up rejects the request with the sentence of the server", async () => {
+  onSignInNeeded(() => Promise.resolve(false));
+  const fetch = answerWith(401, { detail: NEEDS_TOKEN });
+  vi.stubGlobal("fetch", fetch);
+  const refusal = await call("/api/processes/get-layer/execution", { method: "POST", content: {} }).catch(
+    (error: unknown) => error,
+  );
+  expect(refusal).toBeInstanceOf(SignInCancelled);
+  expect(refusal).toBeInstanceOf(Refusal);
+  expect(refusal).toMatchObject({ message: NEEDS_TOKEN, status: 401, wait: null });
+  expect(fetch).toHaveBeenCalledTimes(1);
+});
+
+test("a request that is answered 401 again after the sign-in does not wait a second time", async () => {
+  const needed = vi.fn((_sentence: string, waits: boolean) => Promise.resolve(waits));
+  onSignInNeeded(needed);
+  const fetch = answerWith(401, { detail: NEEDS_TOKEN });
+  vi.stubGlobal("fetch", fetch);
+  const refusal = await call("/api/processes/get-layer/execution", { method: "POST", content: {} }).catch(
+    (error: unknown) => error,
+  );
+  expect(refusal).toBeInstanceOf(Refusal);
+  expect(refusal).not.toBeInstanceOf(SignInCancelled);
+  expect(fetch).toHaveBeenCalledTimes(2);
+  expect(needed.mock.calls).toEqual([
+    [NEEDS_TOKEN, true],
+    [NEEDS_TOKEN, false],
+  ]);
+});
+
+test("a reading answered 401 tells the function for the sign-in and does not wait", async () => {
+  const needed = vi.fn((_sentence: string, _waits: boolean) => Promise.resolve(false));
+  onSignInNeeded(needed);
+  const fetch = answerWith(401, { detail: "Sign in to Earthdata to see your servers." });
+  vi.stubGlobal("fetch", fetch);
+  const refusal = await call("/api/servers").catch((error: unknown) => error);
+  expect(refusal).toBeInstanceOf(Refusal);
+  expect(refusal).not.toBeInstanceOf(SignInCancelled);
+  expect(needed).toHaveBeenCalledExactlyOnceWith("Sign in to Earthdata to see your servers.", false);
+  expect(fetch).toHaveBeenCalledTimes(1);
+});
+
+test("an answer other than 401 does not reach the function for the sign-in", async () => {
+  const needed = vi.fn(() => Promise.resolve(true));
+  onSignInNeeded(needed);
   vi.stubGlobal("fetch", answerWith(404, { detail: "Your session has no job of this name." }));
-  await expect(call("/api/jobs/a")).rejects.toThrow("no job of this name");
-  expect(ended).toHaveBeenCalledTimes(1);
+  await expect(call("/api/jobs/a", { method: "DELETE" })).rejects.toThrow("no job of this name");
+  vi.stubGlobal("fetch", answerWith(507, { detail: "The server has too little free space for this job." }));
+  await expect(call("/api/processes/get-layer/execution", { method: "POST", content: {} })).rejects.toThrow(
+    "too little free space",
+  );
+  expect(needed).not.toHaveBeenCalled();
 });
 
 test("a server that cannot be reached is reported in plain words", async () => {
