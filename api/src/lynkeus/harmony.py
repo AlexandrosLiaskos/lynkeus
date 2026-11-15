@@ -87,7 +87,7 @@ _GROUPS: dict[ProductType, str] = {
 }
 """The group of each product type that holds its layers. The name of a layer is its path inside this group."""
 
-_FREQUENCY_A = "Frequency A"
+_NAMED_A = "Frequency A"
 """The words with which NASA's catalogue begins the name of each layer of the group ``frequencyA``."""
 
 _RECORD = "https://cmr.earthdata.nasa.gov/search/concepts/{identifier}.umm_json"
@@ -361,7 +361,7 @@ def _layers(product: ProductType, channels: Sequence[str]) -> tuple[_Layer, ...]
                 layers.append(
                     _Layer(
                         channel + channel,
-                        f"{_FREQUENCY_A} {channel}{channel}",
+                        f"{_NAMED_A} {channel}{channel}",
                         quantity,
                         "1",
                         "percentiles",
@@ -372,7 +372,7 @@ def _layers(product: ProductType, channels: Sequence[str]) -> tuple[_Layer, ...]
         layers.append(
             _Layer(
                 "rtcGammaToSigmaFactor",
-                f"{_FREQUENCY_A} RTC Gamma to Sigma Factor",
+                f"{_NAMED_A} RTC Gamma to Sigma Factor",
                 "Factor that turns radar backscatter gamma nought into sigma nought",
                 "1",
                 "percentiles",
@@ -382,10 +382,10 @@ def _layers(product: ProductType, channels: Sequence[str]) -> tuple[_Layer, ...]
         )
         quantity = "Number of radar looks averaged in a cell"
         layers.append(
-            _Layer("numberOfLooks", f"{_FREQUENCY_A} Number of Looks", quantity, "1", "percentiles", "viridis", 10)
+            _Layer("numberOfLooks", f"{_NAMED_A} Number of Looks", quantity, "1", "percentiles", "viridis", 10)
         )
         quantity = "Number of the subswath of the valid samples of a cell, or 0 where a sample is not valid"
-        layers.append(_Layer("mask", f"{_FREQUENCY_A} Mask", quantity, "1", "extremes", "tab10", 10, averaged=False))
+        layers.append(_Layer("mask", f"{_NAMED_A} Mask", quantity, "1", "extremes", "tab10", 10, averaged=False))
     elif product == "GUNW":
         for channel in channels:
             if channel in ("HH", "VV"):
@@ -415,7 +415,7 @@ def _interferogram_layers(channel: str) -> list[_Layer]:
     """Return the layers of one channel of a GUNW product."""
     unwrapped, wrapped = f"unwrappedInterferogram/{channel}/", f"wrappedInterferogram/{channel}/"
     offsets = f"pixelOffsets/{channel}/"
-    named = f"{_FREQUENCY_A} {channel}"
+    named = f"{_NAMED_A} {channel}"
     coherence = f"Interferometric coherence magnitude, {channel}"
     screen = f"Ionosphere phase screen {channel}"
     return [
@@ -486,7 +486,7 @@ def _offset_layers(channel: str, number: int) -> list[_Layer]:
     """
     group = f"pixelOffsets/{channel}/layer{number}/"
     of = f"{channel}, layer {number}"
-    named = f"{_FREQUENCY_A} {channel} Layer {number}"
+    named = f"{_NAMED_A} {channel} Layer {number}"
     ratio = f"Signal-to-noise ratio of the offsets {of}"
     return [
         *_offsets(group, of, named),
