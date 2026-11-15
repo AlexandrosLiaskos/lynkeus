@@ -8,7 +8,7 @@ import type { Source } from "../shared/sources";
  * references, the source programs and the data of part 6 of `docs/research/analysis-coherence-change.md` and of
  * `docs/research/analysis-soil-moisture.md`, and for Surface displacement, One pair those of part 6 of
  * `docs/research/analysis-displacement.md`. The Series tools add the notebooks and the uses of part 6 of
- * `docs/research/analysis-series.md`, and the retrieval quality flag those of part 6 of
+ * `docs/research/analysis-series.md`, and the retrieval quality flag and Soil moisture, Series those of part 6 of
  * `docs/research/analysis-soil-moisture.md`. NumPy, Rasterio and harmony-py stand in the list of the Data part,
  * which the page Sources shows beside this one, because a name stands in the lists once.
  */
@@ -32,7 +32,7 @@ export const SOURCES: readonly Source[] = [
     version: "Rev C, version 1.0.0, 8 November 2024",
     licence: "Copyright 2024 California Institute of Technology. Government sponsorship acknowledged",
     url: "https://nisar-docs.asf.alaska.edu/product-specification/",
-    use: "The layers soilMoisture and retrievalQualityFlag of an SME2 product, their units, their grid and the meaning of the lowest bit of the flag, for the two soil moisture tools.",
+    use: "The layers soilMoisture and retrievalQualityFlag of an SME2 product, their units, their grid and the meaning of the lowest bit of the flag, for the three soil moisture tools.",
   },
   {
     name: "NISAR L3 Soil Moisture Data Product, Algorithm Theoretical Basis Document (ATBD), JPL D-107679",
@@ -75,7 +75,7 @@ export const SOURCES: readonly Source[] = [
     version: "Commit 17b69c8, 3 November 2026",
     licence: "Apache-2.0",
     url: "https://github.com/ASFOpenSARlab/NISAR_Cookbook",
-    use: "Source program of Backscatter, One date and of Backscatter, Change (notebook NISAR_GCOV_SARChangeDetectionMethods.ipynb), and their legends. Source program of the two Series tools (notebooks NISAR_GCOV_Time_Series_Example.ipynb and NISAR_Pixel_Conversion.ipynb).",
+    use: "Source program of Backscatter, One date and of Backscatter, Change (notebook NISAR_GCOV_SARChangeDetectionMethods.ipynb), and their legends. Source program of the three Series tools (notebooks NISAR_GCOV_Time_Series_Example.ipynb and NISAR_Pixel_Conversion.ipynb); for Soil moisture, Series their statements are applied to the soil moisture, as the Cookbook has no notebook of SME2 products.",
   },
   {
     name: "ISCE3",
@@ -206,14 +206,14 @@ export const SOURCES: readonly Source[] = [
     version: "Collection NISAR_L3_SME2_PROVISIONAL_V1",
     licence: "NASA ESDIS Data Use and Citation Guidance; free and open data",
     url: "https://doi.org/10.5067/NIL3SME2-P1",
-    use: "The SME2 products of the pilot area on which the two soil moisture tools were measured and compared.",
+    use: "The SME2 products of the pilot area on which the three soil moisture tools were measured and compared.",
   },
   {
     name: "NISAR Beta Soil Moisture (Version 1)",
     version: "Collection NISAR_L3_SME2_BETA_V1",
     licence: "NASA ESDIS Data Use and Citation Guidance; free and open data",
     url: "https://doi.org/10.5067/NIL3SME2-B1",
-    use: "The two SME2 products of the pilot area of December 2025, of the release X05010, on which the two soil moisture tools were measured and compared apart from the provisional ones.",
+    use: "The two SME2 products of the pilot area of December 2025, of the release X05010, on which the three soil moisture tools were measured and compared apart from the provisional ones.",
   },
   {
     name: "Environment of the source program in the comparison: numpy, xarray, dask, rioxarray and rasterio",

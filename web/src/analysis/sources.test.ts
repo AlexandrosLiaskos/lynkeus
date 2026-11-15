@@ -190,6 +190,15 @@ test("the two provisional collections are those that the notes of the new tools 
   expect(beta.url).toBe("https://doi.org/10.5067/NIL3SME2-B1");
 });
 
+test("the source program of Soil moisture, Series is the Cookbook, applied to the soil moisture as its note states", () => {
+  const sheet = oneLine(readFileSync("../docs/methods/soil-moisture-series.md", "utf8"));
+  expect(sheet).toContain("The ASF NISAR Cookbook holds no notebook of SME2 products");
+  expect(source("ASF NISAR Cookbook").use).toContain(
+    "for Soil moisture, Series their statements are applied to the soil moisture",
+  );
+  expect(oneLine(SOIL_MOISTURE_NOTE)).toContain("The ASF NISAR Cookbook holds no notebook of SME2 products");
+});
+
 test("the sources of the Series tools are those that their method sheets cite", () => {
   const sheets = oneLine(SHEETS);
   for (const notebook of ["NISAR_GCOV_Time_Series_Example.ipynb", "NISAR_Pixel_Conversion.ipynb"]) {

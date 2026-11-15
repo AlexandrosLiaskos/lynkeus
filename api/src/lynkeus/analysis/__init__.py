@@ -30,7 +30,7 @@ from lynkeus.analysis.backscatter import backscatter_change, backscatter_state
 from lynkeus.analysis.coherence import coherence_change, coherence_state
 from lynkeus.analysis.displacement import displacement_state
 from lynkeus.analysis.inundation import backscatter_map
-from lynkeus.analysis.series import Place, backscatter_series, coherence_series
+from lynkeus.analysis.series import Place, backscatter_series, coherence_series, soil_moisture_series
 from lynkeus.analysis.soil_moisture import soil_moisture_change, soil_moisture_state
 from lynkeus.layers import AnalysisResult, LayerDescription, SeriesResult
 
@@ -52,4 +52,5 @@ type SeriesFunction = Callable[[Iterable[NDArray[np.float32]], Sequence[LayerDes
 SERIES_TOOLS: dict[str, SeriesFunction] = {
     "backscatter-series": backscatter_series,
     "coherence-series": coherence_series,
+    "soil-moisture-series": soil_moisture_series,
 }
