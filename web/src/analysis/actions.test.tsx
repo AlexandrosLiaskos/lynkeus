@@ -24,6 +24,7 @@ test("exactly the buttons of the nine finished tools have an action", () => {
   expect(Object.keys(actions)).toEqual([
     "backscatter-state",
     "backscatter-change",
+    "backscatter-map",
     "coherence-state",
     "coherence-change",
     "displacement-state",

@@ -557,17 +557,18 @@ def _whole_from_zero(values: NDArray[np.float32]) -> bool:
     return bool(((valid >= 0) & (valid <= MOST_CLASS) & (valid == np.floor(valid))).all())
 
 
-
 def _with_copies_of_the_most_frequent_value(
     values: NDArray[np.float32], grid: Grid, plain: Path, others: list[Path]
 ) -> Path | None:
     """Prepare the reduced copies of classes as the most frequent value of the cells that each cell covers.
 
-    GDAL writes 0, and not ``nan``, in a cell of a reduced copy of 32-bit real numbers that it makes by the most
-    frequent value from cells that all hold ``nan`` (GDAL 3.12.2), and 0 can be a class. The values are therefore
-    written as 32-bit whole numbers with -1 for no data, which the COG driver reduces by the most frequent value of
-    the cells that hold data. Each reduced copy is turned back into 32-bit real numbers with ``nan`` for no data and
-    joined to the plain file of the values through a virtual file (VRT), as for the mean power.
+    The values are written as 32-bit whole numbers with -1 for no data, which the COG driver reduces by the most
+    frequent value of the cells that hold data, so that a value 0 is a class and not a cell without data. GDAL
+    3.12.2 writes 0 in a cell of such a reduced copy whose cells all hold no data, for whole numbers and for real
+    numbers with ``nan`` alike; those cells are found in a reduced copy of the presence of data (1 where a cell holds
+    data, ``nan`` where it holds none) made by averaging, which holds ``nan`` there. Each reduced copy is turned back
+    into 32-bit real numbers with ``nan`` in those cells and joined to the plain file of the values through a
+    virtual file (VRT), as for the mean power.
 
     Parameters
     ----------
@@ -586,11 +587,12 @@ def _with_copies_of_the_most_frequent_value(
         The virtual file from which the COG driver copies the values with these reduced copies, or None when the
         grid is so small that the file has no reduced copy.
     """
-    whole, reduced, virtual = (plain.with_name(f"{plain.name}.{part}") for part in ("whole.tif", "mode.tif", "vrt"))
-    others += [whole, reduced, virtual]
+    parts = ("whole.tif", "mode.tif", "present.tif", "presence.tif", "vrt")
+    whole, reduced, present, presence, virtual = (plain.with_name(f"{plain.name}.{part}") for part in parts)
+    others += [whole, reduced, present, presence, virtual]
+    held = ~np.isnan(values)
     numbers = np.full(values.shape, -1, np.int32)
-    present = ~np.isnan(values)
-    numbers[present] = values[present]
+    numbers[held] = values[held]
     with rasterio.open(whole, "w", **{**_plain(grid), "dtype": "int32", "nodata": -1}) as target:
         target.write(numbers, 1)
     copy(
@@ -602,6 +604,9 @@ def _with_copies_of_the_most_frequent_value(
         OVERVIEWS="IGNORE_EXISTING",
         OVERVIEW_RESAMPLING="MODE",
     )
+    with rasterio.open(present, "w", **_plain(grid)) as target:
+        target.write(np.where(held, np.float32(1), np.float32(np.nan)), 1)
+    _copy_as_cog(present, presence, OVERVIEWS="IGNORE_EXISTING", OVERVIEW_RESAMPLING="AVERAGE")
     with rasterio.open(reduced) as source:
         levels = len(source.overviews(1))
     if levels == 0:
@@ -611,8 +616,10 @@ def _with_copies_of_the_most_frequent_value(
         with rasterio.open(reduced, overview_level=level) as source:
             counted: NDArray[np.int32] = source.read(1)
             size = _grid(source)
+        with rasterio.open(presence, overview_level=level) as source:
+            share: NDArray[np.float32] = source.read(1)
         classes = counted.astype(np.float32)
-        classes[counted == -1] = np.nan
+        classes[(counted == -1) | np.isnan(share)] = np.nan
         file = plain.with_name(f"{plain.name}.{level}.tif")
         others.append(file)
         with rasterio.open(file, "w", **_plain(size)) as target:

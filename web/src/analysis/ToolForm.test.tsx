@@ -22,6 +22,7 @@ import { METHODS } from "./methodSheets";
 import {
   coherence,
   components,
+  crossTerm,
   earlierPair,
   GCOV_NOV,
   GUNW_PAIR,
@@ -38,6 +39,7 @@ import {
 import {
   ABOUT,
   GET_COMPONENTS,
+  GET_CROSS_TERM,
   GET_OTHER_PAIR,
   GET_PARTNER,
   OF_ONE_PRODUCT,
@@ -53,6 +55,7 @@ import {
   FINISHED_TOOLS,
   modesSentence,
   NO_COMPONENTS,
+  NO_CROSS_TERM,
   NO_FREQUENCY,
   NO_INPUT,
   NO_OTHER_PAIR,
@@ -256,6 +259,8 @@ test("the layer to get is named as the Get layer form names it", () => {
   expect(RECEIVE).toEqual({
     "backscatter-state": "Get a Backscatter layer of a GCOV product.",
     "backscatter-change": "Get the same Backscatter layer of two GCOV products of one track and frame.",
+    "backscatter-map":
+      "Get the Backscatter HH layer and the Backscatter HV layer of one GCOV product, for the same area.",
     "coherence-state": "Get a Coherence layer of a GUNW product.",
     "coherence-change": "Get the same Coherence layer of two GUNW products of one track and frame.",
     "displacement-state":
@@ -721,14 +726,60 @@ test("an unwrapped phase without its connected components is stated, with the wa
   expect(dockStore.get().tools).toContain(GET_LAYER_PANE);
 });
 
-test("the two fields of Surface displacement, One pair are named after their layers, each with one sentence", () => {
+test("the two fields of a tool of two layers of one product are named after their layers, each with one sentence", () => {
   expect(OF_ONE_PRODUCT).toEqual({
-    first: { title: "Unwrapped phase", about: ABOUT.phase },
-    second: { title: "Connected components", about: ABOUT.components, get: GET_COMPONENTS },
+    "displacement-state": {
+      first: { title: "Unwrapped phase", about: ABOUT.phase },
+      second: { title: "Connected components", about: ABOUT.components, get: GET_COMPONENTS },
+    },
+    "backscatter-map": {
+      first: { title: "Backscatter HH", about: ABOUT.hh },
+      second: { title: "Backscatter HV", about: ABOUT.hv, get: GET_CROSS_TERM },
+    },
   });
-  for (const sentence of [ABOUT.phase, ABOUT.components]) {
+  for (const sentence of [ABOUT.phase, ABOUT.components, ABOUT.hh, ABOUT.hv]) {
     expect(sentence).toMatch(/^[A-Z][^.]*\.$/);
   }
+  // Every tool whose two inputs are two layers of one product has the words of its two fields.
+  const ofOneProduct = FINISHED_TOOLS.filter((tool) => READS[tool].beside !== undefined);
+  expect(Object.keys(OF_ONE_PRODUCT).sort()).toEqual([...ofOneProduct].sort());
+});
+
+test("Backscatter, Thematic map takes the layers HHHH and HVHV of one product and sends them in that order", async () => {
+  const otherProduct = crossTerm({ id: "hv-nov", title: "Backscatter HV, 2 Nov 2026", inputs: [GCOV_NOV] });
+  show("backscatter-map", [crossTerm(), term(), otherProduct]);
+  expect(options("Backscatter HH")).toEqual([
+    "Select a layer",
+    "Backscatter HH, 21 Oct 2026 (track 141, frame 67, descending)",
+  ]);
+  await userEvent.selectOptions(screen.getByLabelText("Backscatter HH"), "hh-oct");
+  expect(options("Backscatter HV")).toEqual([
+    "Select a layer",
+    "Backscatter HV, 21 Oct 2026 (track 141, frame 67, descending)",
+  ]);
+  await userEvent.selectOptions(screen.getByLabelText("Backscatter HV"), "hv-oct");
+  expect(screen.getByLabelText<HTMLInputElement>("Result name").value).toBe("Wetland inundation, 21 Oct 2026");
+  expect(document.querySelector(".property-list")).toBeNull();
+  await userEvent.click(runButton());
+  expect(server.sent("POST")).toEqual([
+    {
+      method: "POST",
+      address: "/api/processes/backscatter-map/execution",
+      content: { inputs: { inputs: ["hh-oct", "hv-oct"], title: "Wetland inundation, 21 Oct 2026" } },
+    },
+  ]);
+});
+
+test("a layer HHHH without the layer HVHV of its product is stated, with the way to the Get layer form", async () => {
+  show("backscatter-map", [term(), crossTerm({ inputs: [GCOV_NOV], dates: ["2026-11-02"] })]);
+  await userEvent.selectOptions(screen.getByLabelText("Backscatter HH"), "hh-oct");
+  expect(screen.getByLabelText<HTMLSelectElement>("Backscatter HV").disabled).toBe(true);
+  expect(GET_CROSS_TERM).toBe(
+    "The Backscatter HV layer of this product is not in the session. Get the Backscatter HV layer of the same product and area.",
+  );
+  expect(screen.getByText(GET_CROSS_TERM)).toBeDefined();
+  expect(missing()).toBe(NO_CROSS_TERM);
+  expect(runButton().getAttribute("aria-disabled")).toBe("true");
 });
 
 test("layers that do not record which layer of their product they are, are counted, with what to do", () => {
