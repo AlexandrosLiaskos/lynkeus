@@ -10,7 +10,6 @@ import {
   isPairingView,
   isServer,
   FIRST_LAYER_CELLS,
-  FIRST_VERSION,
   isServerLimits,
   isServerName,
   isServers,
@@ -21,6 +20,7 @@ import {
   MOST_NAME,
   MOST_RUNNING_JOBS,
   PAIRING_TIME,
+  runsOlderProgram,
   serverOfAddress,
   USER_CODE,
 } from "./servers";
@@ -56,14 +56,14 @@ test("the limits written here are those of the formats of the server", () => {
   );
 });
 
-test("limits state the most cells of a layer, and limits of version 0.1.0, which lack them, count as 25 million", () => {
+test("limits state the most cells of a layer, and limits of the older program, which lack them, count as 25 million", () => {
   const [stated, old] = list.servers.map((server) => server.state);
   if (!stated || !old || !isServerState(stated) || !isServerState(old)) {
     throw new Error("The first two servers of the example report their state.");
   }
-  expect(stated.version).not.toBe(FIRST_VERSION);
+  // The older and the newer program carry the same version, so the version does not tell them apart.
+  expect(stated.version).toBe(old.version);
   expect(layerCells(stated.limits)).toBe(100_000_000);
-  expect(old.version).toBe(FIRST_VERSION);
   expect("layer_cells" in old.limits).toBe(false);
   expect(layerCells(old.limits)).toBe(FIRST_LAYER_CELLS);
   expect(FIRST_LAYER_CELLS).toBe(25_000_000);
@@ -76,6 +76,15 @@ test("limits state the most cells of a layer, and limits of version 0.1.0, which
   expect(isServerLimits({ ...limits, layer_cells: null })).toBe(false);
 });
 
+test("a server runs the older program when the project server says that its last report lacked the cells", () => {
+  if (!isServers(list)) {
+    throw new Error("The example servers.json has the form of the list of the servers.");
+  }
+  // The first server reported the limit, the second reported limits without it, and the third has not reported.
+  expect(list.servers.map(({ knows_cells }) => knows_cells)).toEqual([true, false, false]);
+  expect(list.servers.map((server) => runsOlderProgram(server))).toEqual([false, true, false]);
+});
+
 test("a server with a wrong field is not accepted", () => {
   const [server] = list.servers;
   expect(isServer({ ...server, id: "3F9A1C0B7E24D658" })).toBe(false);
@@ -85,6 +94,8 @@ test("a server with a wrong field is not accepted", () => {
   expect(isServer({ ...server, connected: "yes" })).toBe(false);
   expect(isServer({ ...server, seen: "2026-11-15T09:40:12Z" })).toBe(false);
   expect(isServer({ ...server, state: undefined })).toBe(false);
+  expect(isServer({ ...server, knows_cells: undefined })).toBe(false);
+  expect(isServer({ ...server, knows_cells: "true" })).toBe(false);
   expect(isServers({ servers: [server] })).toBe(false);
   expect(isServers({ servers: [server, null], limit: 8 })).toBe(false);
   expect(isServers(null)).toBe(false);

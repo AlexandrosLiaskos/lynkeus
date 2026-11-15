@@ -9,12 +9,12 @@ import { Notice } from "../shared/notice/Notice";
 import { PropertyList } from "../shared/properties/PropertyList";
 import {
   FIRST_LAYER_CELLS,
-  FIRST_VERSION,
   layerCells,
   LEAST_LAYER_CELLS,
   MOST_LAYER_CELLS,
   MOST_NAME,
   MOST_RUNNING_JOBS,
+  runsOlderProgram,
   type Server,
   type ServerLimits,
 } from "../shared/servers";
@@ -30,6 +30,7 @@ import {
   limitsFaults,
   limitsOf,
   MILLION,
+  OLDER_PROGRAM,
   serverGroups,
   storageProblem,
   upgradeWords,
@@ -200,8 +201,8 @@ const LIMIT_FIELDS = [
  * such jobs the memory of the computer allows. The error of a field shows after the field is left or the button
  * is pressed. The project server keeps the new limits and passes them to the server, which applies them;
  * `onSet` receives them, so that the list can say that they are on their way. A change that the project server
- * refuses, because the jobs would need more memory than the computer has or because the program of the server
- * is version 0.1.0, is stated in the sentence of the project server.
+ * refuses, because the jobs would need more memory than the computer has or because the server runs the older
+ * program, which does not know the cells of a layer, is stated in the sentence of the project server.
  */
 function LimitsForm({
   server,
@@ -227,9 +228,9 @@ function LimitsForm({
     if (next === null) {
       return;
     }
-    // A program of version 0.1.0 does not know the cells of a layer: while the field holds its 25 million, the
-    // change does not name them, so that the project server does not take it for a change of that limit.
-    if (server.state?.version === FIRST_VERSION && next.layer_cells === FIRST_LAYER_CELLS) {
+    // The older program does not know the cells of a layer: while the field holds its 25 million, the change
+    // does not name them, so that the project server keeps the limit that holds for that program.
+    if (runsOlderProgram(server) && next.layer_cells === FIRST_LAYER_CELLS) {
       delete next.layer_cells;
     }
     setRefusal(null);
@@ -323,12 +324,40 @@ function RemoveForm({ server, onEnd }: FormProps) {
 }
 
 /**
+ * The notice of a server that runs the older Lynkeus Server: the sentence that says so, and the file of the latest
+ * release for the computer of the visitor. While no release is published it says so; when GitHub could not be
+ * read or the release holds no file for that system, it leads to the page of the releases.
+ */
+function UpgradeNotice({ upgrade }: { upgrade: Upgrade }) {
+  return (
+    <Notice kind="info">
+      {OLDER_PROGRAM}{" "}
+      {upgrade.state === "download" ? (
+        <a href={upgrade.download.address}>
+          Download {upgrade.download.name} ({sizeWords(upgrade.download.size)})
+        </a>
+      ) : upgrade.state === "page" ? (
+        <>
+          Download the newer Lynkeus Server from{" "}
+          <a href={releasesPage(REPOSITORY)} target="_blank" rel="noopener noreferrer">
+            the releases of Lynkeus on GitHub
+          </a>{" "}
+          (opens in a new tab).
+        </>
+      ) : (
+        upgradeWords(upgrade)
+      )}
+    </Notice>
+  );
+}
+
+/**
  * One server of the list: its name, whether it is connected and since when it is not, and what it reports about
  * itself. Its three commands stand in a toolbar: Rename, Set limits and Remove. Each one shows its form in the
  * place of the report, and the form ends with its button or with Cancel. A server whose layers use the space
  * that its limit allows says so, and so does a server that does not report yet the limits that were set here.
- * A server that runs version 0.1.0 while a newer release exists says that a newer Lynkeus Server is available,
- * with the download for its computer (`upgrade`).
+ * A server that runs the older Lynkeus Server, whose last report lacked the limit on the cells of a layer, says
+ * so in one sentence and offers the file of the latest release for the computer of the visitor (`upgrade`).
  */
 export function ServerItem({ server, upgrade = null }: { server: Server; upgrade?: Upgrade | null }) {
   const item = useRef<HTMLLIElement>(null);
@@ -368,20 +397,7 @@ export function ServerItem({ server, upgrade = null }: { server: Server; upgrade
         {shown === "remove" ? <RemoveForm server={server} onEnd={end} /> : null}
         {shown === "shown" ? (
           <>
-            {upgrade === null ? null : (
-              <Notice kind="info">
-                {upgradeWords(upgrade)}{" "}
-                {upgrade.download ? (
-                  <a href={upgrade.download.address}>
-                    Download {upgrade.download.name} ({sizeWords(upgrade.download.size)})
-                  </a>
-                ) : (
-                  <a href={releasesPage(REPOSITORY)} target="_blank" rel="noopener noreferrer">
-                    Open the releases of Lynkeus on GitHub (opens in a new tab)
-                  </a>
-                )}
-              </Notice>
-            )}
+            {upgrade === null ? null : <UpgradeNotice upgrade={upgrade} />}
             {problem === null ? null : <Notice kind="warning">{problem}</Notice>}
             {pending === null ? null : <Notice kind="info">{pendingWords(pending)}</Notice>}
             {server.state === null ? <Notice kind="info">The server has not reported its state yet.</Notice> : null}

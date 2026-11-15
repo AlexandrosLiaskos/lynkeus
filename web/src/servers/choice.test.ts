@@ -137,7 +137,7 @@ test("the limit on the cells is the one of the server chosen, or of the server t
   });
 });
 
-test("a server of version 0.1.0, and one that has not reported yet, count as 25 million cells", () => {
+test("a server with the older program, and one that has not reported yet, count as 25 million cells", () => {
   expect(cellsLimitOf(chosenOf(LABORATORY.id, ALL, []), ALL, 10_000_000).limit).toBe(25_000_000);
   expect(cellsLimitOf(chosenOf(NEW.id, ALL, []), ALL, 10_000_000).limit).toBe(25_000_000);
 });

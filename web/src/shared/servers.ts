@@ -37,8 +37,8 @@ export interface ServerLimits {
   /** Largest size of the files of one layer. */
   layer_size: number;
   /**
-   * Most cells of one layer that a job of the server receives. A message without the field comes from a program
-   * of version 0.1.0 and counts as `FIRST_LAYER_CELLS`; read the limit with `layerCells`.
+   * Most cells of one layer that a job of the server receives. A message without the field comes from the older
+   * program, which does not know this limit, and counts as `FIRST_LAYER_CELLS`; read the limit with `layerCells`.
    */
   layer_cells?: number;
 }
@@ -81,6 +81,12 @@ export interface Server {
   seen: number;
   /** Last state that the server reported, or null before its first report. */
   state: ServerState | null;
+  /**
+   * Whether the program of the server knows the limit on the cells of a layer: true when the limits of its last
+   * report name `layer_cells`, false when they lack it, as those of the older program do, and false before the
+   * first report. The older and the newer program carry the same version, so the version does not tell them apart.
+   */
+  knows_cells: boolean;
 }
 
 /** The own servers of the signed-in visitor, and the most that one Earthdata user may connect. */
@@ -115,7 +121,7 @@ export const MOST_RUNNING_JOBS = 64;
 
 /**
  * The most cells of a layer of a server whose message does not state them (`FIRST_LAYER_CELLS`). It is the
- * number of the project server and of the program of version 0.1.0, which knows no other.
+ * number of the project server and of the older program, which knows no other.
  */
 export const FIRST_LAYER_CELLS = 25_000_000;
 
@@ -123,12 +129,18 @@ export const FIRST_LAYER_CELLS = 25_000_000;
 export const LEAST_LAYER_CELLS = 1_000_000;
 export const MOST_LAYER_CELLS = 4_000_000_000;
 
-/** The version of Lynkeus Server that does not know the limit on the cells of a layer. */
-export const FIRST_VERSION = "0.1.0";
-
 /** Return the most cells of one layer that a job of a server with these limits receives. */
 export function layerCells(limits: ServerLimits): number {
   return limits.layer_cells ?? FIRST_LAYER_CELLS;
+}
+
+/**
+ * Tell whether a server runs the older Lynkeus Server, which does not know the limit on the cells of a layer and
+ * receives at most `FIRST_LAYER_CELLS` cells: it has reported, and the project server says that its last report
+ * lacked the limit (`knows_cells`). A server that has not reported yet is not said to run it.
+ */
+export function runsOlderProgram(server: Server): boolean {
+  return server.state !== null && !server.knows_cells;
 }
 
 /** The value of the parameter `server` of an execution that names the project server. */
@@ -192,7 +204,8 @@ export function isServer(value: unknown): value is Server {
     typeof value.connected === "boolean" &&
     isMoment(value.paired) &&
     isMoment(value.seen) &&
-    (value.state === null || isServerState(value.state))
+    (value.state === null || isServerState(value.state)) &&
+    typeof value.knows_cells === "boolean"
   );
 }
 

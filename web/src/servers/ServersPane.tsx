@@ -4,7 +4,7 @@ import { SIGN_IN_PANE } from "../data/SignInPane";
 import { openToolPane } from "../shared/dock/dock";
 import { EmptyState } from "../shared/empty/EmptyState";
 import { Notice } from "../shared/notice/Notice";
-import { FIRST_VERSION, serversStore } from "../shared/servers";
+import { runsOlderProgram, serversStore } from "../shared/servers";
 import { useStore } from "../shared/store";
 import { InfoPane } from "../shared/toolpane/InfoPane";
 import { AddServer } from "./AddServer";
@@ -24,8 +24,8 @@ export const PURPOSE =
  * The list of the servers of the visitor: for each one its name, whether it is connected and since when it is
  * not, its system, processors and memory, its free and used disk space, its running and waiting jobs and the
  * layers that it keeps. Without a server the list says what an own server is for and offers the button that
- * connects one. When a server runs version 0.1.0 of Lynkeus Server, GitHub is asked once for the latest release,
- * and such a server says that a newer one is available.
+ * connects one. When a server runs the older Lynkeus Server, GitHub is asked once for the latest release, and
+ * such a server offers its file for the computer of the visitor.
  */
 function ServerList() {
   const id = useId();
@@ -33,7 +33,7 @@ function ServerList() {
   const fault = useStore(serversFaultStore);
   const downloads = useStore(releaseStore);
   const count = listed?.servers.length ?? 0;
-  const first = listed?.servers.some((server) => server.state?.version === FIRST_VERSION) ?? false;
+  const older = listed?.servers.some(runsOlderProgram) ?? false;
   const read = () => void loadServers();
   const add = () => openAddServer();
 
@@ -41,10 +41,10 @@ function ServerList() {
   useEffect(focusHeading, [count]);
 
   useEffect(() => {
-    if (first) {
+    if (older) {
       void loadRelease();
     }
-  }, [first]);
+  }, [older]);
 
   const notice =
     fault === null ? null : (
@@ -75,7 +75,7 @@ function ServerList() {
           <ServerItem
             key={server.id}
             server={server}
-            upgrade={upgradeOf(server.state, downloads, navigator.userAgent)}
+            upgrade={upgradeOf(server, downloads, navigator.userAgent)}
           />
         ))}
       </ul>

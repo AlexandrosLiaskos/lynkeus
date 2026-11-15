@@ -30,7 +30,7 @@ import {
   VIEW,
   type Site,
 } from "./testServers";
-import { cellsMemoryWords } from "./words";
+import { cellsMemoryWords, OLDER_PROGRAM } from "./words";
 
 let server: Site;
 const SIGNED_IN = { state: "signed-in", user: "a_user" } as const;
@@ -207,7 +207,7 @@ test("a server shows its system, processors, memory, disk, jobs and layers", asy
   await showList();
   expect(rowsOf("Office computer")).toEqual([
     "System: Windows 11",
-    "Lynkeus Server: Version 0.2.0",
+    "Lynkeus Server: Version 0.1.0",
     "Processors: 20",
     "Memory: 16 GB",
     "Running: 1 of at most 4",
@@ -356,8 +356,9 @@ test("the cells of a layer that are no sound number are stated under their field
 
 test("limits that need more memory than the computer has are refused in the sentence of the project server", async () => {
   await showList();
+  // The sentence of the project server for 4 jobs of 1000 million cells and the 16 GB of the Office computer.
   const refusal =
-    "4 jobs that each receive a layer of 1 billion cells need more memory than the 16 GB that the server last reported.";
+    "4 running jobs with layers of 1000 million cells need about 64.8 gigabytes of memory, and your server Office computer has 17.1 gigabytes.";
   server.refuse("PATCH", "/api/servers", 422, refusal);
   await userEvent.click(commandOf("Office computer", "Set limits"));
   const cells = screen.getByLabelText("Most cells of a layer (million)");
@@ -369,10 +370,10 @@ test("limits that need more memory than the computer has are refused in the sent
   expect(screen.getByLabelText<HTMLInputElement>("Most cells of a layer (million)").value).toBe("1000");
 });
 
-test("a change of the cells for a server of version 0.1.0 is refused in the sentence of the project server", async () => {
+test("a change of the cells for a server with the older program is refused in the sentence of the project server", async () => {
   await showList();
   const refusal =
-    "The server Laboratory server runs Lynkeus Server 0.1.0, which receives at most 25 million cells. Install the newer version of Lynkeus Server on that computer.";
+    "To change the cells of a layer of your server Laboratory server, install the newer version of Lynkeus Server on that computer: version 0.1.0 receives at most 25 million cells.";
   server.refuse("PATCH", "/api/servers", 409, refusal);
   await userEvent.click(commandOf("Laboratory server", "Set limits"));
   const cells = screen.getByLabelText<HTMLInputElement>("Most cells of a layer (million)");
@@ -387,7 +388,7 @@ test("a change of the cells for a server of version 0.1.0 is refused in the sent
   });
 });
 
-test("limits of a server of version 0.1.0 whose cells stay at 25 million are sent without the cells", async () => {
+test("limits of a server with the older program whose cells stay at 25 million are sent without the cells", async () => {
   await showList();
   await userEvent.click(commandOf("Laboratory server", "Set limits"));
   const jobs = screen.getByLabelText("Jobs at the same time");
@@ -400,38 +401,58 @@ test("limits of a server of version 0.1.0 whose cells stay at 25 million are sen
   });
 });
 
-const UPGRADE =
-  "A newer Lynkeus Server, version 0.2.0, is available, and version 0.1.0 on this computer receives at most 25 million cells of one layer.";
+const WINDOWS_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36";
 
-test("a server of version 0.1.0 says that a newer Lynkeus Server is available, with the download for its computer", async () => {
+test("a server whose last report lacked the cells of a layer says that it runs an older Lynkeus Server, with the download for the computer of the visitor", async () => {
   server.release = { status: 200, content: RELEASE };
+  vi.spyOn(navigator, "userAgent", "get").mockReturnValue(WINDOWS_AGENT);
   await showList();
-  const notice = await itemOf("Laboratory server").findByText(UPGRADE, { exact: false });
-  // The Laboratory server runs Ubuntu, so the download is the one for Linux, whatever the system of the visitor.
-  const link = within(notice).getByRole<HTMLAnchorElement>("link");
-  expect(link.textContent).toBe("Download Lynkeus-Server-0.2.0-Linux.tar.gz (81.2 MB)");
+  const notice = await itemOf("Laboratory server").findByText(OLDER_PROGRAM, { exact: false });
+  // The visitor reads the page on Windows, so the download is the one for Windows.
+  const link = await within(notice).findByRole<HTMLAnchorElement>("link");
+  expect(link.textContent).toBe("Download Lynkeus-Server-0.2.0-Windows.exe (76.5 MB)");
   expect(link.getAttribute("href")).toBe(
-    "https://github.com/AlexandrosLiaskos/lynkeus/releases/download/v0.2.0/Lynkeus-Server-0.2.0-Linux.tar.gz",
+    "https://github.com/AlexandrosLiaskos/lynkeus/releases/download/v0.2.0/Lynkeus-Server-0.2.0-Windows.exe",
   );
-  // The Office computer runs version 0.2.0 and is told nothing.
-  expect(itemOf("Office computer").queryByText(UPGRADE, { exact: false })).toBeNull();
+  expect(notice.textContent).toBe(`${OLDER_PROGRAM} Download Lynkeus-Server-0.2.0-Windows.exe (76.5 MB)`);
+  // The Office computer reported the cells, and the new server has not reported yet: neither is told anything.
+  expect(itemOf("Office computer").queryByText(OLDER_PROGRAM, { exact: false })).toBeNull();
+  expect(itemOf("DESKTOP-7Q2LM4K").queryByText(OLDER_PROGRAM, { exact: false })).toBeNull();
   // GitHub is asked once, however often the list is read again.
   await act(() => loadServers());
   await act(() => loadServers());
   expect(server.sent("GET", latestReleaseAddress(REPOSITORY))).toHaveLength(1);
 });
 
-test("without a later release no server is told of a newer Lynkeus Server", async () => {
+test("while no release is published, a server with the older program says so in plain words", async () => {
   await showList();
-  await vi.waitFor(() => expect(server.sent("GET", latestReleaseAddress(REPOSITORY))).toHaveLength(1));
-  expect(screen.queryByText(UPGRADE, { exact: false })).toBeNull();
+  const notice = await itemOf("Laboratory server").findByText(
+    `${OLDER_PROGRAM} No version of Lynkeus Server is published yet, so there is nothing to download.`,
+  );
+  expect(within(notice).queryByRole("link")).toBeNull();
+  expect(server.sent("GET", latestReleaseAddress(REPOSITORY))).toHaveLength(1);
 });
 
-test("GitHub is not asked for a list without a server of version 0.1.0", async () => {
-  server.servers = [OFFICE];
+test("when GitHub gives no answer, a server with the older program leads to the page of the releases", async () => {
+  server.release = null;
+  await showList();
+  const link = await itemOf("Laboratory server").findByRole<HTMLAnchorElement>("link", {
+    name: "the releases of Lynkeus on GitHub",
+  });
+  expect(link.getAttribute("href")).toBe("https://github.com/AlexandrosLiaskos/lynkeus/releases");
+  expect(link.target).toBe("_blank");
+  expect(link.closest("[role=status]")?.textContent).toBe(
+    `${OLDER_PROGRAM} Download the newer Lynkeus Server from the releases of Lynkeus on GitHub (opens in a new tab).`,
+  );
+});
+
+test("GitHub is not asked for a list without a server of the older program", async () => {
+  // The new server has not reported yet, so it is not said to run the older program.
+  server.servers = [OFFICE, NEW];
   await showList();
   expect(itemOf("Office computer").getByText("Connected")).toBeDefined();
   expect(server.sent("GET", latestReleaseAddress(REPOSITORY))).toEqual([]);
+  expect(screen.queryByText(OLDER_PROGRAM, { exact: false })).toBeNull();
 });
 
 test("a limit that is no sound number is stated under its field, and nothing is sent", async () => {

@@ -10,6 +10,7 @@ import {
   limitsFaults,
   limitsOf,
   momentWords,
+  OLDER_PROGRAM,
   serverGroups,
   serversSentence,
   storageProblem,
@@ -17,10 +18,10 @@ import {
   upgradeWords,
 } from "./words";
 
-const FILES = `https://github.com/${REPOSITORY}/releases/download/v0.2.0`;
+const FILES = `https://github.com/${REPOSITORY}/releases/download/v0.1.0`;
 /** The line of the memory for the 100 million cells and the 16 GB of the Office computer. */
 const MEMORY_100 =
-  "A job that receives a layer of 100 million cells needs about 1.6 GB of memory. The 16 GB of this computer allow 9 such jobs at the same time.";
+  "A job that receives a layer of 100 million cells needs about 1.7 GB of memory. The 16 GB of this computer allow 9 such jobs at the same time.";
 
 function rows(groups: ReturnType<typeof serverGroups>): Record<string, string[]> {
   return Object.fromEntries(
@@ -57,7 +58,7 @@ test("the line of the list counts the servers that are connected and names the m
 
 test("a server reports its computer, its jobs, its layers and disk, and its connection", () => {
   expect(rows(serverGroups(OFFICE))).toEqual({
-    Computer: ["System: Windows 11", "Lynkeus Server: Version 0.2.0", "Processors: 20", "Memory: 16 GB"],
+    Computer: ["System: Windows 11", "Lynkeus Server: Version 0.1.0", "Processors: 20", "Memory: 16 GB"],
     Jobs: ["Running: 1 of at most 4", "Waiting: 2"],
     "Layers and disk": [
       "Layers kept: 6",
@@ -104,7 +105,7 @@ test("a form shows the limits of a server with its present use", () => {
     { name: "Space for layers", value: "1.3 GB of 100 GB used" },
     { name: "Free disk space", value: "412 GB" },
   ]);
-  // A server of version 0.1.0 does not state the cells of a layer: they count as 25 million.
+  // The older program does not state the cells of a layer: they count as 25 million.
   expect(LABORATORY.state && limitRows(LABORATORY.state)[2]).toEqual({
     name: "Most cells of a layer",
     value: "25 million",
@@ -158,50 +159,60 @@ test("a field of the limits that holds no sound number says what to enter", () =
 test("the line under the cells says what memory a job of that size needs and how many the computer allows", () => {
   expect(cellsMemoryWords(100_000_000, 17_179_869_184)).toBe(MEMORY_100);
   expect(cellsMemoryWords(25_000_000, null)).toBe(
-    "A job that receives a layer of 25 million cells needs about 495.9 MB of memory. The memory of this computer is not known.",
+    "A job that receives a layer of 25 million cells needs about 572.2 MB of memory. The memory of this computer is not known.",
   );
   expect(cellsMemoryWords(4_000_000_000, 17_179_869_184)).toBe(
-    "A job that receives a layer of 4 billion cells needs about 59.7 GB of memory. The 16 GB of this computer do not allow such a job.",
+    "A job that receives a layer of 4 billion cells needs about 59.8 GB of memory. The 16 GB of this computer do not allow such a job.",
   );
   expect(cellsMemoryWords(1_000_000_000, 17_179_869_184)).toMatch(/allow 1 such job at the same time\.$/);
 });
 
-const RELEASE_2: Downloads = {
+const RELEASE: Downloads = {
   state: "published",
   release: {
-    version: "v0.2.0",
+    version: "v0.1.0",
     published: "2026-11-15T12:00:00Z",
     downloads: [
-      { system: "windows", name: "Lynkeus-Server-0.2.0-Windows.exe", address: `${FILES}/Lynkeus-Server-0.2.0-Windows.exe`, size: 83_300_000 },
-      { system: "linux", name: "Lynkeus-Server-0.2.0-Linux.tar.gz", address: `${FILES}/Lynkeus-Server-0.2.0-Linux.tar.gz`, size: 121_900_000 },
+      { system: "windows", name: "Lynkeus-Server-0.1.0-Windows.exe", address: `${FILES}/Lynkeus-Server-0.1.0-Windows.exe`, size: 83_300_000 },
+      { system: "linux", name: "Lynkeus-Server-0.1.0-Linux.tar.gz", address: `${FILES}/Lynkeus-Server-0.1.0-Linux.tar.gz`, size: 121_900_000 },
     ],
   },
 };
 const WINDOWS_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36";
+const MAC_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 15_1) AppleWebKit/605.1.15";
 
-test("a server of version 0.1.0 is told of a newer Lynkeus Server, with the download for its own computer", () => {
-  // The Laboratory server runs version 0.1.0 on Ubuntu, and the visitor reads the page on Windows.
-  expect(upgradeOf(LABORATORY.state, RELEASE_2, WINDOWS_AGENT)).toEqual({
-    version: "0.2.0",
-    download: RELEASE_2.release.downloads[1],
-  });
-  expect(upgradeWords({ version: "0.2.0", download: null })).toBe(
-    "A newer Lynkeus Server, version 0.2.0, is available, and version 0.1.0 on this computer receives at most 25 million cells of one layer.",
+test("a server whose last report lacked the cells of a layer is offered the file for the computer of the visitor", () => {
+  expect(OLDER_PROGRAM).toBe(
+    "This server runs an older Lynkeus Server, which receives at most 25 million cells of one layer.",
   );
-  // A server that could not name its system is offered the download for the system of the visitor.
-  const unnamed = LABORATORY.state && { ...LABORATORY.state, system: "Unknown system" };
-  expect(upgradeOf(unnamed, RELEASE_2, WINDOWS_AGENT)?.download?.system).toBe("windows");
-  // A release without a file for the system of the server names the version alone.
-  const mac = LABORATORY.state && { ...LABORATORY.state, system: "macOS 15.1" };
-  expect(upgradeOf(mac, RELEASE_2, WINDOWS_AGENT)).toEqual({ version: "0.2.0", download: null });
+  // The Laboratory server runs the older program on Ubuntu, and the visitor reads the page on Windows.
+  expect(upgradeOf(LABORATORY, RELEASE, WINDOWS_AGENT)).toEqual({
+    state: "download",
+    download: RELEASE.release.downloads[0],
+  });
+  // A release without a file for the system of the visitor, and an answer of GitHub that could not be read,
+  // lead to the page of the releases.
+  expect(upgradeOf(LABORATORY, RELEASE, MAC_AGENT)).toEqual({ state: "page" });
+  expect(upgradeOf(LABORATORY, { state: "unknown" }, WINDOWS_AGENT)).toEqual({ state: "page" });
 });
 
-test("no newer Lynkeus Server is named without a later release, or for a server of a later version", () => {
-  expect(upgradeOf(OFFICE.state, RELEASE_2, WINDOWS_AGENT)).toBeNull();
-  expect(upgradeOf(NEW.state, RELEASE_2, WINDOWS_AGENT)).toBeNull();
-  expect(upgradeOf(LABORATORY.state, null, WINDOWS_AGENT)).toBeNull();
-  expect(upgradeOf(LABORATORY.state, { state: "none" }, WINDOWS_AGENT)).toBeNull();
-  expect(upgradeOf(LABORATORY.state, { state: "unknown" }, WINDOWS_AGENT)).toBeNull();
-  const same: Downloads = { state: "published", release: { version: "v0.1.0", published: null, downloads: [] } };
-  expect(upgradeOf(LABORATORY.state, same, WINDOWS_AGENT)).toBeNull();
+test("without a published release the notice of the older program says so in plain words", () => {
+  expect(upgradeOf(LABORATORY, { state: "none" }, WINDOWS_AGENT)).toEqual({ state: "none" });
+  expect(upgradeWords({ state: "none" })).toBe(
+    "No version of Lynkeus Server is published yet, so there is nothing to download.",
+  );
+  expect(upgradeOf(LABORATORY, null, WINDOWS_AGENT)).toEqual({ state: "asking" });
+  expect(upgradeWords({ state: "asking" })).toBe("Asking GitHub for the latest version of Lynkeus Server.");
+});
+
+test("a server that knows the cells of a layer, or that has not reported yet, is offered nothing, whatever its version", () => {
+  // The older and the newer program carry the same version.
+  expect(OFFICE.state?.version).toBe(LABORATORY.state?.version);
+  expect(upgradeOf(OFFICE, RELEASE, WINDOWS_AGENT)).toBeNull();
+  // Before its first report the project server says that a server does not know the cells; the pane says nothing.
+  expect(NEW.knows_cells).toBe(false);
+  expect(upgradeOf(NEW, RELEASE, WINDOWS_AGENT)).toBeNull();
+  // The member of the project server decides, and not the limits that the report shows.
+  expect(upgradeOf({ ...LABORATORY, knows_cells: true }, RELEASE, WINDOWS_AGENT)).toBeNull();
+  expect(upgradeOf({ ...OFFICE, knows_cells: false }, RELEASE, WINDOWS_AGENT)?.state).toBe("download");
 });

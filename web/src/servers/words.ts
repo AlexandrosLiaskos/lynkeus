@@ -3,16 +3,16 @@ import { amount, countWords, memoryWords, sizeWords } from "../header/notice/num
 import type { PropertyGroup } from "../shared/properties/PropertyList";
 import {
   FIRST_LAYER_CELLS,
-  FIRST_VERSION,
   layerCells,
   LEAST_LAYER_CELLS,
   MOST_LAYER_CELLS,
   MOST_RUNNING_JOBS,
+  runsOlderProgram,
   type Server,
   type ServerLimits,
   type ServerState,
 } from "../shared/servers";
-import { isLater, systemOfAgent, systemOfServer, type Download, type Downloads } from "./downloads";
+import { systemOfAgent, type Download, type Downloads } from "./downloads";
 import { jobMemory, jobsInMemory } from "./memory";
 
 /** What the interface writes about an own server, in the words and the units that a person reads. */
@@ -225,36 +225,47 @@ export function limitsOf(draft: LimitsDraft): ServerLimits | null {
   return { running_jobs: Number(draft.jobs), storage, layer_size: layer, layer_cells: cells };
 }
 
-/** A newer Lynkeus Server for a computer that runs version 0.1.0. */
-export interface Upgrade {
-  /** The version of the latest release, without the letter of its tag: "0.2.0". */
-  version: string;
-  /** The file of that release for the system of the computer, or null when the release holds none. */
-  download: Download | null;
-}
+/** The sentence of a server that runs the older Lynkeus Server. */
+export const OLDER_PROGRAM = `This server runs an older Lynkeus Server, which receives at most ${countWords(FIRST_LAYER_CELLS)} cells of one layer.`;
+
+/** What the pane offers to a server that runs the older Lynkeus Server, as far as GitHub tells it. */
+export type Upgrade =
+  /** The file of the latest release for the system of the computer of the visitor. */
+  | { state: "download"; download: Download }
+  /** GitHub has not answered yet. */
+  | { state: "asking" }
+  /** No release is published, so there is nothing to download. */
+  | { state: "none" }
+  /**
+   * GitHub gave no answer that could be read, or the latest release holds no file for the system of the computer
+   * of the visitor: the pane leads to the page of the releases.
+   */
+  | { state: "page" };
 
 /**
- * Return the newer Lynkeus Server that a server should install, or null. Only version 0.1.0 is told so: it
- * does not know the limit on the cells of a layer and receives at most 25 million cells. The download is the
- * one for the system that the server reports, because the program is installed on that computer; when its
- * system is not known, it is the one for the system of the visitor (`agent`, as the browser names itself).
+ * Return what the pane offers to a server that runs the older Lynkeus Server, or null for a server that does
+ * not run it (`runsOlderProgram`). The download is the file of the latest release for the system of the
+ * computer of the visitor (`agent`, as the browser names itself).
  */
-export function upgradeOf(state: ServerState | null, downloads: Downloads | null, agent: string): Upgrade | null {
-  if (
-    state?.version !== FIRST_VERSION ||
-    downloads?.state !== "published" ||
-    !isLater(downloads.release.version, state.version)
-  ) {
+export function upgradeOf(server: Server, downloads: Downloads | null, agent: string): Upgrade | null {
+  if (!runsOlderProgram(server)) {
     return null;
   }
-  const system = systemOfServer(state.system) ?? systemOfAgent(agent);
-  return {
-    version: downloads.release.version.replace(/^v/, ""),
-    download: downloads.release.downloads.find((download) => download.system === system) ?? null,
-  };
+  if (downloads === null) {
+    return { state: "asking" };
+  }
+  if (downloads.state === "none") {
+    return { state: "none" };
+  }
+  const system = systemOfAgent(agent);
+  const files = downloads.state === "published" ? downloads.release.downloads : [];
+  const download = files.find((file) => file.system === system);
+  return download ? { state: "download", download } : { state: "page" };
 }
 
-/** State that a newer Lynkeus Server is available for a computer that runs version 0.1.0. */
-export function upgradeWords({ version }: Upgrade): string {
-  return `A newer Lynkeus Server, version ${version}, is available, and version ${FIRST_VERSION} on this computer receives at most ${countWords(FIRST_LAYER_CELLS)} cells of one layer.`;
+/** Return the sentence that follows the one of the older program while the pane has no file and no page to offer. */
+export function upgradeWords(upgrade: { state: "asking" } | { state: "none" }): string {
+  return upgrade.state === "asking"
+    ? "Asking GitHub for the latest version of Lynkeus Server."
+    : "No version of Lynkeus Server is published yet, so there is nothing to download.";
 }
