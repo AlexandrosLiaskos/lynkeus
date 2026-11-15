@@ -241,7 +241,8 @@ def test_wrong_user_codes_of_one_user_are_limited(site: Site) -> None:
         address = f"/api/servers/pairings/{wrong}" if number % 2 else "/api/servers/pairings/not-a-code"
         problem(guesser.get(address), 404, "No computer waits to be connected under this code.")
     refused = guesser.get(f"/api/servers/pairings/{pairing.user_code}")
-    problem(refused, 429, "You gave 10 codes that name no pairing.")
+    assert servers.MAX_CODE_ATTEMPTS == 5
+    problem(refused, 429, "You gave 5 codes that name no pairing.")
     assert 0 < int(refused.headers["retry-after"]) <= 901
     problem(guesser.post("/api/servers", json={"user_code": pairing.user_code}), 429)
     assert other.get(f"/api/servers/pairings/{pairing.user_code}").status_code == 200
@@ -570,8 +571,10 @@ def test_job_runs_on_the_own_server_and_its_layer_is_read_through_the_project_se
         # A request for several ranges, or for another unit, receives the whole file.
         for unread in ("bytes=0-9,20-29", "cells=0-9", "bytes=9-0", "bytes=-"):
             assert visitor.get(layer["record"], headers={"Range": unread}).content == record
-        problem(visitor.get(layer["url"], headers={"Range": f"bytes={size}-"}), 416, "The part starts after the end")
-        problem(visitor.get(layer["url"], headers={"Range": "bytes=-0"}), 416)
+        for beyond in (f"bytes={size}-", "bytes=-0"):
+            outside = visitor.get(layer["url"], headers={"Range": beyond})
+            problem(outside, 416)
+            assert outside.headers["content-range"] == f"bytes */{size}"
         problem(visitor.get(f"{folder}/other.tif"), 404, "Your server keeps no such file.")
         problem(visitor.get(f"/api/servers/{server}/files/{'0' * 32}/gcov-hhhh-20261021.tif"), 404)
         assert visitor.get(f"{folder}/..%2Flynkeus.sqlite3").status_code == 404

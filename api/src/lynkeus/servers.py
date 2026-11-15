@@ -80,12 +80,12 @@ SITE = "https://lynkeus.nkua.cloud"
 MAX_PAIRINGS = 1000
 """The largest number of pairings in progress. Each is kept for ``PAIRING_TIME`` seconds at most."""
 
-MAX_CODE_ATTEMPTS = 10
+MAX_CODE_ATTEMPTS = 5
 """The most wrong user codes that one Earthdata user may give within ``PAIRING_TIME`` seconds.
 
-A user code is one of 20 to the power 8 (25.6 thousand million) codes. With the largest number of
-pairings in progress, one in 25.6 million codes names a pairing, so the wrong codes that this limit
-allows find one with a chance of less than one in two million.
+RFC 8628, section 5.1, recommends a limit on the attempts and gives this number for a code of 8 letters
+out of 20: with 5 attempts within the validity of a code, a guess finds one pairing with a chance of
+2 to the power -32.
 """
 
 MAX_SERVER_UNFINISHED_JOBS = 100
