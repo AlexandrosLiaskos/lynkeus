@@ -209,6 +209,19 @@ def test_result_keeps_its_legend_and_its_method(tmp_path: Path) -> None:
         assert source.tags()["method"] == "Reference of the method"
 
 
+def test_result_carries_the_words_of_the_ends_of_its_legend_and_a_layer_carries_none(tmp_path: Path) -> None:
+    values, grid = read_layer(BACKSCATTER)
+    assert write(tmp_path, values, grid).ends is None
+    result = write(tmp_path, values, grid, kind="result", layer=None, method="Reference of the method")
+    assert result.ends is None
+    result = write(
+        tmp_path, values, grid, kind="result", layer=None, method="Reference of the method", ends=("low", "high")
+    )
+    assert result.ends == ("low", "high")
+    with pytest.raises(ValueError, match="only the legend of a result has words for its two ends"):
+        write(tmp_path, values, grid, ends=("low", "high"))
+
+
 def test_layer_carries_its_name_inside_the_product_and_a_result_carries_none(tmp_path: Path) -> None:
     values, grid = read_layer(BACKSCATTER)
     name = "unwrappedInterferogram/HH/coherenceMagnitude"

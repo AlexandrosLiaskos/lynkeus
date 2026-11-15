@@ -22,6 +22,7 @@ def test_state_is_ten_times_the_logarithm_of_the_power() -> None:
     assert (result.quantity, result.unit, result.colours) == ("Radar backscatter gamma0", "dB", "grey")
     assert "D-102274" in result.method
     assert result.reduction == "mean-power"
+    assert result.ends is None
     np.testing.assert_array_equal(power, before)
 
 
@@ -116,6 +117,7 @@ def test_change_is_the_ratio_of_the_later_to_the_earlier_date_in_decibels() -> N
     assert (result.quantity, result.unit, result.colours) == ("Change of radar backscatter gamma0", "dB", "RdBu")
     assert "Rignot" in result.method
     assert result.reduction == "mean"
+    assert result.ends == ("decrease", "increase")
     np.testing.assert_array_equal(earlier, before[0])
     np.testing.assert_array_equal(later, before[1])
 

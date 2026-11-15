@@ -7,6 +7,7 @@ describes.
 
 import json
 from collections.abc import Sequence
+from dataclasses import replace
 from datetime import date
 from pathlib import Path
 from typing import Any
@@ -97,6 +98,22 @@ def test_result_is_described_by_the_tool_and_by_its_layers(tmp_path: Path) -> No
     assert description.dates == (date(2026, 10, 21), date(2026, 11, 2))
     assert description.inputs == ("product-of-21-october.h5", "product-of-2-november.h5")
     assert description.program == "Lynkeus 0.1.0"
+    assert description.ends is None
+
+
+def test_result_carries_the_words_that_the_tool_gives_for_the_ends_of_its_legend(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def with_words(arrays: Sequence[NDArray[np.float32]], descriptions: Sequence[LayerDescription]) -> AnalysisResult:
+        return replace(ratio(arrays, descriptions), ends=("decrease", "increase"))
+
+    monkeypatch.setitem(TOOLS, "backscatter-change", with_words)
+    description = run(tmp_path)
+    assert description.ends == ("decrease", "increase")
+    assert description.model_dump(mode="json")["ends"] == ["decrease", "increase"]
+    record = json.loads((tmp_path / "backscatter-change.json").read_text(encoding="utf-8"))
+    assert stac_faults(record) == []
+    assert "decrease" not in json.dumps(record)
 
 
 def test_record_of_a_result_names_its_layers_and_its_method(tmp_path: Path) -> None:

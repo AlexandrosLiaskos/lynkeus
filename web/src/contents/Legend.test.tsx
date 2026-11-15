@@ -30,6 +30,19 @@ const COMPONENTS: LayerDescription = {
   colours: "tab10",
 };
 
+const CHANGE: LayerDescription = {
+  ...MOISTURE,
+  id: "change",
+  kind: "result",
+  quantity: "Change of radar backscatter gamma0",
+  unit: "dB",
+  range: [-7.17, 7.17],
+  colours: "RdBu",
+  layer: null,
+  ends: ["decrease", "increase"],
+  method: "Reference of the method",
+};
+
 beforeEach(() => {
   displayStore.set({});
 });
@@ -140,4 +153,52 @@ test("the legend states when the name of the colour scale is not known", () => {
   render(<Legend layer={{ ...MOISTURE, colours: "rainbow" }} />);
   expect(screen.getByRole("img", { name: /^Colour scale grey,/ })).toBeTruthy();
   expect(screen.getByText("Lynkeus has no colour scale named rainbow. The layer is drawn in greys.")).toBeTruthy();
+});
+
+test("the legend names its two ends in the words of the description, each beside the value of its end", () => {
+  const { container } = render(<Legend layer={CHANGE} />);
+  const ramp = screen.getByRole("img", { name: "Colour scale RdBu, from -7.17 (decrease) to 7.17 dB (increase)" });
+  expect(ramp.style.background).toContain(`linear-gradient(to top, ${colourScale("RdBu")[0] ?? ""},`);
+  const marks = [...container.querySelectorAll<HTMLElement>(".legend-marks li")];
+  expect(marks[0]?.textContent).toBe("-7.17 (decrease)");
+  expect(marks[0]?.style.bottom).toBe("0%");
+  expect(marks.at(-1)?.textContent).toBe("7.17 (increase)");
+  expect(marks.at(-1)?.style.bottom).toBe("100%");
+  // The values between the two ends carry no word.
+  expect(marks.slice(1, -1).map((mark) => mark.textContent)).toEqual(["-5", "0", "5"]);
+});
+
+test("an inverted scale turns the colours and keeps each word beside the value of its end", () => {
+  setDisplay(CHANGE, { inverted: true });
+  const { container } = render(<Legend layer={CHANGE} />);
+  const ramp = screen.getByRole("img", {
+    name: "Colour scale RdBu, inverted, from -7.17 (decrease) to 7.17 dB (increase)",
+  });
+  expect(ramp.style.background).toContain(`linear-gradient(to top, ${colourScale("RdBu").at(-1) ?? ""},`);
+  const marks = [...container.querySelectorAll<HTMLElement>(".legend-marks li")];
+  expect(marks[0]?.textContent).toBe("-7.17 (decrease)");
+  expect(marks[0]?.style.bottom).toBe("0%");
+  expect(marks.at(-1)?.textContent).toBe("7.17 (increase)");
+  expect(marks.at(-1)?.style.bottom).toBe("100%");
+});
+
+test("the words of the ends show only while the range is the one of the description", () => {
+  setDisplay(CHANGE, { range: [1, 5] });
+  const { container } = render(<Legend layer={CHANGE} />);
+  expect(screen.getByRole("img", { name: "Colour scale RdBu, from 1 to 5 dB" })).toBeTruthy();
+  const marks = [...container.querySelectorAll(".legend-marks li")].map((mark) => mark.textContent);
+  expect(marks[0]).toBe("1");
+  expect(marks.at(-1)).toBe("5");
+  expect(marks.join(" ")).not.toMatch(/decrease|increase/);
+});
+
+test("a description without words for the ends, or with null, has a legend of values only", () => {
+  const { container, unmount } = render(<Legend layer={{ ...CHANGE, ends: null }} />);
+  expect(screen.getByRole("img", { name: "Colour scale RdBu, from -7.17 to 7.17 dB" })).toBeTruthy();
+  expect(container.querySelector(".legend-marks li")?.textContent).toBe("-7.17");
+  unmount();
+  const stored: LayerDescription = { ...CHANGE };
+  delete stored.ends;
+  render(<Legend layer={stored} />);
+  expect(screen.getByRole("img", { name: "Colour scale RdBu, from -7.17 to 7.17 dB" })).toBeTruthy();
 });

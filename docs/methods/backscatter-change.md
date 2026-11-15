@@ -211,6 +211,7 @@ values."
 | `unit` | dB |
 | `range` | From −r to +r, where r is the 99th percentile of the absolute values of the cells of the result that hold a value |
 | `colours` | `RdBu`, a diverging scale centred on zero. The lowest value is red and the highest blue: a decrease is red and an increase blue |
+| `ends` | `decrease`, `increase`: the words of the lowest and of the highest end of the legend. The Contents pane writes each word in brackets beside the value of its end, while the range of the display is the range of the result |
 
 The range and the colour scale are those of the source program
 ([cell 59](https://github.com/ASFOpenSARlab/NISAR_Cookbook/blob/17b69c87a7320610740be7f2c7e605601cb7fe43/notebooks/NISAR_GCOV_SARChangeDetectionMethods.ipynb):
@@ -223,7 +224,13 @@ shows as `In [30]`, and cell 59 is shown as `In [32]`.
 The colours of an increase are not a convention. The figure of the Sentinel-1 RTC Product Guide of
 ASF uses the opposite colours: red for an increase, blue for a decrease and yellow for little change
 (<https://hyp3-docs.asf.alaska.edu/guides/rtc_product_guide/>, read 14 Nov 2026). The legend must
-therefore name its two ends in words: decrease and increase.
+therefore name its two ends in words: decrease and increase. The function of the tool gives the
+two words in the field `ends` of its result, the layer description carries them in the field
+`ends`, and the legend of the Contents pane writes "(decrease)" beside its lowest value and
+"(increase)" beside its highest. An inverted scale turns the colours and leaves each word beside
+its value. The words show while the range of the display is the range that the tool gave. After a
+change of the range in the Symbology pane the legend shows the values only, because the two words
+describe the ends of the range of the tool, which lie on the two sides of zero.
 
 For colour-blind readers, the research found the following. ColorBrewer, from whose designs the
 colours of `RdBu` come, rates the scheme RdBu as colour-blind friendly for every number of classes
@@ -273,7 +280,9 @@ The exact numbers of the comparison are in `docs/research/analysis.md`, part 4.
    the sentence of the tool as the message of the job (`docs/research/analysis.md`, parts 3.4 and
    4.7). Nothing was seen in a browser.
 4. The parts of the comparison that were not reached (table above, row Not reached) (Andreas).
-5. The name `RdBu` of the colour scale in the Contents pane, the words at the two ends of the
-   legend, and the readability of the scale for colour-blind readers (Stelios). A later commit of
-   `main`, `5095ee0`, holds a scale `RdBu` (`web/src/contents/colours.ts`, line 27); the file was
-   read and nothing was tried.
+5. The name `RdBu` of the colour scale in the Contents pane, and the readability of the scale for
+   colour-blind readers (Stelios). A later commit of `main`, `5095ee0`, holds a scale `RdBu`
+   (`web/src/contents/colours.ts`, line 27); the file was read and nothing was tried.
+6. The words at the two ends of the legend (section Legend) are written by the Contents pane and
+   tested in the simulated browser of the tests (`web/src/contents/Legend.test.tsx`). They were not
+   seen in a browser, and the choice of the two words is for Stelios to confirm.

@@ -38,14 +38,14 @@ def test_layer_description_is_read_and_written_in_the_same_form() -> None:
     layer = LayerDescription.model_validate(LAYER)
     assert layer.dates == (date(2026, 10, 20),)
     assert layer.range == (-25.0, 0.0)
-    assert layer.model_dump(mode="json") == {**LAYER, "range": [-25.0, 0.0]}
+    assert layer.model_dump(mode="json") == {**LAYER, "ends": None, "range": [-25.0, 0.0]}
 
 
 def test_layer_stored_without_the_name_of_its_layer_is_read() -> None:
     stored = {name: value for name, value in LAYER.items() if name != "layer"}
     layer = LayerDescription.model_validate(stored)
     assert layer.layer is None
-    assert layer.model_dump(mode="json") == {**stored, "layer": None, "range": [-25.0, 0.0]}
+    assert layer.model_dump(mode="json") == {**stored, "layer": None, "ends": None, "range": [-25.0, 0.0]}
     assert LayerDescription.model_validate_json(layer.model_dump_json()) == layer
 
 
@@ -133,6 +133,43 @@ def test_layer_request_is_read() -> None:
 def test_wrong_layer_request_is_rejected(change: dict[str, Any]) -> None:
     with pytest.raises(ValidationError):
         LayerRequest.model_validate({**REQUEST, **change})
+
+
+RESULT: dict[str, Any] = {**LAYER, "kind": "result", "layer": None, "method": "Reference of the method"}
+
+
+def test_result_may_name_the_two_ends_of_its_legend_in_words() -> None:
+    assert LayerDescription.model_validate(RESULT).ends is None
+    result = LayerDescription.model_validate({**RESULT, "ends": ["decrease", "increase"]})
+    assert result.ends == ("decrease", "increase")
+    assert result.model_dump(mode="json")["ends"] == ["decrease", "increase"]
+    assert LayerDescription.model_validate_json(result.model_dump_json()) == result
+
+
+def test_description_stored_without_the_words_of_the_ends_is_read() -> None:
+    assert "ends" not in RESULT
+    assert "ends" not in LAYER
+    assert LayerDescription.model_validate(RESULT).ends is None
+    assert LayerDescription.model_validate(LAYER).ends is None
+
+
+@pytest.mark.parametrize("ends", [["decrease"], ["decrease", ""], ["decrease", "none", "increase"], "decrease"])
+def test_words_of_the_ends_that_are_not_two_words_are_rejected(ends: Any) -> None:
+    with pytest.raises(ValidationError):
+        LayerDescription.model_validate({**RESULT, "ends": ends})
+
+
+def test_layer_received_from_nasa_has_no_words_for_the_ends_of_its_legend() -> None:
+    with pytest.raises(ValidationError, match="only the legend of a result has words for its two ends"):
+        LayerDescription.model_validate({**LAYER, "ends": ["low", "high"]})
+
+
+def test_result_of_a_tool_has_no_words_for_the_ends_of_its_legend_unless_it_gives_them() -> None:
+    values = np.zeros((2, 2), dtype=np.float32)
+    assert AnalysisResult(values, "Quantity", "1", (0.0, 1.0), "grey", "Method").ends is None
+    result = AnalysisResult(values, "Quantity", "dB", (-1.0, 1.0), "RdBu", "Method", ends=("decrease", "increase"))
+    assert result.ends == ("decrease", "increase")
+    assert result.reduction == "mean"
 
 
 def test_result_of_a_tool_is_reduced_by_the_mean_of_its_values_unless_it_says_otherwise() -> None:

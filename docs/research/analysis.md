@@ -860,13 +860,19 @@ abstracts were read.
     version 1.6.0, which is public as XML only (part 2.2). The ASF page names a Revision F in its
     text and links the Rev E file.
 14. **Stelios: the colour scales.** The functions name the scales `grey` and `RdBu`, as the source
-    programs do. The names in the Contents pane, the end of `grey` that is black, the words at the
-    two ends of the legend of the change (decrease, increase) and the readability of `RdBu` for
-    colour-blind readers (part 5.7) are his to confirm. At commit `0ad795b` the Data part gives the
-    same two names to layers of its own (`api/src/lynkeus/harmony.py`, lines 275 and 320). A later
-    commit of `main`, `5095ee0`, holds both scales in `web/src/contents/colours.ts` (lines 19 and
-    27), with `grey` from black at the lowest value to white; its legend names no words at the two
-    ends (`web/src/contents/Legend.tsx`). These files were read and nothing was tried.
+    programs do. The names in the Contents pane, the end of `grey` that is black and the
+    readability of `RdBu` for colour-blind readers (part 5.7) are his to confirm. At commit
+    `0ad795b` the Data part gives the same two names to layers of its own
+    (`api/src/lynkeus/harmony.py`, lines 275 and 320). A later commit of `main`, `5095ee0`, holds
+    both scales in `web/src/contents/colours.ts` (lines 19 and 27), with `grey` from black at the
+    lowest value to white. The words at the two ends of the legend of the change are built since
+    15 Nov 2026: `backscatter_change` gives ("decrease", "increase") in the field `ends` of its
+    result, `run_tool` writes them into the field `ends` of the layer description, and the legend
+    of the Contents pane (`RampLegend` in `web/src/contents/Legend.tsx`) writes each word in
+    brackets beside the value of its end, while the range of the display is the range of the
+    description. The other two tools give no words. The tests of the server and of the interface
+    cover each step. Not done: the words were not seen in a browser, no result with words was
+    made through the web service, and the choice of the two words is his to confirm.
 15. **Stelios: the range of the legend.** For the two backscatter tools the `range` of the layer
     description is computed for each result and is not a fixed pair of numbers (part 4.2).
 16. **Alexandros: the tools as processes of the server.** At commit `0ad795b`,

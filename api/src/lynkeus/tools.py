@@ -54,7 +54,9 @@ def run_tool(
         The description of the result. Its quantity, unit, legend, colour
         scale and method are those that the function of the tool returns. Its
         dates and input files are those of the input layers. The reduced
-        copies of its file are made as the function of the tool declares.
+        copies of its file are made as the function of the tool declares,
+        and the words of the two ends of its legend are those that the
+        function gives.
 
     Raises
     ------
@@ -120,6 +122,7 @@ def _run_tool(
             f"Reduced copies made {_REDUCED[result.reduction]}."
         ),
         method=result.method,
+        ends=result.ends,
         decibels=result.reduction == "mean-power",
         links=[
             {"rel": "derived_from", "href": description.record, "type": "application/geo+json"}
