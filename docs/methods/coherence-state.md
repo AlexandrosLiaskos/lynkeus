@@ -102,6 +102,19 @@ None (the product gives the unit `1`). The values lie between 0 and 1; the speci
 state this range, which follows from the formula above. The result is Float32 and its no-data value
 is `nan`.
 
+## Reduced copies of the result
+
+The file of a result holds the values of the layer at full resolution. It also holds reduced copies
+(overviews), at the factors 2 and 4 for the result of the pilot area, which the map draws when it is
+zoomed out. Lynkeus makes each cell of a reduced copy as the mean of the coherence values of the
+cells that it covers, as it does for the layer that it receives. The reduced copies of this result
+were not measured.
+
+For the reader: when the map is zoomed out, a cell shows the mean coherence of the cells that it
+covers. It is not a coherence estimated at that coarser resolution: Lynkeus does not hold the
+complex images from which the mission estimates the coherence. The values at full zoom, and the
+values of the file at full resolution, are those of the product.
+
 ## Legend
 
 | Field of the layer description | Value |

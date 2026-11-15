@@ -183,6 +183,24 @@ The tool computes in 32-bit floating-point numbers, as the source program does.
 
 Decibel (dB). The result is Float32 and its no-data value is `nan`.
 
+## Reduced copies of the result
+
+The file of a result holds the values of the formula at full resolution. It also holds reduced
+copies (overviews), at the factors 2, 4 and 8 for the results of the pilot area, which the map draws
+when it is zoomed out. Lynkeus makes each cell of a reduced copy as the mean of the decibel values
+of the cells that it covers, and not as the decibels of their mean power.
+
+Measured on 15 Nov 2026 on the two results of the pilot area, at the factor 2 (3,581,043 cells with
+a value): the reduced copy equals the mean of the four decibel values (largest difference
+9.5e-07 dB). Against the decibels of the mean power of the same four cells it is on average 0.50 dB
+lower on 21 Oct 2026 and 0.49 dB lower on 2 Nov 2026; 1,204,178 and 1,200,764 cells differ by more
+than 0.5 dB, and the largest difference is 15.2 dB and 15.7 dB (`docs/research/analysis.md`, part
+4.7).
+
+For the reader: when the map is zoomed out, it shows values that are about half a decibel too low
+on average, and more where bright and dark cells lie side by side. The values at full zoom, and the
+values of the file at full resolution, are those of the formula.
+
 ## Legend
 
 | Field of the layer description | Value |

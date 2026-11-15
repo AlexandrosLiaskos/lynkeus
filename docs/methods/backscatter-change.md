@@ -127,8 +127,9 @@ The limits of this evidence are the following.
 
 1. It is one box of 3772 by 3972 cells on a coast, two dates of one track and frame (141, 67), and
    the term `HHHH` of frequency A only.
-2. The only valid value in the box is `1`, so the box holds no boundary between sub-swaths. The mask
-   differs between the two dates in 19 cells. Both products are of acquisitions with dithered pulse repetition frequency
+2. The only valid value in the box is `1`, so the box holds no boundary between sub-swaths. Inside
+   the box, the mask files of Harmony differ between the two dates in 19 cells (table above); over
+   the whole rectangle, the masks of the product differ in 23 cells. Both products are of acquisitions with dithered pulse repetition frequency
    (`isDithered` = `True`), for which the specification gives the value 1 throughout (section
    4.3.3).
 3. The product itself holds `nan` in the cells with mask `0`. In the HDF5 product files, read on
@@ -178,6 +179,24 @@ The tool computes in 32-bit floating-point numbers, as the source program does.
 ## Unit
 
 Decibel (dB). The result is Float32 and its no-data value is `nan`.
+
+## Reduced copies of the result
+
+The file of a result holds the values of the formula at full resolution. It also holds reduced
+copies (overviews), at the factors 2, 4 and 8 for the result of the pilot area, which the map draws
+when it is zoomed out. Lynkeus makes each cell of a reduced copy as the mean of the decibel values
+of the change of the cells that it covers. It is not the change of the mean backscatter of these
+cells, which cannot be derived from the result alone.
+
+Measured on 15 Nov 2026 on the result of the pilot pair, at the factor 2 (3,581,043 cells with a
+value): the reduced copy equals the mean of the four decibel values (largest difference
+9.5e-07 dB). Against the decibels of the ratio of the mean powers of the same four cells, the mean
+difference is 0.002 dB, 758,093 cells differ by more than 0.5 dB, and the largest difference is
+11.6 dB (`docs/research/analysis.md`, part 4.7).
+
+For the reader: when the map is zoomed out, a cell shows the mean of the changes of the cells that
+it covers, which can differ by more than a decibel from the change of their mean backscatter. The
+values at full zoom, and the values of the file at full resolution, are those of the formula.
 
 ## Legend
 
