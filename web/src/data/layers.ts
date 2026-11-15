@@ -16,6 +16,12 @@ export interface LayerEntry {
   created: string | null;
   /** The own server of the visitor that keeps the files of the layer, or null for the project server. */
   server: ServerName | null;
+  /**
+   * The moment until which the project server keeps the layer, as a date-time of RFC 3339. It is absent for a
+   * layer of a server of the visitor, which that computer keeps until the visitor removes it, and where the
+   * server does not state it.
+   */
+  keptUntil?: string;
 }
 
 /** The orders of the list of layers, with the words that name them. */
@@ -57,8 +63,9 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 /**
  * Return a layer of the list of the server as an entry, or null when it does not have the form of one. The
- * server sends the description with the size and the time of the layer beside it, and with the own server that
- * keeps the layer; a description alone is an entry without them, of the project server.
+ * server sends the description with the size and the time of the layer beside it, with the own server that
+ * keeps the layer and, for a layer of the project server, with the moment until which it is kept (`kept_until`);
+ * a description alone is an entry without them, of the project server.
  */
 export function layerEntry(value: unknown): LayerEntry | null {
   if (isLayerDescription(value)) {
@@ -67,11 +74,12 @@ export function layerEntry(value: unknown): LayerEntry | null {
   if (!isRecord(value) || !isLayerDescription(value.layer)) {
     return null;
   }
-  const { size, created, server } = value;
+  const { size, created, server, kept_until: keptUntil } = value;
   const sizeIsValid = size === undefined || size === null || (typeof size === "number" && size >= 0);
   const createdIsValid = created === undefined || created === null || isMoment(created);
   const serverIsValid = server === undefined || server === null || isServerName(server);
-  if (!sizeIsValid || !createdIsValid || !serverIsValid) {
+  const keptUntilIsValid = keptUntil === undefined || keptUntil === null || isMoment(keptUntil);
+  if (!sizeIsValid || !createdIsValid || !serverIsValid || !keptUntilIsValid) {
     return null;
   }
   return {
@@ -79,6 +87,7 @@ export function layerEntry(value: unknown): LayerEntry | null {
     size: typeof size === "number" ? size : null,
     created: isMoment(created) ? created : null,
     server: isServerName(server) ? server : null,
+    ...(isMoment(keptUntil) ? { keptUntil } : {}),
   };
 }
 
@@ -134,6 +143,16 @@ export function loadLayers(): Promise<void> {
 }
 
 /**
+ * Read the layers again after a change that the server made to several of them at once. The answer of a
+ * reading that is still on its way is dropped, because it may state the layers as they were before the change.
+ */
+export function refreshLayers(): Promise<void> {
+  changes += 1;
+  reading = null;
+  return loadLayers();
+}
+
+/**
  * Remove a layer of the session: the server removes its files, and the layer leaves the list and the map. A
  * layer that the server no longer holds leaves them as well.
  */
@@ -168,6 +187,22 @@ export async function renameLayer(id: string, title: string): Promise<LayerEntry
     addToMap(renamed.layer);
   }
   return renamed;
+}
+
+/**
+ * Keep a layer of the project server for the keeping time from now (`docs/Storage.md`): the server sets the
+ * moment until which the layer is kept, and the list takes the entry that it answers.
+ */
+export async function extendLayer(id: string): Promise<LayerEntry> {
+  const extended = entryOf(
+    await call(`${LAYERS}/${encodeURIComponent(id)}/extension`, {
+      method: "POST",
+      failure: "The layer could not be kept longer",
+    }),
+  );
+  changes += 1;
+  layersStore.set(layersStore.get().map((entry) => (entry.layer.id === id ? extended : entry)));
+  return extended;
 }
 
 /**
