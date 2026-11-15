@@ -11,8 +11,6 @@ import { Pane } from "../shared/pane/Pane";
 import { PANE_WIDTH, panesStore, resetPanes, setPaneWidth, type PaneId } from "../shared/panes";
 import { statusBarStore } from "../statusbar/state";
 import { NO_FULL_SCREEN, useViewActions } from "./actions";
-import { STORAGE_PANE } from "./StoragePane";
-import { VIEW_TAB } from "./tab";
 
 beforeEach(() => {
   resetDock();
@@ -245,14 +243,4 @@ test("a refusal of the browser to fill the screen is reported", async () => {
   expect(messagesStore.get().map(({ kind, text }) => [kind, text])).toEqual([
     ["error", "The browser did not allow the map to fill the screen."],
   ]);
-});
-
-test("the Storage button opens the pane Browser storage, and the pane carries the name of the button", () => {
-  setFullScreen(true);
-  const { actions } = setUp();
-  const button = VIEW_TAB.groups.flatMap(({ tools }) => [...tools]).find(({ label }) => label === "Storage");
-  expect(button).toMatchObject({ id: STORAGE_PANE, icon: "settings" });
-  expect(actions()[STORAGE_PANE]?.missing).toBeUndefined();
-  act(() => actions()[STORAGE_PANE]?.run());
-  expect(dockStore.get().tools).toEqual([STORAGE_PANE]);
 });

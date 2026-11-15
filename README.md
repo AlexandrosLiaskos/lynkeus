@@ -39,7 +39,7 @@ the developer of the site, the total of recorded page visits and the event for w
 
 In `web/src/`, each element of the interface has its own folder, which holds the component of the
 element and its style. Each tab of the ribbon is declared in its own folder (`map/`, `data/`,
-`analysis/`, `view/`, `share/` and `help/`), and `ribbon/` joins them. The folder `shared/` holds what
+`analysis/`, `view/`, `share/`, `options/` and `help/`), and `ribbon/` joins them. The folder `shared/` holds what
 every part uses: the tool pane, the stack of panes beside the map, the dialog, the messages, the
 description of a button, the explanation of a title, the styles of the form elements and of the
 keyboard focus, and the formats of a layer. The server holds the same formats in `api/src/lynkeus/layers.py`.

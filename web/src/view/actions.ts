@@ -1,19 +1,10 @@
 import type { ToolAction, ToolActions } from "../ribbon/types";
-import {
-  closeToolPane,
-  dockStore,
-  isShown,
-  openToolPane,
-  pinAllPanes,
-  showPane,
-  type DockState,
-} from "../shared/dock/dock";
+import { closeToolPane, dockStore, isShown, pinAllPanes, showPane, type DockState } from "../shared/dock/dock";
 import { useMap } from "../shared/map";
 import { panesStore, resetPanes, setPaneOpen, type PaneId } from "../shared/panes";
 import { useStore } from "../shared/store";
 import { statusBarStore } from "../statusbar/state";
 import { canFillScreen, toggleFullScreen, useFullScreenElement } from "./fullScreen";
-import { STORAGE_PANE } from "./StoragePane";
 // The panes are kept in the browser from the moment at which the View tab is loaded.
 import "./storedPanes";
 import type { ViewToolId } from "./tab";
@@ -74,6 +65,5 @@ export function useViewActions(): ToolActions<ViewToolId> {
       ? { run: () => toggleFullScreen(map), pressed: fullScreen !== null }
       : { run: () => undefined, missing: NO_FULL_SCREEN },
     "view-status-bar": { run: () => statusBarStore.set(!statusBar), pressed: statusBar },
-    [STORAGE_PANE]: { run: () => openToolPane(STORAGE_PANE) },
   };
 }

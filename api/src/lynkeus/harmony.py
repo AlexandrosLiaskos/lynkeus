@@ -35,7 +35,7 @@ from harmony.auth import BadAuthentication
 from pydantic import Field
 
 from lynkeus.layers import Area, Format, LayerDescription, LayerRequest, ProductType, Text
-from lynkeus.products import COLLECTIONS, CatalogueError, Product, product_from_record
+from lynkeus.products import BETA_COLLECTIONS, COLLECTIONS, CatalogueError, Product, product_from_record
 from lynkeus.writing import PROGRAM, LayerError, Rule, grid_of, read_layer, write_layer
 
 MOST_CELLS = 25_000_000
@@ -261,7 +261,7 @@ def _get_layer(
         inputs=(f"{product.name}.h5",),
         layer=request.layer,
         lineage=(
-            f"Layer {variable} of the NISAR product {product.name}, clipped to the area "
+            f"Layer {variable} of the NISAR product {product.name} ({product.maturity.lower()}), clipped to the area "
             f"{area.west}, {area.south}, {area.east}, {area.north} (west, south, east and north, in degrees) "
             f"by NASA Harmony (job {job}), and written by {PROGRAM} with reduced copies made by {reduced}."
         ),
@@ -442,10 +442,11 @@ def _find(product: ProductType, name: str) -> tuple[Product, str]:
     # The catalogue reads * and ? in a name as wildcards, and a product name holds neither.
     if not re.fullmatch(r"[A-Za-z0-9_]+", name):
         raise LayerError("NASA's catalogue does not hold this product.")
+    collections = (*COLLECTIONS[product], BETA_COLLECTIONS[product])
     try:
         records = (
             earthaccess.DataGranules()
-            .concept_id([collection.concept_id for collection in COLLECTIONS[product]])
+            .concept_id([collection.concept_id for collection in collections])
             .granule_name(name)
             .get(10)
         )
