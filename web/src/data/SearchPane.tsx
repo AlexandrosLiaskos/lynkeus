@@ -1,5 +1,6 @@
 import { useEffect, useId, useState } from "react";
 import { areaStore } from "../shared/area";
+import { openToolPane } from "../shared/dock/dock";
 import { Info } from "../shared/info/Info";
 import { PRODUCT_TYPES, type ProductType } from "../shared/layer";
 import { useMap } from "../shared/map";
@@ -25,7 +26,7 @@ import {
 import { runSearch, stopSearch } from "./run";
 import { firstDraft, FRAMES, searchOfDraft, TRACKS, type SearchDraft } from "./search";
 import { viewArea } from "./searchArea";
-import { productsStore, SEARCH_PANE, searchDraftStore } from "./state";
+import { GET_LAYER_PANE, productsStore, SEARCH_PANE, searchDraftStore } from "./state";
 
 /** Add a value to a list, or take it out, and keep the order of the offered values. */
 function toggled<Value extends string>(offered: readonly Value[], chosen: readonly Value[], value: Value): Value[] {
@@ -117,13 +118,43 @@ function SeasonDayFields({ legend, value, onChange }: SeasonDayFieldsProps) {
 }
 
 /**
+ * Tell whether a group of choices is open, and give the function that closes it. A group opens when one of its
+ * choices is made, also by another part of the page. It does not close when the choice is taken back, so that
+ * it never closes while the user works in it.
+ */
+function useOpenWhenUsed(used: boolean): [open: boolean, close: () => void] {
+  const [open, setOpen] = useState(used);
+  if (used && !open) {
+    setOpen(true);
+  }
+  return [open, () => setOpen(false)];
+}
+
+/**
  * The choices of the search. They are kept when the pane closes. The first time that the pane opens, they are
- * the drawn area or, without one, the view of the map, and the last 30 days.
+ * the drawn area or, without one, the view of the map, and the last 30 days. The choices that most searches
+ * need stand first: what is searched, the product type, the area and the period. The choices of the orbit and of
+ * the radar stand in two groups under them, which are closed while none of their choices is made. The link that
+ * restores the first choices stands at the foot of the form.
  */
 function SearchFields({ onRestore }: { onRestore: () => void }) {
   const map = useMap();
   const id = useId();
   const stored = useStore(searchDraftStore);
+  // The number of times that the first choices were restored. The two groups start again, closed, after each.
+  const [restored, setRestored] = useState(0);
+  const [orbitOpen, closeOrbit] = useOpenWhenUsed(
+    stored !== null && [stored.track, stored.frame, stored.direction, stored.cycle, stored.orbit].some(Boolean),
+  );
+  const [radarOpen, closeRadar] = useOpenWhenUsed(
+    stored !== null &&
+      (stored.channels.length > 0 ||
+        stored.sideChannels.length > 0 ||
+        stored.bands.length > 0 ||
+        stored.bandwidth !== "" ||
+        stored.coverage !== "" ||
+        stored.joint !== ""),
+  );
 
   useEffect(() => {
     if (searchDraftStore.get() === null) {
@@ -145,19 +176,15 @@ function SearchFields({ onRestore }: { onRestore: () => void }) {
   const restore = () => {
     onRestore();
     searchDraftStore.set(firstDraft(rectangleText(viewArea(map))));
+    closeOrbit();
+    closeRadar();
+    setRestored(restored + 1);
   };
 
   const { product } = draft;
   const isPair = PAIR_PRODUCTS.includes(product);
   const hasSideBand = SIDE_BAND_PRODUCTS.includes(product);
   const hasBandwidth = BANDWIDTH_PRODUCTS.includes(product);
-  const radarUsed =
-    draft.channels.length > 0 ||
-    draft.sideChannels.length > 0 ||
-    draft.bands.length > 0 ||
-    draft.bandwidth !== "" ||
-    draft.coverage !== "" ||
-    draft.joint !== "";
 
   const maturity = (
     <Checks
@@ -196,7 +223,7 @@ function SearchFields({ onRestore }: { onRestore: () => void }) {
       </fieldset>
 
       {draft.by === "names" ? (
-        <ToolPaneGroup title="Product names" open>
+        <>
           <FieldTitle field={`${id}-names`} title="Names">
             {EXPLANATIONS.names}
           </FieldTitle>
@@ -210,138 +237,141 @@ function SearchFields({ onRestore }: { onRestore: () => void }) {
             onChange={(event) => change({ names: event.target.value })}
           />
           {maturity}
-        </ToolPaneGroup>
+        </>
       ) : (
         <>
-          <ToolPaneGroup title="Product" open>
-            <label className="usa-label" htmlFor={`${id}-product`}>
-              Product type
-            </label>
-            <select
-              className="usa-select"
-              id={`${id}-product`}
-              value={product}
-              onChange={(event) => change({ product: event.target.value as ProductType })}
-            >
-              {PRODUCT_TYPES.map((type) => (
-                <option key={type} value={type}>
-                  {type}: {PRODUCT_NAMES[type]}
-                </option>
-              ))}
-            </select>
-            {maturity}
-          </ToolPaneGroup>
+          <label className="usa-label" htmlFor={`${id}-product`}>
+            Product type
+          </label>
+          <select
+            className="usa-select"
+            id={`${id}-product`}
+            value={product}
+            onChange={(event) => change({ product: event.target.value as ProductType })}
+          >
+            {PRODUCT_TYPES.map((type) => (
+              <option key={type} value={type}>
+                {type}: {PRODUCT_NAMES[type]}
+              </option>
+            ))}
+          </select>
+          {maturity}
 
-          <ToolPaneGroup title="Area" open>
-            <AreaFields draft={draft} onChange={change} />
-          </ToolPaneGroup>
+          <AreaFields draft={draft} onChange={change} />
 
-          <ToolPaneGroup title="Period" open>
-            <FieldTitle field={`${id}-period`} title="Period">
-              {EXPLANATIONS.period}
-            </FieldTitle>
-            <select
-              className="usa-select"
-              id={`${id}-period`}
-              aria-describedby={infoId(`${id}-period`)}
-              value={draft.period}
-              onChange={(event) => {
-                const period = event.target.value as PeriodId;
-                change({ period, ...periodDays(period) });
-              }}
-            >
-              {PERIODS.map(({ id: period, label }) => (
-                <option key={period} value={period}>
-                  {label}
-                </option>
-              ))}
-            </select>
-            <div className="search-row">
-              <div>
-                <label className="usa-label" htmlFor={`${id}-start`}>
-                  First day
-                </label>
-                <input
-                  className="usa-input"
-                  id={`${id}-start`}
-                  type="date"
-                  value={draft.start}
-                  onChange={(event) => change({ period: "custom", start: event.target.value })}
-                />
-              </div>
-              <div>
-                <label className="usa-label" htmlFor={`${id}-end`}>
-                  Last day
-                </label>
-                <input
-                  className="usa-input"
-                  id={`${id}-end`}
-                  type="date"
-                  value={draft.end}
-                  onChange={(event) => change({ period: "custom", end: event.target.value })}
-                />
-              </div>
-            </div>
-
-            <div className="usa-checkbox">
-              <input
-                className="usa-checkbox__input"
-                type="checkbox"
-                id={`${id}-season`}
-                checked={draft.season !== null}
-                onChange={(event) =>
-                  change({
-                    season: event.target.checked ? { start: { month: 6, day: 1 }, end: { month: 8, day: 31 } } : null,
-                  })
-                }
-              />
-              <label className="usa-checkbox__label" htmlFor={`${id}-season`}>
-                Only a season of each year
+          <FieldTitle field={`${id}-period`} title="Period">
+            {EXPLANATIONS.period}
+          </FieldTitle>
+          <select
+            className="usa-select"
+            id={`${id}-period`}
+            aria-describedby={infoId(`${id}-period`)}
+            value={draft.period}
+            onChange={(event) => {
+              const period = event.target.value as PeriodId;
+              change({ period, ...periodDays(period) });
+            }}
+          >
+            {PERIODS.map(({ id: period, label }) => (
+              <option key={period} value={period}>
+                {label}
+              </option>
+            ))}
+          </select>
+          <div className="search-row">
+            <div>
+              <label className="usa-label" htmlFor={`${id}-start`}>
+                First day
               </label>
+              <input
+                className="usa-input"
+                id={`${id}-start`}
+                type="date"
+                value={draft.start}
+                onChange={(event) => change({ period: "custom", start: event.target.value })}
+              />
             </div>
-            {draft.season ? (
-              <div className="search-row">
-                <SeasonDayFields
-                  legend="Season from"
-                  value={draft.season.start}
-                  onChange={(start) => change({ season: draft.season && { ...draft.season, start } })}
-                />
-                <SeasonDayFields
-                  legend="Season to"
-                  value={draft.season.end}
-                  onChange={(end) => change({ season: draft.season && { ...draft.season, end } })}
-                />
-              </div>
-            ) : null}
+            <div>
+              <label className="usa-label" htmlFor={`${id}-end`}>
+                Last day
+              </label>
+              <input
+                className="usa-input"
+                id={`${id}-end`}
+                type="date"
+                value={draft.end}
+                onChange={(event) => change({ period: "custom", end: event.target.value })}
+              />
+            </div>
+          </div>
 
-            {isPair ? (
-              <fieldset className="usa-fieldset search-checks search-checks--lines">
-                <legend className="usa-legend">A pair of acquisitions is found when</legend>
-                {(
-                  [
-                    [false, "the time from its first date to its second overlaps the period"],
-                    [true, "both of its dates lie inside the period"],
-                  ] as const
-                ).map(([inside, label]) => (
-                  <div className="usa-radio" key={String(inside)}>
-                    <input
-                      className="usa-radio__input"
-                      type="radio"
-                      name={`${id}-pair`}
-                      id={`${id}-pair-${String(inside)}`}
-                      checked={draft.pairInside === inside}
-                      onChange={() => change({ pairInside: inside })}
-                    />
-                    <label className="usa-radio__label" htmlFor={`${id}-pair-${String(inside)}`}>
-                      {label}
-                    </label>
-                  </div>
-                ))}
-              </fieldset>
-            ) : null}
-          </ToolPaneGroup>
+          <div className="usa-checkbox data-option">
+            <input
+              className="usa-checkbox__input"
+              type="checkbox"
+              id={`${id}-season`}
+              checked={draft.season !== null}
+              onChange={(event) =>
+                change({
+                  season: event.target.checked ? { start: { month: 6, day: 1 }, end: { month: 8, day: 31 } } : null,
+                })
+              }
+            />
+            <label className="usa-checkbox__label" htmlFor={`${id}-season`}>
+              Only a season of each year
+            </label>
+          </div>
+          {draft.season ? (
+            <div className="search-row">
+              <SeasonDayFields
+                legend="Season from"
+                value={draft.season.start}
+                onChange={(start) => change({ season: draft.season && { ...draft.season, start } })}
+              />
+              <SeasonDayFields
+                legend="Season to"
+                value={draft.season.end}
+                onChange={(end) => change({ season: draft.season && { ...draft.season, end } })}
+              />
+            </div>
+          ) : null}
 
-          <ToolPaneGroup title="Orbit" open>
+          {isPair ? (
+            <fieldset
+              className="usa-fieldset search-checks search-checks--lines"
+              aria-labelledby={`${id}-pairs`}
+              aria-describedby={infoId(`${id}-pairs`)}
+            >
+              <legend className="usa-legend">
+                <span id={`${id}-pairs`}>Pairs of acquisitions</span>
+                <Info id={infoId(`${id}-pairs`)} about="Pairs of acquisitions">
+                  {EXPLANATIONS.pairs}
+                </Info>
+              </legend>
+              {(
+                [
+                  [false, "Overlapping the period"],
+                  [true, "Inside the period"],
+                ] as const
+              ).map(([inside, label]) => (
+                <div className="usa-radio" key={String(inside)}>
+                  <input
+                    className="usa-radio__input"
+                    type="radio"
+                    name={`${id}-pair`}
+                    id={`${id}-pair-${String(inside)}`}
+                    checked={draft.pairInside === inside}
+                    onChange={() => change({ pairInside: inside })}
+                  />
+                  <label className="usa-radio__label" htmlFor={`${id}-pair-${String(inside)}`}>
+                    {label}
+                  </label>
+                </div>
+              ))}
+            </fieldset>
+          ) : null}
+
+          <ToolPaneGroup key={`orbit-${String(restored)}`} title="Orbit" open={orbitOpen}>
             <div className="search-row">
               <div>
                 <FieldTitle field={`${id}-track`} title="Track">
@@ -419,7 +449,7 @@ function SearchFields({ onRestore }: { onRestore: () => void }) {
             </div>
           </ToolPaneGroup>
 
-          <ToolPaneGroup title="Radar" open={radarUsed}>
+          <ToolPaneGroup key={`radar-${String(restored)}`} title="Radar" open={radarOpen}>
             <Checks
               legend={hasSideBand ? "Channels of the main band (A)" : "Channels"}
               info={EXPLANATIONS.channels}
@@ -497,7 +527,7 @@ function SearchFields({ onRestore }: { onRestore: () => void }) {
         </>
       )}
 
-      <p className="search-restore">
+      <p className="search-foot">
         <button type="button" className="usa-button usa-button--unstyled" onClick={restore}>
           Restore defaults
         </button>
@@ -508,7 +538,8 @@ function SearchFields({ onRestore }: { onRestore: () => void }) {
 
 /**
  * The pane of the button Search products. The search needs no Earthdata account. The foot of the pane states
- * what is wrong with the choices, or how many products were found.
+ * what is wrong with the choices, or how many products were found and that the Catalog pane lists them, with
+ * the link to the next step, Get layer.
  */
 export function SearchPane() {
   const [run, setRun] = useState<ToolPaneRun | null>(null);
@@ -524,11 +555,17 @@ export function SearchPane() {
       return;
     }
     setRun({ state: "running", text: "Searching NASA's catalogue" });
-    runSearch(search).then(setRun, (error: unknown) => {
-      // A search that the user stopped leaves no outcome.
-      const stopped = error instanceof DOMException && error.name === "AbortError";
-      setRun(stopped ? null : { state: "error", text: error instanceof Error ? error.message : "The search failed." });
-    });
+    const next = { label: "Get layer", onClick: () => openToolPane(GET_LAYER_PANE) };
+    runSearch(search).then(
+      (outcome) => setRun(outcome.state === "success" ? { ...outcome, action: next } : outcome),
+      (error: unknown) => {
+        // A search that the user stopped leaves no outcome.
+        const stopped = error instanceof DOMException && error.name === "AbortError";
+        setRun(
+          stopped ? null : { state: "error", text: error instanceof Error ? error.message : "The search failed." },
+        );
+      },
+    );
   };
 
   const cancel = () => {

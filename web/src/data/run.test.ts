@@ -42,7 +42,10 @@ test("a search fills the list, opens the Catalog pane and states the number foun
   selectedProductStore.set("old");
   const running = runSearch(search());
   expect(searchingStore.get()).toBe("first");
-  expect(await running).toEqual({ state: "success", text: "2 products were found." });
+  expect(await running).toEqual({
+    state: "success",
+    text: "2 products were found. The Catalog pane lists them.",
+  });
   expect(searchingStore.get()).toBe("no");
   expect(asked).toHaveLength(1);
   expect(productsStore.get()).toMatchObject({ search: search(), found: 2 });
@@ -59,7 +62,10 @@ test("a search states one product, no product, and more products than one answer
     { found: 13172, products: someProducts(200) },
   );
   vi.stubGlobal("fetch", fetch);
-  expect(await runSearch(search())).toEqual({ state: "success", text: "1 product was found." });
+  expect(await runSearch(search())).toEqual({
+    state: "success",
+    text: "1 product was found. The Catalog pane lists it.",
+  });
   setPaneOpen("catalog", false);
   expect(await runSearch(search())).toEqual({ state: "warning", text: "No product was found for these choices." });
   // A search without a product leaves the Catalog pane as it is, and empties the list.
@@ -67,7 +73,7 @@ test("a search states one product, no product, and more products than one answer
   expect(productsStore.get()?.products).toEqual([]);
   expect(await runSearch(search())).toEqual({
     state: "success",
-    text: "13,172 products were found, and the first 200 are listed. The Catalog pane loads more.",
+    text: "13,172 products were found. The Catalog pane lists the first 200 and loads more.",
   });
 });
 
