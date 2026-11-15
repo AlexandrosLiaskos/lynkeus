@@ -1,14 +1,21 @@
 @use "uswds-core" as uswds;
 @use "../shared/tokens/tokens";
 
-// The title bar, on the light grey of the frame of the page.
+// The dark blue of the welcome screen. It shows while the image loads.
+$night: #040610;
+
+// The title bar stands on the upper edge of the image of the welcome screen: space at the left, under the name,
+// then the limb of the Earth and its clouds. A shade darkens the strip, and most of all its right end, where the
+// account stands. The image is at least 80rem wide and starts at the left, so the name stays over space in a
+// narrow window. White has a contrast of more than 13 to 1 with the strip under the name and under the account.
 .header {
   display: flex;
   align-items: center;
   height: 2rem;
   padding: 0 tokens.$space-3;
-  background: uswds.color("base-lightest");
-  color: tokens.$ink;
+  background:
+    linear-gradient(to left, rgba($night, 0.8), rgba($night, 0.35) 18rem),
+    $night url("/assets/welcome/nisar.webp") left top / max(100%, 80rem) auto no-repeat;
 }
 
 .header-name {
@@ -16,5 +23,11 @@
   align-items: center;
   gap: tokens.$space-2;
   margin: 0;
+  color: uswds.color("white");
   font-size: 0.875rem;
+}
+
+// The line of the keyboard focus is white on the dark bar.
+.header button:not([disabled]):focus-visible {
+  outline-color: uswds.color("white");
 }

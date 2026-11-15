@@ -12,6 +12,8 @@ test("the title bar holds the name, the version beside it and the account at its
   const versionButton = screen.getByRole("button", { name: `Version ${version}` });
   const account = screen.getByRole("button", { name: "Earthdata: not signed in" });
   expect(name.parentElement).toBe(bar);
+  // The bar is dark, so the mark beside the name is the white one.
+  expect(name.querySelector("img")?.getAttribute("src")).toBe("/assets/lynkeus-mark-white.svg");
   expect(name.contains(versionButton)).toBe(false);
   expect(name.compareDocumentPosition(versionButton) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   expect(versionButton.compareDocumentPosition(account) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();

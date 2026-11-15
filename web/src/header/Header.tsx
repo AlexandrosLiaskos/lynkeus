@@ -3,13 +3,13 @@ import { VersionNotice } from "./notice/VersionNotice";
 
 /**
  * The title bar: the name of the application, its version beside the name and, at its right end, the account of
- * the visitor.
+ * the visitor. It stands on a dark strip of the image of the welcome screen, so its mark and its texts are white.
  */
 export function Header({ account }: { account?: ReactNode }) {
   return (
     <header className="header">
       <h1 className="header-name">
-        <img src="/assets/lynkeus-mark.svg" alt="" width="23" height="24" />
+        <img src="/assets/lynkeus-mark-white.svg" alt="" width="23" height="24" />
         Lynkeus
       </h1>
       <VersionNotice />
