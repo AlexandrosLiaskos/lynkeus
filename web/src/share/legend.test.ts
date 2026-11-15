@@ -1,6 +1,7 @@
 import { beforeEach, expect, test } from "vitest";
 import { colourScale } from "../contents/colours";
 import { displayStore, setDisplay } from "../contents/state";
+import { inundation } from "../contents/testClasses";
 import type { LayerDescription } from "../shared/layer";
 import { mapLayersStore } from "../shared/mapLayers";
 import { pictureLegend, visibleLayers } from "./legend";
@@ -89,4 +90,20 @@ test("a scale of classes with more than ten values lists ten and says that the c
   const legend = pictureLegend({ ...MASK, range: [0, 24] });
   expect(legend.classes).toHaveLength(10);
   expect(legend.note).toBe("The colours repeat every ten values.");
+});
+
+test("the legend of a layer of classes lists its classes by their names, in their colours", () => {
+  const classes = inundation();
+  setDisplay(classes, { colours: "viridis", range: [0, 10] });
+  expect(pictureLegend(classes)).toEqual({
+    title: "Wetland inundation, 21 Oct 2026",
+    caption: "Wetland inundation class",
+    ramp: null,
+    classes: [
+      { colour: "#ececee", label: "Not inundated" },
+      { colour: "#151b73", label: "Open water" },
+      { colour: "#42e9f5", label: "Inundated vegetation" },
+    ],
+    note: null,
+  });
 });

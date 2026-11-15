@@ -111,6 +111,60 @@ test.each([
   expect(isLayerDescription({ ...LAYER, ...change })).toBe(false);
 });
 
+/** A result of the three classes of the wetland inundation map, with the colours of its method. */
+const CLASSES = [
+  { value: 1, name: "Not inundated", colour: "#ececee" },
+  { value: 2, name: "Open water", colour: "#151b73" },
+  { value: 3, name: "Inundated vegetation", colour: "#42e9f5" },
+];
+const OF_CLASSES = {
+  ...LAYER,
+  kind: "result",
+  layer: null,
+  unit: "1",
+  range: [1, 3],
+  colours: "classes",
+  method: "Reference of the method",
+  classes: CLASSES,
+};
+
+test("a result may carry a table of classes, and a layer may not", () => {
+  expect(isLayerDescription(OF_CLASSES)).toBe(true);
+  expect(isLayerDescription({ ...OF_CLASSES, classes: null })).toBe(true);
+  expect(isLayerDescription({ ...OF_CLASSES, classes: undefined })).toBe(true);
+  expect(isLayerDescription({ ...OF_CLASSES, kind: "layer", layer: "HHHH", method: null })).toBe(false);
+});
+
+test.each([
+  ["it is empty", []],
+  ["it has one class", CLASSES.slice(0, 1)],
+  ["two classes have one value", [CLASSES[0], CLASSES[0], CLASSES[2]]],
+  ["the values do not increase", [CLASSES[1], CLASSES[0], CLASSES[2]]],
+  ["a value is not a whole number", [{ ...CLASSES[0], value: 0.5 }, CLASSES[1], CLASSES[2]]],
+  ["a value is below zero", [{ ...CLASSES[0], value: -1 }, CLASSES[1], CLASSES[2]]],
+  ["a name is empty", [{ ...CLASSES[0], name: "" }, CLASSES[1], CLASSES[2]]],
+  ["a colour has capital letters", [{ ...CLASSES[0], colour: "#ECECEE" }, CLASSES[1], CLASSES[2]]],
+  ["a colour has no #", [{ ...CLASSES[0], colour: "ececee" }, CLASSES[1], CLASSES[2]]],
+  ["it is not a list", "classes"],
+])("a result is rejected when its table of classes %s", (_reason, classes) => {
+  expect(isLayerDescription({ ...OF_CLASSES, classes })).toBe(false);
+});
+
+test("the range of a result of classes runs from its lowest to its highest class", () => {
+  expect(isLayerDescription({ ...OF_CLASSES, range: [0, 3] })).toBe(false);
+  expect(isLayerDescription({ ...OF_CLASSES, range: [1, 4] })).toBe(false);
+});
+
+test("the server gives the table of classes the same form, for a result only", () => {
+  const layers = readFileSync("../api/src/lynkeus/layers.py", "utf8");
+  expect(layers).toContain("    value: int = Field(ge=0, strict=True)\n");
+  expect(layers).toContain('    colour: str = Field(pattern=r"^#[0-9a-f]{6}$")\n');
+  expect(layers).toContain("    classes: tuple[LayerClass, ...] | None = None\n");
+  expect(layers).toContain('                raise ValueError("only a result may have classes")\n');
+  expect(layers).toContain("            if len(values) < 2 or values != sorted(set(values)):\n");
+  expect(layers).toContain("            if self.range != (values[0], values[-1]):\n");
+});
+
 test("a complete layer request is accepted", () => {
   expect(isLayerRequest(REQUEST)).toBe(true);
 });

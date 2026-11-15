@@ -1,5 +1,6 @@
 import { expect, test } from "vitest";
-import { formatNumber, formatUnit, legendTicks, rampImage } from "./legendValues";
+import { formatNumber, formatUnit, legendTicks, rampImage, tableLegend } from "./legendValues";
+import { INUNDATION_CLASSES } from "./testClasses";
 
 test("a number is written with three significant digits, and as a whole number from one thousand on", () => {
   expect(formatNumber(0)).toBe("0");
@@ -56,4 +57,12 @@ test("a scale of classes is drawn as bands", () => {
   expect(rampImage(["#1f77b4", "#ff7f0e"], "classes")).toBe(
     "linear-gradient(to top, #1f77b4 0% 50%, #ff7f0e 50% 100%)",
   );
+});
+
+test("the legend of a layer of classes lists each class with its colour and its name, in the order of their values", () => {
+  expect(tableLegend(INUNDATION_CLASSES)).toEqual([
+    { colour: "#ececee", label: "Not inundated" },
+    { colour: "#151b73", label: "Open water" },
+    { colour: "#42e9f5", label: "Inundated vegetation" },
+  ]);
 });

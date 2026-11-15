@@ -10,7 +10,8 @@ The values are 32-bit real numbers, and a cell without data holds ``nan``.
 The file has tiles of 512 cells and reduced copies (overviews) made by
 Lynkeus from the values at full resolution: by averaging for a quantity, by
 the most frequent value for classes, and, for decibels of a power, as the
-decibels of the mean of the linear power.
+decibels of the mean of the linear power. A cell of a reduced copy whose
+cells hold no data holds no data.
 """
 
 import json
@@ -39,6 +40,9 @@ type Rule = Literal["percentiles", "symmetric", "extremes"]
 
 BLOCK = 512
 """The side of a tile of the file, in cells."""
+
+MOST_CLASS = 2**31 - 1
+"""The largest value of a layer that is reduced by the most frequent value: the largest 32-bit whole number."""
 
 LOWEST_PERCENT = 2.0
 HIGHEST_PERCENT = 98.0
@@ -325,8 +329,9 @@ def write_layer(
     averaged : bool, optional
         Whether the reduced copies are made by averaging. Averaging suits a
         quantity; for a power, the values averaged must be linear, not in
-        decibels. ``False`` suits classes: a cell of a reduced copy then takes
-        the most frequent value.
+        decibels. ``False`` suits classes, whose values are whole numbers from
+        0: a cell of a reduced copy then takes the most frequent value of the
+        cells that it covers and that hold data.
     decibels : bool, optional
         Whether the values are decibels of a power. The reduced copies are
         then the decibels of the mean of the linear power, so that a reduced
@@ -346,8 +351,9 @@ def write_layer(
     ValueError
         If the array does not fit the grid, ``name`` has another form,
         ``decibels`` is asked without ``averaged``, ``classes`` are given with
-        ``averaged``, or the fields do not make a layer description, for
-        example when a result is given the name of a layer.
+        ``averaged``, values that are not whole numbers from 0 are not to be
+        averaged, or the fields do not make a layer description, for example
+        when a result is given the name of a layer.
     """
     if values.shape != (grid.height, grid.width):
         raise ValueError("the array does not fit the grid")
@@ -355,6 +361,8 @@ def write_layer(
         raise ValueError("values in decibels are reduced by averaging their power")
     if classes is not None and averaged:
         raise ValueError("classes are reduced by taking the most frequent value, not by averaging")
+    if not averaged and not _whole_from_zero(values):
+        raise ValueError("values that are reduced by the most frequent value must be whole numbers from 0")
     if not _NAME.fullmatch(name):
         raise ValueError("the name of the files must hold lower-case letters, digits and hyphens")
     values = np.asarray(values, dtype=np.float32)
@@ -433,7 +441,12 @@ def _write_geotiff(
                 **({} if description.method is None else {"method": description.method}),
                 **({} if description.classes is None else {"classes": _classes_tag(description.classes)}),
             )
-        source = _with_copies_of_the_mean_power(values, grid, plain, others) if decibels else None
+        if decibels:
+            source = _with_copies_of_the_mean_power(values, grid, plain, others)
+        elif not averaged:
+            source = _with_copies_of_the_most_frequent_value(values, grid, plain, others)
+        else:
+            source = None
         if source is None:
             resampling = "AVERAGE" if averaged else "MODE"
             _copy_as_cog(plain, path, OVERVIEWS="IGNORE_EXISTING", OVERVIEW_RESAMPLING=resampling)
@@ -522,7 +535,7 @@ def _with_copies_of_the_mean_power(
         levels = len(source.overviews(1))
     if levels == 0:
         return None
-    overviews = ""
+    files: list[Path] = []
     for level in range(levels):
         with rasterio.open(reduced, overview_level=level) as source:
             mean: NDArray[np.float32] = source.read(1)
@@ -534,10 +547,86 @@ def _with_copies_of_the_mean_power(
         others.append(file)
         with rasterio.open(file, "w", **_plain(size)) as target:
             target.write(copy_in_decibels, 1)
-        overviews += (
-            f'<Overview><SourceFilename relativeToVRT="1">{file.name}</SourceFilename>'
-            "<SourceBand>1</SourceBand></Overview>"
-        )
+        files.append(file)
+    return _with_overviews(plain, virtual, files)
+
+
+def _whole_from_zero(values: NDArray[np.float32]) -> bool:
+    """Tell whether every value that is not ``nan`` is a whole number from 0 that a 32-bit whole number holds."""
+    valid = values[~np.isnan(values)]
+    return bool(((valid >= 0) & (valid <= MOST_CLASS) & (valid == np.floor(valid))).all())
+
+
+
+def _with_copies_of_the_most_frequent_value(
+    values: NDArray[np.float32], grid: Grid, plain: Path, others: list[Path]
+) -> Path | None:
+    """Prepare the reduced copies of classes as the most frequent value of the cells that each cell covers.
+
+    GDAL writes 0, and not ``nan``, in a cell of a reduced copy of 32-bit real numbers that it makes by the most
+    frequent value from cells that all hold ``nan`` (GDAL 3.12.2), and 0 can be a class. The values are therefore
+    written as 32-bit whole numbers with -1 for no data, which the COG driver reduces by the most frequent value of
+    the cells that hold data. Each reduced copy is turned back into 32-bit real numbers with ``nan`` for no data and
+    joined to the plain file of the values through a virtual file (VRT), as for the mean power.
+
+    Parameters
+    ----------
+    values : numpy.ndarray
+        The values, whole numbers from 0. A cell without data holds ``nan``.
+    grid : Grid
+        The grid of the values.
+    plain : pathlib.Path
+        The plain file that holds the values and the metadata.
+    others : list of pathlib.Path
+        Receives every file that this function makes, so that the caller removes them.
+
+    Returns
+    -------
+    pathlib.Path or None
+        The virtual file from which the COG driver copies the values with these reduced copies, or None when the
+        grid is so small that the file has no reduced copy.
+    """
+    whole, reduced, virtual = (plain.with_name(f"{plain.name}.{part}") for part in ("whole.tif", "mode.tif", "vrt"))
+    others += [whole, reduced, virtual]
+    numbers = np.full(values.shape, -1, np.int32)
+    present = ~np.isnan(values)
+    numbers[present] = values[present]
+    with rasterio.open(whole, "w", **{**_plain(grid), "dtype": "int32", "nodata": -1}) as target:
+        target.write(numbers, 1)
+    copy(
+        whole,
+        reduced,
+        driver="COG",
+        BLOCKSIZE=str(BLOCK),
+        COMPRESS="DEFLATE",
+        OVERVIEWS="IGNORE_EXISTING",
+        OVERVIEW_RESAMPLING="MODE",
+    )
+    with rasterio.open(reduced) as source:
+        levels = len(source.overviews(1))
+    if levels == 0:
+        return None
+    files: list[Path] = []
+    for level in range(levels):
+        with rasterio.open(reduced, overview_level=level) as source:
+            counted: NDArray[np.int32] = source.read(1)
+            size = _grid(source)
+        classes = counted.astype(np.float32)
+        classes[counted == -1] = np.nan
+        file = plain.with_name(f"{plain.name}.{level}.tif")
+        others.append(file)
+        with rasterio.open(file, "w", **_plain(size)) as target:
+            target.write(classes, 1)
+        files.append(file)
+    return _with_overviews(plain, virtual, files)
+
+
+def _with_overviews(plain: Path, virtual: Path, files: Sequence[Path]) -> Path:
+    """Write a virtual file of the plain file of the values that names the files given as its reduced copies."""
+    overviews = "".join(
+        f'<Overview><SourceFilename relativeToVRT="1">{file.name}</SourceFilename><SourceBand>1</SourceBand></Overview>'
+        for file in files
+    )
     copy(plain, virtual, driver="VRT")
     text = virtual.read_text(encoding="utf-8")
     if text.count("</VRTRasterBand>") != 1:

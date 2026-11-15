@@ -1,6 +1,16 @@
 import { beforeEach, expect, test } from "vitest";
 import type { LayerDescription } from "../shared/layer";
-import { displayOf, displayStore, firstDisplay, resetDisplay, selectedLayerStore, setDisplay } from "./state";
+import {
+  copyDisplay,
+  displayOf,
+  displayStore,
+  firstDisplay,
+  pasteDisplay,
+  resetDisplay,
+  selectedLayerStore,
+  setDisplay,
+} from "./state";
+import { inundation } from "./testClasses";
 
 const LAYER: LayerDescription = {
   id: "gcov-hhhh-20261021",
@@ -50,4 +60,28 @@ test("a layer returns to its first display", () => {
 
 test("no layer is selected at the start", () => {
   expect(selectedLayerStore.get()).toBeNull();
+});
+
+test("between a layer of classes and another layer, Paste display passes only the colour of the cells without data", () => {
+  const classes = inundation();
+  setDisplay(LAYER, { colours: "viridis", range: [0, 1], noDataColour: "#ff0000", opacity: 0.5 });
+  copyDisplay(LAYER);
+  pasteDisplay(classes);
+  expect(displayOf(classes)).toEqual({
+    visible: true,
+    opacity: 1,
+    range: [1, 3],
+    colours: "classes",
+    noDataColour: "#ff0000",
+  });
+  setDisplay(classes, { noDataColour: "#00ff00" });
+  copyDisplay(classes);
+  pasteDisplay(LAYER);
+  expect(displayOf(LAYER)).toEqual({
+    visible: true,
+    opacity: 0.5,
+    range: [0, 1],
+    colours: "viridis",
+    noDataColour: "#00ff00",
+  });
 });

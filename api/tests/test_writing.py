@@ -186,6 +186,8 @@ def write_classes(folder: Path, **changes: Any) -> tuple[LayerDescription, NDArr
     power, grid = read_layer(BACKSCATTER)
     values = (np.digitize(power, np.quantile(power, [0.3, 0.7])) + 1).astype(np.float32)
     values[power > np.quantile(power, 0.99)] = np.nan
+    # Six blocks of two by two cells hold no data at all.
+    values[:4, :6] = np.nan
     fields: dict[str, Any] = {
         "kind": "result",
         "layer": None,
@@ -233,12 +235,48 @@ def test_reduced_copy_of_a_result_of_classes_holds_classes_and_takes_the_most_fr
     assert copy.shape == (280, 300)
     assert set(np.unique(copy[~np.isnan(copy)])) == {1.0, 2.0, 3.0}
     parts = blocks(values)
+    # A cell whose four cells hold no data holds no data, and not 0.
+    empty = np.isnan(parts).all(axis=2)
+    assert empty.sum() >= 6
+    assert np.isnan(copy[empty]).all()
     counted = np.stack([(parts == value).sum(axis=2) for value in (1, 2, 3)], axis=2)
     most = counted.max(axis=2)
     # Where one class fills more cells of a block of two by two than any other, the reduced copy holds it.
     alone = (most >= 3) | ((most == 2) & ((counted == 2).sum(axis=2) == 1))
     assert alone.sum() > 50_000
     assert np.array_equal(copy[alone], (counted.argmax(axis=2) + 1).astype(np.float32)[alone])
+
+
+def test_reduced_copy_of_whole_numbers_holds_no_data_where_its_cells_hold_none_and_keeps_the_class_0(
+    tmp_path: Path,
+) -> None:
+    # A mask of valid samples: 0 and 1, with no data in its upper left corner and in every eleventh row.
+    power, grid = read_layer(BACKSCATTER)
+    mask = (power > np.median(power)).astype(np.float32)
+    mask[:100, :100] = np.nan
+    mask[::11] = np.nan
+    write(tmp_path, mask, grid, legend="extremes", colours="tab10", averaged=False)
+    copy = reduced_copy(tmp_path / "gcov-hhhh-20261021.tif")
+    parts = blocks(mask)
+    empty = np.isnan(parts).all(axis=2)
+    assert empty.sum() >= 2500
+    assert np.isnan(copy[empty]).all()
+    assert set(np.unique(copy[~empty])) == {0.0, 1.0}
+    only_zero = (parts == 0).all(axis=2)
+    assert only_zero.sum() > 1000
+    assert (copy[only_zero] == 0).all()
+    # Three cells of the class 0 and one of the class 1 make a cell of the class 0.
+    mostly_zero = ((parts == 0).sum(axis=2) == 3) & ((parts == 1).sum(axis=2) == 1)
+    assert mostly_zero.sum() > 1000
+    assert (copy[mostly_zero] == 0).all()
+
+
+def test_values_that_are_not_classes_are_not_reduced_by_the_most_frequent_value(tmp_path: Path) -> None:
+    power, grid = read_layer(BACKSCATTER)
+    for values in (power, -np.ones_like(power)):
+        with pytest.raises(ValueError, match="whole numbers from 0"):
+            write(tmp_path, values, grid, averaged=False)
+    assert list(tmp_path.iterdir()) == []
 
 
 def test_layer_without_classes_has_the_record_that_it_had(tmp_path: Path) -> None:
