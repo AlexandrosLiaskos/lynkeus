@@ -49,6 +49,7 @@ jobs:
         run: |
           npm run format
           npm run lint
+          npm run style
       - name: Types
         run: npm run types
       - name: Tests

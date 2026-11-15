@@ -6,7 +6,21 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import tseslint from "typescript-eslint";
 
 export default defineConfig(
-  globalIgnores(["dist", "public", "eslint.config.js"]),
+  // The browser checks of the folder e2e are checked by the TypeScript compiler with their own settings.
+  globalIgnores([
+    "dist",
+    "public",
+    "eslint.config.js",
+    "stylelint.config.js",
+    "playwright.config.ts",
+    "e2e",
+    "playwright-report",
+    "test-results",
+    "findings",
+    "lighthouse-report",
+    ".lighthouseci",
+    "bundle-map",
+  ]),
   js.configs.recommended,
   tseslint.configs.strictTypeChecked,
   reactHooks.configs.flat.recommended,
