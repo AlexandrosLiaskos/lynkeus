@@ -1,0 +1,156 @@
+{
+ "lynkeus": "0.1.0",
+ "numpy": "2.5.4",
+ "sample_files": {
+  "gcov-hhhh-20261021.tif": {
+   "sha256": "e808a7bfed69c0bd1eabc38faae539bae7aaadd81c86b1bf963900c996dffb84",
+   "sha256_in_samples_json": "e808a7bfed69c0bd1eabc38faae539bae7aaadd81c86b1bf963900c996dffb84"
+  },
+  "gcov-hhhh-20261102.tif": {
+   "sha256": "f9d950ad3b30c07d6d77a3f63d1dd4c106fa1b775982c0834c35e715ac91ac43",
+   "sha256_in_samples_json": "f9d950ad3b30c07d6d77a3f63d1dd4c106fa1b775982c0834c35e715ac91ac43"
+  },
+  "gunw-coherence-20261009-20261021.tif": {
+   "sha256": "e02cb42feeae25a9420c6298a98b59583b0f3a3e70cd0cba5241be484ea1de81",
+   "sha256_in_samples_json": "e02cb42feeae25a9420c6298a98b59583b0f3a3e70cd0cba5241be484ea1de81"
+  }
+ },
+ "runs": {
+  "backscatter-state-20261021": {
+   "tool": "backscatter-state",
+   "layers": [
+    "HHHH"
+   ],
+   "cells": 14982384,
+   "cells_with_a_value": 14316413,
+   "cells_without_data": 665971,
+   "sha256_of_values": "3b7f2dfab1694b478941937522cb512c4a72c8d496d901db6c57a75c86424c68",
+   "sha256_recorded": "3b7f2dfab1694b478941937522cb512c4a72c8d496d901db6c57a75c86424c68",
+   "sha256_recorded_is_in_d17_comparison_json": true,
+   "range": [
+    -17.824283599853516,
+    -0.8974864482879639
+   ],
+   "range_recorded": [
+    -17.824283599853516,
+    -0.8974864482879639
+   ],
+   "quantity_unit_colours_method_equal": true,
+   "cells_that_differ_from_the_recorded_array": 0,
+   "bit_identical_to_the_recorded_array": true,
+   "sha256_equal": true,
+   "range_equal": true,
+   "source_program_array": "db-20261021.npy",
+   "source_program_shape_and_type": [
+    [
+     3972,
+     3772
+    ],
+    "float32"
+   ],
+   "cells_with_a_value_in_one_result_only": 0,
+   "largest_difference_from_the_source_program": 0.0,
+   "bit_identical_to_the_source_program": true
+  },
+  "backscatter-state-20261102": {
+   "tool": "backscatter-state",
+   "layers": [
+    "HHHH"
+   ],
+   "cells": 14982384,
+   "cells_with_a_value": 14316416,
+   "cells_without_data": 665968,
+   "sha256_of_values": "8d32c8078a047d2cfccf4d8c7a9df82f91dd305d0b3663e7204fa0e3604e5c65",
+   "sha256_recorded": "8d32c8078a047d2cfccf4d8c7a9df82f91dd305d0b3663e7204fa0e3604e5c65",
+   "sha256_recorded_is_in_d17_comparison_json": true,
+   "range": [
+    -18.472387313842773,
+    -0.731230616569519
+   ],
+   "range_recorded": [
+    -18.472387313842773,
+    -0.731230616569519
+   ],
+   "quantity_unit_colours_method_equal": true,
+   "cells_that_differ_from_the_recorded_array": 0,
+   "bit_identical_to_the_recorded_array": true,
+   "sha256_equal": true,
+   "range_equal": true,
+   "source_program_array": "db-20261102.npy",
+   "source_program_shape_and_type": [
+    [
+     3972,
+     3772
+    ],
+    "float32"
+   ],
+   "cells_with_a_value_in_one_result_only": 0,
+   "largest_difference_from_the_source_program": 0.0,
+   "bit_identical_to_the_source_program": true
+  },
+  "backscatter-change-20261021-20261102": {
+   "tool": "backscatter-change",
+   "layers": [
+    "HHHH",
+    "HHHH"
+   ],
+   "cells": 14982384,
+   "cells_with_a_value": 14316405,
+   "cells_without_data": 665979,
+   "sha256_of_values": "0333462a5e702218b06d47505367ef8b480f7532e8a9620d75939855875591a0",
+   "sha256_recorded": "0333462a5e702218b06d47505367ef8b480f7532e8a9620d75939855875591a0",
+   "sha256_recorded_is_in_d17_comparison_json": true,
+   "range": [
+    -7.168050689697264,
+    7.168050689697264
+   ],
+   "range_recorded": [
+    -7.168050689697264,
+    7.168050689697264
+   ],
+   "quantity_unit_colours_method_equal": true,
+   "cells_that_differ_from_the_recorded_array": 0,
+   "bit_identical_to_the_recorded_array": true,
+   "sha256_equal": true,
+   "range_equal": true,
+   "source_program_array": "ratio-20261021-20261102.npy",
+   "source_program_shape_and_type": [
+    [
+     3972,
+     3772
+    ],
+    "float32"
+   ],
+   "cells_with_a_value_in_one_result_only": 0,
+   "largest_difference_from_the_source_program": 0.0,
+   "bit_identical_to_the_source_program": true
+  },
+  "coherence-state-20261009-20261021": {
+   "tool": "coherence-state",
+   "layers": [
+    "wrappedInterferogram/HH/coherenceMagnitude"
+   ],
+   "cells": 3743710,
+   "cells_with_a_value": 3579092,
+   "cells_without_data": 164618,
+   "sha256_of_values": "f29816600880f897576f065a85663c6b220de092cd3ea930577b89094a104b4d",
+   "sha256_recorded": "f29816600880f897576f065a85663c6b220de092cd3ea930577b89094a104b4d",
+   "sha256_recorded_is_in_d17_comparison_json": true,
+   "range": [
+    0.0,
+    1.0
+   ],
+   "range_recorded": [
+    0.0,
+    1.0
+   ],
+   "quantity_unit_colours_method_equal": true,
+   "cells_that_differ_from_the_recorded_array": 0,
+   "bit_identical_to_the_recorded_array": true,
+   "sha256_equal": true,
+   "range_equal": true
+  }
+ },
+ "sample_files_unchanged": true,
+ "all_equal": true
+}

@@ -1,0 +1,4122 @@
+{
+ "started": "2026-11-15T01:57:14Z",
+ "products": {
+  "gcov_20261021": {
+   "sample": "gcov-hhhh-20261021.tif",
+   "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+   "layer": "/science/LSAR/GCOV/grids/frequencyA/HHHH",
+   "cmr": {
+    "GranuleUR": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "h5_urls": [
+     "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GCOV_V1/NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001/NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+     "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GCOV_V1/NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001/NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001_QA_STATS.h5"
+    ],
+    "PGEVersionClass": {
+     "PGEName": "GCOV_L_PGE",
+     "PGEVersion": "R05.03.2"
+    },
+    "AdditionalAttributes": {
+     "ASCENDING_DESCENDING": [
+      "DESCENDING"
+     ],
+     "FRAME_NUMBER": [
+      "67"
+     ],
+     "FREQUENCIES": [
+      "A",
+      "B"
+     ],
+     "FREQUENCY_A_POLARIZATION": [
+      "HH",
+      "HV"
+     ],
+     "FREQUENCY_A_POLARIZATION_CONCAT": [
+      "HH+HV"
+     ],
+     "FREQUENCY_A_RANGE_BANDWIDTH": [
+      "40"
+     ],
+     "FREQUENCY_B_POLARIZATION": [
+      "HH",
+      "HV"
+     ],
+     "FREQUENCY_B_POLARIZATION_CONCAT": [
+      "HH+HV"
+     ],
+     "FREQUENCY_B_RANGE_BANDWIDTH": [
+      "5"
+     ],
+     "FULL_FRAME": [
+      "TRUE"
+     ],
+     "JOINT_OBSERVATION": [
+      "TRUE"
+     ],
+     "ORBIT_TYPE": [
+      "MOE"
+     ],
+     "PROCESSING_CENTER": [
+      "JPL"
+     ],
+     "PROCESSING_LEVEL": [
+      "L2"
+     ],
+     "PRODUCTION_PIPELINE": [
+      "PR"
+     ],
+     "PRODUCT_TYPE": [
+      "GCOV"
+     ],
+     "PRODUCT_TYPE_DESC": [
+      "Geocoded Polarimetric Covariance"
+     ],
+     "PRODUCT_VERSION": [
+      "1.0.20"
+     ],
+     "RANGE_BANDWIDTH_CONCAT": [
+      "40+5"
+     ],
+     "STACK_ID": [
+      "141_D_067"
+     ],
+     "TRACK_NUMBER": [
+      "141"
+     ]
+    },
+    "files": [
+     [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+      5758779392
+     ],
+     [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001_LATLON.png",
+      3494420
+     ],
+     [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001_NATIVE.png",
+      4188583
+     ],
+     [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001_NATIVE_A_HHHH.png",
+      1440235
+     ],
+     [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001_NATIVE_A_HVHV.png",
+      1375327
+     ],
+     [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001_NATIVE_B_HHHH.png",
+      819885
+     ],
+     [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001_NATIVE_B_HVHV.png",
+      814969
+     ],
+     [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5.iso.xml",
+      117217
+     ],
+     [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001_QA_REPORT.pdf",
+      439553
+     ],
+     [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001_QA_STATS.h5",
+      72857
+     ],
+     [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001_QA_SUMMARY.csv",
+      1441
+     ],
+     [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001_LATLON.kml",
+      571
+     ],
+     [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001_NATIVE.kml",
+      570
+     ],
+     [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001_NATIVE_A_HHHH.kml",
+      577
+     ],
+     [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001_NATIVE_A_HVHV.kml",
+      577
+     ],
+     [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001_NATIVE_B_HHHH.kml",
+      577
+     ],
+     [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001_NATIVE_B_HVHV.kml",
+      577
+     ],
+     [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.rc.yaml",
+      6019
+     ]
+    ],
+    "ProductionDateTime": "2026-11-08T02:38:28.000000Z",
+    "CollectionReference": {
+     "ShortName": "NISAR_L2_GCOV_V1",
+     "Version": "1"
+    }
+   },
+   "url": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GCOV_V1/NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001/NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+   "file_size_bytes": 5758779392,
+   "frequencyA_members": {
+    "HHHH": {
+     "dtype": "float32",
+     "shape": [
+      35640,
+      36072
+     ],
+     "chunks": [
+      512,
+      512
+     ],
+     "compression": "gzip",
+     "compression_opts": 1,
+     "attrs": {
+      "DIMENSION_LIST": [
+       [
+        "<HDF5 object reference>"
+       ],
+       [
+        "<HDF5 object reference>"
+       ]
+      ],
+      "_FillValue": NaN,
+      "description": "Covariance between HH and HH",
+      "grid_mapping": "projection",
+      "long_name": "Geocoded polarimetric covariance term HHHH",
+      "max_value": 51839.09375,
+      "mean_value": 0.19250288605690002,
+      "min_value": 1.6706226695065618e-16,
+      "sample_stddev": 3.603513717651367,
+      "units": "1",
+      "valid_min": 0.0
+     },
+     "fillvalue": "np.float32(0.0)"
+    },
+    "HVHV": {
+     "dtype": "float32",
+     "shape": [
+      35640,
+      36072
+     ],
+     "chunks": [
+      512,
+      512
+     ],
+     "compression": "gzip",
+     "compression_opts": 1,
+     "attrs": {
+      "DIMENSION_LIST": [
+       [
+        "<HDF5 object reference>"
+       ],
+       [
+        "<HDF5 object reference>"
+       ]
+      ],
+      "_FillValue": NaN,
+      "description": "Covariance between HV and HV",
+      "grid_mapping": "projection",
+      "long_name": "Geocoded polarimetric covariance term HVHV",
+      "max_value": 10332.2236328125,
+      "mean_value": 0.04823436588048935,
+      "min_value": 1.9525376674910054e-17,
+      "sample_stddev": 0.46780943870544434,
+      "units": "1",
+      "valid_min": 0.0
+     },
+     "fillvalue": "np.float32(0.0)"
+    },
+    "inputDataExceptionMask": {
+     "dtype": "uint16",
+     "shape": [
+      35640,
+      36072
+     ],
+     "chunks": [
+      512,
+      512
+     ],
+     "compression": "gzip",
+     "compression_opts": 9,
+     "attrs": {
+      "DIMENSION_LIST": [
+       [
+        "<HDF5 object reference>"
+       ],
+       [
+        "<HDF5 object reference>"
+       ]
+      ],
+      "_FillValue": 65535,
+      "description": "Bitwise OR of input data exception codes for each image pixel (0: no anomaly, 2: NISAR LSAR qFSP-H1 sample slip). Also includes OR of validity mask bits, where each bit is set on for fully-focused data or off for partially focused or missing data (256:HH, 512:HV, 1024:VH, 2048:VV, 4096:LH, 8192:LV, 16384:RH, 32768:RV)",
+      "grid_mapping": "projection",
+      "raw_valid_pulse_fraction_hh": 1.0,
+      "raw_valid_pulse_fraction_hv": 1.0,
+      "rslc_valid_pixel_fraction_hh": 0.9671694446025362,
+      "rslc_valid_pixel_fraction_hv": 0.9671694446025362,
+      "valid_min": 0
+     },
+     "fillvalue": "np.uint16(0)"
+    },
+    "listOfCovarianceTerms": {
+     "dtype": "|S4",
+     "shape": [
+      2
+     ],
+     "chunks": null,
+     "compression": null,
+     "compression_opts": null,
+     "attrs": {
+      "description": "List of processed covariance terms"
+     },
+     "fillvalue": "np.bytes_(b'')"
+    },
+    "listOfPolarizations": {
+     "dtype": "|S2",
+     "shape": [
+      2
+     ],
+     "chunks": null,
+     "compression": null,
+     "compression_opts": null,
+     "attrs": {
+      "description": "List of processed polarization layers with frequency A"
+     },
+     "fillvalue": "np.bytes_(b'')"
+    },
+    "mask": {
+     "dtype": "uint8",
+     "shape": [
+      35640,
+      36072
+     ],
+     "chunks": [
+      512,
+      512
+     ],
+     "compression": "gzip",
+     "compression_opts": 9,
+     "attrs": {
+      "DIMENSION_LIST": [
+       [
+        "<HDF5 object reference>"
+       ],
+       [
+        "<HDF5 object reference>"
+       ]
+      ],
+      "_FillValue": 255,
+      "description": "Mask indicating the subswath number associated with valid GCOV samples. A GCOV sample is only considered valid if it is generated from fully-focused radar samples. If at least one radar sample in the averaging set is partially focused or invalid, the corresponding mask pixel will contain the value 0. GCOV pixels outside of the radar acquisition extent are filled with the value 255",
+      "grid_mapping": "projection",
+      "long_name": "Valid samples subswath mask",
+      "valid_min": 0
+     },
+     "fillvalue": "np.uint8(0)"
+    },
+    "numberOfLooks": {
+     "dtype": "float32",
+     "shape": [
+      35640,
+      36072
+     ],
+     "chunks": [
+      512,
+      512
+     ],
+     "compression": "gzip",
+     "compression_opts": 1,
+     "attrs": {
+      "DIMENSION_LIST": [
+       [
+        "<HDF5 object reference>"
+       ],
+       [
+        "<HDF5 object reference>"
+       ]
+      ],
+      "_FillValue": NaN,
+      "description": "Number of averaged radar-grid pixels for covariance estimation",
+      "grid_mapping": "projection",
+      "long_name": "Number of radar looks",
+      "max_value": 14.073675155639648,
+      "mean_value": 4.5588459968566895,
+      "min_value": 1.253477877050102e-11,
+      "sample_stddev": 0.6649191975593567,
+      "units": "1",
+      "valid_min": 0.0
+     },
+     "fillvalue": "np.float32(0.0)"
+    },
+    "numberOfSubSwaths": {
+     "dtype": "uint8",
+     "shape": [],
+     "chunks": null,
+     "compression": null,
+     "compression_opts": null,
+     "attrs": {
+      "description": "Number of swaths of continuous imagery, due to transmit gaps",
+      "units": "1"
+     },
+     "fillvalue": "np.uint8(0)"
+    },
+    "projection": {
+     "dtype": "uint32",
+     "shape": [],
+     "chunks": null,
+     "compression": null,
+     "compression_opts": null,
+     "attrs": {
+      "description": "Product map grid projection: EPSG code, with additional projection information as HDF5 Attributes",
+      "ellipsoid": "WGS84",
+      "epsg_code": 32619,
+      "false_easting": 500000.0,
+      "false_northing": 0.0,
+      "grid_mapping_name": "transverse_mercator",
+      "inverse_flattening": 298.257223563,
+      "latitude_of_projection_origin": 0.0,
+      "longitude_of_central_meridian": -69.0,
+      "longitude_of_projection_origin": 0.0,
+      "scale_factor_at_central_meridian": 0.9996,
+      "semi_major_axis": 6378137.0,
+      "spatial_ref": "PROJCS[\"WGS 84 / UTM zone 19N\",GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",-69],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"32619\"]]",
+      "utm_zone_number": 19
+     },
+     "fillvalue": "np.uint32(0)"
+    },
+    "rtcGammaToSigmaFactor": {
+     "dtype": "float32",
+     "shape": [
+      35640,
+      36072
+     ],
+     "chunks": [
+      512,
+      512
+     ],
+     "compression": "gzip",
+     "compression_opts": 1,
+     "attrs": {
+      "DIMENSION_LIST": [
+       [
+        "<HDF5 object reference>"
+       ],
+       [
+        "<HDF5 object reference>"
+       ]
+      ],
+      "_FillValue": NaN,
+      "description": "Radiometric terrain correction (RTC) scaling factor to normalize backscatter coefficients from gamma0 to sigma0, accounting for local terrain",
+      "grid_mapping": "projection",
+      "long_name": "Radiometric terrain correction area normalization factor gamma0 to sigma0",
+      "max_value": 0.9989268183708191,
+      "mean_value": 0.7543511986732483,
+      "min_value": 0.001522007049061358,
+      "sample_stddev": 0.0695846900343895,
+      "units": "1",
+      "valid_min": 0.0
+     },
+     "fillvalue": "np.float32(0.0)"
+    },
+    "xCoordinateSpacing": {
+     "dtype": "float64",
+     "shape": [],
+     "chunks": null,
+     "compression": null,
+     "compression_opts": null,
+     "attrs": {
+      "description": "Nominal spacing in meters between consecutive pixels",
+      "long_name": "X coordinates spacing",
+      "units": "meters"
+     },
+     "fillvalue": "np.float64(0.0)"
+    },
+    "xCoordinates": {
+     "dtype": "float64",
+     "shape": [
+      36072
+     ],
+     "chunks": null,
+     "compression": null,
+     "compression_opts": null,
+     "attrs": {
+      "CLASS": "DIMENSION_SCALE",
+      "NAME": "",
+      "REFERENCE_LIST": [
+       [
+        "<HDF5 object reference>",
+        1
+       ],
+       [
+        "<HDF5 object reference>",
+        1
+       ],
+       [
+        "<HDF5 object reference>",
+        1
+       ],
+       [
+        "<HDF5 object reference>",
+        1
+       ],
+       [
+        "<HDF5 object reference>",
+        1
+       ],
+       [
+        "<HDF5 object reference>",
+        1
+       ]
+      ],
+      "description": "X coordinates in specified projection",
+      "long_name": "X coordinates of projection",
+      "pixel_coordinate_convention": "center",
+      "standard_name": "projection_x_coordinate",
+      "units": "meters"
+     },
+     "fillvalue": "np.float64(0.0)"
+    },
+    "yCoordinateSpacing": {
+     "dtype": "float64",
+     "shape": [],
+     "chunks": null,
+     "compression": null,
+     "compression_opts": null,
+     "attrs": {
+      "description": "Nominal spacing in meters between consecutive lines",
+      "long_name": "Y coordinates spacing",
+      "units": "meters"
+     },
+     "fillvalue": "np.float64(0.0)"
+    },
+    "yCoordinates": {
+     "dtype": "float64",
+     "shape": [
+      35640
+     ],
+     "chunks": null,
+     "compression": null,
+     "compression_opts": null,
+     "attrs": {
+      "CLASS": "DIMENSION_SCALE",
+      "NAME": "",
+      "REFERENCE_LIST": [
+       [
+        "<HDF5 object reference>",
+        0
+       ],
+       [
+        "<HDF5 object reference>",
+        0
+       ],
+       [
+        "<HDF5 object reference>",
+        0
+       ],
+       [
+        "<HDF5 object reference>",
+        0
+       ],
+       [
+        "<HDF5 object reference>",
+        0
+       ],
+       [
+        "<HDF5 object reference>",
+        0
+       ]
+      ],
+      "description": "Y coordinates in specified projection",
+      "long_name": "Y coordinates of projection",
+      "pixel_coordinate_convention": "center",
+      "standard_name": "projection_y_coordinate",
+      "units": "meters"
+     },
+     "fillvalue": "np.float64(0.0)"
+    }
+   },
+   "grids_members": {
+    "frequencyA": [
+     "HHHH",
+     "HVHV",
+     "inputDataExceptionMask",
+     "listOfCovarianceTerms",
+     "listOfPolarizations",
+     "mask",
+     "numberOfLooks",
+     "numberOfSubSwaths",
+     "projection",
+     "rtcGammaToSigmaFactor",
+     "xCoordinateSpacing",
+     "xCoordinates",
+     "yCoordinateSpacing",
+     "yCoordinates"
+    ],
+    "frequencyB": [
+     "HHHH",
+     "HVHV",
+     "inputDataExceptionMask",
+     "listOfCovarianceTerms",
+     "listOfPolarizations",
+     "mask",
+     "numberOfLooks",
+     "numberOfSubSwaths",
+     "projection",
+     "rtcGammaToSigmaFactor",
+     "xCoordinateSpacing",
+     "xCoordinates",
+     "yCoordinateSpacing",
+     "yCoordinates"
+    ]
+   },
+   "metadata": {
+    "/science/LSAR/identification": {
+     "absoluteOrbitNumber": {
+      "value": 6468,
+      "dtype": "uint32",
+      "description": "Absolute orbit number"
+     },
+     "boundingPolygon": {
+      "value": "POLYGON ((-71.7045933659548 43.9876556190283 480.581420899245,-71.8030808535525 43.7794425770702 275.454863972222,-71.8957425906337 43.5699028763893 362.422058399019,-71.9872845277878 43.3601673406544 478.397460933126,-72.0815657767743 43.151163522003 404.680248563501,-72.173600672548 42.9416903871608 424.251098833579,-72.2673208662642 42.7326932933341 313.513824464256,-72.3589880159744 42.5232721665421 286.22213718528,-72.4528128025007 42.3144379800787 101.351838425439,-72.5439059344376 42.1050148352265 40.0096857745592,-72.6340655770546 41.8954337461781 -0.310757565618939,-72.2985700960555 41.8144812471778 131.896163140786,-71.9804608058163 41.7366315733899 103.021271273734,-71.6741907539108 41.66066749635 107.237846034779,-71.3804381541672 41.58687470244 -30.7860584311797,-71.0939083340028 41.5140078571392 -30.5413589351303,-70.8154420598064 41.4423498846045 -30.1420814945161,-70.5439494578232 41.3716844225459 -15.518799834513,-70.2791685831835 41.3020011168481 -29.806670340994,-70.0199481438861 41.2330462589374 -29.7736467222685,-69.7659134244629 41.1647631689944 -30.1311883227261,-69.6679437218861 41.3721619228373 -29.3975505905888,-69.5693368088672 41.5794715834466 -29.034370010257,-69.4700806970554 41.786690418748 -28.6855603816409,-69.3701657280674 41.993815923123 -28.1770301236836,-69.2695870590499 42.2008487061337 -27.8787454756932,-69.1683337700335 42.4077868288314 -27.5559367223308,-69.0663962215001 42.6146280537046 -27.0842807177949,-68.9637677280354 42.8213727761154 -26.7054443962785,-68.8604402832959 43.0280194757961 -26.4830393688824,-68.7564027073755 43.2345658980415 -26.201745978664,-69.0178896586102 43.3052141933607 -26.3605255398527,-69.2847836063174 43.3765405175743 -26.3392662718769,-69.5576569722755 43.4486505273503 -26.4857240879824,-69.8371768233028 43.5216668335424 -26.5334110272225,-70.1241438292368 43.5957372241943 -26.6620521541866,-70.4187556121608 43.6708445428293 27.9804340182137,-70.7220574443708 43.7471806923709 137.714767457637,-71.0379579029517 43.825631351078 135.471526620948,-71.3626673222179 43.9051450758705 378.488099582812,-71.7045933659548 43.9876556190283 480.581420899245))",
+      "dtype": "|S2153",
+      "description": "OGR compatible WKT representing the bounding polygon of the image. Horizontal coordinates are WGS84 longitude followed by latitude (both in degrees), and the vertical coordinate is the height above the WGS84 ellipsoid in meters. The first point corresponds to the start-time, near-range radar coordinate, and the perimeter is traversed in counterclockwise order on the map. This means the traversal order in radar coordinates differs for left-looking and right-looking sensors. The polygon includes the four corners of the radar grid, with equal numbers of points distributed evenly in radar coordinates along each edge"
+     },
+     "compositeReleaseId": {
+      "value": "P05036",
+      "dtype": "|S6",
+      "description": "Unique version identifier of the science data production system"
+     },
+     "diagnosticModeFlag": {
+      "value": 0,
+      "dtype": "uint32",
+      "description": "Indicates if the radar operation mode is a diagnostic mode (1-2) or DBFed science (0): 0, 1, or 2"
+     },
+     "frameNumber": {
+      "value": 67,
+      "dtype": "uint16",
+      "description": "Frame number"
+     },
+     "granuleId": {
+      "value": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+      "dtype": "|S91",
+      "description": "Unique granule identification name"
+     },
+     "hasInputDataException": {
+      "value": 0,
+      "dtype": "uint8",
+      "description": "Indication of input data exceptions or anomalies present in this granule. Bitwise OR of instrument exception codes for all image pixels (0: no anomaly, 2: NISAR LSAR qFSP-H1 sample slip)"
+     },
+     "instrumentName": {
+      "value": "LSAR",
+      "dtype": "|S4",
+      "description": "Name of the instrument used to collect the remote sensing data provided in this product"
+     },
+     "isDithered": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "\"True\" if the pulse timing was varied (dithered) during acquisition, \"False\" otherwise"
+     },
+     "isFullFrame": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "\"True\" if the product fully covers a NISAR frame, \"False\" if partial coverage"
+     },
+     "isGeocoded": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "Flag to indicate if the product data is in the radar geometry (\"False\") or in the map geometry (\"True\")"
+     },
+     "isJointObservation": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "\"True\" if any portion of this product was acquired in a joint observation mode (e.g., L-band and S-band simultaneously), \"False\" otherwise"
+     },
+     "isMixedMode": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "\"True\" if this product is a composite of data collected in multiple radar modes, \"False\" otherwise"
+     },
+     "isUrgentObservation": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag indicating if observation is nominal (\"False\") or urgent (\"True\")"
+     },
+     "listOfFrequencies": {
+      "value": [
+       "A",
+       "B"
+      ],
+      "dtype": "|S1",
+      "description": "List of frequency layers available in the product"
+     },
+     "listOfObservationModes": {
+      "value": [
+       "(NOT SPECIFIED)"
+      ],
+      "dtype": "|S15",
+      "description": "List of observation modes of the L0B granules used to generate the input RSLC (one mode per L0B)"
+     },
+     "lookDirection": {
+      "value": "Left",
+      "dtype": "|S4",
+      "description": "Look direction, either \"Left\" or \"Right\""
+     },
+     "missionId": {
+      "value": "NISAR",
+      "dtype": "|S5",
+      "description": "Mission identifier"
+     },
+     "orbitPassDirection": {
+      "value": "Descending",
+      "dtype": "|S10",
+      "description": "Orbit direction, either \"Ascending\" or \"Descending\""
+     },
+     "plannedDatatakeId": {
+      "value": [
+       "dtid_2026294233748"
+      ],
+      "dtype": "|S18",
+      "description": "List of planned datatakes included in the product"
+     },
+     "plannedObservationId": {
+      "value": [
+       "oid_2026294234248"
+      ],
+      "dtype": "|S17",
+      "description": "List of planned observations included in the product"
+     },
+     "platformName": {
+      "value": "NISAR",
+      "dtype": "|S5",
+      "description": "Name of the platform used to collect the remote sensing data provided in this product"
+     },
+     "processingCenter": {
+      "value": "JPL",
+      "dtype": "|S3",
+      "description": "Data processing center"
+     },
+     "processingDateTime": {
+      "value": "2026-11-08T02:38:28",
+      "dtype": "|S19",
+      "description": "Processing date and time (in UTC) in the format YYYY-mm-ddTHH:MM:SS"
+     },
+     "processingType": {
+      "value": "Nominal",
+      "dtype": "|S7",
+      "description": "Processing pipeline used to generate this granule. \"Nominal\": standard production system; \"Urgent\": time-sensitive processing in response to urgent response events; \"Custom\": user-initiated processing outside the nominal production system"
+     },
+     "productDoi": {
+      "value": "10.5067/NIL2GCOV-V1",
+      "dtype": "|S19",
+      "description": "Digital Object Identifier (DOI) for the product"
+     },
+     "productLevel": {
+      "value": "L2",
+      "dtype": "|S2",
+      "description": "Product level. \"L0A\": Unprocessed instrument data; \"L0B\": Reformatted, unprocessed instrument data; \"L1\": Processed instrument data in radar coordinates system; and \"L2\": Processed instrument data in geocoded coordinates system"
+     },
+     "productSpecificationVersion": {
+      "value": "1.6.0",
+      "dtype": "|S5",
+      "description": "Product specification version which represents the schema of this product"
+     },
+     "productType": {
+      "value": "GCOV",
+      "dtype": "|S4",
+      "description": "Product type"
+     },
+     "productVersion": {
+      "value": "1.0.20",
+      "dtype": "|S6",
+      "description": "Product version which represents the structure of the product and the science content governed by the algorithm, input data, and processing parameters"
+     },
+     "radarBand": {
+      "value": "L",
+      "dtype": "|S1",
+      "description": "Acquired frequency band, either \"L\" or \"S\""
+     },
+     "staticLayersDataAccess": {
+      "value": "https://nisar-services.earthdata.nasa.gov/redirect/NISAR_L2_STATIC/NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+      "dtype": "|S161",
+      "description": "Location of the static layers product associated with this product (URL or DOI)"
+     },
+     "trackNumber": {
+      "value": 141,
+      "dtype": "uint32",
+      "description": "Track number"
+     },
+     "zeroDopplerEndTime": {
+      "value": "2026-10-21T23:44:05.999342105",
+      "dtype": "|S29",
+      "description": "Azimuth stop time (in UTC) of the product in the format YYYY-mm-ddTHH:MM:SS.sssssssss"
+     },
+     "zeroDopplerStartTime": {
+      "value": "2026-10-21T23:43:30.000000000",
+      "dtype": "|S29",
+      "description": "Azimuth start time (in UTC) of the product in the format YYYY-mm-ddTHH:MM:SS.sssssssss"
+     }
+    },
+    "/science/LSAR/GCOV/metadata/ceosAnalysisReadyData": {
+     "boundingBox": {
+      "value": "POLYGON ((182880 4886640 0,182880 4530240 0,543600 4530240 0,543600 4886640 0,182880 4886640 0))",
+      "dtype": "|S96",
+      "description": "OGR compatible WKT representing the bounding box of the product (the union of the geocoded grid for available frequency A and frequency B image datasets). Horizontal coordinates are X and Y directions of the geocoded grid coordinate system, and the vertical coordinate is the height above the WGS84 ellipsoid in meters. The first point corresponds to the top left edge of the bounding box. The remaining points are traversed in counterclockwise order on the map. The fifth point closes the bounding box by repeating the first point"
+     },
+     "ceosAnalysisReadyDataDocumentIdentifier": {
+      "value": "https://ceos.org/ard/files/PFS/SAR/v1.0/CEOS-ARD_PFS_Synthetic_Aperture_Radar_v1.0.pdf",
+      "dtype": "|S86",
+      "description": "CEOS Analysis Ready Data (CARD) document identifier"
+     },
+     "ceosAnalysisReadyDataProductType": {
+      "value": "Normalised Radar Backscatter (NRB)",
+      "dtype": "|S34",
+      "description": "CEOS Analysis Ready Data (CARD) product type"
+     },
+     "geometricAccuracy/bias/x": {
+      "value": NaN,
+      "dtype": "float32",
+      "description": "An estimate of the localization error bias in the X/easting direction"
+     },
+     "geometricAccuracy/bias/y": {
+      "value": NaN,
+      "dtype": "float32",
+      "description": "An estimate of the localization error bias in the Y/northing direction"
+     },
+     "geometricAccuracy/standardDeviation/x": {
+      "value": NaN,
+      "dtype": "float32",
+      "description": "An estimate of the localization error standard deviation in the X/easting direction"
+     },
+     "geometricAccuracy/standardDeviation/y": {
+      "value": NaN,
+      "dtype": "float32",
+      "description": "An estimate of the localization error standard deviation in the Y/northing direction"
+     },
+     "outputBackscatterDecibelConversionFormula": {
+      "value": "10*log10(<GCOV_TERM>)",
+      "dtype": "|S21",
+      "description": "Formula to convert provided backscatter to decibel (dB)"
+     }
+    },
+    "/science/LSAR/GCOV/metadata/processingInformation/algorithms": {
+     "demInterpolation": {
+      "value": "biquintic",
+      "dtype": "|S9",
+      "description": "DEM interpolation method"
+     },
+     "geocoding": {
+      "value": "Area-Based SAR Geocoding with Adaptive Multilooking (GEO-AP). DOI: 10.1109/TGRS.2022.3147472",
+      "dtype": "|S92",
+      "description": "Geocoding algorithm"
+     },
+     "geocodingAlgorithmReference": {
+      "value": "Gustavo H. X. Shiroma, Marco Lavalle, and Sean M. Buckley, \"An Area-Based Projection Algorithm for SAR Radiometric Terrain Correction and Geocoding,\" in IEEE Transactions on Geoscience and Remote Sensing, vol. 60, pp. 1-23, 2022, Art no. 5222723, doi: 10.1109/TGRS.2022.3147472.",
+      "dtype": "|S278",
+      "description": "Reference to the geocoding algorithm applied (if applicable)"
+     },
+     "polarimetricSymmetrization": {
+      "value": "disabled",
+      "dtype": "|S8",
+      "description": "Polarimetric symmetrization algorithm"
+     },
+     "radiometricTerrainCorrection": {
+      "value": "Area-Based SAR Radiometric Terrain Correction (RTC-AP). DOI: 10.1109/TGRS.2022.3147472",
+      "dtype": "|S86",
+      "description": "Radiometric terrain correction (RTC) algorithm"
+     },
+     "radiometricTerrainCorrectionAlgorithmReference": {
+      "value": "Gustavo H. X. Shiroma, Marco Lavalle, and Sean M. Buckley, \"An Area-Based Projection Algorithm for SAR Radiometric Terrain Correction and Geocoding,\" in IEEE Transactions on Geoscience and Remote Sensing, vol. 60, pp. 1-23, 2022, Art no. 5222723, doi: 10.1109/TGRS.2022.3147472.",
+      "dtype": "|S278",
+      "description": "Reference to the radiometric terrain correction (RTC) algorithm applied (if applicable)"
+     },
+     "softwareVersion": {
+      "value": "0.25.21",
+      "dtype": "|S7",
+      "description": "Software version used for processing"
+     }
+    },
+    "/science/LSAR/GCOV/metadata/processingInformation/parameters": {
+     "azimuthIonosphericGeolocationCorrectionApplied": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "Flag to indicate if the azimuth ionospheric correction has been applied"
+     },
+     "dryTroposphericGeolocationCorrectionApplied": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "Flag to indicate if the dry tropospheric correction was applied during the generation of the input RSLC to improve geolocation"
+     },
+     "faradayRotationApplied": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if the Faraday rotation correction has been applied"
+     },
+     "frequencyA/dopplerCentroid": {
+      "shape": [
+       357,
+       362
+      ],
+      "dtype": "float64"
+     },
+     "frequencyA/projection": {
+      "value": 32619,
+      "dtype": "uint32",
+      "description": "Product map grid projection: EPSG code, with additional projection information as HDF5 Attributes"
+     },
+     "frequencyA/xCoordinates": {
+      "shape": [
+       362
+      ],
+      "dtype": "float64"
+     },
+     "frequencyA/yCoordinates": {
+      "shape": [
+       357
+      ],
+      "dtype": "float64"
+     },
+     "frequencyB/dopplerCentroid": {
+      "shape": [
+       357,
+       362
+      ],
+      "dtype": "float64"
+     },
+     "frequencyB/projection": {
+      "value": 32619,
+      "dtype": "uint32",
+      "description": "Product map grid projection: EPSG code, with additional projection information as HDF5 Attributes"
+     },
+     "frequencyB/xCoordinates": {
+      "shape": [
+       362
+      ],
+      "dtype": "float64"
+     },
+     "frequencyB/yCoordinates": {
+      "shape": [
+       357
+      ],
+      "dtype": "float64"
+     },
+     "geo2rdr/convergenceThreshold": {
+      "value": 1e-07,
+      "dtype": "float64",
+      "description": "Slant range convergence threshold for geo2rdr transformation"
+     },
+     "geo2rdr/deltaRange": {
+      "value": 1e-08,
+      "dtype": "float64",
+      "description": "Step size for computing numerical gradient of Doppler in meters for geo2rdr transformation"
+     },
+     "geo2rdr/maxNumberOfIterations": {
+      "value": 50,
+      "dtype": "uint64",
+      "description": "Maximum number of iterations for geo2rdr transformation"
+     },
+     "geocoding/geogridUpsampling": {
+      "value": 1.0,
+      "dtype": "float64",
+      "description": "Geocoding geogrid upsampling"
+     },
+     "geocoding/isSourceDataUpsampled": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if the source data is upsampled for geocoding"
+     },
+     "geocoding/maxBlockSize": {
+      "value": 268435456,
+      "dtype": "uint64",
+      "description": "Maximum block size in megabytes (MB) per thread"
+     },
+     "geocoding/memoryMode": {
+      "value": "auto",
+      "dtype": "|S4",
+      "description": "Geocoding memory mode"
+     },
+     "geocoding/minBlockSize": {
+      "value": 33554432,
+      "dtype": "uint64",
+      "description": "Minimum block size in megabytes (MB) per thread"
+     },
+     "isFullCovariance": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if the product is full-covariance"
+     },
+     "noiseCorrectionApplied": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if noise correction has been applied"
+     },
+     "polarimetricSymmetrizationApplied": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if the polarimetric symmetrization has been applied"
+     },
+     "polarizationOrientationCorrectionApplied": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if the polarization orientation correction has been applied"
+     },
+     "postProcessingFilteringApplied": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if the post-processing filtering has been applied"
+     },
+     "preprocessing/frequencyA/numberOfAzimuthLooks": {
+      "value": 1,
+      "dtype": "uint64",
+      "description": "Number of azimuth looks applied to the RSLC before geocoding"
+     },
+     "preprocessing/frequencyA/numberOfRangeLooks": {
+      "value": 1,
+      "dtype": "uint64",
+      "description": "Number of range looks applied to the RSLC before geocoding"
+     },
+     "preprocessing/frequencyB/numberOfAzimuthLooks": {
+      "value": 1,
+      "dtype": "uint64",
+      "description": "Number of azimuth looks applied to the RSLC before geocoding"
+     },
+     "preprocessing/frequencyB/numberOfRangeLooks": {
+      "value": 1,
+      "dtype": "uint64",
+      "description": "Number of range looks applied to the RSLC before geocoding"
+     },
+     "preprocessingMultilookingApplied": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if a preprocessing multilooking has been applied"
+     },
+     "projection": {
+      "value": 32619,
+      "dtype": "uint32",
+      "description": "Product map grid projection: EPSG code, with additional projection information as HDF5 Attributes"
+     },
+     "radiometricTerrainCorrectionApplied": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "Flag to indicate if the radiometric terrain correction has been applied"
+     },
+     "rangeIonosphericGeolocationCorrectionApplied": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "Flag to indicate if the range ionospheric correction has been applied"
+     },
+     "referenceTerrainHeight": {
+      "shape": [
+       357,
+       362
+      ],
+      "dtype": "float32"
+     },
+     "rfiMitigationApplied": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if radio frequency interference (RFI) mitigation was applied during the generation of the input RSLC"
+     },
+     "rtc/geogridUpsampling": {
+      "value": 1.0,
+      "dtype": "float64",
+      "description": "Radiometric terrain correction (RTC) geogrid upsampling"
+     },
+     "rtc/inputBackscatterNormalizationConvention": {
+      "value": "beta0",
+      "dtype": "|S5",
+      "description": "Backscatter normalization convention of the source data"
+     },
+     "rtc/memoryMode": {
+      "value": "auto",
+      "dtype": "|S4",
+      "description": "Radiometric terrain correction (RTC) memory mode"
+     },
+     "rtc/minRtcAreaNormalizationFactorInDB": {
+      "value": -30.0,
+      "dtype": "float64",
+      "description": "Radiometric terrain correction (RTC) minimum area normalization factor value in dB computed as `10 * log10(area_out / area_in)` where `area_in` and `area_out` are the reference surfaces associated with the source data (input) and GCOV terms (output) backscatter conventions, respectively"
+     },
+     "rtc/outputBackscatterExpressionConvention": {
+      "value": "Linear power",
+      "dtype": "|S12",
+      "description": "Backscatter expression convention"
+     },
+     "rtc/outputBackscatterNormalizationConvention": {
+      "value": "gamma0",
+      "dtype": "|S6",
+      "description": "Backscatter normalization convention of the primary data associated with this product"
+     },
+     "runConfigurationContents": {
+      "value": "#s3://nisar-static-repo/LSAR_PARAMETER_SET/05036/GCOV/NISAR_ParameterSet_GCOV_20000101_diag_40_v0.1.yaml was used to generate this runconfig.\nrunconfig:\n    name: NISAR_GCOV_RUNCONFIG\n    groups:\n        pge_name_group:\n            pge_name: GCOV_L_PGE\n        input_file_group:\n            input_file_path: \n                /data/work/jobs/2026/11/08/02/07/SCIFLO_GCOV__release-r05.03.5-gcov_gslc_033_141_067_full_individual_L_40_DH_05_DH_0_state-config-20261108T010419.38394Z/NISAR_L1_PR_RSLC_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5\n            qa_input_file: output/gcov.h5\n        dynamic_ancillary_file_group:\n            dem_file: \n                /data/work/jobs/2026/11/08/02/07/SCIFLO_GCOV__release-r05.03.5-gcov_gslc_033_141_067_full_individual_L_40_DH_05_DH_0_state-config-20261108T010419.38394Z/dem.vrt\n            dem_file_description: Modified Copernicus Digital Elevation Model \n                for the NASA-ISRO NISAR mission, version 1.3, based on the \n                Copernicus DEM 30-m (2023_1), referenced to the WGS 84 ellipsoid\n                and provided in geographic coordinates (EPSG:4326). This digital\n                elevation model (DEM) was prepared at the Jet Propulsion \n                Laboratory, California Institute of Technology, under contract \n                with the National Aeronautics and Space Administration, using \n                the Copernicus DEM 30-m COP-DEM_GLO-30-DGED/2023_1 model \n                provided by the European Space Agency (ESA). The Copernicus DEM \n                30-m was produced using Copernicus WorldDEM-30  DLR e.V. \n                2010-2014 and  Airbus Defence and Space GmbH 2014-2018 provided \n                under COPERNICUS by the European Union and ESA; all rights \n                reserved. The organizations in charge of the NISAR mission or \n                the Copernicus programme by law or by delegation do not incur \n                any liability for any use of the Copernicus WorldDEM-30. Users, \n                including those who redistribute, adapt, modify, or combine the \n                data contained in this DEM, must comply with the terms of the \n                Copernicus DEM 30-m License Agreement. For additional \n                information, please refer to https://doi.org/10.5067/NIDEM-1 and\n                https://doi.org/10.5270/ESA-c5d3d65.\n            orbit_file: \n                /data/work/jobs/2026/11/08/02/07/SCIFLO_GCOV__release-r05.03.5-gcov_gslc_033_141_067_full_individual_L_40_DH_05_DH_0_state-config-20261108T010419.38394Z/NISAR_ANC_J_PR_MOE_20261023T132440_20261021T210332_20261023T025942.xml\n            tec_file: \n                /data/work/jobs/2026/11/08/02/07/SCIFLO_GCOV__release-r05.03.5-gcov_gslc_033_141_067_full_individual_L_40_DH_05_DH_0_state-config-20261108T010419.38394Z/NISAR_ANC_TEC_20261023T211918_20261021T230002_20261022T235952_s015.json\n        primary_executable:\n            product_type: GCOV\n            product_version: 1.0.20\n            product_doi: 10.5067/NIL2GCOV-V1\n            composite_release_id: P05036\n            processing_type: PR\n            product_accuracy: N\n            urgent_request_id:\n            processing_center: J\n            data_source: A\n            static_layers_data_access: \n                https://nisar-services.earthdata.nasa.gov/redirect/NISAR_L2_STATIC/{granule_id}.h5\n            partial_granule_id: \n                NISAR_L2_PR_GCOV_033_141_D_067_{MODE}_{POLE}_A_{StartDateTime}_{EndDateTime}_P05036_N_F_J_001\n        product_path_group:\n            product_path: output\n            scratch_path: scratch\n            sas_output_file: output/gcov.h5\n            product_counter: 1\n            qa_output_dir: output\n        debug_level_group:\n            debug_switch: false\n        processing:\n      #s3://nisar-static-repo/LSAR_PARAMETER_SET/05036/GCOV/NISAR_ParameterSet_GCOV_20000101_diag_40_v0.1.yaml was used to generate this runconfig.\n      #s3://nisar-static-repo/PRODUCT_VERSION/NISAR_ProductVersion_20261102_v1.0.30.yaml is the location of the product version file.\n            input_subset:\n                list_of_frequencies:\n                symmetrize_cross_pol_channels: false\n            dem_download:\n                source:\n                top_left:\n                    x:\n                    y:\n                bottom_right:\n                    x:\n                    y:\n            geocode:\n                output_posting:\n                    A:\n                        x_posting: 10\n                        y_posting: 10\n                    B:\n                        x_posting: 80\n                        y_posting: 80\n                output_epsg: 32619\n                top_left:\n                    y_abs: 4886640.0\n                    x_abs: 182880.0\n                bottom_right:\n                    y_abs: 4530240.0\n                    x_abs: 543600.0\n            radar_grid_cubes:\n                output_epsg: 32619\n                output_posting:\n                    x_posting:\n                    y_posting:\n                top_left:\n                    y_abs:\n                    x_abs:\n                bottom_right:\n                    y_abs:\n                    x_abs:\n            rtc:\n                rtc_min_value_db: -30\n                dem_upsampling: 1\n            tec_correction:\n                ignore_invalid_topside_tec: true\n                polyfit_tec_profile: true\n                num_sigma: 1.5\n        worker:\n            internet_access: false\n            gpu_enabled: false\n        logging:\n            path: scratch/gcov.log\n            write_mode: w\n        output:\n            output_gcov_terms:\n                mantissa_nbits: 16\n                compression_level: 1\n            output_secondary_layers:\n                compression_level: 1\n        qa:\n            qa_reports:\n                backscatter_img:\n                    output_individual_pngs: true\n                browse_latlon:\n                    output_browse_latlon: true\n\n",
+      "dtype": "|S6019",
+      "description": "Contents of the run configuration file with parameters used for processing"
+     },
+     "shadowMaskingApplied": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if the shadow masking has been applied"
+     },
+     "validSamplesSubSwathMaskingApplied": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if the valid samples subswath masking has been applied"
+     },
+     "wetTroposphericGeolocationCorrectionApplied": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if the wet tropospheric correction was applied during the generation of the input RSLC to improve geolocation"
+     },
+     "xCoordinates": {
+      "shape": [
+       362
+      ],
+      "dtype": "float64"
+     },
+     "yCoordinates": {
+      "shape": [
+       357
+      ],
+      "dtype": "float64"
+     }
+    }
+   },
+   "location": {
+    "sample_columns_rows": [
+     3772,
+     3972
+    ],
+    "product_first_column_row": [
+     13664,
+     12903
+    ],
+    "product_columns_rows": [
+     36072,
+     35640
+    ],
+    "largest_coordinate_difference_x_m": 0.0,
+    "largest_coordinate_difference_y_m": 0.0,
+    "product_x_first_last": [
+     182885.0,
+     543595.0
+    ],
+    "product_y_first_last": [
+     4886635.0,
+     4530245.0
+    ],
+    "sample_centre_x_first_last": [
+     319525.0,
+     357235.0
+    ],
+    "sample_centre_y_first_last": [
+     4757605.0,
+     4717895.0
+    ]
+   },
+   "window_1024": {
+    "sample_rows": [
+     1474,
+     2498
+    ],
+    "sample_columns": [
+     1374,
+     2398
+    ],
+    "seconds": 18.2,
+    "cells_compared": 1048576,
+    "dtype_sample": "float32",
+    "dtype_product": "float32",
+    "value_in_both": 1048566,
+    "nan_in_both": 10,
+    "value_in_sample_only": 0,
+    "value_in_product_only": 0,
+    "cells_that_differ": 0,
+    "largest_absolute_difference": "0.0",
+    "bit_identical": true,
+    "zero_negative_infinite_in_product": [
+     0,
+     0,
+     0
+    ]
+   },
+   "whole_box": {
+    "seconds": 93.6,
+    "cells_compared": 14982384,
+    "dtype_sample": "float32",
+    "dtype_product": "float32",
+    "value_in_both": 14316413,
+    "nan_in_both": 29,
+    "value_in_sample_only": 0,
+    "value_in_product_only": 665942,
+    "cells_that_differ": 665942,
+    "largest_absolute_difference": "0.0",
+    "bit_identical": false,
+    "zero_negative_infinite_in_product": [
+     0,
+     0,
+     0
+    ],
+    "product_values_sha256": "04ba3ef8b12753d7ec2b11efdaef71318391eb7fd5fe83040f7a2531f871f323",
+    "sample_values_sha256": "7a9f95e1034b1d9a97282c18c7a64b09a3cb2389bec58fa66f0ab19fa9494a60"
+   },
+   "mask_of_product_in_box": {
+    "seconds": 52.6,
+    "dtype": "uint8",
+    "counts": {
+     "0": 29,
+     "1": 14982355
+    },
+    "mask_0_with_nan_in_HHHH": 29,
+    "mask_255_with_nan_in_HHHH": 0,
+    "mask_0_or_255_with_value_in_HHHH": 0,
+    "mask_1_to_5_with_nan_in_HHHH": 0,
+    "HHHH_below_minus_40_dB": 0
+   },
+   "read_statistics": {
+    "hit_count": 556,
+    "miss_count": 96,
+    "total_requested_bytes": 100663296,
+    "blocksize": 1048576,
+    "size": 5758779392
+   }
+  },
+  "gunw_20261009_20261021": {
+   "sample": "gunw-coherence-20261009-20261021.tif",
+   "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+   "layer": "/science/LSAR/GUNW/grids/frequencyA/wrappedInterferogram/HH/coherenceMagnitude",
+   "cmr": {
+    "GranuleUR": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "h5_urls": [
+     "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/L2_L_GUNW/NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001/NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+     "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/L2_L_GUNW/NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001/NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001_QA_STATS.h5"
+    ],
+    "PGEVersionClass": {
+     "PGEName": "INSAR_L_PGE",
+     "PGEVersion": "R05.03.2"
+    },
+    "AdditionalAttributes": {
+     "ASCENDING_DESCENDING": [
+      "DESCENDING"
+     ],
+     "FRAME_NUMBER": [
+      "67"
+     ],
+     "FREQUENCIES": [
+      "A"
+     ],
+     "FREQUENCY_A_POLARIZATION": [
+      "HH"
+     ],
+     "FREQUENCY_A_POLARIZATION_CONCAT": [
+      "HH"
+     ],
+     "FREQUENCY_A_RANGE_BANDWIDTH": [
+      "40"
+     ],
+     "FULL_FRAME": [
+      "TRUE"
+     ],
+     "JOINT_OBSERVATION": [
+      "TRUE"
+     ],
+     "ORBIT_TYPE": [
+      "MOE"
+     ],
+     "PROCESSING_CENTER": [
+      "JPL"
+     ],
+     "PROCESSING_LEVEL": [
+      "L2"
+     ],
+     "PRODUCTION_PIPELINE": [
+      "PR"
+     ],
+     "PRODUCT_TYPE": [
+      "GUNW"
+     ],
+     "PRODUCT_TYPE_DESC": [
+      "Geocoded Unwrapped Interferogram"
+     ],
+     "PRODUCT_VERSION": [
+      "1.0.20"
+     ],
+     "RANGE_BANDWIDTH_CONCAT": [
+      "40"
+     ],
+     "REFERENCE_ZERO_DOPPLER_END_TIME": [
+      "2026-10-09T23:44:05.999342Z"
+     ],
+     "REFERENCE_ZERO_DOPPLER_START_TIME": [
+      "2026-10-09T23:43:30.000000Z"
+     ],
+     "SECONDARY_ZERO_DOPPLER_END_TIME": [
+      "2026-10-21T23:44:05.999342Z"
+     ],
+     "SECONDARY_ZERO_DOPPLER_START_TIME": [
+      "2026-10-21T23:43:30.000000Z"
+     ],
+     "STACK_ID": [
+      "141_D_067"
+     ],
+     "TRACK_NUMBER": [
+      "141"
+     ]
+    },
+    "files": [
+     [
+      "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+      2415919104
+     ],
+     [
+      "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001_LATLON.png",
+      2891683
+     ],
+     [
+      "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001_NATIVE.png",
+      3177672
+     ],
+     [
+      "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5.iso.xml",
+      113240
+     ],
+     [
+      "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001_QA_REPORT.pdf",
+      1195224
+     ],
+     [
+      "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001_QA_STATS.h5",
+      157846
+     ],
+     [
+      "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001_QA_SUMMARY.csv",
+      2665
+     ],
+     [
+      "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001_LATLON.kml",
+      605
+     ],
+     [
+      "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001_NATIVE.kml",
+      604
+     ],
+     [
+      "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.rc.yaml",
+      12742
+     ]
+    ],
+    "ProductionDateTime": "2026-11-12T23:05:07.000000Z",
+    "CollectionReference": {
+     "ShortName": "NISAR_L2_GUNW_V1",
+     "Version": "1"
+    }
+   },
+   "url": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/L2_L_GUNW/NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001/NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+   "file_size_bytes": 2415919104,
+   "grids_members": {
+    "frequencyA": [
+     "centerFrequency",
+     "listOfPolarizations",
+     "pixelOffsets",
+     "unwrappedInterferogram",
+     "wrappedInterferogram"
+    ]
+   },
+   "groups": {
+    "/science/LSAR/GUNW/grids/frequencyA/wrappedInterferogram": {
+     "HH": "group",
+     "mask": {
+      "dtype": "uint32",
+      "shape": [
+       17820,
+       18036
+      ],
+      "chunks": [
+       512,
+       512
+      ],
+      "compression": "gzip",
+      "compression_opts": 1,
+      "attrs": {
+       "DIMENSION_LIST": [
+        [
+         "<HDF5 object reference>"
+        ],
+        [
+         "<HDF5 object reference>"
+        ]
+       ],
+       "_FillValue": 255,
+       "description": "Combination of a water mask, a mask of subswaths of valid samples, and data anomalies in the reference RSLC and the geometrically coregistered secondary RSLC. Each pixel value is encoded as a 32-bit unsigned integer. Bits 0-7 represent subswath encoding, where the most significant digit represents the water flag of that pixel in the reference RSLC, where 1 is water and 0 is non-water; the second most significant digit corresponds to the subswath number of the reference RSLC, and the least significant digit corresponds to the subswath number of the secondary RSLC; a value of 0 in either digit indicates an invalid sample in the corresponding RSLC. Bits 8-15 represent bitwise anomaly flags for the secondary RSLC, and bits 16-23 represent bitwise anomaly flags for the reference RSLC, with each bit corresponding to a specific anomaly condition. A value of 0 in the anomaly bits indicates that no anomaly is detected in the corresponding RSLC. Bits 24-31 are reserved for future use",
+       "disclaimer": "Water Mask for the NASA-ISRO NISAR mission version 0.5, derived through analysis and processing of multiple input datasets, referenced to the WGS84 ellipsoid. Water mask derived at the Jet Propulsion Laboratory, California Institute of Technology, under contract with NASA, using multiple open datasets: JRC Global Surface Water v1.3 (Pekel et al 2016, Nature 540, 418-422,  EC JRC/Google); ESA WorldCover 10 m 2020 ( ESA WorldCover project 2020 / Contains modified Copernicus Sentinel data (2020) processed by ESA WorldCover consortium); OpenStreetMap Water Polygons ( OpenStreetMap contributors, ODbL 1.0); MEaSUREs GIMP Mask v1 (Howat 2017, doi:10.5067/B8X58MQBFUPA; Howat et al 2014). All trademarks and rights remain with their respective owners; NISAR mission organizations assume no liability for use of this product.",
+       "grid_mapping": "projection",
+       "percentage_water": 49.047779756395656,
+       "valid_min": 0
+      },
+      "fillvalue": "np.uint32(0)"
+     },
+     "projection": {
+      "dtype": "uint32",
+      "shape": [],
+      "chunks": null,
+      "compression": null,
+      "compression_opts": null,
+      "attrs": {
+       "description": "Product map grid projection: EPSG code, with additional projection information as HDF5 Attributes",
+       "ellipsoid": "WGS84",
+       "epsg_code": 32619,
+       "false_easting": 500000.0,
+       "false_northing": 0.0,
+       "grid_mapping_name": "transverse_mercator",
+       "inverse_flattening": 298.257223563,
+       "latitude_of_projection_origin": 0.0,
+       "longitude_of_central_meridian": -69.0,
+       "longitude_of_projection_origin": 0.0,
+       "scale_factor_at_central_meridian": 0.9996,
+       "semi_major_axis": 6378137.0,
+       "spatial_ref": "PROJCS[\"WGS 84 / UTM zone 19N\",GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",-69],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"32619\"]]",
+       "utm_zone_number": 19
+      },
+      "fillvalue": "np.uint32(0)"
+     },
+     "xCoordinateSpacing": {
+      "dtype": "float64",
+      "shape": [],
+      "chunks": null,
+      "compression": null,
+      "compression_opts": null,
+      "attrs": {
+       "description": "Nominal spacing in meters between consecutive pixels",
+       "long_name": "X coordinates spacing",
+       "units": "meters"
+      },
+      "fillvalue": "np.float64(0.0)"
+     },
+     "xCoordinates": {
+      "dtype": "float64",
+      "shape": [
+       18036
+      ],
+      "chunks": null,
+      "compression": null,
+      "compression_opts": null,
+      "attrs": {
+       "CLASS": "DIMENSION_SCALE",
+       "NAME": "",
+       "REFERENCE_LIST": [
+        [
+         "<HDF5 object reference>",
+         1
+        ]
+       ],
+       "description": "X coordinates in specified projection",
+       "long_name": "X coordinate of projection",
+       "standard_name": "projection_x_coordinate",
+       "units": "meters"
+      },
+      "fillvalue": "np.float64(0.0)"
+     },
+     "yCoordinateSpacing": {
+      "dtype": "float64",
+      "shape": [],
+      "chunks": null,
+      "compression": null,
+      "compression_opts": null,
+      "attrs": {
+       "description": "Nominal spacing in meters between consecutive lines",
+       "long_name": "Y coordinates spacing",
+       "units": "meters"
+      },
+      "fillvalue": "np.float64(0.0)"
+     },
+     "yCoordinates": {
+      "dtype": "float64",
+      "shape": [
+       17820
+      ],
+      "chunks": null,
+      "compression": null,
+      "compression_opts": null,
+      "attrs": {
+       "CLASS": "DIMENSION_SCALE",
+       "NAME": "",
+       "REFERENCE_LIST": [
+        [
+         "<HDF5 object reference>",
+         0
+        ]
+       ],
+       "description": "Y coordinates in specified projection",
+       "long_name": "Y coordinate of projection",
+       "standard_name": "projection_y_coordinate",
+       "units": "meters"
+      },
+      "fillvalue": "np.float64(0.0)"
+     }
+    },
+    "/science/LSAR/GUNW/grids/frequencyA/wrappedInterferogram/HH": {
+     "coherenceMagnitude": {
+      "dtype": "float32",
+      "shape": [
+       17820,
+       18036
+      ],
+      "chunks": [
+       512,
+       512
+      ],
+      "compression": "gzip",
+      "compression_opts": 1,
+      "attrs": {
+       "DIMENSION_LIST": [
+        [
+         "<HDF5 object reference>"
+        ],
+        [
+         "<HDF5 object reference>"
+        ]
+       ],
+       "_FillValue": NaN,
+       "description": "Coherence magnitude between HH layers",
+       "grid_mapping": "projection",
+       "max_value": 0.9991191625595093,
+       "mean_value": 0.13703793287277222,
+       "min_value": 0.0,
+       "sample_stddev": 0.21184130012989044,
+       "units": "1"
+      },
+      "fillvalue": "np.float32(0.0)"
+     },
+     "projection": {
+      "dtype": "uint32",
+      "shape": [],
+      "chunks": null,
+      "compression": null,
+      "compression_opts": null,
+      "attrs": {
+       "description": "Product map grid projection: EPSG code, with additional projection information as HDF5 Attributes",
+       "ellipsoid": "WGS84",
+       "epsg_code": 32619,
+       "false_easting": 500000.0,
+       "false_northing": 0.0,
+       "grid_mapping_name": "transverse_mercator",
+       "inverse_flattening": 298.257223563,
+       "latitude_of_projection_origin": 0.0,
+       "longitude_of_central_meridian": -69.0,
+       "longitude_of_projection_origin": 0.0,
+       "scale_factor_at_central_meridian": 0.9996,
+       "semi_major_axis": 6378137.0,
+       "spatial_ref": "PROJCS[\"WGS 84 / UTM zone 19N\",GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",-69],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"32619\"]]",
+       "utm_zone_number": 19
+      },
+      "fillvalue": "np.uint32(0)"
+     },
+     "validDataMask": {
+      "dtype": "uint8",
+      "shape": [
+       17820,
+       18036
+      ],
+      "chunks": [
+       512,
+       512
+      ],
+      "compression": "gzip",
+      "compression_opts": 1,
+      "attrs": {
+       "DIMENSION_LIST": [
+        [
+         "<HDF5 object reference>"
+        ],
+        [
+         "<HDF5 object reference>"
+        ]
+       ],
+       "_FillValue": 255,
+       "description": "Valid mask for the HH layers: bit 1 = reference (1=valid, 0=invalid), bit 0 = secondary (1=valid, 0=invalid). Valid represents fully focused data and invalid represents partially focused or missing data",
+       "grid_mapping": "projection",
+       "long_name": "Valid data mask",
+       "units": "1",
+       "valid_min": 0,
+       "valid_pixel_fraction": 0.9572341564945768
+      },
+      "fillvalue": "np.uint8(0)"
+     },
+     "wrappedInterferogram": {
+      "dtype": "complex64",
+      "shape": [
+       17820,
+       18036
+      ],
+      "chunks": [
+       512,
+       512
+      ],
+      "compression": "gzip",
+      "compression_opts": 1,
+      "attrs": {
+       "DIMENSION_LIST": [
+        [
+         "<HDF5 object reference>"
+        ],
+        [
+         "<HDF5 object reference>"
+        ]
+       ],
+       "_FillValue": "(nan+nanj)",
+       "description": "Complex wrapped interferogram between HH layers",
+       "grid_mapping": "projection",
+       "units": "1"
+      },
+      "fillvalue": "np.complex64(0j)"
+     },
+     "xCoordinateSpacing": {
+      "dtype": "float64",
+      "shape": [],
+      "chunks": null,
+      "compression": null,
+      "compression_opts": null,
+      "attrs": {
+       "description": "Nominal spacing in meters between consecutive pixels",
+       "long_name": "X coordinates spacing",
+       "units": "meters"
+      },
+      "fillvalue": "np.float64(0.0)"
+     },
+     "xCoordinates": {
+      "dtype": "float64",
+      "shape": [
+       18036
+      ],
+      "chunks": null,
+      "compression": null,
+      "compression_opts": null,
+      "attrs": {
+       "CLASS": "DIMENSION_SCALE",
+       "NAME": "",
+       "REFERENCE_LIST": [
+        [
+         "<HDF5 object reference>",
+         1
+        ],
+        [
+         "<HDF5 object reference>",
+         1
+        ],
+        [
+         "<HDF5 object reference>",
+         1
+        ]
+       ],
+       "description": "X coordinates in specified projection",
+       "long_name": "X coordinate of projection",
+       "standard_name": "projection_x_coordinate",
+       "units": "meters"
+      },
+      "fillvalue": "np.float64(0.0)"
+     },
+     "yCoordinateSpacing": {
+      "dtype": "float64",
+      "shape": [],
+      "chunks": null,
+      "compression": null,
+      "compression_opts": null,
+      "attrs": {
+       "description": "Nominal spacing in meters between consecutive lines",
+       "long_name": "Y coordinates spacing",
+       "units": "meters"
+      },
+      "fillvalue": "np.float64(0.0)"
+     },
+     "yCoordinates": {
+      "dtype": "float64",
+      "shape": [
+       17820
+      ],
+      "chunks": null,
+      "compression": null,
+      "compression_opts": null,
+      "attrs": {
+       "CLASS": "DIMENSION_SCALE",
+       "NAME": "",
+       "REFERENCE_LIST": [
+        [
+         "<HDF5 object reference>",
+         0
+        ],
+        [
+         "<HDF5 object reference>",
+         0
+        ],
+        [
+         "<HDF5 object reference>",
+         0
+        ]
+       ],
+       "description": "Y coordinates in specified projection",
+       "long_name": "Y coordinate of projection",
+       "standard_name": "projection_y_coordinate",
+       "units": "meters"
+      },
+      "fillvalue": "np.float64(0.0)"
+     }
+    },
+    "/science/LSAR/GUNW/grids/frequencyA/unwrappedInterferogram": {
+     "HH": "group",
+     "mask": {
+      "dtype": "uint32",
+      "shape": [
+       4455,
+       4509
+      ],
+      "chunks": [
+       512,
+       512
+      ],
+      "compression": "gzip",
+      "compression_opts": 1,
+      "attrs": {
+       "DIMENSION_LIST": [
+        [
+         "<HDF5 object reference>"
+        ],
+        [
+         "<HDF5 object reference>"
+        ]
+       ],
+       "_FillValue": 255,
+       "description": "Combination of a water mask, a mask of subswaths of valid samples, and data anomalies in the reference RSLC and the geometrically coregistered secondary RSLC. Each pixel value is encoded as a 32-bit unsigned integer. Bits 0-7 represent subswath encoding, where the most significant digit represents the water flag of that pixel in the reference RSLC, where 1 is water and 0 is non-water; the second most significant digit corresponds to the subswath number of the reference RSLC, and the least significant digit corresponds to the subswath number of the secondary RSLC; a value of 0 in either digit indicates an invalid sample in the corresponding RSLC. Bits 8-15 represent bitwise anomaly flags for the secondary RSLC, and bits 16-23 represent bitwise anomaly flags for the reference RSLC, with each bit corresponding to a specific anomaly condition. A value of 0 in the anomaly bits indicates that no anomaly is detected in the corresponding RSLC. Bit 24 indicates a bit mask for ionospheric phase mask used during filtering of ionospheric phase. This ionospheric phase mask indicates pixels which were masked out and filled with interpolated data. Bits 25-31 are reserved for future use",
+       "disclaimer": "Water Mask for the NASA-ISRO NISAR mission version 0.5, derived through analysis and processing of multiple input datasets, referenced to the WGS84 ellipsoid. Water mask derived at the Jet Propulsion Laboratory, California Institute of Technology, under contract with NASA, using multiple open datasets: JRC Global Surface Water v1.3 (Pekel et al 2016, Nature 540, 418-422,  EC JRC/Google); ESA WorldCover 10 m 2020 ( ESA WorldCover project 2020 / Contains modified Copernicus Sentinel data (2020) processed by ESA WorldCover consortium); OpenStreetMap Water Polygons ( OpenStreetMap contributors, ODbL 1.0); MEaSUREs GIMP Mask v1 (Howat 2017, doi:10.5067/B8X58MQBFUPA; Howat et al 2014). All trademarks and rights remain with their respective owners; NISAR mission organizations assume no liability for use of this product.",
+       "grid_mapping": "projection",
+       "percentage_water": 49.00521674059392,
+       "valid_min": 0
+      },
+      "fillvalue": "np.uint32(0)"
+     },
+     "projection": {
+      "dtype": "uint32",
+      "shape": [],
+      "chunks": null,
+      "compression": null,
+      "compression_opts": null,
+      "attrs": {
+       "description": "Product map grid projection: EPSG code, with additional projection information as HDF5 Attributes",
+       "ellipsoid": "WGS84",
+       "epsg_code": 32619,
+       "false_easting": 500000.0,
+       "false_northing": 0.0,
+       "grid_mapping_name": "transverse_mercator",
+       "inverse_flattening": 298.257223563,
+       "latitude_of_projection_origin": 0.0,
+       "longitude_of_central_meridian": -69.0,
+       "longitude_of_projection_origin": 0.0,
+       "scale_factor_at_central_meridian": 0.9996,
+       "semi_major_axis": 6378137.0,
+       "spatial_ref": "PROJCS[\"WGS 84 / UTM zone 19N\",GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",-69],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"32619\"]]",
+       "utm_zone_number": 19
+      },
+      "fillvalue": "np.uint32(0)"
+     },
+     "xCoordinateSpacing": {
+      "dtype": "float64",
+      "shape": [],
+      "chunks": null,
+      "compression": null,
+      "compression_opts": null,
+      "attrs": {
+       "description": "Nominal spacing in meters between consecutive pixels",
+       "long_name": "X coordinates spacing",
+       "units": "meters"
+      },
+      "fillvalue": "np.float64(0.0)"
+     },
+     "xCoordinates": {
+      "dtype": "float64",
+      "shape": [
+       4509
+      ],
+      "chunks": null,
+      "compression": null,
+      "compression_opts": null,
+      "attrs": {
+       "CLASS": "DIMENSION_SCALE",
+       "NAME": "",
+       "REFERENCE_LIST": [
+        [
+         "<HDF5 object reference>",
+         1
+        ]
+       ],
+       "description": "X coordinates in specified projection",
+       "long_name": "X coordinate of projection",
+       "standard_name": "projection_x_coordinate",
+       "units": "meters"
+      },
+      "fillvalue": "np.float64(0.0)"
+     },
+     "yCoordinateSpacing": {
+      "dtype": "float64",
+      "shape": [],
+      "chunks": null,
+      "compression": null,
+      "compression_opts": null,
+      "attrs": {
+       "description": "Nominal spacing in meters between consecutive lines",
+       "long_name": "Y coordinates spacing",
+       "units": "meters"
+      },
+      "fillvalue": "np.float64(0.0)"
+     },
+     "yCoordinates": {
+      "dtype": "float64",
+      "shape": [
+       4455
+      ],
+      "chunks": null,
+      "compression": null,
+      "compression_opts": null,
+      "attrs": {
+       "CLASS": "DIMENSION_SCALE",
+       "NAME": "",
+       "REFERENCE_LIST": [
+        [
+         "<HDF5 object reference>",
+         0
+        ]
+       ],
+       "description": "Y coordinates in specified projection",
+       "long_name": "Y coordinate of projection",
+       "standard_name": "projection_y_coordinate",
+       "units": "meters"
+      },
+      "fillvalue": "np.float64(0.0)"
+     }
+    },
+    "/science/LSAR/GUNW/grids/frequencyA/unwrappedInterferogram/HH": {
+     "coherenceMagnitude": {
+      "dtype": "float32",
+      "shape": [
+       4455,
+       4509
+      ],
+      "chunks": [
+       512,
+       512
+      ],
+      "compression": "gzip",
+      "compression_opts": 1,
+      "attrs": {
+       "DIMENSION_LIST": [
+        [
+         "<HDF5 object reference>"
+        ],
+        [
+         "<HDF5 object reference>"
+        ]
+       ],
+       "_FillValue": NaN,
+       "description": "Coherence magnitude between HH layers",
+       "grid_mapping": "projection",
+       "max_value": 0.9959251880645752,
+       "mean_value": 0.32929009199142456,
+       "min_value": 0.0020553292706608772,
+       "sample_stddev": 0.26087990403175354,
+       "units": "1"
+      },
+      "fillvalue": "np.float32(0.0)"
+     },
+     "connectedComponents": {
+      "dtype": "uint16",
+      "shape": [
+       4455,
+       4509
+      ],
+      "chunks": [
+       512,
+       512
+      ],
+      "compression": "gzip",
+      "compression_opts": 1,
+      "attrs": {
+       "DIMENSION_LIST": [
+        [
+         "<HDF5 object reference>"
+        ],
+        [
+         "<HDF5 object reference>"
+        ]
+       ],
+       "_FillValue": 65535,
+       "description": "Connected components for HH layer",
+       "grid_mapping": "projection",
+       "units": "1"
+      },
+      "fillvalue": "np.uint16(0)"
+     },
+     "ionospherePhaseScreen": {
+      "dtype": "float32",
+      "shape": [
+       4455,
+       4509
+      ],
+      "chunks": [
+       512,
+       512
+      ],
+      "compression": "gzip",
+      "compression_opts": 1,
+      "attrs": {
+       "DIMENSION_LIST": [
+        [
+         "<HDF5 object reference>"
+        ],
+        [
+         "<HDF5 object reference>"
+        ]
+       ],
+       "_FillValue": NaN,
+       "description": "Ionosphere phase screen",
+       "grid_mapping": "projection",
+       "max_value": 87.72274780273438,
+       "mean_value": 25.47932243347168,
+       "min_value": -87.93963623046875,
+       "sample_stddev": 19.885326385498047,
+       "units": "radians"
+      },
+      "fillvalue": "np.float32(0.0)"
+     },
+     "ionospherePhaseScreenUncertainty": {
+      "dtype": "float32",
+      "shape": [
+       4455,
+       4509
+      ],
+      "chunks": [
+       512,
+       512
+      ],
+      "compression": "gzip",
+      "compression_opts": 1,
+      "attrs": {
+       "DIMENSION_LIST": [
+        [
+         "<HDF5 object reference>"
+        ],
+        [
+         "<HDF5 object reference>"
+        ]
+       ],
+       "_FillValue": NaN,
+       "description": "Uncertainty of the ionosphere phase screen",
+       "grid_mapping": "projection",
+       "max_value": 3.9883980751037598,
+       "mean_value": 1.8276803493499756,
+       "min_value": 0.6519182324409485,
+       "sample_stddev": 1.0448676347732544,
+       "units": "radians"
+      },
+      "fillvalue": "np.float32(0.0)"
+     },
+     "projection": {
+      "dtype": "uint32",
+      "shape": [],
+      "chunks": null,
+      "compression": null,
+      "compression_opts": null,
+      "attrs": {
+       "description": "Product map grid projection: EPSG code, with additional projection information as HDF5 Attributes",
+       "ellipsoid": "WGS84",
+       "epsg_code": 32619,
+       "false_easting": 500000.0,
+       "false_northing": 0.0,
+       "grid_mapping_name": "transverse_mercator",
+       "inverse_flattening": 298.257223563,
+       "latitude_of_projection_origin": 0.0,
+       "longitude_of_central_meridian": -69.0,
+       "longitude_of_projection_origin": 0.0,
+       "scale_factor_at_central_meridian": 0.9996,
+       "semi_major_axis": 6378137.0,
+       "spatial_ref": "PROJCS[\"WGS 84 / UTM zone 19N\",GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",-69],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"32619\"]]",
+       "utm_zone_number": 19
+      },
+      "fillvalue": "np.uint32(0)"
+     },
+     "unwrappedPhase": {
+      "dtype": "float32",
+      "shape": [
+       4455,
+       4509
+      ],
+      "chunks": [
+       512,
+       512
+      ],
+      "compression": "gzip",
+      "compression_opts": 1,
+      "attrs": {
+       "DIMENSION_LIST": [
+        [
+         "<HDF5 object reference>"
+        ],
+        [
+         "<HDF5 object reference>"
+        ]
+       ],
+       "_FillValue": NaN,
+       "description": "Unwrapped interferogram between HH layers",
+       "grid_mapping": "projection",
+       "max_value": 29.85533332824707,
+       "mean_value": -0.6703072786331177,
+       "min_value": -23.08806610107422,
+       "sample_stddev": 7.439720630645752,
+       "units": "radians"
+      },
+      "fillvalue": "np.float32(0.0)"
+     },
+     "validDataMask": {
+      "dtype": "uint8",
+      "shape": [
+       4455,
+       4509
+      ],
+      "chunks": [
+       512,
+       512
+      ],
+      "compression": "gzip",
+      "compression_opts": 1,
+      "attrs": {
+       "DIMENSION_LIST": [
+        [
+         "<HDF5 object reference>"
+        ],
+        [
+         "<HDF5 object reference>"
+        ]
+       ],
+       "_FillValue": 255,
+       "description": "Valid mask for the HH layers: bit 1 = reference (1=valid, 0=invalid), bit 0 = secondary (1=valid, 0=invalid). Valid represents fully focused data and invalid represents partially focused or missing data",
+       "grid_mapping": "projection",
+       "long_name": "Valid data mask",
+       "units": "1",
+       "valid_min": 0,
+       "valid_pixel_fraction": 0.9575935030480014
+      },
+      "fillvalue": "np.uint8(0)"
+     },
+     "xCoordinateSpacing": {
+      "dtype": "float64",
+      "shape": [],
+      "chunks": null,
+      "compression": null,
+      "compression_opts": null,
+      "attrs": {
+       "description": "Nominal spacing in meters between consecutive pixels",
+       "long_name": "X coordinates spacing",
+       "units": "meters"
+      },
+      "fillvalue": "np.float64(0.0)"
+     },
+     "xCoordinates": {
+      "dtype": "float64",
+      "shape": [
+       4509
+      ],
+      "chunks": null,
+      "compression": null,
+      "compression_opts": null,
+      "attrs": {
+       "CLASS": "DIMENSION_SCALE",
+       "NAME": "",
+       "REFERENCE_LIST": [
+        [
+         "<HDF5 object reference>",
+         1
+        ],
+        [
+         "<HDF5 object reference>",
+         1
+        ],
+        [
+         "<HDF5 object reference>",
+         1
+        ],
+        [
+         "<HDF5 object reference>",
+         1
+        ],
+        [
+         "<HDF5 object reference>",
+         1
+        ],
+        [
+         "<HDF5 object reference>",
+         1
+        ]
+       ],
+       "description": "X coordinates in specified projection",
+       "long_name": "X coordinate of projection",
+       "standard_name": "projection_x_coordinate",
+       "units": "meters"
+      },
+      "fillvalue": "np.float64(0.0)"
+     },
+     "yCoordinateSpacing": {
+      "dtype": "float64",
+      "shape": [],
+      "chunks": null,
+      "compression": null,
+      "compression_opts": null,
+      "attrs": {
+       "description": "Nominal spacing in meters between consecutive lines",
+       "long_name": "Y coordinates spacing",
+       "units": "meters"
+      },
+      "fillvalue": "np.float64(0.0)"
+     },
+     "yCoordinates": {
+      "dtype": "float64",
+      "shape": [
+       4455
+      ],
+      "chunks": null,
+      "compression": null,
+      "compression_opts": null,
+      "attrs": {
+       "CLASS": "DIMENSION_SCALE",
+       "NAME": "",
+       "REFERENCE_LIST": [
+        [
+         "<HDF5 object reference>",
+         0
+        ],
+        [
+         "<HDF5 object reference>",
+         0
+        ],
+        [
+         "<HDF5 object reference>",
+         0
+        ],
+        [
+         "<HDF5 object reference>",
+         0
+        ],
+        [
+         "<HDF5 object reference>",
+         0
+        ],
+        [
+         "<HDF5 object reference>",
+         0
+        ]
+       ],
+       "description": "Y coordinates in specified projection",
+       "long_name": "Y coordinate of projection",
+       "standard_name": "projection_y_coordinate",
+       "units": "meters"
+      },
+      "fillvalue": "np.float64(0.0)"
+     }
+    }
+   },
+   "metadata": {
+    "/science/LSAR/identification": {
+     "boundingPolygon": {
+      "value": "POLYGON ((-71.7120484688846 43.9773913156454 400.068055474508,-71.8072513518594 43.7683939499289 377.628326415327,-71.9040755390603 43.5598604880858 228.165238600976,-71.9944681396638 43.3498540454393 406.897277229746,-72.0880743730369 43.1406931901131 369.521453858801,-72.1800494823649 42.931210942097 390.593140980869,-72.2726168002794 42.7219418150983 343.926483154997,-72.3637152867613 42.5123890636064 347.608978272658,-72.458792492064 42.3038612070294 89.1099416130057,-72.5497112310981 42.0944012086918 36.0706218379481,-72.6392725569493 41.884681234751 28.6493567678642,-72.3047757311744 41.8039715656482 102.093864441485,-71.9864573024794 41.7260727551119 86.3986676993861,-71.6797711317587 41.6500062494293 120.249588243811,-71.3862262384391 41.5762668502331 -30.8088684143832,-71.0997188541443 41.5034071340668 -30.5690688961045,-70.8212752382522 41.431756537145 -30.165758132778,-70.5499726328657 41.3611426743136 -29.7951663653528,-70.2850476033984 41.2914232113806 -29.8285241415874,-70.0258501040448 41.2224763498764 -29.7936396019891,-69.7718384293716 41.1542014610217 -30.1659823337043,-69.6739016351806 41.361603290355 -29.4307786551508,-69.5753277551497 41.5689159571725 -29.0359473836513,-69.4761057672972 41.7761380682497 -28.7205240549556,-69.3762248461675 41.9832667910569 -28.1975150362703,-69.2756807113884 42.1903028003959 -27.8867392152898,-69.1744626738088 42.3972443562476 -27.5801371039397,-69.0725607038144 42.6040890504093 -27.1128204118497,-68.969968019841 42.8108371872462 -26.7144373879465,-68.866677035566 43.017487485114 -26.4926275479874,-68.7626765109901 43.2240375978243 -26.2223339144675,-69.0241374872887 43.2946767302921 -26.382208232085,-69.2910052251558 43.3659940208429 -26.3568198672172,-69.563852120642 43.4380951240653 -26.4880854832815,-69.8433456734829 43.5111027694277 -26.5394897471304,-70.1302863917695 43.5851647053976 -26.6685180658848,-70.424721793293 43.6602255733128 38.7489702310715,-70.72768132202 43.7364748133946 169.425354001956,-71.0435503583278 43.8149180058648 165.784744262276,-71.3698701667108 43.8948254798049 308.67626926397,-71.7120484688846 43.9773913156454 400.068055474508))",
+      "dtype": "|S2150",
+      "description": "OGR compatible WKT representing the bounding polygon of the image. Horizontal coordinates are WGS84 longitude followed by latitude (both in degrees), and the vertical coordinate is the height above the WGS84 ellipsoid in meters. The first point corresponds to the start-time, near-range radar coordinate, and the perimeter is traversed in counterclockwise order on the map. This means the traversal order in radar coordinates differs for left-looking and right-looking sensors. The polygon includes the four corners of the radar grid, with equal numbers of points distributed evenly in radar coordinates along each edge"
+     },
+     "compositeReleaseId": {
+      "value": "P05036",
+      "dtype": "|S6",
+      "description": "Unique version identifier of the science data production system"
+     },
+     "diagnosticModeFlag": {
+      "value": 0,
+      "dtype": "uint32",
+      "description": "Indicates if the radar operation mode is a diagnostic mode (1-2) or DBFed science (0): 0, 1, or 2"
+     },
+     "frameNumber": {
+      "value": 67,
+      "dtype": "uint16",
+      "description": "Frame number"
+     },
+     "granuleId": {
+      "value": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+      "dtype": "|S123",
+      "description": "Unique granule identification name"
+     },
+     "instrumentName": {
+      "value": "L-SAR",
+      "dtype": "|S5",
+      "description": "Name of the instrument used to collect the remote sensing data provided in this product"
+     },
+     "isDithered": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "\"True\" if the pulse timing was varied (dithered) during acquisition, \"False\" otherwise"
+     },
+     "isFullFrame": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "\"True\" if the product fully covers a NISAR frame, \"False\" if partial coverage"
+     },
+     "isGeocoded": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "Flag to indicate if the product data is in the radar geometry (\"False\") or in the map geometry (\"True\")"
+     },
+     "isMixedMode": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "\"True\" if this product is generated from reference and secondary RSLCs with different range bandwidths, \"False\" otherwise"
+     },
+     "isUrgentObservation": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag indicating if observation is nominal (\"False\") or urgent (\"True\")"
+     },
+     "listOfFrequencies": {
+      "value": [
+       "A"
+      ],
+      "dtype": "|S1",
+      "description": "List of frequency layers available in the product"
+     },
+     "lookDirection": {
+      "value": "Left",
+      "dtype": "|S4",
+      "description": "Look direction, either \"Left\" or \"Right\""
+     },
+     "missionId": {
+      "value": "NISAR",
+      "dtype": "|S5",
+      "description": "Mission identifier"
+     },
+     "orbitPassDirection": {
+      "value": "Descending",
+      "dtype": "|S10",
+      "description": "Orbit direction, either \"Ascending\" or \"Descending\""
+     },
+     "platformName": {
+      "value": "NISAR",
+      "dtype": "|S5",
+      "description": "Name of the platform used to collect the remote sensing data provided in this product"
+     },
+     "processingCenter": {
+      "value": "JPL",
+      "dtype": "|S3",
+      "description": "Data processing center"
+     },
+     "processingDateTime": {
+      "value": "2026-11-12T23:05:07",
+      "dtype": "|S19",
+      "description": "Processing date and time (in UTC) in the format YYYY-mm-ddTHH:MM:SS"
+     },
+     "processingType": {
+      "value": "Nominal",
+      "dtype": "|S7",
+      "description": "Processing pipeline used to generate this granule. \"Nominal\": standard production system; \"Urgent\": time-sensitive processing in response to urgent response events; \"Custom\": user-initiated processing outside the nominal production system"
+     },
+     "productDoi": {
+      "value": "10.5067/NIL2GUNW-V1",
+      "dtype": "|S19",
+      "description": "Digital Object Identifier (DOI) for the product"
+     },
+     "productLevel": {
+      "value": "L2",
+      "dtype": "|S2",
+      "description": "Product level. \"L0A\": Unprocessed instrument data; \"L0B\": Reformatted, unprocessed instrument data; \"L1\": Processed instrument data in radar coordinates system; and \"L2\": Processed instrument data in geocoded coordinates system"
+     },
+     "productSpecificationVersion": {
+      "value": "1.6.0",
+      "dtype": "|S5",
+      "description": "Product specification version which represents the schema of this product"
+     },
+     "productType": {
+      "value": "GUNW",
+      "dtype": "|S4",
+      "description": "Product type"
+     },
+     "productVersion": {
+      "value": "1.0.20",
+      "dtype": "|S6",
+      "description": "Product version which represents the structure of the product and the science content governed by the algorithm, input data, and processing parameters"
+     },
+     "radarBand": {
+      "value": "L",
+      "dtype": "|S1",
+      "description": "Acquired frequency band, either \"L\" or \"S\""
+     },
+     "referenceAbsoluteOrbitNumber": {
+      "value": 6295,
+      "dtype": "uint32",
+      "description": "Absolute orbit number for the reference RSLC"
+     },
+     "referenceHasInputDataException": {
+      "value": 0,
+      "dtype": "uint8",
+      "description": "Indication of input reference RSLC data exceptions or anomalies. Zero when no known exception affects this product, otherwise the bitwise OR of exception codes (2: NISAR LSAR qFSP-H1 sample slip)"
+     },
+     "referenceIsJointObservation": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "\"True\" if any portion of the reference RSLC was acquired in a joint observation mode (e.g., L-band and S-band simultaneously), \"False\" otherwise"
+     },
+     "referenceListOfObservationModes": {
+      "value": [
+       "(NOT SPECIFIED)"
+      ],
+      "dtype": "|S15",
+      "description": "List of observation modes of the L0B granules used to generate the reference RSLC (one mode per L0B)"
+     },
+     "referencePlannedDatatakeId": {
+      "value": [
+       "dtid_2026282233748"
+      ],
+      "dtype": "|S18",
+      "description": "List of planned datatakes included in the reference RSLC"
+     },
+     "referencePlannedObservationId": {
+      "value": [
+       "oid_2026282234248"
+      ],
+      "dtype": "|S17",
+      "description": "List of planned observations included in the reference RSLC"
+     },
+     "referenceZeroDopplerEndTime": {
+      "value": "2026-10-09T23:44:05.999342105",
+      "dtype": "|S29",
+      "description": "Azimuth stop time (in UTC) of reference RSLC product in the format YYYY-mm-ddTHH:MM:SS.sssssssss"
+     },
+     "referenceZeroDopplerStartTime": {
+      "value": "2026-10-09T23:43:30.000000000",
+      "dtype": "|S29",
+      "description": "Azimuth start time (in UTC) of reference RSLC product in the format YYYY-mm-ddTHH:MM:SS.sssssssss"
+     },
+     "secondaryAbsoluteOrbitNumber": {
+      "value": 6468,
+      "dtype": "uint32",
+      "description": "Absolute orbit number for the secondary RSLC"
+     },
+     "secondaryHasInputDataException": {
+      "value": 0,
+      "dtype": "uint8",
+      "description": "Indication of input secondary RSLC data exceptions or anomalies. Zero when no known exception affects this product, otherwise the bitwise OR of exception codes (2: NISAR LSAR qFSP-H1 sample slip)"
+     },
+     "secondaryIsJointObservation": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "\"True\" if any portion of the secondary RSLC was acquired in a joint observation mode (e.g., L-band and S-band simultaneously), \"False\" otherwise"
+     },
+     "secondaryListOfObservationModes": {
+      "value": [
+       "(NOT SPECIFIED)"
+      ],
+      "dtype": "|S15",
+      "description": "List of observation modes of the L0B granules used to generate the secondary RSLC (one mode per L0B)"
+     },
+     "secondaryPlannedDatatakeId": {
+      "value": [
+       "dtid_2026294233748"
+      ],
+      "dtype": "|S18",
+      "description": "List of planned datatakes included in the secondary RSLC"
+     },
+     "secondaryPlannedObservationId": {
+      "value": [
+       "oid_2026294234248"
+      ],
+      "dtype": "|S17",
+      "description": "List of planned observations included in the secondary RSLC"
+     },
+     "secondaryZeroDopplerEndTime": {
+      "value": "2026-10-21T23:44:05.999342105",
+      "dtype": "|S29",
+      "description": "Azimuth stop time (in UTC) of secondary RSLC product in the format YYYY-mm-ddTHH:MM:SS.sssssssss"
+     },
+     "secondaryZeroDopplerStartTime": {
+      "value": "2026-10-21T23:43:30.000000000",
+      "dtype": "|S29",
+      "description": "Azimuth start time (in UTC) of secondary RSLC product in the format YYYY-mm-ddTHH:MM:SS.sssssssss"
+     },
+     "staticLayersDataAccess": {
+      "value": "https://nisar-services.earthdata.nasa.gov/redirect/NISAR_L2_STATIC/NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+      "dtype": "|S193",
+      "description": "Location of the static layers product associated with this product (URL or DOI)"
+     },
+     "trackNumber": {
+      "value": 141,
+      "dtype": "uint32",
+      "description": "Track number"
+     }
+    },
+    "/science/LSAR/GUNW/metadata/processingInformation/algorithms": {
+     "coregistration/coregistrationMethod": {
+      "value": "Coarse geometry coregistration with DEM and orbit ephemeris with cross-correlation refinement",
+      "dtype": "|S93",
+      "description": "RSLC coregistration method"
+     },
+     "coregistration/crossCorrelation": {
+      "value": "frequency",
+      "dtype": "|S9",
+      "description": "Cross-correlation algorithm for sub-pixel offsets computation"
+     },
+     "coregistration/crossCorrelationFilling": {
+      "value": "fill_smoothed",
+      "dtype": "|S13",
+      "description": "Outliers data filling algorithm for cross-correlation offsets"
+     },
+     "coregistration/crossCorrelationFilterKernel": {
+      "value": "boxcar",
+      "dtype": "|S6",
+      "description": "Filtering algorithm for cross-correlation offsets"
+     },
+     "coregistration/crossCorrelationOutliers": {
+      "value": "median_filter",
+      "dtype": "|S13",
+      "description": "Outliers identification algorithm"
+     },
+     "coregistration/geometryCoregistration": {
+      "value": "Range doppler to geogrid then geogrid to range doppler",
+      "dtype": "|S54",
+      "description": "Geometry coregistration algorithm"
+     },
+     "coregistration/resampling": {
+      "value": "sinc",
+      "dtype": "|S4",
+      "description": "Secondary RSLC resampling algorithm"
+     },
+     "geocoding/complexGeocodingInterpolation": {
+      "value": "BILINEAR",
+      "dtype": "|S8",
+      "description": "Geocoding interpolation algorithm for complex-valued datasets"
+     },
+     "geocoding/demInterpolation": {
+      "value": "biquintic",
+      "dtype": "|S9",
+      "description": "DEM interpolation algorithm"
+     },
+     "geocoding/floatingGeocodingInterpolation": {
+      "value": "BILINEAR",
+      "dtype": "|S8",
+      "description": "Geocoding interpolation algorithm for floating point datasets"
+     },
+     "geocoding/integerGeocodingInterpolation": {
+      "value": "nearest",
+      "dtype": "|S7",
+      "description": "Geocoding interpolation algorithm for integer datasets"
+     },
+     "interferogramFormation/flatteningMethod": {
+      "value": "With geometry offsets",
+      "dtype": "|S21",
+      "description": "Algorithm used to flatten the wrapped interferogram"
+     },
+     "interferogramFormation/multilooking": {
+      "value": "Spatial moving average with decimation",
+      "dtype": "|S38",
+      "description": "Multilooking algorithm"
+     },
+     "interferogramFormation/wrappedInterferogramFiltering": {
+      "value": "no_filter",
+      "dtype": "|S9",
+      "description": "Algorithm used to filter the wrapped interferogram prior to phase unwrapping"
+     },
+     "ionosphereEstimation/ionosphereAlgorithm": {
+      "value": "Range split-spectrum with sub-band interferograms from the main band and the difference of the main and side band of the input RSLCs",
+      "dtype": "|S132",
+      "description": "Algorithm used to estimate ionosphere phase screen"
+     },
+     "ionosphereEstimation/ionosphereFilling": {
+      "value": "nearest",
+      "dtype": "|S7",
+      "description": "Outliers data filling algorithm for ionosphere phase estimation"
+     },
+     "ionosphereEstimation/ionosphereFiltering": {
+      "value": "Iterative gaussian filter with 1 filtering",
+      "dtype": "|S42",
+      "description": "Filtering algorithm for ionosphere phase screen computation"
+     },
+     "ionosphereEstimation/ionosphereOutliers": {
+      "value": "['coherence', 'subswath_mask']",
+      "dtype": "|S30",
+      "description": "Algorithm identifying outliers in unfiltered ionosphere phase screen"
+     },
+     "ionosphereEstimation/unwrappingErrorCorrection": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "Algorithm correcting unwrapping errors in sub-band unwrapped interferograms"
+     },
+     "softwareVersion": {
+      "value": "0.25.21",
+      "dtype": "|S7",
+      "description": "Software version used for processing"
+     },
+     "unwrapping/costMode": {
+      "value": "smooth",
+      "dtype": "|S6",
+      "description": "Cost mode algorithm for phase unwrapping"
+     },
+     "unwrapping/preprocessing/wrappedPhaseFilling": {
+      "value": "distance_interpolator",
+      "dtype": "|S21",
+      "description": "Outliers data filling algorithm for phase unwrapping preprocessing"
+     },
+     "unwrapping/preprocessing/wrappedPhaseOutliers": {
+      "value": [
+       "subswath_mask"
+      ],
+      "dtype": "object",
+      "description": "Algorithm identifying outliers in the wrapped interferogram"
+     },
+     "unwrapping/unwrappingAlgorithm": {
+      "value": "snaphu",
+      "dtype": "|S6",
+      "description": "Algorithm used for phase unwrapping"
+     },
+     "unwrapping/unwrappingInitializer": {
+      "value": "mcf",
+      "dtype": "|S3",
+      "description": "Algorithm used to initialize phase unwrapping"
+     }
+    },
+    "/science/LSAR/GUNW/metadata/processingInformation/parameters": {
+     "common/frequencyA/dopplerBandwidth": {
+      "value": 1264.0756886487645,
+      "dtype": "float64",
+      "description": "Common Doppler bandwidth between reference and secondary RSLCs"
+     },
+     "common/frequencyA/dopplerCentroid": {
+      "shape": [
+       110,
+       108
+      ],
+      "dtype": "float64"
+     },
+     "geocoding/azimuthIonosphericCorrectionApplied": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "Flag to indicate if the azimuth ionospheric correction is applied to improve geolocation"
+     },
+     "geocoding/hydrostaticTroposphericCorrectionApplied": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "Flag to indicate if the hydrostatic tropospheric correction is applied to improve geolocation"
+     },
+     "geocoding/rangeIonosphericCorrectionApplied": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "Flag to indicate if the range ionospheric correction is applied to improve geolocation"
+     },
+     "geocoding/wetTroposphericCorrectionApplied": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "Flag to indicate if the wet tropospheric correction is applied to improve geolocation"
+     },
+     "ionosphere/highBandBandwidth": {
+      "value": NaN,
+      "dtype": "float32",
+      "description": "Slant range bandwidth of the high sub-band image"
+     },
+     "ionosphere/lowBandBandwidth": {
+      "value": NaN,
+      "dtype": "float32",
+      "description": "Slant range bandwidth of the low sub-band image"
+     },
+     "pixelOffsets/frequencyA/alongTrackSearchWindowSize": {
+      "value": 64,
+      "dtype": "uint32",
+      "description": "Along-track cross-correlation search window size in pixels"
+     },
+     "pixelOffsets/frequencyA/alongTrackSkipWindowSize": {
+      "value": 75,
+      "dtype": "uint32",
+      "description": "Along-track cross-correlation skip window size in pixels"
+     },
+     "pixelOffsets/frequencyA/alongTrackWindowSize": {
+      "value": 96,
+      "dtype": "uint32",
+      "description": "Along-track cross-correlation window size in pixels"
+     },
+     "pixelOffsets/frequencyA/correlationSurfaceOversampling": {
+      "value": 16,
+      "dtype": "uint32",
+      "description": "Oversampling factor of the cross-correlation surface"
+     },
+     "pixelOffsets/frequencyA/isOffsetsBlendingApplied": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if pixel offsets are the results of blending multi-resolution layers of pixel offsets"
+     },
+     "pixelOffsets/frequencyA/slantRangeSearchWindowSize": {
+      "value": 64,
+      "dtype": "uint32",
+      "description": "Slant range cross-correlation search window size in pixels"
+     },
+     "pixelOffsets/frequencyA/slantRangeSkipWindowSize": {
+      "value": 75,
+      "dtype": "uint32",
+      "description": "Slant range cross-correlation skip window size in pixels"
+     },
+     "pixelOffsets/frequencyA/slantRangeWindowSize": {
+      "value": 64,
+      "dtype": "uint32",
+      "description": "Slant range cross-correlation window size in pixels"
+     },
+     "reference/frequencyA/azimuthBandwidth": {
+      "value": 1264.0756886487645,
+      "dtype": "float64",
+      "description": "Processed azimuth bandwidth for reference RSLC"
+     },
+     "reference/frequencyA/dopplerCentroid": {
+      "shape": [
+       110,
+       108
+      ],
+      "dtype": "float64"
+     },
+     "reference/frequencyA/numberOfAzimuthLines": {
+      "value": 54720,
+      "dtype": "uint64",
+      "description": "Number of azimuth lines within the reference RSLC"
+     },
+     "reference/frequencyA/numberOfRangeSamples": {
+      "value": 52713,
+      "dtype": "uint64",
+      "description": "Number of slant range samples for each azimuth line within the reference RSLC"
+     },
+     "reference/frequencyA/rangeBandwidth": {
+      "value": 40000000.0,
+      "dtype": "float64",
+      "description": "Processed slant range bandwidth for reference RSLC"
+     },
+     "reference/frequencyA/slantRangeSpacing": {
+      "value": 3.1228381041666666,
+      "dtype": "float64",
+      "description": "Slant range spacing of reference RSLC"
+     },
+     "reference/frequencyA/slantRangeStart": {
+      "value": 887060.9005171667,
+      "dtype": "float64",
+      "description": "Slant range start distance for the reference RSLC"
+     },
+     "reference/frequencyA/zeroDopplerEndTime": {
+      "value": "2026-10-09T23:44:05.999342105",
+      "dtype": "|S29",
+      "description": "Azimuth stop time (in UTC) of the reference RSLC product in the format YYYY-mm-ddTHH:MM:SS.sssssssss"
+     },
+     "reference/frequencyA/zeroDopplerStartTime": {
+      "value": "2026-10-09T23:43:30.000000000",
+      "dtype": "|S29",
+      "description": "Azimuth start time (in UTC) of the reference RSLC product in the format YYYY-mm-ddTHH:MM:SS.sssssssss"
+     },
+     "reference/frequencyA/zeroDopplerTimeSpacing": {
+      "value": 0.0006578947368421052,
+      "dtype": "float64",
+      "description": "Time interval in the along-track direction for reference RSLC raster layers"
+     },
+     "reference/isMixedMode": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "\"True\" if reference RSLC is a composite of data collected in multiple radar modes, \"False\" otherwise"
+     },
+     "reference/referenceTerrainHeight": {
+      "shape": [
+       110
+      ],
+      "dtype": "float32"
+     },
+     "reference/rfiMitigation": {
+      "value": "tone-rank",
+      "dtype": "|S9",
+      "description": "Algorithm used for radio frequency interference (RFI) mitigation in the reference RSLC, either \"ST-EVD\" or \"FDNF\" (or \"disabled\" if no RFI mitigation was applied)"
+     },
+     "reference/rfiMitigationApplied": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "Flag to indicate if radio frequency interference (RFI) mitigation was applied during the generation of the reference RSLC"
+     },
+     "runConfigurationContents": {
+      "value": "{'pge_name_group': {'pge_name': 'INSAR_L_PGE'}, 'input_file_group': {'reference_rslc_file': '/data/work/jobs/2026/11/12/22/14/SCIFLO_INSAR__release-r05.03.5-network_pair_033_141_067_full_individual_L_40_DH_05_DH_0_state-config-20261112T203315.550272Z/NISAR_L1_PR_RSLC_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5', 'secondary_rslc_file': '/data/work/jobs/2026/11/12/22/14/SCIFLO_INSAR__release-r05.03.5-network_pair_033_141_067_full_individual_L_40_DH_05_DH_0_state-config-20261112T203315.550272Z/NISAR_L1_PR_RSLC_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5', 'qa_rifg_input_file': 'RIFG_product.h5', 'qa_runw_input_file': 'RUNW_product.h5', 'qa_gunw_input_file': 'output/product.h5', 'qa_roff_input_file': 'ROFF_product.h5', 'qa_goff_input_file': 'GOFF_product.h5'}, 'dynamic_ancillary_file_group': {'dem_file': '/data/work/jobs/2026/11/12/22/14/SCIFLO_INSAR__release-r05.03.5-network_pair_033_141_067_full_individual_L_40_DH_05_DH_0_state-config-20261112T203315.550272Z/dem.vrt', 'dem_file_description': 'Modified Copernicus Digital Elevation Model for the NASA-ISRO NISAR mission, version 1.3, based on the Copernicus DEM 30-m (2023_1), referenced to the WGS 84 ellipsoid and provided in geographic coordinates (EPSG:4326). This digital elevation model (DEM) was prepared at the Jet Propulsion Laboratory, California Institute of Technology, under contract with the National Aeronautics and Space Administration, using the Copernicus DEM 30-m COP-DEM_GLO-30-DGED/2023_1 model provided by the European Space Agency (ESA). The Copernicus DEM 30-m was produced using Copernicus WorldDEM-30  DLR e.V. 2010-2014 and  Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved. The organizations in charge of the NISAR mission or the Copernicus programme by law or by delegation do not incur any liability for any use of the Copernicus WorldDEM-30. Users, including those who redistribute, adapt, modify, or combine the data contained in this DEM, must comply with the terms of the Copernicus DEM 30-m License Agreement. For additional information, please refer to https://doi.org/10.5067/NIDEM-1 and https://doi.org/10.5270/ESA-c5d3d65.', 'water_mask_file': '/data/work/jobs/2026/11/12/22/14/SCIFLO_INSAR__release-r05.03.5-network_pair_033_141_067_full_individual_L_40_DH_05_DH_0_state-config-20261112T203315.550272Z/WATERMASK.vrt', 'water_mask_file_description': 'Water Mask for the NASA-ISRO NISAR mission version 0.5, derived through analysis and processing of multiple input datasets, referenced to the WGS84 ellipsoid. Water mask derived at the Jet Propulsion Laboratory, California Institute of Technology, under contract with NASA, using multiple open datasets: JRC Global Surface Water v1.3 (Pekel et al 2016, Nature 540, 418-422,  EC JRC/Google); ESA WorldCover 10 m 2020 ( ESA WorldCover project 2020 / Contains modified Copernicus Sentinel data (2020) processed by ESA WorldCover consortium); OpenStreetMap Water Polygons ( OpenStreetMap contributors, ODbL 1.0); MEaSUREs GIMP Mask v1 (Howat 2017, doi:10.5067/B8X58MQBFUPA; Howat et al 2014). All trademarks and rights remain with their respective owners; NISAR mission organizations assume no liability for use of this product.', 'orbit_files': {'reference_orbit_file': None, 'secondary_orbit_file': None}, 'tec_file': '/data/work/jobs/2026/11/12/22/14/SCIFLO_INSAR__release-r05.03.5-network_pair_033_141_067_full_individual_L_40_DH_05_DH_0_state-config-20261112T203315.550272Z/NISAR_ANC_TEC_20261011T211444_20261009T230002_20261010T235952_s015.json', 'troposphere_weather_model_files': {'reference_troposphere_file': '/data/work/jobs/2026/11/12/22/14/SCIFLO_INSAR__release-r05.03.5-network_pair_033_141_067_full_individual_L_40_DH_05_DH_0_state-config-20261112T203315.550272Z/ECMWF_TROP_202610100000_202610100000_1.nc', 'secondary_troposphere_file': '/data/work/jobs/2026/11/12/22/14/SCIFLO_INSAR__release-r05.03.5-network_pair_033_141_067_full_individual_L_40_DH_05_DH_0_state-config-20261112T203315.550272Z/ECMWF_TROP_202610220000_202610220000_1.nc'}}, 'product_path_group': {'product_path': 'output', 'scratch_path': 'scratch', 'sas_output_file': 'output/product.h5', 'qa_output_dir': 'qa_insar', 'product_counter': 1}, 'primary_executable': {'product_type': 'GUNW', 'product_version': {'rifg_version': '1.0.20', 'roff_version': '1.0.20', 'runw_version': '1.0.20', 'goff_version': '1.0.20', 'gunw_version': '1.0.20'}, 'product_doi': {'rifg_doi': '10.5067/NIL1RIFG-V1', 'roff_doi': '10.5067/NIL1ROFF-V1', 'runw_doi': '10.5067/NIL1RUNW-V1', 'goff_doi': '10.5067/NIL2GOFF-V1', 'gunw_doi': '10.5067/NIL2GUNW-V1'}, 'static_layers_data_access': 'https://nisar-services.earthdata.nasa.gov/redirect/NISAR_L2_STATIC/{granule_id}.h5', 'composite_release_id': 'P05036', 'processing_type': 'PR', 'product_accuracy': 'N', 'urgent_request_id': None, 'processing_center': 'J', 'partial_granule_id': 'NISAR_{Level}_PR_{ProductType}_032_141_D_067_033_{MODE}_{PO}_{RefStartDateTime}_{RefEndDateTime}_{SecStartDateTime}_{SecEndDateTime}_P05036_N_F_J_001'}, 'debug_level_group': {'debug_switch': False}, 'worker': {'intermediate_files_removal_enabled': True, 'internet_access': False, 'gpu_enabled': False, 'gpu_id': 0}, 'processing': {'process_single_co_pol_offset': True, 'input_subset': {'list_of_frequencies': {'A': ['HH']}}, 'dem_download': {'source': None, 'top_left': {'x': None, 'y': None}, 'bottom_right': {'x': None, 'y': None}}, 'geocode': {'runw_path': None, 'roff_path': None, 'rifg_path': None, 'x_snap': None, 'y_snap': None, 'output_epsg': 32619, 'output_posting': {'A': {'x_posting': 80, 'y_posting': 80}, 'B': {'x_posting': None, 'y_posting': None}}, 'wrapped_interferogram': {'interp_method': 'BILINEAR', 'x_snap': None, 'y_snap': None, 'output_posting': {'A': {'x_posting': 20, 'y_posting': 20}, 'B': {'x_posting': None, 'y_posting': None}}}, 'top_left': {'y_abs': None, 'x_abs': None}, 'bottom_right': {'y_abs': None, 'x_abs': None}, 'lines_per_block': 1000, 'interp_method': 'BILINEAR', 'geogrids': {'A': <isce3.ext.isce3.product.GeoGridParameters object at 0x7f5adb6108b0>}, 'wrapped_igram_geogrids': {'A': <isce3.ext.isce3.product.GeoGridParameters object at 0x7f5adb611870>}, 'gunw_datasets': {'connected_components': True, 'coherence_magnitude': True, 'ionosphere_phase_screen': True, 'ionosphere_phase_screen_uncertainty': True, 'unwrapped_phase': True, 'along_track_offset': True, 'slant_range_offset': True, 'correlation_surface_peak': True, 'mask': True, 'valid_data_mask': True}, 'goff_datasets': {'along_track_offset': True, 'snr': True, 'along_track_offset_variance': True, 'correlation_surface_peak': True, 'cross_offset_variance': True, 'slant_range_offset': True, 'slant_range_offset_variance': True, 'mask': True, 'valid_data_mask': True}, 'wrapped_datasets': {'coherence_magnitude': True, 'wrapped_interferogram': True, 'mask': True, 'valid_data_mask': True}}, 'radar_grid_cubes': {'heights': [-500, 0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500, 8000, 8500, 9000], 'output_epsg': 32619, 'output_posting': {'x_posting': 500, 'y_posting': 500}, 'y_snap': None, 'x_snap': None, 'top_left': {'y_abs': None, 'x_abs': None}, 'bottom_right': {'y_abs': None, 'x_abs': None}, 'geogrid': <isce3.ext.isce3.product.GeoGridParameters object at 0x7f5addabf8f0>}, 'bandpass': {'lines_per_block': 1000, 'window_function': 'tukey', 'window_shape': 0.25, 'range_fft_size': None}, 'ionosphere_phase_correction': {'enabled': True, 'lines_per_block': 8000, 'spectral_diversity': 'main_diff_ms_band', 'list_of_frequencies': {'A': ['HH'], 'B': ['HH']}, 'split_range_spectrum': {'lines_per_block': 2048, 'low_band_bandwidth': None, 'high_band_bandwidth': None, 'window_function': 'tukey', 'window_shape': 0.25}, 'dispersive_filter': {'enabled': True, 'filter_mask_type': ['coherence', 'subswath_mask'], 'median_filter_size': 15, 'median_filter_threshold': 0.6, 'filter_coherence_threshold': 0.2, 'filling_method': 'nearest', 'filling_guide_filter_method': 'median_gaussian', 'filling_guide_median_size': 3, 'filling_outlier_threshold': 3.5, 'filling_outlier_min_scale': 0.0, 'filling_outlier_mad_scale_factor': 1.4826, 'kernel_range': 14, 'kernel_azimuth': 110, 'sigma_range': 4, 'sigma_azimuth': 37, 'filter_iterations': 1, 'unwrap_correction': True, 'min_cluster_pixels': 2, 'bridge_algorithm_enabled': True, 'bridge_radius': 500, 'bridge_erosion_size': 2, 'bridge_minimum_samples': 14, 'bridge_ramp_type': None, 'bridge_ramp_maximum_pixel': 1000000.0}, 'qfsp_correction': {'enabled': True, 'background_order': 2, 'template_smooth_win': 3, 'inner_shrink': 2, 'outer_feather': 10, 'background_crit_value': 5.0, 'background_max_iterations': 50, 'background_max_samples': 20000, 'background_minimum_quality': 0.05, 'debug_flag': False}}, 'troposphere_delay': {'enabled': True, 'package': 'raider', 'weather_model_type': 'HRES', 'delay_direction': 'line_of_sight_mapping', 'enable_wet_product': True, 'enable_hydrostatic_product': True, 'enable_comb_product': False}, 'geo2rdr': {'threshold': 1e-08, 'maxiter': 25, 'lines_per_block': 1000, 'topo_path': 'scratch'}, 'rdr2geo': {'threshold': 1e-07, 'numiter': 25, 'extraiter': 10, 'lines_per_block': 1000, 'write_x': True, 'write_y': True, 'write_z': True, 'write_incidence': False, 'write_heading': False, 'write_local_incidence': False, 'write_local_psi': False, 'write_simulated_amplitude': False, 'write_layover_shadow': False}, 'coarse_resample': {'offsets_dir': 'scratch', 'lines_per_tile': 1000, 'columns_per_tile': 1000}, 'dense_offsets': {'enabled': True, 'lines_per_block': 1000, 'coregistered_slc_path': 'scratch', 'window_range': 64, 'window_azimuth': 96, 'half_search_range': 32, 'half_search_azimuth': 32, 'skip_range': 75, 'skip_azimuth': 75, 'margin': 0, 'offset_width': None, 'offset_length': None, 'start_pixel_range': None, 'start_pixel_azimuth': None, 'cross_correlation_domain': 'frequency', 'slc_oversampling_factor': 2, 'deramping_method': 'complex', 'deramping_axis': 'azimuth', 'use_gross_offsets': True, 'gross_offset_range': 0, 'gross_offset_azimuth': 0, 'gross_offset_filepath': None, 'merge_gross_offset': None, 'correlation_statistics_zoom': 21, 'correlation_surface_zoom': 8, 'correlation_surface_oversampling_factor': 16, 'correlation_surface_oversampling_method': 'fft', 'cuda_streams': None, 'windows_batch_range': 10, 'windows_batch_azimuth': 1}, 'offsets_product': {'enabled': False, 'coregistered_slc_path': 'scratch', 'lines_per_block': 1000, 'margin': 0, 'offset_length': None, 'offset_width': None, 'skip_range': 15, 'skip_azimuth': 15, 'start_pixel_range': None, 'start_pixel_azimuth': None, 'cross_correlation_domain': 'frequency', 'deramping_method': 'complex', 'deramping_axis': 'azimuth', 'slc_oversampling_factor': 2, 'gross_offset_filepath': None, 'gross_offset_range': 0, 'gross_offset_azimuth': 0, 'merge_gross_offset': False, 'correlation_statistics_zoom': 21, 'correlation_surface_zoom': 8, 'correlation_surface_oversampling_factor': 64, 'correlation_surface_oversampling_method': 'sinc', 'cuda_streams': 2, 'windows_batch_range': 10, 'windows_batch_azimuth': 5, 'layer1': {'window_range': 64, 'window_azimuth': 64, 'half_search_range': 16, 'half_search_azimuth': 16}}, 'rubbersheet': {'dense_offsets_path': 'scratch', 'offsets_product_path': None, 'geo2rdr_offsets_path': 'scratch', 'enabled': True, 'culling_metric': 'median_filter', 'median_filter_size_range': 9, 'median_filter_size_azimuth': 9, 'threshold': 3, 'mask_refine_enabled': True, 'mask_refine_min_neighbors': 0, 'mask_refine_filter_size': 5, 'outlier_filling_method': 'fill_smoothed', 'fill_smoothed': {'iterations': 15, 'kernel_size': 13}, 'interpolation_method': 'idw', 'azimuth_offset_filter': {'offsets_filter': 'mean', 'kernel_size': 31}, 'subswath_mask_apply_enabled': True, 'idw_interpolation': {'power': 2, 'number': 100, 'radius': 200}, 'offsets_filter': 'boxcar', 'boxcar': {'filter_size_range': 5, 'filter_size_azimuth': 5}, 'polyfitting': {'enabled': False, 'degree': 2, 'critical_value': 0.1, 'samples_along_range': 200, 'samples_along_azimuth': 200}}, 'fine_resample': {'enabled': True, 'offsets_dir': 'scratch', 'lines_per_tile': 100, 'columns_per_tile': 0}, 'crossmul': {'range_looks': 5, 'azimuth_looks': 6, 'flatten': True, 'oversample': 2, 'lines_per_block': 1024, 'common_band_range_filter': False, 'common_band_azimuth_filter': False, 'coregistered_slc_path': 'scratch', 'flatten_path': 'scratch'}, 'filter_interferogram': {'interferogram_path': None, 'mask': {'general': None}, 'lines_per_block': 100, 'filter_type': 'no_filter', 'boxcar': {'filter_size_range': 9, 'filter_size_azimuth': 9}}, 'baseline': {'mode': 'top_bottom'}, 'phase_unwrap': {'crossmul_path': None, 'range_looks': 13, 'azimuth_looks': 16, 'preprocess_wrapped_phase': {'enabled': True, 'mask': {'mask_path': None, 'mask_type': ['subswath_mask'], 'ocean_water_buffer': 1, 'inland_water_buffer': 1, 'outlier_threshold': 0.5, 'median_filter_size': 25}, 'filling_enabled': False, 'filling_method': 'distance_interpolator', 'distance_interpolator': {'distance': 2}}, 'algorithm': 'snaphu', 'icu': {'seed': 0, 'buffer_lines': 3700, 'overlap_lines': 200, 'use_phase_gradient_neutron': False, 'use_intensity_neutron': False, 'phase_gradient_window_size': 5, 'neutron_phase_gradient_threshold': 3.0, 'neutron_intensity_threshold': 8.0, 'max_intensity_correlation_threshold': 0.8, 'trees_number': 7, 'max_branch_length': 64, 'pixel_spacing_ratio': 1.0, 'initial_correlation_threshold': 0.1, 'max_correlation_threshold': 0.9, 'correlation_threshold_increments': 0.1, 'min_tile_area': 0.003125, 'bootstrap_lines': 16, 'min_overlap_area': 16, 'phase_variance_threshold': 8}, 'phass': {'correlation_threshold_increments': 0.2, 'good_correlation': 0.7, 'min_unwrap_area': 200, 'power': None}, 'snaphu': {'nlooks': None, 'cost_mode': 'smooth', 'mask': None, 'initialization_method': 'mcf', 'min_conncomp_frac': 0.0001, 'phase_grad_window': [7, 7], 'ntiles': [1, 1], 'tile_overlap': [0, 0], 'nproc': 1, 'tile_cost_thresh': 500, 'min_region_size': 300, 'single_tile_reoptimize': True, 'regrow_conncomps': True}, 'whirlwind': {'nlooks': None, 'mask': None, 'bridge': True, 'interpolate': False, 'interp_cutoff': 0.1, 'interp_num_neighbors': 30, 'interp_max_radius': 101, 'interp_min_radius': 0, 'interp_alpha': 0.75, 'conncomp_min_coherence': 'auto', 'conncomp_reliability': 0.5, 'min_size_px': 100, 'max_ncomps': 1024, 'connect_gaps': False, 'connect_gaps_max_px': 300, 'goldstein_alpha': 0.0, 'goldstein_psize': 64}, 'bridge': {'enabled': True, 'bridge_radius': 300, 'bridge_erosion_size': 2, 'bridge_minimum_samples': 14, 'bridge_ramp_type': None, 'bridge_ramp_maximum_pixel': 1000000.0}}, 'correction_luts': {'solid_earth_tides_enabled': True}, 'tec_correction': {'apply_slant_range_correction': True, 'apply_azimuth_correction': True, 'use_total_tec_only': False, 'ignore_invalid_topside_tec': True, 'polyfit_tec_profile': True, 'num_sigma': 1.5}}, 'output': {'page_enabled': True, 'compression_enabled': True, 'compression_level': 1, 'chunk_size': [512, 512], 'shuffle': True}, 'qa': {'rifg': {'workflows': {'validate': True, 'qa_reports': True}, 'software_config': {'use_cache': True, 'delete_qa_scratch_files': True}, 'validation': {'metadata_luts_fail_if_all_nan': True}, 'qa_reports': {'browse': {'longest_side_max': 2048, 'output_browse_latlon': True, 'resample': 'nearest'}, 'wrapped_igram': {'nan_threshold': 95.0, 'inf_threshold': 95.0, 'fill_threshold': 95.0, 'near_zero_threshold': -1, 'total_invalid_threshold': 95.0, 'epsilon': 1e-06, 'zero_is_invalid': False}, 'coh_mag': {'nan_threshold': 95.0, 'inf_threshold': 95.0, 'fill_threshold': 95.0, 'near_zero_threshold': 95.0, 'total_invalid_threshold': 95.0, 'epsilon': 1e-06, 'zero_is_invalid': True}, 'az_and_range_offsets': {'nan_threshold': 95.0, 'inf_threshold': 95.0, 'fill_threshold': 95.0, 'near_zero_threshold': -1, 'total_invalid_threshold': 95.0, 'epsilon': 1e-06, 'zero_is_invalid': False}, 'correlation_surface_peak': {'nan_threshold': 95.0, 'inf_threshold': 95.0, 'fill_threshold': 95.0, 'near_zero_threshold': -1, 'total_invalid_threshold': 95.0, 'epsilon': 1e-06, 'zero_is_invalid': False}}}, 'runw': {'workflows': {'validate': True, 'qa_reports': True}, 'software_config': {'use_cache': True, 'delete_qa_scratch_files': True}, 'validation': {'metadata_luts_fail_if_all_nan': True}, 'qa_reports': {'browse': {'longest_side_max': 2048, 'rewrap': 2, 'output_browse_latlon': True, 'resample': 'bilinear'}, 'phase_img': {'rewrap': 7, 'nan_threshold': 95.0, 'inf_threshold': 95.0, 'fill_threshold': 95.0, 'near_zero_threshold': 95.0, 'total_invalid_threshold': 95.0, 'epsilon': 1e-06, 'zero_is_invalid': True}, 'coh_mag': {'nan_threshold': 95.0, 'inf_threshold': 95.0, 'fill_threshold': 95.0, 'near_zero_threshold': 95.0, 'total_invalid_threshold': 95.0, 'epsilon': 1e-06, 'zero_is_invalid': True}, 'connected_components': {'nan_threshold': 0, 'inf_threshold': 0, 'fill_threshold': 95.0, 'near_zero_threshold': 99.9, 'total_invalid_threshold': 99.9, 'epsilon': 1e-06, 'zero_is_invalid': True, 'max_num_cc': None}, 'ionosphere_phase_screen': {'nan_threshold': -1, 'inf_threshold': 95.0, 'fill_threshold': -1, 'near_zero_threshold': -1, 'total_invalid_threshold': -1, 'epsilon': 1e-06, 'zero_is_invalid': False}, 'ionosphere_phase_screen_uncertainty': {'nan_threshold': 95.0, 'inf_threshold': 95.0, 'fill_threshold': 95.0, 'near_zero_threshold': -1, 'total_invalid_threshold': 95.0, 'epsilon': 1e-06, 'zero_is_invalid': False}, 'az_and_range_offsets': {'nan_threshold': 95.0, 'inf_threshold': 95.0, 'fill_threshold': 95.0, 'near_zero_threshold': -1, 'total_invalid_threshold': 95.0, 'epsilon': 1e-06, 'zero_is_invalid': False}, 'correlation_surface_peak': {'nan_threshold': 95.0, 'inf_threshold': 95.0, 'fill_threshold': 95.0, 'near_zero_threshold': -1, 'total_invalid_threshold': 95.0, 'epsilon': 1e-06, 'zero_is_invalid': False}}}, 'gunw': {'workflows': {'validate': True, 'qa_reports': True}, 'software_config': {'use_cache': True, 'delete_qa_scratch_files': True}, 'validation': {'metadata_luts_fail_if_all_nan': True}, 'qa_reports': {'browse': {'longest_side_max': 2048, 'rewrap': 2, 'output_browse_latlon': True, 'resample': 'average'}, 'phase_img': {'rewrap': 7, 'nan_threshold': 99.0, 'inf_threshold': 99.0, 'fill_threshold': 99.0, 'near_zero_threshold': 99.0, 'total_invalid_threshold': 99.0, 'epsilon': 1e-06, 'zero_is_invalid': True}, 'wrapped_igram': {'nan_threshold': 99.0, 'inf_threshold': 99.0, 'fill_threshold': 99.0, 'near_zero_threshold': -1, 'total_invalid_threshold': 99.0, 'epsilon': 1e-06, 'zero_is_invalid': False}, 'coh_mag': {'nan_threshold': 99.0, 'inf_threshold': 99.0, 'fill_threshold': 99.0, 'near_zero_threshold': 99.0, 'total_invalid_threshold': 99.0, 'epsilon': 1e-06, 'zero_is_invalid': True}, 'connected_components': {'nan_threshold': 0, 'inf_threshold': 0, 'fill_threshold': 99.0, 'near_zero_threshold': 99.9, 'total_invalid_threshold': 99.9, 'epsilon': 1e-06, 'zero_is_invalid': True, 'max_num_cc': None}, 'ionosphere_phase_screen': {'nan_threshold': -1, 'inf_threshold': 99.0, 'fill_threshold': -1, 'near_zero_threshold': -1, 'total_invalid_threshold': -1, 'epsilon': 1e-06, 'zero_is_invalid': False}, 'ionosphere_phase_screen_uncertainty': {'nan_threshold': 99.0, 'inf_threshold': 99.0, 'fill_threshold': 99.0, 'near_zero_threshold': -1, 'total_invalid_threshold': 99.0, 'epsilon': 1e-06, 'zero_is_invalid': False}, 'az_and_range_offsets': {'nan_threshold': 99.0, 'inf_threshold': 99.0, 'fill_threshold': 99.0, 'near_zero_threshold': -1, 'total_invalid_threshold': 99.0, 'epsilon': 1e-06, 'zero_is_invalid': False}, 'correlation_surface_peak': {'nan_threshold': 99.0, 'inf_threshold': 99.0, 'fill_threshold': 99.0, 'near_zero_threshold': -1, 'total_invalid_threshold': 99.0, 'epsilon': 1e-06, 'zero_is_invalid': False}}}, 'roff': {'workflows': {'validate': True, 'qa_reports': True}, 'software_config': {'use_cache': True, 'delete_qa_scratch_files': True}, 'validation': {'metadata_luts_fail_if_all_nan': True}, 'qa_reports': {'browse': {'longest_side_max': 2048, 'browse_decimation_freqa': None, 'browse_decimation_freqb': None, 'output_browse_latlon': True, 'resample': 'bilinear'}, 'az_and_range_offsets': {'nan_threshold': 95.0, 'inf_threshold': 95.0, 'fill_threshold': 95.0, 'near_zero_threshold': -1, 'total_invalid_threshold': 95.0, 'epsilon': 1e-06, 'zero_is_invalid': False}, 'quiver_plots': {'colorbar_min_max': None, 'arrow_density': 20, 'arrow_scaling': None}, 'az_and_rg_variance': {'colorbar_min_max': None, 'nan_threshold': 95.0, 'inf_threshold': 95.0, 'fill_threshold': 95.0, 'near_zero_threshold': -1, 'total_invalid_threshold': 95.0, 'epsilon': 1e-06, 'zero_is_invalid': False}, 'cross_offset_variance': {'colorbar_min_max': None, 'percentile_for_clipping': [1.0, 99.0], 'nan_threshold': 95.0, 'inf_threshold': 95.0, 'fill_threshold': 95.0, 'near_zero_threshold': -1, 'total_invalid_threshold': 95.0, 'epsilon': 1e-06, 'zero_is_invalid': False}, 'correlation_surface_peak': {'nan_threshold': 95.0, 'inf_threshold': 95.0, 'fill_threshold': 95.0, 'near_zero_threshold': 95.0, 'total_invalid_threshold': 95.0, 'epsilon': 1e-06, 'zero_is_invalid': True}}}, 'goff': {'workflows': {'validate': True, 'qa_reports': True}, 'software_config': {'use_cache': True, 'delete_qa_scratch_files': True}, 'validation': {'metadata_luts_fail_if_all_nan': True}, 'qa_reports': {'browse': {'longest_side_max': 2048, 'browse_decimation_freqa': None, 'browse_decimation_freqb': None, 'output_browse_latlon': True, 'resample': 'average'}, 'az_and_range_offsets': {'nan_threshold': 99.0, 'inf_threshold': 99.0, 'fill_threshold': 99.0, 'near_zero_threshold': -1, 'total_invalid_threshold': 99.0, 'epsilon': 1e-06, 'zero_is_invalid': False}, 'quiver_plots': {'colorbar_min_max': None, 'arrow_density': 20, 'arrow_scaling': None}, 'az_and_rg_variance': {'colorbar_min_max': None, 'nan_threshold': 99.0, 'inf_threshold': 99.0, 'fill_threshold': 99.0, 'near_zero_threshold': -1, 'total_invalid_threshold': 99.0, 'epsilon': 1e-06, 'zero_is_invalid': False}, 'cross_offset_variance': {'colorbar_min_max': None, 'percentile_for_clipping': [1.0, 99.0], 'nan_threshold': 99.0, 'inf_threshold': 99.0, 'fill_threshold': 99.0, 'near_zero_threshold': -1, 'total_invalid_threshold': 99.0, 'epsilon': 1e-06, 'zero_is_invalid': False}, 'correlation_surface_peak': {'nan_threshold': 99.0, 'inf_threshold': 99.0, 'fill_threshold': 99.0, 'near_zero_threshold': 99.0, 'total_invalid_threshold': 99.0, 'epsilon': 1e-06, 'zero_is_invalid': True}}}}, 'logging': {'path': 'scratch/insar.log', 'write_mode': 'w'}}",
+      "dtype": "|S22655",
+      "description": "Contents of the run configuration file with parameters used for processing"
+     },
+     "secondary/frequencyA/azimuthBandwidth": {
+      "value": 1264.0910035420065,
+      "dtype": "float64",
+      "description": "Processed azimuth bandwidth for secondary RSLC"
+     },
+     "secondary/frequencyA/dopplerCentroid": {
+      "shape": [
+       111,
+       108
+      ],
+      "dtype": "float64"
+     },
+     "secondary/frequencyA/numberOfAzimuthLines": {
+      "value": 54720,
+      "dtype": "uint64",
+      "description": "Number of azimuth lines within the secondary RSLC"
+     },
+     "secondary/frequencyA/numberOfRangeSamples": {
+      "value": 52712,
+      "dtype": "uint64",
+      "description": "Number of slant range samples for each azimuth line within the secondary RSLC"
+     },
+     "secondary/frequencyA/rangeBandwidth": {
+      "value": 40000000.0,
+      "dtype": "float64",
+      "description": "Processed slant range bandwidth for secondary RSLC"
+     },
+     "secondary/frequencyA/slantRangeSpacing": {
+      "value": 3.1228381041666666,
+      "dtype": "float64",
+      "description": "Slant range spacing of secondary RSLC"
+     },
+     "secondary/frequencyA/slantRangeStart": {
+      "value": 887060.9005171667,
+      "dtype": "float64",
+      "description": "Slant range start distance for the secondary RSLC"
+     },
+     "secondary/frequencyA/zeroDopplerEndTime": {
+      "value": "2026-10-21T23:44:05.999342105",
+      "dtype": "|S29",
+      "description": "Azimuth stop time (in UTC) of the secondary RSLC product in the format YYYY-mm-ddTHH:MM:SS.sssssssss"
+     },
+     "secondary/frequencyA/zeroDopplerStartTime": {
+      "value": "2026-10-21T23:43:30.000000000",
+      "dtype": "|S29",
+      "description": "Azimuth start time (in UTC) of the secondary RSLC product in the format YYYY-mm-ddTHH:MM:SS.sssssssss"
+     },
+     "secondary/frequencyA/zeroDopplerTimeSpacing": {
+      "value": 0.0006578947368421052,
+      "dtype": "float64",
+      "description": "Time interval in the along-track direction for secondary RSLC raster layers"
+     },
+     "secondary/isMixedMode": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "\"True\" if secondary RSLC is a composite of data collected in multiple radar modes, \"False\" otherwise"
+     },
+     "secondary/referenceTerrainHeight": {
+      "shape": [
+       111
+      ],
+      "dtype": "float32"
+     },
+     "secondary/rfiMitigation": {
+      "value": "tone-rank",
+      "dtype": "|S9",
+      "description": "Algorithm used for radio frequency interference (RFI) mitigation in the secondary RSLC, either \"ST-EVD\" or \"FDNF\" (or \"disabled\" if no RFI mitigation was applied)"
+     },
+     "secondary/rfiMitigationApplied": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "Flag to indicate if radio frequency interference (RFI) mitigation was applied during the generation of the secondary RSLC"
+     },
+     "unwrappedInterferogram/frequencyA/azimuthBandwidth": {
+      "value": 1264.0756886487645,
+      "dtype": "float64",
+      "description": "Processed azimuth bandwidth for frequency A interferometric layers"
+     },
+     "unwrappedInterferogram/frequencyA/commonBandAzimuthFilterApplied": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if common band azimuth filter has been applied"
+     },
+     "unwrappedInterferogram/frequencyA/commonBandRangeFilterApplied": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if common band range filter has been applied"
+     },
+     "unwrappedInterferogram/frequencyA/ellipsoidalFlatteningApplied": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "Flag to indicate if the interferometric phase has been flattened with respect to a zero height ellipsoid"
+     },
+     "unwrappedInterferogram/frequencyA/numberOfAzimuthLooks": {
+      "value": 16,
+      "dtype": "uint32",
+      "description": "Number of looks applied in the along-track direction to form the unwrapped interferogram"
+     },
+     "unwrappedInterferogram/frequencyA/numberOfRangeLooks": {
+      "value": 13,
+      "dtype": "uint32",
+      "description": "Number of looks applied in the slant range direction to form the unwrapped interferogram"
+     },
+     "unwrappedInterferogram/frequencyA/rangeBandwidth": {
+      "value": 40000000.0,
+      "dtype": "float64",
+      "description": "Processed slant range bandwidth for frequency A interferometric layers"
+     },
+     "unwrappedInterferogram/frequencyA/topographicFlatteningApplied": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "Flag to indicate if the interferometric phase has been flattened with respect to topographic height using a DEM"
+     },
+     "wrappedInterferogram/frequencyA/azimuthBandwidth": {
+      "value": 1264.0756886487645,
+      "dtype": "float64",
+      "description": "Processed azimuth bandwidth for frequency A interferometric layers"
+     },
+     "wrappedInterferogram/frequencyA/commonBandAzimuthFilterApplied": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if common band azimuth filter has been applied"
+     },
+     "wrappedInterferogram/frequencyA/commonBandRangeFilterApplied": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if common band range filter has been applied"
+     },
+     "wrappedInterferogram/frequencyA/ellipsoidalFlatteningApplied": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "Flag to indicate if the interferometric phase has been flattened with respect to a zero height ellipsoid"
+     },
+     "wrappedInterferogram/frequencyA/numberOfAzimuthLooks": {
+      "value": 6,
+      "dtype": "uint32",
+      "description": "Number of looks applied in the along-track direction to form the wrapped interferogram"
+     },
+     "wrappedInterferogram/frequencyA/numberOfRangeLooks": {
+      "value": 5,
+      "dtype": "uint32",
+      "description": "Number of looks applied in the slant range direction to form the wrapped interferogram"
+     },
+     "wrappedInterferogram/frequencyA/rangeBandwidth": {
+      "value": 40000000.0,
+      "dtype": "float64",
+      "description": "Processed slant range bandwidth for frequency A interferometric layers"
+     },
+     "wrappedInterferogram/frequencyA/topographicFlatteningApplied": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "Flag to indicate if the interferometric phase has been flattened with respect to topographic height using a DEM"
+     }
+    }
+   },
+   "coordinates_read_from": "/science/LSAR/GUNW/grids/frequencyA/wrappedInterferogram/HH",
+   "location": {
+    "sample_columns_rows": [
+     1886,
+     1985
+    ],
+    "product_first_column_row": [
+     6832,
+     6452
+    ],
+    "product_columns_rows": [
+     18036,
+     17820
+    ],
+    "largest_coordinate_difference_x_m": 0.0,
+    "largest_coordinate_difference_y_m": 0.0,
+    "product_x_first_last": [
+     182890.0,
+     543590.0
+    ],
+    "product_y_first_last": [
+     4886630.0,
+     4530250.0
+    ],
+    "sample_centre_x_first_last": [
+     319530.0,
+     357230.0
+    ],
+    "sample_centre_y_first_last": [
+     4757590.0,
+     4717910.0
+    ]
+   },
+   "window_600": {
+    "sample_rows": [
+     692,
+     1292
+    ],
+    "sample_columns": [
+     643,
+     1243
+    ],
+    "seconds": 12.3,
+    "cells_compared": 360000,
+    "dtype_sample": "float32",
+    "dtype_product": "float32",
+    "value_in_both": 360000,
+    "nan_in_both": 0,
+    "value_in_sample_only": 0,
+    "value_in_product_only": 0,
+    "cells_that_differ": 0,
+    "largest_absolute_difference": "0.0",
+    "bit_identical": true,
+    "zero_negative_infinite_in_product": [
+     0,
+     0,
+     0
+    ]
+   },
+   "whole_box": {
+    "seconds": 34.8,
+    "cells_compared": 3743710,
+    "dtype_sample": "float32",
+    "dtype_product": "float32",
+    "value_in_both": 3579092,
+    "nan_in_both": 0,
+    "value_in_sample_only": 0,
+    "value_in_product_only": 164618,
+    "cells_that_differ": 164618,
+    "largest_absolute_difference": "0.0",
+    "bit_identical": false,
+    "zero_negative_infinite_in_product": [
+     0,
+     0,
+     0
+    ],
+    "above_1": 0,
+    "below_0": 0
+   },
+   "read_statistics": {
+    "hit_count": 581,
+    "miss_count": 31,
+    "total_requested_bytes": 32505856,
+    "blocksize": 1048576,
+    "size": 2415919104
+   }
+  },
+  "gcov_20261102": {
+   "sample": "gcov-hhhh-20261102.tif",
+   "granule": "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001",
+   "layer": "/science/LSAR/GCOV/grids/frequencyA/HHHH",
+   "cmr": {
+    "GranuleUR": "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001",
+    "h5_urls": [
+     "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GCOV_V1/NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001/NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5",
+     "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GCOV_V1/NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001/NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001_QA_STATS.h5"
+    ],
+    "PGEVersionClass": {
+     "PGEName": "GCOV_L_PGE",
+     "PGEVersion": "R05.03.2"
+    },
+    "AdditionalAttributes": {
+     "ASCENDING_DESCENDING": [
+      "DESCENDING"
+     ],
+     "FRAME_NUMBER": [
+      "67"
+     ],
+     "FREQUENCIES": [
+      "A",
+      "B"
+     ],
+     "FREQUENCY_A_POLARIZATION": [
+      "HH",
+      "HV"
+     ],
+     "FREQUENCY_A_POLARIZATION_CONCAT": [
+      "HH+HV"
+     ],
+     "FREQUENCY_A_RANGE_BANDWIDTH": [
+      "40"
+     ],
+     "FREQUENCY_B_POLARIZATION": [
+      "HH",
+      "HV"
+     ],
+     "FREQUENCY_B_POLARIZATION_CONCAT": [
+      "HH+HV"
+     ],
+     "FREQUENCY_B_RANGE_BANDWIDTH": [
+      "5"
+     ],
+     "FULL_FRAME": [
+      "TRUE"
+     ],
+     "JOINT_OBSERVATION": [
+      "TRUE"
+     ],
+     "ORBIT_TYPE": [
+      "MOE"
+     ],
+     "PROCESSING_CENTER": [
+      "JPL"
+     ],
+     "PROCESSING_LEVEL": [
+      "L2"
+     ],
+     "PRODUCTION_PIPELINE": [
+      "PR"
+     ],
+     "PRODUCT_TYPE": [
+      "GCOV"
+     ],
+     "PRODUCT_TYPE_DESC": [
+      "Geocoded Polarimetric Covariance"
+     ],
+     "PRODUCT_VERSION": [
+      "1.0.20"
+     ],
+     "RANGE_BANDWIDTH_CONCAT": [
+      "40+5"
+     ],
+     "STACK_ID": [
+      "141_D_067"
+     ],
+     "TRACK_NUMBER": [
+      "141"
+     ]
+    },
+    "files": [
+     [
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5",
+      5754585088
+     ],
+     [
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001_LATLON.png",
+      3356891
+     ],
+     [
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001_NATIVE.png",
+      4023321
+     ],
+     [
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001_NATIVE_A_HHHH.png",
+      1367086
+     ],
+     [
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001_NATIVE_A_HVHV.png",
+      1381572
+     ],
+     [
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001_NATIVE_B_HHHH.png",
+      802297
+     ],
+     [
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001_NATIVE_B_HVHV.png",
+      818150
+     ],
+     [
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5.iso.xml",
+      117211
+     ],
+     [
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001_QA_REPORT.pdf",
+      434756
+     ],
+     [
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001_QA_STATS.h5",
+      72860
+     ],
+     [
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001_QA_SUMMARY.csv",
+      1441
+     ],
+     [
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001_LATLON.kml",
+      571
+     ],
+     [
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001_NATIVE.kml",
+      570
+     ],
+     [
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001_NATIVE_A_HHHH.kml",
+      577
+     ],
+     [
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001_NATIVE_A_HVHV.kml",
+      577
+     ],
+     [
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001_NATIVE_B_HHHH.kml",
+      577
+     ],
+     [
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001_NATIVE_B_HVHV.kml",
+      577
+     ],
+     [
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.rc.yaml",
+      6023
+     ]
+    ],
+    "ProductionDateTime": "2026-11-11T18:19:46.000000Z",
+    "CollectionReference": {
+     "ShortName": "NISAR_L2_GCOV_V1",
+     "Version": "1"
+    }
+   },
+   "url": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GCOV_V1/NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001/NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5",
+   "file_size_bytes": 5754585088,
+   "frequencyA_members": {
+    "HHHH": {
+     "dtype": "float32",
+     "shape": [
+      35640,
+      36072
+     ],
+     "chunks": [
+      512,
+      512
+     ],
+     "compression": "gzip",
+     "compression_opts": 1,
+     "attrs": {
+      "DIMENSION_LIST": [
+       [
+        "<HDF5 object reference>"
+       ],
+       [
+        "<HDF5 object reference>"
+       ]
+      ],
+      "_FillValue": NaN,
+      "description": "Covariance between HH and HH",
+      "grid_mapping": "projection",
+      "long_name": "Geocoded polarimetric covariance term HHHH",
+      "max_value": 24645.7109375,
+      "mean_value": 0.19409464299678802,
+      "min_value": 7.268607434326375e-17,
+      "sample_stddev": 2.8809242248535156,
+      "units": "1",
+      "valid_min": 0.0
+     },
+     "fillvalue": "np.float32(0.0)"
+    },
+    "HVHV": {
+     "dtype": "float32",
+     "shape": [
+      35640,
+      36072
+     ],
+     "chunks": [
+      512,
+      512
+     ],
+     "compression": "gzip",
+     "compression_opts": 1,
+     "attrs": {
+      "DIMENSION_LIST": [
+       [
+        "<HDF5 object reference>"
+       ],
+       [
+        "<HDF5 object reference>"
+       ]
+      ],
+      "_FillValue": NaN,
+      "description": "Covariance between HV and HV",
+      "grid_mapping": "projection",
+      "long_name": "Geocoded polarimetric covariance term HVHV",
+      "max_value": 1729.901611328125,
+      "mean_value": 0.04938970506191254,
+      "min_value": 3.6359378951813473e-17,
+      "sample_stddev": 0.20373286306858063,
+      "units": "1",
+      "valid_min": 0.0
+     },
+     "fillvalue": "np.float32(0.0)"
+    },
+    "inputDataExceptionMask": {
+     "dtype": "uint16",
+     "shape": [
+      35640,
+      36072
+     ],
+     "chunks": [
+      512,
+      512
+     ],
+     "compression": "gzip",
+     "compression_opts": 9,
+     "attrs": {
+      "DIMENSION_LIST": [
+       [
+        "<HDF5 object reference>"
+       ],
+       [
+        "<HDF5 object reference>"
+       ]
+      ],
+      "_FillValue": 65535,
+      "description": "Bitwise OR of input data exception codes for each image pixel (0: no anomaly, 2: NISAR LSAR qFSP-H1 sample slip). Also includes OR of validity mask bits, where each bit is set on for fully-focused data or off for partially focused or missing data (256:HH, 512:HV, 1024:VH, 2048:VV, 4096:LH, 8192:LV, 16384:RH, 32768:RV)",
+      "grid_mapping": "projection",
+      "raw_valid_pulse_fraction_hh": 1.0,
+      "raw_valid_pulse_fraction_hv": 1.0,
+      "rslc_valid_pixel_fraction_hh": 0.9665338649379794,
+      "rslc_valid_pixel_fraction_hv": 0.9665338649379794,
+      "valid_min": 0
+     },
+     "fillvalue": "np.uint16(0)"
+    },
+    "listOfCovarianceTerms": {
+     "dtype": "|S4",
+     "shape": [
+      2
+     ],
+     "chunks": null,
+     "compression": null,
+     "compression_opts": null,
+     "attrs": {
+      "description": "List of processed covariance terms"
+     },
+     "fillvalue": "np.bytes_(b'')"
+    },
+    "listOfPolarizations": {
+     "dtype": "|S2",
+     "shape": [
+      2
+     ],
+     "chunks": null,
+     "compression": null,
+     "compression_opts": null,
+     "attrs": {
+      "description": "List of processed polarization layers with frequency A"
+     },
+     "fillvalue": "np.bytes_(b'')"
+    },
+    "mask": {
+     "dtype": "uint8",
+     "shape": [
+      35640,
+      36072
+     ],
+     "chunks": [
+      512,
+      512
+     ],
+     "compression": "gzip",
+     "compression_opts": 9,
+     "attrs": {
+      "DIMENSION_LIST": [
+       [
+        "<HDF5 object reference>"
+       ],
+       [
+        "<HDF5 object reference>"
+       ]
+      ],
+      "_FillValue": 255,
+      "description": "Mask indicating the subswath number associated with valid GCOV samples. A GCOV sample is only considered valid if it is generated from fully-focused radar samples. If at least one radar sample in the averaging set is partially focused or invalid, the corresponding mask pixel will contain the value 0. GCOV pixels outside of the radar acquisition extent are filled with the value 255",
+      "grid_mapping": "projection",
+      "long_name": "Valid samples subswath mask",
+      "valid_min": 0
+     },
+     "fillvalue": "np.uint8(0)"
+    },
+    "numberOfLooks": {
+     "dtype": "float32",
+     "shape": [
+      35640,
+      36072
+     ],
+     "chunks": [
+      512,
+      512
+     ],
+     "compression": "gzip",
+     "compression_opts": 1,
+     "attrs": {
+      "DIMENSION_LIST": [
+       [
+        "<HDF5 object reference>"
+       ],
+       [
+        "<HDF5 object reference>"
+       ]
+      ],
+      "_FillValue": NaN,
+      "description": "Number of averaged radar-grid pixels for covariance estimation",
+      "grid_mapping": "projection",
+      "long_name": "Number of radar looks",
+      "max_value": 13.587902069091797,
+      "mean_value": 4.560692310333252,
+      "min_value": 5.951271475623798e-09,
+      "sample_stddev": 0.6666464805603027,
+      "units": "1",
+      "valid_min": 0.0
+     },
+     "fillvalue": "np.float32(0.0)"
+    },
+    "numberOfSubSwaths": {
+     "dtype": "uint8",
+     "shape": [],
+     "chunks": null,
+     "compression": null,
+     "compression_opts": null,
+     "attrs": {
+      "description": "Number of swaths of continuous imagery, due to transmit gaps",
+      "units": "1"
+     },
+     "fillvalue": "np.uint8(0)"
+    },
+    "projection": {
+     "dtype": "uint32",
+     "shape": [],
+     "chunks": null,
+     "compression": null,
+     "compression_opts": null,
+     "attrs": {
+      "description": "Product map grid projection: EPSG code, with additional projection information as HDF5 Attributes",
+      "ellipsoid": "WGS84",
+      "epsg_code": 32619,
+      "false_easting": 500000.0,
+      "false_northing": 0.0,
+      "grid_mapping_name": "transverse_mercator",
+      "inverse_flattening": 298.257223563,
+      "latitude_of_projection_origin": 0.0,
+      "longitude_of_central_meridian": -69.0,
+      "longitude_of_projection_origin": 0.0,
+      "scale_factor_at_central_meridian": 0.9996,
+      "semi_major_axis": 6378137.0,
+      "spatial_ref": "PROJCS[\"WGS 84 / UTM zone 19N\",GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",-69],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"32619\"]]",
+      "utm_zone_number": 19
+     },
+     "fillvalue": "np.uint32(0)"
+    },
+    "rtcGammaToSigmaFactor": {
+     "dtype": "float32",
+     "shape": [
+      35640,
+      36072
+     ],
+     "chunks": [
+      512,
+      512
+     ],
+     "compression": "gzip",
+     "compression_opts": 1,
+     "attrs": {
+      "DIMENSION_LIST": [
+       [
+        "<HDF5 object reference>"
+       ],
+       [
+        "<HDF5 object reference>"
+       ]
+      ],
+      "_FillValue": NaN,
+      "description": "Radiometric terrain correction (RTC) scaling factor to normalize backscatter coefficients from gamma0 to sigma0, accounting for local terrain",
+      "grid_mapping": "projection",
+      "long_name": "Radiometric terrain correction area normalization factor gamma0 to sigma0",
+      "max_value": 0.9988309144973755,
+      "mean_value": 0.7541183829307556,
+      "min_value": 0.0020734735298901796,
+      "sample_stddev": 0.06967046111822128,
+      "units": "1",
+      "valid_min": 0.0
+     },
+     "fillvalue": "np.float32(0.0)"
+    },
+    "xCoordinateSpacing": {
+     "dtype": "float64",
+     "shape": [],
+     "chunks": null,
+     "compression": null,
+     "compression_opts": null,
+     "attrs": {
+      "description": "Nominal spacing in meters between consecutive pixels",
+      "long_name": "X coordinates spacing",
+      "units": "meters"
+     },
+     "fillvalue": "np.float64(0.0)"
+    },
+    "xCoordinates": {
+     "dtype": "float64",
+     "shape": [
+      36072
+     ],
+     "chunks": null,
+     "compression": null,
+     "compression_opts": null,
+     "attrs": {
+      "CLASS": "DIMENSION_SCALE",
+      "NAME": "",
+      "REFERENCE_LIST": [
+       [
+        "<HDF5 object reference>",
+        1
+       ],
+       [
+        "<HDF5 object reference>",
+        1
+       ],
+       [
+        "<HDF5 object reference>",
+        1
+       ],
+       [
+        "<HDF5 object reference>",
+        1
+       ],
+       [
+        "<HDF5 object reference>",
+        1
+       ],
+       [
+        "<HDF5 object reference>",
+        1
+       ]
+      ],
+      "description": "X coordinates in specified projection",
+      "long_name": "X coordinates of projection",
+      "pixel_coordinate_convention": "center",
+      "standard_name": "projection_x_coordinate",
+      "units": "meters"
+     },
+     "fillvalue": "np.float64(0.0)"
+    },
+    "yCoordinateSpacing": {
+     "dtype": "float64",
+     "shape": [],
+     "chunks": null,
+     "compression": null,
+     "compression_opts": null,
+     "attrs": {
+      "description": "Nominal spacing in meters between consecutive lines",
+      "long_name": "Y coordinates spacing",
+      "units": "meters"
+     },
+     "fillvalue": "np.float64(0.0)"
+    },
+    "yCoordinates": {
+     "dtype": "float64",
+     "shape": [
+      35640
+     ],
+     "chunks": null,
+     "compression": null,
+     "compression_opts": null,
+     "attrs": {
+      "CLASS": "DIMENSION_SCALE",
+      "NAME": "",
+      "REFERENCE_LIST": [
+       [
+        "<HDF5 object reference>",
+        0
+       ],
+       [
+        "<HDF5 object reference>",
+        0
+       ],
+       [
+        "<HDF5 object reference>",
+        0
+       ],
+       [
+        "<HDF5 object reference>",
+        0
+       ],
+       [
+        "<HDF5 object reference>",
+        0
+       ],
+       [
+        "<HDF5 object reference>",
+        0
+       ]
+      ],
+      "description": "Y coordinates in specified projection",
+      "long_name": "Y coordinates of projection",
+      "pixel_coordinate_convention": "center",
+      "standard_name": "projection_y_coordinate",
+      "units": "meters"
+     },
+     "fillvalue": "np.float64(0.0)"
+    }
+   },
+   "grids_members": {
+    "frequencyA": [
+     "HHHH",
+     "HVHV",
+     "inputDataExceptionMask",
+     "listOfCovarianceTerms",
+     "listOfPolarizations",
+     "mask",
+     "numberOfLooks",
+     "numberOfSubSwaths",
+     "projection",
+     "rtcGammaToSigmaFactor",
+     "xCoordinateSpacing",
+     "xCoordinates",
+     "yCoordinateSpacing",
+     "yCoordinates"
+    ],
+    "frequencyB": [
+     "HHHH",
+     "HVHV",
+     "inputDataExceptionMask",
+     "listOfCovarianceTerms",
+     "listOfPolarizations",
+     "mask",
+     "numberOfLooks",
+     "numberOfSubSwaths",
+     "projection",
+     "rtcGammaToSigmaFactor",
+     "xCoordinateSpacing",
+     "xCoordinates",
+     "yCoordinateSpacing",
+     "yCoordinates"
+    ]
+   },
+   "metadata": {
+    "/science/LSAR/identification": {
+     "absoluteOrbitNumber": {
+      "value": 6641,
+      "dtype": "uint32",
+      "description": "Absolute orbit number"
+     },
+     "boundingPolygon": {
+      "value": "POLYGON ((-71.6924166410176 44.027616530036 198.178466154136,-71.7834137865773 43.8175894338408 420.073211676328,-71.8762716935536 43.6080839721653 503.12223524702,-71.9732632205964 43.3996463047724 317.529963891883,-72.063342620359 43.1896194849845 488.558959960255,-72.1568098481805 42.9804785475575 433.208994368567,-72.2524842960419 42.7719393775621 217.302124024226,-72.3430105529539 42.5622319547885 261.449677449401,-72.4343747891437 42.3527942587741 224.342009767045,-72.5278365211403 42.1439292210296 33.0588594980244,-72.6181952075645 41.9343845869304 -12.6202489054751,-72.2810998010199 41.8530411184298 191.097609716851,-71.9639160227868 41.7754143103491 78.5915152198894,-71.6567712454562 41.6992275097036 116.452064284969,-71.3627975916528 41.6253722720154 -30.7110652999184,-71.075600323261 41.5523266196281 -4.63891444489595,-70.7971458199705 41.4806623936907 -30.0614738471434,-70.5255118588246 41.409950351555 -29.6350717813041,-70.26026766731 41.3401338721832 -29.7223033577927,-70.0006818532882 41.2710694226524 -22.4425935345607,-69.7464461691711 41.2027192858169 -29.9972631553775,-69.648351237398 41.4100984450728 -29.283399639721,-69.5496185350215 41.6173885059933 -29.0320106655795,-69.4502326691663 41.8245868545223 -28.565213964579,-69.3501881064477 42.0316921244461 -28.1067331246596,-69.2494781850442 42.2387044019802 -27.8533628862458,-69.1480909421525 42.445621517573 -27.4761634443942,-69.0460180852316 42.6524415914062 -26.9807324404082,-68.9432535478521 42.8591651579669 -26.6678660020035,-68.8397876723962 43.0657902659872 -26.4485851340909,-68.735609429255 43.2723147439356 -26.1263982235287,-68.9973905216634 43.3430563848777 -26.2738462214837,-69.2645881248904 43.4144768029125 -26.268445282374,-69.5377758880031 43.4866818612852 -26.4598953150058,-69.8176213798372 43.5597941637866 -26.5052242285282,-70.1049277996249 43.6339619970189 -26.6482582078687,-70.3999415301898 43.7091804064043 24.6032621939433,-70.7044692531438 43.7858318926961 76.6187675694983,-71.0151787732915 43.8629994055525 435.583801273827,-71.3414679500196 43.9429202817192 590.602233951369,-71.6924166410176 44.027616530036 198.178466154136))",
+      "dtype": "|S2152",
+      "description": "OGR compatible WKT representing the bounding polygon of the image. Horizontal coordinates are WGS84 longitude followed by latitude (both in degrees), and the vertical coordinate is the height above the WGS84 ellipsoid in meters. The first point corresponds to the start-time, near-range radar coordinate, and the perimeter is traversed in counterclockwise order on the map. This means the traversal order in radar coordinates differs for left-looking and right-looking sensors. The polygon includes the four corners of the radar grid, with equal numbers of points distributed evenly in radar coordinates along each edge"
+     },
+     "compositeReleaseId": {
+      "value": "P05036",
+      "dtype": "|S6",
+      "description": "Unique version identifier of the science data production system"
+     },
+     "diagnosticModeFlag": {
+      "value": 0,
+      "dtype": "uint32",
+      "description": "Indicates if the radar operation mode is a diagnostic mode (1-2) or DBFed science (0): 0, 1, or 2"
+     },
+     "frameNumber": {
+      "value": 67,
+      "dtype": "uint16",
+      "description": "Frame number"
+     },
+     "granuleId": {
+      "value": "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001",
+      "dtype": "|S91",
+      "description": "Unique granule identification name"
+     },
+     "hasInputDataException": {
+      "value": 0,
+      "dtype": "uint8",
+      "description": "Indication of input data exceptions or anomalies present in this granule. Bitwise OR of instrument exception codes for all image pixels (0: no anomaly, 2: NISAR LSAR qFSP-H1 sample slip)"
+     },
+     "instrumentName": {
+      "value": "LSAR",
+      "dtype": "|S4",
+      "description": "Name of the instrument used to collect the remote sensing data provided in this product"
+     },
+     "isDithered": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "\"True\" if the pulse timing was varied (dithered) during acquisition, \"False\" otherwise"
+     },
+     "isFullFrame": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "\"True\" if the product fully covers a NISAR frame, \"False\" if partial coverage"
+     },
+     "isGeocoded": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "Flag to indicate if the product data is in the radar geometry (\"False\") or in the map geometry (\"True\")"
+     },
+     "isJointObservation": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "\"True\" if any portion of this product was acquired in a joint observation mode (e.g., L-band and S-band simultaneously), \"False\" otherwise"
+     },
+     "isMixedMode": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "\"True\" if this product is a composite of data collected in multiple radar modes, \"False\" otherwise"
+     },
+     "isUrgentObservation": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag indicating if observation is nominal (\"False\") or urgent (\"True\")"
+     },
+     "listOfFrequencies": {
+      "value": [
+       "A",
+       "B"
+      ],
+      "dtype": "|S1",
+      "description": "List of frequency layers available in the product"
+     },
+     "listOfObservationModes": {
+      "value": [
+       "(NOT SPECIFIED)"
+      ],
+      "dtype": "|S15",
+      "description": "List of observation modes of the L0B granules used to generate the input RSLC (one mode per L0B)"
+     },
+     "lookDirection": {
+      "value": "Left",
+      "dtype": "|S4",
+      "description": "Look direction, either \"Left\" or \"Right\""
+     },
+     "missionId": {
+      "value": "NISAR",
+      "dtype": "|S5",
+      "description": "Mission identifier"
+     },
+     "orbitPassDirection": {
+      "value": "Descending",
+      "dtype": "|S10",
+      "description": "Orbit direction, either \"Ascending\" or \"Descending\""
+     },
+     "plannedDatatakeId": {
+      "value": [
+       "dtid_2026306233748"
+      ],
+      "dtype": "|S18",
+      "description": "List of planned datatakes included in the product"
+     },
+     "plannedObservationId": {
+      "value": [
+       "oid_2026306234248"
+      ],
+      "dtype": "|S17",
+      "description": "List of planned observations included in the product"
+     },
+     "platformName": {
+      "value": "NISAR",
+      "dtype": "|S5",
+      "description": "Name of the platform used to collect the remote sensing data provided in this product"
+     },
+     "processingCenter": {
+      "value": "JPL",
+      "dtype": "|S3",
+      "description": "Data processing center"
+     },
+     "processingDateTime": {
+      "value": "2026-11-11T18:19:46",
+      "dtype": "|S19",
+      "description": "Processing date and time (in UTC) in the format YYYY-mm-ddTHH:MM:SS"
+     },
+     "processingType": {
+      "value": "Nominal",
+      "dtype": "|S7",
+      "description": "Processing pipeline used to generate this granule. \"Nominal\": standard production system; \"Urgent\": time-sensitive processing in response to urgent response events; \"Custom\": user-initiated processing outside the nominal production system"
+     },
+     "productDoi": {
+      "value": "10.5067/NIL2GCOV-V1",
+      "dtype": "|S19",
+      "description": "Digital Object Identifier (DOI) for the product"
+     },
+     "productLevel": {
+      "value": "L2",
+      "dtype": "|S2",
+      "description": "Product level. \"L0A\": Unprocessed instrument data; \"L0B\": Reformatted, unprocessed instrument data; \"L1\": Processed instrument data in radar coordinates system; and \"L2\": Processed instrument data in geocoded coordinates system"
+     },
+     "productSpecificationVersion": {
+      "value": "1.6.0",
+      "dtype": "|S5",
+      "description": "Product specification version which represents the schema of this product"
+     },
+     "productType": {
+      "value": "GCOV",
+      "dtype": "|S4",
+      "description": "Product type"
+     },
+     "productVersion": {
+      "value": "1.0.20",
+      "dtype": "|S6",
+      "description": "Product version which represents the structure of the product and the science content governed by the algorithm, input data, and processing parameters"
+     },
+     "radarBand": {
+      "value": "L",
+      "dtype": "|S1",
+      "description": "Acquired frequency band, either \"L\" or \"S\""
+     },
+     "staticLayersDataAccess": {
+      "value": "https://nisar-services.earthdata.nasa.gov/redirect/NISAR_L2_STATIC/NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5",
+      "dtype": "|S161",
+      "description": "Location of the static layers product associated with this product (URL or DOI)"
+     },
+     "trackNumber": {
+      "value": 141,
+      "dtype": "uint32",
+      "description": "Track number"
+     },
+     "zeroDopplerEndTime": {
+      "value": "2026-11-02T23:44:05.999342105",
+      "dtype": "|S29",
+      "description": "Azimuth stop time (in UTC) of the product in the format YYYY-mm-ddTHH:MM:SS.sssssssss"
+     },
+     "zeroDopplerStartTime": {
+      "value": "2026-11-02T23:43:30.000000000",
+      "dtype": "|S29",
+      "description": "Azimuth start time (in UTC) of the product in the format YYYY-mm-ddTHH:MM:SS.sssssssss"
+     }
+    },
+    "/science/LSAR/GCOV/metadata/ceosAnalysisReadyData": {
+     "boundingBox": {
+      "value": "POLYGON ((182880 4886640 0,182880 4530240 0,543600 4530240 0,543600 4886640 0,182880 4886640 0))",
+      "dtype": "|S96",
+      "description": "OGR compatible WKT representing the bounding box of the product (the union of the geocoded grid for available frequency A and frequency B image datasets). Horizontal coordinates are X and Y directions of the geocoded grid coordinate system, and the vertical coordinate is the height above the WGS84 ellipsoid in meters. The first point corresponds to the top left edge of the bounding box. The remaining points are traversed in counterclockwise order on the map. The fifth point closes the bounding box by repeating the first point"
+     },
+     "ceosAnalysisReadyDataDocumentIdentifier": {
+      "value": "https://ceos.org/ard/files/PFS/SAR/v1.0/CEOS-ARD_PFS_Synthetic_Aperture_Radar_v1.0.pdf",
+      "dtype": "|S86",
+      "description": "CEOS Analysis Ready Data (CARD) document identifier"
+     },
+     "ceosAnalysisReadyDataProductType": {
+      "value": "Normalised Radar Backscatter (NRB)",
+      "dtype": "|S34",
+      "description": "CEOS Analysis Ready Data (CARD) product type"
+     },
+     "geometricAccuracy/bias/x": {
+      "value": NaN,
+      "dtype": "float32",
+      "description": "An estimate of the localization error bias in the X/easting direction"
+     },
+     "geometricAccuracy/bias/y": {
+      "value": NaN,
+      "dtype": "float32",
+      "description": "An estimate of the localization error bias in the Y/northing direction"
+     },
+     "geometricAccuracy/standardDeviation/x": {
+      "value": NaN,
+      "dtype": "float32",
+      "description": "An estimate of the localization error standard deviation in the X/easting direction"
+     },
+     "geometricAccuracy/standardDeviation/y": {
+      "value": NaN,
+      "dtype": "float32",
+      "description": "An estimate of the localization error standard deviation in the Y/northing direction"
+     },
+     "outputBackscatterDecibelConversionFormula": {
+      "value": "10*log10(<GCOV_TERM>)",
+      "dtype": "|S21",
+      "description": "Formula to convert provided backscatter to decibel (dB)"
+     }
+    },
+    "/science/LSAR/GCOV/metadata/processingInformation/algorithms": {
+     "demInterpolation": {
+      "value": "biquintic",
+      "dtype": "|S9",
+      "description": "DEM interpolation method"
+     },
+     "geocoding": {
+      "value": "Area-Based SAR Geocoding with Adaptive Multilooking (GEO-AP). DOI: 10.1109/TGRS.2022.3147472",
+      "dtype": "|S92",
+      "description": "Geocoding algorithm"
+     },
+     "geocodingAlgorithmReference": {
+      "value": "Gustavo H. X. Shiroma, Marco Lavalle, and Sean M. Buckley, \"An Area-Based Projection Algorithm for SAR Radiometric Terrain Correction and Geocoding,\" in IEEE Transactions on Geoscience and Remote Sensing, vol. 60, pp. 1-23, 2022, Art no. 5222723, doi: 10.1109/TGRS.2022.3147472.",
+      "dtype": "|S278",
+      "description": "Reference to the geocoding algorithm applied (if applicable)"
+     },
+     "polarimetricSymmetrization": {
+      "value": "disabled",
+      "dtype": "|S8",
+      "description": "Polarimetric symmetrization algorithm"
+     },
+     "radiometricTerrainCorrection": {
+      "value": "Area-Based SAR Radiometric Terrain Correction (RTC-AP). DOI: 10.1109/TGRS.2022.3147472",
+      "dtype": "|S86",
+      "description": "Radiometric terrain correction (RTC) algorithm"
+     },
+     "radiometricTerrainCorrectionAlgorithmReference": {
+      "value": "Gustavo H. X. Shiroma, Marco Lavalle, and Sean M. Buckley, \"An Area-Based Projection Algorithm for SAR Radiometric Terrain Correction and Geocoding,\" in IEEE Transactions on Geoscience and Remote Sensing, vol. 60, pp. 1-23, 2022, Art no. 5222723, doi: 10.1109/TGRS.2022.3147472.",
+      "dtype": "|S278",
+      "description": "Reference to the radiometric terrain correction (RTC) algorithm applied (if applicable)"
+     },
+     "softwareVersion": {
+      "value": "0.25.21",
+      "dtype": "|S7",
+      "description": "Software version used for processing"
+     }
+    },
+    "/science/LSAR/GCOV/metadata/processingInformation/parameters": {
+     "azimuthIonosphericGeolocationCorrectionApplied": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "Flag to indicate if the azimuth ionospheric correction has been applied"
+     },
+     "dryTroposphericGeolocationCorrectionApplied": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "Flag to indicate if the dry tropospheric correction was applied during the generation of the input RSLC to improve geolocation"
+     },
+     "faradayRotationApplied": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if the Faraday rotation correction has been applied"
+     },
+     "frequencyA/dopplerCentroid": {
+      "shape": [
+       357,
+       362
+      ],
+      "dtype": "float64"
+     },
+     "frequencyA/projection": {
+      "value": 32619,
+      "dtype": "uint32",
+      "description": "Product map grid projection: EPSG code, with additional projection information as HDF5 Attributes"
+     },
+     "frequencyA/xCoordinates": {
+      "shape": [
+       362
+      ],
+      "dtype": "float64"
+     },
+     "frequencyA/yCoordinates": {
+      "shape": [
+       357
+      ],
+      "dtype": "float64"
+     },
+     "frequencyB/dopplerCentroid": {
+      "shape": [
+       357,
+       362
+      ],
+      "dtype": "float64"
+     },
+     "frequencyB/projection": {
+      "value": 32619,
+      "dtype": "uint32",
+      "description": "Product map grid projection: EPSG code, with additional projection information as HDF5 Attributes"
+     },
+     "frequencyB/xCoordinates": {
+      "shape": [
+       362
+      ],
+      "dtype": "float64"
+     },
+     "frequencyB/yCoordinates": {
+      "shape": [
+       357
+      ],
+      "dtype": "float64"
+     },
+     "geo2rdr/convergenceThreshold": {
+      "value": 1e-07,
+      "dtype": "float64",
+      "description": "Slant range convergence threshold for geo2rdr transformation"
+     },
+     "geo2rdr/deltaRange": {
+      "value": 1e-08,
+      "dtype": "float64",
+      "description": "Step size for computing numerical gradient of Doppler in meters for geo2rdr transformation"
+     },
+     "geo2rdr/maxNumberOfIterations": {
+      "value": 50,
+      "dtype": "uint64",
+      "description": "Maximum number of iterations for geo2rdr transformation"
+     },
+     "geocoding/geogridUpsampling": {
+      "value": 1.0,
+      "dtype": "float64",
+      "description": "Geocoding geogrid upsampling"
+     },
+     "geocoding/isSourceDataUpsampled": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if the source data is upsampled for geocoding"
+     },
+     "geocoding/maxBlockSize": {
+      "value": 268435456,
+      "dtype": "uint64",
+      "description": "Maximum block size in megabytes (MB) per thread"
+     },
+     "geocoding/memoryMode": {
+      "value": "auto",
+      "dtype": "|S4",
+      "description": "Geocoding memory mode"
+     },
+     "geocoding/minBlockSize": {
+      "value": 33554432,
+      "dtype": "uint64",
+      "description": "Minimum block size in megabytes (MB) per thread"
+     },
+     "isFullCovariance": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if the product is full-covariance"
+     },
+     "noiseCorrectionApplied": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if noise correction has been applied"
+     },
+     "polarimetricSymmetrizationApplied": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if the polarimetric symmetrization has been applied"
+     },
+     "polarizationOrientationCorrectionApplied": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if the polarization orientation correction has been applied"
+     },
+     "postProcessingFilteringApplied": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if the post-processing filtering has been applied"
+     },
+     "preprocessing/frequencyA/numberOfAzimuthLooks": {
+      "value": 1,
+      "dtype": "uint64",
+      "description": "Number of azimuth looks applied to the RSLC before geocoding"
+     },
+     "preprocessing/frequencyA/numberOfRangeLooks": {
+      "value": 1,
+      "dtype": "uint64",
+      "description": "Number of range looks applied to the RSLC before geocoding"
+     },
+     "preprocessing/frequencyB/numberOfAzimuthLooks": {
+      "value": 1,
+      "dtype": "uint64",
+      "description": "Number of azimuth looks applied to the RSLC before geocoding"
+     },
+     "preprocessing/frequencyB/numberOfRangeLooks": {
+      "value": 1,
+      "dtype": "uint64",
+      "description": "Number of range looks applied to the RSLC before geocoding"
+     },
+     "preprocessingMultilookingApplied": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if a preprocessing multilooking has been applied"
+     },
+     "projection": {
+      "value": 32619,
+      "dtype": "uint32",
+      "description": "Product map grid projection: EPSG code, with additional projection information as HDF5 Attributes"
+     },
+     "radiometricTerrainCorrectionApplied": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "Flag to indicate if the radiometric terrain correction has been applied"
+     },
+     "rangeIonosphericGeolocationCorrectionApplied": {
+      "value": "True",
+      "dtype": "|S4",
+      "description": "Flag to indicate if the range ionospheric correction has been applied"
+     },
+     "referenceTerrainHeight": {
+      "shape": [
+       357,
+       362
+      ],
+      "dtype": "float32"
+     },
+     "rfiMitigationApplied": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if radio frequency interference (RFI) mitigation was applied during the generation of the input RSLC"
+     },
+     "rtc/geogridUpsampling": {
+      "value": 1.0,
+      "dtype": "float64",
+      "description": "Radiometric terrain correction (RTC) geogrid upsampling"
+     },
+     "rtc/inputBackscatterNormalizationConvention": {
+      "value": "beta0",
+      "dtype": "|S5",
+      "description": "Backscatter normalization convention of the source data"
+     },
+     "rtc/memoryMode": {
+      "value": "auto",
+      "dtype": "|S4",
+      "description": "Radiometric terrain correction (RTC) memory mode"
+     },
+     "rtc/minRtcAreaNormalizationFactorInDB": {
+      "value": -30.0,
+      "dtype": "float64",
+      "description": "Radiometric terrain correction (RTC) minimum area normalization factor value in dB computed as `10 * log10(area_out / area_in)` where `area_in` and `area_out` are the reference surfaces associated with the source data (input) and GCOV terms (output) backscatter conventions, respectively"
+     },
+     "rtc/outputBackscatterExpressionConvention": {
+      "value": "Linear power",
+      "dtype": "|S12",
+      "description": "Backscatter expression convention"
+     },
+     "rtc/outputBackscatterNormalizationConvention": {
+      "value": "gamma0",
+      "dtype": "|S6",
+      "description": "Backscatter normalization convention of the primary data associated with this product"
+     },
+     "runConfigurationContents": {
+      "value": "#s3://nisar-static-repo/LSAR_PARAMETER_SET/05036/GCOV/NISAR_ParameterSet_GCOV_20000101_diag_40_v0.1.yaml was used to generate this runconfig.\nrunconfig:\n    name: NISAR_GCOV_RUNCONFIG\n    groups:\n        pge_name_group:\n            pge_name: GCOV_L_PGE\n        input_file_group:\n            input_file_path: \n                /data/work/jobs/2026/11/11/17/54/SCIFLO_GCOV__release-r05.03.5-gcov_gslc_034_141_067_full_individual_L_40_DH_05_DH_0_state-config-20261111T090856.159631Z/NISAR_L1_PR_RSLC_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5\n            qa_input_file: output/gcov.h5\n        dynamic_ancillary_file_group:\n            dem_file: \n                /data/work/jobs/2026/11/11/17/54/SCIFLO_GCOV__release-r05.03.5-gcov_gslc_034_141_067_full_individual_L_40_DH_05_DH_0_state-config-20261111T090856.159631Z/dem.vrt\n            dem_file_description: Modified Copernicus Digital Elevation Model \n                for the NASA-ISRO NISAR mission, version 1.3, based on the \n                Copernicus DEM 30-m (2023_1), referenced to the WGS 84 ellipsoid\n                and provided in geographic coordinates (EPSG:4326). This digital\n                elevation model (DEM) was prepared at the Jet Propulsion \n                Laboratory, California Institute of Technology, under contract \n                with the National Aeronautics and Space Administration, using \n                the Copernicus DEM 30-m COP-DEM_GLO-30-DGED/2023_1 model \n                provided by the European Space Agency (ESA). The Copernicus DEM \n                30-m was produced using Copernicus WorldDEM-30  DLR e.V. \n                2010-2014 and  Airbus Defence and Space GmbH 2014-2018 provided \n                under COPERNICUS by the European Union and ESA; all rights \n                reserved. The organizations in charge of the NISAR mission or \n                the Copernicus programme by law or by delegation do not incur \n                any liability for any use of the Copernicus WorldDEM-30. Users, \n                including those who redistribute, adapt, modify, or combine the \n                data contained in this DEM, must comply with the terms of the \n                Copernicus DEM 30-m License Agreement. For additional \n                information, please refer to https://doi.org/10.5067/NIDEM-1 and\n                https://doi.org/10.5270/ESA-c5d3d65.\n            orbit_file: \n                /data/work/jobs/2026/11/11/17/54/SCIFLO_GCOV__release-r05.03.5-gcov_gslc_034_141_067_full_individual_L_40_DH_05_DH_0_state-config-20261111T090856.159631Z/NISAR_ANC_J_PR_MOE_20261104T132502_20261102T205942_20261104T025942.xml\n            tec_file: \n                /data/work/jobs/2026/11/11/17/54/SCIFLO_GCOV__release-r05.03.5-gcov_gslc_034_141_067_full_individual_L_40_DH_05_DH_0_state-config-20261111T090856.159631Z/NISAR_ANC_TEC_20261104T211326_20261102T230002_20261103T235952_s015.json\n        primary_executable:\n            product_type: GCOV\n            product_version: 1.0.20\n            product_doi: 10.5067/NIL2GCOV-V1\n            composite_release_id: P05036\n            processing_type: PR\n            product_accuracy: N\n            urgent_request_id:\n            processing_center: J\n            data_source: A\n            static_layers_data_access: \n                https://nisar-services.earthdata.nasa.gov/redirect/NISAR_L2_STATIC/{granule_id}.h5\n            partial_granule_id: \n                NISAR_L2_PR_GCOV_034_141_D_067_{MODE}_{POLE}_A_{StartDateTime}_{EndDateTime}_P05036_N_F_J_001\n        product_path_group:\n            product_path: output\n            scratch_path: scratch\n            sas_output_file: output/gcov.h5\n            product_counter: 1\n            qa_output_dir: output\n        debug_level_group:\n            debug_switch: false\n        processing:\n      #s3://nisar-static-repo/LSAR_PARAMETER_SET/05036/GCOV/NISAR_ParameterSet_GCOV_20000101_diag_40_v0.1.yaml was used to generate this runconfig.\n      #s3://nisar-static-repo/PRODUCT_VERSION/NISAR_ProductVersion_20261102_v1.0.30.yaml is the location of the product version file.\n            input_subset:\n                list_of_frequencies:\n                symmetrize_cross_pol_channels: false\n            dem_download:\n                source:\n                top_left:\n                    x:\n                    y:\n                bottom_right:\n                    x:\n                    y:\n            geocode:\n                output_posting:\n                    A:\n                        x_posting: 10\n                        y_posting: 10\n                    B:\n                        x_posting: 80\n                        y_posting: 80\n                output_epsg: 32619\n                top_left:\n                    y_abs: 4886640.0\n                    x_abs: 182880.0\n                bottom_right:\n                    y_abs: 4530240.0\n                    x_abs: 543600.0\n            radar_grid_cubes:\n                output_epsg: 32619\n                output_posting:\n                    x_posting:\n                    y_posting:\n                top_left:\n                    y_abs:\n                    x_abs:\n                bottom_right:\n                    y_abs:\n                    x_abs:\n            rtc:\n                rtc_min_value_db: -30\n                dem_upsampling: 1\n            tec_correction:\n                ignore_invalid_topside_tec: true\n                polyfit_tec_profile: true\n                num_sigma: 1.5\n        worker:\n            internet_access: false\n            gpu_enabled: false\n        logging:\n            path: scratch/gcov.log\n            write_mode: w\n        output:\n            output_gcov_terms:\n                mantissa_nbits: 16\n                compression_level: 1\n            output_secondary_layers:\n                compression_level: 1\n        qa:\n            qa_reports:\n                backscatter_img:\n                    output_individual_pngs: true\n                browse_latlon:\n                    output_browse_latlon: true\n\n",
+      "dtype": "|S6023",
+      "description": "Contents of the run configuration file with parameters used for processing"
+     },
+     "shadowMaskingApplied": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if the shadow masking has been applied"
+     },
+     "validSamplesSubSwathMaskingApplied": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if the valid samples subswath masking has been applied"
+     },
+     "wetTroposphericGeolocationCorrectionApplied": {
+      "value": "False",
+      "dtype": "|S5",
+      "description": "Flag to indicate if the wet tropospheric correction was applied during the generation of the input RSLC to improve geolocation"
+     },
+     "xCoordinates": {
+      "shape": [
+       362
+      ],
+      "dtype": "float64"
+     },
+     "yCoordinates": {
+      "shape": [
+       357
+      ],
+      "dtype": "float64"
+     }
+    }
+   },
+   "location": {
+    "sample_columns_rows": [
+     3772,
+     3972
+    ],
+    "product_first_column_row": [
+     13664,
+     12903
+    ],
+    "product_columns_rows": [
+     36072,
+     35640
+    ],
+    "largest_coordinate_difference_x_m": 0.0,
+    "largest_coordinate_difference_y_m": 0.0,
+    "product_x_first_last": [
+     182885.0,
+     543595.0
+    ],
+    "product_y_first_last": [
+     4886635.0,
+     4530245.0
+    ],
+    "sample_centre_x_first_last": [
+     319525.0,
+     357235.0
+    ],
+    "sample_centre_y_first_last": [
+     4757605.0,
+     4717895.0
+    ]
+   },
+   "window_1024": {
+    "sample_rows": [
+     1474,
+     2498
+    ],
+    "sample_columns": [
+     1374,
+     2398
+    ],
+    "seconds": 15.5,
+    "cells_compared": 1048576,
+    "dtype_sample": "float32",
+    "dtype_product": "float32",
+    "value_in_both": 1048570,
+    "nan_in_both": 6,
+    "value_in_sample_only": 0,
+    "value_in_product_only": 0,
+    "cells_that_differ": 0,
+    "largest_absolute_difference": "0.0",
+    "bit_identical": true,
+    "zero_negative_infinite_in_product": [
+     0,
+     0,
+     0
+    ]
+   },
+   "whole_box": {
+    "seconds": 96.4,
+    "cells_compared": 14982384,
+    "dtype_sample": "float32",
+    "dtype_product": "float32",
+    "value_in_both": 14316416,
+    "nan_in_both": 26,
+    "value_in_sample_only": 0,
+    "value_in_product_only": 665942,
+    "cells_that_differ": 665942,
+    "largest_absolute_difference": "0.0",
+    "bit_identical": false,
+    "zero_negative_infinite_in_product": [
+     0,
+     0,
+     0
+    ],
+    "product_values_sha256": "328bd03e2244c8efa1aa704501c4d30e0bd27b223864b55dd28b61aa07cac4e6",
+    "sample_values_sha256": "12fb0c0723178cbfe41ce7187b314c5e7923e6bb16ec40a824c5403ebe55b87c"
+   },
+   "mask_of_product_in_box": {
+    "seconds": 46.1,
+    "dtype": "uint8",
+    "counts": {
+     "0": 26,
+     "1": 14982358
+    },
+    "mask_0_with_nan_in_HHHH": 26,
+    "mask_255_with_nan_in_HHHH": 0,
+    "mask_0_or_255_with_value_in_HHHH": 0,
+    "mask_1_to_5_with_nan_in_HHHH": 0,
+    "HHHH_below_minus_40_dB": 0
+   },
+   "read_statistics": {
+    "hit_count": 556,
+    "miss_count": 92,
+    "total_requested_bytes": 96468992,
+    "blocksize": 1048576,
+    "size": 5754585088
+   }
+  }
+ },
+ "errors": [],
+ "earthdata_login": {
+  "authenticated": true,
+  "strategy": "netrc"
+ },
+ "environment": {
+  "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+  "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+  "gdal_in_rasterio": "3.12.2",
+  "hdf5": "2.0.0",
+  "packages": {
+   "earthaccess": "0.19.0",
+   "h5py": "3.16.0",
+   "numpy": "2.5.4",
+   "rasterio": "1.5.2",
+   "fsspec": "2026.9.0",
+   "aiohttp": "3.14.5",
+   "requests": "2.34.2"
+  }
+ },
+ "elapsed_s": 448.1,
+ "mask_pairs_of_the_two_dates": {
+  "pairs": {
+   "0,0": {
+    "cells": 16,
+    "with_a_value_of_the_change": 0
+   },
+   "0,1": {
+    "cells": 13,
+    "with_a_value_of_the_change": 0
+   },
+   "1,0": {
+    "cells": 10,
+    "with_a_value_of_the_change": 0
+   },
+   "1,1": {
+    "cells": 14982345,
+    "with_a_value_of_the_change": 14982345
+   }
+  },
+  "cells_where_the_masks_differ": 23,
+  "change_values_where_either_mask_is_0_or_255": 0
+ },
+ "ended": "2026-11-15T02:04:42Z"
+}
