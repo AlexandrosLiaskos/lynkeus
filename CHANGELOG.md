@@ -77,6 +77,19 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The interface guide, and the shared building blocks of a pane that carry its rules: section, empty state,
   notice, property list, toolbar of icon buttons, menu button and the line of a tool pane that states what is
   missing.
+- The analysis tools Backscatter, One date, Backscatter, Change and Coherence, One pair in the server, each
+  with its method sheet in `docs/methods/`. A tool refuses a layer that it does not read, with a sentence
+  that says why.
+- The name of a layer inside its product, in the layer description and as the name of the band in the STAC
+  record of the layer.
+- The reduced copies of a result of Backscatter, One date, made as the decibels of the mean power of the
+  cells that each of their cells covers.
+- The forms of the three analysis tools, in the tool pane. A form offers the layers of the session that its
+  tool reads, proposes the name of the result, shows the method in the words of the method sheet and starts
+  the tool as a job.
+- The dialog Methods of the Help tab, with the method sheet of each finished analysis tool.
+- The words at the two ends of the legend of a result of Backscatter, Change, decrease and increase, which
+  the Contents pane writes beside the lowest and the highest value.
 
 ### Changed
 
