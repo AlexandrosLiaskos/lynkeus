@@ -8,6 +8,7 @@
 service; ``lynkeus.limits`` adds it.
 The addresses of the sessions, the processes, the jobs and the layers are added
 by ``lynkeus.routes``, with the processes that ``lynkeus.offered`` lists.
+The addresses of the own servers of the visitors are added by ``lynkeus.server_routes``.
 """
 
 import asyncio
@@ -44,6 +45,7 @@ from lynkeus.products import (
     search_products,
 )
 from lynkeus.routes import install
+from lynkeus.server_routes import install_servers
 
 SEARCH_TIME = 45.0
 """The longest time that a search may take, in seconds."""
@@ -271,6 +273,7 @@ def create_app() -> FastAPI:
 
     install_limits(app)
     install(app, processes())
+    install_servers(app)
     return app
 
 
