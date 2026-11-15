@@ -1,0 +1,2217 @@
+{
+ "made": "2026-11-15T21:04:39Z",
+ "service": "private copy; see served_commit.txt",
+ "steps": [
+  {
+   "step": "1 state before the sign-in",
+   "time": "2026-11-15T20:58:56Z",
+   "browser": "first browser",
+   "request": "GET /api/session",
+   "request_carried_the_cookie": false,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "earthdata": null
+   }
+  },
+  {
+   "step": "1 layers before the sign-in",
+   "time": "2026-11-15T20:58:56Z",
+   "browser": "first browser",
+   "request": "GET /api/layers",
+   "request_carried_the_cookie": false,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "layers": []
+   }
+  },
+  {
+   "step": "1 a job before the sign-in",
+   "time": "2026-11-15T20:58:56Z",
+   "browser": "first browser",
+   "request": "POST /api/processes/get-layer/execution",
+   "request_carried_the_cookie": false,
+   "body": {
+    "inputs": {
+     "product": "GCOV",
+     "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+     "layer": "HHHH",
+     "area": {
+      "west": -71.0,
+      "south": 42.75,
+      "east": -70.95,
+      "north": 42.8
+     }
+    }
+   },
+   "status": 401,
+   "headers": {
+    "Content-Type": "application/problem+json",
+    "WWW-Authenticate": "Bearer realm=\"Earthdata Login\"",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "type": "about:blank",
+    "title": "Unauthorized",
+    "status": 401,
+    "detail": "Sign in to Earthdata to start this job."
+   }
+  },
+  {
+   "step": "1 limits and resources",
+   "time": "2026-11-15T20:58:56Z",
+   "browser": "first browser",
+   "request": "GET /api/limits",
+   "request_carried_the_cookie": false,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "version": "0.1.0",
+    "resources": {
+     "processors": 1.0,
+     "memory": 2147483648,
+     "free_space": 16510853120
+    },
+    "limits": {
+     "layer_cells": 25000000,
+     "larger_layer": "refused",
+     "layer_size": 500000000,
+     "running_jobs": 2,
+     "waiting_jobs": 20,
+     "job_time": 2400.0,
+     "account_unfinished_jobs": 4,
+     "account_layers": 50,
+     "account_series": 50,
+     "account_size": 2000000000,
+     "total_size": 20000000000,
+     "free_space_reserve": 5000000000,
+     "keep_time": 1209600.0,
+     "search_products": 200,
+     "session_idle_time": 1209600.0,
+     "earthdata_idle_time": 1800.0,
+     "earthdata_time": 28800.0
+    }
+   }
+  },
+  {
+   "step": "1 record before the sign-in",
+   "time": "2026-11-15T20:58:56Z",
+   "rows": {
+    "sessions": 0,
+    "jobs": 0,
+    "layers": 0,
+    "series": 0,
+    "servers": 0,
+    "server_jobs": 0,
+    "server_layers": 0,
+    "user_version": 4
+   },
+   "cookies_of_the_browser": 0
+  },
+  {
+   "step": "2 sign-in (state after it)",
+   "time": "2026-11-15T20:59:00Z",
+   "browser": "first browser",
+   "request": "GET /api/session",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": "lynkeus_session=<key of 43 characters>; HttpOnly; Max-Age=1209600; Path=/api; SameSite=strict"
+   },
+   "answer": {
+    "earthdata": {
+     "user": "<user>",
+     "token": true
+    }
+   },
+   "sign_in_status": 200,
+   "cookie_after_the_sign_in": {
+    "name": "lynkeus_session",
+    "path": "/api",
+    "length_of_the_key": 43,
+    "lives_for_seconds": 1209600,
+    "http_only": true,
+    "same_site": "strict",
+    "secure": false
+   }
+  },
+  {
+   "step": "3 get layer",
+   "time": "2026-11-15T20:59:00Z",
+   "browser": "first browser",
+   "request": "POST /api/processes/get-layer/execution",
+   "request_carried_the_cookie": true,
+   "body": {
+    "inputs": {
+     "product": "GCOV",
+     "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+     "layer": "HHHH",
+     "area": {
+      "west": -71.0,
+      "south": 42.75,
+      "east": -70.95,
+      "north": 42.8
+     }
+    }
+   },
+   "status": 201,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "processID": "get-layer",
+    "type": "process",
+    "jobID": "40b9bc959a899d7f1defffa2f9f3856e",
+    "title": "Frequency A HHHH of NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "status": "accepted",
+    "message": "The job waits for its turn.",
+    "created": "2026-11-15T20:59:00Z",
+    "updated": "2026-11-15T20:59:00Z",
+    "progress": 0,
+    "inputs": {
+     "product": "GCOV",
+     "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+     "layer": "HHHH",
+     "area": {
+      "west": -71.0,
+      "south": 42.75,
+      "east": -70.95,
+      "north": 42.8
+     }
+    },
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/40b9bc959a899d7f1defffa2f9f3856e",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     }
+    ]
+   }
+  },
+  {
+   "step": "3 get layer, the job",
+   "time": "2026-11-15T21:01:20Z",
+   "browser": "first browser",
+   "request": "GET /api/jobs/40b9bc959a899d7f1defffa2f9f3856e",
+   "waited_seconds": 140,
+   "answer": {
+    "processID": "get-layer",
+    "type": "process",
+    "jobID": "40b9bc959a899d7f1defffa2f9f3856e",
+    "title": "Frequency A HHHH of NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "status": "successful",
+    "message": "The layer is ready.",
+    "created": "2026-11-15T20:59:00Z",
+    "started": "2026-11-15T20:59:00Z",
+    "finished": "2026-11-15T21:01:19Z",
+    "updated": "2026-11-15T21:01:19Z",
+    "progress": 100,
+    "inputs": {
+     "product": "GCOV",
+     "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+     "layer": "HHHH",
+     "area": {
+      "west": -71.0,
+      "south": 42.75,
+      "east": -70.95,
+      "north": 42.8
+     }
+    },
+    "layer": "2fbc2c6e147006f5e1d49765a97987c7",
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/40b9bc959a899d7f1defffa2f9f3856e",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/40b9bc959a899d7f1defffa2f9f3856e/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   }
+  },
+  {
+   "step": "4 the entry of the layer",
+   "time": "2026-11-15T21:01:20Z",
+   "browser": "first browser",
+   "request": "GET /api/layers",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "layers": [
+     {
+      "layer": {
+       "id": "2fbc2c6e147006f5e1d49765a97987c7",
+       "title": "Frequency A HHHH, 21 Oct 2026",
+       "kind": "layer",
+       "url": "/files/2fbc2c6e147006f5e1d49765a97987c7/gcov-hhhh-20261021.tif",
+       "quantity": "Radar backscatter gamma nought, HH, linear power",
+       "unit": "1",
+       "range": [
+        0.02383169174194336,
+        1.0212127685546877
+       ],
+       "colours": "grey",
+       "dates": [
+        "2026-10-21"
+       ],
+       "inputs": [
+        "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+       ],
+       "layer": "HHHH",
+       "ends": null,
+       "frequency": null,
+       "program": "Lynkeus 0.1.0",
+       "method": null,
+       "record": "/files/2fbc2c6e147006f5e1d49765a97987c7/gcov-hhhh-20261021.json"
+      },
+      "size": 795662,
+      "created": "2026-11-15T21:01:19Z",
+      "server": null,
+      "kept_until": "2026-11-29T21:01:19Z",
+      "source": {
+       "process": "get-layer",
+       "inputs": {
+        "product": "GCOV",
+        "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+        "layer": "HHHH",
+        "area": {
+         "west": -71.0,
+         "south": 42.75,
+         "east": -70.95,
+         "north": 42.8
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "step": "4 the time for which the layer is kept",
+   "time": "2026-11-15T21:01:20Z",
+   "days": 14.0
+  },
+  {
+   "step": "4 the first bytes of the file of the layer",
+   "time": "2026-11-15T21:01:20Z",
+   "browser": "first browser",
+   "request": "GET /files/2fbc2c6e147006f5e1d49765a97987c7/gcov-hhhh-20261021.tif",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 206,
+   "headers": {
+    "Content-Type": "image/tiff; application=geotiff; profile=cloud-optimized",
+    "Content-Range": "bytes 0-15/790811",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "bytes": 16,
+    "first_bytes_hex": "49492a00c0000000"
+   }
+  },
+  {
+   "step": "4 the same bytes without a sign-in",
+   "time": "2026-11-15T21:01:20Z",
+   "browser": "a browser that is not signed in",
+   "request": "GET /files/2fbc2c6e147006f5e1d49765a97987c7/gcov-hhhh-20261021.tif",
+   "request_carried_the_cookie": false,
+   "body": null,
+   "status": 206,
+   "headers": {
+    "Content-Type": "image/tiff; application=geotiff; profile=cloud-optimized",
+    "Content-Range": "bytes 0-15/790811",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "bytes": 16,
+    "first_bytes_hex": "49492a00c0000000"
+   }
+  },
+  {
+   "step": "5 layers of the second browser before its sign-in",
+   "time": "2026-11-15T21:01:20Z",
+   "browser": "second browser",
+   "request": "GET /api/layers",
+   "request_carried_the_cookie": false,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "layers": []
+   }
+  },
+  {
+   "step": "5 sign-in of the second browser (state after it)",
+   "time": "2026-11-15T21:01:20Z",
+   "browser": "second browser",
+   "request": "GET /api/session",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": "lynkeus_session=<key of 43 characters>; HttpOnly; Max-Age=1209600; Path=/api; SameSite=strict"
+   },
+   "answer": {
+    "earthdata": {
+     "user": "<user>",
+     "token": true
+    }
+   },
+   "sign_in_status": 200,
+   "cookie_after_the_sign_in": {
+    "name": "lynkeus_session",
+    "path": "/api",
+    "length_of_the_key": 43,
+    "lives_for_seconds": 1209599,
+    "http_only": true,
+    "same_site": "strict",
+    "secure": false
+   }
+  },
+  {
+   "step": "5 layers of the second browser",
+   "time": "2026-11-15T21:01:20Z",
+   "browser": "second browser",
+   "request": "GET /api/layers",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "layers": [
+     {
+      "layer": {
+       "id": "2fbc2c6e147006f5e1d49765a97987c7",
+       "title": "Frequency A HHHH, 21 Oct 2026",
+       "kind": "layer",
+       "url": "/files/2fbc2c6e147006f5e1d49765a97987c7/gcov-hhhh-20261021.tif",
+       "quantity": "Radar backscatter gamma nought, HH, linear power",
+       "unit": "1",
+       "range": [
+        0.02383169174194336,
+        1.0212127685546877
+       ],
+       "colours": "grey",
+       "dates": [
+        "2026-10-21"
+       ],
+       "inputs": [
+        "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+       ],
+       "layer": "HHHH",
+       "ends": null,
+       "frequency": null,
+       "program": "Lynkeus 0.1.0",
+       "method": null,
+       "record": "/files/2fbc2c6e147006f5e1d49765a97987c7/gcov-hhhh-20261021.json"
+      },
+      "size": 795662,
+      "created": "2026-11-15T21:01:19Z",
+      "server": null,
+      "kept_until": "2026-11-29T21:01:19Z",
+      "source": {
+       "process": "get-layer",
+       "inputs": {
+        "product": "GCOV",
+        "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+        "layer": "HHHH",
+        "area": {
+         "west": -71.0,
+         "south": 42.75,
+         "east": -70.95,
+         "north": 42.8
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "step": "5 jobs of the second browser",
+   "time": "2026-11-15T21:01:20Z",
+   "browser": "second browser",
+   "request": "GET /api/jobs",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "jobs": [
+     {
+      "processID": "get-layer",
+      "type": "process",
+      "jobID": "40b9bc959a899d7f1defffa2f9f3856e",
+      "title": "Frequency A HHHH of NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+      "status": "successful",
+      "message": "The layer is ready.",
+      "created": "2026-11-15T20:59:00Z",
+      "started": "2026-11-15T20:59:00Z",
+      "finished": "2026-11-15T21:01:19Z",
+      "updated": "2026-11-15T21:01:19Z",
+      "progress": 100,
+      "inputs": {
+       "product": "GCOV",
+       "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+       "layer": "HHHH",
+       "area": {
+        "west": -71.0,
+        "south": 42.75,
+        "east": -70.95,
+        "north": 42.8
+       }
+      },
+      "layer": "2fbc2c6e147006f5e1d49765a97987c7",
+      "server": null,
+      "links": [
+       {
+        "href": "/api/jobs/40b9bc959a899d7f1defffa2f9f3856e",
+        "rel": "self",
+        "type": "application/json",
+        "title": "State of the job"
+       },
+       {
+        "href": "/api/jobs/40b9bc959a899d7f1defffa2f9f3856e/results",
+        "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+        "type": "application/json",
+        "title": "Results of the job"
+       }
+      ]
+     }
+    ],
+    "links": [
+     {
+      "href": "/api/jobs?limit=100&offset=0",
+      "rel": "self",
+      "type": "application/json",
+      "title": "Jobs of the account"
+     }
+    ]
+   }
+  },
+  {
+   "step": "5 record",
+   "time": "2026-11-15T21:01:20Z",
+   "rows": {
+    "sessions": 2,
+    "jobs": 1,
+    "layers": 1,
+    "series": 0,
+    "servers": 0,
+    "server_jobs": 0,
+    "server_layers": 0,
+    "user_version": 4
+   }
+  },
+  {
+   "step": "6 restart of the private service",
+   "time": "2026-11-15T21:01:21Z",
+   "docker": "storage-server-api"
+  },
+  {
+   "step": "6 state after the restart",
+   "time": "2026-11-15T21:01:26Z",
+   "browser": "first browser",
+   "request": "GET /api/session",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": "lynkeus_session=<key of 43 characters>; HttpOnly; Max-Age=1209600; Path=/api; SameSite=strict"
+   },
+   "answer": {
+    "earthdata": {
+     "user": "<user>",
+     "token": false
+    }
+   }
+  },
+  {
+   "step": "6 layers after the restart",
+   "time": "2026-11-15T21:01:26Z",
+   "browser": "first browser",
+   "request": "GET /api/layers",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "layers": [
+     {
+      "layer": {
+       "id": "2fbc2c6e147006f5e1d49765a97987c7",
+       "title": "Frequency A HHHH, 21 Oct 2026",
+       "kind": "layer",
+       "url": "/files/2fbc2c6e147006f5e1d49765a97987c7/gcov-hhhh-20261021.tif",
+       "quantity": "Radar backscatter gamma nought, HH, linear power",
+       "unit": "1",
+       "range": [
+        0.02383169174194336,
+        1.0212127685546877
+       ],
+       "colours": "grey",
+       "dates": [
+        "2026-10-21"
+       ],
+       "inputs": [
+        "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+       ],
+       "layer": "HHHH",
+       "ends": null,
+       "frequency": null,
+       "program": "Lynkeus 0.1.0",
+       "method": null,
+       "record": "/files/2fbc2c6e147006f5e1d49765a97987c7/gcov-hhhh-20261021.json"
+      },
+      "size": 795662,
+      "created": "2026-11-15T21:01:19Z",
+      "server": null,
+      "kept_until": "2026-11-29T21:01:19Z",
+      "source": {
+       "process": "get-layer",
+       "inputs": {
+        "product": "GCOV",
+        "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+        "layer": "HHHH",
+        "area": {
+         "west": -71.0,
+         "south": 42.75,
+         "east": -70.95,
+         "north": 42.8
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "step": "6 the first bytes of the file after the restart",
+   "time": "2026-11-15T21:01:26Z",
+   "browser": "first browser",
+   "request": "GET /files/2fbc2c6e147006f5e1d49765a97987c7/gcov-hhhh-20261021.tif",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 206,
+   "headers": {
+    "Content-Type": "image/tiff; application=geotiff; profile=cloud-optimized",
+    "Content-Range": "bytes 0-15/790811",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "bytes": 16,
+    "first_bytes_hex": "49492a00c0000000"
+   }
+  },
+  {
+   "step": "6 an analysis tool without the token",
+   "time": "2026-11-15T21:01:26Z",
+   "browser": "first browser",
+   "request": "POST /api/processes/backscatter-state/execution",
+   "request_carried_the_cookie": true,
+   "body": {
+    "inputs": {
+     "inputs": [
+      "2fbc2c6e147006f5e1d49765a97987c7"
+     ],
+     "title": "Backscatter of the test area"
+    }
+   },
+   "status": 201,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "processID": "backscatter-state",
+    "type": "process",
+    "jobID": "0ac05fbea0b8a5538d67432c7a61c9f1",
+    "title": "Backscatter of the test area",
+    "status": "accepted",
+    "message": "The job waits for its turn.",
+    "created": "2026-11-15T21:01:26Z",
+    "updated": "2026-11-15T21:01:26Z",
+    "progress": 0,
+    "inputs": {
+     "inputs": [
+      "2fbc2c6e147006f5e1d49765a97987c7"
+     ],
+     "title": "Backscatter of the test area"
+    },
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/0ac05fbea0b8a5538d67432c7a61c9f1",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     }
+    ]
+   }
+  },
+  {
+   "step": "6 an analysis tool without the token, the job",
+   "time": "2026-11-15T21:01:34Z",
+   "browser": "first browser",
+   "request": "GET /api/jobs/0ac05fbea0b8a5538d67432c7a61c9f1",
+   "waited_seconds": 8,
+   "answer": {
+    "processID": "backscatter-state",
+    "type": "process",
+    "jobID": "0ac05fbea0b8a5538d67432c7a61c9f1",
+    "title": "Backscatter of the test area",
+    "status": "successful",
+    "message": "The layer is ready.",
+    "created": "2026-11-15T21:01:26Z",
+    "started": "2026-11-15T21:01:26Z",
+    "finished": "2026-11-15T21:01:31Z",
+    "updated": "2026-11-15T21:01:31Z",
+    "progress": 100,
+    "inputs": {
+     "inputs": [
+      "2fbc2c6e147006f5e1d49765a97987c7"
+     ],
+     "title": "Backscatter of the test area"
+    },
+    "layer": "1b2305fc179d8e388df072c4c77805ea",
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/0ac05fbea0b8a5538d67432c7a61c9f1",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/0ac05fbea0b8a5538d67432c7a61c9f1/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   }
+  },
+  {
+   "step": "6 the result of the analysis tool",
+   "time": "2026-11-15T21:01:34Z",
+   "browser": "first browser",
+   "request": "GET /api/jobs/0ac05fbea0b8a5538d67432c7a61c9f1/results",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "id": "1b2305fc179d8e388df072c4c77805ea",
+    "title": "Backscatter of the test area",
+    "kind": "result",
+    "url": "/files/1b2305fc179d8e388df072c4c77805ea/backscatter-state.tif",
+    "quantity": "Radar backscatter gamma0",
+    "unit": "dB",
+    "range": [
+     -13.906850433349609,
+     -1.201410198211675
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": null,
+    "frequency": null,
+    "program": "Lynkeus 0.1.0",
+    "method": "10*log10 of the covariance term, the conversion that the product states in its field outputBackscatterDecibelConversionFormula (NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)",
+    "record": "/files/1b2305fc179d8e388df072c4c77805ea/backscatter-state.json"
+   }
+  },
+  {
+   "step": "6 the first bytes of the file of the result",
+   "time": "2026-11-15T21:01:34Z",
+   "browser": "first browser",
+   "request": "GET /files/1b2305fc179d8e388df072c4c77805ea/backscatter-state.tif",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 206,
+   "headers": {
+    "Content-Type": "image/tiff; application=geotiff; profile=cloud-optimized",
+    "Content-Range": "bytes 0-15/967343",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "bytes": 16,
+    "first_bytes_hex": "49492a00c0000000"
+   }
+  },
+  {
+   "step": "6 get layer without the token",
+   "time": "2026-11-15T21:01:34Z",
+   "browser": "first browser",
+   "request": "POST /api/processes/get-layer/execution",
+   "request_carried_the_cookie": true,
+   "body": {
+    "inputs": {
+     "product": "GCOV",
+     "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+     "layer": "HHHH",
+     "area": {
+      "west": -71.0,
+      "south": 42.75,
+      "east": -70.95,
+      "north": 42.8
+     }
+    }
+   },
+   "status": 401,
+   "headers": {
+    "Content-Type": "application/problem+json",
+    "WWW-Authenticate": "Bearer realm=\"Earthdata Login\"",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "type": "about:blank",
+    "title": "Unauthorized",
+    "status": 401,
+    "detail": "Enter your Earthdata token again to start this job, because the server no longer holds it."
+   }
+  },
+  {
+   "step": "6 the servers of the account without the token",
+   "time": "2026-11-15T21:01:34Z",
+   "browser": "first browser",
+   "request": "GET /api/servers",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "servers": [],
+    "limit": 8
+   }
+  },
+  {
+   "step": "6 state after these requests",
+   "time": "2026-11-15T21:01:34Z",
+   "browser": "first browser",
+   "request": "GET /api/session",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": "lynkeus_session=<key of 43 characters>; HttpOnly; Max-Age=1209600; Path=/api; SameSite=strict"
+   },
+   "answer": {
+    "earthdata": {
+     "user": "<user>",
+     "token": false
+    }
+   }
+  },
+  {
+   "step": "7 extension of the layer",
+   "time": "2026-11-15T21:01:34Z",
+   "browser": "first browser",
+   "request": "POST /api/layers/2fbc2c6e147006f5e1d49765a97987c7/extension",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "layer": {
+     "id": "2fbc2c6e147006f5e1d49765a97987c7",
+     "title": "Frequency A HHHH, 21 Oct 2026",
+     "kind": "layer",
+     "url": "/files/2fbc2c6e147006f5e1d49765a97987c7/gcov-hhhh-20261021.tif",
+     "quantity": "Radar backscatter gamma nought, HH, linear power",
+     "unit": "1",
+     "range": [
+      0.02383169174194336,
+      1.0212127685546877
+     ],
+     "colours": "grey",
+     "dates": [
+      "2026-10-21"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "HHHH",
+     "ends": null,
+     "frequency": null,
+     "program": "Lynkeus 0.1.0",
+     "method": null,
+     "record": "/files/2fbc2c6e147006f5e1d49765a97987c7/gcov-hhhh-20261021.json"
+    },
+    "size": 795662,
+    "created": "2026-11-15T21:01:19Z",
+    "server": null,
+    "kept_until": "2026-11-29T21:01:34Z",
+    "source": {
+     "process": "get-layer",
+     "inputs": {
+      "product": "GCOV",
+      "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+      "layer": "HHHH",
+      "area": {
+       "west": -71.0,
+       "south": 42.75,
+       "east": -70.95,
+       "north": 42.8
+      }
+     }
+    }
+   }
+  },
+  {
+   "step": "7 extension of everything of the account",
+   "time": "2026-11-15T21:01:34Z",
+   "browser": "first browser",
+   "request": "POST /api/storage/extension",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 204,
+   "headers": {
+    "Set-Cookie": null
+   },
+   "answer": null
+  },
+  {
+   "step": "8 stop of the private service",
+   "time": "2026-11-15T21:01:35Z",
+   "docker": "storage-server-api"
+  },
+  {
+   "step": "8 the record file was changed while the service was stopped",
+   "time": "2026-11-15T21:01:35Z",
+   "layers_and_moments_before": [
+    [
+     "2fbc2c6e147006f5e1d49765a97987c7",
+     "2026-11-29T21:01:34Z"
+    ],
+    [
+     "1b2305fc179d8e388df072c4c77805ea",
+     "2026-11-29T21:01:34Z"
+    ]
+   ],
+   "change": "the layer 2fbc2c6e147006f5e1d49765a97987c7 is kept for 3 more days, and the result 1b2305fc179d8e388df072c4c77805ea was to be removed 60 seconds ago",
+   "folders_of_files": [
+    "1b2305fc179d8e388df072c4c77805ea",
+    "2fbc2c6e147006f5e1d49765a97987c7"
+   ]
+  },
+  {
+   "step": "8 start of the private service",
+   "time": "2026-11-15T21:01:35Z",
+   "docker": "storage-server-api"
+  },
+  {
+   "step": "8 layers after the removal run",
+   "time": "2026-11-15T21:01:43Z",
+   "browser": "first browser",
+   "request": "GET /api/layers",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "layers": [
+     {
+      "layer": {
+       "id": "2fbc2c6e147006f5e1d49765a97987c7",
+       "title": "Frequency A HHHH, 21 Oct 2026",
+       "kind": "layer",
+       "url": "/files/2fbc2c6e147006f5e1d49765a97987c7/gcov-hhhh-20261021.tif",
+       "quantity": "Radar backscatter gamma nought, HH, linear power",
+       "unit": "1",
+       "range": [
+        0.02383169174194336,
+        1.0212127685546877
+       ],
+       "colours": "grey",
+       "dates": [
+        "2026-10-21"
+       ],
+       "inputs": [
+        "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+       ],
+       "layer": "HHHH",
+       "ends": null,
+       "frequency": null,
+       "program": "Lynkeus 0.1.0",
+       "method": null,
+       "record": "/files/2fbc2c6e147006f5e1d49765a97987c7/gcov-hhhh-20261021.json"
+      },
+      "size": 795662,
+      "created": "2026-11-15T21:01:19Z",
+      "server": null,
+      "kept_until": "2026-11-18T21:01:35Z",
+      "source": {
+       "process": "get-layer",
+       "inputs": {
+        "product": "GCOV",
+        "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+        "layer": "HHHH",
+        "area": {
+         "west": -71.0,
+         "south": 42.75,
+         "east": -70.95,
+         "north": 42.8
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "step": "8 the job of the removed result",
+   "time": "2026-11-15T21:01:43Z",
+   "browser": "first browser",
+   "request": "GET /api/jobs/0ac05fbea0b8a5538d67432c7a61c9f1",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 404,
+   "headers": {
+    "Content-Type": "application/problem+json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "type": "http://www.opengis.net/def/exceptions/ogcapi-processes-1/1.0/no-such-job",
+    "title": "Not Found",
+    "status": 404,
+    "detail": "You have no job of this name."
+   }
+  },
+  {
+   "step": "8 the file of the removed result",
+   "time": "2026-11-15T21:01:43Z",
+   "browser": "first browser",
+   "request": "GET /files/1b2305fc179d8e388df072c4c77805ea/backscatter-state.tif",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 404,
+   "headers": {
+    "Content-Type": "text/html; charset=utf-8",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "bytes": 153,
+    "first_bytes_hex": "3c68746d6c3e0d0a"
+   }
+  },
+  {
+   "step": "8 after the removal run",
+   "time": "2026-11-15T21:01:43Z",
+   "folders_of_files": [
+    "2fbc2c6e147006f5e1d49765a97987c7"
+   ],
+   "rows": {
+    "sessions": 2,
+    "jobs": 1,
+    "layers": 1,
+    "series": 0,
+    "servers": 0,
+    "server_jobs": 0,
+    "server_layers": 0,
+    "user_version": 4
+   }
+  },
+  {
+   "step": "8 extension of the layer that had 3 days left",
+   "time": "2026-11-15T21:01:43Z",
+   "browser": "first browser",
+   "request": "POST /api/layers/2fbc2c6e147006f5e1d49765a97987c7/extension",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "layer": {
+     "id": "2fbc2c6e147006f5e1d49765a97987c7",
+     "title": "Frequency A HHHH, 21 Oct 2026",
+     "kind": "layer",
+     "url": "/files/2fbc2c6e147006f5e1d49765a97987c7/gcov-hhhh-20261021.tif",
+     "quantity": "Radar backscatter gamma nought, HH, linear power",
+     "unit": "1",
+     "range": [
+      0.02383169174194336,
+      1.0212127685546877
+     ],
+     "colours": "grey",
+     "dates": [
+      "2026-10-21"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "HHHH",
+     "ends": null,
+     "frequency": null,
+     "program": "Lynkeus 0.1.0",
+     "method": null,
+     "record": "/files/2fbc2c6e147006f5e1d49765a97987c7/gcov-hhhh-20261021.json"
+    },
+    "size": 795662,
+    "created": "2026-11-15T21:01:19Z",
+    "server": null,
+    "kept_until": "2026-11-29T21:01:43Z",
+    "source": {
+     "process": "get-layer",
+     "inputs": {
+      "product": "GCOV",
+      "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+      "layer": "HHHH",
+      "area": {
+       "west": -71.0,
+       "south": 42.75,
+       "east": -70.95,
+       "north": 42.8
+      }
+     }
+    }
+   }
+  },
+  {
+   "step": "9 the token is given again (state after it)",
+   "time": "2026-11-15T21:01:44Z",
+   "browser": "first browser",
+   "request": "GET /api/session",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": "lynkeus_session=<key of 43 characters>; HttpOnly; Max-Age=1209600; Path=/api; SameSite=strict"
+   },
+   "answer": {
+    "earthdata": {
+     "user": "<user>",
+     "token": true
+    }
+   },
+   "sign_in_status": 200,
+   "cookie_after_the_sign_in": {
+    "name": "lynkeus_session",
+    "path": "/api",
+    "length_of_the_key": 43,
+    "lives_for_seconds": 1209600,
+    "http_only": true,
+    "same_site": "strict",
+    "secure": false
+   }
+  },
+  {
+   "step": "9 get layer after the token was given again",
+   "time": "2026-11-15T21:01:44Z",
+   "browser": "first browser",
+   "request": "POST /api/processes/get-layer/execution",
+   "request_carried_the_cookie": true,
+   "body": {
+    "inputs": {
+     "product": "GCOV",
+     "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+     "layer": "HHHH",
+     "area": {
+      "west": -71.0,
+      "south": 42.75,
+      "east": -70.95,
+      "north": 42.8
+     }
+    }
+   },
+   "status": 201,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "processID": "get-layer",
+    "type": "process",
+    "jobID": "7426c794585a3413326c45c5117d7e49",
+    "title": "Frequency A HHHH of NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "status": "accepted",
+    "message": "The job waits for its turn.",
+    "created": "2026-11-15T21:01:44Z",
+    "updated": "2026-11-15T21:01:44Z",
+    "progress": 0,
+    "inputs": {
+     "product": "GCOV",
+     "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+     "layer": "HHHH",
+     "area": {
+      "west": -71.0,
+      "south": 42.75,
+      "east": -70.95,
+      "north": 42.8
+     }
+    },
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/7426c794585a3413326c45c5117d7e49",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     }
+    ]
+   }
+  },
+  {
+   "step": "9 the released program Lynkeus Server v0.1.0 was started against the private service",
+   "time": "2026-11-15T21:01:53Z",
+   "started": true,
+   "program_reads": "0.1.0 /v010/lynkeus/__init__.py 3",
+   "shows_a_code": true
+  },
+  {
+   "step": "9 the pairing that the program asked for",
+   "time": "2026-11-15T21:01:53Z",
+   "browser": "first browser",
+   "request": "GET /api/servers/pairings/<code of the program>",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "user_code": "<code of the program>",
+    "machine": {
+     "name": "ebb31d08a784",
+     "system": "Debian GNU/Linux 13 (trixie)",
+     "version": "0.1.0"
+    }
+   }
+  },
+  {
+   "step": "9 confirmation of the pairing",
+   "time": "2026-11-15T21:01:53Z",
+   "browser": "first browser",
+   "request": "POST /api/servers",
+   "request_carried_the_cookie": true,
+   "body": {
+    "user_code": "<code of the program>"
+   },
+   "status": 201,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "id": "3da401bf19dbb8fd",
+    "name": "ebb31d08a784",
+    "connected": false,
+    "paired": 1794776513.71284,
+    "seen": 1794776513.71284,
+    "state": null,
+    "knows_cells": false
+   }
+  },
+  {
+   "step": "9 the servers of the account",
+   "time": "2026-11-15T21:01:57Z",
+   "browser": "first browser",
+   "request": "GET /api/servers",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "servers": [
+     {
+      "id": "3da401bf19dbb8fd",
+      "name": "ebb31d08a784",
+      "connected": true,
+      "paired": 1794776513.71284,
+      "seen": 1794776517.429499,
+      "state": {
+       "processors": 2,
+       "memory": 8326627328,
+       "disk_free": 16504201216,
+       "disk_used": 0,
+       "running": 0,
+       "waiting": 0,
+       "layers": 0,
+       "limits": {
+        "running_jobs": 1,
+        "storage": 8252102656,
+        "layer_size": 625000000,
+        "layer_cells": 117000000
+       },
+       "system": "Debian GNU/Linux 13 (trixie)",
+       "version": "0.1.0"
+      },
+      "knows_cells": true
+     }
+    ],
+    "limit": 8
+   }
+  },
+  {
+   "step": "9 get layer on the server of the program",
+   "time": "2026-11-15T21:01:57Z",
+   "browser": "first browser",
+   "request": "POST /api/processes/get-layer/execution?server=3da401bf19dbb8fd",
+   "request_carried_the_cookie": true,
+   "body": {
+    "inputs": {
+     "product": "GCOV",
+     "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+     "layer": "HHHH",
+     "area": {
+      "west": -71.0,
+      "south": 42.75,
+      "east": -70.95,
+      "north": 42.8
+     }
+    }
+   },
+   "status": 201,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "processID": "get-layer",
+    "type": "process",
+    "jobID": "897dc15b738d9a3301d270404a79d080",
+    "title": "Frequency A HHHH of NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "status": "accepted",
+    "message": "The job waits for your server to take it.",
+    "created": "2026-11-15T21:01:57Z",
+    "updated": "2026-11-15T21:01:57Z",
+    "progress": 0,
+    "inputs": {
+     "product": "GCOV",
+     "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+     "layer": "HHHH",
+     "area": {
+      "west": -71.0,
+      "south": 42.75,
+      "east": -70.95,
+      "north": 42.8
+     }
+    },
+    "server": {
+     "id": "3da401bf19dbb8fd",
+     "name": "ebb31d08a784"
+    },
+    "links": [
+     {
+      "href": "/api/jobs/897dc15b738d9a3301d270404a79d080",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     }
+    ]
+   }
+  },
+  {
+   "step": "9 get layer on the server of the program, the job",
+   "time": "2026-11-15T21:04:38Z",
+   "browser": "first browser",
+   "request": "GET /api/jobs/897dc15b738d9a3301d270404a79d080",
+   "waited_seconds": 160,
+   "answer": {
+    "processID": "get-layer",
+    "type": "process",
+    "jobID": "897dc15b738d9a3301d270404a79d080",
+    "title": "Frequency A HHHH of NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "status": "successful",
+    "message": "The layer is ready.",
+    "created": "2026-11-15T21:01:57Z",
+    "started": "2026-11-15T21:01:57Z",
+    "finished": "2026-11-15T21:04:36Z",
+    "updated": "2026-11-15T21:04:37Z",
+    "progress": 100,
+    "inputs": {
+     "product": "GCOV",
+     "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+     "layer": "HHHH",
+     "area": {
+      "west": -71.0,
+      "south": 42.75,
+      "east": -70.95,
+      "north": 42.8
+     }
+    },
+    "layer": "a20271305d4579a002a0a271f9cdaff4",
+    "server": {
+     "id": "3da401bf19dbb8fd",
+     "name": "ebb31d08a784"
+    },
+    "links": [
+     {
+      "href": "/api/jobs/897dc15b738d9a3301d270404a79d080",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/897dc15b738d9a3301d270404a79d080/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   }
+  },
+  {
+   "step": "9 get layer after the token was given again, the job",
+   "time": "2026-11-15T21:04:38Z",
+   "browser": "first browser",
+   "request": "GET /api/jobs/7426c794585a3413326c45c5117d7e49",
+   "waited_seconds": 0,
+   "answer": {
+    "processID": "get-layer",
+    "type": "process",
+    "jobID": "7426c794585a3413326c45c5117d7e49",
+    "title": "Frequency A HHHH of NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "status": "successful",
+    "message": "The layer is ready.",
+    "created": "2026-11-15T21:01:44Z",
+    "started": "2026-11-15T21:01:44Z",
+    "finished": "2026-11-15T21:03:17Z",
+    "updated": "2026-11-15T21:03:17Z",
+    "progress": 100,
+    "inputs": {
+     "product": "GCOV",
+     "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+     "layer": "HHHH",
+     "area": {
+      "west": -71.0,
+      "south": 42.75,
+      "east": -70.95,
+      "north": 42.8
+     }
+    },
+    "layer": "368dd8bca029090b8eacba9e14887529",
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/7426c794585a3413326c45c5117d7e49",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/7426c794585a3413326c45c5117d7e49/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   }
+  },
+  {
+   "step": "9 layers of the account",
+   "time": "2026-11-15T21:04:38Z",
+   "browser": "first browser",
+   "request": "GET /api/layers",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "layers": [
+     {
+      "layer": {
+       "id": "a20271305d4579a002a0a271f9cdaff4",
+       "title": "Backscatter HH, 21 Oct 2026",
+       "kind": "layer",
+       "url": "/api/servers/3da401bf19dbb8fd/files/a20271305d4579a002a0a271f9cdaff4/gcov-hhhh-20261021.tif",
+       "quantity": "Radar backscatter gamma nought, HH, linear power",
+       "unit": "1",
+       "range": [
+        0.02383169174194336,
+        1.0212127685546877
+       ],
+       "colours": "grey",
+       "dates": [
+        "2026-10-21"
+       ],
+       "inputs": [
+        "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+       ],
+       "layer": "HHHH",
+       "ends": null,
+       "frequency": null,
+       "program": "Lynkeus 0.1.0",
+       "method": null,
+       "record": "/api/servers/3da401bf19dbb8fd/files/a20271305d4579a002a0a271f9cdaff4/gcov-hhhh-20261021.json"
+      },
+      "size": 795656,
+      "created": "2026-11-15T21:04:36Z",
+      "server": {
+       "id": "3da401bf19dbb8fd",
+       "name": "ebb31d08a784"
+      },
+      "kept_until": null,
+      "source": {
+       "process": "get-layer",
+       "inputs": {
+        "product": "GCOV",
+        "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+        "layer": "HHHH",
+        "area": {
+         "west": -71.0,
+         "south": 42.75,
+         "east": -70.95,
+         "north": 42.8
+        }
+       }
+      }
+     },
+     {
+      "layer": {
+       "id": "368dd8bca029090b8eacba9e14887529",
+       "title": "Frequency A HHHH, 21 Oct 2026",
+       "kind": "layer",
+       "url": "/files/368dd8bca029090b8eacba9e14887529/gcov-hhhh-20261021.tif",
+       "quantity": "Radar backscatter gamma nought, HH, linear power",
+       "unit": "1",
+       "range": [
+        0.02383169174194336,
+        1.0212127685546877
+       ],
+       "colours": "grey",
+       "dates": [
+        "2026-10-21"
+       ],
+       "inputs": [
+        "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+       ],
+       "layer": "HHHH",
+       "ends": null,
+       "frequency": null,
+       "program": "Lynkeus 0.1.0",
+       "method": null,
+       "record": "/files/368dd8bca029090b8eacba9e14887529/gcov-hhhh-20261021.json"
+      },
+      "size": 795662,
+      "created": "2026-11-15T21:03:17Z",
+      "server": null,
+      "kept_until": "2026-11-29T21:03:17Z",
+      "source": {
+       "process": "get-layer",
+       "inputs": {
+        "product": "GCOV",
+        "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+        "layer": "HHHH",
+        "area": {
+         "west": -71.0,
+         "south": 42.75,
+         "east": -70.95,
+         "north": 42.8
+        }
+       }
+      }
+     },
+     {
+      "layer": {
+       "id": "2fbc2c6e147006f5e1d49765a97987c7",
+       "title": "Frequency A HHHH, 21 Oct 2026",
+       "kind": "layer",
+       "url": "/files/2fbc2c6e147006f5e1d49765a97987c7/gcov-hhhh-20261021.tif",
+       "quantity": "Radar backscatter gamma nought, HH, linear power",
+       "unit": "1",
+       "range": [
+        0.02383169174194336,
+        1.0212127685546877
+       ],
+       "colours": "grey",
+       "dates": [
+        "2026-10-21"
+       ],
+       "inputs": [
+        "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+       ],
+       "layer": "HHHH",
+       "ends": null,
+       "frequency": null,
+       "program": "Lynkeus 0.1.0",
+       "method": null,
+       "record": "/files/2fbc2c6e147006f5e1d49765a97987c7/gcov-hhhh-20261021.json"
+      },
+      "size": 795662,
+      "created": "2026-11-15T21:01:19Z",
+      "server": null,
+      "kept_until": "2026-11-29T21:01:43Z",
+      "source": {
+       "process": "get-layer",
+       "inputs": {
+        "product": "GCOV",
+        "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+        "layer": "HHHH",
+        "area": {
+         "west": -71.0,
+         "south": 42.75,
+         "east": -70.95,
+         "north": 42.8
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "step": "9 the first bytes of the file that the program keeps",
+   "time": "2026-11-15T21:04:38Z",
+   "browser": "first browser",
+   "request": "GET /api/servers/3da401bf19dbb8fd/files/a20271305d4579a002a0a271f9cdaff4/gcov-hhhh-20261021.tif",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 206,
+   "headers": {
+    "Content-Type": "image/tiff; application=geotiff; profile=cloud-optimized",
+    "Content-Range": "bytes 0-15/790809",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "bytes": 16,
+    "first_bytes_hex": "49492a00c0000000"
+   }
+  },
+  {
+   "step": "9 a new title for the layer that the program keeps",
+   "time": "2026-11-15T21:04:38Z",
+   "browser": "first browser",
+   "request": "PATCH /api/layers/a20271305d4579a002a0a271f9cdaff4",
+   "request_carried_the_cookie": true,
+   "body": {
+    "title": "Kept by the program"
+   },
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "layer": {
+     "id": "a20271305d4579a002a0a271f9cdaff4",
+     "title": "Kept by the program",
+     "kind": "layer",
+     "url": "/api/servers/3da401bf19dbb8fd/files/a20271305d4579a002a0a271f9cdaff4/gcov-hhhh-20261021.tif",
+     "quantity": "Radar backscatter gamma nought, HH, linear power",
+     "unit": "1",
+     "range": [
+      0.02383169174194336,
+      1.0212127685546877
+     ],
+     "colours": "grey",
+     "dates": [
+      "2026-10-21"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "HHHH",
+     "ends": null,
+     "frequency": null,
+     "program": "Lynkeus 0.1.0",
+     "method": null,
+     "record": "/api/servers/3da401bf19dbb8fd/files/a20271305d4579a002a0a271f9cdaff4/gcov-hhhh-20261021.json"
+    },
+    "size": 795656,
+    "created": "2026-11-15T21:04:36Z",
+    "server": {
+     "id": "3da401bf19dbb8fd",
+     "name": "ebb31d08a784"
+    },
+    "kept_until": null,
+    "source": {
+     "process": "get-layer",
+     "inputs": {
+      "product": "GCOV",
+      "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+      "layer": "HHHH",
+      "area": {
+       "west": -71.0,
+       "south": 42.75,
+       "east": -70.95,
+       "north": 42.8
+      }
+     }
+    }
+   }
+  },
+  {
+   "step": "9 extension of the layer that the program keeps",
+   "time": "2026-11-15T21:04:38Z",
+   "browser": "first browser",
+   "request": "POST /api/layers/a20271305d4579a002a0a271f9cdaff4/extension",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "layer": {
+     "id": "a20271305d4579a002a0a271f9cdaff4",
+     "title": "Kept by the program",
+     "kind": "layer",
+     "url": "/api/servers/3da401bf19dbb8fd/files/a20271305d4579a002a0a271f9cdaff4/gcov-hhhh-20261021.tif",
+     "quantity": "Radar backscatter gamma nought, HH, linear power",
+     "unit": "1",
+     "range": [
+      0.02383169174194336,
+      1.0212127685546877
+     ],
+     "colours": "grey",
+     "dates": [
+      "2026-10-21"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "HHHH",
+     "ends": null,
+     "frequency": null,
+     "program": "Lynkeus 0.1.0",
+     "method": null,
+     "record": "/api/servers/3da401bf19dbb8fd/files/a20271305d4579a002a0a271f9cdaff4/gcov-hhhh-20261021.json"
+    },
+    "size": 795656,
+    "created": "2026-11-15T21:04:36Z",
+    "server": {
+     "id": "3da401bf19dbb8fd",
+     "name": "ebb31d08a784"
+    },
+    "kept_until": null,
+    "source": {
+     "process": "get-layer",
+     "inputs": {
+      "product": "GCOV",
+      "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+      "layer": "HHHH",
+      "area": {
+       "west": -71.0,
+       "south": 42.75,
+       "east": -70.95,
+       "north": 42.8
+      }
+     }
+    }
+   }
+  },
+  {
+   "step": "9 the folder of the program",
+   "time": "2026-11-15T21:04:38Z",
+   "files": [
+    "files",
+    "lock",
+    "log.txt",
+    "lynkeus.sqlite3",
+    "settings.json"
+   ],
+   "record_version": 3
+  },
+  {
+   "step": "10 removal of everything of the account on the project server",
+   "time": "2026-11-15T21:04:38Z",
+   "browser": "first browser",
+   "request": "DELETE /api/storage",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 204,
+   "headers": {
+    "Set-Cookie": null
+   },
+   "answer": null
+  },
+  {
+   "step": "10 layers after it",
+   "time": "2026-11-15T21:04:38Z",
+   "browser": "first browser",
+   "request": "GET /api/layers",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "layers": [
+     {
+      "layer": {
+       "id": "a20271305d4579a002a0a271f9cdaff4",
+       "title": "Kept by the program",
+       "kind": "layer",
+       "url": "/api/servers/3da401bf19dbb8fd/files/a20271305d4579a002a0a271f9cdaff4/gcov-hhhh-20261021.tif",
+       "quantity": "Radar backscatter gamma nought, HH, linear power",
+       "unit": "1",
+       "range": [
+        0.02383169174194336,
+        1.0212127685546877
+       ],
+       "colours": "grey",
+       "dates": [
+        "2026-10-21"
+       ],
+       "inputs": [
+        "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+       ],
+       "layer": "HHHH",
+       "ends": null,
+       "frequency": null,
+       "program": "Lynkeus 0.1.0",
+       "method": null,
+       "record": "/api/servers/3da401bf19dbb8fd/files/a20271305d4579a002a0a271f9cdaff4/gcov-hhhh-20261021.json"
+      },
+      "size": 795656,
+      "created": "2026-11-15T21:04:36Z",
+      "server": {
+       "id": "3da401bf19dbb8fd",
+       "name": "ebb31d08a784"
+      },
+      "kept_until": null,
+      "source": {
+       "process": "get-layer",
+       "inputs": {
+        "product": "GCOV",
+        "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+        "layer": "HHHH",
+        "area": {
+         "west": -71.0,
+         "south": 42.75,
+         "east": -70.95,
+         "north": 42.8
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "step": "10 jobs after it",
+   "time": "2026-11-15T21:04:38Z",
+   "browser": "first browser",
+   "request": "GET /api/jobs",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "jobs": [
+     {
+      "processID": "get-layer",
+      "type": "process",
+      "jobID": "897dc15b738d9a3301d270404a79d080",
+      "title": "Frequency A HHHH of NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+      "status": "successful",
+      "message": "The layer is ready.",
+      "created": "2026-11-15T21:01:57Z",
+      "started": "2026-11-15T21:01:57Z",
+      "finished": "2026-11-15T21:04:36Z",
+      "updated": "2026-11-15T21:04:37Z",
+      "progress": 100,
+      "inputs": {
+       "product": "GCOV",
+       "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+       "layer": "HHHH",
+       "area": {
+        "west": -71.0,
+        "south": 42.75,
+        "east": -70.95,
+        "north": 42.8
+       }
+      },
+      "layer": "a20271305d4579a002a0a271f9cdaff4",
+      "server": {
+       "id": "3da401bf19dbb8fd",
+       "name": "ebb31d08a784"
+      },
+      "links": [
+       {
+        "href": "/api/jobs/897dc15b738d9a3301d270404a79d080",
+        "rel": "self",
+        "type": "application/json",
+        "title": "State of the job"
+       },
+       {
+        "href": "/api/jobs/897dc15b738d9a3301d270404a79d080/results",
+        "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+        "type": "application/json",
+        "title": "Results of the job"
+       }
+      ]
+     }
+    ],
+    "links": [
+     {
+      "href": "/api/jobs?limit=100&offset=0",
+      "rel": "self",
+      "type": "application/json",
+      "title": "Jobs of the account"
+     }
+    ]
+   }
+  },
+  {
+   "step": "10 servers after it",
+   "time": "2026-11-15T21:04:38Z",
+   "browser": "first browser",
+   "request": "GET /api/servers",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "servers": [
+     {
+      "id": "3da401bf19dbb8fd",
+      "name": "ebb31d08a784",
+      "connected": true,
+      "paired": 1794776513.71284,
+      "seen": 1794776678.3894176,
+      "state": {
+       "processors": 2,
+       "memory": 8326627328,
+       "disk_free": 16505892864,
+       "disk_used": 795656,
+       "running": 0,
+       "waiting": 0,
+       "layers": 1,
+       "limits": {
+        "running_jobs": 1,
+        "storage": 8252102656,
+        "layer_size": 625000000,
+        "layer_cells": 117000000
+       },
+       "system": "Debian GNU/Linux 13 (trixie)",
+       "version": "0.1.0"
+      },
+      "knows_cells": true
+     }
+    ],
+    "limit": 8
+   }
+  },
+  {
+   "step": "10 state after it",
+   "time": "2026-11-15T21:04:38Z",
+   "browser": "first browser",
+   "request": "GET /api/session",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": "lynkeus_session=<key of 43 characters>; HttpOnly; Max-Age=1209600; Path=/api; SameSite=strict"
+   },
+   "answer": {
+    "earthdata": {
+     "user": "<user>",
+     "token": true
+    }
+   }
+  },
+  {
+   "step": "10 layers of the second browser after it",
+   "time": "2026-11-15T21:04:38Z",
+   "browser": "second browser",
+   "request": "GET /api/layers",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "layers": [
+     {
+      "layer": {
+       "id": "a20271305d4579a002a0a271f9cdaff4",
+       "title": "Kept by the program",
+       "kind": "layer",
+       "url": "/api/servers/3da401bf19dbb8fd/files/a20271305d4579a002a0a271f9cdaff4/gcov-hhhh-20261021.tif",
+       "quantity": "Radar backscatter gamma nought, HH, linear power",
+       "unit": "1",
+       "range": [
+        0.02383169174194336,
+        1.0212127685546877
+       ],
+       "colours": "grey",
+       "dates": [
+        "2026-10-21"
+       ],
+       "inputs": [
+        "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+       ],
+       "layer": "HHHH",
+       "ends": null,
+       "frequency": null,
+       "program": "Lynkeus 0.1.0",
+       "method": null,
+       "record": "/api/servers/3da401bf19dbb8fd/files/a20271305d4579a002a0a271f9cdaff4/gcov-hhhh-20261021.json"
+      },
+      "size": 795656,
+      "created": "2026-11-15T21:04:36Z",
+      "server": {
+       "id": "3da401bf19dbb8fd",
+       "name": "ebb31d08a784"
+      },
+      "kept_until": null,
+      "source": {
+       "process": "get-layer",
+       "inputs": {
+        "product": "GCOV",
+        "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+        "layer": "HHHH",
+        "area": {
+         "west": -71.0,
+         "south": 42.75,
+         "east": -70.95,
+         "north": 42.8
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "step": "10 after the removal",
+   "time": "2026-11-15T21:04:38Z",
+   "folders_of_files": [],
+   "rows": {
+    "sessions": 2,
+    "jobs": 0,
+    "layers": 0,
+    "series": 0,
+    "servers": 1,
+    "server_jobs": 1,
+    "server_layers": 1,
+    "user_version": 4
+   }
+  },
+  {
+   "step": "11 removal of the layer that the program keeps",
+   "time": "2026-11-15T21:04:38Z",
+   "browser": "first browser",
+   "request": "DELETE /api/layers/a20271305d4579a002a0a271f9cdaff4",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 204,
+   "headers": {
+    "Set-Cookie": null
+   },
+   "answer": null
+  },
+  {
+   "step": "11 the files of the program",
+   "time": "2026-11-15T21:04:38Z",
+   "layers": []
+  },
+  {
+   "step": "11 removal of the server",
+   "time": "2026-11-15T21:04:38Z",
+   "browser": "first browser",
+   "request": "DELETE /api/servers/3da401bf19dbb8fd",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 204,
+   "headers": {
+    "Set-Cookie": null
+   },
+   "answer": null
+  },
+  {
+   "step": "11 sign-out",
+   "time": "2026-11-15T21:04:38Z",
+   "browser": "first browser",
+   "request": "DELETE /api/session/earthdata",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 204,
+   "headers": {
+    "Set-Cookie": "lynkeus_session=\"\"; expires=Sun, 15 Nov 2026 21:04:38 GMT; HttpOnly; Max-Age=0; Path=/api; SameSite=strict"
+   },
+   "answer": null
+  },
+  {
+   "step": "11 state after the sign-out",
+   "time": "2026-11-15T21:04:38Z",
+   "browser": "first browser",
+   "request": "GET /api/session",
+   "request_carried_the_cookie": false,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "earthdata": null
+   }
+  },
+  {
+   "step": "11 layers after the sign-out",
+   "time": "2026-11-15T21:04:38Z",
+   "browser": "first browser",
+   "request": "GET /api/layers",
+   "request_carried_the_cookie": false,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": null
+   },
+   "answer": {
+    "layers": []
+   }
+  },
+  {
+   "step": "11 state of the second browser",
+   "time": "2026-11-15T21:04:38Z",
+   "browser": "second browser",
+   "request": "GET /api/session",
+   "request_carried_the_cookie": true,
+   "body": null,
+   "status": 200,
+   "headers": {
+    "Content-Type": "application/json",
+    "Set-Cookie": "lynkeus_session=<key of 43 characters>; HttpOnly; Max-Age=1209600; Path=/api; SameSite=strict"
+   },
+   "answer": {
+    "earthdata": {
+     "user": "<user>",
+     "token": false
+    }
+   }
+  },
+  {
+   "step": "11 record at the end",
+   "time": "2026-11-15T21:04:38Z",
+   "rows": {
+    "sessions": 1,
+    "jobs": 0,
+    "layers": 0,
+    "series": 0,
+    "servers": 0,
+    "server_jobs": 0,
+    "server_layers": 0,
+    "user_version": 4
+   }
+  },
+  {
+   "step": "12 the log of the web server",
+   "time": "2026-11-15T21:04:38Z",
+   "lines_of_requests": 209,
+   "lines_about_files": 6,
+   "lines_about_one_layer": 5,
+   "lines_of_both_logs_that_hold_the_name_of_a_layer_folder": 0,
+   "lines_that_hold_the_name_of_the_server": 2,
+   "examples": [
+    "<address> - - [15/Nov/2026:21:01:20 +0000] \"GET /files/-/gcov-hhhh-20261021.tif HTTP/1.1\" 206 16 \"-\" \"Python-urllib/3.12\" \"-\"",
+    "<address> - - [15/Nov/2026:21:01:20 +0000] \"GET /files/-/gcov-hhhh-20261021.tif HTTP/1.1\" 206 16 \"-\" \"Python-urllib/3.12\" \"-\"",
+    "<address> - - [15/Nov/2026:21:01:26 +0000] \"GET /files/-/gcov-hhhh-20261021.tif HTTP/1.1\" 206 16 \"-\" \"Python-urllib/3.12\" \"-\"",
+    "<address> - - [15/Nov/2026:21:01:43 +0000] \"GET /files/-/backscatter-state.tif HTTP/1.1\" 404 153 \"-\" \"Python-urllib/3.12\" \"-\"",
+    "<address> - - [15/Nov/2026:21:04:38 +0000] \"GET /api/servers/-/files/-/gcov-hhhh-20261021.tif HTTP/1.1\" 206 16 \"-\" \"Python-urllib/3.12\" \"-\"",
+    "<address> - - [15/Nov/2026:21:01:34 +0000] \"POST /api/layers/-/extension HTTP/1.1\" 200 946 \"-\" \"Python-urllib/3.12\" \"-\"",
+    "<address> - - [15/Nov/2026:21:01:43 +0000] \"POST /api/layers/-/extension HTTP/1.1\" 200 946 \"-\" \"Python-urllib/3.12\" \"-\"",
+    "<address> - - [15/Nov/2026:21:04:38 +0000] \"PATCH /api/layers/- HTTP/1.1\" 200 1019 \"-\" \"Python-urllib/3.12\" \"-\""
+   ]
+  },
+  {
+   "step": "12 the newest jobs of this account at NASA Harmony",
+   "time": "2026-11-15T21:04:39Z",
+   "jobs": [
+    {
+     "status": "successful",
+     "createdAt": "2026-11-15T21:02:03.484Z",
+     "dataExpiration": "2026-12-15T21:02:03.484Z"
+    },
+    {
+     "status": "successful",
+     "createdAt": "2026-11-15T21:01:52.781Z",
+     "dataExpiration": "2026-12-15T21:01:52.781Z"
+    },
+    {
+     "status": "successful",
+     "createdAt": "2026-11-15T20:59:06.034Z",
+     "dataExpiration": "2026-12-15T20:59:06.034Z"
+    }
+   ]
+  }
+ ]
+}

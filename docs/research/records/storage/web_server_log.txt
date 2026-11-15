@@ -1,0 +1,29 @@
+Run of nginx:1.27-alpine with web/nginx.conf of the branch storage-server on 15 November 2026, in a container
+without a network. The requests came from inside the container (Wget), so the address of the visitor is 127.0.0.1.
+The folder of the layer in the requests was 0123456789abcdef0123456789abcdef, the server 0123456789abcdef and its
+layer fedcba9876543210fedcba9876543210. The requests under /api/ ended without an answer (status 499), because the
+container had no web service behind it; the request to /api/visit is not in the log.
+
+$ nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+--- access log
+127.0.0.1 - - [15/Nov/2026:20:58:27 +0000] "GET / HTTP/1.1" 200 615 "-" "Wget" "-"
+127.0.0.1 - - [15/Nov/2026:20:58:27 +0000] "GET /files/-/gcov-hhhh-20261021.tif HTTP/1.1" 404 153 "-" "Wget" "-"
+127.0.0.1 - - [15/Nov/2026:20:58:27 +0000] "GET /files/-/gcov-hhhh-20261021.json?x=1 HTTP/1.1" 404 153 "-" "Wget" "-"
+127.0.0.1 - - [15/Nov/2026:20:58:28 +0000] "GET /files/- HTTP/1.1" 404 153 "-" "Wget" "-"
+127.0.0.1 - - [15/Nov/2026:20:58:28 +0000] "GET /files/short/a.tif HTTP/1.1" 404 153 "-" "Wget" "-"
+127.0.0.1 - - [15/Nov/2026:20:58:32 +0000] "GET /api/servers/-/files/-/gcov-hhhh-20261021.tif HTTP/1.1" 499 0 "-" "Wget" "-"
+127.0.0.1 - - [15/Nov/2026:20:58:36 +0000] "GET /api/servers/0123456789abcdef HTTP/1.1" 499 0 "-" "Wget" "-"
+127.0.0.1 - - [15/Nov/2026:20:58:41 +0000] "GET /api/layers/- HTTP/1.1" 499 0 "-" "Wget" "-"
+127.0.0.1 - - [15/Nov/2026:20:58:45 +0000] "GET /api/layers/-/extension HTTP/1.1" 499 0 "-" "Wget" "-"
+127.0.0.1 - - [15/Nov/2026:20:58:45 +0000] "GET /robots.txt HTTP/1.1" 404 153 "https://lynkeus.nkua.cloud/api/servers/-/files/-/a.json" "Wget" "-"
+127.0.0.1 - - [15/Nov/2026:20:58:45 +0000] "GET /favicon.ico HTTP/1.1" 404 153 "https://lynkeus.nkua.cloud/files/-/gcov-hhhh-20261021.json" "Wget" "-"
+127.0.0.1 - - [15/Nov/2026:20:58:45 +0000] "GET /assets/none.js HTTP/1.1" 404 153 "https://lynkeus.nkua.cloud/?area=1" "Wget" "-"
+--- error log
+2026/11/15 20:58:28 [error] 21#21: recv() failed (111: Connection refused) while resolving, resolver: 127.0.0.11:53
+2026/11/15 20:58:32 [error] 21#21: recv() failed (111: Connection refused) while resolving, resolver: 127.0.0.11:53
+2026/11/15 20:58:37 [error] 21#21: recv() failed (111: Connection refused) while resolving, resolver: 127.0.0.11:53
+2026/11/15 20:58:41 [error] 21#21: recv() failed (111: Connection refused) while resolving, resolver: 127.0.0.11:53
+2026/11/15 20:58:46 [error] 21#21: recv() failed (111: Connection refused) while resolving, resolver: 127.0.0.11:53
+--- lines that hold the random part: 0

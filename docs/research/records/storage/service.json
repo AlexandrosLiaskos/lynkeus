@@ -1,0 +1,38 @@
+{
+ "made": "2026-11-15T21:04:39Z",
+ "what": "The private copy of the web service on which sequence.json was recorded. It ran beside the live site on the same machine and touched nothing of it.",
+ "branch": "storage-server",
+ "commit": "4d32c7b68932dbe913d19c8e6d344719a796909d",
+ "tree_of_api_src": "5e55c6a346f03127a85d534499ce2105d051165e",
+ "blob_of_web_nginx_conf": "71366851e7a7f34134eddf00990e10e9f2f70c52",
+ "note": "The folder api/src of the service was that of the commit. The file web/nginx.conf was the one of the commit that follows it on the branch, which adds the addresses under /api/layers/ to the log format. Both are named by their Git object names, which `git rev-parse <commit>:api/src` and `git hash-object web/nginx.conf` give.",
+ "web_service": {
+  "image": "built from api/Dockerfile of the branch (base python:3.13-slim)",
+  "command": "uvicorn lynkeus.server:app --host 0.0.0.0 --port 8000 --no-access-log --timeout-graceful-shutdown 5",
+  "settings": "read-only file system, user 10001, init, 1 processor, 2 gigabytes of memory, LYNKEUS_COOKIE_SECURE=false because the private web server took plain HTTP on 127.0.0.1, so the cookie of the record lacks Secure"
+ },
+ "web_server": {
+  "image": "nginx:1.27-alpine",
+  "digest": "sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10",
+  "settings": "web/nginx.conf of the branch; the folder of the files of the layers read-only; a port on 127.0.0.1 only"
+ },
+ "released_program": {
+  "tag": "v0.1.0",
+  "commit": "049dc9240a48694d341ed5da4da2878e00961ea8",
+  "tree_of_api_src": "2aac7fec331fc9c775ffd83d209a8bc517063dcb",
+  "command": "python -m lynkeus.ownserver --no-window --server http://127.0.0.1 --data-folder /data",
+  "how": "The folder api/src of the tag ran in a container of its own with the libraries of the image of the web service, in the network of the private web server, so that it reached the service through that web server as the released program reaches the site. It read its own code: version 0.1.0, record of version 3."
+ },
+ "driver": "A program on the same machine, with a cookie jar for each browser. It asked Earthdata Login for a user token with the credentials of that machine and held it in memory only. The record holds no token, no key of a session and no name of the Earthdata user.",
+ "data": {
+  "product": "GCOV",
+  "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+  "layer": "HHHH",
+  "area": {
+   "west": -71.0,
+   "south": 42.75,
+   "east": -70.95,
+   "north": 42.8
+  }
+ }
+}
