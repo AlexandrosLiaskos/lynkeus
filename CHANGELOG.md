@@ -100,10 +100,10 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   the button Storage of the tab Options opens, switches each part on and off, states the size of its stored
   copy and clears it.
 - The welcome screen of the application page, which covers the page when it opens: an illustration of the NISAR
-  satellite with the name of the platform, the team, the developer of the site, the total of recorded page
-  visits, and the event with the logos of NASA, the NASA Space Apps Challenge and the universities of the team.
-  The visitor slides it up to enter.
-- The mark of the team as the black silhouette of a lynx, in the title bar.
+  satellite with the mark and the name of the platform, the team, and the event with the logos of NASA, the NASA
+  Space Apps Challenge and the universities of the team. The visitor slides it up to enter.
+- The mark of Lynkeus, a drawing of the NISAR satellite, in black in the title bar and in white on the welcome
+  screen.
 
 ### Changed
 

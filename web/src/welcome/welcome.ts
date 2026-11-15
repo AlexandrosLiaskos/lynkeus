@@ -22,6 +22,8 @@ export interface Logo {
 export const WELCOME = {
   name: "Lynkeus",
   subtitle: "NISAR Surface Change Analysis Platform",
+  /** The words of the button that opens the page. */
+  enter: "Enter the Platform",
   /** The image behind the texts: NASA's illustration of the NISAR satellite, PIA26611. */
   image: { file: "nisar.webp", credit: "Image: NASA/JPL-Caltech, artist's concept" },
   team: [
@@ -44,7 +46,6 @@ export const WELCOME = {
       label: "Email Andreas Liaskos",
     },
   ],
-  developer: { name: "Alexandros Liaskos", address: "https://liaskos.eu/" },
   event: {
     name: "NASA Space Apps Challenge Hackathon",
     address: "https://www.spaceappschallenge.org/2026/local-events/athens/",

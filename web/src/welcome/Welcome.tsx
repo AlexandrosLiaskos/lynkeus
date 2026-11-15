@@ -10,19 +10,6 @@ import {
 import { visits } from "./visits";
 import { WELCOME } from "./welcome";
 
-/** What the screen knows of the total of page visits: the total, that it was asked, or that no answer came. */
-type Total = number | "asked" | "unknown";
-
-const NUMBERS = new Intl.NumberFormat("en");
-
-/** The words in the place of the total. */
-function totalWords(total: Total): string {
-  if (total === "asked") {
-    return "—";
-  }
-  return total === "unknown" ? "not available" : NUMBERS.format(total);
-}
-
 /** The time that the screen takes to slide away, in milliseconds. The style of the screen names the same time. */
 export const SLIDE_TIME = 700;
 
@@ -35,31 +22,30 @@ function onControl(target: EventTarget): boolean {
 }
 
 interface WelcomeProps {
-  /** Ask for the total of recorded page visits. A test gives its own. */
-  load?: () => Promise<number>;
+  /** Count the visit. A test gives its own. */
+  count?: () => Promise<number>;
 }
 
 /**
  * The welcome screen, which covers the page when it opens, as the lock screen of a computer covers the desktop.
- * It shows an illustration of the NISAR satellite and, in its lower right part, the name of the platform, the team, the
- * developer of the site, the total of recorded page visits, and the event for which Lynkeus was started with the
- * logos of its organisers and of the universities of the team. Every member, the signature, the event and every
- * logo is a link.
+ * It shows an illustration of the NISAR satellite and, in its lower right part, the mark and the name of the
+ * platform, the team, the event for which Lynkeus was started with the logos of its organisers and of the
+ * universities of the team, and the button that opens the page. Every member, the event and every logo is a link.
  *
- * The visitor slides the screen up to enter: with the arrow at its foot, by dragging it upward, by scrolling, or
+ * The visitor slides the screen up to enter: with that button, with the arrow at its foot, by dragging it upward, by
+ * scrolling, or
  * with the Enter, Space, Up or Escape key. The screen then moves up out of the window and the page stands under
  * it.
  *
  * It is the dialog element of the browser, opened as a modal, so the browser keeps the keyboard focus inside it
  * until the visitor enters.
  */
-export function Welcome({ load = visits }: WelcomeProps) {
+export function Welcome({ count = visits }: WelcomeProps) {
   const dialog = useRef<HTMLDialogElement>(null);
   const content = useRef<HTMLDivElement>(null);
   // The height of the pointer where a drag began, and null while nothing is dragged.
   const drag = useRef<number | null>(null);
   const [leaving, setLeaving] = useState(false);
-  const [total, setTotal] = useState<Total>("asked");
 
   useEffect(() => {
     const element = dialog.current;
@@ -69,24 +55,11 @@ export function Welcome({ load = visits }: WelcomeProps) {
     }
   }, []);
 
+  // The visit is counted once for each browser. The screen does not show the total, so a counter that does not
+  // answer changes nothing here.
   useEffect(() => {
-    let shown = true;
-    void load().then(
-      (count) => {
-        if (shown) {
-          setTotal(count);
-        }
-      },
-      () => {
-        if (shown) {
-          setTotal("unknown");
-        }
-      },
-    );
-    return () => {
-      shown = false;
-    };
-  }, [load]);
+    count().catch(() => undefined);
+  }, [count]);
 
   // The screen closes when it has moved out of the window, and at once for a visitor who has asked for less motion.
   useEffect(() => {
@@ -177,9 +150,12 @@ export function Welcome({ load = visits }: WelcomeProps) {
     >
       <img className="welcome-image" src={`/assets/welcome/${WELCOME.image.file}`} alt="" draggable={false} />
       <div className="welcome-content" ref={content}>
-        <header>
-          <h2 className="welcome-title">{WELCOME.name}</h2>
-          <p className="welcome-subtitle">{WELCOME.subtitle}</p>
+        <header className="welcome-head">
+          <img className="welcome-mark" src="/assets/lynkeus-mark-white.svg" alt="" draggable={false} />
+          <div>
+            <h2 className="welcome-title">{WELCOME.name}</h2>
+            <p className="welcome-subtitle">{WELCOME.subtitle}</p>
+          </div>
         </header>
         <div className="welcome-credits">
           <section className="welcome-team">
@@ -200,41 +176,27 @@ export function Welcome({ load = visits }: WelcomeProps) {
               ))}
             </ul>
           </section>
-          <section className="welcome-developer">
-            <h3 className="welcome-label">Website developed by</h3>
-            <a
-              href={WELCOME.developer.address}
-              aria-label={`Site of ${WELCOME.developer.name}`}
-              title={WELCOME.developer.address}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <img src="/assets/welcome/signature.png" alt="" draggable={false} />
-              <span className="welcome-name">{WELCOME.developer.name}</span>
-            </a>
-          </section>
-          <section className="welcome-visits">
-            <h3 className="welcome-label">Recorded page visits</h3>
-            <p role="status">{totalWords(total)}</p>
+          <section className="welcome-event">
+            <p>
+              <a href={WELCOME.event.address} target="_blank" rel="noreferrer">
+                {WELCOME.event.name}
+              </a>{" "}
+              • {WELCOME.event.place}
+            </p>
+            <ul>
+              {WELCOME.logos.map(({ name, file, address }) => (
+                <li key={file}>
+                  <a href={address} title={name} target="_blank" rel="noreferrer">
+                    <img src={`/assets/welcome/${file}`} alt={name} draggable={false} />
+                  </a>
+                </li>
+              ))}
+            </ul>
           </section>
         </div>
-        <footer className="welcome-event">
-          <p>
-            <a href={WELCOME.event.address} target="_blank" rel="noreferrer">
-              {WELCOME.event.name}
-            </a>{" "}
-            • {WELCOME.event.place}
-          </p>
-          <ul>
-            {WELCOME.logos.map(({ name, file, address }) => (
-              <li key={file}>
-                <a href={address} title={name} target="_blank" rel="noreferrer">
-                  <img src={`/assets/welcome/${file}`} alt={name} draggable={false} />
-                </a>
-              </li>
-            ))}
-          </ul>
-        </footer>
+        <button type="button" className="welcome-start" onClick={enter}>
+          {WELCOME.enter} <span aria-hidden="true">→</span>
+        </button>
       </div>
       <p className="welcome-credit">{WELCOME.image.credit}</p>
       <button
