@@ -51,6 +51,15 @@ A series uses the same two words for how the value of a date is made from the
 cells of its layer.
 """
 
+type ResultReduction = Literal["mean", "mean-power", "mode"]
+"""How the reduced copies (overviews) of a result are made from its values.
+
+``mean`` and ``mean-power`` are those of ``Reduction``. ``mode`` is for a
+result of classes: a cell of a reduced copy takes the most frequent value of
+the cells that it covers, so that it holds a class and not a value between
+classes.
+"""
+
 
 class Format(BaseModel):
     """A format that accepts no unknown field and cannot be changed after it is made."""
@@ -77,6 +86,26 @@ class Area(Format):
         if self.south >= self.north:
             raise ValueError("south must be smaller than north")
         return self
+
+
+class LayerClass(Format):
+    """A class of a layer of classes.
+
+    Attributes
+    ----------
+    value : int
+        Value of the cells of the class in the file of the layer, a whole
+        number from 0.
+    name : str
+        Name of the class for the visitor, for example ``Open water``.
+    colour : str
+        Colour of the class, as ``#`` and six hexadecimal digits in lower case,
+        for example ``#151b73``.
+    """
+
+    value: int = Field(ge=0, strict=True)
+    name: Text
+    colour: str = Field(pattern=r"^#[0-9a-f]{6}$")
 
 
 type Corner = tuple[float, float]
@@ -262,6 +291,13 @@ class LayerDescription(Format):
         example ``("decrease", "increase")``. Only a result may have them,
         when its tool gives them. A layer has none, and a description stored
         before this field existed has none.
+    classes : tuple of LayerClass or None
+        The classes of a layer of classes, in the order of their values: the
+        value of the cells of each class in the file, its name and its colour.
+        Only a result may have them, when its tool gives classes. The range of
+        such a result runs from the lowest to the highest value of its classes,
+        and its cells are drawn in the colours of their classes. A layer has
+        none, and a description stored before this field existed has none.
     frequency : float or None
         Centre frequency of the radar band of the layer, in hertz, as the
         product states it. The layer ``unwrappedPhase`` of a GUNW product has
@@ -297,6 +333,7 @@ class LayerDescription(Format):
     inputs: tuple[Text, ...] = Field(min_length=1)
     layer: Text | None = None
     ends: tuple[Text, Text] | None = None
+    classes: tuple[LayerClass, ...] | None = None
     frequency: float | None = Field(default=None, gt=0)
     note: Text | None = None
     program: Text
@@ -319,6 +356,18 @@ class LayerDescription(Format):
             raise ValueError("only the legend of a result has words for its two ends")
         if self.kind == "result" and self.frequency is not None:
             raise ValueError("a result is not a layer of a product, so it has no centre frequency of a radar band")
+        if self.classes is not None:
+            values = [entry.value for entry in self.classes]
+            if self.kind == "layer":
+                raise ValueError("only a result may have classes")
+            if len(values) < 2 or values != sorted(set(values)):
+                raise ValueError(
+                    "a layer of classes has at least two classes, with different values in increasing order"
+                )
+            if self.range != (values[0], values[-1]):
+                raise ValueError(
+                    "the range of a layer of classes runs from the lowest to the highest value of its classes"
+                )
         if self.kind == "layer" and self.note is not None:
             raise ValueError("only a result has a note of its tool")
         if self.kind == "layer" and self.statistics is not None:
@@ -575,10 +624,10 @@ class AnalysisResult:
         Name of the colour scale.
     method : str
         Reference of the method.
-    reduction : {"mean", "mean-power"}
+    reduction : {"mean", "mean-power", "mode"}
         How the reduced copies of the result are made from ``values``: the
-        mean of the values, or, for decibels of a power, the decibels of the
-        mean of the linear power.
+        mean of the values; for decibels of a power, the decibels of the mean
+        of the linear power; for classes, the most frequent value.
     ends : tuple of str or None
         Words that name the lowest and the highest end of the legend, for
         example ``("decrease", "increase")``, or None when the two values of
@@ -586,6 +635,17 @@ class AnalysisResult:
     note : str or None
         One sentence for the visitor about the result, for example how many
         cells the tool left out, or None.
+    classes : tuple of LayerClass or None
+        The classes of a result of classes, in the order of their values, or
+        None for a result of a quantity. The cells of each class hold its
+        value in ``values``. A result has classes when, and only when, its
+        reduction is ``mode``.
+
+    Raises
+    ------
+    ValueError
+        If the result has classes and another reduction than ``mode``, or the
+        reduction ``mode`` without classes.
     """
 
     values: NDArray[np.float32]
@@ -594,9 +654,15 @@ class AnalysisResult:
     range: tuple[float, float]
     colours: str
     method: str
-    reduction: Reduction = "mean"
+    reduction: ResultReduction = "mean"
     ends: tuple[str, str] | None = None
     note: str | None = None
+    classes: tuple[LayerClass, ...] | None = None
+
+    def __post_init__(self) -> None:
+        """Check that the classes and the reduction agree."""
+        if (self.classes is None) == (self.reduction == "mode"):
+            raise ValueError("a result has classes when, and only when, its reduced copies are made by the mode")
 
 
 @dataclass(frozen=True)

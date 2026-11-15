@@ -87,6 +87,15 @@ function layerRows(layer: LayerDescription): Property[] {
       ? { name: "Unit", value: "None", info: "The quantity has no dimension, so its values carry no unit." }
       : { name: "Unit", value: unit },
     { name: layer.dates.length === 1 ? "Date" : "Dates", value: formatDates(layer.dates) },
+    ...(layer.classes
+      ? [
+          {
+            name: "Classes",
+            value: layer.classes.map(({ value, name }) => `${String(value)} ${name}`).join("; "),
+            info: "The value of the cells of each class in the file, and the name of the class.",
+          },
+        ]
+      : []),
     ...layer.inputs.map((input, index) => ({
       name: layer.inputs.length === 1 ? "Product file" : `Product file ${String(index + 1)}`,
       value: input,
@@ -129,8 +138,11 @@ function gridRows(cog: Cog): Property[] {
   ];
 }
 
-/** Return the rows of the group File that only the opened file gives: its reduced copies and its values. */
-function fileRows(cog: Cog, unit: string): Property[] {
+/**
+ * Return the rows of the group File that only the opened file gives: its reduced copies and its values. The values
+ * of a layer of classes are classes, which have no mean and no standard deviation, so it has no rows of statistics.
+ */
+function fileRows(cog: Cog, unit: string, classes: boolean): Property[] {
   const write = (value: number) => `${formatNumber(value)}${unit && ` ${unit}`}`;
   return [
     {
@@ -143,21 +155,25 @@ function fileRows(cog: Cog, unit: string): Property[] {
               .map(({ size }) => `${String(size[0])} by ${String(size[1])} cells`)
               .join("; ")
           : "None",
-      info: "The copies of the grid with fewer cells that the file holds. The map draws them at small scales.",
+      info: classes
+        ? "The copies of the grid with fewer cells that the file holds. The map draws them at small scales, and a cell of a copy holds the most frequent class of the cells that it covers."
+        : "The copies of the grid with fewer cells that the file holds. The map draws them at small scales.",
     },
     {
       name: "Value without data",
       value: cog.noData === null ? "None" : String(cog.noData),
       info: "The value that marks a cell without data, when the file names one.",
     },
-    ...(cog.statistics
-      ? [
-          { name: "Lowest value", value: write(cog.statistics.minimum) },
-          { name: "Highest value", value: write(cog.statistics.maximum) },
-          { name: "Mean", value: write(cog.statistics.mean) },
-          { name: "Standard deviation", value: write(cog.statistics.deviation) },
-        ]
-      : [{ name: "Statistics", value: "None", info: "The file states no statistics of its values." }]),
+    ...(classes
+      ? []
+      : cog.statistics
+        ? [
+            { name: "Lowest value", value: write(cog.statistics.minimum) },
+            { name: "Highest value", value: write(cog.statistics.maximum) },
+            { name: "Mean", value: write(cog.statistics.mean) },
+            { name: "Standard deviation", value: write(cog.statistics.deviation) },
+          ]
+        : [{ name: "Statistics", value: "None", info: "The file states no statistics of its values." }]),
   ];
 }
 
@@ -195,10 +211,20 @@ function PropertiesOf({ layer }: { layer: LayerDescription }) {
   const groups: PropertyGroup[] = [
     { title: "Layer", rows: layerRows(layer) },
     ...(layer.statistics
-      ? [{ title: "Statistics in the area", rows: statisticsRows(layer.statistics, formatUnit(layer.unit)) }]
+      ? [
+          {
+            title: "Statistics in the area",
+            // Classes have no mean, deviation or median: a layer of classes keeps the area and its cells with data.
+            rows: statisticsRows(layer.statistics, formatUnit(layer.unit)).slice(0, layer.classes ? 2 : undefined),
+          },
+        ]
       : []),
     ...(typeof cog === "string" ? [] : [{ title: "Projection and grid", rows: gridRows(cog) }]),
-    { title: "File", rows: typeof cog === "string" ? file : [...file, ...fileRows(cog, formatUnit(layer.unit))] },
+    {
+      title: "File",
+      rows:
+        typeof cog === "string" ? file : [...file, ...fileRows(cog, formatUnit(layer.unit), Boolean(layer.classes))],
+    },
     { title: "Record", rows: [addressRow(layer.record, "The record is a STAC Item, which describes the layer.")] },
   ];
 

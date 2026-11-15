@@ -57,6 +57,8 @@ interface CogSourceOptions {
  * The values of a Cloud Optimized GeoTIFF with one band, as tiles for the map. The source reads the tiles of the
  * file as the file stores them, and at a small scale the tiles of its reduced copies. A tile holds, for each cell,
  * the numbers that `composeTile` describes. The values are not interpolated: the map shows the cells of the file.
+ * A reduced copy of a layer of classes holds the most frequent class of the cells that each of its cells covers,
+ * as the server writes it, so a layer of classes shows classes at every scale.
  */
 export class CogSource extends DataTile {
   private failure: Error | null = null;

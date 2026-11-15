@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { colourScale, scaleKind } from "../contents/colours";
-import { formatNumber, formatUnit, legendTicks } from "../contents/legendValues";
+import { formatNumber, formatUnit, legendTicks, tableLegend } from "../contents/legendValues";
 import { displayOf, displayStore } from "../contents/state";
 import type { LayerDescription } from "../shared/layer";
 import { mapLayersStore } from "../shared/mapLayers";
@@ -25,7 +25,8 @@ export function useVisibleLayers(): LayerDescription[] {
 
 /**
  * Return the legend of a layer as it is drawn on a picture: the same quantity, unit, colours and values as the
- * legend of the Contents pane, for the display that the layer has now.
+ * legend of the Contents pane, for the display that the layer has now. A layer of classes lists its classes by
+ * their names.
  */
 export function pictureLegend(layer: LayerDescription): PictureLegend {
   const { range, colours: name } = displayOf(layer);
@@ -33,6 +34,9 @@ export function pictureLegend(layer: LayerDescription): PictureLegend {
   const unit = formatUnit(layer.unit);
   const colours = colourScale(name);
   const base = { title: layer.title, caption: unit === "" ? layer.quantity : `${layer.quantity} (${unit})` };
+  if (layer.classes) {
+    return { ...base, ramp: null, classes: tableLegend(layer.classes), note: null };
+  }
   if (scaleKind(name) === "classes") {
     const first = Math.ceil(lowest);
     const count = Math.max(0, Math.floor(highest) - first + 1);

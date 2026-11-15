@@ -9,6 +9,7 @@ import { addToMap, mapLayersStore } from "../shared/mapLayers";
 import { panesStore, resetPanes, setPaneOpen } from "../shared/panes";
 import { displayOf, displayStore, firstDisplay, setDisplay, symbologyStore } from "./state";
 import { SymbologyPane } from "./Symbology";
+import { inundation } from "./testClasses";
 
 // The pane reads the test files in place of files of the site.
 vi.mock("./files", async () => {
@@ -291,4 +292,23 @@ test("the pane says so when its layer has left the map, and its foot states how 
   });
   await userEvent.click(screen.getByRole("button", { name: "Show Contents pane" }));
   expect(panesStore.get().contents.open).toBe(true);
+});
+
+test("a layer of classes shows its classes with their colours, and the pane sets only its cells without data", async () => {
+  const classes = inundation();
+  open(classes);
+  expect(screen.getAllByRole("heading", { level: 3 }).map((heading) => heading.textContent)).toEqual([
+    "Classes",
+    "Cells without data",
+  ]);
+  const items = [...document.querySelectorAll<HTMLElement>(".legend-classes li")];
+  expect(items.map((item) => item.textContent)).toEqual(["Not inundated", "Open water", "Inundated vegetation"]);
+  expect(screen.queryByRole("combobox", { name: "Colour scale" })).toBeNull();
+  expect(screen.queryByRole("combobox", { name: "Method" })).toBeNull();
+  await userEvent.click(group("Cells without data"));
+  await userEvent.click(screen.getByRole("checkbox", { name: "Draw in a colour" }));
+  fireEvent.change(screen.getByLabelText("Colour"), { target: { value: "#ff8800" } });
+  await userEvent.click(screen.getByRole("button", { name: "Apply" }));
+  expect(displayOf(classes)).toEqual({ ...firstDisplay(classes), noDataColour: "#ff8800" });
+  expect(screen.getByText("The display of Wetland inundation, 21 Oct 2026 was changed.")).toBeTruthy();
 });

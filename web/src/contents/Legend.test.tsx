@@ -6,6 +6,7 @@ import type { LayerDescription } from "../shared/layer";
 import { colourScale } from "./colours";
 import { Legend } from "./Legend";
 import { displayStore, setDisplay } from "./state";
+import { inundation } from "./testClasses";
 
 const MOISTURE: LayerDescription = {
   id: "moisture",
@@ -203,4 +204,23 @@ test("a description without words for the ends, or with null, has a legend of va
   delete stored.ends;
   render(<Legend layer={stored} />);
   expect(screen.getByRole("img", { name: "Colour scale RdBu, from -7.17 to 7.17 dB" })).toBeTruthy();
+});
+
+test("a layer of classes lists its classes by name, each beside its colour, and has no scale", () => {
+  const classes = inundation();
+  setDisplay(classes, { noDataColour: "#000000", colours: "viridis", range: [0, 10], mask: [1, 2] });
+  const { container } = render(<Legend layer={classes} />);
+  expect(screen.getByText("Wetland inundation class")).toBeTruthy();
+  const items = [...container.querySelectorAll<HTMLElement>(".legend-classes li")];
+  expect(items.map((item) => item.textContent)).toEqual(["Not inundated", "Open water", "Inundated vegetation"]);
+  expect(items.map((item) => item.querySelector<HTMLElement>(".legend-swatch")?.style.background)).toEqual([
+    "#ececee",
+    "#151b73",
+    "#42e9f5",
+  ]);
+  expect(screen.queryByRole("img")).toBeNull();
+  expect(container.querySelector(".legend-marks")).toBeNull();
+  expect(screen.getByText("No data")).toBeTruthy();
+  expect(screen.queryByText(/are hidden/)).toBeNull();
+  expect(screen.queryByText(/has no colour scale named/)).toBeNull();
 });

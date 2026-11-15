@@ -160,6 +160,27 @@ export const SOURCES: readonly Source[] = [
     use: "The research on colour scales and colour-blind readers.",
   },
   {
+    name: "NASA-ISRO SAR (NISAR) Mission Science Users' Handbook, second edition",
+    version: "Version 2.0, 22 October 2025",
+    licence: "CC0-1.0",
+    url: "https://doi.org/10.48577/jpl.UD4HV3",
+    use: "Method of Backscatter, Thematic map: section 6.4, the classification of wetland inundation by thresholds on the backscatter of the channels HH and HV.",
+  },
+  {
+    name: "NISAR_Inundation, the wetland inundation classification of the NISAR science team",
+    version: "Commit 85140c4, 10 July 2026",
+    licence: "Apache-2.0",
+    url: "https://github.com/NISAR-Science-Algorithms/NISAR_Inundation/tree/85140c4c3cc11d9b3f8a58efecc8fea112edf39d",
+    use: "Source program of Backscatter, Thematic map: the statements of Steps 4b to 6 of its notebook and the thresholds of its set Default, with which the tool was compared.",
+  },
+  {
+    name: "STAC Classification Extension",
+    version: "2.0.0",
+    licence: "Apache-2.0",
+    url: "https://github.com/stac-extensions/classification",
+    use: "The table of classes in the record of a result of Backscatter, Thematic map.",
+  },
+  {
     name: "NISAR Validated Geocoded Polarimetric Covariance Product (Version 1)",
     version: "Collection NISAR_L2_GCOV_V1",
     licence: "NASA ESDIS Data Use and Citation Guidance; free and open data",

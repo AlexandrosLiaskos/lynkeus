@@ -57,6 +57,7 @@ test("the page shows one section for each finished tool and one for the statisti
   expect(screen.getAllByRole("heading", { level: 3 }).map((heading) => heading.textContent)).toEqual([
     "Backscatter, One date",
     "Backscatter, Change",
+    "Backscatter, Thematic map",
     "Coherence, One pair",
     "Coherence, Change",
     "Surface displacement, One pair",
@@ -81,6 +82,7 @@ test("the section of the tool that a form asked for is open, and the others are 
   expect(expanded).toEqual([
     "false",
     "true",
+    "false",
     "false",
     "false",
     "false",

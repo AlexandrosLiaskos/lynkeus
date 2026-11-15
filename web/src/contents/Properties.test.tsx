@@ -11,6 +11,7 @@ import { putShapeLayer, shapeLayersStore, type ShapeLayer } from "../shared/shap
 import { LABORATORY, OFFICE, SERVERS } from "../servers/testServers";
 import { keptRow, PropertiesWindow, wholeAddress } from "./Properties";
 import { propertiesStore } from "./state";
+import { inundation } from "./testClasses";
 
 vi.mock("../shared/clipboard", () => ({ copyText: vi.fn() }));
 
@@ -258,6 +259,13 @@ test("a shape layer whose description states its name has one row of that name",
   render(<PropertiesWindow />);
   expect(namesOf("Layer")).toEqual(["Name"]);
   expect(valueOf("Layer", "Name")).toBe("Area of the Map tab");
+});
+
+test("a result of classes lists its classes, and its file shows no statistics of values", async () => {
+  show(inundation());
+  await screen.findByText("EPSG:32619");
+  expect(valueOf("Layer", "Classes")).toBe("1 Not inundated; 2 Open water; 3 Inundated vegetation");
+  expect(namesOf("File")).toEqual(["Address", "Kept on", "Reduced copies", "Value without data"]);
 });
 
 test("a result of a run with an area drawn on the map shows its statistics in the area after the group Layer", async () => {

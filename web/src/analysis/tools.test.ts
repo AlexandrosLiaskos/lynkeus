@@ -5,6 +5,7 @@ import { expect, test } from "vitest";
 import {
   coherence,
   components,
+  crossTerm,
   earlierPair,
   GCOV_NOV,
   GCOV_OCT,
@@ -32,20 +33,24 @@ import {
   besideOf,
   check,
   CHOOSE_COMPONENTS,
+  CHOOSE_CROSS_TERM,
   compared,
   comparisonOf,
   componentsOf,
+  crossTermsOf,
   datesWords,
   defaultTitle,
   FINISHED_TOOLS,
   hasFrequency,
   inOrder,
   layerOption,
+  MAP_TERMS,
   matches,
   missingOf,
   modesSentence,
   MOST_TITLE,
   NO_COMPONENTS,
+  NO_CROSS_TERM,
   NO_FREQUENCY,
   NO_OTHER_PAIR,
   NO_PARTNER,
@@ -65,10 +70,11 @@ import {
   unnamed,
 } from "./tools";
 
-test("the finished tools are the seven tools that the server offers, under the names of their buttons", () => {
+test("the finished tools are the eight tools that the server offers, under the names of their buttons", () => {
   expect(FINISHED_TOOLS).toEqual([
     "backscatter-state",
     "backscatter-change",
+    "backscatter-map",
     "coherence-state",
     "coherence-change",
     "displacement-state",
@@ -168,6 +174,15 @@ test("the layers that the tools read are the layers that the server accepts", ()
   expect(server("soil_moisture")).toContain("earlier, later = check_dates(arrays, layers, count=2)");
   expect(server("inputs")).toContain('    unit: str = "1",\n');
   expect(server("inputs")).toContain("if layer.unit != unit:");
+  expect(server("inundation")).toContain(`_HH = re.compile(r"${MAP_TERMS[0]}")`);
+  expect(server("inundation")).toContain(`_HV = re.compile(r"${MAP_TERMS[1]}")`);
+  expect(server("inundation")).toContain(
+    'check_inputs(arrays[:1], layers[:1], count=1, product="GCOV", names=_HH, reads="the layer HHHH", dates=1)',
+  );
+  expect(server("inundation")).toContain(
+    'check_inputs(arrays[1:], layers[1:], count=1, product="GCOV", names=_HV, reads="the layer HVHV", dates=1)',
+  );
+  expect(server("inundation")).toContain("if layers[0].inputs != layers[1].inputs:");
 });
 
 test("the comparisons that the form refuses are refusals of the server, made in the same order", () => {
@@ -384,6 +399,7 @@ test("a tool of two inputs compares two dates or two pairs of dates, and a tool 
   expect(Object.fromEntries(FINISHED_TOOLS.map((tool) => [tool, comparisonOf(tool)]))).toEqual({
     "backscatter-state": null,
     "backscatter-change": "dates",
+    "backscatter-map": null,
     "coherence-state": null,
     "coherence-change": "pairs",
     "displacement-state": null,
@@ -542,6 +558,7 @@ test("every proposed name is a name that the server takes", () => {
   for (const title of [
     defaultTitle("backscatter-state", [term()]),
     defaultTitle("backscatter-change", [term(), laterTerm()]),
+    defaultTitle("backscatter-map", [term(), crossTerm()]),
     defaultTitle("coherence-state", [coherence()]),
     defaultTitle("coherence-change", [earlierPair(), laterPair()]),
     defaultTitle("displacement-state", [phase(), components()]),
@@ -792,16 +809,21 @@ test("each tool reads the product type, the number of layers and the number of d
   ).toEqual({
     "backscatter-state": ["GCOV", 1, 1],
     "backscatter-change": ["GCOV", 2, 1],
+    "backscatter-map": ["GCOV", 2, 1],
     "coherence-state": ["GUNW", 1, 2],
     "coherence-change": ["GUNW", 2, 2],
     "displacement-state": ["GUNW", 2, 2],
     "soil-moisture-state": ["SME2", 1, 1],
     "soil-moisture-change": ["SME2", 2, 1],
   });
-  expect(FINISHED_TOOLS.map((tool) => READS[tool].unit)).toEqual(["1", "1", "1", "1", "rad", "m3 m-3", "m3 m-3"]);
-  // Surface displacement, One pair is the only tool whose second input is another layer of the same product.
-  expect(FINISHED_TOOLS.filter((tool) => READS[tool].beside !== undefined)).toEqual(["displacement-state"]);
+  expect(FINISHED_TOOLS.map((tool) => READS[tool].unit)).toEqual(["1", "1", "1", "1", "1", "rad", "m3 m-3", "m3 m-3"]);
+  // Two tools take as their second input another layer of the product of the first.
+  expect(FINISHED_TOOLS.filter((tool) => READS[tool].beside !== undefined)).toEqual([
+    "backscatter-map",
+    "displacement-state",
+  ]);
   expect(READS["displacement-state"].beside?.unit).toBe("1");
+  expect(READS["backscatter-map"].beside?.unit).toBe("1");
 });
 
 test("Surface displacement, One pair reads the layer unwrappedPhase of a GUNW product as its first input", () => {
@@ -959,4 +981,50 @@ test("the proposed name of a displacement states the channel and the two dates o
   ).toBe("Surface displacement VV, 9 Oct 2026 to 21 Oct 2026");
   expect(defaultTitle("displacement-state", [phase()])).toBe("");
   expect(defaultTitle("displacement-state", [])).toBe("");
+});
+
+test("Backscatter, Thematic map reads the layer HHHH of a GCOV product first and its layer HVHV second", () => {
+  expect(MAP_TERMS).toEqual(["HHHH", "HVHV"]);
+  expect(unfit("backscatter-map", term())).toBeNull();
+  for (const name of ["HVHV", "VVVV", "VHVH", "mask"]) {
+    expect(unfit("backscatter-map", term({ layer: name }))).toBe("name");
+  }
+  expect(unfit("backscatter-map", coherence())).toBe("product");
+  expect(unfit("backscatter-map", term({ unit: "dB" }))).toBe("unit");
+  expect(accepted("backscatter-map", [crossTerm(), term(), laterTerm()]).map(({ id }) => id)).toEqual([
+    "hh-oct",
+    "hh-nov",
+  ]);
+});
+
+test("the second field of Backscatter, Thematic map offers the layer HVHV of the product file of the first", () => {
+  const otherProduct = crossTerm({ id: "hv-nov", dates: ["2026-11-02"], inputs: [GCOV_NOV] });
+  const layers = [term(), crossTerm(), otherProduct, laterTerm(), crossTerm({ id: "hv-db", unit: "dB" })];
+  expect(crossTermsOf(term(), layers).map(({ id }) => id)).toEqual(["hv-oct"]);
+  expect(besideOf("backscatter-map", term(), layers).map(({ id }) => id)).toEqual(["hv-oct"]);
+  expect(besideOf("backscatter-map", laterTerm(), layers).map(({ id }) => id)).toEqual(["hv-nov"]);
+});
+
+test("Backscatter, Thematic map sends the layer HHHH first and the layer HVHV second", () => {
+  const layers = [crossTerm(), term()];
+  expect(check({ tool: "backscatter-map", layers, first: "hh-oct", second: "hv-oct", title: " Map " })).toEqual({
+    layers: [term(), crossTerm()],
+    faults: SOUND,
+    inputs: { inputs: ["hh-oct", "hv-oct"], title: "Map" },
+  });
+});
+
+test("the second field of Backscatter, Thematic map states what is missing in one sentence", () => {
+  const chosen = { tool: "backscatter-map" as const, first: "hh-oct", second: null, title: "Map" };
+  expect(check({ ...chosen, layers: [term(), crossTerm()] }).faults.second).toBe(CHOOSE_CROSS_TERM);
+  const elsewhere = crossTerm({ inputs: [GCOV_NOV], dates: ["2026-11-02"] });
+  expect(check({ ...chosen, layers: [term(), elsewhere], second: "hv-oct" }).faults.second).toBe(NO_CROSS_TERM);
+  expect(check({ ...chosen, layers: [term()] }).faults.second).toBe(NO_CROSS_TERM);
+  expect(NO_CROSS_TERM).toBe("The Backscatter HV layer of this product is not in the session.");
+  expect(CHOOSE_CROSS_TERM).toBe("Choose the Backscatter HV layer.");
+});
+
+test("the proposed name of a thematic map of the backscatter states the date of its product", () => {
+  expect(defaultTitle("backscatter-map", [term(), crossTerm()])).toBe("Wetland inundation, 21 Oct 2026");
+  expect(defaultTitle("backscatter-map", [term()])).toBe("");
 });

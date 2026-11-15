@@ -23,6 +23,7 @@ from rasterio.warp import transform
 from lynkeus import __version__
 from lynkeus.analysis import TOOLS
 from lynkeus.analysis.backscatter import backscatter_state
+from lynkeus.analysis.inundation import CLASSES, backscatter_map
 from lynkeus.areas import cells_inside, statistics_inside
 from lynkeus.layers import AnalysisResult, LayerDescription, Shape, ToolRun
 from lynkeus.tools import run_tool
@@ -213,6 +214,62 @@ def test_reduced_copy_of_a_result_in_decibels_is_the_tool_applied_to_the_reduced
     assert stac_faults(record) == []
     lineage = record["properties"]["processing:lineage"]
     assert lineage.endswith("Reduced copies made as the decibels of the mean of the linear power.")
+
+
+def test_result_of_classes_carries_the_table_of_its_tool_and_its_reduced_copies_hold_classes(
+    tmp_path: Path,
+) -> None:
+    granule = "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001"
+    power, grid = read_layer(LAYERS / "gcov-hhhh-20261021.tif")
+    # The layer HVHV stands in as a quarter of the layer HHHH, so that the ratio of the two is 4.
+    received: dict[str, tuple[LayerDescription, Path]] = {}
+    for term, values in (("HHHH", power), ("HVHV", power / np.float32(4))):
+        name = f"gcov-{term.lower()}-20261021"
+        (tmp_path / term).mkdir()
+        description = write_layer(
+            values,
+            grid,
+            layer_id=term.lower(),
+            folder=tmp_path / term,
+            address=f"/files/{term.lower()}",
+            name=name,
+            title=f"Backscatter {term[:2]}, 21 Oct 2026",
+            kind="layer",
+            quantity=f"Radar backscatter gamma nought, {term[:2]}, linear power",
+            unit="1",
+            legend="percentiles",
+            colours="grey",
+            dates=(date(2026, 10, 21),),
+            inputs=(f"{granule}.h5",),
+            layer=term,
+            lineage=f"Layer {term} of the product.",
+        )
+        received[term.lower()] = (description, tmp_path / term / f"{name}.tif")
+    (tmp_path / "result").mkdir()
+    description = run_tool(
+        ToolRun(tool="backscatter-map", inputs=("hhhh", "hvhv"), title="Wetland inundation, 21 Oct 2026"),
+        layers=received,
+        layer_id="result",
+        folder=tmp_path / "result",
+        address="/files/result",
+        report=lambda progress, message: None,
+    )
+    assert (description.kind, description.unit, description.range) == ("result", "1", (1.0, 3.0))
+    assert (description.colours, description.classes) == ("classes", CLASSES)
+    hh, _ = read_layer(received["hhhh"][1])
+    hv, _ = read_layer(received["hvhv"][1])
+    written, _ = read_layer(tmp_path / "result" / "backscatter-map.tif")
+    expected = backscatter_map([hh, hv], [received["hhhh"][0], received["hvhv"][0]]).values
+    assert written.tobytes() == expected.tobytes()
+    assert set(np.unique(written[~np.isnan(written)])) <= {1.0, 2.0, 3.0}
+    with rasterio.open(tmp_path / "result" / "backscatter-map.tif", overview_level=0) as source:
+        copy = source.read(1)
+    assert copy.shape == (280, 300)
+    assert set(np.unique(copy[~np.isnan(copy)])) <= {1.0, 2.0, 3.0}
+    record = json.loads((tmp_path / "result" / "backscatter-map.json").read_text(encoding="utf-8"))
+    assert stac_faults(record) == []
+    assert [entry["value"] for entry in record["assets"]["data"]["classification:classes"]] == [1, 2, 3]
+    assert record["properties"]["processing:lineage"].endswith("Reduced copies made by taking the most frequent class.")
 
 
 def test_layers_on_different_grids_are_refused(tmp_path: Path) -> None:

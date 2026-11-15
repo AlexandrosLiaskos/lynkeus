@@ -38,6 +38,16 @@ export interface AreaStatistics {
 export const PRODUCT_TYPES = ["GCOV", "GUNW", "GOFF", "SME2"] as const;
 export type ProductType = (typeof PRODUCT_TYPES)[number];
 
+/** A class of a layer of classes. */
+export interface LayerClass {
+  /** Value of the cells of the class in the file of the layer, a whole number from 0. */
+  value: number;
+  /** Name of the class, for example "Open water". */
+  name: string;
+  /** Colour of the class, as # and six hexadecimal digits in lower case. */
+  colour: string;
+}
+
 /**
  * The description of a layer. The Contents pane receives one for every layer, whether the layer was received
  * from NASA or computed by an analysis tool.
@@ -74,6 +84,13 @@ export interface LayerDescription {
    * before this field existed.
    */
   ends?: readonly [string, string] | null;
+  /**
+   * The classes of a layer of classes, in the order of their values. Only a result may have them, when its tool
+   * gives classes. The range of such a result runs from the lowest to the highest value of its classes, and its
+   * cells are drawn in the colours of their classes. A layer has null or no field, and so has a description
+   * stored before this field existed.
+   */
+  classes?: readonly LayerClass[] | null;
   /**
    * Centre frequency of the radar band of the layer, in hertz, as the product states it. The layer
    * `unwrappedPhase` of a GUNW product has one when the server received it from NASA and the product states the
@@ -125,12 +142,47 @@ export interface ToolRun {
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const EPSG = /^EPSG:\d{1,6}$/;
 
+const COLOUR = /^#[0-9a-f]{6}$/;
+
 function isText(value: unknown): value is string {
   return typeof value === "string" && value !== "";
 }
 
 function isList(value: unknown, isItem: (item: unknown) => boolean): boolean {
   return Array.isArray(value) && value.length > 0 && value.every(isItem);
+}
+
+/** Tell whether a value is a class of a layer of classes. */
+function isLayerClass(value: unknown): value is LayerClass {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+  const { value: number, name, colour } = value as Record<string, unknown>;
+  return (
+    typeof number === "number" &&
+    Number.isInteger(number) &&
+    number >= 0 &&
+    isText(name) &&
+    typeof colour === "string" &&
+    COLOUR.test(colour)
+  );
+}
+
+/**
+ * Tell whether a value is the table of classes of a result whose legend has this range: at least two classes, with
+ * different values in increasing order, from the lowest value of the range to the highest.
+ */
+function isTableOfClasses(value: unknown, range: readonly [number, number]): boolean {
+  if (!isList(value, isLayerClass)) {
+    return false;
+  }
+  const values = (value as readonly LayerClass[]).map((entry) => entry.value);
+  return (
+    values.length >= 2 &&
+    values.every((entry, index) => index === 0 || entry > (values[index - 1] ?? entry)) &&
+    values[0] === range[0] &&
+    values[values.length - 1] === range[1]
+  );
 }
 
 function isNumber(value: unknown): value is number {
@@ -192,6 +244,7 @@ export function isLayerDescription(value: unknown): value is LayerDescription {
   const { kind, range, method } = layer;
   const name = layer.layer ?? null;
   const ends = layer.ends ?? null;
+  const classes = layer.classes ?? null;
   const frequency = layer.frequency ?? null;
   const note = layer.note ?? null;
   const statistics = layer.statistics ?? null;
@@ -209,6 +262,7 @@ export function isLayerDescription(value: unknown): value is LayerDescription {
     isList(layer.inputs, isText) &&
     (kind === "result" ? name === null : name === null || isText(name)) &&
     (ends === null || (kind === "result" && Array.isArray(ends) && ends.length === 2 && ends.every(isText))) &&
+    (classes === null || (kind === "result" && isTableOfClasses(classes, range as [number, number]))) &&
     (frequency === null ||
       (kind === "layer" && typeof frequency === "number" && Number.isFinite(frequency) && frequency > 0)) &&
     (note === null || (kind === "result" && isText(note))) &&
