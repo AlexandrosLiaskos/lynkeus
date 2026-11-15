@@ -8,6 +8,7 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 
 ### Added
 
+- Get layer receives the layers of beta products, and the description of a layer states the level of validation of its product.
 - The site of the project, with the team log as a web page that is generated from its Markdown file.
 - The service that counts page visits and stores only their total.
 - The files that deploy Lynkeus in containers and publish the team log whenever its file changes.
