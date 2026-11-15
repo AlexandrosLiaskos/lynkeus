@@ -223,29 +223,29 @@ Every row was asked on 14 Nov 2026 through the functions of the server, from the
 | Not confirmed | The words with which Harmony reports a licence agreement that is not accepted: Lynkeus looks for "EULA" or "license agreement" in the message, and no account without the agreement was at hand. Why the reduced copies of Harmony hold negative values. The time that Harmony keeps a result (30 days were seen in the answers of its jobs, and no document was read). The layers of the channel VV of GUNW other than the unwrapped phase, and all layers of GOFF with the channel VV: they are listed from the capabilities of Harmony and were not received. The revisions of the specifications later than those read. The display of the files in OpenLayers in a browser. |
 | Read on | 14 Nov 2026 |
 
-The layers that `layers_of` offers, with `<c>` for a channel (GCOV: HH, HV, VH, VV; GUNW and GOFF: HH, VV) and `<n>` for an offset layer (1, 2, 3):
+The layers that `layers_of` offers, with `<c>` for a channel (GCOV: HH, HV, VH, VV; GUNW and GOFF: HH, VV) and `<n>` for an offset layer (1, 2, 3). The name for the visitor is the name that NASA's catalogue gives the variable of the layer: the field `LongName` of its variable record, read on 15 Nov 2026 and kept in `api/tests/data/variable-names.json`.
 
 | Product | Name of the layer | Name for the visitor | Unit | Legend | Colour scale | Smallest cell |
 |---|---|---|---|---|---|---|
-| GCOV | `<c><c>` | Backscatter `<c>` | 1 | 2nd to 98th percentile | grey | 10 m |
-| GCOV | `rtcGammaToSigmaFactor` | Factor from gamma nought to sigma nought | 1 | 2nd to 98th percentile | viridis | 10 m |
-| GCOV | `numberOfLooks` | Number of looks | 1 | 2nd to 98th percentile | viridis | 10 m |
-| GCOV | `mask` | Mask of valid samples | 1 | lowest to highest value | tab10 | 10 m |
-| GUNW | `unwrappedInterferogram/<c>/unwrappedPhase` | Unwrapped phase `<c>` | rad | symmetric about zero | RdBu | 80 m |
-| GUNW | `unwrappedInterferogram/<c>/connectedComponents` | Connected components `<c>` | 1 | lowest to highest value | tab10 | 80 m |
-| GUNW | `unwrappedInterferogram/<c>/coherenceMagnitude` | Coherence `<c>`, 80 m | 1 | 0 to 1 | grey | 80 m |
-| GUNW | `unwrappedInterferogram/<c>/ionospherePhaseScreen` | Ionosphere phase screen `<c>` | rad | 2nd to 98th percentile | viridis | 80 m |
-| GUNW | `unwrappedInterferogram/<c>/ionospherePhaseScreenUncertainty` | Uncertainty of the ionosphere phase screen `<c>` | rad | 2nd to 98th percentile | viridis | 80 m |
-| GUNW | `wrappedInterferogram/<c>/coherenceMagnitude` | Coherence `<c>`, 20 m | 1 | 0 to 1 | grey | 20 m |
-| GUNW | `pixelOffsets/<c>/slantRangeOffset` | Slant range offset `<c>` | m | symmetric about zero | RdBu | 80 m |
-| GUNW | `pixelOffsets/<c>/alongTrackOffset` | Along-track offset `<c>` | m | symmetric about zero | RdBu | 80 m |
-| GUNW | `pixelOffsets/<c>/correlationSurfacePeak` | Correlation peak of the offsets `<c>` | 1 | 0 to 1 | viridis | 80 m |
-| GOFF | `pixelOffsets/<c>/layer<n>/slantRangeOffset` | Slant range offset `<c>`, layer `<n>` | m | symmetric about zero | RdBu | 80 m |
-| GOFF | `pixelOffsets/<c>/layer<n>/alongTrackOffset` | Along-track offset `<c>`, layer `<n>` | m | symmetric about zero | RdBu | 80 m |
-| GOFF | `pixelOffsets/<c>/layer<n>/correlationSurfacePeak` | Correlation peak of the offsets `<c>`, layer `<n>` | 1 | 0 to 1 | viridis | 80 m |
-| GOFF | `pixelOffsets/<c>/layer<n>/snr` | Signal-to-noise ratio of the offsets `<c>`, layer `<n>` | 1 | 2nd to 98th percentile | viridis | 80 m |
-| SME2 | `soilMoisture` | Soil moisture | m3 m-3 | 2nd to 98th percentile | YlGnBu | 200 m |
-| SME2 | `soilMoistureUncertainty` | Uncertainty of soil moisture | m3 m-3 | 2nd to 98th percentile | viridis | 200 m |
+| GCOV | `<c><c>` | Frequency A `<c><c>` | 1 | 2nd to 98th percentile | grey | 10 m |
+| GCOV | `rtcGammaToSigmaFactor` | Frequency A RTC Gamma to Sigma Factor | 1 | 2nd to 98th percentile | viridis | 10 m |
+| GCOV | `numberOfLooks` | Frequency A Number of Looks | 1 | 2nd to 98th percentile | viridis | 10 m |
+| GCOV | `mask` | Frequency A Mask | 1 | lowest to highest value | tab10 | 10 m |
+| GUNW | `unwrappedInterferogram/<c>/unwrappedPhase` | Frequency A `<c>` Unwrapped Phase | rad | symmetric about zero | RdBu | 80 m |
+| GUNW | `unwrappedInterferogram/<c>/connectedComponents` | Frequency A `<c>` Unwrapped Interferogram Connected Components | 1 | lowest to highest value | tab10 | 80 m |
+| GUNW | `unwrappedInterferogram/<c>/coherenceMagnitude` | Frequency A `<c>` Unwrapped Interferogram Coherence Magnitude | 1 | 0 to 1 | grey | 80 m |
+| GUNW | `unwrappedInterferogram/<c>/ionospherePhaseScreen` | Frequency A `<c>` Ionosphere Phase Screen | rad | 2nd to 98th percentile | viridis | 80 m |
+| GUNW | `unwrappedInterferogram/<c>/ionospherePhaseScreenUncertainty` | Frequency A `<c>` Ionosphere Phase Screen Uncertainty | rad | 2nd to 98th percentile | viridis | 80 m |
+| GUNW | `wrappedInterferogram/<c>/coherenceMagnitude` | Frequency A `<c>` Wrapped Interferogram Coherence Magnitude | 1 | 0 to 1 | grey | 20 m |
+| GUNW | `pixelOffsets/<c>/slantRangeOffset` | Frequency A `<c>` Slant Range Offset | m | symmetric about zero | RdBu | 80 m |
+| GUNW | `pixelOffsets/<c>/alongTrackOffset` | Frequency A `<c>` Along Track Offset | m | symmetric about zero | RdBu | 80 m |
+| GUNW | `pixelOffsets/<c>/correlationSurfacePeak` | Frequency A `<c>` Correlation Surface Peak | 1 | 0 to 1 | viridis | 80 m |
+| GOFF | `pixelOffsets/<c>/layer<n>/slantRangeOffset` | Frequency A `<c>` Layer `<n>` Slant Range Offset | m | symmetric about zero | RdBu | 80 m |
+| GOFF | `pixelOffsets/<c>/layer<n>/alongTrackOffset` | Frequency A `<c>` Layer `<n>` Along Track Offset | m | symmetric about zero | RdBu | 80 m |
+| GOFF | `pixelOffsets/<c>/layer<n>/correlationSurfacePeak` | Frequency A `<c>` Layer `<n>` Correlation Surface Peak | 1 | 0 to 1 | viridis | 80 m |
+| GOFF | `pixelOffsets/<c>/layer<n>/snr` | Frequency A `<c>` Layer `<n>` SNR | 1 | 2nd to 98th percentile | viridis | 80 m |
+| SME2 | `soilMoisture` | Soil Moisture | m3 m-3 | 2nd to 98th percentile | YlGnBu | 200 m |
+| SME2 | `soilMoistureUncertainty` | Soil Moisture Uncertainty | m3 m-3 | 2nd to 98th percentile | viridis | 200 m |
 ## Sign in to Earthdata
 
 | | |

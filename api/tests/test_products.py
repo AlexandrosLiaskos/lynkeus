@@ -100,7 +100,7 @@ def test_product_carries_the_layers_that_lynkeus_receives() -> None:
         "numberOfLooks",
         "mask",
     ]
-    assert (product.layers[0].title, product.layers[0].spacing) == ("Backscatter HH", 10)
+    assert (product.layers[0].title, product.layers[0].spacing) == ("Frequency A HHHH", 10)
     for name in ("granule-gcov", "granule-gunw", "granule-goff", "granule-sme2"):
         product = product_from_record(record(name))
         offered = layers_of(product.product, product.channels)

@@ -150,11 +150,11 @@ def visit(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Visit:
 
 def test_backscatter_product_offers_the_term_of_each_channel() -> None:
     assert layers_of("GCOV", ("HH", "HV")) == (
-        LayerChoice(name="HHHH", title="Backscatter HH", spacing=10),
-        LayerChoice(name="HVHV", title="Backscatter HV", spacing=10),
-        LayerChoice(name="rtcGammaToSigmaFactor", title="Factor from gamma nought to sigma nought", spacing=10),
-        LayerChoice(name="numberOfLooks", title="Number of looks", spacing=10),
-        LayerChoice(name="mask", title="Mask of valid samples", spacing=10),
+        LayerChoice(name="HHHH", title="Frequency A HHHH", spacing=10),
+        LayerChoice(name="HVHV", title="Frequency A HVHV", spacing=10),
+        LayerChoice(name="rtcGammaToSigmaFactor", title="Frequency A RTC Gamma to Sigma Factor", spacing=10),
+        LayerChoice(name="numberOfLooks", title="Frequency A Number of Looks", spacing=10),
+        LayerChoice(name="mask", title="Frequency A Mask", spacing=10),
     )
     assert [layer.name for layer in layers_of("GCOV", ("VV", "VH"))][:2] == ["VVVV", "VHVH"]
     # Harmony lists no term of the compact channels.
@@ -167,18 +167,21 @@ def test_backscatter_product_offers_the_term_of_each_channel() -> None:
 
 def test_interferogram_product_offers_the_layers_of_its_channel() -> None:
     assert [(layer.name, layer.title) for layer in layers_of("GUNW", ("HH",))] == [
-        ("unwrappedInterferogram/HH/unwrappedPhase", "Unwrapped phase HH"),
-        ("unwrappedInterferogram/HH/connectedComponents", "Connected components HH"),
-        ("unwrappedInterferogram/HH/coherenceMagnitude", "Coherence HH, 80 m"),
-        ("unwrappedInterferogram/HH/ionospherePhaseScreen", "Ionosphere phase screen HH"),
+        ("unwrappedInterferogram/HH/unwrappedPhase", "Frequency A HH Unwrapped Phase"),
+        (
+            "unwrappedInterferogram/HH/connectedComponents",
+            "Frequency A HH Unwrapped Interferogram Connected Components",
+        ),
+        ("unwrappedInterferogram/HH/coherenceMagnitude", "Frequency A HH Unwrapped Interferogram Coherence Magnitude"),
+        ("unwrappedInterferogram/HH/ionospherePhaseScreen", "Frequency A HH Ionosphere Phase Screen"),
         (
             "unwrappedInterferogram/HH/ionospherePhaseScreenUncertainty",
-            "Uncertainty of the ionosphere phase screen HH",
+            "Frequency A HH Ionosphere Phase Screen Uncertainty",
         ),
-        ("wrappedInterferogram/HH/coherenceMagnitude", "Coherence HH, 20 m"),
-        ("pixelOffsets/HH/slantRangeOffset", "Slant range offset HH"),
-        ("pixelOffsets/HH/alongTrackOffset", "Along-track offset HH"),
-        ("pixelOffsets/HH/correlationSurfacePeak", "Correlation peak of the offsets HH"),
+        ("wrappedInterferogram/HH/coherenceMagnitude", "Frequency A HH Wrapped Interferogram Coherence Magnitude"),
+        ("pixelOffsets/HH/slantRangeOffset", "Frequency A HH Slant Range Offset"),
+        ("pixelOffsets/HH/alongTrackOffset", "Frequency A HH Along Track Offset"),
+        ("pixelOffsets/HH/correlationSurfacePeak", "Frequency A HH Correlation Surface Peak"),
     ]
     # Only the coherence of the wrapped interferogram is at 20 m.
     assert [layer.spacing for layer in layers_of("GUNW", ("HH",))] == [80, 80, 80, 80, 80, 20, 80, 80, 80]
@@ -189,10 +192,10 @@ def test_interferogram_product_offers_the_layers_of_its_channel() -> None:
 def test_offset_product_offers_its_three_offset_layers() -> None:
     offered = layers_of("GOFF", ("HH",))
     assert [(layer.name, layer.title) for layer in offered[:4]] == [
-        ("pixelOffsets/HH/layer1/slantRangeOffset", "Slant range offset HH, layer 1"),
-        ("pixelOffsets/HH/layer1/alongTrackOffset", "Along-track offset HH, layer 1"),
-        ("pixelOffsets/HH/layer1/correlationSurfacePeak", "Correlation peak of the offsets HH, layer 1"),
-        ("pixelOffsets/HH/layer1/snr", "Signal-to-noise ratio of the offsets HH, layer 1"),
+        ("pixelOffsets/HH/layer1/slantRangeOffset", "Frequency A HH Layer 1 Slant Range Offset"),
+        ("pixelOffsets/HH/layer1/alongTrackOffset", "Frequency A HH Layer 1 Along Track Offset"),
+        ("pixelOffsets/HH/layer1/correlationSurfacePeak", "Frequency A HH Layer 1 Correlation Surface Peak"),
+        ("pixelOffsets/HH/layer1/snr", "Frequency A HH Layer 1 SNR"),
     ]
     assert [layer.name.split("/")[2] for layer in offered] == ["layer1"] * 4 + ["layer2"] * 4 + ["layer3"] * 4
     assert {layer.spacing for layer in offered} == {80}
@@ -201,8 +204,8 @@ def test_offset_product_offers_its_three_offset_layers() -> None:
 def test_soil_moisture_product_offers_the_same_layers_for_every_channel() -> None:
     assert layers_of("SME2", ("HH", "HV")) == layers_of("SME2", ())
     assert layers_of("SME2", ()) == (
-        LayerChoice(name="soilMoisture", title="Soil moisture", spacing=200),
-        LayerChoice(name="soilMoistureUncertainty", title="Uncertainty of soil moisture", spacing=200),
+        LayerChoice(name="soilMoisture", title="Soil Moisture", spacing=200),
+        LayerChoice(name="soilMoistureUncertainty", title="Soil Moisture Uncertainty", spacing=200),
     )
 
 
@@ -216,6 +219,19 @@ def test_every_layer_offered_is_one_that_harmony_lists() -> None:
         for collection in (*collections, BETA_COLLECTIONS[product]):
             for layer in offered:
                 assert harmony._GROUPS[product] + layer.name in listed[collection.short_name], layer.name
+
+
+def test_each_layer_bears_the_name_that_nasas_catalogue_gives_it() -> None:
+    # The field LongName of the variable records of NASA's catalogue (CMR, provider ASF), read on 15 Nov 2026.
+    # There the name of the mask ends with a space, which is left out.
+    names: dict[str, str] = json.loads((DATA / "variable-names.json").read_text(encoding="utf-8"))
+    channels = {"GCOV": ("HH", "HV", "VH", "VV"), "GUNW": ("HH", "VV"), "GOFF": ("HH", "VV"), "SME2": ("HH", "HV")}
+    offered = {
+        group + layer.name: layer.title
+        for product, group in harmony._GROUPS.items()
+        for layer in layers_of(product, channels[product])
+    }
+    assert offered == names
 
 
 def test_number_of_cells_of_an_area_agrees_with_a_file_of_harmony() -> None:
@@ -262,7 +278,7 @@ def test_ring_that_crosses_the_meridian_of_180_degrees_is_compared_on_both_sides
 def test_layer_is_received_and_written(visit: Visit) -> None:
     description = visit.get()
     assert description.id == "k3v9x2"
-    assert description.title == "Backscatter HH, 21 Oct 2026"
+    assert description.title == "Frequency A HHHH, 21 Oct 2026"
     assert (description.kind, description.method) == ("layer", None)
     assert description.url == "/files/k3v9x2/gcov-hhhh-20261021.tif"
     assert description.record == "/files/k3v9x2/gcov-hhhh-20261021.json"
@@ -326,7 +342,7 @@ def test_soil_moisture_keeps_its_unit_and_loses_its_no_data_value(
     visit = Visit(monkeypatch, tmp_path, "sme2-soilmoisture-20261009.tif", "granule-sme2")
     name = record("granule-sme2")["umm"]["GranuleUR"]
     description = visit.get(product="SME2", granule=f"{name}.h5", layer="soilMoisture")
-    assert description.title == "Soil moisture, 9 Oct 2026"
+    assert description.title == "Soil Moisture, 9 Oct 2026"
     assert (description.quantity, description.unit, description.colours) == ("Soil moisture", "m3 m-3", "YlGnBu")
     assert description.layer == "soilMoisture"
     assert description.url == "/files/k3v9x2/sme2-soilmoisture-20261009.tif"
@@ -352,7 +368,9 @@ def test_classes_of_an_interferogram_are_received_as_classes(monkeypatch: pytest
     description = visit.get(
         product="GUNW", granule=name, layer=layer, area=Area(west=-71, south=42.75, east=-70.95, north=42.8)
     )
-    assert description.title == "Connected components HH, 9 Oct 2026 to 21 Oct 2026"
+    assert description.title == (
+        "Frequency A HH Unwrapped Interferogram Connected Components, 9 Oct 2026 to 21 Oct 2026"
+    )
     assert description.dates == (date(2026, 10, 9), date(2026, 10, 21))
     assert description.layer == layer
     assert (description.unit, description.range, description.colours) == ("1", (0.0, 1.0), "tab10")
