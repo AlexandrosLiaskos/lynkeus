@@ -48,6 +48,26 @@ test("a result is accepted only without the name of a layer inside a product", (
   expect(isLayerDescription({ ...result, layer: undefined })).toBe(true);
 });
 
+test("a result may name the two ends of its legend in words, and a layer may not", () => {
+  const result = { ...LAYER, kind: "result", layer: null, method: "Reference of the method" };
+  expect(isLayerDescription({ ...result, ends: ["decrease", "increase"] })).toBe(true);
+  expect(isLayerDescription({ ...result, ends: null })).toBe(true);
+  expect(isLayerDescription(result)).toBe(true);
+  expect(isLayerDescription({ ...LAYER, ends: null })).toBe(true);
+  expect(isLayerDescription({ ...LAYER, ends: ["low", "high"] })).toBe(false);
+});
+
+test.each([
+  ["one word", ["decrease"]],
+  ["three words", ["decrease", "none", "increase"]],
+  ["an empty word", ["decrease", ""]],
+  ["a word that is not text", ["decrease", 1]],
+  ["one text", "decrease"],
+])("a result is rejected when the words of the ends of its legend are %s", (_, ends) => {
+  const result = { ...LAYER, kind: "result", layer: null, method: "Reference of the method" };
+  expect(isLayerDescription({ ...result, ends })).toBe(false);
+});
+
 test.each([
   ["the id is empty", { id: "" }],
   ["the kind is unknown", { kind: "other" }],

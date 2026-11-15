@@ -48,19 +48,36 @@ function ClassLegend({ colours, range }: { colours: readonly string[]; range: re
   );
 }
 
-/** The legend of a continuous scale: the colours from the lowest value, at the bottom, to the highest value. */
+/**
+ * Return the words that name the lowest and the highest end of the scale, or null. The words are those of the
+ * legend that the tool gave, so they show while the range of the display is the range of the description. They
+ * belong to the values, not to the colours: an inverted scale keeps each word beside its value.
+ */
+function wordsOfEnds(layer: LayerDescription, display: LayerDisplay): readonly [string, string] | null {
+  if (display.range[0] !== layer.range[0] || display.range[1] !== layer.range[1]) {
+    return null;
+  }
+  return layer.ends ?? null;
+}
+
+/**
+ * The legend of a continuous scale: the colours from the lowest value, at the bottom, to the highest value. When
+ * the description names the two ends in words, each word stands in brackets beside the value of its end.
+ */
 function RampLegend({ layer }: { layer: LayerDescription }) {
   const display = useStore(displayStore)[layer.id] ?? firstDisplay(layer);
   const name = display.colours;
   const colours = display.inverted ? [...colourScale(name)].reverse() : colourScale(name);
   const unit = shownUnit(layer, display);
   const [lowest, highest] = shownRange(layer, display);
+  const words = wordsOfEnds(layer, display);
+  const [lowestWord, highestWord] = words ? [` (${words[0]})`, ` (${words[1]})`] : ["", ""];
   const marks = [
-    { value: lowest, label: formatNumber(lowest) },
+    { value: lowest, label: `${formatNumber(lowest)}${lowestWord}` },
     ...legendTicks(lowest, highest),
-    { value: highest, label: formatNumber(highest) },
+    { value: highest, label: `${formatNumber(highest)}${highestWord}` },
   ];
-  const ends = `from ${formatNumber(lowest)} to ${formatNumber(highest)}${unit && ` ${unit}`}`;
+  const ends = `from ${formatNumber(lowest)}${lowestWord} to ${formatNumber(highest)}${unit && ` ${unit}`}${highestWord}`;
   return (
     <div className="legend-scale">
       <div
@@ -82,7 +99,8 @@ function RampLegend({ layer }: { layer: LayerDescription }) {
 
 /**
  * The legend of a layer: its quantity, its unit and its colour scale, with the lowest and the highest value of
- * the scale and round values between them. The legend follows the display of the layer. For a layer that is
+ * the scale and round values between them, and the words of its two ends when the description has them. The
+ * legend follows the display of the layer. For a layer that is
  * shown in decibels the legend says so, and the values beside the scale are decibels. Every note of the legend,
  * such as the one on decibels, on hidden values or on the cells without data, has one style.
  */

@@ -34,6 +34,12 @@ export interface LayerDescription {
    * NASA has one. A result has null, and a layer stored before this field existed has null or no field.
    */
   layer?: string | null;
+  /**
+   * Words that name the lowest and the highest end of the legend, for example ["decrease", "increase"]. Only a
+   * result may have them, when its tool gives them. A layer has null or no field, and so has a description stored
+   * before this field existed.
+   */
+  ends?: readonly [string, string] | null;
   /** Program and version that produced the file. */
   program: string;
   /** Reference of the method. A result has one, and a layer has null. */
@@ -80,6 +86,7 @@ export function isLayerDescription(value: unknown): value is LayerDescription {
   const layer = value as Record<string, unknown>;
   const { kind, range, method } = layer;
   const name = layer.layer ?? null;
+  const ends = layer.ends ?? null;
   return (
     [layer.id, layer.title, layer.url, layer.quantity, layer.unit, layer.colours, layer.program, layer.record].every(
       isText,
@@ -93,6 +100,7 @@ export function isLayerDescription(value: unknown): value is LayerDescription {
     isList(layer.dates, (date) => typeof date === "string" && DATE.test(date)) &&
     isList(layer.inputs, isText) &&
     (kind === "result" ? name === null : name === null || isText(name)) &&
+    (ends === null || (kind === "result" && Array.isArray(ends) && ends.length === 2 && ends.every(isText))) &&
     (kind === "result" ? isText(method) : method === null)
   );
 }
