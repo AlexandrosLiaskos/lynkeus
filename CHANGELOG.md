@@ -194,8 +194,8 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The footer of the application page.
 - The buttons Change and Thematic map of Surface displacement and Thematic map of Coherence and Soil moisture
   in the Analysis tab, because no published method gives their results: the phase of each GUNW pair is
-  measured from its own arbitrary reference, so two pairs cannot be subtracted, and no algorithm of the NISAR
-  science team derives classes from coherence, displacement or soil moisture.
+  measured from its own arbitrary reference, so two pairs cannot be subtracted, and no published algorithm of
+  the NISAR science team that derives classes from coherence, displacement or soil moisture was found.
 
 ### Fixed
 

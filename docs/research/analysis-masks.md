@@ -78,9 +78,9 @@ the earlier work received for the pilot box: 3,772 by 3,972 cells of 10 m for GC
 rectangles of the coherence layers for GUNW. In every product a central window of the term or of the
 coherence (512 by 512 cells; 471 by 471 at 80 m) was compared with the received layer. Every cell
 that holds a value in the received layer holds the same value in the product, bit for bit, and no cell
-holds a value in the received layer only, so the windows match. At 80 m the window reaches the edge of
-the box, and up to 4,983 of its cells hold a value in the product only: the received layer leaves every
-cell outside the box empty.
+holds a value in the received layer only, so the windows match. At 80 m the window spans the whole width of
+the rectangle, and up to 4,983 of its cells hold a value in the product only, where the received layer
+holds none; that these are cells outside the box was not tested.
 
 The results were computed from the received layers, which are the inputs of the results of the pilot
 area, by the rules of the tools. Backscatter, One date holds a value where the term is a finite number
@@ -157,7 +157,7 @@ next area.
    valid.
 6. In the 80 m layer `mask` of the provisional pair of 27 Sep 2026 to 9 Oct 2026, the cells with bit 24 hold
    the numbers 12 and 124 in bits 0 to 7, and its other cells 11 and 111. In the validated pair of
-   9 Oct 2026 to 21 Oct 2026, the cells with bit 24 hold 11 and 111, as its other cells do. No digit is 0,
+   9 Oct 2026 to 21 Oct 2026, the cells with bit 24 hold 11 and 111, as its other cells do. No sub-swath digit is 0,
    so the rule does not apply; what the numbers mean was not studied.
 
 ## 6. Sources and records
@@ -167,8 +167,8 @@ next area.
 | Product specification files `nisar_L2_GCOV.xml` and `nisar_L2_GUNW.xml` | Versions 1.5.0 and 1.6.0, in nisarqa at commit `a8bc425` | The entries of `mask` and `validDataMask` (part 2) |
 | The GCOV and GUNW product files (HDF5) at the ASF DAAC | The granules named in the records | The attributes and the values of the masks (part 3) |
 
-The records are kept in `docs/research/records/analysis/masks/`. The program that made them, with the
-rules of the tools that it applies, is described in part 3.1.
+The records are kept in `docs/research/records/analysis/masks/`. The program that made them is not part of
+the repository; part 3.1 describes what it read and the rules that it applies.
 
 | File | SHA-256 | Contents |
 |---|---|---|
