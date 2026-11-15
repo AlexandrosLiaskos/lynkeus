@@ -9,7 +9,7 @@ export function Header({ account }: { account?: ReactNode }) {
   return (
     <header className="header">
       <h1 className="header-name">
-        <img src="/assets/lynkeus-mark.svg" alt="" width="23" height="20" />
+        <img src="/assets/lynkeus-mark.svg" alt="" width="25" height="20" />
         Lynkeus
       </h1>
       <VersionNotice />
