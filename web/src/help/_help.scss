@@ -111,3 +111,42 @@
 .sources .usa-table a {
   overflow-wrap: anywhere;
 }
+
+// The dialog Methods: the sheet of each tool. A section of a sheet stands 12 pixels under the one before it, and
+// its paragraphs, its formula and its lists take the text of the dialog.
+.methods-section {
+  margin-top: tokens.$space-3;
+  font-size: tokens.$text;
+  line-height: tokens.$line;
+}
+
+.methods-sheet > .property-list:last-child {
+  margin-top: tokens.$space-3;
+}
+
+.methods-section p,
+.methods-list {
+  margin: 0 0 tokens.$space-2;
+}
+
+.methods-list {
+  padding-left: tokens.$space-4;
+}
+
+.methods-list li + li {
+  margin-top: tokens.$space-1;
+}
+
+// A formula is written in letters of one width, and it breaks into lines where the dialog ends.
+.methods-formula {
+  margin: 0 0 tokens.$space-2;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: tokens.$text;
+}
+
+// A long address or path breaks where its line ends.
+.methods :is(a, code) {
+  overflow-wrap: anywhere;
+}

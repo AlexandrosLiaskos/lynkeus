@@ -5,7 +5,7 @@ import { Ribbon } from "../ribbon/Ribbon";
 import { dockStore, resetDock } from "../shared/dock/dock";
 import { useHelpActions } from "./actions";
 import { HelpDialogs } from "./HelpDialogs";
-import { aboutDialogStore, GETTING_STARTED_PANE, sourcesDialogStore } from "./state";
+import { aboutDialogStore, GETTING_STARTED_PANE, methodsStore, sourcesDialogStore } from "./state";
 import { HELP_TAB } from "./tab";
 
 /** The Help tab as the page holds it: its buttons with their actions, and its dialogs. */
@@ -22,6 +22,7 @@ beforeEach(() => {
   resetDock();
   aboutDialogStore.set(false);
   sourcesDialogStore.set(false);
+  methodsStore.set({ open: false, tool: null });
 });
 
 test("Getting started is the first button of the Help tab", () => {
@@ -55,10 +56,18 @@ test("the button Sources opens its dialog", async () => {
   expect(screen.getByRole<HTMLDialogElement>("dialog", { name: "Sources" }).open).toBe(true);
 });
 
-test("the button Methods is not finished and does nothing", async () => {
+test("the button Methods opens its dialog", async () => {
   render(<HelpTab />);
   const button = screen.getByRole("button", { name: "Methods" });
-  expect(button.getAttribute("aria-disabled")).toBe("true");
+  expect(button.getAttribute("aria-disabled")).toBeNull();
   await userEvent.click(button);
-  expect(screen.queryByRole("dialog")).toBeNull();
+  expect(screen.getByRole<HTMLDialogElement>("dialog", { name: "Methods" }).open).toBe(true);
+});
+
+test("every button of the Help tab is finished", () => {
+  render(<HelpTab />);
+  const buttons = HELP_TAB.groups.flatMap(({ tools }) =>
+    tools.map(({ label }) => screen.getByRole("button", { name: label })),
+  );
+  expect(buttons.map((button) => button.getAttribute("aria-disabled"))).toEqual([null, null, null, null]);
 });
