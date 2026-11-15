@@ -17,10 +17,11 @@
         "limits": {
           "running_jobs": 4,
           "storage": 100000000000,
-          "layer_size": 10000000000
+          "layer_size": 10000000000,
+          "layer_cells": 100000000
         },
         "system": "Windows 11",
-        "version": "0.1.0"
+        "version": "0.2.0"
       }
     },
     {

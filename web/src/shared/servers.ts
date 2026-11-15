@@ -36,6 +36,11 @@ export interface ServerLimits {
   storage: number;
   /** Largest size of the files of one layer. */
   layer_size: number;
+  /**
+   * Most cells of one layer that a job of the server receives. A message without the field comes from a program
+   * of version 0.1.0 and counts as `FIRST_LAYER_CELLS`; read the limit with `layerCells`.
+   */
+  layer_cells?: number;
 }
 
 /** What an own server reports about itself. Sizes are in bytes. */
@@ -108,6 +113,24 @@ export const MOST_NAME = 80;
 /** The most jobs that an own server may run at the same time, as its limit allows. */
 export const MOST_RUNNING_JOBS = 64;
 
+/**
+ * The most cells of a layer of a server whose message does not state them (`FIRST_LAYER_CELLS`). It is the
+ * number of the project server and of the program of version 0.1.0, which knows no other.
+ */
+export const FIRST_LAYER_CELLS = 25_000_000;
+
+/** The least and the most that the limit on the cells of a layer of a server may be. */
+export const LEAST_LAYER_CELLS = 1_000_000;
+export const MOST_LAYER_CELLS = 4_000_000_000;
+
+/** The version of Lynkeus Server that does not know the limit on the cells of a layer. */
+export const FIRST_VERSION = "0.1.0";
+
+/** Return the most cells of one layer that a job of a server with these limits receives. */
+export function layerCells(limits: ServerLimits): number {
+  return limits.layer_cells ?? FIRST_LAYER_CELLS;
+}
+
 /** The value of the parameter `server` of an execution that names the project server. */
 export const PROJECT_SERVER = "project";
 
@@ -140,7 +163,9 @@ export function isServerLimits(value: unknown): value is ServerLimits {
     isCount(value.running_jobs, 1) &&
     value.running_jobs <= MOST_RUNNING_JOBS &&
     isCount(value.storage) &&
-    isCount(value.layer_size)
+    isCount(value.layer_size) &&
+    (value.layer_cells === undefined ||
+      (isCount(value.layer_cells, LEAST_LAYER_CELLS) && value.layer_cells <= MOST_LAYER_CELLS))
   );
 }
 

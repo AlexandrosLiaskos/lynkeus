@@ -13,7 +13,15 @@ from pathlib import Path
 import pytest
 
 from lynkeus.layers import Format
-from lynkeus.linking import PairingConfirmation, PairingView, Server, ServerChange, ServerName, Servers
+from lynkeus.linking import (
+    FIRST_LAYER_CELLS,
+    PairingConfirmation,
+    PairingView,
+    Server,
+    ServerChange,
+    ServerName,
+    Servers,
+)
 
 DATA = Path(__file__).parent / "data" / "servers"
 
@@ -48,3 +56,19 @@ def test_examples_cover_the_states_that_the_interface_shows() -> None:
     assert full is not None
     assert full.memory is None
     assert full.disk_used >= full.limits.storage
+
+
+def test_limits_without_the_cells_of_a_layer_are_read_as_25_million() -> None:
+    servers = Servers.model_validate_json((DATA / "servers.json").read_text(encoding="utf-8")).servers
+    new, old = servers[0].state, servers[1].state
+    assert new is not None
+    assert old is not None
+    # The first server runs a program that states the limit; the second runs version 0.1.0, which does not.
+    assert new.version != "0.1.0"
+    assert new.limits.layer_cells == 100_000_000
+    assert old.version == "0.1.0"
+    assert "layer_cells" not in old.limits.model_fields_set
+    assert old.limits.layer_cells == FIRST_LAYER_CELLS == 25_000_000
+    change = ServerChange.model_validate_json((DATA / "server-change-limits.json").read_text(encoding="utf-8"))
+    assert change.limits is not None
+    assert change.limits.layer_cells == 150_000_000

@@ -4,16 +4,17 @@ import { SIGN_IN_PANE } from "../data/SignInPane";
 import { openToolPane } from "../shared/dock/dock";
 import { EmptyState } from "../shared/empty/EmptyState";
 import { Notice } from "../shared/notice/Notice";
-import { serversStore } from "../shared/servers";
+import { FIRST_VERSION, serversStore } from "../shared/servers";
 import { useStore } from "../shared/store";
 import { InfoPane } from "../shared/toolpane/InfoPane";
 import { AddServer } from "./AddServer";
 import { connectOf, forgetConnect } from "./connect";
+import { loadRelease, releaseStore } from "./downloads";
 import { focusHeading } from "./focus";
 import { followServers, loadServers, serversFaultStore } from "./requests";
 import { ServerItem } from "./ServerItem";
 import { openAddServer, returnStore, SERVERS_PANE, serversViewStore, showServerList, type ServersView } from "./state";
-import { serversSentence } from "./words";
+import { serversSentence, upgradeOf } from "./words";
 
 /** What an own server is for, in the words of the empty list. */
 export const PURPOSE =
@@ -23,18 +24,27 @@ export const PURPOSE =
  * The list of the servers of the visitor: for each one its name, whether it is connected and since when it is
  * not, its system, processors and memory, its free and used disk space, its running and waiting jobs and the
  * layers that it keeps. Without a server the list says what an own server is for and offers the button that
- * connects one.
+ * connects one. When a server runs version 0.1.0 of Lynkeus Server, GitHub is asked once for the latest release,
+ * and such a server says that a newer one is available.
  */
 function ServerList() {
   const id = useId();
   const listed = useStore(serversStore);
   const fault = useStore(serversFaultStore);
+  const downloads = useStore(releaseStore);
   const count = listed?.servers.length ?? 0;
+  const first = listed?.servers.some((server) => server.state?.version === FIRST_VERSION) ?? false;
   const read = () => void loadServers();
   const add = () => openAddServer();
 
   // The row of a removed server leaves the pane, and the focus goes to the title of the pane.
   useEffect(focusHeading, [count]);
+
+  useEffect(() => {
+    if (first) {
+      void loadRelease();
+    }
+  }, [first]);
 
   const notice =
     fault === null ? null : (
@@ -62,7 +72,11 @@ function ServerList() {
       </p>
       <ul className="item-list servers-list">
         {listed.servers.map((server) => (
-          <ServerItem key={server.id} server={server} />
+          <ServerItem
+            key={server.id}
+            server={server}
+            upgrade={upgradeOf(server.state, downloads, navigator.userAgent)}
+          />
         ))}
       </ul>
       <div className="servers-buttons">

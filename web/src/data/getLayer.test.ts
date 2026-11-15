@@ -165,8 +165,36 @@ test("one request is planned for each chosen layer of each product, in their ord
 });
 
 test("a layer above the limit of the server is named with both numbers", () => {
-  expect(tooLarge("Backscatter HH", 41_300_000, 25_000_000)).toBe(
+  const project = { limit: 25_000_000, server: null, several: false, larger: null };
+  expect(tooLarge("Backscatter HH", 41_300_000, project)).toBe(
     'The area is too large for the layer "Backscatter HH": the layer would have about 41 million cells, and Lynkeus receives at most 25 million. Choose a smaller area.',
+  );
+});
+
+test("a layer above the limit names the server of the job, and the server of the visitor that receives more", () => {
+  const larger = { name: "Office computer", limit: 100_000_000 };
+  expect(tooLarge("Backscatter HH", 41_300_000, { limit: 25_000_000, server: null, several: true, larger })).toBe(
+    'The area is too large for the layer "Backscatter HH" on the project server: the layer would have about 41 million cells, and the project server receives at most 25 million. Choose a smaller area, or your server "Office computer", which receives at most 100 million.',
+  );
+  expect(
+    tooLarge("Backscatter HH", 141_300_000, {
+      limit: 100_000_000,
+      server: "Office computer",
+      several: true,
+      larger: null,
+    }),
+  ).toBe(
+    'The area is too large for the layer "Backscatter HH" on your server "Office computer": the layer would have about 141 million cells, and that server receives at most 100 million. Choose a smaller area.',
+  );
+  expect(
+    tooLarge("Backscatter HH", 41_300_000, {
+      limit: 37_500_000,
+      server: "Field laptop",
+      several: true,
+      larger: { name: "Office computer", limit: 1_250_000_000 },
+    }),
+  ).toBe(
+    'The area is too large for the layer "Backscatter HH" on your server "Field laptop": the layer would have about 41 million cells, and that server receives at most 37.5 million. Choose a smaller area, or your server "Office computer", which receives at most 1,250 million.',
   );
 });
 

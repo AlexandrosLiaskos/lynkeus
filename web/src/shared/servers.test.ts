@@ -9,10 +9,15 @@ import list from "../../../api/tests/data/servers/servers.json";
 import {
   isPairingView,
   isServer,
+  FIRST_LAYER_CELLS,
+  FIRST_VERSION,
   isServerLimits,
   isServerName,
   isServers,
   isServerState,
+  layerCells,
+  LEAST_LAYER_CELLS,
+  MOST_LAYER_CELLS,
   MOST_NAME,
   MOST_RUNNING_JOBS,
   PAIRING_TIME,
@@ -43,6 +48,32 @@ test("the limits written here are those of the formats of the server", () => {
   expect(linking).toContain(`running_jobs: int = Field(ge=1, le=${String(MOST_RUNNING_JOBS)})`);
   expect(linking).toContain(`type Label = Annotated[str, Field(min_length=1, max_length=${String(MOST_NAME)})]`);
   expect(linking).toContain(`Field(pattern=r"${USER_CODE.source}")`);
+  // Python writes the numbers with an underscore between the groups of three digits.
+  const python = (count: number) => count.toLocaleString("en-US").replaceAll(",", "_");
+  expect(linking).toContain(`FIRST_LAYER_CELLS = ${python(FIRST_LAYER_CELLS)}\n`);
+  expect(linking).toContain(
+    `layer_cells: int = Field(default=FIRST_LAYER_CELLS, ge=${python(LEAST_LAYER_CELLS)}, le=${python(MOST_LAYER_CELLS)})`,
+  );
+});
+
+test("limits state the most cells of a layer, and limits of version 0.1.0, which lack them, count as 25 million", () => {
+  const [stated, old] = list.servers.map((server) => server.state);
+  if (!stated || !old || !isServerState(stated) || !isServerState(old)) {
+    throw new Error("The first two servers of the example report their state.");
+  }
+  expect(stated.version).not.toBe(FIRST_VERSION);
+  expect(layerCells(stated.limits)).toBe(100_000_000);
+  expect(old.version).toBe(FIRST_VERSION);
+  expect("layer_cells" in old.limits).toBe(false);
+  expect(layerCells(old.limits)).toBe(FIRST_LAYER_CELLS);
+  expect(FIRST_LAYER_CELLS).toBe(25_000_000);
+  const limits = { running_jobs: 1, storage: 0, layer_size: 0 };
+  expect(isServerLimits({ ...limits, layer_cells: LEAST_LAYER_CELLS })).toBe(true);
+  expect(isServerLimits({ ...limits, layer_cells: MOST_LAYER_CELLS })).toBe(true);
+  expect(isServerLimits({ ...limits, layer_cells: LEAST_LAYER_CELLS - 1 })).toBe(false);
+  expect(isServerLimits({ ...limits, layer_cells: MOST_LAYER_CELLS + 1 })).toBe(false);
+  expect(isServerLimits({ ...limits, layer_cells: 25_000_000.5 })).toBe(false);
+  expect(isServerLimits({ ...limits, layer_cells: null })).toBe(false);
 });
 
 test("a server with a wrong field is not accepted", () => {
