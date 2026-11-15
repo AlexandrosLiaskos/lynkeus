@@ -18,6 +18,7 @@ import {
   type RequestProduct,
   type Ring,
 } from "./getLayer";
+import { fitRings, rectangleAround } from "./searchArea";
 import { standIn } from "./testSession";
 
 const AREA = { west: -71.2, south: 42.6, east: -70.75, north: 42.95 };
@@ -98,6 +99,64 @@ test("an area inside one of the two polygons of an outline is inside the outline
   ];
   expect(coverage({ west: -179.5, south: 50.5, east: -178.5, north: 51.5 }, [east, west])).toBe("inside");
   expect(coverage({ west: 171, south: 50.5, east: 172, north: 51.5 }, [east, west])).toBe("inside");
+});
+
+test("the outline of a product, taken as the area, lies inside that outline", () => {
+  // The area takes points along the long sides of the outline, on the line that the map draws. On the north side
+  // of this outline that line passes about 130 m north of a straight line in degrees between the corners.
+  const rings = fitRings(OUTLINE) ?? [];
+  expect(rings[0]?.length).toBe((OUTLINE[0]?.length ?? 0) + 2);
+  expect(coverage(rings, OUTLINE)).toBe("inside");
+  // The rectangle around the outline holds corners outside it.
+  expect(coverage(rectangleAround(rings), OUTLINE)).toBe("partly");
+});
+
+test("a large outline far to the north, taken as the area, lies inside that outline", () => {
+  // Sides of eight degrees of longitude, along which the line of the map bends by kilometres.
+  const outline: Ring[] = [
+    [
+      [-150, 60],
+      [-142, 60.5],
+      [-142.5, 62.5],
+      [-150.5, 62],
+      [-150, 60],
+    ],
+  ];
+  const rings = fitRings(outline) ?? [];
+  expect(rings[0]?.length).toBeGreaterThan(5);
+  expect(coverage(rings, outline)).toBe("inside");
+});
+
+test("an area of polygons is compared by its polygons, not by the rectangle around them", () => {
+  // A triangle inside the slanted outline, whose rectangle reaches west of the outline.
+  const inside: Ring = [
+    [-72.1, 43],
+    [-71.95, 42.8],
+    [-71.8, 43.3],
+    [-72.1, 43],
+  ];
+  expect(coverage([inside], OUTLINE)).toBe("inside");
+  expect(coverage(rectangleAround([inside]), OUTLINE)).toBe("partly");
+  // The first corner of this triangle lies west of the outline.
+  const partly: Ring = [
+    [-72.3, 43],
+    [-71.95, 42.8],
+    [-71.8, 43.3],
+    [-72.3, 43],
+  ];
+  expect(coverage([partly], OUTLINE)).toBe("partly");
+  // A triangle beside the south-west corner of the outline, whose rectangle holds that corner.
+  const outside: Ring = [
+    [-72.75, 42],
+    [-72.75, 41.75],
+    [-72.5, 41.75],
+    [-72.75, 42],
+  ];
+  expect(coverage([outside], OUTLINE)).toBe("outside");
+  expect(coverage(rectangleAround([outside]), OUTLINE)).toBe("partly");
+  // Of two polygons, one inside and one outside, a part lies outside.
+  expect(coverage([inside, outside], OUTLINE)).toBe("partly");
+  expect(coverage([], OUTLINE)).toBe("outside");
 });
 
 test("the four fields of the area are checked and read", () => {

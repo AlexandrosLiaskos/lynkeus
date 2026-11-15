@@ -14,7 +14,7 @@ import { serversStore, type Servers } from "../shared/servers";
 import { panesStore, resetPanes, setPaneOpen } from "../shared/panes";
 import { useStore } from "../shared/store";
 import { addWhenReadyStore } from "./follow";
-import { cellLimitStore, type RequestProduct } from "./getLayer";
+import { cellLimitStore, type RequestProduct, type Ring } from "./getLayer";
 import {
   ABOUT,
   GetLayerForm,
@@ -365,7 +365,7 @@ test("the area is the one of the search, in both directions", async () => {
   expect(sides()).toEqual(["-71", "42", "-70", "43"]);
 });
 
-test("an area of polygons gives the rectangle around them", async () => {
+test("an area of polygons gives the rectangle around them, and the outline of the product lies inside itself", async () => {
   select();
   show();
   await userEvent.selectOptions(areaChoice(), "product");
@@ -376,7 +376,50 @@ test("an area of polygons gives the rectangle around them", async () => {
   ]);
   expect(screen.getByRole("button", { name: "Information about Rectangle" })).toBeDefined();
   expect(screen.getByText(ABOUT.rectangle)).toBeDefined();
+  expect(screen.queryByText(/lies outside the outline/)).toBeNull();
+});
+
+test("an area of polygons is compared with the outline of the product by its polygons", async () => {
+  show();
+  await userEvent.click(layerBox("Backscatter HH"));
+  const takePolygons = (rings: Ring[]) => {
+    const draft = searchDraftStore.get();
+    act(() => searchDraftStore.set(draft && { ...draft, limited: true, area: { kind: "polygons", rings } }));
+  };
+  // A triangle inside the slanted outline, although the rectangle around it reaches west of the outline.
+  takePolygons([
+    [
+      [-72.1, 43],
+      [-71.95, 42.8],
+      [-71.8, 43.3],
+      [-72.1, 43],
+    ],
+  ]);
+  expect(screen.queryByText(/lies outside the outline/)).toBeNull();
+  expect(isActive(runButton())).toBe(true);
+  // The first corner of this triangle lies west of the outline.
+  takePolygons([
+    [
+      [-72.3, 43],
+      [-71.95, 42.8],
+      [-71.8, 43.3],
+      [-72.3, 43],
+    ],
+  ]);
   expect(screen.getByText("A part of the area lies outside the outline of the product.")).toBeDefined();
+  expect(isActive(runButton())).toBe(true);
+  // A triangle beside the south-west corner of the outline, whose rectangle holds that corner.
+  takePolygons([
+    [
+      [-72.75, 42],
+      [-72.75, 41.75],
+      [-72.5, 41.75],
+      [-72.75, 42],
+    ],
+  ]);
+  expect(screen.getByRole("alert").textContent).toBe("The area lies outside the outline of the product.");
+  expect(missing()).toBe("Choose an area inside the outline of the product.");
+  expect(isActive(runButton())).toBe(false);
 });
 
 test("no layer is received for the whole Earth", async () => {

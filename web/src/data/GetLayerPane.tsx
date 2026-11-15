@@ -370,7 +370,10 @@ export function GetLayerForm({ found, selected, products, session, onSignIn, onS
     (count, { id: product, layers }) => count + layers.filter(({ name }) => chosen[product]?.includes(name)).length,
     0,
   );
-  const lying = area ? products.map((product) => ({ product, lies: coverage(area, product.footprint) })) : [];
+  // An area of polygons is compared with the outline of a product by its polygons, not by the rectangle around
+  // them, so that the outline of the selected product, taken as the area, lies inside that outline.
+  const given = draft?.area.kind === "polygons" ? draft.area.rings : area;
+  const lying = area && given ? products.map((product) => ({ product, lies: coverage(given, product.footprint) })) : [];
   const outside = lying.filter(({ product, lies }) => lies === "outside" && (chosen[product.id]?.length ?? 0) > 0);
   const estimates = planned.flatMap(({ request, product, choice }) => {
     const size = estimate(request.area, choice);
