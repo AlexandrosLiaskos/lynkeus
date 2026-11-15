@@ -127,8 +127,9 @@ The limits of this evidence are the following.
 
 1. It is one box of 3772 by 3972 cells on a coast, two dates of one track and frame (141, 67), and
    the term `HHHH` of frequency A only.
-2. The only valid value in the box is `1`, so the box holds no boundary between sub-swaths. The mask
-   differs between the two dates in 19 cells. Both products are of acquisitions with dithered pulse repetition frequency
+2. The only valid value in the box is `1`, so the box holds no boundary between sub-swaths. Inside
+   the box, the mask files of Harmony differ between the two dates in 19 cells (table above); over
+   the whole rectangle, the masks of the product differ in 23 cells. Both products are of acquisitions with dithered pulse repetition frequency
    (`isDithered` = `True`), for which the specification gives the value 1 throughout (section
    4.3.3).
 3. The product itself holds `nan` in the cells with mask `0`. In the HDF5 product files, read on

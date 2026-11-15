@@ -445,9 +445,10 @@ of the `HHHH` sample of its date: the same size, transform, projection and bound
    of the file whose centre lies outside the requested box, which NASA Harmony fills with the
    no-data value. In the product files these cells hold the mask `1` (665,942 cells) or `0` (2
    cells), and no cell of the rectangle holds `255` (table below).
-2. 16 cells have mask `0` on both dates, and the mask differs between the two dates in 19 cells. Of
-   the 14,316,405 cells with mask `1` on both dates, all hold a value of the change; 0 cells hold a
-   value of the change where either mask is `0` or `255`.
+2. In the mask files of Harmony, inside the box, 16 cells have mask `0` on both dates, and the
+   masks differ between the two dates in 19 cells. Of the 14,316,405 cells with mask `1` on both
+   dates in these files, all hold a value of the change; 0 cells hold a value of the change where
+   either mask is `0` or `255` (`mask_measurement.json`, `step4b_record.json`).
    In the product files, over the whole rectangle, the pairs of mask values are `0`, `0` in 16
    cells; `0`, `1` in 13; `1`, `0` in 10; and `1`, `1` in 14,982,345, all of which hold a value of
    the change. The masks of the product differ in 23 cells (`step4_record.json`).
