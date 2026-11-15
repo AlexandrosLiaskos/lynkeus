@@ -78,7 +78,19 @@ test("the section of the tool that a form asked for is open, and the others are 
   const expanded = SHEETS.map((tool) =>
     screen.getByRole("button", { name: METHODS[tool].title, hidden: true }).getAttribute("aria-expanded"),
   );
-  expect(expanded).toEqual(["false", "true", "false", "false", "false", "false", "false", "false", "false", "false"]);
+  expect(expanded).toEqual([
+    "false",
+    "true",
+    "false",
+    "false",
+    "false",
+    "false",
+    "false",
+    "false",
+    "false",
+    "false",
+    "false",
+  ]);
 });
 
 test.each([
