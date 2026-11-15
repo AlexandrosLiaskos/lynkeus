@@ -91,6 +91,12 @@ class LayerDescription(Format):
         example ``("decrease", "increase")``. Only a result may have them,
         when its tool gives them. A layer has none, and a description stored
         before this field existed has none.
+    frequency : float or None
+        Centre frequency of the radar band of the layer, in hertz, as the
+        product states it. A layer received from NASA has one when its values
+        are a phase and the product states the frequency. Every other layer
+        has none, a result has none, and a description stored before this
+        field existed has none.
     program : str
         Program and version that produced the file.
     method : str or None
@@ -111,6 +117,7 @@ class LayerDescription(Format):
     inputs: tuple[Text, ...] = Field(min_length=1)
     layer: Text | None = None
     ends: tuple[Text, Text] | None = None
+    frequency: float | None = Field(default=None, gt=0)
     program: Text
     method: Text | None = None
     record: Text
@@ -128,6 +135,8 @@ class LayerDescription(Format):
             raise ValueError("a result is not a layer of a product, so it has no name of one")
         if self.kind == "layer" and self.ends is not None:
             raise ValueError("only the legend of a result has words for its two ends")
+        if self.kind == "result" and self.frequency is not None:
+            raise ValueError("a result is not a layer of a product, so it has no centre frequency of a radar band")
         return self
 
 
