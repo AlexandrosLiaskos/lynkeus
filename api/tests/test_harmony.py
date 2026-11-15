@@ -28,7 +28,7 @@ from harmony.auth import BadAuthentication
 from lynkeus import harmony
 from lynkeus.harmony import LayerChoice, cells_of, get_layer, layers_of
 from lynkeus.layers import Area, LayerRequest
-from lynkeus.products import COLLECTIONS, product_from_record
+from lynkeus.products import BETA_COLLECTIONS, COLLECTIONS, product_from_record
 from lynkeus.writing import LayerError, read_layer
 from tests.records import DATA, LAYERS, stac_faults
 
@@ -209,7 +209,7 @@ def test_every_layer_offered_is_one_that_harmony_lists() -> None:
         offered = layers_of(product, channels[product])
         assert offered
         assert len({layer.name for layer in offered}) == len(offered)
-        for collection in collections:
+        for collection in (*collections, BETA_COLLECTIONS[product]):
             for layer in offered:
                 assert harmony._GROUPS[product] + layer.name in listed[collection.short_name], layer.name
 
@@ -276,7 +276,10 @@ def test_layer_is_received_and_written(visit: Visit) -> None:
 
 def test_harmony_is_asked_for_the_layer_of_the_product_in_the_area(visit: Visit) -> None:
     visit.get()
-    assert visit.catalogue.asked == {"concept_id": ["C3622241360-ASF", "C2854338529-ASF"], "granule_name": BACKSCATTER}
+    assert visit.catalogue.asked == {
+        "concept_id": ["C3622241360-ASF", "C2854338529-ASF", "C3622214170-ASF"],
+        "granule_name": BACKSCATTER,
+    }
     assert visit.tokens == [TOKEN]
     (request,) = visit.client.requests
     assert request.is_valid()
