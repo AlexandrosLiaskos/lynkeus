@@ -237,6 +237,8 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - Lynkeus Server writes a layer on a computer where PostGIS, QGIS or another program names its own map data in the
   variables PROJ_DATA, PROJ_LIB or GDAL_DATA. It used that data, PROJ refused the database of another version, and
   every job of Get layer ended with an internal error. The program now uses the map data that came with it.
+- The message at the foot of a tool pane was pressed into a column one letter wide when two links stood beside
+  it; the links now go to the next line and the message keeps the width of the pane.
 
 ### Security
 

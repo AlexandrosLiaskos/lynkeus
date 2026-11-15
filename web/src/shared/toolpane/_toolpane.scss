@@ -101,8 +101,10 @@
   height: tokens.$icon;
 }
 
+// The text keeps a width in which a sentence can be read. Links that do not fit beside that width go to the
+// next line, and the text then takes the whole of its line.
 .tool-pane-status-text {
-  flex: 1;
+  flex: 1 1 12rem;
   min-width: 0;
   overflow-wrap: anywhere;
 }
