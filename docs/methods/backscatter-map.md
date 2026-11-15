@@ -231,7 +231,20 @@ tag `classes`. The pane Identify and the status bar show the number of the class
 
 ## Comparison with the source program (D-17)
 
-⟦COMPARISON⟧
+| | |
+|---|---|
+| Source program | NISAR_Inundation, notebook `NISAR_L3_Inundation_ProductGeneration.ipynb`, [cells 20, 24, 26 and 28](https://github.com/NISAR-Science-Algorithms/NISAR_Inundation/blob/85140c4c3cc11d9b3f8a58efecc8fea112edf39d/notebooks/NISAR_L3_Inundation_ProductGeneration.ipynb) (Steps 4b, 5a, 5b and 6), executed as they stand with `study_area = 'Default'` and `combination_method = 'sum'` |
+| Version | Commit `85140c4` of 10 Jul 2026, branch `main` (the repository has no release and no tag). SHA-256 of the notebook `de7625fba23d350a544cbcc3bffec5e6ed39d18de5cfe43b5f76a435dfc3d7b6`, of the file of thresholds `c522694cba28ae98bdbd98a3225c19d5a2ba3f33ac3b128552d5348e0e66e0dd` |
+| Licence | Apache-2.0 |
+| Files compared | 21 Oct 2026: `gcov-hhhh-20261021.tif` (SHA-256 `6b713d8164b7f0acfd3bc5802cb417b2e4e5a33b7d320d6baabf7ffff87b07ee`) and `gcov-hvhv-20261021.tif` (SHA-256 `211b93891fd7427e034b3e50dc4c451c4fc28dfcb7906c6b245214e5e5eebc2f`), the layers `HHHH` and `HVHV` of the product `NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001`. 2 Nov 2026: `gcov-hhhh-20261102.tif` (SHA-256 `9ea6c973f9e79c39bf5881a75ccede4b50f5875b394c0330981b311884884b34`, received by the Series track) and `gcov-hvhv-20261102.tif` (SHA-256 `8e015385b2e20aa4d0a80bef47e17947dcf7fdfdac5e4998b3bc81627686e623`), of the product `NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001`. The files of the received layers, read at full resolution by both sides |
+| Lynkeus side | 21 Oct 2026: the result of the job of the private copy of the web service (`backscatter-map.tif`, SHA-256 `39b42c81a77c48bc91fbfa7d547cf093be2e07839776564d8184fb7e2eeb1e03`), equal in every cell to `lynkeus.tools.run_tool` run again on the same layers. 2 Nov 2026: `run_tool` in the checks container (SHA-256 `e6175b5f221157970069fd3f9ae151938b4824e1c56959726776005b98cf425f`). Python 3.13.18, numpy 2.5.4, rasterio 1.5.2 (GDAL 3.12.2) |
+| Platform of the source program | Python 3.13.18, numpy 2.5.3, xarray 2026.7.0, dask 2025.12.0, rioxarray 0.22.0, rasterio 1.4.4 (GDAL 3.10.3) and PyYAML 6.0.3. The file `requirements.yml` of the repository names its packages without versions; these are the versions of the lock file of the ASF NISAR Cookbook that the other comparisons used |
+| Input of the source program | The notebook opens HDF5 product files (Steps 3b and 3c). For the comparison its dataset `ts` was built from the two GeoTIFF files of each date with rioxarray, with one date and the variables `HHHH` and `HVHV` |
+| Result | 0 cells differ on 21 Oct 2026 and 0 on 2 Nov 2026, of 14,982,384 cells each. The cells of the class 0 of the notebook are exactly the cells without data of the tool. Notebook, 21 Oct 2026: class 0 (no data) 665,971, class 1 8,270,128, class 2 3,064,856, class 3 2,981,429; 2 Nov 2026: class 0 (no data) 665,968, class 1 8,025,903, class 2 3,067,220, class 3 3,223,293 |
+| Not reached | Cells where `HVHV` is 0, or where the sum is not above 0 while both layers hold a value, were not counted. Products of ascending orbits and of the provisional and beta collections were not classified. One area and two dates were compared |
+
+The records are `comparison.json`, `lynkeus_side.json` and `jobs_map.json` in
+`docs/research/records/analysis/backscatter-map/`.
 
 ## Not yet confirmed
 

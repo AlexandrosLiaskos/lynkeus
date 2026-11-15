@@ -1,0 +1,92 @@
+{
+ "notebook": "notebooks/NISAR_L3_Inundation_ProductGeneration.ipynb",
+ "notebook_sha256": "de7625fba23d350a544cbcc3bffec5e6ed39d18de5cfe43b5f76a435dfc3d7b6",
+ "thresholds_file": "ancillary_data/wetland_calibration_parameters.yaml",
+ "thresholds_sha256": "c522694cba28ae98bdbd98a3225c19d5a2ba3f33ac3b128552d5348e0e66e0dd",
+ "repository_commit": "85140c4c3cc11d9b3f8a58efecc8fea112edf39d",
+ "cells_executed": {
+  "20": "\n# Compute ratio, product, and sum\nts[\"hhhh_hvhv_ratio\"] = ts.HHHH / ts.HVHV\nts[\"hhhh_hvhv_product\"] = ts.HHHH * ts.HVHV\nts[\"hhhh_hvhv_sum\"] = ts.HHHH + ts.HVHV\nts",
+  "24": "# Read in contents of yaml configuration file\nwith open(Path.cwd().parent / 'ancillary_data' / 'wetland_calibration_parameters.yaml','rb') as f:    \n    config_doc = safe_load(f)\n\nclass_thresh = config_doc['runconfig']['calval_sites'][study_area]\nclass_thresh",
+  "26": "th = {}\n\n# inundated vegetation (iv)\nth['iv_hh_max'] = class_thresh['inun_veg_single_class']['HH_max']\nth['iv_hh_min'] = class_thresh['inun_veg_single_class']['HH_min']\nth['iv_ratio_max'] = class_thresh['inun_veg_single_class']['ratio_max']\nth['iv_ratio_min'] = class_thresh['inun_veg_single_class']['ratio_min']\n\n# open water (ow)\nif combination_method == 'sum':\n    th['ow_comb_max'] = class_thresh['open_water']['sum_max']\n    th['ow_comb_min'] = class_thresh['open_water']['sum_min']\nelif combination_method == 'product':\n    th['ow_comb_max'] = class_thresh['open_water']['product_max']\n    th['ow_comb_min'] = class_thresh['open_water']['product_min']    \nelse:\n    raise Exception(\"Invalid combination method\") \n\nth",
+  "28": "# First classify open water, then classify remaining (non-open water) pixels as inun veg or not inundated\n\nnp.seterr(invalid='ignore')\n\nts[\"inundation_classified\"] = xr.zeros_like(ts.HHHH)\nnumpx = ts.isel(time=0).HHHH.notnull().sum().to_numpy()\n\nfor t in ts.time:\n    ts.sel(time=t)[\"inundation_classified\"] = xr.zeros_like(ts.sel(time=t).HHHH)\n    np.zeros(ts.sel(time=t).HHHH.shape, dtype=np.int8)\n\n\n    # set all valid data pixels to 1\n    if combination_method == 'sum':\n        ds_comb = ts.sel(time=t).hhhh_hvhv_sum.copy()\n    else:\n        ds_comb = ts.sel(time=t).hhhh_hvhv_product.copy()\n    idx = ds_comb > 0\n    ts[\"inundation_classified\"].loc[dict(time=t)] = xr.where(\n        idx,\n        1,\n        ts.sel(time=t)[\"inundation_classified\"]\n    )\n\n    # set open water pixels to 2\n    idx = (ds_comb > th['ow_comb_min']) & (ds_comb <= th['ow_comb_max'])\n    ts[\"inundation_classified\"].loc[dict(time=t)] = xr.where(\n        idx,\n        2,\n        ts.sel(time=t)[\"inundation_classified\"]\n    )\n\n    # set inundate vegetation pixels to 3\n    idx = (ts.sel(time=t).HHHH >= th['iv_hh_min']) & (ts.sel(time=t).HHHH <= th['iv_hh_max']) & \\\n           (ts.sel(time=t).hhhh_hvhv_ratio >= th['iv_ratio_min']) & (ts.sel(time=t).hhhh_hvhv_ratio <= th['iv_ratio_max']) & \\\n           (ts.sel(time=t)[\"inundation_classified\"] != 2)\n    ts[\"inundation_classified\"].loc[dict(time=t)] = xr.where(\n        idx,\n        3,\n        ts.sel(time=t)[\"inundation_classified\"]\n    )\n\n    print(str(ts.time.sel(time=t).item().date()))\n    print(f\"Open Water: {(100*(ts.sel(time=t)[\"inundation_classified\"] == 2).sum().to_numpy()/numpx):.2f}%\")\n    print(f\"Inundated Vegetation: {(100*(ts.sel(time=t)[\"inundation_classified\"] == 3).sum().to_numpy()/numpx):.2f}%\")\n    print(f\"Not Inundated: {(100*(ts.sel(time=t)[\"inundation_classified\"] == 1).sum().to_numpy()/numpx):.2f}%\\n\")\n"
+ },
+ "versions": {
+  "python": "3.13.18",
+  "numpy": "2.5.3",
+  "xarray": "2026.7.0",
+  "dask": "2025.12.0",
+  "rioxarray": "0.22.0",
+  "rasterio": "1.4.4",
+  "gdal": "3.10.3",
+  "pyyaml": "6.0.3"
+ },
+ "dates": {
+  "2026-10-21": {
+   "input_hhhh_sha256": "6b713d8164b7f0acfd3bc5802cb417b2e4e5a33b7d320d6baabf7ffff87b07ee",
+   "input_hvhv_sha256": "211b93891fd7427e034b3e50dc4c451c4fc28dfcb7906c6b245214e5e5eebc2f",
+   "lynkeus_result_sha256": "39b42c81a77c48bc91fbfa7d547cf093be2e07839776564d8184fb7e2eeb1e03",
+   "lynkeus_how": "job of the private web service",
+   "grid": [
+    3972,
+    3772
+   ],
+   "notebook_dtype": "float32",
+   "notebook_classes": {
+    "0": 665971,
+    "1": 8270128,
+    "2": 3064856,
+    "3": 2981429
+   },
+   "notebook_other_values": 0,
+   "notebook_printed": [
+    "2026-10-21",
+    "Open Water: 21.41%",
+    "Inundated Vegetation: 20.83%",
+    "Not Inundated: 57.77%"
+   ],
+   "thresholds_of_the_notebook": {
+    "iv_hh_max": 10.0,
+    "iv_hh_min": 0.42448979591836733,
+    "iv_ratio_max": 500.0,
+    "iv_ratio_min": 1.2000000000000002,
+    "ow_comb_max": 0.06800000369548798,
+    "ow_comb_min": 0.0
+   },
+   "cells_differing": 0
+  },
+  "2026-11-02": {
+   "input_hhhh_sha256": "9ea6c973f9e79c39bf5881a75ccede4b50f5875b394c0330981b311884884b34",
+   "input_hvhv_sha256": "8e015385b2e20aa4d0a80bef47e17947dcf7fdfdac5e4998b3bc81627686e623",
+   "lynkeus_result_sha256": "e6175b5f221157970069fd3f9ae151938b4824e1c56959726776005b98cf425f",
+   "lynkeus_how": "run_tool in the checks container",
+   "grid": [
+    3972,
+    3772
+   ],
+   "notebook_dtype": "float32",
+   "notebook_classes": {
+    "0": 665968,
+    "1": 8025903,
+    "2": 3067220,
+    "3": 3223293
+   },
+   "notebook_other_values": 0,
+   "notebook_printed": [
+    "2026-11-02",
+    "Open Water: 21.42%",
+    "Inundated Vegetation: 22.51%",
+    "Not Inundated: 56.06%"
+   ],
+   "thresholds_of_the_notebook": {
+    "iv_hh_max": 10.0,
+    "iv_hh_min": 0.42448979591836733,
+    "iv_ratio_max": 500.0,
+    "iv_ratio_min": 1.2000000000000002,
+    "ow_comb_max": 0.06800000369548798,
+    "ow_comb_min": 0.0
+   },
+   "cells_differing": 0
+  }
+ },
+ "cells_differing_total": 0
+}

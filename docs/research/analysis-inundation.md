@@ -73,7 +73,15 @@ web service, and `HHHH` of 2 Nov 2026 was taken from the files of the Series tra
 
 ## 5. Comparison (D-17)
 
-⟦NOTE_COMPARISON⟧
+The statements of cells 20, 24, 26 and 28 of the notebook were executed as they stand, with
+`study_area = 'Default'` and `combination_method = 'sum'`, on a dataset `ts` built with rioxarray from
+the files of the received layers (Python 3.13.18, numpy 2.5.3, xarray 2026.7.0, dask
+2025.12.0, rioxarray 0.22.0, rasterio 1.4.4, PyYAML 6.0.3). Their classes
+were compared cell by cell with the result of the tool: of 14,982,384 cells on each date, 0 cells
+differ on 21 Oct 2026 and 0 on 2 Nov 2026 (`comparison.json`). The result of 21 Oct 2026 was made by a
+job of a private copy of the web service, run on 15 Nov 2026 inside the container of the checks of the
+server program, and equals `lynkeus.tools.run_tool` in every cell; the result of 2 Nov 2026 was made
+by `run_tool` (`lynkeus_side.json`). The same service refused six wrong inputs (`jobs_map.json`).
 
 ## 6. Sources
 
