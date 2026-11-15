@@ -36,6 +36,7 @@ export function series(change: Partial<SeriesDescription> = {}): SeriesDescripti
     program: "Lynkeus 0.1.0",
     method:
       "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)",
+    note: null,
     ...change,
   };
 }

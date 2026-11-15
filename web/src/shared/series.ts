@@ -73,11 +73,20 @@ export interface SeriesDescription {
   program: string;
   /** Reference of the method. */
   method: string;
+  /**
+   * One sentence for the visitor that the tool gives about the series, for example how many cells it left out,
+   * or null. A series of a tool that gives none has null or no field, and so has a description stored before this
+   * field existed.
+   */
+  note?: string | null;
 }
 
 /** What the form of a Series tool sends to the server. The answer is a job, whose result is a series description. */
 export interface SeriesInputs {
-  /** The id of each input layer, in any order: 2 to 50 layers, each once. */
+  /**
+   * The id of each input layer, the dates in any order: 2 to 50 layers, each once. A tool that reads two layers of
+   * each date takes them one after the other.
+   */
   inputs: readonly string[];
   /** Name of the series. */
   title: string;
@@ -156,6 +165,7 @@ export function isSeriesDescription(value: unknown): value is SeriesDescription 
   const range = value.range ?? null;
   const point = value.point ?? null;
   const cell = value.cell ?? null;
+  const note = value.note ?? null;
   const shape = value.shape ?? null;
   if (
     typeof id !== "string" ||
@@ -169,7 +179,8 @@ export function isSeriesDescription(value: unknown): value is SeriesDescription 
     !entries.every(isSeriesEntry) ||
     !Array.isArray(inputs) ||
     inputs.length !== entries.length ||
-    !inputs.every(isText)
+    !inputs.every(isText) ||
+    !(note === null || isText(note))
   ) {
     return false;
   }

@@ -1,0 +1,543 @@
+{
+ "started": "2026-11-15T19:42:10Z",
+ "products": {
+  "20260915": {
+   "product_file": "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001.h5",
+   "bytes": 96468992,
+   "sha256": "c4b9589f86c175aa67b609d6038e57ac41316d5adc1406ebed06bec598b7d9e7",
+   "retrievalQualityFlag": {
+    "dtype": "int16",
+    "fill": -9999,
+    "description": "Soil moisture retrieval quality flag. The least significant bit indicates whether the retrieval is recommended (0 = recommended, 1 = not recommended). The second bit indicates the use of the PMI algorithm (0 = not applied, 1 = applied). The third bit indicates the use of the TSR algorithm (0 = not applied, 1 = applied). The most significant bit indicates the use of the DSG algorithm (0 = not applied, 1 = applied)"
+   },
+   "whole_frame": {
+    "cells_with_a_soil_moisture": 702700,
+    "flag_fill_where_soil_moisture_held": 0,
+    "cells_with_bit_0_set": 694132,
+    "cells_recommended": 8568,
+    "percent_not_recommended": 98.781,
+    "flag_values": {
+     "3": 2,
+     "4": 570,
+     "5": 11142,
+     "8": 157,
+     "9": 7258,
+     "10": 2304,
+     "11": 3546,
+     "12": 179,
+     "13": 11735,
+     "14": 5358,
+     "15": 660449
+    },
+    "surface_flag_of_the_cells_not_recommended": {
+     "fill": 2,
+     "zero": 352,
+     "bits_set": {
+      "0": 44406,
+      "7": 1854,
+      "8": 689206,
+      "9": 5614
+     }
+    },
+    "cells_not_recommended_whose_only_surface_bit_is_7": 0,
+    "surface_flag_of_the_cells_recommended": {
+     "zero": 8568,
+     "bits_set": {}
+    }
+   },
+   "received_flag": {
+    "file": "sme2-retrievalqualityflag-20260915.tif",
+    "sha256": "d08fc466a5144c6ddecc1d968321182b546c5ac4a704e095c61ddf62f919f7f5",
+    "grid": {
+     "columns_rows": [
+      216,
+      164
+     ],
+     "first_column_row_in_the_product": [
+      872,
+      584
+     ],
+     "largest_coordinate_difference_x_m": 2.300366759300232e-07,
+     "largest_coordinate_difference_y_m": 1.5832483768463135e-07
+    },
+    "cells": 35424,
+    "value_in_both": 29238,
+    "no_data_in_both": 6186,
+    "value_in_the_layer_only": 0,
+    "value_in_the_product_only": 0,
+    "value_in_the_product_only_with_centre_inside_the_box": 0,
+    "equal_where_both_hold_a_value": true,
+    "cells_that_differ_where_both_hold_a_value": 0
+   },
+   "box": {
+    "cells_with_a_soil_moisture": 29238,
+    "flag_fill_where_soil_moisture_held": 0,
+    "cells_with_bit_0_set": 28816,
+    "cells_recommended": 422,
+    "percent_not_recommended": 98.557,
+    "flag_values": {
+     "4": 4,
+     "5": 1823,
+     "8": 10,
+     "9": 233,
+     "10": 360,
+     "12": 1,
+     "13": 219,
+     "14": 47,
+     "15": 26541
+    },
+    "surface_flag_of_the_cells_not_recommended": {
+     "fill": 0,
+     "zero": 36,
+     "bits_set": {
+      "0": 2186,
+      "8": 28158,
+      "9": 1574
+     }
+    },
+    "cells_not_recommended_whose_only_surface_bit_is_7": 0,
+    "surface_flag_of_the_cells_recommended": {
+     "zero": 422,
+     "bits_set": {}
+    }
+   },
+   "box_cells_with_centre_inside_the_box": {
+    "cells_with_a_soil_moisture": 29238,
+    "flag_fill_where_soil_moisture_held": 0,
+    "cells_with_bit_0_set": 28816,
+    "cells_recommended": 422,
+    "percent_not_recommended": 98.557,
+    "flag_values": {
+     "4": 4,
+     "5": 1823,
+     "8": 10,
+     "9": 233,
+     "10": 360,
+     "12": 1,
+     "13": 219,
+     "14": 47,
+     "15": 26541
+    },
+    "surface_flag_of_the_cells_not_recommended": {
+     "fill": 0,
+     "zero": 36,
+     "bits_set": {
+      "0": 2186,
+      "8": 28158,
+      "9": 1574
+     }
+    },
+    "cells_not_recommended_whose_only_surface_bit_is_7": 0,
+    "surface_flag_of_the_cells_recommended": {
+     "zero": 422,
+     "bits_set": {}
+    }
+   },
+   "received_sm": {
+    "file": "sme2-soilmoisture-20260915.tif",
+    "sha256": "9d43d3c5684158dc7f03495428ba33dde26e0fa1f3937bf8da08237103daf818",
+    "grid": {
+     "columns_rows": [
+      216,
+      164
+     ],
+     "first_column_row_in_the_product": [
+      872,
+      584
+     ],
+     "largest_coordinate_difference_x_m": 2.300366759300232e-07,
+     "largest_coordinate_difference_y_m": 1.5832483768463135e-07
+    },
+    "cells": 35424,
+    "value_in_both": 29238,
+    "no_data_in_both": 6186,
+    "value_in_the_layer_only": 0,
+    "value_in_the_product_only": 0,
+    "value_in_the_product_only_with_centre_inside_the_box": 0,
+    "equal_where_both_hold_a_value": true,
+    "cells_that_differ_where_both_hold_a_value": 0
+   },
+   "frame_file_sm": {
+    "file": "frame-sm-20260915.tif",
+    "sha256": "2e194d7630111a71c0adcffa9436da2205e426547b6502fbd882c45abb5f7ec2",
+    "read_back_is_bit_identical": true,
+    "columns_rows": [
+     2205,
+     1620
+    ]
+   },
+   "frame_file_flag": {
+    "file": "frame-flag-20260915.tif",
+    "sha256": "fcbe305b7128b79783cebcabe730b92c970d6fcca21b1234d8752bc4d79f7507",
+    "read_back_is_bit_identical": true,
+    "columns_rows": [
+     2205,
+     1620
+    ]
+   }
+  },
+  "20260927": {
+   "product_file": "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+   "bytes": 96468992,
+   "sha256": "4ce70185c501879ec81bacf14ab2fd2e69bfd750f1325fa41da36be996837797",
+   "retrievalQualityFlag": {
+    "dtype": "int16",
+    "fill": -9999,
+    "description": "Soil moisture retrieval quality flag. The least significant bit indicates whether the retrieval is recommended (0 = recommended, 1 = not recommended). The second bit indicates the use of the PMI algorithm (0 = not applied, 1 = applied). The third bit indicates the use of the TSR algorithm (0 = not applied, 1 = applied). The most significant bit indicates the use of the DSG algorithm (0 = not applied, 1 = applied)"
+   },
+   "whole_frame": {
+    "cells_with_a_soil_moisture": 704158,
+    "flag_fill_where_soil_moisture_held": 0,
+    "cells_with_bit_0_set": 695030,
+    "cells_recommended": 9128,
+    "percent_not_recommended": 98.704,
+    "flag_values": {
+     "3": 976,
+     "4": 461,
+     "5": 11317,
+     "7": 1,
+     "8": 215,
+     "9": 8624,
+     "10": 3750,
+     "11": 32,
+     "12": 111,
+     "13": 3402,
+     "14": 4591,
+     "15": 670678
+    },
+    "surface_flag_of_the_cells_not_recommended": {
+     "fill": 976,
+     "zero": 482,
+     "bits_set": {
+      "0": 44457,
+      "7": 1785,
+      "8": 688892,
+      "9": 5622
+     }
+    },
+    "cells_not_recommended_whose_only_surface_bit_is_7": 0,
+    "surface_flag_of_the_cells_recommended": {
+     "zero": 9128,
+     "bits_set": {}
+    }
+   },
+   "received_flag": {
+    "file": "sme2-retrievalqualityflag-20260927.tif",
+    "sha256": "79084b753a8a3fe42f0bc7b40c678b436cba27cca8270fda6a01f9eac18adf16",
+    "grid": {
+     "columns_rows": [
+      216,
+      164
+     ],
+     "first_column_row_in_the_product": [
+      872,
+      584
+     ],
+     "largest_coordinate_difference_x_m": 2.300366759300232e-07,
+     "largest_coordinate_difference_y_m": 1.5832483768463135e-07
+    },
+    "cells": 35424,
+    "value_in_both": 29238,
+    "no_data_in_both": 6186,
+    "value_in_the_layer_only": 0,
+    "value_in_the_product_only": 0,
+    "value_in_the_product_only_with_centre_inside_the_box": 0,
+    "equal_where_both_hold_a_value": true,
+    "cells_that_differ_where_both_hold_a_value": 0
+   },
+   "box": {
+    "cells_with_a_soil_moisture": 29238,
+    "flag_fill_where_soil_moisture_held": 0,
+    "cells_with_bit_0_set": 28759,
+    "cells_recommended": 479,
+    "percent_not_recommended": 98.362,
+    "flag_values": {
+     "4": 30,
+     "5": 1798,
+     "8": 9,
+     "9": 233,
+     "10": 158,
+     "12": 1,
+     "13": 157,
+     "14": 281,
+     "15": 26571
+    },
+    "surface_flag_of_the_cells_not_recommended": {
+     "fill": 0,
+     "zero": 9,
+     "bits_set": {
+      "0": 2186,
+      "8": 28113,
+      "9": 1574
+     }
+    },
+    "cells_not_recommended_whose_only_surface_bit_is_7": 0,
+    "surface_flag_of_the_cells_recommended": {
+     "zero": 479,
+     "bits_set": {}
+    }
+   },
+   "box_cells_with_centre_inside_the_box": {
+    "cells_with_a_soil_moisture": 29238,
+    "flag_fill_where_soil_moisture_held": 0,
+    "cells_with_bit_0_set": 28759,
+    "cells_recommended": 479,
+    "percent_not_recommended": 98.362,
+    "flag_values": {
+     "4": 30,
+     "5": 1798,
+     "8": 9,
+     "9": 233,
+     "10": 158,
+     "12": 1,
+     "13": 157,
+     "14": 281,
+     "15": 26571
+    },
+    "surface_flag_of_the_cells_not_recommended": {
+     "fill": 0,
+     "zero": 9,
+     "bits_set": {
+      "0": 2186,
+      "8": 28113,
+      "9": 1574
+     }
+    },
+    "cells_not_recommended_whose_only_surface_bit_is_7": 0,
+    "surface_flag_of_the_cells_recommended": {
+     "zero": 479,
+     "bits_set": {}
+    }
+   },
+   "received_sm": {
+    "file": "sme2-soilmoisture-20260927.tif",
+    "sha256": "96704bf572bddc1070f600a0bf1adb3941ed5122a59479c6c419c73f40118cc9",
+    "grid": {
+     "columns_rows": [
+      216,
+      164
+     ],
+     "first_column_row_in_the_product": [
+      872,
+      584
+     ],
+     "largest_coordinate_difference_x_m": 2.300366759300232e-07,
+     "largest_coordinate_difference_y_m": 1.5832483768463135e-07
+    },
+    "cells": 35424,
+    "value_in_both": 29238,
+    "no_data_in_both": 6186,
+    "value_in_the_layer_only": 0,
+    "value_in_the_product_only": 0,
+    "value_in_the_product_only_with_centre_inside_the_box": 0,
+    "equal_where_both_hold_a_value": true,
+    "cells_that_differ_where_both_hold_a_value": 0
+   },
+   "frame_file_sm": {
+    "file": "frame-sm-20260927.tif",
+    "sha256": "9e71d1cd9d13d687cf5f381a2a3e1e72c5025e6779d66f77989c1905fe282261",
+    "read_back_is_bit_identical": true,
+    "columns_rows": [
+     2205,
+     1620
+    ]
+   },
+   "frame_file_flag": {
+    "file": "frame-flag-20260927.tif",
+    "sha256": "175a58fd9274eea3f5a71b627310830de36eda11db04e3dfc109838773cb6300",
+    "read_back_is_bit_identical": true,
+    "columns_rows": [
+     2205,
+     1620
+    ]
+   }
+  },
+  "20261009": {
+   "product_file": "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+   "bytes": 96468992,
+   "sha256": "579f26ae636c3adc36e0af5d88d69df82ea3a09a1cc1d758085a414f43a951f8",
+   "retrievalQualityFlag": {
+    "dtype": "int16",
+    "fill": -9999,
+    "description": "Soil moisture retrieval quality flag. The least significant bit indicates whether the retrieval is recommended (0 = recommended, 1 = not recommended). The second bit indicates the use of the PMI algorithm (0 = not applied, 1 = applied). The third bit indicates the use of the TSR algorithm (0 = not applied, 1 = applied). The most significant bit indicates the use of the DSG algorithm (0 = not applied, 1 = applied)"
+   },
+   "whole_frame": {
+    "cells_with_a_soil_moisture": 704710,
+    "flag_fill_where_soil_moisture_held": 0,
+    "cells_with_bit_0_set": 693642,
+    "cells_recommended": 11068,
+    "percent_not_recommended": 98.429,
+    "flag_values": {
+     "3": 1947,
+     "4": 658,
+     "5": 11074,
+     "7": 1,
+     "8": 216,
+     "9": 8966,
+     "10": 2007,
+     "11": 956,
+     "12": 155,
+     "13": 3819,
+     "14": 8032,
+     "15": 666879
+    },
+    "surface_flag_of_the_cells_not_recommended": {
+     "fill": 1947,
+     "zero": 322,
+     "bits_set": {
+      "0": 44271,
+      "7": 2110,
+      "8": 686598,
+      "9": 5623
+     }
+    },
+    "cells_not_recommended_whose_only_surface_bit_is_7": 0,
+    "surface_flag_of_the_cells_recommended": {
+     "zero": 11068,
+     "bits_set": {}
+    }
+   },
+   "received_flag": {
+    "file": "sme2-retrievalqualityflag-20261009.tif",
+    "sha256": "7d06edb5cfbd0946b5476ca787b12493404aac72502c85b8aee7e93cc4533c8b",
+    "grid": {
+     "columns_rows": [
+      216,
+      164
+     ],
+     "first_column_row_in_the_product": [
+      872,
+      584
+     ],
+     "largest_coordinate_difference_x_m": 2.300366759300232e-07,
+     "largest_coordinate_difference_y_m": 1.5832483768463135e-07
+    },
+    "cells": 35424,
+    "value_in_both": 29238,
+    "no_data_in_both": 6186,
+    "value_in_the_layer_only": 0,
+    "value_in_the_product_only": 0,
+    "value_in_the_product_only_with_centre_inside_the_box": 0,
+    "equal_where_both_hold_a_value": true,
+    "cells_that_differ_where_both_hold_a_value": 0
+   },
+   "box": {
+    "cells_with_a_soil_moisture": 29238,
+    "flag_fill_where_soil_moisture_held": 0,
+    "cells_with_bit_0_set": 28638,
+    "cells_recommended": 600,
+    "percent_not_recommended": 97.948,
+    "flag_values": {
+     "4": 43,
+     "5": 1785,
+     "8": 11,
+     "9": 231,
+     "10": 40,
+     "12": 1,
+     "13": 184,
+     "14": 505,
+     "15": 26438
+    },
+    "surface_flag_of_the_cells_not_recommended": {
+     "fill": 0,
+     "zero": 0,
+     "bits_set": {
+      "0": 2186,
+      "8": 27973,
+      "9": 1574
+     }
+    },
+    "cells_not_recommended_whose_only_surface_bit_is_7": 0,
+    "surface_flag_of_the_cells_recommended": {
+     "zero": 600,
+     "bits_set": {}
+    }
+   },
+   "box_cells_with_centre_inside_the_box": {
+    "cells_with_a_soil_moisture": 29238,
+    "flag_fill_where_soil_moisture_held": 0,
+    "cells_with_bit_0_set": 28638,
+    "cells_recommended": 600,
+    "percent_not_recommended": 97.948,
+    "flag_values": {
+     "4": 43,
+     "5": 1785,
+     "8": 11,
+     "9": 231,
+     "10": 40,
+     "12": 1,
+     "13": 184,
+     "14": 505,
+     "15": 26438
+    },
+    "surface_flag_of_the_cells_not_recommended": {
+     "fill": 0,
+     "zero": 0,
+     "bits_set": {
+      "0": 2186,
+      "8": 27973,
+      "9": 1574
+     }
+    },
+    "cells_not_recommended_whose_only_surface_bit_is_7": 0,
+    "surface_flag_of_the_cells_recommended": {
+     "zero": 600,
+     "bits_set": {}
+    }
+   },
+   "received_sm": {
+    "file": "sme2-soilmoisture-20261009.tif",
+    "sha256": "688a3815a0aef633167b8462a26dc6fd1301ea4250132039e6131cefe953f4b3",
+    "grid": {
+     "columns_rows": [
+      216,
+      164
+     ],
+     "first_column_row_in_the_product": [
+      872,
+      584
+     ],
+     "largest_coordinate_difference_x_m": 2.300366759300232e-07,
+     "largest_coordinate_difference_y_m": 1.5832483768463135e-07
+    },
+    "cells": 35424,
+    "value_in_both": 29238,
+    "no_data_in_both": 6186,
+    "value_in_the_layer_only": 0,
+    "value_in_the_product_only": 0,
+    "value_in_the_product_only_with_centre_inside_the_box": 0,
+    "equal_where_both_hold_a_value": true,
+    "cells_that_differ_where_both_hold_a_value": 0
+   },
+   "frame_file_sm": {
+    "file": "frame-sm-20261009.tif",
+    "sha256": "0b9ad74c474bcf94612314add359ae0677f0506996dbc996f5b4e1988918baff",
+    "read_back_is_bit_identical": true,
+    "columns_rows": [
+     2205,
+     1620
+    ]
+   },
+   "frame_file_flag": {
+    "file": "frame-flag-20261009.tif",
+    "sha256": "695e4c29b52430ae7a689b05f1961df0fd143ec2c7183e62634f5fd0fbfd9965",
+    "read_back_is_bit_identical": true,
+    "columns_rows": [
+     2205,
+     1620
+    ]
+   }
+  }
+ },
+ "environment": {
+  "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+  "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+  "hdf5": "2.0.0",
+  "packages": {
+   "h5py": "3.16.0",
+   "numpy": "2.5.4",
+   "rasterio": "1.5.2"
+  }
+ },
+ "ended": "2026-11-15T19:42:12Z"
+}

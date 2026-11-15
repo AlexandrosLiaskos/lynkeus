@@ -208,7 +208,11 @@ def test_soil_moisture_product_offers_the_same_layers_for_every_channel() -> Non
     assert layers_of("SME2", ()) == (
         LayerChoice(name="soilMoisture", title="Soil Moisture", spacing=200),
         LayerChoice(name="soilMoistureUncertainty", title="Soil Moisture Uncertainty", spacing=200),
+        LayerChoice(name="retrievalQualityFlag", title="Retrieval Quality Flag", spacing=200),
     )
+    # The flag holds whole numbers, so its reduced copies take the most frequent value and do not average.
+    (flag,) = [layer for layer in harmony._layers("SME2", ()) if layer.name == "retrievalQualityFlag"]
+    assert (flag.unit, flag.averaged, flag.legend, flag.frequency) == ("1", False, "extremes", False)
 
 
 def test_every_layer_offered_is_one_that_harmony_lists() -> None:

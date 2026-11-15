@@ -78,6 +78,7 @@ export function layerGroups({ layer, size, created, server }: LayerEntry, kept: 
         },
         { name: "Program", value: layer.program },
         ...stated("Method", layer.method),
+        ...stated("Note", layer.note ?? null),
       ],
     },
     {

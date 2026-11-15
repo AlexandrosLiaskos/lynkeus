@@ -1,0 +1,2925 @@
+{
+ "flag-20260623": {
+  "name": "flag-20260623",
+  "granule": "NISAR_L3_PR_SME2_023_141_D_067_4005_DHDH_A_20260623T234333_20260623T234408_P05023_N_F_J_001",
+  "layer": "retrievalQualityFlag",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 17.1,
+  "received_utc": "2026-11-15T19:28:02Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.4,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    3.6,
+    5,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    7.0,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    10.2,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    16.9,
+    90,
+    "Writing the layer."
+   ],
+   [
+    17.0,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "flag-20260623",
+   "title": "Retrieval quality flag, 23 Jun 2026",
+   "kind": "layer",
+   "url": "/files/flag-20260623/sme2-retrievalqualityflag-20260623.tif",
+   "quantity": "Retrieval quality flag of the soil moisture, whose lowest bit marks a retrieval not recommended",
+   "unit": "1",
+   "range": [
+    8.0,
+    9.0
+   ],
+   "colours": "tab10",
+   "dates": [
+    "2026-06-23"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_023_141_D_067_4005_DHDH_A_20260623T234333_20260623T234408_P05023_N_F_J_001.h5"
+   ],
+   "layer": "retrievalQualityFlag",
+   "ends": null,
+   "frequency": null,
+   "note": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/flag-20260623/sme2-retrievalqualityflag-20260623.json"
+  },
+  "files": {
+   "sme2-retrievalqualityflag-20260623.json": {
+    "bytes": 5071,
+    "sha256": "0e06ed045061f332e73742ce1c9f3ba5ac5e5a4a403a4dbb9c1fbaf66fc43851"
+   },
+   "sme2-retrievalqualityflag-20260623.tif": {
+    "bytes": 10139,
+    "sha256": "70499a58e5db6ae8c785f35131faaacc93b8abc4e486ab908588e32b8d21857c"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "9.0",
+    "STATISTICS_MEAN": "8.985334354821058",
+    "STATISTICS_MINIMUM": "8.0",
+    "STATISTICS_STDDEV": "0.12021049883611712",
+    "STATISTICS_VALID_PERCENT": "77.37974254742548"
+   },
+   "overviews": []
+  },
+  "values": {
+   "cells": 35424,
+   "cells_with_a_value": 27411,
+   "values": {
+    "8": 402,
+    "9": 27009
+   },
+   "cells_with_bit_0_set": 27009
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  }
+ },
+ "flag-20260705": {
+  "name": "flag-20260705",
+  "granule": "NISAR_L3_PR_SME2_024_141_D_067_4005_DHDH_A_20260705T234333_20260705T234408_P05023_N_F_J_001",
+  "layer": "retrievalQualityFlag",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 16.9,
+  "received_utc": "2026-11-15T19:29:16Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.6,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    4.1,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    7.4,
+    5,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    10.8,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    16.9,
+    90,
+    "Writing the layer."
+   ],
+   [
+    16.9,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "flag-20260705",
+   "title": "Retrieval quality flag, 5 Jul 2026",
+   "kind": "layer",
+   "url": "/files/flag-20260705/sme2-retrievalqualityflag-20260705.tif",
+   "quantity": "Retrieval quality flag of the soil moisture, whose lowest bit marks a retrieval not recommended",
+   "unit": "1",
+   "range": [
+    8.0,
+    9.0
+   ],
+   "colours": "tab10",
+   "dates": [
+    "2026-07-05"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_024_141_D_067_4005_DHDH_A_20260705T234333_20260705T234408_P05023_N_F_J_001.h5"
+   ],
+   "layer": "retrievalQualityFlag",
+   "ends": null,
+   "frequency": null,
+   "note": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/flag-20260705/sme2-retrievalqualityflag-20260705.json"
+  },
+  "files": {
+   "sme2-retrievalqualityflag-20260705.json": {
+    "bytes": 5069,
+    "sha256": "ce3a1723e97b200b4f1c596f3d988acc8c3b323f6c77f061edc2db8c7650c872"
+   },
+   "sme2-retrievalqualityflag-20260705.tif": {
+    "bytes": 10120,
+    "sha256": "f24b5cbb10c4f54f48d8cacf0f0c097b796ae74b3a2b6af06817ce09e161f30c"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "9.0",
+    "STATISTICS_MEAN": "8.985954543796286",
+    "STATISTICS_MINIMUM": "8.0",
+    "STATISTICS_STDDEV": "0.11767829606067295",
+    "STATISTICS_VALID_PERCENT": "77.37974254742548"
+   },
+   "overviews": []
+  },
+  "values": {
+   "cells": 35424,
+   "cells_with_a_value": 27411,
+   "values": {
+    "8": 385,
+    "9": 27026
+   },
+   "cells_with_bit_0_set": 27026
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  }
+ },
+ "flag-20260717": {
+  "name": "flag-20260717",
+  "granule": "NISAR_L3_PR_SME2_025_141_D_067_4005_DHDH_A_20260717T234332_20260717T234407_P05023_N_F_J_001",
+  "layer": "retrievalQualityFlag",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 14.8,
+  "received_utc": "2026-11-15T19:29:48Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.3,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    4.0,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    7.7,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    14.7,
+    90,
+    "Writing the layer."
+   ],
+   [
+    14.8,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "flag-20260717",
+   "title": "Retrieval quality flag, 17 Jul 2026",
+   "kind": "layer",
+   "url": "/files/flag-20260717/sme2-retrievalqualityflag-20260717.tif",
+   "quantity": "Retrieval quality flag of the soil moisture, whose lowest bit marks a retrieval not recommended",
+   "unit": "1",
+   "range": [
+    4.0,
+    13.0
+   ],
+   "colours": "tab10",
+   "dates": [
+    "2026-07-17"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_025_141_D_067_4005_DHDH_A_20260717T234332_20260717T234407_P05023_N_F_J_001.h5"
+   ],
+   "layer": "retrievalQualityFlag",
+   "ends": null,
+   "frequency": null,
+   "note": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/flag-20260717/sme2-retrievalqualityflag-20260717.json"
+  },
+  "files": {
+   "sme2-retrievalqualityflag-20260717.json": {
+    "bytes": 5072,
+    "sha256": "2a5d6534a812a5cf22f6604e1dce5e6a070678e018ba9d9983b0247f1ea440a0"
+   },
+   "sme2-retrievalqualityflag-20260717.tif": {
+    "bytes": 11741,
+    "sha256": "31c27281590f18d7ede3406e4f14fde3d4e9fb2158ca7a857494504f8c102174"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "13.0",
+    "STATISTICS_MEAN": "12.424687051097886",
+    "STATISTICS_MINIMUM": "4.0",
+    "STATISTICS_STDDEV": "1.9989023330806703",
+    "STATISTICS_VALID_PERCENT": "82.53726287262873"
+   },
+   "overviews": []
+  },
+  "values": {
+   "cells": 35424,
+   "cells_with_a_value": 29238,
+   "values": {
+    "4": 10,
+    "5": 1817,
+    "8": 220,
+    "9": 234,
+    "12": 159,
+    "13": 26798
+   },
+   "cells_with_bit_0_set": 28849
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  }
+ },
+ "flag-20260810": {
+  "name": "flag-20260810",
+  "granule": "NISAR_L3_PR_SME2_027_141_D_067_4005_DHDH_A_20260810T234331_20260810T234406_P05023_N_F_J_001",
+  "layer": "retrievalQualityFlag",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 25.4,
+  "received_utc": "2026-11-15T19:30:33Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    1.4,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    12.0,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    15.3,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    18.9,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    25.4,
+    90,
+    "Writing the layer."
+   ],
+   [
+    25.4,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "flag-20260810",
+   "title": "Retrieval quality flag, 10 Aug 2026",
+   "kind": "layer",
+   "url": "/files/flag-20260810/sme2-retrievalqualityflag-20260810.tif",
+   "quantity": "Retrieval quality flag of the soil moisture, whose lowest bit marks a retrieval not recommended",
+   "unit": "1",
+   "range": [
+    4.0,
+    15.0
+   ],
+   "colours": "tab10",
+   "dates": [
+    "2026-08-10"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_027_141_D_067_4005_DHDH_A_20260810T234331_20260810T234406_P05023_N_F_J_001.h5"
+   ],
+   "layer": "retrievalQualityFlag",
+   "ends": null,
+   "frequency": null,
+   "note": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/flag-20260810/sme2-retrievalqualityflag-20260810.json"
+  },
+  "files": {
+   "sme2-retrievalqualityflag-20260810.json": {
+    "bytes": 5072,
+    "sha256": "c484ae937d693bd60c74330eda3b9f1c16c8fbdd4a8e9f01f357c4111a825625"
+   },
+   "sme2-retrievalqualityflag-20260810.tif": {
+    "bytes": 12321,
+    "sha256": "22b3df203048a99350b5ecf9c1e44b10dff3e71262372893bf66cfe5a7189422"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "15.0",
+    "STATISTICS_MEAN": "14.249675080374855",
+    "STATISTICS_MINIMUM": "4.0",
+    "STATISTICS_STDDEV": "2.5106747400027105",
+    "STATISTICS_VALID_PERCENT": "82.53726287262873"
+   },
+   "overviews": []
+  },
+  "values": {
+   "cells": 35424,
+   "cells_with_a_value": 29238,
+   "values": {
+    "4": 6,
+    "5": 1821,
+    "8": 9,
+    "9": 234,
+    "10": 316,
+    "12": 1,
+    "13": 275,
+    "14": 62,
+    "15": 26514
+   },
+   "cells_with_bit_0_set": 28844
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  }
+ },
+ "flag-20260822": {
+  "name": "flag-20260822",
+  "granule": "NISAR_L3_PR_SME2_028_141_D_067_4005_DHDH_A_20260822T234330_20260822T234405_P05023_N_F_J_001",
+  "layer": "retrievalQualityFlag",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 19.0,
+  "received_utc": "2026-11-15T19:31:11Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.3,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    6.1,
+    5,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    9.6,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    12.9,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    19.0,
+    90,
+    "Writing the layer."
+   ],
+   [
+    19.0,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "flag-20260822",
+   "title": "Retrieval quality flag, 22 Aug 2026",
+   "kind": "layer",
+   "url": "/files/flag-20260822/sme2-retrievalqualityflag-20260822.tif",
+   "quantity": "Retrieval quality flag of the soil moisture, whose lowest bit marks a retrieval not recommended",
+   "unit": "1",
+   "range": [
+    4.0,
+    15.0
+   ],
+   "colours": "tab10",
+   "dates": [
+    "2026-08-22"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_028_141_D_067_4005_DHDH_A_20260822T234330_20260822T234405_P05023_N_F_J_001.h5"
+   ],
+   "layer": "retrievalQualityFlag",
+   "ends": null,
+   "frequency": null,
+   "note": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/flag-20260822/sme2-retrievalqualityflag-20260822.json"
+  },
+  "files": {
+   "sme2-retrievalqualityflag-20260822.json": {
+    "bytes": 5070,
+    "sha256": "51a3ec2deaa24e4c1f9628a3cf0cf5fe221fbfebdc7e342f54b8985a143989b6"
+   },
+   "sme2-retrievalqualityflag-20260822.tif": {
+    "bytes": 12233,
+    "sha256": "9ae1b61d5eb3683b57f8b80b8d206cd8b24253ebc85b790434888599c4bf017d"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "15.0",
+    "STATISTICS_MEAN": "14.27163280662152",
+    "STATISTICS_MINIMUM": "4.0",
+    "STATISTICS_STDDEV": "2.494433862791602",
+    "STATISTICS_VALID_PERCENT": "82.53726287262873"
+   },
+   "overviews": []
+  },
+  "values": {
+   "cells": 35424,
+   "cells_with_a_value": 29238,
+   "values": {
+    "4": 13,
+    "5": 1814,
+    "8": 8,
+    "9": 234,
+    "10": 182,
+    "12": 2,
+    "13": 221,
+    "14": 195,
+    "15": 26569
+   },
+   "cells_with_bit_0_set": 28838
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  }
+ },
+ "flag-20260903": {
+  "name": "flag-20260903",
+  "granule": "NISAR_L3_PR_SME2_029_141_D_067_4005_DHDH_A_20260903T234330_20260903T234405_P05023_N_F_J_001",
+  "layer": "retrievalQualityFlag",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 16.7,
+  "received_utc": "2026-11-15T19:31:51Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.3,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    3.5,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    7.0,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    10.4,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    16.6,
+    90,
+    "Writing the layer."
+   ],
+   [
+    16.7,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "flag-20260903",
+   "title": "Retrieval quality flag, 3 Sep 2026",
+   "kind": "layer",
+   "url": "/files/flag-20260903/sme2-retrievalqualityflag-20260903.tif",
+   "quantity": "Retrieval quality flag of the soil moisture, whose lowest bit marks a retrieval not recommended",
+   "unit": "1",
+   "range": [
+    4.0,
+    15.0
+   ],
+   "colours": "tab10",
+   "dates": [
+    "2026-09-03"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_029_141_D_067_4005_DHDH_A_20260903T234330_20260903T234405_P05023_N_F_J_001.h5"
+   ],
+   "layer": "retrievalQualityFlag",
+   "ends": null,
+   "frequency": null,
+   "note": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/flag-20260903/sme2-retrievalqualityflag-20260903.json"
+  },
+  "files": {
+   "sme2-retrievalqualityflag-20260903.json": {
+    "bytes": 5070,
+    "sha256": "dcde7e315e94236ef8f2a7183effef3a0e2f1d12d5c145ec7b3d2644bf275f87"
+   },
+   "sme2-retrievalqualityflag-20260903.tif": {
+    "bytes": 12162,
+    "sha256": "7e19ea8b9029074a326834da404ec474ac5cfc18b3bd0d76f41a09d8e61c4b27"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "15.0",
+    "STATISTICS_MEAN": "14.245160407688624",
+    "STATISTICS_MINIMUM": "4.0",
+    "STATISTICS_STDDEV": "2.5159909279379438",
+    "STATISTICS_VALID_PERCENT": "82.53726287262873"
+   },
+   "overviews": []
+  },
+  "values": {
+   "cells": 35424,
+   "cells_with_a_value": 29238,
+   "values": {
+    "4": 1,
+    "5": 1826,
+    "8": 10,
+    "9": 233,
+    "10": 367,
+    "13": 236,
+    "14": 24,
+    "15": 26541
+   },
+   "cells_with_bit_0_set": 28836
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  }
+ },
+ "flag-20260915": {
+  "name": "flag-20260915",
+  "granule": "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001",
+  "layer": "retrievalQualityFlag",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 15.9,
+  "received_utc": "2026-11-15T19:32:23Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.4,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    3.7,
+    5,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    6.9,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    10.2,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    15.8,
+    90,
+    "Writing the layer."
+   ],
+   [
+    15.8,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "flag-20260915",
+   "title": "Retrieval quality flag, 15 Sep 2026",
+   "kind": "layer",
+   "url": "/files/flag-20260915/sme2-retrievalqualityflag-20260915.tif",
+   "quantity": "Retrieval quality flag of the soil moisture, whose lowest bit marks a retrieval not recommended",
+   "unit": "1",
+   "range": [
+    4.0,
+    15.0
+   ],
+   "colours": "tab10",
+   "dates": [
+    "2026-09-15"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001.h5"
+   ],
+   "layer": "retrievalQualityFlag",
+   "ends": null,
+   "frequency": null,
+   "note": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/flag-20260915/sme2-retrievalqualityflag-20260915.json"
+  },
+  "files": {
+   "sme2-retrievalqualityflag-20260915.json": {
+    "bytes": 5071,
+    "sha256": "4e52e6501c4fd86fb8d0493b1eb0ebfb4948c4dd57fef8627414674113942372"
+   },
+   "sme2-retrievalqualityflag-20260915.tif": {
+    "bytes": 12213,
+    "sha256": "d08fc466a5144c6ddecc1d968321182b546c5ac4a704e095c61ddf62f919f7f5"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "15.0",
+    "STATISTICS_MEAN": "14.246528490320815",
+    "STATISTICS_MINIMUM": "4.0",
+    "STATISTICS_STDDEV": "2.515394986468229",
+    "STATISTICS_VALID_PERCENT": "82.53726287262873"
+   },
+   "overviews": []
+  },
+  "values": {
+   "cells": 35424,
+   "cells_with_a_value": 29238,
+   "values": {
+    "4": 4,
+    "5": 1823,
+    "8": 10,
+    "9": 233,
+    "10": 360,
+    "12": 1,
+    "13": 219,
+    "14": 47,
+    "15": 26541
+   },
+   "cells_with_bit_0_set": 28816
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  }
+ },
+ "flag-20260927": {
+  "name": "flag-20260927",
+  "granule": "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001",
+  "layer": "retrievalQualityFlag",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 14.9,
+  "received_utc": "2026-11-15T19:33:01Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.4,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    5.6,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    9.2,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    14.8,
+    90,
+    "Writing the layer."
+   ],
+   [
+    14.8,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "flag-20260927",
+   "title": "Retrieval quality flag, 27 Sep 2026",
+   "kind": "layer",
+   "url": "/files/flag-20260927/sme2-retrievalqualityflag-20260927.tif",
+   "quantity": "Retrieval quality flag of the soil moisture, whose lowest bit marks a retrieval not recommended",
+   "unit": "1",
+   "range": [
+    4.0,
+    15.0
+   ],
+   "colours": "tab10",
+   "dates": [
+    "2026-09-27"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5"
+   ],
+   "layer": "retrievalQualityFlag",
+   "ends": null,
+   "frequency": null,
+   "note": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/flag-20260927/sme2-retrievalqualityflag-20260927.json"
+  },
+  "files": {
+   "sme2-retrievalqualityflag-20260927.json": {
+    "bytes": 5071,
+    "sha256": "29d8ab5ab40568110ed1f20bf67c5202340cc2ad0f39640a082a2590a5339d9d"
+   },
+   "sme2-retrievalqualityflag-20260927.tif": {
+    "bytes": 12252,
+    "sha256": "79084b753a8a3fe42f0bc7b40c678b436cba27cca8270fda6a01f9eac18adf16"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "15.0",
+    "STATISTICS_MEAN": "14.276318489636774",
+    "STATISTICS_MINIMUM": "4.0",
+    "STATISTICS_STDDEV": "2.493679148859413",
+    "STATISTICS_VALID_PERCENT": "82.53726287262873"
+   },
+   "overviews": []
+  },
+  "values": {
+   "cells": 35424,
+   "cells_with_a_value": 29238,
+   "values": {
+    "4": 30,
+    "5": 1798,
+    "8": 9,
+    "9": 233,
+    "10": 158,
+    "12": 1,
+    "13": 157,
+    "14": 281,
+    "15": 26571
+   },
+   "cells_with_bit_0_set": 28759
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  }
+ },
+ "flag-20261009": {
+  "name": "flag-20261009",
+  "granule": "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001",
+  "layer": "retrievalQualityFlag",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 19.6,
+  "received_utc": "2026-11-15T19:33:40Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.4,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    6.3,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    9.6,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    13.1,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    19.5,
+    90,
+    "Writing the layer."
+   ],
+   [
+    19.6,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "flag-20261009",
+   "title": "Retrieval quality flag, 9 Oct 2026",
+   "kind": "layer",
+   "url": "/files/flag-20261009/sme2-retrievalqualityflag-20261009.tif",
+   "quantity": "Retrieval quality flag of the soil moisture, whose lowest bit marks a retrieval not recommended",
+   "unit": "1",
+   "range": [
+    4.0,
+    15.0
+   ],
+   "colours": "tab10",
+   "dates": [
+    "2026-10-09"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+   ],
+   "layer": "retrievalQualityFlag",
+   "ends": null,
+   "frequency": null,
+   "note": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/flag-20261009/sme2-retrievalqualityflag-20261009.json"
+  },
+  "files": {
+   "sme2-retrievalqualityflag-20261009.json": {
+    "bytes": 5069,
+    "sha256": "075b6c9023525e999a8035123f5bff190e01dde8d6dba78e86dc8286f173a1cb"
+   },
+   "sme2-retrievalqualityflag-20261009.tif": {
+    "bytes": 12405,
+    "sha256": "7d06edb5cfbd0946b5476ca787b12493404aac72502c85b8aee7e93cc4533c8b"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "15.0",
+    "STATISTICS_MEAN": "14.286476503180792",
+    "STATISTICS_MINIMUM": "4.0",
+    "STATISTICS_STDDEV": "2.480669315887029",
+    "STATISTICS_VALID_PERCENT": "82.53726287262873"
+   },
+   "overviews": []
+  },
+  "values": {
+   "cells": 35424,
+   "cells_with_a_value": 29238,
+   "values": {
+    "4": 43,
+    "5": 1785,
+    "8": 11,
+    "9": 231,
+    "10": 40,
+    "12": 1,
+    "13": 184,
+    "14": 505,
+    "15": 26438
+   },
+   "cells_with_bit_0_set": 28638
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  }
+ },
+ "flag-beta-20251213": {
+  "name": "flag-beta-20251213",
+  "granule": "NISAR_L3_PR_SME2_007_141_D_067_4005_DHDH_A_20251213T234332_20251213T234407_X05010_N_F_J_001",
+  "layer": "retrievalQualityFlag",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 19.5,
+  "received_utc": "2026-11-15T19:34:23Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.4,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    5.9,
+    5,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    9.5,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    13.1,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    19.5,
+    90,
+    "Writing the layer."
+   ],
+   [
+    19.5,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "flag-beta-20251213",
+   "title": "Retrieval quality flag, 13 Dec 2025",
+   "kind": "layer",
+   "url": "/files/flag-beta-20251213/sme2-retrievalqualityflag-20251213.tif",
+   "quantity": "Retrieval quality flag of the soil moisture, whose lowest bit marks a retrieval not recommended",
+   "unit": "1",
+   "range": [
+    3.5,
+    4.5
+   ],
+   "colours": "tab10",
+   "dates": [
+    "2025-12-13"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_007_141_D_067_4005_DHDH_A_20251213T234332_20251213T234407_X05010_N_F_J_001.h5"
+   ],
+   "layer": "retrievalQualityFlag",
+   "ends": null,
+   "frequency": null,
+   "note": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/flag-beta-20251213/sme2-retrievalqualityflag-20251213.json"
+  },
+  "files": {
+   "sme2-retrievalqualityflag-20251213.json": {
+    "bytes": 5039,
+    "sha256": "939fba22d0cc6a8a060ebbb365424312e92bd2a87dafef05b92c331a1f10e224"
+   },
+   "sme2-retrievalqualityflag-20251213.tif": {
+    "bytes": 4526,
+    "sha256": "f74bd52f8f5e83e3026cd33775bfb3499317dafb8745d00db5983921e94e61a0"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "4.0",
+    "STATISTICS_MEAN": "4.0",
+    "STATISTICS_MINIMUM": "4.0",
+    "STATISTICS_STDDEV": "0.0",
+    "STATISTICS_VALID_PERCENT": "1.925248419150858"
+   },
+   "overviews": []
+  },
+  "values": {
+   "cells": 35424,
+   "cells_with_a_value": 682,
+   "values": {
+    "4": 682
+   },
+   "cells_with_bit_0_set": 0
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  }
+ },
+ "flag-beta-20251225": {
+  "name": "flag-beta-20251225",
+  "granule": "NISAR_L3_PR_SME2_008_141_D_067_4005_DHDH_A_20251225T234333_20251225T234408_X05010_N_F_J_001",
+  "layer": "retrievalQualityFlag",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 17.4,
+  "received_utc": "2026-11-15T19:34:56Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.3,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    3.6,
+    5,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    7.0,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    10.5,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    17.4,
+    90,
+    "Writing the layer."
+   ],
+   [
+    17.4,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "flag-beta-20251225",
+   "title": "Retrieval quality flag, 25 Dec 2025",
+   "kind": "layer",
+   "url": "/files/flag-beta-20251225/sme2-retrievalqualityflag-20251225.tif",
+   "quantity": "Retrieval quality flag of the soil moisture, whose lowest bit marks a retrieval not recommended",
+   "unit": "1",
+   "range": [
+    3.5,
+    4.5
+   ],
+   "colours": "tab10",
+   "dates": [
+    "2025-12-25"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_008_141_D_067_4005_DHDH_A_20251225T234333_20251225T234408_X05010_N_F_J_001.h5"
+   ],
+   "layer": "retrievalQualityFlag",
+   "ends": null,
+   "frequency": null,
+   "note": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/flag-beta-20251225/sme2-retrievalqualityflag-20251225.json"
+  },
+  "files": {
+   "sme2-retrievalqualityflag-20251225.json": {
+    "bytes": 5040,
+    "sha256": "5c8abbe8fd5716f9ff0dfe7d44567b8eca92b9f86345e7801d9519f52a54541f"
+   },
+   "sme2-retrievalqualityflag-20251225.tif": {
+    "bytes": 3812,
+    "sha256": "4601de8c49282cad5f4aaf3fc04779512a7f8413db38a405fa72a9a1ab7f7adb"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "4.0",
+    "STATISTICS_MEAN": "4.0",
+    "STATISTICS_MINIMUM": "4.0",
+    "STATISTICS_STDDEV": "0.0",
+    "STATISTICS_VALID_PERCENT": "0.9202800361336947"
+   },
+   "overviews": []
+  },
+  "values": {
+   "cells": 35424,
+   "cells_with_a_value": 326,
+   "values": {
+    "4": 326
+   },
+   "cells_with_bit_0_set": 0
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  }
+ },
+ "sm-20260623": {
+  "name": "sm-20260623",
+  "granule": "NISAR_L3_PR_SME2_023_141_D_067_4005_DHDH_A_20260623T234333_20260623T234408_P05023_N_F_J_001",
+  "layer": "soilMoisture",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 57.2,
+  "received_utc": "2026-11-15T19:27:44Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.4,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    10.8,
+    5,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    14.1,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    17.3,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    20.6,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    24.1,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    27.4,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    30.6,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    33.9,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    37.1,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    40.4,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    44.0,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    47.2,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    50.8,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    56.9,
+    90,
+    "Writing the layer."
+   ],
+   [
+    57.2,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "sm-20260623",
+   "title": "Soil moisture, 23 Jun 2026",
+   "kind": "layer",
+   "url": "/files/sm-20260623/sme2-soilmoisture-20260623.tif",
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    0.2808548331260681,
+    0.42534313201904295
+   ],
+   "colours": "YlGnBu",
+   "dates": [
+    "2026-06-23"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_023_141_D_067_4005_DHDH_A_20260623T234333_20260623T234408_P05023_N_F_J_001.h5"
+   ],
+   "layer": "soilMoisture",
+   "ends": null,
+   "frequency": null,
+   "note": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/sm-20260623/sme2-soilmoisture-20260623.json"
+  },
+  "files": {
+   "sme2-soilmoisture-20260623.json": {
+    "bytes": 4879,
+    "sha256": "281c2e6b81d5357d3c01188605c59e875a44a99db30607da3bdfc2714100d9bb"
+   },
+   "sme2-soilmoisture-20260623.tif": {
+    "bytes": 96629,
+    "sha256": "ab84bb8c06a797451c6df1bc9db5d7b29882dc8556e954f1babca5f4ac0c06b8"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "0.6000000238418579",
+    "STATISTICS_MEAN": "0.3638787594666028",
+    "STATISTICS_MINIMUM": "0.15765893459320068",
+    "STATISTICS_STDDEV": "0.03281092531495536",
+    "STATISTICS_VALID_PERCENT": "77.37974254742548"
+   },
+   "overviews": []
+  },
+  "values": {
+   "cells": 35424,
+   "cells_with_a_value": 27411,
+   "lowest": "0.15765893459320068",
+   "highest": "0.6000000238418579"
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  }
+ },
+ "sm-20260705": {
+  "name": "sm-20260705",
+  "granule": "NISAR_L3_PR_SME2_024_141_D_067_4005_DHDH_A_20260705T234333_20260705T234408_P05023_N_F_J_001",
+  "layer": "soilMoisture",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 57.1,
+  "received_utc": "2026-11-15T19:28:59Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.5,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    5.0,
+    5,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    8.5,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    12.2,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    15.7,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    19.0,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    22.6,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    25.9,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    29.4,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    33.0,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    36.5,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    40.1,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    43.6,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    47.0,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    50.2,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    57.1,
+    90,
+    "Writing the layer."
+   ],
+   [
+    57.1,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "sm-20260705",
+   "title": "Soil moisture, 5 Jul 2026",
+   "kind": "layer",
+   "url": "/files/sm-20260705/sme2-soilmoisture-20260705.tif",
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    0.2653586983680725,
+    0.41897068619728084
+   ],
+   "colours": "YlGnBu",
+   "dates": [
+    "2026-07-05"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_024_141_D_067_4005_DHDH_A_20260705T234333_20260705T234408_P05023_N_F_J_001.h5"
+   ],
+   "layer": "soilMoisture",
+   "ends": null,
+   "frequency": null,
+   "note": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/sm-20260705/sme2-soilmoisture-20260705.json"
+  },
+  "files": {
+   "sme2-soilmoisture-20260705.json": {
+    "bytes": 4877,
+    "sha256": "abb2d2509b1215f5c6249bad96b98edb3c9f99d877d80eef12480ba536973649"
+   },
+   "sme2-soilmoisture-20260705.tif": {
+    "bytes": 96711,
+    "sha256": "ba7e1ab6587a0c9303bb9b602bb183b37f83ad8fc68c8699aa3a9775563fe46f"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "0.6000000238418579",
+    "STATISTICS_MEAN": "0.3589982047205722",
+    "STATISTICS_MINIMUM": "0.14518651366233826",
+    "STATISTICS_STDDEV": "0.03500986562479614",
+    "STATISTICS_VALID_PERCENT": "77.37974254742548"
+   },
+   "overviews": []
+  },
+  "values": {
+   "cells": 35424,
+   "cells_with_a_value": 27411,
+   "lowest": "0.14518651366233826",
+   "highest": "0.6000000238418579"
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  }
+ },
+ "sm-20260717": {
+  "name": "sm-20260717",
+  "granule": "NISAR_L3_PR_SME2_025_141_D_067_4005_DHDH_A_20260717T234332_20260717T234407_P05023_N_F_J_001",
+  "layer": "soilMoisture",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 16.9,
+  "received_utc": "2026-11-15T19:29:33Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.3,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    6.5,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    10.3,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    16.9,
+    90,
+    "Writing the layer."
+   ],
+   [
+    16.9,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "sm-20260717",
+   "title": "Soil moisture, 17 Jul 2026",
+   "kind": "layer",
+   "url": "/files/sm-20260717/sme2-soilmoisture-20260717.tif",
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    0.2593825548887253,
+    0.4208033537864683
+   ],
+   "colours": "YlGnBu",
+   "dates": [
+    "2026-07-17"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_025_141_D_067_4005_DHDH_A_20260717T234332_20260717T234407_P05023_N_F_J_001.h5"
+   ],
+   "layer": "soilMoisture",
+   "ends": null,
+   "frequency": null,
+   "note": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/sm-20260717/sme2-soilmoisture-20260717.json"
+  },
+  "files": {
+   "sme2-soilmoisture-20260717.json": {
+    "bytes": 4880,
+    "sha256": "cbdd18ba30ae64a92dec107e61fd56c6b3bb8e74a138b0359e9e6c0c4d04aa38"
+   },
+   "sme2-soilmoisture-20260717.tif": {
+    "bytes": 99463,
+    "sha256": "2e3993ad27a072c7fb6a50f79104e570a0aff0734f9b1395485161e1aeb872ca"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "0.6000000238418579",
+    "STATISTICS_MEAN": "0.3449957066540031",
+    "STATISTICS_MINIMUM": "0.07199999690055847",
+    "STATISTICS_STDDEV": "0.034306183590429244",
+    "STATISTICS_VALID_PERCENT": "82.53726287262873"
+   },
+   "overviews": []
+  },
+  "values": {
+   "cells": 35424,
+   "cells_with_a_value": 29238,
+   "lowest": "0.07199999690055847",
+   "highest": "0.6000000238418579"
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  }
+ },
+ "sm-20260810": {
+  "name": "sm-20260810",
+  "granule": "NISAR_L3_PR_SME2_027_141_D_067_4005_DHDH_A_20260810T234331_20260810T234406_P05023_N_F_J_001",
+  "layer": "soilMoisture",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 19.9,
+  "received_utc": "2026-11-15T19:30:07Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.3,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    8.6,
+    5,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    12.4,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    19.7,
+    90,
+    "Writing the layer."
+   ],
+   [
+    19.8,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "sm-20260810",
+   "title": "Soil moisture, 10 Aug 2026",
+   "kind": "layer",
+   "url": "/files/sm-20260810/sme2-soilmoisture-20260810.tif",
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    0.23886045008897783,
+    0.41100001335144043
+   ],
+   "colours": "YlGnBu",
+   "dates": [
+    "2026-08-10"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_027_141_D_067_4005_DHDH_A_20260810T234331_20260810T234406_P05023_N_F_J_001.h5"
+   ],
+   "layer": "soilMoisture",
+   "ends": null,
+   "frequency": null,
+   "note": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/sm-20260810/sme2-soilmoisture-20260810.json"
+  },
+  "files": {
+   "sme2-soilmoisture-20260810.json": {
+    "bytes": 4879,
+    "sha256": "8ce106e7aab4bcaea03ea5c2d916139e50d0064255a1c68ceefb80cb12c9cbe8"
+   },
+   "sme2-soilmoisture-20260810.tif": {
+    "bytes": 99929,
+    "sha256": "c6ef592ac3aae0fd8829ab3880524ae207d37d5642a9324689a446e8aa0c8ea4"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "0.6000000238418579",
+    "STATISTICS_MEAN": "0.2962202476804519",
+    "STATISTICS_MINIMUM": "0.09600000083446503",
+    "STATISTICS_STDDEV": "0.03455408326422542",
+    "STATISTICS_VALID_PERCENT": "82.53726287262873"
+   },
+   "overviews": []
+  },
+  "values": {
+   "cells": 35424,
+   "cells_with_a_value": 29238,
+   "lowest": "0.09600000083446503",
+   "highest": "0.6000000238418579"
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  }
+ },
+ "sm-20260822": {
+  "name": "sm-20260822",
+  "granule": "NISAR_L3_PR_SME2_028_141_D_067_4005_DHDH_A_20260822T234330_20260822T234405_P05023_N_F_J_001",
+  "layer": "soilMoisture",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 19.4,
+  "received_utc": "2026-11-15T19:30:52Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.4,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    6.2,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    9.6,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    13.2,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    19.4,
+    90,
+    "Writing the layer."
+   ],
+   [
+    19.4,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "sm-20260822",
+   "title": "Soil moisture, 22 Aug 2026",
+   "kind": "layer",
+   "url": "/files/sm-20260822/sme2-soilmoisture-20260822.tif",
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    0.21808022141456604,
+    0.35610010981559725
+   ],
+   "colours": "YlGnBu",
+   "dates": [
+    "2026-08-22"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_028_141_D_067_4005_DHDH_A_20260822T234330_20260822T234405_P05023_N_F_J_001.h5"
+   ],
+   "layer": "soilMoisture",
+   "ends": null,
+   "frequency": null,
+   "note": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/sm-20260822/sme2-soilmoisture-20260822.json"
+  },
+  "files": {
+   "sme2-soilmoisture-20260822.json": {
+    "bytes": 4880,
+    "sha256": "1f4b6a94fb86216bdc60ef6eeac8eeef627d2c7695a32190b519fcee2c357984"
+   },
+   "sme2-soilmoisture-20260822.tif": {
+    "bytes": 99961,
+    "sha256": "7135c12bda5a741daeb51315bc7cc9310bd95c908bc62ebcd3f90c51de173200"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "0.6000000238418579",
+    "STATISTICS_MEAN": "0.2586827440346219",
+    "STATISTICS_MINIMUM": "0.07000000029802322",
+    "STATISTICS_STDDEV": "0.030853461220727164",
+    "STATISTICS_VALID_PERCENT": "82.53726287262873"
+   },
+   "overviews": []
+  },
+  "values": {
+   "cells": 35424,
+   "cells_with_a_value": 29238,
+   "lowest": "0.07000000029802322",
+   "highest": "0.6000000238418579"
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  }
+ },
+ "sm-20260903": {
+  "name": "sm-20260903",
+  "granule": "NISAR_L3_PR_SME2_029_141_D_067_4005_DHDH_A_20260903T234330_20260903T234405_P05023_N_F_J_001",
+  "layer": "soilMoisture",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 22.6,
+  "received_utc": "2026-11-15T19:31:34Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.4,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    9.1,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    12.7,
+    5,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    16.1,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    22.6,
+    90,
+    "Writing the layer."
+   ],
+   [
+    22.6,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "sm-20260903",
+   "title": "Soil moisture, 3 Sep 2026",
+   "kind": "layer",
+   "url": "/files/sm-20260903/sme2-soilmoisture-20260903.tif",
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    0.24356797993183135,
+    0.4449999928474426
+   ],
+   "colours": "YlGnBu",
+   "dates": [
+    "2026-09-03"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_029_141_D_067_4005_DHDH_A_20260903T234330_20260903T234405_P05023_N_F_J_001.h5"
+   ],
+   "layer": "soilMoisture",
+   "ends": null,
+   "frequency": null,
+   "note": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/sm-20260903/sme2-soilmoisture-20260903.json"
+  },
+  "files": {
+   "sme2-soilmoisture-20260903.json": {
+    "bytes": 4877,
+    "sha256": "953a3761ef2d60ca6ac0d3baf90cfae688daa19593fa75ccda851af5af6e69a2"
+   },
+   "sme2-soilmoisture-20260903.tif": {
+    "bytes": 100002,
+    "sha256": "ac9cefe3ccee07f4d1521a11e794120ad2721ddc31e0274d5a29a195585374c1"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "0.6000000238418579",
+    "STATISTICS_MEAN": "0.2987114803043613",
+    "STATISTICS_MINIMUM": "0.07599999755620956",
+    "STATISTICS_STDDEV": "0.04175111990777581",
+    "STATISTICS_VALID_PERCENT": "82.53726287262873"
+   },
+   "overviews": []
+  },
+  "values": {
+   "cells": 35424,
+   "cells_with_a_value": 29238,
+   "lowest": "0.07599999755620956",
+   "highest": "0.6000000238418579"
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  }
+ },
+ "sm-20260915": {
+  "name": "sm-20260915",
+  "granule": "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001",
+  "layer": "soilMoisture",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 16.5,
+  "received_utc": "2026-11-15T19:32:07Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.3,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    3.7,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    6.9,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    10.4,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    16.5,
+    90,
+    "Writing the layer."
+   ],
+   [
+    16.5,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "sm-20260915",
+   "title": "Soil moisture, 15 Sep 2026",
+   "kind": "layer",
+   "url": "/files/sm-20260915/sme2-soilmoisture-20260915.tif",
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    0.23740190804004668,
+    0.4309999942779541
+   ],
+   "colours": "YlGnBu",
+   "dates": [
+    "2026-09-15"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001.h5"
+   ],
+   "layer": "soilMoisture",
+   "ends": null,
+   "frequency": null,
+   "note": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/sm-20260915/sme2-soilmoisture-20260915.json"
+  },
+  "files": {
+   "sme2-soilmoisture-20260915.json": {
+    "bytes": 4878,
+    "sha256": "ecac6097fcf8d919ffb93bbf12327fc557ce8508d48e5b8758d1d600b31bac9f"
+   },
+   "sme2-soilmoisture-20260915.tif": {
+    "bytes": 99762,
+    "sha256": "9d43d3c5684158dc7f03495428ba33dde26e0fa1f3937bf8da08237103daf818"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "0.6000000238418579",
+    "STATISTICS_MEAN": "0.2907900572357234",
+    "STATISTICS_MINIMUM": "0.08500000089406967",
+    "STATISTICS_STDDEV": "0.0407113505563074",
+    "STATISTICS_VALID_PERCENT": "82.53726287262873"
+   },
+   "overviews": []
+  },
+  "values": {
+   "cells": 35424,
+   "cells_with_a_value": 29238,
+   "lowest": "0.08500000089406967",
+   "highest": "0.6000000238418579"
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  }
+ },
+ "sm-20260927": {
+  "name": "sm-20260927",
+  "granule": "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001",
+  "layer": "soilMoisture",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 23.0,
+  "received_utc": "2026-11-15T19:32:46Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.4,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    12.5,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    16.0,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    23.0,
+    90,
+    "Writing the layer."
+   ],
+   [
+    23.0,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "sm-20260927",
+   "title": "Soil moisture, 27 Sep 2026",
+   "kind": "layer",
+   "url": "/files/sm-20260927/sme2-soilmoisture-20260927.tif",
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    0.2289392176270485,
+    0.37700000405311584
+   ],
+   "colours": "YlGnBu",
+   "dates": [
+    "2026-09-27"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5"
+   ],
+   "layer": "soilMoisture",
+   "ends": null,
+   "frequency": null,
+   "note": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/sm-20260927/sme2-soilmoisture-20260927.json"
+  },
+  "files": {
+   "sme2-soilmoisture-20260927.json": {
+    "bytes": 4879,
+    "sha256": "347b0eb03aa481459ba3568393a3177aa1c0e3478c4b0772003ab7e04e26ed54"
+   },
+   "sme2-soilmoisture-20260927.tif": {
+    "bytes": 99726,
+    "sha256": "96704bf572bddc1070f600a0bf1adb3941ed5122a59479c6c419c73f40118cc9"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "0.6000000238418579",
+    "STATISTICS_MEAN": "0.2765517229501881",
+    "STATISTICS_MINIMUM": "0.08900000154972076",
+    "STATISTICS_STDDEV": "0.03175475256026234",
+    "STATISTICS_VALID_PERCENT": "82.53726287262873"
+   },
+   "overviews": []
+  },
+  "values": {
+   "cells": 35424,
+   "cells_with_a_value": 29238,
+   "lowest": "0.08900000154972076",
+   "highest": "0.6000000238418579"
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  }
+ },
+ "sm-20261009": {
+  "name": "sm-20261009",
+  "granule": "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001",
+  "layer": "soilMoisture",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 19.6,
+  "received_utc": "2026-11-15T19:33:21Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.8,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    6.3,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    9.8,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    13.3,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    19.5,
+    90,
+    "Writing the layer."
+   ],
+   [
+    19.5,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "sm-20261009",
+   "title": "Soil moisture, 9 Oct 2026",
+   "kind": "layer",
+   "url": "/files/sm-20261009/sme2-soilmoisture-20261009.tif",
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    0.17800000309944153,
+    0.2919092983007429
+   ],
+   "colours": "YlGnBu",
+   "dates": [
+    "2026-10-09"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+   ],
+   "layer": "soilMoisture",
+   "ends": null,
+   "frequency": null,
+   "note": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/sm-20261009/sme2-soilmoisture-20261009.json"
+  },
+  "files": {
+   "sme2-soilmoisture-20261009.json": {
+    "bytes": 4878,
+    "sha256": "735de6e1afc6f955c8bd73ca45e0aa9295367bcb644506220e9daa2fdaa730e1"
+   },
+   "sme2-soilmoisture-20261009.tif": {
+    "bytes": 100772,
+    "sha256": "688a3815a0aef633167b8462a26dc6fd1301ea4250132039e6131cefe953f4b3"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "0.6000000238418579",
+    "STATISTICS_MEAN": "0.23388739770511627",
+    "STATISTICS_MINIMUM": "0.07999999821186066",
+    "STATISTICS_STDDEV": "0.02790906132319405",
+    "STATISTICS_VALID_PERCENT": "82.53726287262873"
+   },
+   "overviews": []
+  },
+  "values": {
+   "cells": 35424,
+   "cells_with_a_value": 29238,
+   "lowest": "0.07999999821186066",
+   "highest": "0.6000000238418579"
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  }
+ },
+ "sm-beta-20251213": {
+  "name": "sm-beta-20251213",
+  "granule": "NISAR_L3_PR_SME2_007_141_D_067_4005_DHDH_A_20251213T234332_20251213T234407_X05010_N_F_J_001",
+  "layer": "soilMoisture",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 22.9,
+  "received_utc": "2026-11-15T19:34:03Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.4,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    9.7,
+    5,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    13.1,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    16.3,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    22.8,
+    90,
+    "Writing the layer."
+   ],
+   [
+    22.8,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "sm-beta-20251213",
+   "title": "Soil moisture, 13 Dec 2025",
+   "kind": "layer",
+   "url": "/files/sm-beta-20251213/sme2-soilmoisture-20251213.tif",
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    0.1806408828496933,
+    0.35754518091678616
+   ],
+   "colours": "YlGnBu",
+   "dates": [
+    "2025-12-13"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_007_141_D_067_4005_DHDH_A_20251213T234332_20251213T234407_X05010_N_F_J_001.h5"
+   ],
+   "layer": "soilMoisture",
+   "ends": null,
+   "frequency": null,
+   "note": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/sm-beta-20251213/sme2-soilmoisture-20251213.json"
+  },
+  "files": {
+   "sme2-soilmoisture-20251213.json": {
+    "bytes": 4878,
+    "sha256": "b04892633ab00ff2f36bb7970bc42b011af1c9b4aebdadc40fc5575cedec18a7"
+   },
+   "sme2-soilmoisture-20251213.tif": {
+    "bytes": 8220,
+    "sha256": "385fa721e90f2e918ec42560e3abc9c144298b0a35fb38849b0645d2aa00e53f"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "0.4186220169067383",
+    "STATISTICS_MEAN": "0.2762652840738422",
+    "STATISTICS_MINIMUM": "0.12240751087665558",
+    "STATISTICS_STDDEV": "0.041774779540620074",
+    "STATISTICS_VALID_PERCENT": "1.925248419150858"
+   },
+   "overviews": []
+  },
+  "values": {
+   "cells": 35424,
+   "cells_with_a_value": 682,
+   "lowest": "0.12240751087665558",
+   "highest": "0.4186220169067383"
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  }
+ },
+ "sm-beta-20251225": {
+  "name": "sm-beta-20251225",
+  "granule": "NISAR_L3_PR_SME2_008_141_D_067_4005_DHDH_A_20251225T234333_20251225T234408_X05010_N_F_J_001",
+  "layer": "soilMoisture",
+  "area": {
+   "west": -71.2,
+   "south": 42.6,
+   "east": -70.75,
+   "north": 42.95
+  },
+  "seconds": 15.8,
+  "received_utc": "2026-11-15T19:34:39Z",
+  "steps": [
+   [
+    0.0,
+    0,
+    "Finding the product in NASA's catalogue."
+   ],
+   [
+    0.3,
+    5,
+    "Asking NASA Harmony for the layer."
+   ],
+   [
+    5.5,
+    12,
+    "NASA Harmony is preparing the layer."
+   ],
+   [
+    9.2,
+    85,
+    "Receiving the layer from NASA Harmony."
+   ],
+   [
+    15.8,
+    90,
+    "Writing the layer."
+   ],
+   [
+    15.8,
+    100,
+    "The layer is ready."
+   ]
+  ],
+  "description": {
+   "id": "sm-beta-20251225",
+   "title": "Soil moisture, 25 Dec 2025",
+   "kind": "layer",
+   "url": "/files/sm-beta-20251225/sme2-soilmoisture-20251225.tif",
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    0.17578545212745667,
+    0.3302881717681885
+   ],
+   "colours": "YlGnBu",
+   "dates": [
+    "2025-12-25"
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_008_141_D_067_4005_DHDH_A_20251225T234333_20251225T234408_X05010_N_F_J_001.h5"
+   ],
+   "layer": "soilMoisture",
+   "ends": null,
+   "frequency": null,
+   "note": null,
+   "program": "Lynkeus 0.1.0",
+   "method": null,
+   "record": "/files/sm-beta-20251225/sme2-soilmoisture-20251225.json"
+  },
+  "files": {
+   "sme2-soilmoisture-20251225.json": {
+    "bytes": 4879,
+    "sha256": "3025a3dd27920fb619114eb99ee60f180759626f63e8f9899df66839bf263e2e"
+   },
+   "sme2-soilmoisture-20251225.tif": {
+    "bytes": 5583,
+    "sha256": "22e4ad3bf8ae25b5c8d71a77ff1bf71d5a898e635c56c314c0b36329479cf8d2"
+   }
+  },
+  "grid": {
+   "crs": "EPSG:6933",
+   "transform": [
+    200.17900467012078,
+    0.0,
+    -6869743.1154914815,
+    0.0,
+    -200.17900467012078,
+    4990662.763762219
+   ],
+   "width": 216,
+   "height": 164,
+   "dtype": "float32",
+   "nodata": "nan",
+   "band_tags": {
+    "STATISTICS_MAXIMUM": "0.37125420570373535",
+    "STATISTICS_MEAN": "0.2654901544100668",
+    "STATISTICS_MINIMUM": "0.14443029463291168",
+    "STATISTICS_STDDEV": "0.03853928330173323",
+    "STATISTICS_VALID_PERCENT": "0.9202800361336947"
+   },
+   "overviews": []
+  },
+  "values": {
+   "cells": 35424,
+   "cells_with_a_value": 326,
+   "lowest": "0.14443029463291168",
+   "highest": "0.37125420570373535"
+  },
+  "environment": {
+   "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+   "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+   "packages": {
+    "harmony-py": "1.8.0",
+    "earthaccess": "0.19.0",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "pydantic": "2.14.3"
+   }
+  }
+ }
+}
