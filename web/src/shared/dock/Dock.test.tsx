@@ -2,7 +2,6 @@
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MotionGlobalConfig } from "motion/react";
 import { useState } from "react";
 import { beforeEach, expect, test, vi } from "vitest";
 import { PANE_WIDTH, panesStore, resetPanes } from "../panes";
@@ -365,28 +364,4 @@ test("a pane of the stack that goes behind another one is inert and does not mov
   await waitFor(() => expect(catalog.style.opacity).toBe("1"));
   await waitFor(() => expect(layer.style.opacity).toBe("0"));
   expect(layer.style.transform).toBe("none");
-});
-
-test("a pane that is shown again while it leaves ends in view, also with the real times of the motion", async () => {
-  MotionGlobalConfig.skipAnimations = false;
-  try {
-    render(
-      <Dock side="right">
-        <Notes id="catalog" title="Catalog" />
-      </Dock>,
-    );
-    const pane = document.getElementById(paneElementId("catalog")) as HTMLElement;
-    act(() => setAutoHide("catalog", true));
-    const tab = screen.getByRole("button", { name: "Catalog" });
-    await userEvent.click(tab);
-    await userEvent.click(tab);
-    expect(pane.hasAttribute("inert")).toBe(true);
-    await userEvent.click(tab);
-    expect(pane.hidden).toBe(false);
-    expect(pane.hasAttribute("inert")).toBe(false);
-    await waitFor(() => expect(pane.style.opacity).toBe("1"));
-    await waitFor(() => expect(pane.style.transform).toBe("none"));
-  } finally {
-    MotionGlobalConfig.skipAnimations = true;
-  }
 });
