@@ -3,6 +3,8 @@
 import { useId } from "react";
 import { Info } from "../shared/info/Info";
 import type { LayerDescription } from "../shared/layer";
+import { Notice } from "../shared/notice/Notice";
+import { statementOf } from "../options/kept";
 import { LayerNeeded, SelectedLayer } from "./SelectedLayer";
 
 /** The two forms in which the record of a layer is saved. */
@@ -21,9 +23,17 @@ const FORMS = [
 ] as const;
 
 /**
+ * What the pane of the record says about the address that a saved record holds: the provenance record writes
+ * the address of the file of the layer, and the STAC record the address of the record beside it, which carries
+ * the same random part. The second sentence is the statement of `docs/Storage.md` about the files.
+ */
+export const FILE_ADDRESS = `The saved record holds the address of the layer on this site. ${statementOf("files")}`;
+
+/**
  * The fields of the record: the layer whose record is saved, and the form of the record, with what each form
- * holds behind the "i" beside the title of the choice. Without a selected layer, the fields state what is needed
- * and offer the button that leads there.
+ * holds behind the "i" beside the title of the choice. Both forms hold the address of the layer on the site, so
+ * a notice says who reads the file at that address (`docs/Storage.md`). Without a selected layer, the fields
+ * state what is needed and offer the button that leads there.
  */
 export function RecordFields({ layer, form, onChange }: RecordFieldsProps) {
   const id = useId();
@@ -59,6 +69,7 @@ export function RecordFields({ layer, form, onChange }: RecordFieldsProps) {
           </div>
         ))}
       </fieldset>
+      <Notice kind="info">{FILE_ADDRESS}</Notice>
     </>
   );
 }
