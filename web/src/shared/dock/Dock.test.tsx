@@ -246,6 +246,31 @@ test("a pane that shows over the map hides when the pointer is pressed outside i
   expect(screen.getByRole("button", { name: "Catalog" }).getAttribute("aria-expanded")).toBe("false");
 });
 
+test("a hidden pane of each side shows at the same time, and both hide when the pointer is pressed in the map", async () => {
+  render(
+    <>
+      <Dock side="left">
+        <Notes id="contents" title="Contents" />
+      </Dock>
+      <main tabIndex={0} aria-label="Map" />
+      <Dock side="right">
+        <Notes id="catalog" title="Catalog" />
+      </Dock>
+    </>,
+  );
+  act(() => {
+    setAutoHide("left", true);
+    setAutoHide("right", true);
+  });
+  await userEvent.click(screen.getByRole("button", { name: "Contents" }));
+  await userEvent.click(screen.getByRole("button", { name: "Catalog" }));
+  await userEvent.click(screen.getByRole("textbox", { name: "Notes of Contents" }));
+  expect(screen.getByRole("complementary", { name: "Contents" })).toBeDefined();
+  expect(screen.getByRole("complementary", { name: "Catalog" })).toBeDefined();
+  await userEvent.click(screen.getByRole("main"));
+  expect(screen.queryByRole("complementary")).toBeNull();
+});
+
 test("the pin of a pane that shows over the map keeps the panes of the side open again", async () => {
   render(
     <Dock side="right">
