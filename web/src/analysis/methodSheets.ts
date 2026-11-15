@@ -82,6 +82,43 @@ export const METHODS: Record<SheetTool, Method> = {
       },
     ],
   },
+  "backscatter-map": {
+    title: "Backscatter, Thematic map",
+    rows: [
+      {
+        name: "What it shows",
+        text: "The class of each cell on one date (open water, inundated vegetation or not inundated), by the thresholds of the NISAR science team for wetland inundation.",
+      },
+      {
+        name: "Input",
+        text: "The Backscatter HH layer and the Backscatter HV layer of one GCOV product, received for the same area.",
+      },
+      {
+        name: "Formula",
+        text: "`open water: 0 < HH + HV <= 0.068; inundated vegetation: 0.4245 <= HH <= 10 and 1.2 <= HH / HV <= 500; not inundated: every other cell with HH + HV > 0`",
+      },
+      {
+        name: "Result",
+        text: "Three classes without unit: grey for not inundated, dark blue for open water and light blue for inundated vegetation, the colours of the notebook of the science team. A cell without data in either layer is left empty.",
+      },
+      {
+        name: "How to read",
+        text: "Open water is dark in both layers, because its smooth surface reflects the radar signal away from the satellite. Inundated vegetation is bright in HH and brighter in HH than in HV, because the signal bounces from the water to the stems and trunks and back to the radar. Every other cell, whether field, forest or town, is in the class not inundated.",
+      },
+      {
+        name: "Limits",
+        text: "The thresholds were set by the science team at a calibration site of the mission (Yucatan Lake), and no accuracy is known for other places. No mask of wetlands is applied, so buildings can fall into inundated vegetation, mudflats and smooth dry ground into open water, and water roughened by wind into not inundated. The last step of the notebook, which reduces the map to cells of one hectare by the most frequent class, is not done.",
+      },
+      {
+        name: "Checked",
+        text: "The classes equal those of the statements of the notebook of the science team in every cell of the test area (lower Merrimack River, 21 Oct and 2 Nov 2026).",
+      },
+      {
+        name: "References",
+        text: "[NISAR Mission Science Users' Handbook, 2nd edition, section 6.4](https://doi.org/10.48577/jpl.UD4HV3). [NISAR_Inundation, notebook of the science team](https://github.com/NISAR-Science-Algorithms/NISAR_Inundation).",
+      },
+    ],
+  },
   "coherence-state": {
     title: "Coherence, One pair",
     rows: [

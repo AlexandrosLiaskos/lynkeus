@@ -1,0 +1,376 @@
+{
+ "started": "2026-11-15T20:13:24Z",
+ "phase": "receive",
+ "area": {
+  "west": -71.2,
+  "south": 42.6,
+  "east": -70.75,
+  "north": 42.95
+ },
+ "layers": {
+  "hh_1021": {
+   "process": "get-layer",
+   "inputs": {
+    "product": "GCOV",
+    "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "layer": "HHHH",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T20:13:25Z",
+   "http_status": 201,
+   "job": "b3ba27f6d9d4d9bb26a0105eeaef69e3",
+   "job_title": "Backscatter HH of NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+   "status_info": {
+    "processID": "get-layer",
+    "type": "process",
+    "jobID": "b3ba27f6d9d4d9bb26a0105eeaef69e3",
+    "title": "Backscatter HH of NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "status": "successful",
+    "message": "The layer is ready.",
+    "created": "2026-11-15T20:13:25Z",
+    "started": "2026-11-15T20:13:25Z",
+    "finished": "2026-11-15T20:21:37Z",
+    "updated": "2026-11-15T20:21:37Z",
+    "progress": 100,
+    "inputs": {
+     "product": "GCOV",
+     "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+     "layer": "HHHH",
+     "area": {
+      "west": -71.2,
+      "south": 42.6,
+      "east": -70.75,
+      "north": 42.95
+     }
+    },
+    "layer": "5b39a70ebe15413cfa6e7e12c5954326",
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/b3ba27f6d9d4d9bb26a0105eeaef69e3",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/b3ba27f6d9d4d9bb26a0105eeaef69e3/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   },
+   "status": "successful",
+   "ended": "2026-11-15T20:21:38Z",
+   "results_http_status": 200,
+   "result": {
+    "id": "5b39a70ebe15413cfa6e7e12c5954326",
+    "title": "Backscatter HH, 21 Oct 2026",
+    "kind": "layer",
+    "url": "/files/5b39a70ebe15413cfa6e7e12c5954326/gcov-hhhh-20261021.tif",
+    "quantity": "Radar backscatter gamma nought, HH, linear power",
+    "unit": "1",
+    "range": [
+     0.011646270751953125,
+     1.185333251953125
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "HHHH",
+    "ends": null,
+    "classes": null,
+    "frequency": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/5b39a70ebe15413cfa6e7e12c5954326/gcov-hhhh-20261021.json"
+   }
+  },
+  "hv_1021": {
+   "process": "get-layer",
+   "inputs": {
+    "product": "GCOV",
+    "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "layer": "HVHV",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T20:13:25Z",
+   "http_status": 201,
+   "job": "f81269dcc719638b0c96f1ebb9cfefbe",
+   "job_title": "Backscatter HV of NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+   "status_info": {
+    "processID": "get-layer",
+    "type": "process",
+    "jobID": "f81269dcc719638b0c96f1ebb9cfefbe",
+    "title": "Backscatter HV of NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "status": "successful",
+    "message": "The layer is ready.",
+    "created": "2026-11-15T20:13:25Z",
+    "started": "2026-11-15T20:13:25Z",
+    "finished": "2026-11-15T20:22:59Z",
+    "updated": "2026-11-15T20:22:59Z",
+    "progress": 100,
+    "inputs": {
+     "product": "GCOV",
+     "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+     "layer": "HVHV",
+     "area": {
+      "west": -71.2,
+      "south": 42.6,
+      "east": -70.75,
+      "north": 42.95
+     }
+    },
+    "layer": "4bcec93249f5b117ad917ec8de0f570b",
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/f81269dcc719638b0c96f1ebb9cfefbe",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/f81269dcc719638b0c96f1ebb9cfefbe/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   },
+   "status": "successful",
+   "ended": "2026-11-15T20:23:00Z",
+   "results_http_status": 200,
+   "result": {
+    "id": "4bcec93249f5b117ad917ec8de0f570b",
+    "title": "Backscatter HV, 21 Oct 2026",
+    "kind": "layer",
+    "url": "/files/4bcec93249f5b117ad917ec8de0f570b/gcov-hvhv-20261021.tif",
+    "quantity": "Radar backscatter gamma nought, HV, linear power",
+    "unit": "1",
+    "range": [
+     0.0025252771377563474,
+     0.25980377197265625
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "HVHV",
+    "ends": null,
+    "classes": null,
+    "frequency": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/4bcec93249f5b117ad917ec8de0f570b/gcov-hvhv-20261021.json"
+   }
+  },
+  "hv_1102": {
+   "process": "get-layer",
+   "inputs": {
+    "product": "GCOV",
+    "granule": "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001",
+    "layer": "HVHV",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T20:13:25Z",
+   "http_status": 201,
+   "job": "fda5463e43893b8047e0a3c7a4095073",
+   "job_title": "Backscatter HV of NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001",
+   "status_info": {
+    "processID": "get-layer",
+    "type": "process",
+    "jobID": "fda5463e43893b8047e0a3c7a4095073",
+    "title": "Backscatter HV of NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001",
+    "status": "successful",
+    "message": "The layer is ready.",
+    "created": "2026-11-15T20:13:25Z",
+    "started": "2026-11-15T20:21:37Z",
+    "finished": "2026-11-15T20:26:23Z",
+    "updated": "2026-11-15T20:26:23Z",
+    "progress": 100,
+    "inputs": {
+     "product": "GCOV",
+     "granule": "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001",
+     "layer": "HVHV",
+     "area": {
+      "west": -71.2,
+      "south": 42.6,
+      "east": -70.75,
+      "north": 42.95
+     }
+    },
+    "layer": "0d93dc3cfee5addc71fca2d8b4c5a669",
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/fda5463e43893b8047e0a3c7a4095073",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/fda5463e43893b8047e0a3c7a4095073/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   },
+   "status": "successful",
+   "ended": "2026-11-15T20:26:23Z",
+   "results_http_status": 200,
+   "result": {
+    "id": "0d93dc3cfee5addc71fca2d8b4c5a669",
+    "title": "Backscatter HV, 2 Nov 2026",
+    "kind": "layer",
+    "url": "/files/0d93dc3cfee5addc71fca2d8b4c5a669/gcov-hvhv-20261102.tif",
+    "quantity": "Radar backscatter gamma nought, HV, linear power",
+    "unit": "1",
+    "range": [
+     0.0024936795234680176,
+     0.2729759216308594
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-11-02"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "HVHV",
+    "ends": null,
+    "classes": null,
+    "frequency": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/0d93dc3cfee5addc71fca2d8b4c5a669/gcov-hvhv-20261102.json"
+   }
+  }
+ },
+ "maps": {},
+ "refusals": {},
+ "notes": [],
+ "signed_in": true,
+ "layers_of_the_session": {
+  "layers": [
+   {
+    "layer": {
+     "id": "0d93dc3cfee5addc71fca2d8b4c5a669",
+     "title": "Backscatter HV, 2 Nov 2026",
+     "kind": "layer",
+     "url": "/files/0d93dc3cfee5addc71fca2d8b4c5a669/gcov-hvhv-20261102.tif",
+     "quantity": "Radar backscatter gamma nought, HV, linear power",
+     "unit": "1",
+     "range": [
+      0.0024936795234680176,
+      0.2729759216308594
+     ],
+     "colours": "grey",
+     "dates": [
+      "2026-11-02"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "HVHV",
+     "ends": null,
+     "classes": null,
+     "frequency": null,
+     "program": "Lynkeus 0.1.0",
+     "method": null,
+     "record": "/files/0d93dc3cfee5addc71fca2d8b4c5a669/gcov-hvhv-20261102.json"
+    },
+    "size": 51889310,
+    "created": "2026-11-15T20:26:23Z",
+    "server": null
+   },
+   {
+    "layer": {
+     "id": "4bcec93249f5b117ad917ec8de0f570b",
+     "title": "Backscatter HV, 21 Oct 2026",
+     "kind": "layer",
+     "url": "/files/4bcec93249f5b117ad917ec8de0f570b/gcov-hvhv-20261021.tif",
+     "quantity": "Radar backscatter gamma nought, HV, linear power",
+     "unit": "1",
+     "range": [
+      0.0025252771377563474,
+      0.25980377197265625
+     ],
+     "colours": "grey",
+     "dates": [
+      "2026-10-21"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "HVHV",
+     "ends": null,
+     "classes": null,
+     "frequency": null,
+     "program": "Lynkeus 0.1.0",
+     "method": null,
+     "record": "/files/4bcec93249f5b117ad917ec8de0f570b/gcov-hvhv-20261021.json"
+    },
+    "size": 51833674,
+    "created": "2026-11-15T20:22:59Z",
+    "server": null
+   },
+   {
+    "layer": {
+     "id": "5b39a70ebe15413cfa6e7e12c5954326",
+     "title": "Backscatter HH, 21 Oct 2026",
+     "kind": "layer",
+     "url": "/files/5b39a70ebe15413cfa6e7e12c5954326/gcov-hhhh-20261021.tif",
+     "quantity": "Radar backscatter gamma nought, HH, linear power",
+     "unit": "1",
+     "range": [
+      0.011646270751953125,
+      1.185333251953125
+     ],
+     "colours": "grey",
+     "dates": [
+      "2026-10-21"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "HHHH",
+     "ends": null,
+     "classes": null,
+     "frequency": null,
+     "program": "Lynkeus 0.1.0",
+     "method": null,
+     "record": "/files/5b39a70ebe15413cfa6e7e12c5954326/gcov-hhhh-20261021.json"
+    },
+    "size": 52051760,
+    "created": "2026-11-15T20:21:37Z",
+    "server": null
+   }
+  ]
+ },
+ "sign_out_http_status": 204,
+ "ended": "2026-11-15T20:26:23Z"
+}

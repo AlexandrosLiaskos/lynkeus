@@ -115,6 +115,9 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   from the ISO XML file of the product.
 - The sources of Surface displacement, One pair in the dialog Sources of the Help tab.
 - The analysis tools Backscatter, Series and Coherence, Series: the values of many dates against time, at a point or for the area, shown as a chart with a table in the pane Series and listed under Series in the Catalog pane.
+- The analysis tool Backscatter, Thematic map: the wetland inundation classes of the NISAR science team
+  (not inundated, open water, inundated vegetation) of one GCOV product, with its method sheet and research note.
+  A result of classes lists its classes with their colours in the legend, in Properties and in its record.
 
 ### Changed
 
@@ -186,6 +189,8 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 
 ### Fixed
 
+- The reduced copies of the layers Mask of valid samples (GCOV) and Connected components (GUNW) held 0 where
+  every cell that they cover holds no data; they now hold no data there.
 - Get layer warned that a part of the area lies outside the outline of the product when the area was taken from
   that outline. It compared the outline with the rectangle around an area of polygons; it now compares the
   polygons themselves, so a polygon inside the outline gives no warning and a polygon wholly outside it is refused.

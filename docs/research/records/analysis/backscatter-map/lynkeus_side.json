@@ -1,0 +1,230 @@
+{
+ "lynkeus": "0.1.0",
+ "numpy": "2.5.4",
+ "rasterio": "1.5.2",
+ "gdal": "3.12.2",
+ "dates": {
+  "2026-10-21": {
+   "how": "job of the private web service",
+   "hhhh": {
+    "path": "files/5b39a70ebe15413cfa6e7e12c5954326/gcov-hhhh-20261021.tif",
+    "sha256": "6b713d8164b7f0acfd3bc5802cb417b2e4e5a33b7d320d6baabf7ffff87b07ee",
+    "product": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+    "layer": "HHHH",
+    "id": "5b39a70ebe15413cfa6e7e12c5954326"
+   },
+   "hvhv": {
+    "path": "files/4bcec93249f5b117ad917ec8de0f570b/gcov-hvhv-20261021.tif",
+    "sha256": "211b93891fd7427e034b3e50dc4c451c4fc28dfcb7906c6b245214e5e5eebc2f",
+    "product": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+    "layer": "HVHV",
+    "id": "4bcec93249f5b117ad917ec8de0f570b"
+   },
+   "result": {
+    "path": "files/a22f3160aad46984fa7fddcd3e0e1926/backscatter-map.tif",
+    "sha256": "39b42c81a77c48bc91fbfa7d547cf093be2e07839776564d8184fb7e2eeb1e03",
+    "description": {
+     "id": "a22f3160aad46984fa7fddcd3e0e1926",
+     "title": "Wetland inundation, 21 Oct 2026",
+     "kind": "result",
+     "url": "/files/a22f3160aad46984fa7fddcd3e0e1926/backscatter-map.tif",
+     "quantity": "Wetland inundation class",
+     "unit": "1",
+     "range": [
+      1.0,
+      3.0
+     ],
+     "colours": "classes",
+     "dates": [
+      "2026-10-21"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": null,
+     "ends": null,
+     "classes": [
+      {
+       "value": 1,
+       "name": "Not inundated",
+       "colour": "#ececee"
+      },
+      {
+       "value": 2,
+       "name": "Open water",
+       "colour": "#151b73"
+      },
+      {
+       "value": 3,
+       "name": "Inundated vegetation",
+       "colour": "#42e9f5"
+      }
+     ],
+     "frequency": null,
+     "program": "Lynkeus 0.1.0",
+     "method": "Wetland inundation classification of the NISAR science team: Steps 4b to 6 of the notebook NISAR_L3_Inundation_ProductGeneration.ipynb of NISAR_Inundation, commit 85140c4, with the thresholds of the set Default of ancillary_data/wetland_calibration_parameters.yaml (https://github.com/NISAR-Science-Algorithms/NISAR_Inundation; NISAR Mission Science Users' Handbook, 2nd edition, section 6.4, https://doi.org/10.48577/jpl.UD4HV3)",
+     "record": "/files/a22f3160aad46984fa7fddcd3e0e1926/backscatter-map.json"
+    },
+    "grid": [
+     3972,
+     3772
+    ],
+    "classes": {
+     "no data": 665971,
+     "1": 8270128,
+     "2": 3064856,
+     "3": 2981429,
+     "other": 0
+    },
+    "overviews": {
+     "factors": [
+      2,
+      4,
+      8
+     ],
+     "levels": [
+      [
+       1986,
+       1886
+      ],
+      [
+       993,
+       943
+      ],
+      [
+       496,
+       471
+      ]
+     ],
+     "first_copy_shape": [
+      1986,
+      1886
+     ],
+     "first_copy_values": [
+      1.0,
+      2.0,
+      3.0
+     ],
+     "blocks_with_one_most_frequent_class": 2974328,
+     "of_these_differing_from_that_class": 0,
+     "blocks_without_data": 164553,
+     "of_these_with_a_value_in_the_copy": 0
+    }
+   }
+  },
+  "2026-11-02": {
+   "how": "run_tool in the checks container",
+   "hhhh": {
+    "path": "files/e7084528cd2fbdabe0da018099e8ba69/gcov-hhhh-20261102.tif",
+    "sha256": "9ea6c973f9e79c39bf5881a75ccede4b50f5875b394c0330981b311884884b34",
+    "product": "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5",
+    "layer": "HHHH",
+    "id": "e7084528cd2fbdabe0da018099e8ba69"
+   },
+   "hvhv": {
+    "path": "files/0d93dc3cfee5addc71fca2d8b4c5a669/gcov-hvhv-20261102.tif",
+    "sha256": "8e015385b2e20aa4d0a80bef47e17947dcf7fdfdac5e4998b3bc81627686e623",
+    "product": "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5",
+    "layer": "HVHV",
+    "id": "0d93dc3cfee5addc71fca2d8b4c5a669"
+   },
+   "result": {
+    "path": "out/map_1102/backscatter-map.tif",
+    "sha256": "e6175b5f221157970069fd3f9ae151938b4824e1c56959726776005b98cf425f",
+    "description": {
+     "id": "map-1102",
+     "title": "Wetland inundation, 2 Nov 2026",
+     "kind": "result",
+     "url": "/files/map_1102/backscatter-map.tif",
+     "quantity": "Wetland inundation class",
+     "unit": "1",
+     "range": [
+      1.0,
+      3.0
+     ],
+     "colours": "classes",
+     "dates": [
+      "2026-11-02"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": null,
+     "ends": null,
+     "classes": [
+      {
+       "value": 1,
+       "name": "Not inundated",
+       "colour": "#ececee"
+      },
+      {
+       "value": 2,
+       "name": "Open water",
+       "colour": "#151b73"
+      },
+      {
+       "value": 3,
+       "name": "Inundated vegetation",
+       "colour": "#42e9f5"
+      }
+     ],
+     "frequency": null,
+     "program": "Lynkeus 0.1.0",
+     "method": "Wetland inundation classification of the NISAR science team: Steps 4b to 6 of the notebook NISAR_L3_Inundation_ProductGeneration.ipynb of NISAR_Inundation, commit 85140c4, with the thresholds of the set Default of ancillary_data/wetland_calibration_parameters.yaml (https://github.com/NISAR-Science-Algorithms/NISAR_Inundation; NISAR Mission Science Users' Handbook, 2nd edition, section 6.4, https://doi.org/10.48577/jpl.UD4HV3)",
+     "record": "/files/map_1102/backscatter-map.json"
+    },
+    "grid": [
+     3972,
+     3772
+    ],
+    "classes": {
+     "no data": 665968,
+     "1": 8025903,
+     "2": 3067220,
+     "3": 3223293,
+     "other": 0
+    },
+    "overviews": {
+     "factors": [
+      2,
+      4,
+      8
+     ],
+     "levels": [
+      [
+       1986,
+       1886
+      ],
+      [
+       993,
+       943
+      ],
+      [
+       496,
+       471
+      ]
+     ],
+     "first_copy_shape": [
+      1986,
+      1886
+     ],
+     "first_copy_values": [
+      1.0,
+      2.0,
+      3.0
+     ],
+     "blocks_with_one_most_frequent_class": 2939009,
+     "of_these_differing_from_that_class": 0,
+     "blocks_without_data": 164553,
+     "of_these_with_a_value_in_the_copy": 0
+    }
+   }
+  }
+ },
+ "job_result_equals_run_tool_result_2026_10_21": true,
+ "seconds_run_tool": {
+  "2026-10-21": 9.26,
+  "2026-11-02": 9.03
+ },
+ "peak_resident_memory_mb": 606.0
+}
