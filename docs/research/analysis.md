@@ -331,6 +331,7 @@ Every number of this part is copied from a record that the repository keeps in
 | `samples_check.json` | `9f6b7bbf1d1a8efae017bff701cf91bf80695df217e5100089b685e56f4bf88e` | The three tools of the branch `analysis` on the sample files, against the arrays of the comparison of 14 Nov 2026 (part 4.6) |
 | `jobs.json` | `a5b09d9d04e4e0b5ca94531e55b66ceaa30836bcc8db5f79f8c65d9731855929` | The jobs of the first run of the tools through the web service, on 15 Nov 2026 (parts 3.4 and 4.7). The field `service`, the address of the private copy of the service, was removed from the stored copy |
 | `jobs_check.json` | `c96ef649c32d94535702be913e539886d214e5ae9e5b5e1149c93762e32c95c7` | The files and the records that these jobs wrote, read back (part 4.7) |
+| `overviews_check.json` | `5f2dcb30c3d18848009da7b1781f84923f6fc69449ed61fccc2b33ae5e83b566` | The reduced copies of the results that `run_tool` makes from the sample files, against the reduced copies of the input layers (part 4.7) |
 
 The measurements of parts 4.1 to 4.5 were first made on 14 Nov 2026 and were repeated on 15 Nov
 2026 with a second set of scripts, written separately (part 4.6). The records of 14 Nov 2026 are
@@ -607,11 +608,19 @@ the grid is that of the input layers; `inputs` holds the product files of the in
 order; the file is valid for `cog_validate` in strict mode; and the record is valid against the
 schemas.
 
-The reduced copies (overviews) of a result are made by `write_layer` with the resampling `AVERAGE`
-of GDAL, as for a received layer, because `run_tool` does not say otherwise. For a result in
-decibels this averages decibel values, and `write_layer` states in its documentation string that
-the values averaged for a power must be linear. Measured on the first reduced copy (factor 2;
-3,581,043 cells with a value):
+**Reduced copies of a result.** The function of a tool declares in the field `reduction` of its
+result how the reduced copies (overviews) are made, and `write_layer` makes them so. `mean` is the
+resampling `AVERAGE` of GDAL on the values, as for a received layer; Backscatter, Change and
+Coherence, One pair declare it. `mean-power` is declared by Backscatter, One date: `write_layer`
+returns the decibel values to linear power, lets the COG driver of GDAL reduce the power with
+`AVERAGE`, converts each reduced copy to decibels, and gives these copies to the COG driver as the
+overviews of the file (through a virtual file, VRT, and the option `OVERVIEWS=FORCE_USE_EXISTING`).
+The record of a result ends with "Reduced copies made by averaging the values." or with "Reduced
+copies made as the decibels of the mean of the linear power."
+
+In the run through the web service described above (commit `d9d54d5`), every result was still
+reduced with `AVERAGE` on its values, which for a result in decibels averages decibel values.
+Measured on these results, on the first reduced copy (factor 2; 3,581,043 cells with a value):
 
 | | Backscatter, One date, 21 Oct 2026 | Backscatter, One date, 2 Nov 2026 | Backscatter, Change |
 |---|---|---|---|
@@ -621,11 +630,44 @@ the values averaged for a power must be linear. Measured on the first reduced co
 | Largest difference (dB) | `15.234850031091355` | `15.681339741737233` | `11.585588051056583` |
 | Cells that differ by more than 0.5 dB; by more than 1 dB | 1,204,178; 405,244 | 1,200,764; 402,948 | 758,093; 168,757 |
 
-The values at full resolution are not affected. A map that draws a reduced copy of a One date
-result shows values that are on average 0.5 dB lower than the decibels of the mean power. The
-correction belongs to `lynkeus.tools` and `lynkeus.writing` and is not made here (part 7, point
-17). The reduced copy of the coherence result has 992 rows for 1985 rows of the layer, so it was
-not compared block by block.
+
+A map that drew such a reduced copy of a One date result showed values that were on average 0.5 dB
+lower than the decibels of the mean power. For this reason Backscatter, One date now declares
+`mean-power`.
+
+Measured on 15 Nov 2026 after this change, on the four results that `run_tool` makes from the
+sample files of the team folder (GDAL 3.12.2, NumPy 2.5.4; record
+`overviews_check.json`). This run did not pass through the web service.
+
+| | Backscatter, One date, 21 Oct 2026 | Backscatter, One date, 2 Nov 2026 | Backscatter, Change | Coherence, One pair |
+|---|---|---|---|---|
+| `reduction` | `mean-power` | `mean-power` | `mean` | `mean` |
+| Each reduced copy compared with | 10·log10 of the reduced copy of the input layer | the same | see below | the reduced copy of the input layer |
+| Factor 2: cells with a value; largest difference; cells that differ | 3,581,043; `5.7220458984375e-06` dB; 1,276,943 | 3,581,043; `5.7220458984375e-06` dB; 1,246,927 | see below | 896,168; `0.0`; 0 |
+| Factor 4: the same | 896,214; `3.814697265625e-06` dB; 237,669 | 896,214; `3.814697265625e-06` dB; 227,214 | see below | 224,722; `0.0`; 0 |
+| Factor 8: the same | 224,943; `3.814697265625e-06` dB; 56,900 | 224,943; `3.814697265625e-06` dB; 54,983 | see below | no such copy |
+| Cells with a value in one of the two only, at any factor | 0 | 0 | 0 | 0 |
+| SHA-256 of the values at full resolution equal to that of the comparison (part 4.6) | yes | yes | yes | yes |
+| Values at full resolution equal bit for bit to the array of the function | yes | yes | yes | yes |
+| `range` equal to that of the comparison | yes | yes | yes | yes |
+| Size of the file (bytes) | 62,951,605 | 63,031,609 | 69,599,521 | 15,194,282 |
+| Valid for `cog_validate` in strict mode; faults against the schemas of STAC | yes; none | yes; none | yes; none | yes; none |
+
+The reduced copies of a One date result differ from 10·log10 of the reduced copies of its input
+layer by at most 5.7e-06 dB. They are not equal bit for bit, because `write_layer` returns 32-bit
+decibel values to power before it averages them, while the reduced copy of the input layer averages
+the power of the product. The reduced copies of the coherence result are equal bit for bit to
+those of its input layer.
+
+The reduced copies of a Change result remain means of its decibel values. For this result the
+record gives the difference from 10·log10 of the ratio of the reduced copies of the two input
+layers: largest `21.884182929992676` dB at the factor 2, `15.25481128692627` dB at
+the factor 4 and `13.127677470445633` dB at the factor 8. This is another comparison than that
+of the first table: the reduced copy of an input layer averages the cells that hold a value in
+that layer, while the first table averages, for both dates, the cells of each block of four that
+hold a value in the result. A map that draws a
+reduced copy of a Change result shows the mean of the changes of the cells that it covers, and not
+the change of their mean backscatter (part 7, point 17).
 
 Not measured: the memory of a job of a tool, and the display of a result in a browser.
 
@@ -829,12 +871,15 @@ abstracts were read.
     description is the first paragraph of the documentation string of the function (lines 141 and
     142). On 15 Nov 2026 the three tools ran as jobs of a private copy of the web service (part
     4.7). Nothing was tried in a browser.
-17. **Alexandros: the reduced copies of a result in decibels.** `run_tool` lets `write_layer` make
-    the reduced copies of every result by averaging. For a result in decibels the reduced copy is
-    then the mean of decibel values, which is on average 0.5 dB below the decibels of the mean
-    power for the One date results of the pilot area (part 4.7). The values at full resolution are
-    correct. The correction is in `api/src/lynkeus/tools.py` or `api/src/lynkeus/writing.py`, which
-    are not files of this part.
+17. **Alexandros: the reduced copies of a result in decibels.** In the first run through the web
+    service, `write_layer` made the reduced copies of every result by averaging its values, so that
+    a reduced copy of a One date result was on average 0.5 dB below the decibels of the mean power
+    (part 4.7). Now the function of a tool declares how its result is reduced, and the reduced
+    copies of a One date result are the decibels of the mean power (part 4.7). The reduced copies
+    of a Change result remain means of its decibel values, which is not the change of the mean
+    backscatter; to give the latter, the reduced copies would have to be computed from the two
+    input layers, which `write_layer` does not receive. Not tried: a result with the new reduced
+    copies through the web service, and its display in a browser.
 18. **Andreas: the second reading of part 5.** The sources of part 5 were read on 14 Nov 2026. An
     independent verification of 15 Nov 2026 read them a second time in part only. Not opened for
     the second reading: the five pages of the QGIS User Guide 3.44 and the page Scientific colour

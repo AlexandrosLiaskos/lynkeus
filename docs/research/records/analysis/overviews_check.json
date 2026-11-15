@@ -1,0 +1,254 @@
+{
+ "lynkeus": "0.1.0",
+ "numpy": "2.5.4",
+ "gdal": "3.12.2",
+ "results": {
+  "backscatter-state-20261021": {
+   "file_bytes": 62951605,
+   "reduced_copies": [
+    2,
+    4,
+    8
+   ],
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool backscatter-state of Lynkeus 0.1.0 on the layers: gcov-hhhh-20261021. Method: 10*log10 of the covariance term, the conversion that the product states in its field outputBackscatterDecibelConversionFormula (NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7). Reduced copies made as the decibels of the mean of the linear power.",
+   "range": [
+    -17.824283599853516,
+    -0.8974864482879639
+   ],
+   "reduction_declared_by_the_tool": "mean-power",
+   "full_resolution": {
+    "sha256_of_values": "3b7f2dfab1694b478941937522cb512c4a72c8d496d901db6c57a75c86424c68",
+    "sha256_recorded_in_the_comparison": "3b7f2dfab1694b478941937522cb512c4a72c8d496d901db6c57a75c86424c68",
+    "equal_to_the_record": true,
+    "bit_identical_to_the_function": true,
+    "range_equal_to_the_record": true
+   },
+   "levels": {
+    "2": {
+     "compared_with": "10 * log10 of the reduced copy of the input layer",
+     "shape": [
+      1986,
+      1886
+     ],
+     "cells_with_a_value_in_both": 3581043,
+     "cells_with_a_value_in_one_only": 0,
+     "largest_absolute_difference": 5.7220458984375e-06,
+     "cells_that_differ": 1276943,
+     "bit_identical": false
+    },
+    "4": {
+     "compared_with": "10 * log10 of the reduced copy of the input layer",
+     "shape": [
+      993,
+      943
+     ],
+     "cells_with_a_value_in_both": 896214,
+     "cells_with_a_value_in_one_only": 0,
+     "largest_absolute_difference": 3.814697265625e-06,
+     "cells_that_differ": 237669,
+     "bit_identical": false
+    },
+    "8": {
+     "compared_with": "10 * log10 of the reduced copy of the input layer",
+     "shape": [
+      496,
+      471
+     ],
+     "cells_with_a_value_in_both": 224943,
+     "cells_with_a_value_in_one_only": 0,
+     "largest_absolute_difference": 3.814697265625e-06,
+     "cells_that_differ": 56900,
+     "bit_identical": false
+    }
+   }
+  },
+  "backscatter-state-20261102": {
+   "file_bytes": 63031609,
+   "reduced_copies": [
+    2,
+    4,
+    8
+   ],
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool backscatter-state of Lynkeus 0.1.0 on the layers: gcov-hhhh-20261102. Method: 10*log10 of the covariance term, the conversion that the product states in its field outputBackscatterDecibelConversionFormula (NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7). Reduced copies made as the decibels of the mean of the linear power.",
+   "range": [
+    -18.472387313842773,
+    -0.731230616569519
+   ],
+   "reduction_declared_by_the_tool": "mean-power",
+   "full_resolution": {
+    "sha256_of_values": "8d32c8078a047d2cfccf4d8c7a9df82f91dd305d0b3663e7204fa0e3604e5c65",
+    "sha256_recorded_in_the_comparison": "8d32c8078a047d2cfccf4d8c7a9df82f91dd305d0b3663e7204fa0e3604e5c65",
+    "equal_to_the_record": true,
+    "bit_identical_to_the_function": true,
+    "range_equal_to_the_record": true
+   },
+   "levels": {
+    "2": {
+     "compared_with": "10 * log10 of the reduced copy of the input layer",
+     "shape": [
+      1986,
+      1886
+     ],
+     "cells_with_a_value_in_both": 3581043,
+     "cells_with_a_value_in_one_only": 0,
+     "largest_absolute_difference": 5.7220458984375e-06,
+     "cells_that_differ": 1246927,
+     "bit_identical": false
+    },
+    "4": {
+     "compared_with": "10 * log10 of the reduced copy of the input layer",
+     "shape": [
+      993,
+      943
+     ],
+     "cells_with_a_value_in_both": 896214,
+     "cells_with_a_value_in_one_only": 0,
+     "largest_absolute_difference": 3.814697265625e-06,
+     "cells_that_differ": 227214,
+     "bit_identical": false
+    },
+    "8": {
+     "compared_with": "10 * log10 of the reduced copy of the input layer",
+     "shape": [
+      496,
+      471
+     ],
+     "cells_with_a_value_in_both": 224943,
+     "cells_with_a_value_in_one_only": 0,
+     "largest_absolute_difference": 3.814697265625e-06,
+     "cells_that_differ": 54983,
+     "bit_identical": false
+    }
+   }
+  },
+  "backscatter-change-20261021-20261102": {
+   "file_bytes": 69599521,
+   "reduced_copies": [
+    2,
+    4,
+    8
+   ],
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool backscatter-change of Lynkeus 0.1.0 on the layers: gcov-hhhh-20261021, gcov-hhhh-20261102. Method: Ratio of the backscatter of two dates, in decibels (Rignot and van Zyl, 1993, https://doi.org/10.1109/36.239913). Reduced copies made by averaging the values.",
+   "range": [
+    -7.168050689697264,
+    7.168050689697264
+   ],
+   "reduction_declared_by_the_tool": "mean",
+   "full_resolution": {
+    "sha256_of_values": "0333462a5e702218b06d47505367ef8b480f7532e8a9620d75939855875591a0",
+    "sha256_recorded_in_the_comparison": "0333462a5e702218b06d47505367ef8b480f7532e8a9620d75939855875591a0",
+    "equal_to_the_record": true,
+    "bit_identical_to_the_function": true,
+    "range_equal_to_the_record": true
+   },
+   "levels": {
+    "2": {
+     "compared_with": "10 * log10 of the ratio of the reduced copies of the two input layers (for information)",
+     "shape": [
+      1986,
+      1886
+     ],
+     "cells_with_a_value_in_both": 3581043,
+     "cells_with_a_value_in_one_only": 0,
+     "largest_absolute_difference": 21.884182929992676,
+     "cells_that_differ": 3580941,
+     "bit_identical": false
+    },
+    "4": {
+     "compared_with": "10 * log10 of the ratio of the reduced copies of the two input layers (for information)",
+     "shape": [
+      993,
+      943
+     ],
+     "cells_with_a_value_in_both": 896214,
+     "cells_with_a_value_in_one_only": 0,
+     "largest_absolute_difference": 15.25481128692627,
+     "cells_that_differ": 896192,
+     "bit_identical": false
+    },
+    "8": {
+     "compared_with": "10 * log10 of the ratio of the reduced copies of the two input layers (for information)",
+     "shape": [
+      496,
+      471
+     ],
+     "cells_with_a_value_in_both": 224943,
+     "cells_with_a_value_in_one_only": 0,
+     "largest_absolute_difference": 13.127677470445633,
+     "cells_that_differ": 224938,
+     "bit_identical": false
+    }
+   }
+  },
+  "coherence-state-20261009-20261021": {
+   "file_bytes": 15194282,
+   "reduced_copies": [
+    2,
+    4
+   ],
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool coherence-state of Lynkeus 0.1.0 on the layers: gunw-coherence-20261009-20261021. Method: Layer coherenceMagnitude of the product, unchanged (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146). Reduced copies made by averaging the values.",
+   "range": [
+    0.0,
+    1.0
+   ],
+   "reduction_declared_by_the_tool": "mean",
+   "full_resolution": {
+    "sha256_of_values": "f29816600880f897576f065a85663c6b220de092cd3ea930577b89094a104b4d",
+    "sha256_recorded_in_the_comparison": "f29816600880f897576f065a85663c6b220de092cd3ea930577b89094a104b4d",
+    "equal_to_the_record": true,
+    "bit_identical_to_the_function": true,
+    "range_equal_to_the_record": true
+   },
+   "levels": {
+    "2": {
+     "compared_with": "the reduced copy of the input layer",
+     "shape": [
+      992,
+      943
+     ],
+     "cells_with_a_value_in_both": 896168,
+     "cells_with_a_value_in_one_only": 0,
+     "largest_absolute_difference": 0.0,
+     "cells_that_differ": 0,
+     "bit_identical": true
+    },
+    "4": {
+     "compared_with": "the reduced copy of the input layer",
+     "shape": [
+      496,
+      471
+     ],
+     "cells_with_a_value_in_both": 224722,
+     "cells_with_a_value_in_one_only": 0,
+     "largest_absolute_difference": 0.0,
+     "cells_that_differ": 0,
+     "bit_identical": true
+    }
+   }
+  }
+ }
+}
