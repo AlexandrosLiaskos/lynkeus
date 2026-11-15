@@ -4,9 +4,10 @@
 
 The interface writes its notice about the version from this answer, so that
 no number of a limit is written in two places. ``service_limits`` reads the
-resources when it is called: the processors that the service may use and the
-memory that it may hold. The limits are the named constants of the modules
-that apply them, read when the answer is made.
+resources when it is called: the processors that the service may use, the
+memory that it may hold and the free space of the disk of its data folder.
+The limits are the named constants of the modules that apply them, read when
+the answer is made.
 
 The answer describes the project server. A job that runs on an own server of
 a visitor (``docs/Own_Servers.md``) meets the limits that the owner of that
@@ -23,7 +24,7 @@ import os
 from pathlib import Path
 from typing import Annotated, Literal
 
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, Request
 from pydantic import Field
 
 from lynkeus import __version__, harmony, jobs, products, sessions
@@ -54,10 +55,15 @@ class Resources(Format):
     memory : int or None
         Memory that the service may hold, in bytes, or None when it could not
         be read.
+    free_space : int or None
+        Free space of the disk that holds the data folder of the service, in
+        bytes, or None when it could not be read. The service leaves
+        ``Limits.free_space_reserve`` of it free.
     """
 
     processors: float | None = Field(gt=0)
     memory: int | None = Field(gt=0)
+    free_space: int | None = Field(default=None, ge=0)
 
 
 class Limits(Format):
@@ -74,23 +80,31 @@ class Limits(Format):
     running_jobs : int
         Largest number of jobs that run at once (``lynkeus.jobs.MAX_RUNNING_JOBS``).
     waiting_jobs : int
-        Largest number of jobs of all sessions that wait (``lynkeus.jobs.MAX_WAITING_JOBS``).
+        Largest number of jobs of all accounts that wait (``lynkeus.jobs.MAX_WAITING_JOBS``).
     job_time : float
         Longest time that a job may run, in seconds (``lynkeus.jobs.JOB_TIME``).
-    session_unfinished_jobs : int
-        Largest number of jobs of one session that wait or run
-        (``lynkeus.jobs.MAX_SESSION_UNFINISHED_JOBS``).
-    session_layers : int
-        Largest number of layers of one session (``lynkeus.jobs.MAX_SESSION_LAYERS``).
-    session_size : int
-        Largest total size of the layers of one session, in bytes (``lynkeus.jobs.MAX_SESSION_SIZE``).
+    account_unfinished_jobs : int
+        Largest number of jobs of one account that wait or run
+        (``lynkeus.jobs.MAX_ACCOUNT_UNFINISHED_JOBS``).
+    account_layers : int
+        Largest number of layers of one account (``lynkeus.jobs.MAX_ACCOUNT_LAYERS``).
+    account_series : int
+        Largest number of series of one account (``lynkeus.jobs.MAX_ACCOUNT_SERIES``).
+    account_size : int
+        Largest total size of the layers of one account, in bytes (``lynkeus.jobs.MAX_ACCOUNT_SIZE``).
     total_size : int
-        Largest total size of the layers of all sessions, in bytes (``lynkeus.jobs.MAX_TOTAL_SIZE``).
+        Largest total size of the layers of all accounts, in bytes (``lynkeus.jobs.MAX_TOTAL_SIZE``).
+    free_space_reserve : int
+        Free space that the service leaves on the disk of its data folder, in bytes
+        (``lynkeus.jobs.FREE_SPACE_RESERVE``).
+    keep_time : float
+        The keeping time, in seconds: the time for which a layer and a series are kept after they were
+        made or last extended (``lynkeus.jobs.KEEP_TIME``).
     search_products : int
         Largest number of products in one answer of a search (``lynkeus.products.MOST_PRODUCTS``).
     session_idle_time : float
-        Time without use after which a session is removed, in seconds
-        (``lynkeus.sessions.SESSION_IDLE_TIME``).
+        Time without use after which a session ends, in seconds
+        (``lynkeus.sessions.SESSION_IDLE_TIME``). It equals ``keep_time``.
     earthdata_idle_time : float
         Time without use after which a sign-in to Earthdata ends, in seconds
         (``lynkeus.sessions.EARTHDATA_IDLE_TIME``).
@@ -104,10 +118,13 @@ class Limits(Format):
     running_jobs: int = Field(gt=0)
     waiting_jobs: int = Field(gt=0)
     job_time: float = Field(gt=0)
-    session_unfinished_jobs: int = Field(gt=0)
-    session_layers: int = Field(gt=0)
-    session_size: int = Field(gt=0)
+    account_unfinished_jobs: int = Field(gt=0)
+    account_layers: int = Field(gt=0)
+    account_series: int = Field(gt=0)
+    account_size: int = Field(gt=0)
     total_size: int = Field(gt=0)
+    free_space_reserve: int = Field(ge=0)
+    keep_time: float = Field(gt=0)
     search_products: int = Field(gt=0)
     session_idle_time: float = Field(gt=0)
     earthdata_idle_time: float = Field(gt=0)
@@ -209,13 +226,31 @@ def _smaller[Number: (int, float)](first: Number | None, second: Number | None) 
     return min(first, second)
 
 
-def resources(folder: Path = CONTROL_GROUP) -> Resources:
+def free_space(data: Path | None) -> int | None:
+    """Read the free space of the disk that holds the data folder of the service, in bytes.
+
+    Returns
+    -------
+    int or None
+        None when the folder is not known or the free space cannot be read.
+    """
+    if data is None:
+        return None
+    try:
+        return jobs.free_space(data)
+    except OSError:
+        return None
+
+
+def resources(folder: Path = CONTROL_GROUP, data: Path | None = None) -> Resources:
     """Read what the service may use of its machine.
 
     Parameters
     ----------
     folder : pathlib.Path
         Folder of the files of the control group of the service.
+    data : pathlib.Path, optional
+        Data folder of the service, whose disk is measured.
 
     Returns
     -------
@@ -223,11 +258,14 @@ def resources(folder: Path = CONTROL_GROUP) -> Resources:
         The smaller of the limit of the control group and the amount of the
         machine, for the processors and for the memory. The number of
         processors is rounded to two decimal places and is at least 0.01.
+        The free space is that of the disk of the data folder.
     """
     processors = _smaller(processor_limit(folder), machine_processors())
     if processors is not None:
         processors = max(round(processors, 2), 0.01)
-    return Resources(processors=processors, memory=_smaller(memory_limit(folder), machine_memory()))
+    return Resources(
+        processors=processors, memory=_smaller(memory_limit(folder), machine_memory()), free_space=free_space(data)
+    )
 
 
 def limits() -> Limits:
@@ -239,10 +277,13 @@ def limits() -> Limits:
         running_jobs=jobs.MAX_RUNNING_JOBS,
         waiting_jobs=jobs.MAX_WAITING_JOBS,
         job_time=jobs.JOB_TIME,
-        session_unfinished_jobs=jobs.MAX_SESSION_UNFINISHED_JOBS,
-        session_layers=jobs.MAX_SESSION_LAYERS,
-        session_size=jobs.MAX_SESSION_SIZE,
+        account_unfinished_jobs=jobs.MAX_ACCOUNT_UNFINISHED_JOBS,
+        account_layers=jobs.MAX_ACCOUNT_LAYERS,
+        account_series=jobs.MAX_ACCOUNT_SERIES,
+        account_size=jobs.MAX_ACCOUNT_SIZE,
         total_size=jobs.MAX_TOTAL_SIZE,
+        free_space_reserve=jobs.FREE_SPACE_RESERVE,
+        keep_time=jobs.KEEP_TIME,
         search_products=products.MOST_PRODUCTS,
         session_idle_time=sessions.SESSION_IDLE_TIME,
         earthdata_idle_time=sessions.EARTHDATA_IDLE_TIME,
@@ -250,15 +291,17 @@ def limits() -> Limits:
     )
 
 
-def service_limits(folder: Path = CONTROL_GROUP) -> ServiceLimits:
+def service_limits(folder: Path = CONTROL_GROUP, data: Path | None = None) -> ServiceLimits:
     """Return the version, the resources and the limits of the service.
 
     Parameters
     ----------
     folder : pathlib.Path
         Folder of the files of the control group of the service.
+    data : pathlib.Path, optional
+        Data folder of the service, whose disk is measured.
     """
-    return ServiceLimits(version=__version__, resources=resources(folder), limits=limits())
+    return ServiceLimits(version=__version__, resources=resources(folder, data), limits=limits())
 
 
 def control_group() -> Path:
@@ -269,10 +312,12 @@ def control_group() -> Path:
 def install_limits(app: FastAPI) -> None:
     """Add to a web service the address ``GET /api/limits``.
 
-    The address answers every visitor and creates no session.
+    The address answers every visitor and creates no session. The free space is read from the data
+    folder of the service that ``lynkeus.routes.install`` added, and is ``null`` without that service.
     """
 
     @app.get("/api/limits")
-    def service(folder: Annotated[Path, Depends(control_group)]) -> ServiceLimits:
+    def service(request: Request, folder: Annotated[Path, Depends(control_group)]) -> ServiceLimits:
         """Report the version of Lynkeus, the resources of the service and its limits."""
-        return service_limits(folder)
+        running = getattr(request.app.state, "lynkeus", None)
+        return service_limits(folder, getattr(running, "folder", None))

@@ -153,15 +153,35 @@ def test_every_limit_is_the_constant_of_the_module_that_applies_it() -> None:
         running_jobs=jobs.MAX_RUNNING_JOBS,
         waiting_jobs=jobs.MAX_WAITING_JOBS,
         job_time=jobs.JOB_TIME,
-        session_unfinished_jobs=jobs.MAX_SESSION_UNFINISHED_JOBS,
-        session_layers=jobs.MAX_SESSION_LAYERS,
-        session_size=jobs.MAX_SESSION_SIZE,
+        account_unfinished_jobs=jobs.MAX_ACCOUNT_UNFINISHED_JOBS,
+        account_layers=jobs.MAX_ACCOUNT_LAYERS,
+        account_series=jobs.MAX_ACCOUNT_SERIES,
+        account_size=jobs.MAX_ACCOUNT_SIZE,
         total_size=jobs.MAX_TOTAL_SIZE,
+        free_space_reserve=jobs.FREE_SPACE_RESERVE,
+        keep_time=jobs.KEEP_TIME,
         search_products=products.MOST_PRODUCTS,
         session_idle_time=sessions.SESSION_IDLE_TIME,
         earthdata_idle_time=sessions.EARTHDATA_IDLE_TIME,
         earthdata_time=sessions.EARTHDATA_TIME,
     )
+
+
+def test_the_limits_are_those_of_an_account_and_name_the_keeping_time_and_the_reserve() -> None:
+    answer = limits.limits().model_dump()
+    # The four limits of an account stand in the place of the limits of a session (docs/Storage.md).
+    assert {name for name in answer if name.startswith(("account_", "session_"))} == {
+        "account_layers",
+        "account_series",
+        "account_size",
+        "account_unfinished_jobs",
+        "session_idle_time",
+    }
+    assert (answer["account_layers"], answer["account_series"], answer["account_unfinished_jobs"]) == (50, 50, 4)
+    assert (answer["account_size"], answer["total_size"]) == (2_000_000_000, 20_000_000_000)
+    # One duration: the keeping time, which is also the time without use after which a session ends.
+    assert answer["keep_time"] == answer["session_idle_time"] == 14 * 24 * 3600
+    assert answer["free_space_reserve"] == 5_000_000_000 == 10 * answer["layer_size"]
 
 
 def test_a_limit_is_read_when_the_answer_is_made_and_is_not_a_copy(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -189,7 +209,7 @@ def test_the_answer_holds_the_version_the_resources_and_the_limits(tmp_path: Pat
     )
 
 
-@pytest.mark.parametrize("change", [{"processors": 0}, {"memory": 0}, {"memory": -1}, {"disk": 1}])
+@pytest.mark.parametrize("change", [{"processors": 0}, {"memory": 0}, {"memory": -1}, {"disk": 1}, {"free_space": -1}])
 def test_the_format_of_the_resources_refuses_what_is_not_an_amount(change: dict[str, int]) -> None:
     with pytest.raises(ValidationError):
         limits.Resources(**{"processors": 2, "memory": GIBIBYTE, **change})
@@ -214,8 +234,41 @@ def test_the_address_answers_every_visitor_and_creates_no_session(tmp_path: Path
     assert "set-cookie" not in response.headers
     assert response.json() == limits.service_limits(folder).model_dump(mode="json")
     assert response.json()["version"] == __version__
-    assert response.json()["resources"] == {"processors": 4, "memory": 2 * GIBIBYTE}
+    # Without the service of the record and the jobs there is no data folder to measure.
+    assert response.json()["resources"] == {"processors": 4, "memory": 2 * GIBIBYTE, "free_space": None}
     assert set(response.json()["limits"]) == set(limits.Limits.model_fields)
+
+
+@pytest.mark.usefixtures("machine")
+def test_the_address_gives_the_free_space_of_the_disk_of_the_data_folder(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("LYNKEUS_DATA_FOLDER", str(tmp_path / "data"))
+    measured: list[Path] = []
+
+    def free(folder: Path) -> int:
+        measured.append(folder)
+        return 18_000_000_000
+
+    monkeypatch.setattr(jobs, "free_space", free)
+    app = server.create_app()
+    app.dependency_overrides[limits.control_group] = lambda: group(tmp_path, memory=str(2 * GIBIBYTE))
+    with TestClient(app) as client:
+        response = client.get("/api/limits")
+        assert response.json()["resources"] == {"processors": 4, "memory": 2 * GIBIBYTE, "free_space": 18_000_000_000}
+        assert measured == [tmp_path / "data"]
+        assert "set-cookie" not in response.headers
+
+        def unreadable(folder: Path) -> int:
+            raise OSError("no such disk")
+
+        monkeypatch.setattr(jobs, "free_space", unreadable)
+        assert client.get("/api/limits").json()["resources"]["free_space"] is None
+
+
+def test_the_free_space_of_no_folder_is_not_known() -> None:
+    assert limits.free_space(None) is None
+    assert limits.resources().free_space is None
 
 
 def test_the_address_answers_when_the_resources_cannot_be_read(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -225,7 +278,7 @@ def test_the_address_answers_when_the_resources_cannot_be_read(tmp_path: Path, m
     app.dependency_overrides[limits.control_group] = lambda: tmp_path
     response = TestClient(app).get("/api/limits")
     assert response.status_code == 200
-    assert response.json()["resources"] == {"processors": None, "memory": None}
+    assert response.json()["resources"] == {"processors": None, "memory": None, "free_space": None}
 
 
 def test_the_service_reads_the_folder_of_its_own_control_group() -> None:
