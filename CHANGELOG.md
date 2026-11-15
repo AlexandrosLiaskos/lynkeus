@@ -115,6 +115,16 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   from the ISO XML file of the product.
 - The sources of Surface displacement, One pair in the dialog Sources of the Help tab.
 - The analysis tools Backscatter, Series and Coherence, Series: the values of many dates against time, at a point or for the area, shown as a chart with a table in the pane Series and listed under Series in the Catalog pane.
+- The storage of the web service by account (`docs/Storage.md`): a layer, a series and a job of the project
+  server belong to the Earthdata account and are listed in every browser that is signed in to it. A layer and a
+  series state the moment until which they are kept, 14 days after they were made or last extended, and the
+  addresses `POST /api/layers/{name}/extension`, `POST /api/series/{name}/extension` and
+  `POST /api/storage/extension` keep them for 14 more days. A removal run every 5 minutes removes what has
+  passed its moment. `DELETE /api/storage` removes everything of the account from the project server.
+- The entry of a layer states the request that made it (`source`), so that the same layer can be requested again.
+- The web service reads the free space of the disk of its data folder before a job starts and while the job
+  writes, and it leaves 5 gigabytes free. `GET /api/limits` gives the free space and that reserve.
+- The log limits of the three containers in `compose.yaml`: 3 files of 10 megabytes each.
 
 ### Changed
 
@@ -187,6 +197,18 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - A notice in a pane and the outcome at the foot of a tool pane, such as those of Get layer and Search products,
   have an X that closes them. A closed notice returns when its text changes or its pane opens again, and a closed
   outcome with the next run.
+- A session of the web service is made when a visitor signs in to Earthdata, and by nothing else: a visitor who
+  does not sign in receives no cookie. A session ends after 14 days without use, at Sign out, or when its browser
+  signs in to another account. The loss of the Earthdata token no longer ends anything: the visitor stays signed
+  in, everything that sends no request to NASA works, and a job that needs the token is answered with 401 and one
+  sentence. `GET /api/session` answers `{"earthdata": {"user": ..., "token": true or false}}`.
+- The limits of a session are the limits of an account. `GET /api/limits` names `account_layers`,
+  `account_series`, `account_size` and `account_unfinished_jobs`, and gains `keep_time` and `free_space_reserve`.
+- The record file has version 4. A file of version 1, 2 or 3, of the project server or of Lynkeus Server, is
+  brought to it when it is opened, and keeps every row.
+- The log of the web server writes "-" in the place of the random folder of a layer file, and of the names of the
+  server and of the layer in the address of a file that a server of a visitor keeps.
+- An error answer of the web service names RFC 9457, which replaced RFC 7807; its form is unchanged.
 
 ### Removed
 
