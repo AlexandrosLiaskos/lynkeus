@@ -1,7 +1,15 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { expect, test } from "vitest";
-import { LARGER_LAYER, limitSentences, resourcesSentence, serverVersionSentence, versionSentence } from "./sentences";
+import {
+  freeSpaceSentence,
+  LARGER_LAYER,
+  limitSentences,
+  resourcesSentence,
+  serverVersionSentence,
+  tokenTimeWords,
+  versionSentence,
+} from "./sentences";
 import { SAMPLE, sampleWith } from "./testLimits";
 
 test("the first sentence names the version and says that the application is under development", () => {
@@ -21,19 +29,19 @@ test("the resources are said in the numbers of the answer", () => {
   expect(resourcesSentence(SAMPLE.resources)).toBe(
     "Lynkeus runs on a server where it may use 2 processors and 2 GB of memory.",
   );
-  expect(resourcesSentence({ processors: 1, memory: 536870912 })).toBe(
+  expect(resourcesSentence({ processors: 1, memory: 536870912, free_space: null })).toBe(
     "Lynkeus runs on a server where it may use 1 processor and 512 MB of memory.",
   );
 });
 
 test("a resource that the server could not read is said to be unread", () => {
-  expect(resourcesSentence({ processors: 2, memory: null })).toBe(
+  expect(resourcesSentence({ processors: 2, memory: null, free_space: null })).toBe(
     "Lynkeus runs on a server where it may use 2 processors. The memory that it may use could not be read.",
   );
-  expect(resourcesSentence({ processors: null, memory: 2147483648 })).toBe(
+  expect(resourcesSentence({ processors: null, memory: 2147483648, free_space: null })).toBe(
     "Lynkeus runs on a server where it may use 2 GB of memory. The number of processors that it may use could not be read.",
   );
-  expect(resourcesSentence({ processors: null, memory: null })).toBe(
+  expect(resourcesSentence({ processors: null, memory: null, free_space: null })).toBe(
     "The processors and the memory that Lynkeus may use on its server could not be read.",
   );
 });
@@ -42,11 +50,13 @@ test("each limit is said with its reason, in the numbers of the answer", () => {
   expect(limitSentences(SAMPLE)).toEqual([
     "A layer may hold at most 25 million cells, because Lynkeus has 2 GB of memory and runs 2 jobs at once. An area that needs more cells is refused.",
     "At most 2 jobs run at once, because Lynkeus has 2 processors. A job may run for at most 40 minutes, which covers the wait for NASA Harmony and the writing of the layer.",
-    "A session may have at most 4 jobs waiting or running, so that one visitor does not fill the queue, which holds at most 20 jobs of all sessions.",
-    "A session may keep at most 50 layers and 2 GB of files, and the files of one layer may take at most 500 MB, because the layers of all sessions share 20 GB of the disk of the server.",
+    "An Earthdata account may have at most 4 jobs waiting or running, so that one visitor does not fill the queue, which holds at most 20 jobs of all accounts.",
+    "An Earthdata account may keep at most 50 layers, 20 series and 2 GB of files on the project server, and the files of one layer may take at most 500 MB, because the layers of all accounts share 20 GB of the disk of the server.",
+    "The project server keeps a layer or a series for 14 days after it was made or last extended, and then removes it, which frees its storage. A file that you download is the permanent copy.",
+    "A job is refused when it would leave less than 2 GB free on the disk of the server, so that the disk does not fill. At present 18 GB are free.",
     "A search lists at most 200 products at a time. The Catalog pane loads the next ones on request.",
-    "A session that is not used for 7 days is removed with its jobs and its layers, which frees their storage.",
-    "A sign-in to Earthdata ends after 30 minutes without use, and after 8 hours at the latest, because the server keeps the Earthdata token for a limited time only.",
+    "A browser stays signed in to an Earthdata account for 14 days without use, the time for which a layer is kept.",
+    "The web service holds the Earthdata user token in its memory for 30 minutes without use, and 8 hours at the latest. Afterwards the visitor stays signed in, and the token is asked again when a request to NASA needs it.",
   ]);
 });
 
@@ -59,26 +69,30 @@ test("the sentences follow other numbers of the answer", () => {
         running_jobs: 3,
         waiting_jobs: 30,
         job_time: 3600,
-        session_unfinished_jobs: 1,
-        session_layers: 1,
-        session_size: 4000000000,
+        account_unfinished_jobs: 1,
+        account_layers: 1,
+        account_series: 1,
+        account_size: 4000000000,
         total_size: 40000000000,
         search_products: 100,
-        session_idle_time: 86400,
+        keep_time: 86400,
+        free_space_reserve: 500000000,
         earthdata_idle_time: 900,
         earthdata_time: 3600,
       },
-      { processors: 4, memory: 4294967296 },
+      { processors: 4, memory: 4294967296, free_space: 0 },
     ),
   );
   expect(sentences).toEqual([
     "A layer may hold at most 36 million cells, because Lynkeus has 4 GB of memory and runs 3 jobs at once. An area that needs more cells is refused.",
     "At most 3 jobs run at once, because Lynkeus has 4 processors. A job may run for at most 1 hour, which covers the wait for NASA Harmony and the writing of the layer.",
-    "A session may have at most 1 job waiting or running, so that one visitor does not fill the queue, which holds at most 30 jobs of all sessions.",
-    "A session may keep at most 1 layer and 4 GB of files, and the files of one layer may take at most 750 MB, because the layers of all sessions share 40 GB of the disk of the server.",
+    "An Earthdata account may have at most 1 job waiting or running, so that one visitor does not fill the queue, which holds at most 30 jobs of all accounts.",
+    "An Earthdata account may keep at most 1 layer, 1 series and 4 GB of files on the project server, and the files of one layer may take at most 750 MB, because the layers of all accounts share 40 GB of the disk of the server.",
+    "The project server keeps a layer or a series for 1 day after it was made or last extended, and then removes it, which frees its storage. A file that you download is the permanent copy.",
+    "A job is refused when it would leave less than 500 MB free on the disk of the server, so that the disk does not fill. At present 0 bytes are free.",
     "A search lists at most 100 products at a time. The Catalog pane loads the next ones on request.",
-    "A session that is not used for 1 day is removed with its jobs and its layers, which frees their storage.",
-    "A sign-in to Earthdata ends after 15 minutes without use, and after 1 hour at the latest, because the server keeps the Earthdata token for a limited time only.",
+    "A browser stays signed in to an Earthdata account for 1 day without use, the time for which a layer is kept.",
+    "The web service holds the Earthdata user token in its memory for 15 minutes without use, and 1 hour at the latest. Afterwards the visitor stays signed in, and the token is asked again when a request to NASA needs it.",
   ]);
 });
 
@@ -105,4 +119,21 @@ test("a reason that needs a resource is said without its number when the resourc
 test("one processor is said in the singular", () => {
   const [, jobs] = limitSentences(sampleWith({ running_jobs: 1 }, { processors: 1 }));
   expect(jobs?.startsWith("At most 1 job runs at once, because Lynkeus has 1 processor. ")).toBe(true);
+});
+
+test("the free space is said only where the server could read it", () => {
+  expect(freeSpaceSentence(sampleWith({}, { free_space: null }))).toBe(
+    "A job is refused when it would leave less than 2 GB free on the disk of the server, so that the disk does not fill.",
+  );
+  expect(freeSpaceSentence(SAMPLE).endsWith(" At present 18 GB are free.")).toBe(true);
+});
+
+test("the times of the token are said in the numbers of the answer", () => {
+  expect(tokenTimeWords(SAMPLE.limits)).toBe("30 minutes without use, and 8 hours at the latest");
+});
+
+test("no sentence about what the server keeps names a session", () => {
+  for (const sentence of limitSentences(SAMPLE)) {
+    expect(sentence).not.toMatch(/\bsessions?\b/);
+  }
 });
