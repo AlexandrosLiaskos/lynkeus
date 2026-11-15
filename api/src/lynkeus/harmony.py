@@ -385,6 +385,21 @@ def _layers(product: ProductType, channels: Sequence[str]) -> tuple[_Layer, ...]
         layers.append(_Layer("soilMoisture", "Soil moisture", "Soil moisture", "m3 m-3", "percentiles", "YlGnBu", 200))
         quantity = "Uncertainty of soil moisture"
         layers.append(_Layer("soilMoistureUncertainty", quantity, quantity, "m3 m-3", "percentiles", "viridis", 200))
+        # Whole numbers whose lowest bit is set where the mission does not recommend the retrieval (JPL D-107677
+        # Rev C, page 37). The tools of the group Soil moisture leave those cells out.
+        quantity = "Retrieval quality flag of the soil moisture, whose lowest bit marks a retrieval not recommended"
+        layers.append(
+            _Layer(
+                "retrievalQualityFlag",
+                "Retrieval quality flag",
+                quantity,
+                "1",
+                "extremes",
+                "tab10",
+                200,
+                averaged=False,
+            )
+        )
     return tuple(layers)
 
 

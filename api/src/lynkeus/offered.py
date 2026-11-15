@@ -79,7 +79,9 @@ class SeriesInputs(Format):
     Attributes
     ----------
     inputs : tuple of str
-        The ``id`` of each input layer, in any order.
+        The ``id`` of each input layer, the dates in any order. A tool that
+        reads two layers of each date takes them one after the other, in
+        the order that its method sheet gives.
     title : str
         Name of the series.
     point : Point or None
@@ -92,7 +94,10 @@ class SeriesInputs(Format):
         min_length=2,
         max_length=MAX_SESSION_LAYERS,
         title="Input layers",
-        description="The id of each input layer, in any order. A layer is given once.",
+        description=(
+            "The id of each input layer, the dates in any order. A tool that reads two layers of each date takes "
+            "them one after the other, in the order that its method sheet gives. A layer is given once."
+        ),
     )
     title: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=MAX_TITLE_LENGTH)] = Field(
         description="Name of the series."

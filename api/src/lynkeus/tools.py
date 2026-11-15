@@ -70,8 +70,8 @@ def run_tool(
         scale and method are those that the function of the tool returns. Its
         dates and input files are those of the input layers. The reduced
         copies of its file are made as the function of the tool declares,
-        and the words of the two ends of its legend are those that the
-        function gives.
+        and the words of the two ends of its legend and the note are those
+        that the function gives. The record repeats the note in its lineage.
 
     Raises
     ------
@@ -134,10 +134,12 @@ def _run_tool(
         inputs=list(dict.fromkeys(name for description in descriptions for name in description.inputs)),
         lineage=(
             f"Result of the analysis tool {run.tool} of {PROGRAM} on the layers: {names}. Method: {result.method}. "
-            f"Reduced copies made {_REDUCED[result.reduction]}."
+            + (f"{result.note} " if result.note else "")
+            + f"Reduced copies made {_REDUCED[result.reduction]}."
         ),
         method=result.method,
         ends=result.ends,
+        note=result.note,
         decibels=result.reduction == "mean-power",
         links=[
             {"rel": "derived_from", "href": description.record, "type": "application/geo+json"}
@@ -229,8 +231,8 @@ def run_series(
     -------
     SeriesDescription
         The description of the series. Its entries, product files, layer
-        name, quantity, unit, reduction, range and method are those that the
-        function of the tool returns. Its point is that of the run, its cell
+        name, quantity, unit, reduction, range, method and note are those
+        that the function of the tool returns. Its point is that of the run, its cell
         is the cell of the grid of the layers that holds the point, and its
         area is the rectangle around that grid. One layer is read at a time.
 
@@ -291,6 +293,7 @@ def _run_series(
         layer=result.layer,
         program=PROGRAM,
         method=result.method,
+        note=result.note,
     )
     report(100, "The series is ready.")
     return description
