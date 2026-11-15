@@ -140,7 +140,7 @@ export const METHODS: Record<SheetTool, Method> = {
       },
       {
         name: "How to read",
-        text: "A positive value means that the radar echoes of the later pair are more alike than those of the earlier pair, and a negative value that they are less alike. The map does not state the cause: rain, snow, the growth of plants and farming also change the coherence. On the test area the mean change between pairs of 12 days without a known event lies between −0.242 and 0.200.",
+        text: "A positive value means that the radar echoes of the later pair are more alike than those of the earlier pair, and a negative value that they are less alike. The map does not state the cause: rain, snow, the growth of plants and farming also change the coherence. On the test area the mean change between pairs of 12 days without a known event lies between −0.242 and 0.200 (20 m layers).",
       },
       {
         name: "Limits",

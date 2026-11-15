@@ -212,7 +212,7 @@ test("the numbers of the summaries of the three new tools are those of their she
   expect(change).toContain("the mean change is -0.013");
   expect(change).toContain("it is 0.200");
   expect(change).toContain("it is -0.242");
-  expect(rowOf(METHODS["coherence-change"], "How to read")).toContain("between −0.242 and 0.200");
+  expect(rowOf(METHODS["coherence-change"], "How to read")).toContain("between −0.242 and 0.200 (20 m layers)");
   for (const tool of ["coherence-change", "soil-moisture-change"] as const) {
     expect(oneLine(sheet(tool))).toContain('GDAL 3.12.2 "Chicoutimi"');
     expect(rowOf(METHODS[tool], "Checked")).toContain("the program `gdal raster calc` of GDAL 3.12.2");
