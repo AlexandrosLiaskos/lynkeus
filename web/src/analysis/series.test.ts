@@ -31,8 +31,18 @@ const GUNW = (first: string, second: string, release: string) =>
   `NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_${first}T234330_${first}T234405_${second}T234330_${second}T234405_${release}_N_F_J_001.h5`;
 
 /** The four backscatter layers of the pilot area: two of the provisional release and two of the validated one. */
-const SEP = term({ id: "hh-sep", title: "Backscatter HH, 27 Sep 2026", dates: ["2026-09-27"], inputs: [GCOV("031", "20260927", "P05023")] });
-const OCT_9 = term({ id: "hh-oct-9", title: "Backscatter HH, 9 Oct 2026", dates: ["2026-10-09"], inputs: [GCOV("032", "20261009", "P05023")] });
+const SEP = term({
+  id: "hh-sep",
+  title: "Backscatter HH, 27 Sep 2026",
+  dates: ["2026-09-27"],
+  inputs: [GCOV("031", "20260927", "P05023")],
+});
+const OCT_9 = term({
+  id: "hh-oct-9",
+  title: "Backscatter HH, 9 Oct 2026",
+  dates: ["2026-10-09"],
+  inputs: [GCOV("032", "20261009", "P05023")],
+});
 const OCT_21 = term();
 const NOV = laterTerm();
 const FOUR = [NOV, SEP, OCT_21, OCT_9];
@@ -43,7 +53,10 @@ const pair = (id: string, first: string, second: string, release: string): Layer
     id,
     title: `Coherence HH, 20 m, ${id}`,
     layer: "wrappedInterferogram/HH/coherenceMagnitude",
-    dates: [`${first.slice(0, 4)}-${first.slice(4, 6)}-${first.slice(6)}`, `${second.slice(0, 4)}-${second.slice(4, 6)}-${second.slice(6)}`],
+    dates: [
+      `${first.slice(0, 4)}-${first.slice(4, 6)}-${first.slice(6)}`,
+      `${second.slice(0, 4)}-${second.slice(4, 6)}-${second.slice(6)}`,
+    ],
     inputs: [GUNW(first, second, release)],
   });
 const PAIRS = [
@@ -86,14 +99,18 @@ test("a Series tool reads the layers of the tool of one date, and the limits of 
     String.raw`_RELEASE = re.compile(r"_(?P<crid>(?P<major>[A-Z]\d{2})\d{3})_[A-Z]_[A-Z]_[A-Z]_\d{3}(?:\.h5)?$")`,
   );
   expect([FEWEST_LAYERS, MOST_LAYERS]).toEqual([2, 50]);
-  expect(read("offered.py")).toContain("    inputs: tuple[Text, ...] = Field(\n        min_length=2,\n        max_length=MAX_SESSION_LAYERS,");
+  expect(read("offered.py")).toContain(
+    "    inputs: tuple[Text, ...] = Field(\n        min_length=2,\n        max_length=MAX_SESSION_LAYERS,",
+  );
   expect(read("jobs.py")).toContain("MAX_SESSION_LAYERS = 50\n");
 });
 
 test("the release of a product is read from the name of its file", () => {
   expect(majorRelease(SEP)).toBe("P05");
   expect(majorRelease(NOV)).toBe("P05");
-  expect(majorRelease(term({ inputs: ["NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405"] }))).toBeNull();
+  expect(
+    majorRelease(term({ inputs: ["NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405"] })),
+  ).toBeNull();
   expect(daysWords(["2026-10-09", "2026-10-21"])).toBe("9 Oct 2026 to 21 Oct 2026");
   expect(daysWords(["2026-11-02"])).toBe("2 Nov 2026");
 });
@@ -109,10 +126,7 @@ test("the layers that a tool reads together form one group, the earliest date fi
 });
 
 test("layers of another term, frame or major release stand in other groups, and a group needs two dates", () => {
-  const cross = [
-    term({ id: "hv-oct", layer: "HVHV" }),
-    laterTerm({ id: "hv-nov", layer: "HVHV" }),
-  ];
+  const cross = [term({ id: "hv-oct", layer: "HVHV" }), laterTerm({ id: "hv-nov", layer: "HVHV" })];
   const elsewhere = term({
     id: "frame-68",
     dates: ["2026-10-21"],
@@ -132,7 +146,9 @@ test("layers of another term, frame or major release stand in other groups, and 
   // One layer, two layers of one date and a result of a tool give no group.
   expect(seriesGroups("backscatter-series", [OCT_21])).toEqual([]);
   expect(seriesGroups("backscatter-series", [OCT_21, twice])).toEqual([]);
-  expect(seriesGroups("backscatter-series", [{ ...OCT_21, kind: "result", layer: null, method: "m" }, NOV])).toEqual([]);
+  expect(seriesGroups("backscatter-series", [{ ...OCT_21, kind: "result", layer: null, method: "m" }, NOV])).toEqual(
+    [],
+  );
   expect(seriesGroups("coherence-series", FOUR)).toEqual([]);
 });
 
@@ -144,11 +160,11 @@ test("the form chooses every layer of a group at first, and of two layers of one
 
 test("the name of a series is proposed from the quantity, the channel and the first and the last date", () => {
   expect(seriesTitle("backscatter-series", [SEP, OCT_9, OCT_21, NOV])).toBe(
-    "Series of backscatter HH in dB, 27 Sep 2026 to 2 Nov 2026",
+    "Series of backscatter HH in dB, 27 Sept 2026 to 2 Nov 2026",
   );
   const [pairs] = seriesGroups("coherence-series", PAIRS);
   expect(seriesTitle("coherence-series", pairs?.layers ?? [])).toBe(
-    "Series of coherence magnitude HH, 20 m, 15 Sep 2026 to 21 Oct 2026",
+    "Series of coherence magnitude HH, 20 m, 15 Sept 2026 to 21 Oct 2026",
   );
   expect(seriesTitle("backscatter-series", [])).toBe("");
 });
@@ -173,15 +189,20 @@ test("each field states its fault, and the foot states the first of them", () =>
   expect(few.faults.layers).toBe("Choose at least two layers.");
   expect(few.inputs).toBeNull();
   const many = Array.from({ length: 51 }, (_, index) =>
-    term({ id: `layer-${String(index)}`, dates: [`2026-${String(1 + Math.floor(index / 28)).padStart(2, "0")}-${String(1 + (index % 28)).padStart(2, "0")}`] }),
+    term({
+      id: `layer-${String(index)}`,
+      dates: [
+        `2026-${String(1 + Math.floor(index / 28)).padStart(2, "0")}-${String(1 + (index % 28)).padStart(2, "0")}`,
+      ],
+    }),
   );
   expect(checkSeries(choices({ group: many, chosen: many.map((layer) => layer.id) })).faults.layers).toBe(
     "Choose at most 50 layers.",
   );
   const twice = term({ id: "hh-oct-again" });
-  expect(checkSeries(choices({ group: [OCT_21, twice, NOV], chosen: ["hh-oct", "hh-oct-again", "hh-nov"] })).faults.layers).toBe(
-    "Two of the chosen layers have the same dates. Choose one of them.",
-  );
+  expect(
+    checkSeries(choices({ group: [OCT_21, twice, NOV], chosen: ["hh-oct", "hh-oct-again", "hh-nov"] })).faults.layers,
+  ).toBe("Two of the chosen layers have the same dates. Choose one of them.");
   const nowhere = checkSeries(choices({ place: "point", latitude: "", longitude: "200" }));
   expect(nowhere.faults).toEqual({
     layers: null,

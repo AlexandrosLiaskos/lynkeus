@@ -109,6 +109,7 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   Coherence, Change says in one sentence why it does not compare two pairs of dates.
 - The sources of these three tools in the dialog Sources of the Help tab.
   screen.
+- The analysis tools Backscatter, Series and Coherence, Series: the values of many dates against time, at a point or for the area, shown as a chart with a table in the pane Series and listed under Series in the Catalog pane.
 
 ### Changed
 

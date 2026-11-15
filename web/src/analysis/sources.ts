@@ -4,7 +4,8 @@ import type { Source } from "../shared/sources";
  * The methods, programs and datasets that the Analysis and Help tabs use. The entries are those of part 6 of
  * `docs/research/analysis.md` and, for the tools Coherence, Change and Soil moisture, One date and Change, the
  * references, the source programs and the data of part 6 of `docs/research/analysis-coherence-change.md` and of
- * `docs/research/analysis-soil-moisture.md`. NumPy, Rasterio and harmony-py stand in the list of the Data part,
+ * `docs/research/analysis-soil-moisture.md`. The Series tools add the notebooks and the uses of part 6 of
+ * `docs/research/analysis-series.md`. NumPy, Rasterio and harmony-py stand in the list of the Data part,
  * which the page Sources shows beside this one, because a name stands in the lists once.
  */
 export const SOURCES: readonly Source[] = [
@@ -13,14 +14,14 @@ export const SOURCES: readonly Source[] = [
     version: "Rev F, version 1.5.0, 8 July 2026",
     licence: "Copyright 2024 California Institute of Technology. Government sponsorship acknowledged",
     url: "https://nisar-docs.asf.alaska.edu/product-specification/",
-    use: "The layers of a GCOV product, their units, the mask and the field of the conversion to decibels, for the two backscatter tools.",
+    use: "The layers of a GCOV product, their units, the mask and the field of the conversion to decibels, for the backscatter tools.",
   },
   {
     name: "NASA SDS Product Specification, Level-2 Geocoded Unwrapped Interferogram (L2 GUNW), JPL D-102272",
     version: "Rev E, version 1.2.1, 8 November 2024",
     licence: "Copyright 2024 California Institute of Technology. Government sponsorship acknowledged",
     url: "https://nisar-docs.asf.alaska.edu/product-specification/",
-    use: "The layers coherenceMagnitude of a GUNW product, for the two coherence tools.",
+    use: "The layers coherenceMagnitude of a GUNW product, for the coherence tools One pair, Change and Series.",
   },
   {
     name: "NASA SDS Product Specification, Level-3 Soil Moisture (L3 SME2), JPL D-107677",
@@ -49,14 +50,14 @@ export const SOURCES: readonly Source[] = [
     version: "Rev C, 19 October 2025",
     licence: "All rights reserved (section 1.5 of the document)",
     url: "https://nisar-docs.asf.alaska.edu/naming-conventions/",
-    use: "The fields of the name of a product file from which the tools and their forms read the instrument, the product type, the track, the direction, the frame and, for a pair of dates, the bandwidth mode.",
+    use: "The fields of the name of a product file from which the tools and their forms read the instrument, the product type, the track, the direction, the frame and, for a pair of dates, the bandwidth mode, and the release of the processing software, which the Series tools compare.",
   },
   {
     name: "ASF NISAR Cookbook",
     version: "Commit 17b69c8, 3 November 2026",
     licence: "Apache-2.0",
     url: "https://github.com/ASFOpenSARlab/NISAR_Cookbook",
-    use: "Source program of Backscatter, One date and of Backscatter, Change (notebook NISAR_GCOV_SARChangeDetectionMethods.ipynb), and their legends.",
+    use: "Source program of Backscatter, One date and of Backscatter, Change (notebook NISAR_GCOV_SARChangeDetectionMethods.ipynb), and their legends. Source program of the two Series tools (notebooks NISAR_GCOV_Time_Series_Example.ipynb and NISAR_Pixel_Conversion.ipynb).",
   },
   {
     name: "ISCE3",
@@ -95,7 +96,7 @@ export const SOURCES: readonly Source[] = [
     name: "Touzi, Lopes, Bruniquel and Vachon (1999), Coherence estimation for SAR imagery",
     licence: "IEEE licence for its publications, named in the Crossref record of the article",
     url: "https://doi.org/10.1109/36.739146",
-    use: "How to read the coherence, and why Coherence, Change compares layers of one spacing.",
+    use: "How to read the coherence, why Coherence, Change compares layers of one spacing, and the bias of the mean coherence of an area.",
   },
   {
     name: "Zebker and Villasenor (1992), Decorrelation in interferometric radar echoes",

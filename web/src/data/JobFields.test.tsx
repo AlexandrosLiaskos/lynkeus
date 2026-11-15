@@ -67,7 +67,11 @@ test("a job of a Series tool names its point in words and carries the identifier
     job({
       processID: "backscatter-series",
       status: "successful",
-      inputs: { inputs: ["first", "second"], title: "Series of backscatter", point: { longitude: -70.9, latitude: 42.8 } },
+      inputs: {
+        inputs: ["first", "second"],
+        title: "Series of backscatter",
+        point: { longitude: -70.9, latitude: 42.8 },
+      },
       series: "5b0a52ffe356b487a469c1b2c7989d7e",
     }),
   );

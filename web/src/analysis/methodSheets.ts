@@ -1,5 +1,5 @@
 import type { Method } from "./methods";
-import type { FinishedTool } from "./tools";
+import type { SheetTool } from "./series";
 
 /**
  * The summary of the method of each finished tool: the title of its method sheet in `docs/methods/` and the rows
@@ -7,7 +7,7 @@ import type { FinishedTool } from "./tools";
  * here, and the test `methodSheets.test.ts` requires each row to equal the row of its sheet. A change of a sheet
  * is repeated here.
  */
-export const METHODS: Record<FinishedTool, Method> = {
+export const METHODS: Record<SheetTool, Method> = {
   "backscatter-state": {
     title: "Backscatter, One date",
     rows: [
@@ -227,6 +227,80 @@ export const METHODS: Record<FinishedTool, Method> = {
       {
         name: "References",
         text: "[Singh (1989)](https://doi.org/10.1080/01431168908903939), of which section 4.1 was read. [NISAR L3 SME2 Product Specification, JPL D-107677 Rev C](https://nisar-docs.asf.alaska.edu/product-specification/).",
+      },
+    ],
+  },
+  "backscatter-series": {
+    title: "Backscatter, Series",
+    rows: [
+      {
+        name: "What it shows",
+        text: "The radar backscatter (gamma0) of many dates against time, at a point or as the mean of the area, in decibels.",
+      },
+      {
+        name: "Input",
+        text: "The same backscatter layer of 2 to 50 GCOV products of one track, direction and frame, one for each date. A point is given by its latitude and longitude.",
+      },
+      {
+        name: "Formula",
+        text: "`10 * log10(mean(gamma0))` over the cells of each date. At a point it is the one cell that holds the point.",
+      },
+      {
+        name: "Result",
+        text: "A series in decibels (dB): one value for each date, with the number of cells behind it. It is shown as a chart and a table, and it has no file.",
+      },
+      {
+        name: "How to read",
+        text: "Each value is one date. A higher value means that the surface returned more of the radar signal on that date. The cause of a change is for the user to establish.",
+      },
+      {
+        name: "Limits",
+        text: "The values may come from products of two processing releases, provisional and validated, and it is not confirmed that they compare without a correction. Over an area the value is the mean of the power, given in decibels. One area and four dates were compared.",
+      },
+      {
+        name: "Checked",
+        text: "For the mean of the area and at five points, the values differ from those of the notebooks of the ASF NISAR Cookbook by less than 0.00001 dB (lower Merrimack River, 27 Sep to 2 Nov 2026).",
+      },
+      {
+        name: "References",
+        text: "[ASF NISAR Cookbook](https://github.com/ASFOpenSARlab/NISAR_Cookbook). [NISAR L2 GCOV Product Specification, JPL D-102274 Rev F](https://nisar-docs.asf.alaska.edu/product-specification/). [SDS Product File Naming Conventions, JPL D-102255 Rev C](https://nisar-docs.asf.alaska.edu/naming-conventions/).",
+      },
+    ],
+  },
+  "coherence-series": {
+    title: "Coherence, Series",
+    rows: [
+      {
+        name: "What it shows",
+        text: "The interferometric coherence of many pairs of dates against time, at a point or as the mean of the area: a value from 0 to 1 that states how alike the radar echoes of two dates are.",
+      },
+      {
+        name: "Input",
+        text: "The same coherence layer (`coherenceMagnitude`) of 2 to 50 GUNW products of one track, direction and frame, one for each pair. A point is given by its latitude and longitude.",
+      },
+      {
+        name: "Formula",
+        text: "The mean of the layer of the product over the cells of each pair. At a point it is the one cell that holds the point.",
+      },
+      {
+        name: "Result",
+        text: "A series without unit, from 0 to 1: one value for each pair, with the number of cells behind it. It is shown as a chart and a table, and it has no file.",
+      },
+      {
+        name: "How to read",
+        text: "Each value is one pair, drawn from its first to its second date. Near 1, the radar echoes of the two dates are alike, and near 0 they differ. Pairs of different spans can stand in one series.",
+      },
+      {
+        name: "Limits",
+        text: "The values may come from products of two processing releases, provisional and validated, and it is not confirmed that they compare without a correction. The mean coherence of an area is biased toward higher values (Touzi et al., 1999, abstract), and the tool applies no correction. One area and three pairs were compared.",
+      },
+      {
+        name: "Checked",
+        text: "For the mean of the area, the values differ by less than 0.0000001 from the mean that the code of a notebook of the ASF NISAR Cookbook gives on the same layers, and at five points they are equal (lower Merrimack River, 15 Sep to 21 Oct 2026).",
+      },
+      {
+        name: "References",
+        text: "[Touzi et al. (1999)](https://doi.org/10.1109/36.739146), of which the abstract was read. [NISAR L2 GUNW Product Specification, JPL D-102272 Rev E](https://nisar-docs.asf.alaska.edu/product-specification/). [ASF NISAR Cookbook](https://github.com/ASFOpenSARlab/NISAR_Cookbook).",
       },
     ],
   },

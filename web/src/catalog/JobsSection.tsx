@@ -171,8 +171,8 @@ function JobItem({ job, onDetails, onGone }: JobItemProps) {
       : listed && series
         ? { label: "Show series", run: () => showSeries(series) }
         : runAgain
-        ? { label: "Run again", run: runAgain }
-        : null;
+          ? { label: "Run again", run: runAgain }
+          : null;
   const more: MenuButtonItem[] = [
     { label: "Details", onSelect: onDetails },
     ...(!unfinished && runAgain && main?.run !== runAgain ? [{ label: "Run again", onSelect: runAgain }] : []),

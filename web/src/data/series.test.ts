@@ -49,7 +49,7 @@ test("the series of the session are read from the address of the server", async 
 test("a list that holds something else than a series is not kept, and the fault is stated", async () => {
   server.series = [seriesItem()];
   await loadSeries();
-  server.series = [{ series: { ...series(), entries: [] }, created: "2026-11-15T13:02:11Z" } as never];
+  server.series = [{ series: { ...series(), entries: [] }, created: "2026-11-15T13:02:11Z" }];
   await loadSeries();
   expect(seriesFaultStore.get()).toBe(UNREADABLE);
   expect(seriesStore.get()).toHaveLength(1);

@@ -35,7 +35,8 @@ import { accepted, MOST_TITLE } from "./tools";
 
 /** The explanations of the titles of the form. Each one is one sentence and shows from the button beside its title. */
 export const ABOUT_SERIES = {
-  group: "The layer of the product, with the track, the frame, the direction of the orbit and the release of its products.",
+  group:
+    "The layer of the product, with the track, the frame, the direction of the orbit and the release of its products.",
   layers: "The same layer of two or more dates, received with Get layer and kept on the project server.",
   place: "The series gives the mean of the whole area of the layers, or the value of the cell that holds a point.",
   latitude: "The latitude of the point in degrees, as 42.8 or 42.8 N or 42° 48′ 30″ N.",

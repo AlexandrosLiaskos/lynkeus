@@ -66,7 +66,8 @@ const STARTED: Started = { id: "job-1", sending: false, fault: null, cancelled: 
 
 test("the explanations of the titles of the form are one sentence each", () => {
   expect(ABOUT_SERIES).toEqual({
-    group: "The layer of the product, with the track, the frame, the direction of the orbit and the release of its products.",
+    group:
+      "The layer of the product, with the track, the frame, the direction of the orbit and the release of its products.",
     layers: "The same layer of two or more dates, received with Get layer and kept on the project server.",
     place: "The series gives the mean of the whole area of the layers, or the value of the cell that holds a point.",
     latitude: "The latitude of the point in degrees, as 42.8 or 42.8 N or 42° 48′ 30″ N.",
@@ -86,18 +87,21 @@ test.each(SERIES_TOOLS)("the i of the pane of %s states what the tool shows, in 
   expect(pane.textContent).toContain(rowOf(METHODS[tool], "What it shows"));
 });
 
-test.each(SERIES_TOOLS)("without two layers that it reads together, the pane of %s names the layers to get", async (tool) => {
-  show(tool, [term(), coherence()]);
-  expect(screen.getByText("No layers to use")).toBeDefined();
-  expect(screen.getByText(RECEIVE_SERIES[tool])).toBeDefined();
-  expect(missing()).toBe(NO_LAYERS);
-  expect(runButton().getAttribute("aria-disabled")).toBe("true");
-  expect(screen.queryByLabelText("Series name")).toBeNull();
-  await userEvent.click(screen.getByRole("button", { name: "Get layer" }));
-  expect(dockStore.get().tools).toContain(GET_LAYER_PANE);
-  await userEvent.click(runButton());
-  expect(server.sent("POST")).toEqual([]);
-});
+test.each(SERIES_TOOLS)(
+  "without two layers that it reads together, the pane of %s names the layers to get",
+  async (tool) => {
+    show(tool, [term(), coherence()]);
+    expect(screen.getByText("No layers to use")).toBeDefined();
+    expect(screen.getByText(RECEIVE_SERIES[tool])).toBeDefined();
+    expect(missing()).toBe(NO_LAYERS);
+    expect(runButton().getAttribute("aria-disabled")).toBe("true");
+    expect(screen.queryByLabelText("Series name")).toBeNull();
+    await userEvent.click(screen.getByRole("button", { name: "Get layer" }));
+    expect(dockStore.get().tools).toContain(GET_LAYER_PANE);
+    await userEvent.click(runButton());
+    expect(server.sent("POST")).toEqual([]);
+  },
+);
 
 test("the form offers the layers of the series by date, chooses them all and proposes a name", () => {
   show("backscatter-series", [...THREE, coherence()]);
@@ -107,7 +111,7 @@ test("the form offers the layers of the series by date, chooses them all and pro
     ["Backscatter HH, 2 Nov 2026", true],
   ]);
   expect(screen.getByLabelText<HTMLInputElement>("Series name").value).toBe(
-    "Series of backscatter HH in dB, 27 Sep 2026 to 2 Nov 2026",
+    "Series of backscatter HH in dB, 27 Sept 2026 to 2 Nov 2026",
   );
   expect(screen.getByLabelText<HTMLInputElement>("Whole area").checked).toBe(true);
   expect(screen.getByLabelText<HTMLInputElement>("At a point").checked).toBe(false);
@@ -129,7 +133,7 @@ test("a series of the whole area is started as a job with the layers in the orde
       content: {
         inputs: {
           inputs: ["hh-sep", "hh-oct", "hh-nov"],
-          title: "Series of backscatter HH in dB, 27 Sep 2026 to 2 Nov 2026",
+          title: "Series of backscatter HH in dB, 27 Sept 2026 to 2 Nov 2026",
         },
       },
     },
@@ -172,7 +176,7 @@ test("a series at a point takes its latitude and longitude in degrees and sends 
   expect(server.sent("POST")[0]?.content).toEqual({
     inputs: {
       inputs: ["hh-sep", "hh-oct", "hh-nov"],
-      title: "Series of backscatter HH in dB, 27 Sep 2026 to 2 Nov 2026",
+      title: "Series of backscatter HH in dB, 27 Sept 2026 to 2 Nov 2026",
       point: { longitude: -70.9, latitude: 42.8 },
     },
   });
@@ -197,7 +201,11 @@ test("with layers of two kinds that cannot stand in one series, the field Layer 
   ];
   show("backscatter-series", [...THREE, ...cross]);
   const layer = screen.getByLabelText<HTMLSelectElement>("Layer");
-  expect(within(layer).getAllByRole("option").map((option) => option.textContent)).toEqual([
+  expect(
+    within(layer)
+      .getAllByRole("option")
+      .map((option) => option.textContent),
+  ).toEqual([
     "HHHH, track 141, frame 67, descending, release P05",
     "HVHV, track 141, frame 67, descending, release P05",
   ]);
@@ -240,8 +248,16 @@ test("the foot follows the job: its start, its progress, a refusal, and the seri
     text: "Starting the job",
   });
   const fault = "A session holds at most 50 series. Remove a series and try again.";
-  expect(seriesRunOf({ id: null, sending: false, fault, cancelled: false }, [])).toEqual({ state: "error", text: fault });
-  const running = job({ jobID: "job-1", status: "running", message: "Reading the layer of 21 Oct 2026.", progress: 40 });
+  expect(seriesRunOf({ id: null, sending: false, fault, cancelled: false }, [])).toEqual({
+    state: "error",
+    text: fault,
+  });
+  const running = job({
+    jobID: "job-1",
+    status: "running",
+    message: "Reading the layer of 21 Oct 2026.",
+    progress: 40,
+  });
   expect(seriesRunOf(STARTED, [running])).toEqual({
     state: "running",
     progress: 0.4,
@@ -252,11 +268,23 @@ test("the foot follows the job: its start, its progress, a refusal, and the seri
     state: "error",
     text: "The point lies outside the area of the layers.",
   });
-  expect(seriesRunOf({ ...STARTED, cancelled: true }, [])).toEqual({ state: "warning", text: "The job was cancelled." });
+  expect(seriesRunOf({ ...STARTED, cancelled: true }, [])).toEqual({
+    state: "warning",
+    text: "The job was cancelled.",
+  });
   expect(seriesRunOf(STARTED, [])).toEqual({ state: "warning", text: "The job is no longer in the list of jobs." });
-  const done = job({ jobID: "job-1", status: "successful", message: "The series is ready.", progress: 100, series: "s-1" });
+  const done = job({
+    jobID: "job-1",
+    status: "successful",
+    message: "The series is ready.",
+    progress: 100,
+    series: "s-1",
+  });
   const unread = seriesRunOf(STARTED, [done]);
-  expect(unread).toMatchObject({ state: "success", text: "The series is ready. It is under Series in the Catalog pane." });
+  expect(unread).toMatchObject({
+    state: "success",
+    text: "The series is ready. It is under Series in the Catalog pane.",
+  });
   expect(unread && "action" in unread ? unread.action?.label : null).toBe("Show the Catalog pane");
   const read = seriesRunOf(STARTED, [done], new Set(["s-1"]));
   expect(read && "action" in read ? read.action?.label : null).toBe("Show the series");
@@ -274,7 +302,7 @@ test("a job that the form started is followed to its end, and the foot offers th
   expect(started?.processID).toBe("backscatter-series");
   server.change("job-1", { status: "running", message: "Reading the layer of 27 Sep 2026.", progress: 30 });
   await act(() => loadJobs());
-  expect(screen.getByText("Running. Reading the layer of 27 Sep 2026.")).toBeDefined();
+  expect(screen.getByText("Running. Reading the layer of 27 Sep 2026. (30 %)")).toBeDefined();
   server.series = [seriesItem()];
   server.change("job-1", { status: "successful", message: "The series is ready.", progress: 100, series: series().id });
   await act(async () => {

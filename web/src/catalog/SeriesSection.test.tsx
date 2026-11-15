@@ -70,11 +70,11 @@ test("each series shows its name, its quantity with the unit, and its dates with
   await show();
   expect(screen.getByRole("button", { name: "Series (2)", expanded: true })).toBeDefined();
   expect([...document.querySelectorAll(".layer .catalog-pick")].map((text) => text.textContent)).toEqual([
-    "Coherence HH at p1Interferometric coherence (magnitude) (no unit)3 pairs · 15 Sep 2026 to 21 Oct 2026 · At a point",
-    "Backscatter HH, mean of the areaRadar backscatter gamma0 (dB)4 dates · 27 Sep 2026 to 2 Nov 2026 · Whole area",
+    "Coherence HH at p1Interferometric coherence (magnitude) (no unit)3 pairs · 15 Sept 2026 to 21 Oct 2026 · At a point",
+    "Backscatter HH, mean of the areaRadar backscatter gamma0 (dB)4 dates · 27 Sept 2026 to 2 Nov 2026 · Whole area",
   ]);
-  expect(seriesLine(series())).toBe("4 dates · 27 Sep 2026 to 2 Nov 2026 · Whole area");
-  expect(seriesLine(pairSeries())).toBe("3 pairs · 15 Sep 2026 to 21 Oct 2026 · At a point");
+  expect(seriesLine(series())).toBe("4 dates · 27 Sept 2026 to 2 Nov 2026 · Whole area");
+  expect(seriesLine(pairSeries())).toBe("3 pairs · 15 Sept 2026 to 21 Oct 2026 · At a point");
 });
 
 test("the item of a series shows the command Show, and its menu holds Rename and Remove", async () => {
@@ -170,9 +170,14 @@ test("a list that could not be read states the fault and offers a new reading", 
   server.refuse("GET", "/api/series", 503, "The server is busy. Try again in a few minutes.");
   await show();
   expect(seriesFaultStore.get()).toBe("The server is busy. Try again in a few minutes.");
-  expect(screen.getByRole("alert").textContent).toContain("The server is busy. Try again in a few minutes.");
+  const alert = screen.getByRole("alert");
+  expect(alert.textContent).toContain("The server is busy. Try again in a few minutes.");
   server.accept();
-  await userEvent.click(within(screen.getByRole("alert")).getByRole("button", { name: "Read again" }));
+  const notice = alert.closest<HTMLElement>(".notice");
+  if (!notice) {
+    throw new Error("the fault is not in a notice");
+  }
+  await userEvent.click(within(notice).getByRole("button", { name: "Read again" }));
   await vi.waitFor(() => expect(seriesStore.get()).toHaveLength(2));
   expect(screen.queryByRole("alert")).toBeNull();
 });

@@ -171,6 +171,6 @@ export function isSeriesDescription(value: unknown): value is SeriesDescription 
   if (point === null ? cell !== null : !isPoint(point) || !isCell(cell)) {
     return false;
   }
-  const keys = (entries as SeriesEntry[]).map(datesKey);
+  const keys = entries.map(datesKey);
   return keys.every((key, index) => index === 0 || (keys[index - 1] ?? "") < key);
 }

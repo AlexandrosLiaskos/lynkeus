@@ -56,14 +56,14 @@ test("a value is written with its decimals, a missing one as no value, and a num
 
 test("the table of a series gives the date, the value and the number of cells of every entry", () => {
   expect(tableRows(series())).toEqual([
-    ["27 Sep 2026", "−4.32", "14,316,415"],
+    ["27 Sept 2026", "−4.32", "14,316,415"],
     ["9 Oct 2026", "−4.83", "14,316,411"],
     ["21 Oct 2026", "−4.83", "14,316,413"],
     ["2 Nov 2026", "−4.74", "14,316,416"],
   ]);
   expect(tableRows(pairSeries())).toEqual([
-    ["15 Sep 2026 to 27 Sep 2026", "0.370", "1"],
-    ["27 Sep 2026 to 9 Oct 2026", "0.322", "1"],
+    ["15 Sept 2026 to 27 Sept 2026", "0.370", "1"],
+    ["27 Sept 2026 to 9 Oct 2026", "0.322", "1"],
     ["9 Oct 2026 to 21 Oct 2026", "0.648", "1"],
   ]);
   expect([ofPairs(series()), ofPairs(pairSeries())]).toEqual([false, true]);
@@ -92,22 +92,21 @@ test("a series of dates is shown as a chart with the unit on its value axis and 
   expect(chart.querySelector("polyline")?.getAttribute("points")?.split(" ")).toHaveLength(4);
   expect(chart.querySelectorAll("circle")).toHaveLength(4);
   const table = screen.getByRole("table", { name: "Values of the series Backscatter HH, mean of the area" });
-  expect(within(table).getAllByRole("columnheader").map((head) => head.textContent)).toEqual([
-    "Date",
-    "Value (dB)",
-    "Cells",
-  ]);
+  expect(
+    within(table)
+      .getAllByRole("columnheader")
+      .map((head) => head.textContent),
+  ).toEqual(["Date", "Value (dB)", "Cells"]);
   expect(rowsOf(table)).toEqual(tableRows(series()));
   // The table stands after the chart.
-  expect(Array.from(document.querySelectorAll(".series svg, .series table"), (element) => element.tagName)).toEqual([
-    "svg",
-    "TABLE",
-  ]);
+  expect(
+    Array.from(document.querySelectorAll(".series .series-chart svg, .series table"), (element) => element.tagName),
+  ).toEqual(["svg", "TABLE"]);
   expect(valueOf("Place")).toBe("Whole area of the layers");
   expect(valueOf("Cell")).toBeNull();
   expect(valueOf("Value of a date")).toBe("The mean of the power of the cells, given in decibels");
   expect(valueOf("Layer of the product")).toBe("HHHH");
-  expect(valueOf("27 Sep 2026")).toBe(series().inputs[0]);
+  expect(valueOf("27 Sept 2026")).toBe(series().inputs[0]);
 });
 
 test("a date without a value is not drawn, and the table says no value", () => {
@@ -127,7 +126,19 @@ test("a series of pairs is drawn as segments from the first to the second date, 
   expect(screen.getByText("Interferometric coherence (magnitude) (no unit)")).toBeDefined();
   const chart = screen.getByRole("img");
   const texts = Array.from(chart.querySelectorAll("text"), (text) => text.textContent);
-  expect(texts).toEqual(["no unit", "0.0", "0.2", "0.4", "0.6", "0.8", "1.0", "15 Sep", "9 Oct", "21 Oct", "Date (2026)"]);
+  expect(texts).toEqual([
+    "no unit",
+    "0.0",
+    "0.2",
+    "0.4",
+    "0.6",
+    "0.8",
+    "1.0",
+    "15 Sep",
+    "9 Oct",
+    "21 Oct",
+    "Date (2026)",
+  ]);
   expect(chart.querySelectorAll("polyline")).toHaveLength(0);
   const segments = Array.from(chart.querySelectorAll("line.series-chart-line"));
   expect(segments).toHaveLength(3);
@@ -138,11 +149,11 @@ test("a series of pairs is drawn as segments from the first to the second date, 
   // The second pair starts on the date on which the first one ends.
   expect(segments[1]?.getAttribute("x1")).toBe(segments[0]?.getAttribute("x2"));
   const table = screen.getByRole("table");
-  expect(within(table).getAllByRole("columnheader").map((head) => head.textContent)).toEqual([
-    "Pair",
-    "Value (no unit)",
-    "Cells",
-  ]);
+  expect(
+    within(table)
+      .getAllByRole("columnheader")
+      .map((head) => head.textContent),
+  ).toEqual(["Pair", "Value (no unit)", "Cells"]);
   expect(rowsOf(table)).toEqual(tableRows(pairSeries()));
   expect(valueOf("Place")).toBe("At the point 42.80000° N, 71.00000° W");
   expect(valueOf("Cell")).toBe("Row 852, column 846, with its centre at 42.80004° N, 71.00004° W");

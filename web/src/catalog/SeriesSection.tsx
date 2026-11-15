@@ -145,12 +145,7 @@ function SeriesRow({ item, shown, onRemove }: SeriesRowProps) {
       ) : (
         <>
           <div className="item-main">
-            <button
-              type="button"
-              className="catalog-pick"
-              aria-pressed={shown}
-              onClick={() => showSeries(series.id)}
-            >
+            <button type="button" className="catalog-pick" aria-pressed={shown} onClick={() => showSeries(series.id)}>
               <span className="item-title">{series.title}</span>
               <span className="item-line">
                 {series.quantity} ({unitWords(series.unit)})

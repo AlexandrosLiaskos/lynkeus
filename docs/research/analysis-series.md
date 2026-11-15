@@ -673,9 +673,12 @@ Decisions of this part, each of which the owner may change:
    runs from 0 to 1, the range of the series; for a backscatter it follows the values.
 7. **The level of validation.** The table does not name it. A layer description has no field for
    the level of validation of its product, in the server or in the interface, at the commit
-   `14ea838` and on `main` at the commit `6a17496`, so the level of an entry cannot be named without
-   new work on the server. The names of the product files, which carry the release, are listed under
-   the table.
+   `14ea838` and on `main` at the commit `e686b49`. The level stands only in the sentence
+   `processing:lineage` of the STAC record of a received layer (`get_layer` in
+   `api/src/lynkeus/harmony.py`), and a series has no STAC record, so the level of an entry cannot be
+   named without new work on the server. The names of the product files, which carry the release, are
+   listed under the table.
 8. **Sources.** The page Sources names the series tools in the entries that were there. The guide
-   of the ASF DAAC, the HyP3 documentation and the provisional collections are not added, because
-   their licences were not read.
+   of the ASF DAAC, the HyP3 documentation and the provisional collection of the GCOV products are not
+   added, because their licences were not read. The provisional collection of the GUNW products stands
+   in the page from the work on Coherence, Change, and its entry does not name the series.

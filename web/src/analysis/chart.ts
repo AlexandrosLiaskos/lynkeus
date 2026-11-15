@@ -114,7 +114,10 @@ export function chartOf(series: SeriesDescription, frame: Frame): Chart {
   const chosen =
     count <= 1
       ? dates.slice(0, 1)
-      : Array.from({ length: count }, (_, index) => dates[Math.round((index * (dates.length - 1)) / (count - 1))] ?? "");
+      : Array.from(
+          { length: count },
+          (_, index) => dates[Math.round((index * (dates.length - 1)) / (count - 1))] ?? "",
+        );
   const years = [...new Set(dates.map((date) => date.slice(0, 4)))];
   const drawn = series.entries.flatMap((entry): Drawn[] =>
     entry.value === null
@@ -123,10 +126,14 @@ export function chartOf(series: SeriesDescription, frame: Frame): Chart {
   );
   const single = series.entries.every((entry) => entry.dates.length === 1);
   return {
-    values: (sound ? marks : [0, 1]).map((value) => ({ at: y(value), words: markWords(value, sound ? marks : [0, 1]) })),
+    values: (sound ? marks : [0, 1]).map((value) => ({
+      at: y(value),
+      words: markWords(value, sound ? marks : [0, 1]),
+    })),
     days: [...new Set(chosen)].map((date) => ({ at: x(date), words: dayWords(date) })),
     time: years.length > 1 ? `Date (${years[0] ?? ""} to ${years.at(-1) ?? ""})` : `Date (${years[0] ?? ""})`,
     drawn,
-    line: single && drawn.length > 1 ? drawn.map((point) => `${point.x1.toFixed(1)},${point.y.toFixed(1)}`).join(" ") : "",
+    line:
+      single && drawn.length > 1 ? drawn.map((point) => `${point.x1.toFixed(1)},${point.y.toFixed(1)}`).join(" ") : "",
   };
 }

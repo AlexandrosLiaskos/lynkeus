@@ -2,18 +2,19 @@ import { readFileSync } from "node:fs";
 import { expect, test } from "vitest";
 import { sourceFaults } from "../help/sources";
 import { SOURCES } from "./sources";
-import { FINISHED_TOOLS } from "./tools";
+import { SHEET_TOOLS } from "./series";
 
 /**
  * The texts of the method sheets of the finished tools and of the research notes of the part, as the repository
  * holds them. The first note holds the tools of level 1; the tools Coherence, Change and Soil moisture, One date
- * and Change have their own notes.
+ * and Change have their own notes, and so have the two Series tools.
  */
-const SHEETS = FINISHED_TOOLS.map((tool) => readFileSync(`../docs/methods/${tool}.md`, "utf8")).join("\n");
+const SHEETS = SHEET_TOOLS.map((tool) => readFileSync(`../docs/methods/${tool}.md`, "utf8")).join("\n");
 const NOTE = readFileSync("../docs/research/analysis.md", "utf8");
 const COHERENCE_CHANGE_NOTE = readFileSync("../docs/research/analysis-coherence-change.md", "utf8");
 const SOIL_MOISTURE_NOTE = readFileSync("../docs/research/analysis-soil-moisture.md", "utf8");
-const NOTES = [NOTE, COHERENCE_CHANGE_NOTE, SOIL_MOISTURE_NOTE].join("\n");
+const SERIES_NOTE = readFileSync("../docs/research/analysis-series.md", "utf8");
+const NOTES = [NOTE, COHERENCE_CHANGE_NOTE, SOIL_MOISTURE_NOTE, SERIES_NOTE].join("\n");
 
 /** A text with every run of white space as one space. */
 function oneLine(text: string): string {
@@ -153,4 +154,25 @@ test("the two provisional collections are those that the notes of the new tools 
   const moisture = source("NISAR Provisional Soil Moisture");
   expect(moisture.version).toBe("Collection NISAR_L3_SME2_PROVISIONAL_V1");
   expect(moisture.url).toBe("https://doi.org/10.5067/NIL3SME2-P1");
+});
+
+test("the sources of the Series tools are those that their method sheets cite", () => {
+  const sheets = oneLine(SHEETS);
+  for (const notebook of ["NISAR_GCOV_Time_Series_Example.ipynb", "NISAR_Pixel_Conversion.ipynb"]) {
+    expect(sheets).toContain(notebook);
+    expect(source("ASF NISAR Cookbook").use).toContain(notebook);
+  }
+  expect(sheets).toContain(
+    "space-averaged coherence magnitude is biased toward higher values (Touzi et al., 1999, abstract)",
+  );
+  expect(source("Touzi, Lopes, Bruniquel and Vachon (1999)").use).toContain(
+    "and the bias of the mean coherence of an area.",
+  );
+  expect(sheets).toContain("section 4.1, pages 20 and 21 (the composite release identifier, CRID)");
+  expect(source("Science Data Systems (SDS) L-SAR Product File Naming Conventions").use).toContain(
+    "the release of the processing software",
+  );
+  expect(source("NASA SDS Product Specification, Level-2 Geocoded Unwrapped").use).toContain(
+    "for the coherence tools One pair, Change and Series.",
+  );
 });
