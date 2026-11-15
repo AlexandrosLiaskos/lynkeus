@@ -16,6 +16,7 @@ export function series(change: Partial<SeriesDescription> = {}): SeriesDescripti
     range: null,
     point: null,
     cell: null,
+    shape: null,
     area: { west: -71.21240946923143, south: 42.59232397512833, east: -70.74021462753375, north: 42.957757337981135 },
     entries: [
       { dates: ["2026-09-27"], value: -4.315111978395169, cells: 14316415 },
@@ -49,6 +50,7 @@ export function pairSeries(change: Partial<SeriesDescription> = {}): SeriesDescr
     range: [0, 1],
     point: { longitude: -71, latitude: 42.8 },
     cell: { row: 852, column: 846, longitude: -71.00003754277799, latitude: 42.80004114499954 },
+    shape: null,
     area: { west: -71.21240624479763, south: 42.59241396597496, east: -70.74021713322617, north: 42.957667328501266 },
     entries: [
       { dates: ["2026-09-15", "2026-09-27"], value: 0.36974722146987915, cells: 1 },

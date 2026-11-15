@@ -1,5 +1,4 @@
-import type { Method } from "./methods";
-import type { SheetTool } from "./series";
+import type { Method, Sheet } from "./methods";
 
 /**
  * The summary of the method of each finished tool: the title of its method sheet in `docs/methods/` and the rows
@@ -7,7 +6,7 @@ import type { SheetTool } from "./series";
  * here, and the test `methodSheets.test.ts` requires each row to equal the row of its sheet. A change of a sheet
  * is repeated here.
  */
-export const METHODS: Record<SheetTool, Method> = {
+export const METHODS: Record<Sheet, Method> = {
   "backscatter-state": {
     title: "Backscatter, One date",
     rows: [
@@ -338,6 +337,43 @@ export const METHODS: Record<SheetTool, Method> = {
       {
         name: "References",
         text: "[Touzi et al. (1999)](https://doi.org/10.1109/36.739146), of which the abstract was read. [NISAR L2 GUNW Product Specification, JPL D-102272 Rev E](https://nisar-docs.asf.alaska.edu/product-specification/). [ASF NISAR Cookbook](https://github.com/ASFOpenSARlab/NISAR_Cookbook).",
+      },
+    ],
+  },
+  "area-statistics": {
+    title: "Statistics in an area",
+    rows: [
+      {
+        name: "What it shows",
+        text: "The number of cells with data of a result inside a rectangle or polygon drawn on the map, with their mean, standard deviation, lowest value, median and highest value.",
+      },
+      {
+        name: "Input",
+        text: "The result of a tool that maps, at full resolution, and an area drawn on the map: a rectangle or a polygon of at most 250 corners whose sides do not cross.",
+      },
+      {
+        name: "Formula",
+        text: "A cell counts when its centre lies inside the area and it holds a value; then `mean = sum(x) / n` and `deviation = sqrt(sum((x - mean)^2) / n)`.",
+      },
+      {
+        name: "Result",
+        text: "Numbers in the unit of the result, shown in its Properties and stored in its description and its STAC record. The median of an even number of cells is the mean of the two in the middle.",
+      },
+      {
+        name: "How to read",
+        text: "The numbers describe only the cells inside the area. For a result in decibels the mean is that of the decibel values, and not the decibels of the mean power, which Backscatter, Series gives.",
+      },
+      {
+        name: "Limits",
+        text: "A cell that a side cuts counts only when its centre lies inside. Each side, a straight line on the map, is followed on the grid of the result in pieces of at most one cell. The statistics belong to the area of the run, so an area drawn later needs a new run.",
+      },
+      {
+        name: "Checked",
+        text: "The comparison with `gdal raster zonal-stats` of GDAL 3.12.2 on results of the test area is under way.",
+      },
+      {
+        name: "References",
+        text: "[GDAL, gdal raster zonal-stats](https://gdal.org/en/stable/programs/gdal_raster_zonal_stats.html). [GDAL, gdal_rasterize](https://gdal.org/en/stable/programs/gdal_rasterize.html), for the rule of the cell centre.",
       },
     ],
   },

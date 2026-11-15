@@ -1,6 +1,14 @@
 import { readFileSync } from "node:fs";
 import { expect, test } from "vitest";
-import { isLayerDescription, isLayerRequest, type LayerDescription, type LayerRequest } from "./layer";
+import {
+  isAreaStatistics,
+  isLayerDescription,
+  isLayerRequest,
+  isShape,
+  type AreaStatistics,
+  type LayerDescription,
+  type LayerRequest,
+} from "./layer";
 
 const LAYER: LayerDescription = {
   id: "gcov-hhhh-20261020",
@@ -122,4 +130,62 @@ test.each([
   ["the area is not valid", { area: { west: 1, south: 0, east: 0, north: 1 } }],
 ])("a layer request is rejected when %s", (_reason, change) => {
   expect(isLayerRequest({ ...REQUEST, ...change })).toBe(false);
+});
+
+const SHAPE = {
+  crs: "EPSG:3857",
+  kind: "polygon",
+  points: [
+    [0, 0],
+    [10, 0],
+    [10, 10],
+    [0, 0],
+  ],
+} as const;
+
+const STATISTICS: AreaStatistics = {
+  area: SHAPE,
+  cells: 3,
+  mean: -10.5,
+  deviation: 1.25,
+  minimum: -12,
+  median: -10,
+  maximum: -9.5,
+};
+
+test("a result may carry its statistics inside an area drawn on the map, and a layer may not", () => {
+  const result = { ...LAYER, kind: "result", layer: null, method: "Reference of the method" };
+  expect(isLayerDescription({ ...result, statistics: STATISTICS })).toBe(true);
+  expect(isLayerDescription({ ...result, statistics: null })).toBe(true);
+  expect(isLayerDescription({ ...LAYER, statistics: STATISTICS })).toBe(false);
+  const none = { area: SHAPE, cells: 0, mean: null, deviation: null, minimum: null, median: null, maximum: null };
+  expect(isAreaStatistics(none)).toBe(true);
+  expect(isAreaStatistics({ ...none, mean: 1 })).toBe(false);
+  expect(isAreaStatistics({ ...STATISTICS, median: null })).toBe(false);
+  expect(isAreaStatistics({ ...STATISTICS, cells: 2.5 })).toBe(false);
+  expect(isAreaStatistics({ ...STATISTICS, area: { ...SHAPE, crs: "WGS 84" } })).toBe(false);
+});
+
+test("an area drawn on the map has 4 to 251 points of two numbers, the last equal to the first", () => {
+  expect(isShape(SHAPE)).toBe(true);
+  expect(isShape({ ...SHAPE, kind: "circle" })).toBe(false);
+  expect(isShape({ ...SHAPE, points: SHAPE.points.slice(0, 3) })).toBe(false);
+  expect(isShape({ ...SHAPE, points: [...SHAPE.points.slice(0, 3), [1, 1]] })).toBe(false);
+  expect(isShape({ ...SHAPE, points: [[0, 0], [10, 0], [10, "10"], [0, 0]] })).toBe(false);
+  const many = Array.from({ length: 251 }, (_, index) => [index, index % 2] as const);
+  expect(isShape({ ...SHAPE, points: [...many, many[0]] })).toBe(false);
+});
+
+test("the server gives an area and its statistics the same form", () => {
+  const layers = readFileSync("../api/src/lynkeus/layers.py", "utf8");
+  for (const line of [
+    '    crs: str = Field(pattern=r"^EPSG:[0-9]{1,6}$")\n',
+    '    kind: Literal["rectangle", "polygon"]\n',
+    "    points: tuple[tuple[float, float], ...] = Field(min_length=4, max_length=MOST_CORNERS + 1)\n",
+    "    cells: int = Field(ge=0)\n",
+    "    statistics: AreaStatistics | None = None\n",
+    '            raise ValueError("only a result has statistics in an area")\n',
+  ]) {
+    expect(layers).toContain(line);
+  }
 });

@@ -39,7 +39,7 @@ export function seriesLine(series: SeriesDescription): string {
   return [
     `${String(count)} ${pairs ? "pairs" : "dates"}`,
     `${formatDay(first)} to ${formatDay(last)}`,
-    series.point ? "At a point" : "Whole area",
+    series.point ? "At a point" : series.shape ? "Drawn area" : "Whole area",
   ].join(" · ");
 }
 

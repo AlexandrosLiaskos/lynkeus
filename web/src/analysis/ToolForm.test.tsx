@@ -16,7 +16,11 @@ import { mapLayersStore } from "../shared/mapLayers";
 import { messagesStore } from "../shared/messages/messages";
 import { resetPanes } from "../shared/panes";
 import { serversStore, type ServerName } from "../shared/servers";
+import { drawingStore } from "../data/state";
+import { testMap } from "../data/testProducts";
+import { MapContext } from "../shared/map";
 import { AnalysisDialogs } from "./AnalysisDialogs";
+import { analysisAreaStore, analysisDrawingStore } from "./analysisArea";
 import { rowOf } from "./methods";
 import { METHODS } from "./methodSheets";
 import {
@@ -44,6 +48,7 @@ import {
   RECEIVE,
   runOf,
   SECOND,
+  STATISTICS_PLACE,
   ToolForm,
   unnamedSentence,
   type Started,
@@ -76,6 +81,9 @@ beforeEach(() => {
   methodsStore.set({ open: false, tool: null });
   serversStore.set(null);
   resetServersState();
+  analysisAreaStore.set(null);
+  analysisDrawingStore.set(null);
+  drawingStore.set(null);
   server = standIn();
 });
 
@@ -632,6 +640,7 @@ test("Surface displacement, One pair shows its two layer fields, proposes a name
     "Connected components",
     "Result name",
     "Add to the map when ready",
+    "Area",
   ]);
   // The two layers are of one pair, so the form shows no row Dates.
   expect(body?.querySelectorAll(".property-row")).toHaveLength(0);
@@ -805,6 +814,7 @@ test("a form with a layer shows its fields in their order, and nothing else", as
     "Layer of the other date",
     "Result name",
     "Add to the map when ready",
+    "Area",
   ]);
   expect(body?.querySelectorAll(".property-row")).toHaveLength(1);
 });
@@ -824,6 +834,7 @@ test.each([
       other,
       "Result name",
       "Add to the map when ready",
+      "Area",
     ]);
     expect(body?.querySelectorAll(".property-row")).toHaveLength(1);
     expect(body?.querySelector(".usa-alert")).toBeNull();
@@ -838,6 +849,7 @@ test("the form of Soil moisture, One date shows the fields of a tool of one inpu
     "Layer",
     "Result name",
     "Add to the map when ready",
+    "Area",
   ]);
   expect(body?.querySelectorAll(".property-row")).toHaveLength(0);
   expect(body?.querySelector(".usa-alert")).toBeNull();
@@ -863,6 +875,7 @@ test("a visitor with an own server chooses the server of a tool, Automatic at fi
     "Result name",
     "Server",
     "Add to the map when ready",
+    "Area",
   ]);
   await userEvent.click(runButton());
   await vi.waitFor(() => expect(server.sent("POST")).toHaveLength(1));
@@ -955,10 +968,98 @@ test("the link Method at the foot opens the page Methods at the tool", async () 
 });
 
 test("the Analysis tab holds the form of each finished tool, closed until its button opens it", () => {
-  render(<AnalysisDialogs />);
+  render(
+    <MapContext value={testMap()}>
+      <AnalysisDialogs />
+    </MapContext>,
+  );
   expect(screen.queryByRole("complementary")).toBeNull();
   for (const tool of FINISHED_TOOLS) {
     act(() => openToolPane(tool));
     expect(screen.getByRole("complementary", { name: METHODS[tool].title })).toBeDefined();
   }
+});
+
+/** A rectangle of the map in the pilot area, as the field takes it from a drawing. */
+const RECTANGLE = {
+  crs: "EPSG:3857",
+  kind: "rectangle",
+  points: [
+    [-7909000, 5270000],
+    [-7891000, 5270000],
+    [-7891000, 5284000],
+    [-7909000, 5284000],
+    [-7909000, 5270000],
+  ],
+} as const;
+
+/** The group Statistics in an area of the form. */
+function statisticsGroup(): HTMLDetailsElement {
+  const summary = Array.from(document.querySelectorAll(".tool-pane-group > summary")).find(
+    (element) => element.textContent === "Statistics in an area",
+  );
+  const group = summary?.parentElement;
+  if (!(group instanceof HTMLDetailsElement)) {
+    throw new Error("The form has no group Statistics in an area.");
+  }
+  return group;
+}
+
+test("the last field, Statistics in an area, is a group that is closed while no area is drawn", () => {
+  show("backscatter-state", [term()]);
+  const group = statisticsGroup();
+  expect(group.open).toBe(false);
+  expect(group.parentElement?.lastElementChild).toBe(group);
+  // Closed, the group is one line; opened by the visitor, it shows the field.
+  group.open = true;
+  expect(options("Area")).toEqual(["None", "A rectangle", "A polygon"]);
+  act(() => analysisAreaStore.set(RECTANGLE));
+  expect(group.open).toBe(true);
+  expect(options("Area")).toEqual(["None", "The rectangle drawn on the map", "A rectangle", "A polygon"]);
+  expect(screen.getByLabelText<HTMLSelectElement>("Area").value).toBe("drawn");
+});
+
+test("the field Area draws a shape on the map, and None takes the area away", async () => {
+  show("coherence-state", [coherence()]);
+  statisticsGroup().open = true;
+  drawingStore.set("rectangle");
+  await userEvent.selectOptions(screen.getByLabelText("Area"), "draw-polygon");
+  expect([analysisDrawingStore.get(), drawingStore.get()]).toEqual(["polygon", null]);
+  expect(screen.getByText(/^Click on the map for each point/)).toBeDefined();
+  act(() => {
+    analysisDrawingStore.set(null);
+    analysisAreaStore.set(RECTANGLE);
+  });
+  await userEvent.selectOptions(screen.getByLabelText("Area"), "none");
+  expect([analysisAreaStore.get(), analysisDrawingStore.get()]).toEqual([null, null]);
+});
+
+test("a tool with an area drawn on the map sends the area with its layer and the name of its result", async () => {
+  analysisAreaStore.set(RECTANGLE);
+  show("backscatter-state", [term()]);
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "hh-oct");
+  await userEvent.click(runButton());
+  expect(server.sent("POST")).toEqual([
+    {
+      method: "POST",
+      address: "/api/processes/backscatter-state/execution",
+      content: { inputs: { inputs: ["hh-oct"], title: "Backscatter HH in dB, 21 Oct 2026", area: RECTANGLE } },
+    },
+  ]);
+});
+
+test("the foot states where the statistics in the area of a result are", () => {
+  const done = job({ jobID: "job-1", status: "successful", message: "The result is ready.", progress: 100, layer: "result-1" });
+  const counted = new Set(["result-1"]);
+  expect(runOf(STARTED, [done], new Set(["result-1"]), counted)).toMatchObject({
+    state: "success",
+    text: `The result is ready. It is on the map and under Layers in the Catalog pane. ${STATISTICS_PLACE.onMap}`,
+  });
+  expect(runOf(STARTED, [done], new Set(), counted)).toMatchObject({
+    text: `The result is ready. It is under Layers in the Catalog pane. ${STATISTICS_PLACE.offMap}`,
+  });
+  expect(STATISTICS_PLACE).toEqual({
+    onMap: "Its statistics in the area are in its Properties in the Contents pane.",
+    offMap: "Its statistics in the area are in its Properties once it is on the map.",
+  });
 });

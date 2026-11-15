@@ -255,7 +255,10 @@ def test_series_of_an_area_drawn_on_the_map_takes_the_cells_inside_it() -> None:
     second, cells_2 = decibels_of_mean(values_of(NOVEMBER)[inside])
     assert 0 < cells_1 < values_of(OCTOBER).size
     assert [entry.cells for entry in series.entries] == [cells_1, cells_2]
-    assert [entry.value for entry in series.entries] == [pytest.approx(first, abs=1e-9), pytest.approx(second, abs=1e-9)]
+    assert [entry.value for entry in series.entries] == [
+        pytest.approx(first, abs=1e-9),
+        pytest.approx(second, abs=1e-9),
+    ]
     assert (series.shape, series.point, series.cell) == (area, None, None)
     assert series.area == area_of(grid)
     far = Shape(crs=grid.crs, kind="rectangle", points=tuple((x + 1e6, y) for x, y in area.points))

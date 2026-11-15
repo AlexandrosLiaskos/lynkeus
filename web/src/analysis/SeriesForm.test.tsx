@@ -13,6 +13,7 @@ import type { LayerDescription } from "../shared/layer";
 import { messagesStore } from "../shared/messages/messages";
 import { resetPanes } from "../shared/panes";
 import type { ServerName } from "../shared/servers";
+import { analysisAreaStore, analysisDrawingStore } from "./analysisArea";
 import { rowOf } from "./methods";
 import { METHODS } from "./methodSheets";
 import { ANGLE_FAULTS, NO_LAYERS, SERIES_TOOLS, type SeriesTool } from "./series";
@@ -30,6 +31,8 @@ beforeEach(() => {
   resetSeries();
   messagesStore.set([]);
   methodsStore.set({ open: false, tool: null });
+  analysisAreaStore.set(null);
+  analysisDrawingStore.set(null);
   server = standIn();
 });
 
@@ -113,7 +116,7 @@ test("the form offers the layers of the series by date, chooses them all and pro
   expect(screen.getByLabelText<HTMLInputElement>("Series name").value).toBe(
     "Series of backscatter HH in dB, 27 Sep 2026 to 2 Nov 2026",
   );
-  expect(screen.getByLabelText<HTMLInputElement>("Whole area").checked).toBe(true);
+  expect(screen.getByLabelText<HTMLInputElement>("For the area").checked).toBe(true);
   expect(screen.getByLabelText<HTMLInputElement>("At a point").checked).toBe(false);
   expect(missing()).toBeNull();
   // One group of layers needs no choice of the layer, and a series has no server to choose and no box for the map.
@@ -312,4 +315,33 @@ test("a job that the form started is followed to its end, and the foot offers th
   expect(screen.getByText("The series is ready. It is under Series in the Catalog pane.")).toBeDefined();
   await userEvent.click(screen.getByRole("button", { name: "Show the series" }));
   expect(shownSeriesStore.get()).toBe(series().id);
+});
+
+test("a series for the area takes the area drawn on the map, in a group that is closed while there is none", async () => {
+  show("backscatter-series", THREE);
+  const summary = Array.from(document.querySelectorAll(".tool-pane-group > summary")).find(
+    (element) => element.textContent === "Area drawn on the map",
+  );
+  const group = summary?.parentElement as HTMLDetailsElement | undefined;
+  expect(group?.open).toBe(false);
+  const area = {
+    crs: "EPSG:3857",
+    kind: "polygon",
+    points: [
+      [-7900000, 5270000],
+      [-7890000, 5271000],
+      [-7895000, 5280000],
+      [-7900000, 5270000],
+    ],
+  } as const;
+  act(() => analysisAreaStore.set(area));
+  expect(group?.open).toBe(true);
+  expect(screen.getByLabelText<HTMLSelectElement>("Area").selectedOptions[0]?.textContent).toBe(
+    "The polygon of 3 corners drawn on the map",
+  );
+  await userEvent.click(runButton());
+  expect(server.sent("POST")[0]?.content).toMatchObject({ inputs: { area } });
+  // A series at a point takes no area, and the group stands only under the choice of the area.
+  await userEvent.click(screen.getByLabelText("At a point"));
+  expect(document.querySelector(".tool-pane-group")).toBeNull();
 });

@@ -1,3 +1,5 @@
+import { SHEET_TOOLS } from "./series";
+
 /**
  * The names of the rows of the summary of a method, in the order of the section In brief of a method sheet
  * (`docs/methods/`).
@@ -30,3 +32,10 @@ export interface Method {
 export function rowOf(method: Method, name: RowName): string {
   return method.rows.find((row) => row.name === name)?.text ?? "";
 }
+
+/**
+ * The method sheets that the page Methods shows: the sheet of each finished tool, then the sheet of the statistics
+ * in an area, which every tool that maps computes when it is run with an area drawn on the map.
+ */
+export const SHEETS = [...SHEET_TOOLS, "area-statistics"] as const;
+export type Sheet = (typeof SHEETS)[number];
