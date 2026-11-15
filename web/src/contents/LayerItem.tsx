@@ -3,6 +3,8 @@ import { openToolPane } from "../shared/dock/dock";
 import { Icon } from "../shared/icon/Icon";
 import type { LayerDescription } from "../shared/layer";
 import { useMap } from "../shared/map";
+import { MenuButton } from "../shared/menu/MenuButton";
+import { Notice } from "../shared/notice/Notice";
 import { useStore } from "../shared/store";
 import { formatDates } from "./dates";
 import { extentOf } from "./display";
@@ -52,8 +54,9 @@ export function nameButtonId(id: string): string {
 }
 
 /**
- * One layer of the Contents pane: the box that shows or hides it, its name, which selects it, the button of its
- * menu and, under them, its dates, its legend and its opacity. The part under the name can be folded.
+ * One layer of the Contents pane. Its row holds the arrow that folds its legend, the box that shows or hides it,
+ * its name with its dates, which selects it, and the button of its menu. Under the row stand its legend and its
+ * opacity, or a notice when its file could not be read. The right mouse button opens the same menu at the pointer.
  */
 export function LayerItem({ layer, place, count, drop, onMoved, onRemoved, ...drag }: LayerItemProps) {
   const map = useMap();
@@ -65,8 +68,7 @@ export function LayerItem({ layer, place, count, drop, onMoved, onRemoved, ...dr
   const [renaming, setRenaming] = useState(false);
   const refocus = useRef(false);
   const renamed = useRef(false);
-  const [menu, setMenu] = useState<{ x: number; y: number; focus: "first" | "last" } | null>(null);
-  const opener = useRef<HTMLElement | null>(null);
+  const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
   const detailsId = useId();
   const opacityId = useId();
   const percent = Math.round(display.opacity * 100);
@@ -110,8 +112,14 @@ export function LayerItem({ layer, place, count, drop, onMoved, onRemoved, ...dr
     setRenaming(false);
   };
 
+  // A field that has just opened has not closed yet.
+  useEffect(() => {
+    if (renaming) {
+      renamed.current = false;
+    }
+  }, [renaming]);
+
   const startRenaming = () => {
-    renamed.current = false;
     setRenaming(true);
   };
 
@@ -150,23 +158,9 @@ export function LayerItem({ layer, place, count, drop, onMoved, onRemoved, ...dr
     },
   ];
 
-  const openMenuAt = (button: HTMLElement, focus: "first" | "last") => {
-    const { left, bottom } = button.getBoundingClientRect();
-    opener.current = button;
-    setMenu({ x: left, y: bottom, focus });
-  };
-
-  const onMenuButtonKey = (event: KeyboardEvent<HTMLButtonElement>) => {
-    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-      event.preventDefault();
-      openMenuAt(event.currentTarget, event.key === "ArrowDown" ? "first" : "last");
-    }
-  };
-
   const onContextMenu = (event: MouseEvent) => {
     event.preventDefault();
-    opener.current = document.getElementById(nameButtonId(layer.id));
-    setMenu({ x: event.clientX, y: event.clientY, focus: "first" });
+    setMenu({ x: event.clientX, y: event.clientY });
   };
 
   // With the focus on the name, Alt and an arrow key move the layer, F2 opens the field for a new name and
@@ -196,10 +190,11 @@ export function LayerItem({ layer, place, count, drop, onMoved, onRemoved, ...dr
     }
   };
 
+  // The menu at the pointer has no button of its own, so the focus returns to the name of the layer.
   const closeMenu = (refocus: boolean) => {
     setMenu(null);
     if (refocus) {
-      opener.current?.focus();
+      document.getElementById(nameButtonId(layer.id))?.focus();
     }
   };
 
@@ -224,7 +219,7 @@ export function LayerItem({ layer, place, count, drop, onMoved, onRemoved, ...dr
           aria-label={`Legend of ${layer.title}`}
           onClick={() => setFolded(layer.id, !folded)}
         >
-          <Icon name={folded ? "navigate_next" : "expand_more"} />
+          <Icon name="expand_more" />
         </button>
         <label className="contents-visible">
           <input
@@ -254,21 +249,21 @@ export function LayerItem({ layer, place, count, drop, onMoved, onRemoved, ...dr
             onClick={() => selectedLayerStore.set(selected ? null : layer.id)}
             onKeyDown={onNameKey}
           >
-            <span className="contents-title">{layer.title}</span>{" "}
-            <span className="contents-dates">{formatDates(layer.dates)}</span>
+            <span className="item-title">{layer.title}</span>{" "}
+            <span className="item-line">{formatDates(layer.dates)}</span>
           </button>
         )}
-        <button
-          type="button"
-          className="contents-menu-button"
-          aria-haspopup="menu"
-          aria-expanded={menu !== null}
-          aria-label={`Commands of ${layer.title}`}
-          onClick={(event) => openMenuAt(event.currentTarget, "first")}
-          onKeyDown={onMenuButtonKey}
-        >
-          <Icon name="more_vert" />
-        </button>
+        <MenuButton
+          icon="more_vert"
+          label={`Commands of ${layer.title}`}
+          items={items.map(({ label, run, disabled, checked, separated }) => ({
+            label,
+            onSelect: run,
+            disabled,
+            checked,
+            separated,
+          }))}
+        />
       </div>
       <div className="contents-details" id={detailsId} hidden={folded}>
         {problem === undefined ? (
@@ -290,12 +285,12 @@ export function LayerItem({ layer, place, count, drop, onMoved, onRemoved, ...dr
             </div>
           </>
         ) : (
-          <p className="contents-problem">{problem}</p>
+          <Notice kind="error" action={{ label: "Remove layer", onClick: remove }}>
+            {problem}
+          </Notice>
         )}
       </div>
-      {menu && (
-        <Menu label={`Commands of ${layer.title}`} items={items} at={menu} focus={menu.focus} onClose={closeMenu} />
-      )}
+      {menu && <Menu label={`Commands of ${layer.title}`} items={items} at={menu} focus="first" onClose={closeMenu} />}
     </li>
   );
 }

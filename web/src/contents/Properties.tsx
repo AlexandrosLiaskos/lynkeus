@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Dialog } from "../shared/dialog/Dialog";
 import type { LayerDescription } from "../shared/layer";
 import { mapLayersStore } from "../shared/mapLayers";
+import { Notice } from "../shared/notice/Notice";
+import { PropertyList, type Property, type PropertyGroup } from "../shared/properties/PropertyList";
 import { useStore } from "../shared/store";
 import type { Cog } from "./cog";
 import { formatDates } from "./dates";
@@ -15,58 +17,126 @@ function gridNumber(value: number): string {
   return String(Number(value.toPrecision(10)));
 }
 
-/** Return the unit of the coordinates of a projection, in words. */
+/** Return the unit of the coordinates of a projection as it stands in a name, or an empty text when it is not known. */
 function unitOf(code: string): string {
   const units = projectionOf(code)?.getUnits();
-  return units === "m" ? "metres" : units === "degrees" ? "degrees" : "units of the projection";
+  return units === "m" ? " (m)" : units === "degrees" ? " (degrees)" : "";
 }
 
-/** The properties that the file of a layer states: its projection, its grid and its values. */
-function FileProperties({ cog }: { cog: Cog }) {
+/**
+ * Return an address as it is copied: the whole address, so that it also opens outside Lynkeus. An address of the
+ * site itself is stored without the name of the site.
+ *
+ * @param address The address as the description of the layer gives it.
+ * @param base The address of the page.
+ */
+export function wholeAddress(address: string, base: string): string {
+  try {
+    return new URL(address, base).href;
+  } catch {
+    return address;
+  }
+}
+
+/** Return the row of an address: a link that shows the address as it is stored, and a button that copies it whole. */
+function addressRow(address: string, info: string): Property {
+  return {
+    name: "Address",
+    value: <a href={address}>{address}</a>,
+    copy: wholeAddress(address, window.location.href),
+    info,
+  };
+}
+
+/** Return the rows of the group Layer: what the layer is and where it comes from. */
+function layerRows(layer: LayerDescription): Property[] {
+  const unit = formatUnit(layer.unit);
+  return [
+    { name: "Name", value: layer.title },
+    { name: "Kind", value: layer.kind === "layer" ? "Layer of a NISAR product" : "Result of an analysis tool" },
+    { name: "Quantity", value: layer.quantity },
+    unit === ""
+      ? { name: "Unit", value: "None", info: "The quantity has no dimension, so its values carry no unit." }
+      : { name: "Unit", value: unit },
+    { name: layer.dates.length === 1 ? "Date" : "Dates", value: formatDates(layer.dates) },
+    ...layer.inputs.map((input, index) => ({
+      name: layer.inputs.length === 1 ? "Product file" : `Product file ${String(index + 1)}`,
+      value: input,
+      copy: true,
+    })),
+    { name: "Program", value: layer.program, info: "The program that wrote the file of the layer, with its version." },
+    ...(layer.method === null
+      ? []
+      : [
+          {
+            name: "Method",
+            value: layer.method,
+            info: "The method sheet of the analysis tool that computed the result.",
+          },
+        ]),
+  ];
+}
+
+/** Return the rows of the group Projection and grid, which the file of the layer states. */
+function gridRows(cog: Cog): Property[] {
   const full = cog.levels.at(-1);
   const unit = unitOf(cog.projection);
-  const [west, south, east, north] = cog.extent;
-  return (
-    <>
-      <dt>Projection</dt>
-      <dd>{cog.projection}</dd>
-      {full ? (
-        <>
-          <dt>Grid</dt>
-          <dd>
-            {full.size[0]} columns by {full.size[1]} rows, cells of {gridNumber(full.cell[0])} by{" "}
-            {gridNumber(full.cell[1])} {unit}
-          </dd>
-        </>
-      ) : null}
-      <dt>Extent (west, south, east, north, in {unit})</dt>
-      <dd>{[west, south, east, north].map(gridNumber).join(", ")}</dd>
-      <dt>Reduced copies in the file</dt>
-      <dd>
-        {cog.levels.length > 1
+  return [
+    { name: "Projection", value: cog.projection },
+    ...(full
+      ? [
+          { name: "Size", value: `${String(full.size[0])} columns by ${String(full.size[1])} rows` },
+          { name: `Cell size${unit}`, value: `${gridNumber(full.cell[0])} by ${gridNumber(full.cell[1])}` },
+        ]
+      : []),
+    {
+      name: `Extent${unit}`,
+      value: cog.extent.map(gridNumber).join(", "),
+      copy: true,
+      info: "The west, south, east and north limits of the grid, in the coordinates of the projection.",
+    },
+  ];
+}
+
+/** Return the rows of the group File that only the opened file gives: its reduced copies and its values. */
+function fileRows(cog: Cog, unit: string): Property[] {
+  const write = (value: number) => `${formatNumber(value)}${unit && ` ${unit}`}`;
+  return [
+    {
+      name: "Reduced copies",
+      value:
+        cog.levels.length > 1
           ? cog.levels
               .slice(0, -1)
               .reverse()
               .map(({ size }) => `${String(size[0])} by ${String(size[1])} cells`)
               .join("; ")
-          : "None"}
-      </dd>
-      <dt>Value of a cell without data</dt>
-      <dd>{cog.noData === null ? "The file names none" : String(cog.noData)}</dd>
-      <dt>Statistics that the file states</dt>
-      <dd>
-        {cog.statistics
-          ? `Lowest value ${formatNumber(cog.statistics.minimum)}, highest value ${formatNumber(cog.statistics.maximum)}, mean ${formatNumber(cog.statistics.mean)}, standard deviation ${formatNumber(cog.statistics.deviation)}`
-          : "None"}
-      </dd>
-    </>
-  );
+          : "None",
+      info: "The copies of the grid with fewer cells that the file holds. The map draws them at small scales.",
+    },
+    {
+      name: "Value without data",
+      value: cog.noData === null ? "None" : String(cog.noData),
+      info: "The value that marks a cell without data, when the file names one.",
+    },
+    ...(cog.statistics
+      ? [
+          { name: "Lowest value", value: write(cog.statistics.minimum) },
+          { name: "Highest value", value: write(cog.statistics.maximum) },
+          { name: "Mean", value: write(cog.statistics.mean) },
+          { name: "Standard deviation", value: write(cog.statistics.deviation) },
+        ]
+      : [{ name: "Statistics", value: "None", info: "The file states no statistics of its values." }]),
+  ];
 }
 
-/** The properties of one layer. The file of the layer is read for its projection and its grid. */
+/**
+ * The properties of one layer as a list of names and values in four groups: the layer, the projection and the
+ * grid, the file and the record. The file of the layer is read for its projection, its grid and its values;
+ * until it is read, and when it cannot be read, a notice above the list says so and the list shows the rest.
+ */
 function PropertiesOf({ layer }: { layer: LayerDescription }) {
   const [cog, setCog] = useState<Cog | "reading" | "failed">("reading");
-  const unit = formatUnit(layer.unit);
 
   useEffect(() => {
     let current = true;
@@ -87,54 +157,36 @@ function PropertiesOf({ layer }: { layer: LayerDescription }) {
     };
   }, [layer.url]);
 
+  const file = addressRow(layer.url, "The file is a Cloud Optimized GeoTIFF.");
+  const groups: PropertyGroup[] = [
+    { title: "Layer", rows: layerRows(layer) },
+    ...(typeof cog === "string" ? [] : [{ title: "Projection and grid", rows: gridRows(cog) }]),
+    { title: "File", rows: typeof cog === "string" ? [file] : [file, ...fileRows(cog, formatUnit(layer.unit))] },
+    { title: "Record", rows: [addressRow(layer.record, "The record is a STAC Item, which describes the layer.")] },
+  ];
+
   return (
-    <dl className="properties">
-      <dt>Name</dt>
-      <dd>{layer.title}</dd>
-      <dt>Kind</dt>
-      <dd>{layer.kind === "layer" ? "Layer of a NISAR product" : "Result of an analysis tool"}</dd>
-      <dt>Quantity</dt>
-      <dd>{layer.quantity}</dd>
-      <dt>Unit</dt>
-      <dd>{unit === "" ? "None (a quantity without dimension)" : unit}</dd>
-      <dt>{layer.dates.length === 1 ? "Date" : "Dates"}</dt>
-      <dd>{formatDates(layer.dates)}</dd>
-      <dt>{layer.inputs.length === 1 ? "Product file" : "Product files"}</dt>
-      {layer.inputs.map((input) => (
-        <dd key={input}>{input}</dd>
-      ))}
-      <dt>Program</dt>
-      <dd>{layer.program}</dd>
-      {layer.method === null ? null : (
-        <>
-          <dt>Method</dt>
-          <dd>{layer.method}</dd>
-        </>
-      )}
+    <>
       {typeof cog === "string" ? (
-        <>
-          <dt>Projection and grid</dt>
-          <dd>{cog === "reading" ? "Reading the file of the layer." : "The file of the layer could not be read."}</dd>
-        </>
-      ) : (
-        <FileProperties cog={cog} />
-      )}
-      <dt>File (Cloud Optimized GeoTIFF)</dt>
-      <dd>
-        <a href={layer.url}>{layer.url}</a>
-      </dd>
-      <dt>Record (STAC Item)</dt>
-      <dd>
-        <a href={layer.record}>{layer.record}</a>
-      </dd>
-    </dl>
+        <div className="properties-notice">
+          {cog === "reading" ? (
+            <Notice kind="info">Reading the file of the layer.</Notice>
+          ) : (
+            <Notice kind="error">
+              The file of the layer could not be read. Its projection, its grid and its values are not shown.
+            </Notice>
+          )}
+        </div>
+      ) : null}
+      <PropertyList groups={groups} />
+    </>
   );
 }
 
 /**
  * The Properties window of a layer: what the layer is, where it comes from, and the projection and the grid of
- * its file, with the addresses of the file and of its record. The command Properties of the menu of a layer
- * opens it.
+ * its file, with the addresses of the file and of its record, which can be copied. The command Properties of the
+ * menu of a layer opens it.
  */
 export function PropertiesWindow() {
   const shown = useStore(propertiesStore);
