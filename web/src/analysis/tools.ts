@@ -10,6 +10,7 @@ export const FINISHED_TOOLS = [
   "backscatter-change",
   "coherence-state",
   "coherence-change",
+  "displacement-state",
   "soil-moisture-state",
   "soil-moisture-change",
 ] as const;
@@ -34,6 +35,15 @@ const COHERENCE_LAYER = /^(unwrappedInterferogram|wrappedInterferogram)\/(HH|VV)
 const COHERENCE_SPACING: Record<string, string> = { unwrappedInterferogram: "80 m", wrappedInterferogram: "20 m" };
 
 /**
+ * The names of the layers `unwrappedPhase` and `connectedComponents` of a GUNW product, as a layer request gives
+ * them: the group of the unwrapped interferogram, the channel and the name of the layer
+ * (`docs/methods/displacement-state.md`, section Input layer). Surface displacement, One pair reads them. The
+ * server accepts the same names, in `api/src/lynkeus/analysis/displacement.py`.
+ */
+const PHASE_LAYER = /^unwrappedInterferogram\/(HH|VV)\/unwrappedPhase$/;
+const COMPONENTS_LAYER = /^unwrappedInterferogram\/(HH|VV)\/connectedComponents$/;
+
+/**
  * The name of the layer of the soil moisture of an SME2 product, which the two soil moisture tools read, and the
  * unit that its layer description carries (`docs/methods/soil-moisture-state.md`, section Input layer). The
  * server accepts the same name and the same unit, in `api/src/lynkeus/analysis/soil_moisture.py`.
@@ -44,18 +54,27 @@ export const SOIL_MOISTURE_UNIT = "m3 m-3";
 /** The largest length of the name of a result, in characters, as the server takes it (`MAX_TITLE_LENGTH`). */
 export const MOST_TITLE = 200;
 
-/** What a tool reads. */
-interface Reads {
+/** A layer that a tool reads: the unit of its description and its name inside the product. */
+interface Kind {
+  /** The unit that the description of the layer carries. */
+  unit: string;
+  /** Tells whether the tool reads the layer of this name inside the product. */
+  names: (name: string) => boolean;
+}
+
+/** What a tool reads. `unit` and `names` describe each input layer, or the first one of a tool with `beside`. */
+interface Reads extends Kind {
   /** The type of the NISAR product of each input layer. */
   product: "GCOV" | "GUNW" | "SME2";
   /** The number of input layers. */
   count: 1 | 2;
   /** The number of dates of each input layer: one for an acquisition, two for a pair. */
   dates: 1 | 2;
-  /** The unit that the description of each input layer carries. */
-  unit: string;
-  /** Tells whether the tool reads the layer of this name inside the product. */
-  names: (name: string) => boolean;
+  /**
+   * The second input layer of a tool whose two inputs are two different layers of one product file. A tool of
+   * two inputs without it compares the same layer of two dates or of two pairs of dates.
+   */
+  beside?: Kind;
 }
 
 function isTerm(name: string): boolean {
@@ -70,26 +89,43 @@ function isSoilMoisture(name: string): boolean {
   return name === SOIL_MOISTURE_LAYER;
 }
 
+function isPhase(name: string): boolean {
+  return PHASE_LAYER.test(name);
+}
+
+function isComponents(name: string): boolean {
+  return COMPONENTS_LAYER.test(name);
+}
+
 /** What each finished tool reads, as its method sheet states it. */
 export const READS: Record<FinishedTool, Reads> = {
   "backscatter-state": { product: "GCOV", count: 1, dates: 1, unit: "1", names: isTerm },
   "backscatter-change": { product: "GCOV", count: 2, dates: 1, unit: "1", names: isTerm },
   "coherence-state": { product: "GUNW", count: 1, dates: 2, unit: "1", names: isCoherence },
   "coherence-change": { product: "GUNW", count: 2, dates: 2, unit: "1", names: isCoherence },
+  "displacement-state": {
+    product: "GUNW",
+    count: 2,
+    dates: 2,
+    unit: "rad",
+    names: isPhase,
+    beside: { unit: "1", names: isComponents },
+  },
   "soil-moisture-state": { product: "SME2", count: 1, dates: 1, unit: SOIL_MOISTURE_UNIT, names: isSoilMoisture },
   "soil-moisture-change": { product: "SME2", count: 2, dates: 1, unit: SOIL_MOISTURE_UNIT, names: isSoilMoisture },
 };
 
 /**
  * What a tool of two inputs compares: the layers of two dates ("dates") or the layers of two pairs of dates
- * ("pairs"). A tool of one input compares nothing, and the answer is null.
+ * ("pairs"). A tool of one input compares nothing, and neither does Surface displacement, One pair, whose two
+ * inputs are two layers of one product; the answer is null for them.
  */
 export type Comparison = "dates" | "pairs";
 
-/** Return what a tool compares, or null for a tool of one input. */
+/** Return what a tool compares, or null for a tool that compares nothing. */
 export function comparisonOf(tool: FinishedTool): Comparison | null {
-  const { count, dates } = READS[tool];
-  if (count === 1) {
+  const { count, dates, beside } = READS[tool];
+  if (count === 1 || beside) {
     return null;
   }
   return dates === 1 ? "dates" : "pairs";
@@ -153,8 +189,8 @@ export function bandwidthModeOf(file: string): string | null {
  */
 export type Unfit = "product" | "unnamed" | "name" | "unit" | "dates";
 
-/** Return why a tool does not read a layer, or null for a layer that it reads. */
-export function unfit(tool: FinishedTool, layer: LayerDescription): Unfit | null {
+/** Return why a layer is not the layer of one kind that a tool reads, or null for a layer that is. */
+function unfitAs(tool: FinishedTool, kind: Kind, layer: LayerDescription): Unfit | null {
   const reads = READS[tool];
   if (acquisitionOfLayer(layer)?.product !== reads.product) {
     return "product";
@@ -162,13 +198,21 @@ export function unfit(tool: FinishedTool, layer: LayerDescription): Unfit | null
   if (typeof layer.layer !== "string") {
     return "unnamed";
   }
-  if (!reads.names(layer.layer)) {
+  if (!kind.names(layer.layer)) {
     return "name";
   }
-  if (layer.unit !== reads.unit) {
+  if (layer.unit !== kind.unit) {
     return "unit";
   }
   return layer.dates.length === reads.dates ? null : "dates";
+}
+
+/**
+ * Return why a tool does not read a layer as its first input, or null for a layer that it reads. The first input
+ * of Surface displacement, One pair is the layer `unwrappedPhase`.
+ */
+export function unfit(tool: FinishedTool, layer: LayerDescription): Unfit | null {
+  return unfitAs(tool, READS[tool], layer);
 }
 
 /** Return the layers that a tool reads, in the order of the list. */
@@ -217,6 +261,51 @@ export function partners(
   layers: readonly LayerDescription[],
 ): LayerDescription[] {
   return accepted(tool, layers).filter((layer) => matches(first, layer));
+}
+
+/** Return the channel of a layer `unwrappedPhase` or `connectedComponents`, for example `HH`, or null. */
+function channelOf(layer: LayerDescription): string | null {
+  const name = typeof layer.layer === "string" ? layer.layer : "";
+  return (PHASE_LAYER.exec(name) ?? COMPONENTS_LAYER.exec(name))?.[1] ?? null;
+}
+
+/**
+ * Return the layers that can stand beside a layer `unwrappedPhase` as the second input of Surface displacement,
+ * One pair: the layers `connectedComponents` of the same product file and of the same channel. The server
+ * refuses two layers of different product files or channels, in `api/src/lynkeus/analysis/displacement.py`.
+ */
+export function componentsOf(phase: LayerDescription, layers: readonly LayerDescription[]): LayerDescription[] {
+  const kind = READS["displacement-state"].beside;
+  const channel = channelOf(phase);
+  return kind === undefined || channel === null
+    ? []
+    : layers.filter(
+        (layer) =>
+          unfitAs("displacement-state", kind, layer) === null &&
+          layer.inputs[0] === phase.inputs[0] &&
+          channelOf(layer) === channel,
+      );
+}
+
+/**
+ * Return the layers that can stand beside a first layer as the second input of a tool of two inputs: the same
+ * layer of another date or pair for a tool that compares, and the layer `connectedComponents` of the product of
+ * the first for Surface displacement, One pair.
+ */
+export function besideOf(
+  tool: FinishedTool,
+  first: LayerDescription,
+  layers: readonly LayerDescription[],
+): LayerDescription[] {
+  return READS[tool].beside ? componentsOf(first, layers) : partners(tool, first, layers);
+}
+
+/**
+ * Tell whether the description of a layer records the centre frequency of its radar band. The server records it
+ * for a layer `unwrappedPhase` that it receives, and Surface displacement, One pair refuses a layer without it.
+ */
+export function hasFrequency(layer: LayerDescription): boolean {
+  return typeof layer.frequency === "number";
 }
 
 /** Return the first date of a layer. Every layer description has at least one date. */
@@ -357,6 +446,10 @@ export function defaultTitle(tool: FinishedTool, inputs: readonly LayerDescripti
     return "";
   }
   const days = datesWords(tool, inputs);
+  if (tool === "displacement-state") {
+    // The two layers are of one product, so the dates of the first are the dates of the pair.
+    return `Surface displacement ${channelOf(first) ?? ""}, ${daysOf(first)}`;
+  }
   if (tool === "soil-moisture-state") {
     return `Volumetric soil moisture, ${days}`;
   }
@@ -395,6 +488,18 @@ const SECOND_FAULTS: Record<Comparison, { none: string; choose: string }> = {
   pairs: { none: NO_OTHER_PAIR, choose: "Choose the layer of the other pair." },
 };
 
+/**
+ * The fault of the first field of Surface displacement, One pair when the description of the chosen layer does
+ * not record the centre frequency of its radar band. The server refuses such a layer.
+ */
+export const NO_FREQUENCY = "This layer does not record the frequency of the radar, so get it again with Get layer.";
+
+/** The fault of the second field of Surface displacement, One pair when no layer can stand beside the first. */
+export const NO_COMPONENTS = "The Connected components layer of this product is not in the session.";
+
+/** The fault of the second field of Surface displacement, One pair while a layer can be chosen and none is. */
+export const CHOOSE_COMPONENTS = "Choose the Connected components layer.";
+
 /** What the form of a tool holds at one moment. */
 export interface Choices {
   tool: FinishedTool;
@@ -402,7 +507,7 @@ export interface Choices {
   layers: readonly LayerDescription[];
   /** The id of the layer of the first field, or null. */
   first: string | null;
-  /** The id of the layer of the second field of a tool that compares, or null. */
+  /** The id of the layer of the second field of a tool of two inputs, or null. */
   second: string | null;
   /** The name of the result, as the field holds it. */
   title: string;
@@ -423,7 +528,10 @@ export interface Inputs {
 
 /** The outcome of the check of the choices: the layers in the order of the tool, and the faults of the fields. */
 export interface Checked {
-  /** The input layers that are chosen and in order, with the earlier date or pair first for a tool that compares. */
+  /**
+   * The input layers that are chosen and in order: the earlier date or pair first for a tool that compares, and
+   * the layer `unwrappedPhase` first for Surface displacement, One pair.
+   */
   layers: readonly LayerDescription[];
   faults: Faults;
   /** What the form sends, or null while a field has a fault. */
@@ -433,8 +541,10 @@ export interface Checked {
 /**
  * Check the choices of the form of a tool. A layer that is chosen must still be a layer of the session that the
  * tool reads. For a tool that compares, the second layer must stand beside the first and the tool must be able
- * to compare the two (`compared`), and the layer of the earlier date or pair is put first. The name of the
- * result must have 1 to 200 characters.
+ * to compare the two (`compared`), and the layer of the earlier date or pair is put first. For Surface
+ * displacement, One pair the first layer must record the centre frequency of its radar band, and the second must
+ * be the layer `connectedComponents` of the same product file and channel. The name of the result must have 1 to
+ * 200 characters.
  */
 export function check({ tool, layers, first, second, title }: Choices): Checked {
   const comparison = comparisonOf(tool);
@@ -444,6 +554,19 @@ export function check({ tool, layers, first, second, title }: Choices): Checked 
   let chosen: readonly LayerDescription[] = [];
   if (!one) {
     faults.first = "Choose a layer.";
+  } else if (READS[tool].beside) {
+    const beside = componentsOf(one, layers);
+    const other = beside.find((layer) => layer.id === second);
+    if (!hasFrequency(one)) {
+      faults.first = NO_FREQUENCY;
+    }
+    if (beside.length === 0) {
+      faults.second = NO_COMPONENTS;
+    } else if (!other) {
+      faults.second = CHOOSE_COMPONENTS;
+    } else if (faults.first === null) {
+      chosen = [one, other];
+    }
   } else if (comparison === null) {
     chosen = [one];
   } else {

@@ -23,6 +23,7 @@ import { rowOf } from "./methods";
 import { METHODS } from "./methodSheets";
 import {
   accepted,
+  besideOf,
   check,
   comparisonOf,
   datesWords,
@@ -30,10 +31,11 @@ import {
   layerOption,
   missingOf,
   MOST_TITLE,
+  NO_COMPONENTS,
   NO_INPUT,
   NO_OTHER_PAIR,
   NO_PARTNER,
-  partners,
+  READS,
   unnamed,
   type Comparison,
   type FinishedTool,
@@ -45,6 +47,10 @@ export const ABOUT = {
   pair: "The same layer of two dates of one track and frame. The earlier date is taken first.",
   pairs:
     "The same coherence layer of two pairs of dates of one track and frame, which span the same number of days; the earlier pair is taken first.",
+  phase:
+    "An Unwrapped phase layer of a GUNW product, which holds the change of the distance to the radar between the two dates as an angle.",
+  components:
+    "The Connected components layer of the same product, channel and area, which marks the cells where the unwrapped phase is unreliable.",
   title: "The name of the result in the Catalog and Contents panes.",
 } as const;
 
@@ -54,6 +60,8 @@ export const RECEIVE: Record<FinishedTool, string> = {
   "backscatter-change": "Get the same Backscatter layer of two GCOV products of one track and frame.",
   "coherence-state": "Get a Coherence layer of a GUNW product.",
   "coherence-change": "Get the same Coherence layer of two GUNW products of one track and frame.",
+  "displacement-state":
+    "Get the Unwrapped phase layer and the Connected components layer of one GUNW product, for the same area.",
   "soil-moisture-state": "Get the Soil moisture layer of an SME2 product.",
   "soil-moisture-change": "Get the Soil moisture layer of two SME2 products of one track and frame.",
 };
@@ -64,11 +72,23 @@ export const GET_PARTNER = `${NO_PARTNER} Get the same layer of another date of 
 /** The same statement for Coherence, Change, which compares two pairs of dates. */
 export const GET_OTHER_PAIR = `${NO_OTHER_PAIR} Get the same layer of another pair of dates of the same track and frame.`;
 
+/** What the form states when the session holds no layer that can stand beside the first of Surface displacement, One pair. */
+export const GET_COMPONENTS = `${NO_COMPONENTS} Get the Connected components layer of the same product, channel and area.`;
+
 /** The words of the second field of a tool that compares, by what the tool compares. */
 export const SECOND: Record<Comparison, { title: string; about: string; get: string }> = {
   dates: { title: "Layer of the other date", about: ABOUT.pair, get: GET_PARTNER },
   pairs: { title: "Layer of the other pair", about: ABOUT.pairs, get: GET_OTHER_PAIR },
 };
+
+/**
+ * The words of the two fields of Surface displacement, One pair, whose inputs are two layers of one product: the
+ * title and the explanation of the first field, and the words of the second.
+ */
+export const OF_ONE_PRODUCT = {
+  first: { title: "Unwrapped phase", about: ABOUT.phase },
+  second: { title: "Connected components", about: ABOUT.components, get: GET_COMPONENTS },
+} as const;
 
 /**
  * State that layers of the session cannot be used, and how they become usable. They are the layers whose
@@ -205,7 +225,8 @@ function showMethod(tool: FinishedTool): void {
  * layer, or the two fields of a tool that compares two dates or two pairs of dates, with the dates in their
  * order, the name of the result, for which the form proposes one, and the box that adds the result to the map.
  * The second field offers the layers that can stand beside the first, and states in one sentence why the tool
- * does not compare the two layers that are chosen. The "i" of the pane states what
+ * does not compare the two layers that are chosen. Surface displacement, One pair has two fields as well, for
+ * two layers of one product, and no row of dates. The "i" of the pane states what
  * the tool shows, and the link Method at the foot opens the page Methods at the tool. While a choice is missing
  * or impossible, the foot of the pane states the first fault, and a field that was left states its own, with the
  * shared `FieldError`. Without a layer that the tool reads, the pane names the layer to get and offers the Get
@@ -228,11 +249,13 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
 
   const method = METHODS[tool];
   const comparison = comparisonOf(tool);
-  const words = comparison === null ? null : SECOND[comparison];
+  // The two inputs of the tool are two layers of one product, and not one layer of two dates or pairs.
+  const ofOneProduct = READS[tool].beside !== undefined;
+  const words = ofOneProduct ? OF_ONE_PRODUCT.second : comparison === null ? null : SECOND[comparison];
   const layers = entries.map((entry) => entry.layer);
   const offered = accepted(tool, layers);
   const one = offered.find((layer) => layer.id === first);
-  const beside = one && words ? partners(tool, one, layers) : [];
+  const beside = one && words ? besideOf(tool, one, layers) : [];
   const without = unnamed(tool, layers);
 
   // The layers are put in the order of the tool before the name is proposed from them.
@@ -301,8 +324,8 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
         <>
           <LayerField
             id={`${id}-first`}
-            title="Layer"
-            about={words ? words.about : ABOUT.layer}
+            title={ofOneProduct ? OF_ONE_PRODUCT.first.title : "Layer"}
+            about={ofOneProduct ? OF_ONE_PRODUCT.first.about : words ? words.about : ABOUT.layer}
             layers={offered}
             chosen={first}
             fault={faults.first}
@@ -325,7 +348,7 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
               {words.get}
             </Notice>
           ) : null}
-          {chosen.length === 2 ? (
+          {chosen.length === 2 && comparison !== null ? (
             <PropertyList groups={[{ rows: [{ name: "Dates", value: datesWords(tool, chosen) }] }]} />
           ) : null}
 

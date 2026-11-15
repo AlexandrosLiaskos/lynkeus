@@ -4,7 +4,7 @@ import { beforeEach, expect, test } from "vitest";
 import { Ribbon } from "../ribbon/Ribbon";
 import { dockStore, resetDock } from "../shared/dock/dock";
 import { useAnalysisActions } from "./actions";
-import { ANALYSIS_TAB } from "./tab";
+import { ANALYSIS_TAB, DISPLACEMENT_STATE } from "./tab";
 import { FINISHED_TOOLS } from "./tools";
 
 /** The Analysis tab as the page holds it: its buttons with their actions. */
@@ -19,13 +19,14 @@ function buttonsOf(group: string): HTMLElement[] {
 
 beforeEach(resetDock);
 
-test("exactly the buttons of the six finished tools have an action", () => {
+test("exactly the buttons of the seven finished tools have an action", () => {
   const actions = renderHook(useAnalysisActions).result.current;
   expect(Object.keys(actions)).toEqual([
     "backscatter-state",
     "backscatter-change",
     "coherence-state",
     "coherence-change",
+    "displacement-state",
     "soil-moisture-state",
     "soil-moisture-change",
   ]);
@@ -37,7 +38,7 @@ test("exactly the buttons of the six finished tools have an action", () => {
   }
 });
 
-test("the six finished buttons are active, and every other button of the tab is inactive", () => {
+test("the seven finished buttons are active, and every other button of the tab is inactive", () => {
   render(<AnalysisTab />);
   const inactive = Object.fromEntries(
     ANALYSIS_TAB.groups.map(({ label }) => [
@@ -48,7 +49,7 @@ test("the six finished buttons are active, and every other button of the tab is 
   expect(inactive).toEqual({
     Backscatter: [false, false, true, true],
     Coherence: [false, false, true, true],
-    "Surface displacement": [true, true, true, true],
+    "Surface displacement": [false, true, true, true],
     "Soil moisture": [false, false, true, true],
   });
 });
@@ -57,7 +58,7 @@ test("the button of a finished tool opens the tool pane of that tool, and an ina
   render(<AnalysisTab />);
   const [oneDate, change, series] = buttonsOf("Backscatter");
   const [onePair, coherenceChange, coherenceSeries] = buttonsOf("Coherence");
-  const [displacement] = buttonsOf("Surface displacement");
+  const [displacement, displacementChange] = buttonsOf("Surface displacement");
   const [moisture, moistureChange, , moistureMap] = buttonsOf("Soil moisture");
   if (
     !oneDate ||
@@ -67,6 +68,7 @@ test("the button of a finished tool opens the tool pane of that tool, and an ina
     !coherenceChange ||
     !coherenceSeries ||
     !displacement ||
+    !displacementChange ||
     !moisture ||
     !moistureChange ||
     !moistureMap
@@ -89,9 +91,28 @@ test("the button of a finished tool opens the tool pane of that tool, and an ina
   expect(dockStore.get().tools).toEqual(all);
   await userEvent.click(series);
   await userEvent.click(coherenceSeries);
-  await userEvent.click(displacement);
+  await userEvent.click(displacementChange);
   await userEvent.click(moistureMap);
   expect(dockStore.get().tools).toEqual(all);
+  await userEvent.click(displacement);
+  expect(dockStore.get().tools).toEqual([...all, "displacement-state"]);
+});
+
+test("the button One pair of Surface displacement says in one sentence what its map shows", () => {
+  const group = ANALYSIS_TAB.groups.find(({ label }) => label === "Surface displacement");
+  expect(group?.tools.map(({ id, description }) => [id, description])).toEqual([
+    ["displacement-state", DISPLACEMENT_STATE],
+    ["displacement-change", "Maps the change in surface displacement between two pairs of dates."],
+    ["displacement-series", "Plots the surface displacement of many pairs of dates, at a point or for the area."],
+    [
+      "displacement-map",
+      "Maps classes that a published algorithm of the NISAR science team derives from the surface displacement.",
+    ],
+  ]);
+  expect(DISPLACEMENT_STATE).toBe(
+    "Maps the movement of the ground toward or away from the radar between the two dates of one pair.",
+  );
+  expect(DISPLACEMENT_STATE).toMatch(/^[A-Z][^.]*\.$/);
 });
 
 test("the buttons of the three new tools say in one sentence what the tool maps", () => {

@@ -109,6 +109,11 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   Coherence, Change says in one sentence why it does not compare two pairs of dates.
 - The sources of these three tools in the dialog Sources of the Help tab.
   screen.
+- The analysis tool Surface displacement, One pair, on the server and in the tool pane, with its method sheet,
+  its research note and the section In brief of the sheet in the dialog Methods of the Help tab.
+- The centre frequency of the radar band in the description of a layer Unwrapped phase, which Get layer reads
+  from the ISO XML file of the product.
+- The sources of Surface displacement, One pair in the dialog Sources of the Help tab.
 
 ### Changed
 

@@ -7,6 +7,19 @@
 | Result | Displacement of the ground along the line of sight of the radar between the two dates of one pair, in metres (m). The values are relative, and the effects of the atmosphere are not removed |
 | State | The comparison (D-17) was made on 15 Nov 2026 on the layers of two pairs of the pilot area, which were received through `lynkeus.harmony.get_layer`. The tool was run on them directly and through `lynkeus.tools.run_tool`. It was not run as a job of the web service. On the same day the work was fitted onto the branch `analysis-raster`; the phase layer of the pair of 9 and 21 Oct 2026 was received again, and the tool and the comparison were repeated on the code of commit `6b7572e`, with the same frequency, the same results and the same legends. |
 
+## In brief
+
+| | |
+|---|---|
+| What it shows | The movement of the ground toward or away from the radar along its viewing direction between the two dates of one pair, relative to an unknown level, so only differences inside one map carry meaning. |
+| Input | The Unwrapped phase layer (`unwrappedPhase`) and the Connected components layer (`connectedComponents`) of one GUNW product, channel and area. The phase holds the change of the distance to the radar as an angle. The components mark the cells where that angle is unreliable. |
+| Formula | `displacement = -wavelength / (4 * pi) * phase`, with the wavelength as the speed of light divided by the centre frequency of the product. Cells of the connected component 0 are left empty. |
+| Result | Metres (m), positive toward the radar. The legend runs from the 2nd to the 98th percentile of the result, from red (away from the radar) to blue (toward the radar). |
+| How to read | A higher value is a movement toward the radar relative to a lower value. The radar looks at the ground from the side, so a value is neither a vertical nor a horizontal movement. The value of one cell alone is not a measurement: compare cells inside one map. |
+| Limits | The values are not corrected for the atmosphere or the solid Earth tides: on the two test pairs, over ground with no known movement, 96 % of the cells span 0.10 m and 0.09 m. The sign was derived from the software of the mission and was not checked on ground with a known movement. Cells where the unwrapping is unreliable are left empty. |
+| Checked | The result equals the output of the function `scale_data2disp_unit` of MintPy 1.6.4 for the same phase and wavelength, in every cell with a value (lower Merrimack River, pairs of 27 Sep to 9 Oct and 9 to 21 Oct 2026, channel HH). The empty cells were checked by a count. No ground with a known movement was compared. |
+| References | [NISAR L1 and L2 Algorithm Theoretical Basis Document, JPL D-95677 Rev A](https://nisar.asf.earthdatacloud.nasa.gov/NISAR-SAMPLE-DATA/DOCS/NISAR_D-95677_NASA_L1_L2_ATBD_20231112_R3.4_w-sigs.pdf). [NISAR L2 GUNW Product Specification, JPL D-102272 Rev E](https://nisar-docs.asf.alaska.edu/product-specification/). [ISCE3 0.25.21](https://github.com/isce-framework/isce3) and [MintPy 1.6.4](https://github.com/insarlab/MintPy). |
+
 ## Reference
 
 1. NISAR L1 and L2 Algorithm Theoretical Basis Document, JPL D-95677, Rev A, 12 November 2023
@@ -158,7 +171,7 @@ formula.
 | `quantity` | Relative displacement along the line of sight |
 | `unit` | `m` |
 | `range` | from the 2nd to the 98th percentile of the result |
-| `colours` | `RdBu` |
+| `colours` | `RdBu`. The lowest value is red and the highest blue: a movement away from the radar is red and a movement toward the radar blue |
 | `ends` | `away from the radar` for the lowest value, `toward the radar` for the highest |
 
 The range is computed for each result, with the percentiles that Lynkeus applies to a layer that it
@@ -231,8 +244,9 @@ The exact numbers of the comparison are in `docs/research/analysis-displacement.
    read states the sign with which it is to be combined with the phase, and its values in the pilot
    pair (16.57 to 32.46 rad) are larger than those of the phase
    (`docs/research/analysis-displacement.md`, part 4.4).
-7. How the interface shows the field `frequency` and the sentence of a refusal. The field was added
-   to the layer description on the server only; the copy of the format in `web/src/shared/layer.ts`
-   does not hold it. Nothing was seen in a browser, and the tool was not run as a job of the web
-   service.
-8. The name `RdBu` of the colour scale in the Contents pane, and which end of it is red.
+7. The form of the tool and the page Methods in a browser. The interface holds the field
+   `frequency` (`web/src/shared/layer.ts`) and offers the tool with a form of two layer fields. Its
+   tests pass; nothing was seen in a browser, and the tool was not run as a job of the web service.
+8. The legend in the Contents pane. The colour table `RdBu` of the interface
+   (`web/src/contents/colourTables.ts`) begins in red at the lowest value and ends in blue at the
+   highest. This was read in the code and was not seen in a browser.

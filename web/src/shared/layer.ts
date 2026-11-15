@@ -40,6 +40,13 @@ export interface LayerDescription {
    * before this field existed.
    */
   ends?: readonly [string, string] | null;
+  /**
+   * Centre frequency of the radar band of the layer, in hertz, as the product states it. The layer
+   * `unwrappedPhase` of a GUNW product has one when the server received it from NASA and the product states the
+   * frequency. Every other layer has null or no field, a result has none, and so has a description stored before
+   * this field existed.
+   */
+  frequency?: number | null;
   /** Program and version that produced the file. */
   program: string;
   /** Reference of the method. A result has one, and a layer has null. */
@@ -87,6 +94,7 @@ export function isLayerDescription(value: unknown): value is LayerDescription {
   const { kind, range, method } = layer;
   const name = layer.layer ?? null;
   const ends = layer.ends ?? null;
+  const frequency = layer.frequency ?? null;
   return (
     [layer.id, layer.title, layer.url, layer.quantity, layer.unit, layer.colours, layer.program, layer.record].every(
       isText,
@@ -101,6 +109,8 @@ export function isLayerDescription(value: unknown): value is LayerDescription {
     isList(layer.inputs, isText) &&
     (kind === "result" ? name === null : name === null || isText(name)) &&
     (ends === null || (kind === "result" && Array.isArray(ends) && ends.length === 2 && ends.every(isText))) &&
+    (frequency === null ||
+      (kind === "layer" && typeof frequency === "number" && Number.isFinite(frequency) && frequency > 0)) &&
     (kind === "result" ? isText(method) : method === null)
   );
 }

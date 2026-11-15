@@ -21,21 +21,26 @@ import { rowOf } from "./methods";
 import { METHODS } from "./methodSheets";
 import {
   coherence,
+  components,
   earlierPair,
   GCOV_NOV,
   GUNW_PAIR,
+  GUNW_SEP,
   laterPair,
   laterSoil,
   laterTerm,
   longPair,
+  phase,
   SME2_OCT,
   soil,
   term,
 } from "./testLayers";
 import {
   ABOUT,
+  GET_COMPONENTS,
   GET_OTHER_PAIR,
   GET_PARTNER,
+  OF_ONE_PRODUCT,
   RECEIVE,
   runOf,
   SECOND,
@@ -44,8 +49,11 @@ import {
   type Started,
 } from "./ToolForm";
 import {
+  CHOOSE_COMPONENTS,
   FINISHED_TOOLS,
   modesSentence,
+  NO_COMPONENTS,
+  NO_FREQUENCY,
   NO_INPUT,
   NO_OTHER_PAIR,
   NO_PARTNER,
@@ -188,6 +196,10 @@ test("the explanations of the titles of the form are short", () => {
     pair: "The same layer of two dates of one track and frame. The earlier date is taken first.",
     pairs:
       "The same coherence layer of two pairs of dates of one track and frame, which span the same number of days; the earlier pair is taken first.",
+    phase:
+      "An Unwrapped phase layer of a GUNW product, which holds the change of the distance to the radar between the two dates as an angle.",
+    components:
+      "The Connected components layer of the same product, channel and area, which marks the cells where the unwrapped phase is unreliable.",
     title: "The name of the result in the Catalog and Contents panes.",
   });
   // The explanation that Coherence, Change adds is one sentence.
@@ -244,6 +256,8 @@ test("the layer to get is named as the Get layer form names it", () => {
     "backscatter-change": "Get the same Backscatter layer of two GCOV products of one track and frame.",
     "coherence-state": "Get a Coherence layer of a GUNW product.",
     "coherence-change": "Get the same Coherence layer of two GUNW products of one track and frame.",
+    "displacement-state":
+      "Get the Unwrapped phase layer and the Connected components layer of one GUNW product, for the same area.",
     "soil-moisture-state": "Get the Soil moisture layer of an SME2 product.",
     "soil-moisture-change": "Get the Soil moisture layer of two SME2 products of one track and frame.",
   });
@@ -595,6 +609,124 @@ test("an empty name of the result is refused at its field after the field is lef
   expect(name.getAttribute("aria-invalid")).toBeNull();
   expect(name.classList.contains("usa-input--error")).toBe(false);
   expect(runButton().getAttribute("aria-disabled")).toBeNull();
+});
+
+test("Surface displacement, One pair shows its two layer fields, proposes a name and starts its process", async () => {
+  show("displacement-state", [components(), coherence(), phase(), term()]);
+  expect(options("Unwrapped phase")).toEqual([
+    "Select a layer",
+    "Unwrapped phase HH, 9 Oct 2026 to 21 Oct 2026 (track 141, frame 67, descending)",
+  ]);
+  expect(screen.getByLabelText<HTMLSelectElement>("Connected components").disabled).toBe(true);
+  expect(missing()).toBe("Choose a layer.");
+  await userEvent.selectOptions(screen.getByLabelText("Unwrapped phase"), "phase-hh");
+  expect(screen.getByLabelText<HTMLSelectElement>("Connected components").disabled).toBe(false);
+  expect(missing()).toBe(CHOOSE_COMPONENTS);
+  expect(runButton().getAttribute("aria-disabled")).toBe("true");
+  await userEvent.selectOptions(screen.getByLabelText("Connected components"), "components-hh");
+  const body = document.querySelector(".tool-pane-body");
+  expect(Array.from(body?.querySelectorAll("label") ?? [], (label) => label.textContent)).toEqual([
+    "Unwrapped phase",
+    "Connected components",
+    "Result name",
+    "Add to the map when ready",
+  ]);
+  // The two layers are of one pair, so the form shows no row Dates.
+  expect(body?.querySelectorAll(".property-row")).toHaveLength(0);
+  expect(screen.getByLabelText<HTMLInputElement>("Result name").value).toBe(
+    "Surface displacement HH, 9 Oct 2026 to 21 Oct 2026",
+  );
+  expect(runButton().getAttribute("aria-disabled")).toBeNull();
+  await userEvent.click(runButton());
+  expect(server.sent("POST")).toEqual([
+    {
+      method: "POST",
+      address: "/api/processes/displacement-state/execution",
+      content: {
+        inputs: {
+          inputs: ["phase-hh", "components-hh"],
+          title: "Surface displacement HH, 9 Oct 2026 to 21 Oct 2026",
+        },
+      },
+    },
+  ]);
+});
+
+test("the field Connected components offers only the layer of the product and the channel of the unwrapped phase", async () => {
+  const vertical = "unwrappedInterferogram/VV/";
+  show("displacement-state", [
+    phase(),
+    phase({
+      id: "phase-vv",
+      title: "Unwrapped phase VV, 9 Oct 2026 to 21 Oct 2026",
+      layer: `${vertical}unwrappedPhase`,
+    }),
+    components(),
+    components({
+      id: "components-vv",
+      title: "Connected components VV, 9 Oct 2026 to 21 Oct 2026",
+      layer: `${vertical}connectedComponents`,
+    }),
+    components({
+      id: "components-earlier",
+      title: "Connected components HH, 27 Sep 2026 to 9 Oct 2026",
+      dates: ["2026-09-27", "2026-10-09"],
+      inputs: [GUNW_SEP],
+    }),
+    coherence(),
+  ]);
+  await userEvent.selectOptions(screen.getByLabelText("Unwrapped phase"), "phase-hh");
+  expect(options("Connected components")).toEqual([
+    "Select a layer",
+    "Connected components HH, 9 Oct 2026 to 21 Oct 2026 (track 141, frame 67, descending)",
+  ]);
+  await userEvent.selectOptions(screen.getByLabelText("Unwrapped phase"), "phase-vv");
+  expect(options("Connected components")).toEqual([
+    "Select a layer",
+    "Connected components VV, 9 Oct 2026 to 21 Oct 2026 (track 141, frame 67, descending)",
+  ]);
+});
+
+test("an unwrapped phase without the frequency of the radar is refused at its field, and the tool does not run", async () => {
+  show("displacement-state", [phase({ frequency: null }), components()]);
+  await userEvent.selectOptions(screen.getByLabelText("Unwrapped phase"), "phase-hh");
+  await userEvent.selectOptions(screen.getByLabelText("Connected components"), "components-hh");
+  expect(missing()).toBe(NO_FREQUENCY);
+  screen.getByLabelText("Unwrapped phase").focus();
+  await userEvent.tab();
+  const fault = screen.getByRole("alert");
+  expect(fault.textContent).toBe(NO_FREQUENCY);
+  const field = screen.getByLabelText("Unwrapped phase");
+  expect(field.getAttribute("aria-invalid")).toBe("true");
+  expect(field.getAttribute("aria-describedby")?.split(" ")).toContain(fault.id);
+  expect(screen.getByLabelText<HTMLInputElement>("Result name").value).toBe("");
+  expect(runButton().getAttribute("aria-disabled")).toBe("true");
+  await userEvent.click(runButton());
+  expect(server.sent("POST")).toEqual([]);
+});
+
+test("an unwrapped phase without its connected components is stated, with the way to the Get layer form", async () => {
+  show("displacement-state", [phase(), components({ inputs: [GUNW_SEP] })]);
+  await userEvent.selectOptions(screen.getByLabelText("Unwrapped phase"), "phase-hh");
+  expect(screen.getByLabelText<HTMLSelectElement>("Connected components").disabled).toBe(true);
+  expect(GET_COMPONENTS).toBe(
+    "The Connected components layer of this product is not in the session. Get the Connected components layer of the same product, channel and area.",
+  );
+  expect(screen.getByText(GET_COMPONENTS)).toBeDefined();
+  expect(missing()).toBe(NO_COMPONENTS);
+  expect(runButton().getAttribute("aria-disabled")).toBe("true");
+  await userEvent.click(screen.getByRole("button", { name: "Get layer" }));
+  expect(dockStore.get().tools).toContain(GET_LAYER_PANE);
+});
+
+test("the two fields of Surface displacement, One pair are named after their layers, each with one sentence", () => {
+  expect(OF_ONE_PRODUCT).toEqual({
+    first: { title: "Unwrapped phase", about: ABOUT.phase },
+    second: { title: "Connected components", about: ABOUT.components, get: GET_COMPONENTS },
+  });
+  for (const sentence of [ABOUT.phase, ABOUT.components]) {
+    expect(sentence).toMatch(/^[A-Z][^.]*\.$/);
+  }
 });
 
 test("layers that do not record which layer of their product they are, are counted, with what to do", () => {

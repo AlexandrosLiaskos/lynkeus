@@ -58,6 +58,7 @@ test("the page shows one section for each finished tool, under the title of its 
     "Backscatter, Change",
     "Coherence, One pair",
     "Coherence, Change",
+    "Surface displacement, One pair",
     "Soil moisture, One date",
     "Soil moisture, Change",
   ]);
@@ -72,10 +73,10 @@ test("the section of the tool that a form asked for is open, and the others are 
   const expanded = FINISHED_TOOLS.map((tool) =>
     screen.getByRole("button", { name: METHODS[tool].title, hidden: true }).getAttribute("aria-expanded"),
   );
-  expect(expanded).toEqual(["false", "true", "false", "false", "false", "false"]);
+  expect(expanded).toEqual(["false", "true", "false", "false", "false", "false", "false"]);
 });
 
-test.each(["coherence-change", "soil-moisture-state", "soil-moisture-change"] as const)(
+test.each(["coherence-change", "displacement-state", "soil-moisture-state", "soil-moisture-change"] as const)(
   "the link Method of %s opens its section alone",
   (asked) => {
     render(<MethodsDialog />);

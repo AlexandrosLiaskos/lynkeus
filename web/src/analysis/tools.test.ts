@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { expect, test } from "vitest";
 import {
   coherence,
+  components,
   earlierPair,
   GCOV_NOV,
   GCOV_OCT,
@@ -12,6 +13,7 @@ import {
   laterSoil,
   laterTerm,
   longPair,
+  phase,
   SME2_OCT,
   SME2_SEP,
   soil,
@@ -23,18 +25,24 @@ import {
   acquisitionWords,
   BACKSCATTER_TERMS,
   bandwidthModeOf,
+  besideOf,
   check,
+  CHOOSE_COMPONENTS,
   compared,
   comparisonOf,
+  componentsOf,
   datesWords,
   defaultTitle,
   FINISHED_TOOLS,
+  hasFrequency,
   inOrder,
   layerOption,
   matches,
   missingOf,
   modesSentence,
   MOST_TITLE,
+  NO_COMPONENTS,
+  NO_FREQUENCY,
   NO_OTHER_PAIR,
   NO_PARTNER,
   OVERLAP,
@@ -50,12 +58,13 @@ import {
   unnamed,
 } from "./tools";
 
-test("the finished tools are the six tools that the server offers, under the names of their buttons", () => {
+test("the finished tools are the seven tools that the server offers, under the names of their buttons", () => {
   expect(FINISHED_TOOLS).toEqual([
     "backscatter-state",
     "backscatter-change",
     "coherence-state",
     "coherence-change",
+    "displacement-state",
     "soil-moisture-state",
     "soil-moisture-change",
   ]);
@@ -116,6 +125,23 @@ test("the layers that the tools read are the layers that the server accepts", ()
   expect(server("coherence")).toMatch(/count=1, product="GUNW", names=_COHERENCE, reads="[^"]+", dates=2\s*\)/);
   expect(server("inputs")).toContain('r"NISAR_(?P<instrument>[LS])\\d_(?:PR|UR|OD)_(?P<product>[A-Z0-9]{4})_\\d{3}_"');
   expect(server("inputs")).toContain('r"(?P<track>\\d{3})_(?P<direction>[AD])_(?P<frame>\\d{3})_"');
+  expect(server("displacement")).toContain('_PHASE = re.compile(r"unwrappedInterferogram/(HH|VV)/unwrappedPhase")');
+  expect(server("displacement")).toContain(
+    '_COMPONENTS = re.compile(r"unwrappedInterferogram/(HH|VV)/connectedComponents")',
+  );
+  expect(server("displacement")).toMatch(
+    /product="GUNW",\s+names=_PHASE,\s+reads="the layer unwrappedPhase",\s+dates=2,\s+unit="rad",\s+\)/,
+  );
+  expect(server("displacement")).toMatch(
+    /product="GUNW",\s+names=_COMPONENTS,\s+reads="the layer connectedComponents",\s+dates=2,\s+\)/,
+  );
+  expect(server("displacement")).toContain("if len(layers) != 2:");
+  expect(server("displacement")).toContain("if described.inputs != labelled.inputs:");
+  expect(server("displacement")).toContain("channel is None or other is None or channel[1] != other[1]");
+  expect(server("displacement")).toContain("if described.frequency is None:");
+  expect(server("displacement")).toContain('"receive it again with Get layer."');
+  expect(server("inputs")).toContain('    unit: str = "1",\n');
+  expect(server("inputs")).toContain("if layer.unit != unit:");
   expect(server("inputs")).toContain("names.fullmatch(layer.layer)");
   expect(server("inputs")).toContain("receive it again with Get layer.");
   expect(server("coherence")).toContain(
@@ -349,6 +375,7 @@ test("a tool of two inputs compares two dates or two pairs of dates, and a tool 
     "backscatter-change": "dates",
     "coherence-state": null,
     "coherence-change": "pairs",
+    "displacement-state": null,
     "soil-moisture-state": null,
     "soil-moisture-change": "dates",
   });
@@ -506,6 +533,7 @@ test("every proposed name is a name that the server takes", () => {
     defaultTitle("backscatter-change", [term(), laterTerm()]),
     defaultTitle("coherence-state", [coherence()]),
     defaultTitle("coherence-change", [earlierPair(), laterPair()]),
+    defaultTitle("displacement-state", [phase(), components()]),
     defaultTitle("soil-moisture-state", [soil()]),
     defaultTitle("soil-moisture-change", [soil(), laterSoil()]),
   ]) {
@@ -700,8 +728,169 @@ test("each tool reads the product type, the number of layers and the number of d
     "backscatter-change": ["GCOV", 2, 1],
     "coherence-state": ["GUNW", 1, 2],
     "coherence-change": ["GUNW", 2, 2],
+    "displacement-state": ["GUNW", 2, 2],
     "soil-moisture-state": ["SME2", 1, 1],
     "soil-moisture-change": ["SME2", 2, 1],
   });
-  expect(FINISHED_TOOLS.map((tool) => READS[tool].unit)).toEqual(["1", "1", "1", "1", "m3 m-3", "m3 m-3"]);
+  expect(FINISHED_TOOLS.map((tool) => READS[tool].unit)).toEqual(["1", "1", "1", "1", "rad", "m3 m-3", "m3 m-3"]);
+  // Surface displacement, One pair is the only tool whose second input is another layer of the same product.
+  expect(FINISHED_TOOLS.filter((tool) => READS[tool].beside !== undefined)).toEqual(["displacement-state"]);
+  expect(READS["displacement-state"].beside?.unit).toBe("1");
+});
+
+test("Surface displacement, One pair reads the layer unwrappedPhase of a GUNW product as its first input", () => {
+  for (const name of ["unwrappedInterferogram/HH/unwrappedPhase", "unwrappedInterferogram/VV/unwrappedPhase"]) {
+    expect(unfit("displacement-state", phase({ layer: name }))).toBeNull();
+  }
+  for (const name of [
+    "unwrappedInterferogram/HH/connectedComponents",
+    "unwrappedInterferogram/HH/ionospherePhaseScreen",
+    "unwrappedInterferogram/HH/coherenceMagnitude",
+    "unwrappedInterferogram/HV/unwrappedPhase",
+    "wrappedInterferogram/HH/unwrappedPhase",
+    "unwrappedInterferogram/HH/unwrappedPhase/",
+    "pixelOffsets/HH/slantRangeOffset",
+    "unwrappedPhase",
+  ]) {
+    expect(unfit("displacement-state", phase({ layer: name }))).toBe("name");
+  }
+  expect(unfit("displacement-state", term())).toBe("product");
+  expect(unfit("displacement-state", phase({ layer: null }))).toBe("unnamed");
+  expect(unfit("displacement-state", phase({ unit: "1" }))).toBe("unit");
+  expect(unfit("displacement-state", phase({ dates: ["2026-10-21"] }))).toBe("dates");
+  // The layer of the connected components is the second input, so the first field does not offer it.
+  expect(unfit("displacement-state", components())).toBe("name");
+  expect(accepted("displacement-state", [components(), coherence(), phase(), term()])).toEqual([phase()]);
+});
+
+test("a layer Unwrapped phase without its name inside the product is counted, and no layer of another unit", () => {
+  expect(unnamed("displacement-state", [phase({ layer: null }), phase(), components({ layer: null })])).toBe(1);
+  expect(unnamed("displacement-state", [phase({ layer: undefined, dates: ["2026-10-21"] })])).toBe(0);
+  expect(unnamed("coherence-state", [phase({ layer: null })])).toBe(0);
+});
+
+test("the second field of Surface displacement, One pair offers the connected components of the same product file and channel", () => {
+  const layers = [
+    phase(),
+    components(),
+    components({ id: "components-vv", layer: "unwrappedInterferogram/VV/connectedComponents" }),
+    components({ id: "components-earlier", dates: ["2026-09-27", "2026-10-09"], inputs: [GUNW_SEP] }),
+    components({ id: "components-unnamed", layer: null }),
+    components({ id: "components-rad", unit: "rad" }),
+    components({ id: "components-one-date", dates: ["2026-10-21"] }),
+    components({ id: "components-result", kind: "result", layer: null, method: "A method" }),
+    coherence(),
+    term(),
+  ];
+  expect(componentsOf(phase(), layers).map(({ id }) => id)).toEqual(["components-hh"]);
+  expect(besideOf("displacement-state", phase(), layers).map(({ id }) => id)).toEqual(["components-hh"]);
+  const vertical = phase({ id: "phase-vv", layer: "unwrappedInterferogram/VV/unwrappedPhase" });
+  expect(componentsOf(vertical, layers).map(({ id }) => id)).toEqual(["components-vv"]);
+  const earlier = phase({ id: "phase-earlier", dates: ["2026-09-27", "2026-10-09"], inputs: [GUNW_SEP] });
+  expect(componentsOf(earlier, layers).map(({ id }) => id)).toEqual(["components-earlier"]);
+  expect(componentsOf(phase(), [phase(), coherence()])).toEqual([]);
+  // A layer that is not a layer Unwrapped phase has no channel, so nothing stands beside it.
+  expect(componentsOf(coherence(), layers)).toEqual([]);
+});
+
+test("the second field of a tool that compares still offers the same layer of another date or pair", () => {
+  expect(besideOf("backscatter-change", term(), [term(), laterTerm(), phase(), components()])).toEqual([laterTerm()]);
+  expect(besideOf("coherence-change", laterPair(), [laterPair(), earlierPair(), phase(), components()])).toEqual([
+    earlierPair(),
+  ]);
+});
+
+test("a layer records the centre frequency of its radar band, or it does not", () => {
+  expect(hasFrequency(phase())).toBe(true);
+  expect(hasFrequency(phase({ frequency: null }))).toBe(false);
+  expect(hasFrequency(phase({ frequency: undefined }))).toBe(false);
+  expect(hasFrequency(components())).toBe(false);
+});
+
+test("Surface displacement, One pair sends the unwrapped phase first and the connected components second", () => {
+  const layers = [components(), phase(), coherence()];
+  const choices = { tool: "displacement-state", layers, title: "Movement" } as const;
+  expect(check({ ...choices, first: "phase-hh", second: "components-hh" })).toEqual({
+    layers: [phase(), components()],
+    faults: SOUND,
+    inputs: { inputs: ["phase-hh", "components-hh"], title: "Movement" },
+  });
+  // The layer of the connected components is not a first input, and the phase is not a second one.
+  expect(check({ ...choices, first: "components-hh", second: "phase-hh" }).faults).toEqual({
+    ...SOUND,
+    first: "Choose a layer.",
+  });
+  expect(check({ ...choices, first: "phase-hh", second: "phase-hh" }).faults).toEqual({
+    ...SOUND,
+    second: "Choose the Connected components layer.",
+  });
+  expect(check({ ...choices, first: "phase-hh", second: null }).faults).toEqual({
+    ...SOUND,
+    second: "Choose the Connected components layer.",
+  });
+});
+
+test("an unwrapped phase without the centre frequency is refused in one sentence, at its field", () => {
+  const layers = [phase({ frequency: null }), components()];
+  const checked = check({
+    tool: "displacement-state",
+    layers,
+    first: "phase-hh",
+    second: "components-hh",
+    title: "Movement",
+  });
+  expect(checked.faults).toEqual({ ...SOUND, first: NO_FREQUENCY });
+  expect(checked.layers).toEqual([]);
+  expect(checked.inputs).toBeNull();
+  expect(NO_FREQUENCY).toBe("This layer does not record the frequency of the radar, so get it again with Get layer.");
+  expect(NO_FREQUENCY).toMatch(/^[A-Z][^.]*\.$/);
+  // A description stored before the field existed has no field, and is refused in the same way.
+  const older = check({
+    tool: "displacement-state",
+    layers: [phase({ frequency: undefined }), components()],
+    first: "phase-hh",
+    second: null,
+    title: "Movement",
+  });
+  expect(older.faults).toEqual({
+    first: NO_FREQUENCY,
+    second: CHOOSE_COMPONENTS,
+    title: null,
+  });
+  expect(missingOf(older.faults)).toBe(NO_FREQUENCY);
+  expect(CHOOSE_COMPONENTS).toBe("Choose the Connected components layer.");
+});
+
+test("an unwrapped phase without the connected components of its product in the session is refused in one sentence", () => {
+  const layers = [
+    phase(),
+    components({ id: "components-vv", layer: "unwrappedInterferogram/VV/connectedComponents" }),
+    components({ id: "components-earlier", inputs: [GUNW_SEP] }),
+  ];
+  const checked = check({
+    tool: "displacement-state",
+    layers,
+    first: "phase-hh",
+    second: "components-vv",
+    title: "Movement",
+  });
+  expect(checked.faults).toEqual({ ...SOUND, second: NO_COMPONENTS });
+  expect(checked.inputs).toBeNull();
+  expect(NO_COMPONENTS).toBe("The Connected components layer of this product is not in the session.");
+  expect(NO_COMPONENTS).toMatch(/^[A-Z][^.]*\.$/);
+});
+
+test("the proposed name of a displacement states the channel and the two dates of the pair", () => {
+  expect(defaultTitle("displacement-state", [phase(), components()])).toBe(
+    "Surface displacement HH, 9 Oct 2026 to 21 Oct 2026",
+  );
+  const vertical = "unwrappedInterferogram/VV/";
+  expect(
+    defaultTitle("displacement-state", [
+      phase({ layer: `${vertical}unwrappedPhase` }),
+      components({ layer: `${vertical}connectedComponents` }),
+    ]),
+  ).toBe("Surface displacement VV, 9 Oct 2026 to 21 Oct 2026");
+  expect(defaultTitle("displacement-state", [phase()])).toBe("");
+  expect(defaultTitle("displacement-state", [])).toBe("");
 });

@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { expect, test } from "vitest";
 import { isLayerDescription, isLayerRequest, type LayerDescription, type LayerRequest } from "./layer";
 
@@ -55,6 +56,32 @@ test("a result may name the two ends of its legend in words, and a layer may not
   expect(isLayerDescription(result)).toBe(true);
   expect(isLayerDescription({ ...LAYER, ends: null })).toBe(true);
   expect(isLayerDescription({ ...LAYER, ends: ["low", "high"] })).toBe(false);
+});
+
+test("a layer may carry the centre frequency of its radar band, in hertz, and a result may not", () => {
+  const result = { ...LAYER, kind: "result", layer: null, method: "Reference of the method" };
+  expect(isLayerDescription({ ...LAYER, frequency: 1239000000 })).toBe(true);
+  expect(isLayerDescription({ ...LAYER, frequency: null })).toBe(true);
+  expect(isLayerDescription({ ...LAYER, frequency: undefined })).toBe(true);
+  expect(isLayerDescription({ ...result, frequency: null })).toBe(true);
+  expect(isLayerDescription({ ...result, frequency: 1239000000 })).toBe(false);
+});
+
+test.each([
+  ["zero", 0],
+  ["negative", -1239000000],
+  ["infinite", Infinity],
+  ["not a number", NaN],
+  ["a text", "1239000000"],
+  ["a list", [1239000000]],
+])("a layer is rejected when its centre frequency is %s", (_, frequency) => {
+  expect(isLayerDescription({ ...LAYER, frequency })).toBe(false);
+});
+
+test("the server gives the centre frequency the same form: a number above zero, of a layer only", () => {
+  const layers = readFileSync("../api/src/lynkeus/layers.py", "utf8");
+  expect(layers).toContain("    frequency: float | None = Field(default=None, gt=0)\n");
+  expect(layers).toContain('        if self.kind == "result" and self.frequency is not None:\n');
 });
 
 test.each([

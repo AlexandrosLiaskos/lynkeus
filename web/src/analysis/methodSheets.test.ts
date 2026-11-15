@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { expect, test } from "vitest";
+import { COLOUR_TABLES } from "../contents/colourTables";
 import { ROW_NAMES, rowOf } from "./methods";
 import { METHODS } from "./methodSheets";
 import { FINISHED_TOOLS, type FinishedTool } from "./tools";
@@ -90,6 +91,60 @@ test("no summary uses the words corridor or route", () => {
       expect(text).not.toMatch(/corridor|route/i);
     }
   }
+});
+
+test("the summary of the displacement says what a user must know before reading the map", () => {
+  const method = METHODS["displacement-state"];
+  expect(rowOf(method, "What it shows")).toBe(
+    "The movement of the ground toward or away from the radar along its viewing direction between the two dates of one pair, relative to an unknown level, so only differences inside one map carry meaning.",
+  );
+  expect(rowOf(method, "How to read")).toContain("The value of one cell alone is not a measurement");
+  expect(rowOf(method, "Limits")).toContain("not corrected for the atmosphere");
+  expect(rowOf(method, "Limits")).toContain(
+    "The sign was derived from the software of the mission and was not checked on ground with a known movement.",
+  );
+  expect(rowOf(method, "Limits")).toContain("Cells where the unwrapping is unreliable are left empty.");
+  expect(rowOf(method, "Result")).toContain("positive toward the radar");
+  expect(rowOf(method, "Checked")).toContain("No ground with a known movement was compared.");
+});
+
+test("the spans of the two test pairs in the row Limits are those of the records of the comparison", () => {
+  // The legend of a result runs from its 2nd to its 98th percentile, so it spans 96 % of the cells with a value.
+  const record = JSON.parse(
+    readFileSync("../docs/research/records/analysis/displacement/refit_lynkeus_side.json", "utf8"),
+  ) as { pairs: Record<string, { legend: [string, string] }> };
+  const spans = ["20261009-20261021", "20260927-20261009"].map((pair) => {
+    const [lowest, highest] = record.pairs[pair]?.legend ?? ["", ""];
+    return (Number(highest) - Number(lowest)).toFixed(2);
+  });
+  expect(spans).toEqual(["0.10", "0.09"]);
+  expect(rowOf(METHODS["displacement-state"], "Limits")).toContain(
+    `96 % of the cells span ${spans[0] ?? ""} m and ${spans[1] ?? ""} m`,
+  );
+  const writing = readFileSync("../api/src/lynkeus/writing.py", "utf8");
+  expect(writing).toMatch(/^LOWEST_PERCENT = 2(\.0)?$/m);
+  expect(writing).toMatch(/^HIGHEST_PERCENT = 98(\.0)?$/m);
+  expect(sheet("displacement-state")).toContain("the pilot area has no known\n   movement");
+});
+
+test("the legend of the displacement runs from red at its lowest value to blue at its highest", () => {
+  expect(rowOf(METHODS["displacement-state"], "Result")).toContain(
+    "from red (away from the radar) to blue (toward the radar)",
+  );
+  // The colour scale RdBu of the interface, as hexadecimal colours from the lowest value to the highest.
+  expect(COLOUR_TABLES.RdBu?.slice(0, 6)).toBe("67001f");
+  expect(COLOUR_TABLES.RdBu?.slice(-6)).toBe("053061");
+  const server = readFileSync("../api/src/lynkeus/analysis/displacement.py", "utf8");
+  expect(server).toContain('        "RdBu",\n');
+  expect(server).toContain('        ("away from the radar", "toward the radar"),\n');
+});
+
+test("the summary of the displacement names the comparison as its sheet does", () => {
+  const text = sheet("displacement-state");
+  expect(rowOf(METHODS["displacement-state"], "Checked")).toContain("`scale_data2disp_unit` of MintPy 1.6.4");
+  expect(text).toContain("MintPy 1.6.4, the package of the Python Package Index");
+  expect(text).toContain("`mintpy.utils.plot.scale_data2disp_unit`");
+  expect(text).toContain("One area, two pairs, the channel HH and the range bandwidth of 40 MHz were compared");
 });
 
 /** The research note of the group Soil moisture and the sheet and the note of Coherence, Change. */

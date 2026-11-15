@@ -94,6 +94,32 @@ test("the source program of the comparisons of the two new change tools is the o
   expect(SOIL_MOISTURE_NOTE).toContain("| GDAL 3.12.2 | The image `ghcr.io/osgeo/gdal:alpine-small-3.12.2`");
 });
 
+test("the sources of Surface displacement, One pair carry the versions that its method sheet cites", () => {
+  const sheet = oneLine(readFileSync("../docs/methods/displacement-state.md", "utf8"));
+  expect(sheet).toContain("JPL D-95677, Rev A, 12 November 2023");
+  expect(source("NISAR L1 and L2 Algorithm Theoretical Basis Document").version).toBe("Rev A, 12 November 2023");
+  expect(sheet).toContain(source("NISAR L1 and L2 Algorithm Theoretical Basis Document").url);
+  expect(sheet).toContain("MintPy 1.6.4");
+  expect(sheet).toContain("GPL-3.0-or-later");
+  expect(source("MintPy").version).toBe("1.6.4");
+  expect(source("MintPy").licence).toBe("GPL-3.0-or-later");
+  expect(sheet).toContain("Revision A, 25 May 2022");
+  expect(source("NISAR Solid Earth Team (2022)").version).toBe("Revision A, 25 May 2022");
+  expect(sheet).toContain(source("NISAR Solid Earth Team (2022)").url);
+  expect(sheet).toContain("ISCE3, the program of the mission, version 0.25.21");
+});
+
+test("the sources of Surface displacement, One pair are those that its research note lists", () => {
+  const note = readFileSync("../docs/research/analysis-displacement.md", "utf8");
+  expect(note).toContain("`NISAR_L2_GUNW_V1` and `NISAR_L2_GUNW_PROVISIONAL_V1`");
+  expect(note).toContain("[MintPy](https://github.com/insarlab/MintPy)");
+  expect(source("MintPy").url).toBe("https://github.com/insarlab/MintPy");
+  expect(note).toContain(source("NISAR L1 and L2 Algorithm Theoretical Basis Document").url);
+  expect(note).toContain(source("NISAR Solid Earth Team (2022)").url);
+  expect(source("NISAR Provisional Geocoded Unwrapped").use).toContain("Surface displacement, One pair");
+  expect(source("NISAR Validated Geocoded Unwrapped").use).toContain("Surface displacement, One pair");
+});
+
 test("every article of the list is cited by its address in a method sheet or in the research note", () => {
   // An address of the DOI resolver names an article, or a dataset of NASA under the prefix 10.5067.
   const articles = SOURCES.filter(

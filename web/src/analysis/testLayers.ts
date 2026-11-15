@@ -88,6 +88,41 @@ export function longPair(change: Partial<LayerDescription> = {}): LayerDescripti
   });
 }
 
+/**
+ * A layer Unwrapped phase of a GUNW product, as the server describes it after it was received, for the tests.
+ * Its centre frequency is the one of the products of the pilot area (`docs/methods/displacement-state.md`).
+ */
+export function phase(change: Partial<LayerDescription> = {}): LayerDescription {
+  return layer({
+    id: "phase-hh",
+    title: "Unwrapped phase HH, 9 Oct 2026 to 21 Oct 2026",
+    layer: "unwrappedInterferogram/HH/unwrappedPhase",
+    quantity: "Unwrapped interferometric phase, HH",
+    unit: "rad",
+    range: [-4, 4],
+    colours: "RdBu",
+    dates: ["2026-10-09", "2026-10-21"],
+    inputs: [GUNW_PAIR],
+    frequency: 1239000000,
+    ...change,
+  });
+}
+
+/** The layer Connected components of the same product and channel, for the tests. */
+export function components(change: Partial<LayerDescription> = {}): LayerDescription {
+  return layer({
+    id: "components-hh",
+    title: "Connected components HH, 9 Oct 2026 to 21 Oct 2026",
+    layer: "unwrappedInterferogram/HH/connectedComponents",
+    quantity: "Connected component of the phase unwrapping, HH",
+    range: [0, 1],
+    colours: "tab10",
+    dates: ["2026-10-09", "2026-10-21"],
+    inputs: [GUNW_PAIR],
+    ...change,
+  });
+}
+
 /** A layer Soil moisture of an SME2 product, as the server describes it after it was received, for the tests. */
 export function soil(change: Partial<LayerDescription> = {}): LayerDescription {
   return layer({

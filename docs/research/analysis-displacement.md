@@ -134,10 +134,11 @@ The smallest change that carries the value is therefore:
    given above and its value is a finite number above zero. In every other case, and when the file
    cannot be fetched, the layer is received without a frequency, and the tool refuses it with a
    sentence.
-3. **Interface.** The copy of the format in `web/src/shared/layer.ts` was not changed, because this
-   part changes nothing under `web/`. Its check `isLayerDescription` (lines 82 to 106) reads the
-   fields that it knows and does not refuse a description with a further field; this was read in the
-   code and not tried in a browser.
+3. **Interface.** The copy of the format in `web/src/shared/layer.ts` holds the field as well. Its
+   check `isLayerDescription` accepts a frequency that is a finite number above zero, and only in
+   the description of a layer, as the server does. The form of the tool offers a layer
+   `unwrappedPhase` without the field and states in one sentence, at its field, that the layer must
+   be received again. This is covered by the tests of the interface and was not seen in a browser.
 
 4. **A visitor's own server.** This point was read in the code and was not run. The program of an
    own server (`lynkeus.link`) runs the same processes (`lynkeus.offered`) on the computer of the
@@ -608,10 +609,10 @@ text was not read.
    ISCE3 and agrees with MintPy and with the convention of ASF. It was not checked against a
    movement that is known from another measurement. The sign of the solid Earth tides table of ISCE3
    was not reconciled with it.
-2. **The change of the layer description.** The field `frequency` exists on the server only. The
-   copy of the format in `web/src/shared/layer.ts` and the pages that show a layer do not know it.
-   Whether the field is wanted in this form, and whether the STAC record of a layer should carry the
-   frequency as well, is for the owner to decide.
+2. **The change of the layer description.** The field `frequency` exists on the server and in the
+   copy of the format in `web/src/shared/layer.ts`. The pages that show the properties of a layer
+   do not show it. Whether the field is wanted in this form, and whether the STAC record of a layer
+   should carry the frequency as well, is for the owner to decide.
 3. **The change of the Data part.** `get_layer` now fetches one more file for the layer
    `unwrappedPhase` of a GUNW product. When the file cannot be read, the layer is received without
    a frequency and the tool refuses it. The other choice, to refuse the layer itself, was not taken.
@@ -622,7 +623,8 @@ text was not read.
 5. **Channel VV, other bandwidths, more than one component, a later reference date.** Not received
    or not found (method sheet, Not yet confirmed).
 6. **The web service and the browser.** The tool ran through `run_tool`, not as a job of the web
-   service, and nothing was seen in a browser.
+   service. The form of the tool, its texts and the page Methods are covered by the tests of the
+   interface; nothing was seen in a browser.
 7. **The heading "Input layer" of the method sheet.** The sheet follows the headings of
    `docs/methods/coherence-state.md`, as asked, although the tool has two inputs; the two
    backscatter sheets use "Input layers".

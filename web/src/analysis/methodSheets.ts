@@ -156,6 +156,43 @@ export const METHODS: Record<FinishedTool, Method> = {
       },
     ],
   },
+  "displacement-state": {
+    title: "Surface displacement, One pair",
+    rows: [
+      {
+        name: "What it shows",
+        text: "The movement of the ground toward or away from the radar along its viewing direction between the two dates of one pair, relative to an unknown level, so only differences inside one map carry meaning.",
+      },
+      {
+        name: "Input",
+        text: "The Unwrapped phase layer (`unwrappedPhase`) and the Connected components layer (`connectedComponents`) of one GUNW product, channel and area. The phase holds the change of the distance to the radar as an angle. The components mark the cells where that angle is unreliable.",
+      },
+      {
+        name: "Formula",
+        text: "`displacement = -wavelength / (4 * pi) * phase`, with the wavelength as the speed of light divided by the centre frequency of the product. Cells of the connected component 0 are left empty.",
+      },
+      {
+        name: "Result",
+        text: "Metres (m), positive toward the radar. The legend runs from the 2nd to the 98th percentile of the result, from red (away from the radar) to blue (toward the radar).",
+      },
+      {
+        name: "How to read",
+        text: "A higher value is a movement toward the radar relative to a lower value. The radar looks at the ground from the side, so a value is neither a vertical nor a horizontal movement. The value of one cell alone is not a measurement: compare cells inside one map.",
+      },
+      {
+        name: "Limits",
+        text: "The values are not corrected for the atmosphere or the solid Earth tides: on the two test pairs, over ground with no known movement, 96 % of the cells span 0.10 m and 0.09 m. The sign was derived from the software of the mission and was not checked on ground with a known movement. Cells where the unwrapping is unreliable are left empty.",
+      },
+      {
+        name: "Checked",
+        text: "The result equals the output of the function `scale_data2disp_unit` of MintPy 1.6.4 for the same phase and wavelength, in every cell with a value (lower Merrimack River, pairs of 27 Sep to 9 Oct and 9 to 21 Oct 2026, channel HH). The empty cells were checked by a count. No ground with a known movement was compared.",
+      },
+      {
+        name: "References",
+        text: "[NISAR L1 and L2 Algorithm Theoretical Basis Document, JPL D-95677 Rev A](https://nisar.asf.earthdatacloud.nasa.gov/NISAR-SAMPLE-DATA/DOCS/NISAR_D-95677_NASA_L1_L2_ATBD_20231112_R3.4_w-sigs.pdf). [NISAR L2 GUNW Product Specification, JPL D-102272 Rev E](https://nisar-docs.asf.alaska.edu/product-specification/). [ISCE3 0.25.21](https://github.com/isce-framework/isce3) and [MintPy 1.6.4](https://github.com/insarlab/MintPy).",
+      },
+    ],
+  },
   "soil-moisture-state": {
     title: "Soil moisture, One date",
     rows: [
