@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """The tools of the group Soil moisture. They read the layer ``soilMoisture`` of SME2 products.
 
 The layer is the volumetric soil moisture that the mission retrieves from the radar backscatter, in cubic metres

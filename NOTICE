@@ -1,6 +1,46 @@
 Lynkeus
 Copyright 2026 Alexandros Liaskos
 
-This product is licensed under the Apache License, Version 2.0.
+Lynkeus is free software: you can redistribute it and/or modify it under the terms of the GNU Affero
+General Public License, version 3, as published by the Free Software Foundation, and the additional
+terms under its section 7 that are given in the file NOTICE.
 
-The third-party software that Lynkeus uses is listed, with its licences, in README.md.
+Lynkeus is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General
+Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License along with Lynkeus, in the
+file LICENSE. If not, see <https://www.gnu.org/licenses/>.
+
+
+Attribution
+
+    Lynkeus, by Alexandros Liaskos and Team Lynkeus.
+    Liaskos, A., and Team Lynkeus (2026). Lynkeus: a web platform for the analysis of surface change
+    with radar data of the NISAR mission [software]. https://github.com/AlexandrosLiaskos/lynkeus
+
+
+Additional terms under section 7 of the GNU Affero General Public License, version 3
+
+1. Attribution (section 7(b)). Every copy of Lynkeus and every work based on it, in source or object
+   form, including every version with which users interact remotely through a computer network, must
+   preserve the attribution above, complete and legible, in its Appropriate Legal Notices (in Lynkeus,
+   the About dialog) and in its documentation. From the day the file CITATION.cff of the original
+   repository, https://github.com/AlexandrosLiaskos/lynkeus, gives a DOI for Lynkeus, the attribution
+   must also give that DOI.
+
+2. Modified versions (section 7(c)). A modified version must state, next to the attribution, that it
+   is based on Lynkeus and has been modified, and by whom. It must not be presented as the original
+   Lynkeus or as the work of its authors.
+
+3. Names of the authors (section 7(d)). The names of the authors of Lynkeus may not be used for the
+   publicity of a work based on Lynkeus, or to suggest that they endorse it, without their written
+   permission, except to give the attribution of term 1.
+
+4. Name and logo (section 7(e)). This licence grants no rights under trademark law to the name Lynkeus
+   or to its logo. A work based on Lynkeus may not use them as its own name or mark, except to give the
+   attribution of term 1 and the statement of term 2.
+
+
+The third-party software that Lynkeus uses is listed, with its licences, in README.md. The logos on the
+welcome screen belong to their owners (README.md, section Logos).

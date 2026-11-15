@@ -13,8 +13,10 @@ This note records, for the two tools, what `docs/research/analysis.md` records f
 of level 1: the product specification of the input layer (part 2), the published method and the
 source program of the comparison (part 3), what was measured on real files (part 4), how GIS
 programs offer the same functions (part 5), the sources with the date on which each was read (part
-6) and what is not confirmed (part 7). The tools Soil moisture Series and Soil moisture Thematic map
-are not part of this note.
+6) and what is not confirmed (part 7). The tool Soil moisture Series is not part of this note. The
+button Soil moisture Thematic map was removed from the Analysis tab on 15 Nov 2026, as no published
+algorithm of the NISAR science team derives classes from soil moisture
+(`docs/research/analysis-thematic-maps.md`).
 
 ## 1. Points that this note answers
 

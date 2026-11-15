@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, expect, test } from "vitest";
@@ -48,20 +50,46 @@ test("the dialog states what Lynkeus is and that it is independent of NASA, and 
   expect(dialog.querySelector("img")).toBeNull();
 });
 
-test("the dialog shows the version of package.json, the team, the licence and the two links as names and values", () => {
+test("the dialog shows the version of package.json, the team and the team log as names and values", () => {
   const dialog = open();
   expect(rows(dialog.querySelector(".property-list"))).toEqual([
     ["Version", version],
     ["Developed by", "Team Lynkeus"],
-    ["Licence", "Copyright 2026 Alexandros Liaskos. This product is licensed under the Apache License, Version 2.0."],
     ["Team log", "https://lynkeus.nkua.cloud/team-log/"],
-    ["Repository", "https://github.com/AlexandrosLiaskos/lynkeus"],
+  ]);
+});
+
+test("the first section states the licence as NOTICE gives it, with the links to the source code, LICENSE and NOTICE", () => {
+  const dialog = open();
+  const licence = section(dialog, "Licence");
+  expect(dialog.querySelector(".section")).toBe(licence);
+  expect(within(licence).getByRole("button", { name: "Licence" }).getAttribute("aria-expanded")).toBe("true");
+  const info = within(licence).getByRole("button", { name: "Information about Licence" });
+  expect(document.getElementById(info.getAttribute("aria-describedby") ?? "")?.textContent).toBe(ABOUT.terms);
+  expect(Array.from(licence.querySelectorAll(".about-licence > p"), (paragraph) => paragraph.textContent)).toEqual([
+    "Copyright 2026 Alexandros Liaskos",
+    ABOUT.licence,
+    ABOUT.warranty,
+  ]);
+  expect(within(licence).getByRole("heading", { level: 4, name: "Attribution" })).toBeDefined();
+  expect(Array.from(licence.querySelectorAll(".about-attribution > p"), (line) => line.textContent)).toEqual([
+    "Lynkeus, by Alexandros Liaskos and Team Lynkeus.",
+    "Liaskos, A., and Team Lynkeus (2026). Lynkeus: a web platform for the analysis of surface change with radar data of the NISAR mission [software]. https://github.com/AlexandrosLiaskos/lynkeus",
+  ]);
+  expect(rows(licence)).toEqual([
+    ["Source code", "https://github.com/AlexandrosLiaskos/lynkeus"],
+    ["Licence", "https://github.com/AlexandrosLiaskos/lynkeus/blob/main/LICENSE"],
+    ["Notice", "https://github.com/AlexandrosLiaskos/lynkeus/blob/main/NOTICE"],
   ]);
   const links = within(dialog).getAllByRole<HTMLAnchorElement>("link");
-  expect(links.map((link) => [link.textContent, link.getAttribute("href"), link.target])).toEqual([
-    ["https://lynkeus.nkua.cloud/team-log/", "https://lynkeus.nkua.cloud/team-log/", "_blank"],
-    ["https://github.com/AlexandrosLiaskos/lynkeus", "https://github.com/AlexandrosLiaskos/lynkeus", "_blank"],
-  ]);
+  expect(links.map((link) => [link.textContent, link.getAttribute("href"), link.target])).toEqual(
+    [
+      "https://lynkeus.nkua.cloud/team-log/",
+      "https://github.com/AlexandrosLiaskos/lynkeus",
+      "https://github.com/AlexandrosLiaskos/lynkeus/blob/main/LICENSE",
+      "https://github.com/AlexandrosLiaskos/lynkeus/blob/main/NOTICE",
+    ].map((address) => [address, address, "_blank"]),
+  );
 });
 
 test("the citation entry stands in a section of its own, with its explanation behind the i", () => {
@@ -72,11 +100,11 @@ test("the citation entry stands in a section of its own, with its explanation be
   expect(document.getElementById(info.getAttribute("aria-describedby") ?? "")?.textContent).toBe(ABOUT.cite);
   expect(rows(citation)).toEqual([
     ["Title", "Lynkeus"],
-    ["Author", "Alexandros Liaskos"],
+    ["Authors", "Alexandros Liaskos and Team Lynkeus"],
     ["Version", version],
     ["Address", "https://lynkeus.nkua.cloud/"],
     ["Repository", "https://github.com/AlexandrosLiaskos/lynkeus"],
-    ["Licence", "Apache-2.0"],
+    ["Licence", "AGPL-3.0-only"],
   ]);
   expect(
     within(citation)
@@ -88,6 +116,7 @@ test("the citation entry stands in a section of its own, with its explanation be
 test("no explanation stands as text under a heading of the dialog", () => {
   const dialog = open();
   expect(within(dialog).queryByText(ABOUT.cite, { selector: "p" })).toBeNull();
+  expect(within(dialog).queryByText(ABOUT.terms, { selector: "p" })).toBeNull();
   expect(dialog.querySelector(".usa-hint")).toBeNull();
 });
 

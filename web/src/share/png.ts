@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 /** The eight bytes that start every PNG file. */
 const SIGNATURE = [137, 80, 78, 71, 13, 10, 26, 10] as const;
 

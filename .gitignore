@@ -4,6 +4,12 @@
 # Node
 node_modules/
 /web/dist/
+/web/playwright-report/
+/web/test-results/
+/web/findings/
+/web/lighthouse-report/
+/web/.lighthouseci/
+/web/bundle-map/
 
 # Python
 __pycache__/

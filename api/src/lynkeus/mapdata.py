@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """The map data that the libraries of Lynkeus read, and the variables of the environment that name it.
 
 rasterio holds PROJ and GDAL, and both read data files, among them the database of the coordinate systems of PROJ.

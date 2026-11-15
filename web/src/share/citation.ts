@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { version } from "../../package.json";
 import type { LayerDescription } from "../shared/layer";
 import { siteAddress, type LayerRecord } from "./record";
@@ -26,7 +28,7 @@ const PUBLISHER = "NASA Alaska Satellite Facility Distributed Active Archive Cen
 
 /** How Lynkeus is cited. The values are those of the file CITATION.cff of the repository; a test compares them. */
 export const LYNKEUS = {
-  author: "Liaskos, A.",
+  author: "Liaskos, A., and Team Lynkeus.",
   title: "Lynkeus",
   version,
   address: "https://github.com/AlexandrosLiaskos/lynkeus",

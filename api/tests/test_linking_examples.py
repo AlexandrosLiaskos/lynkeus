@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """The example messages of the addresses with which the interface manages own servers.
 
 The files of ``tests/data/servers`` are examples of what the project server answers to the interface and of

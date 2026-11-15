@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """The web service with the stand-in processes of the tests, as a program of its own.
 
 ``python -m tests.service <folder>`` runs the web service on a free port of this computer and writes

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """Lynkeus Server, the program that a visitor runs on a computer of his own.
 
 The program connects the computer to Lynkeus (``lynkeus.link``): the jobs of its owner then run on

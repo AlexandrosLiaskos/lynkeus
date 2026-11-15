@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """The analysis tools of Lynkeus.
 
 Every tool is one function. It receives the arrays of its input layers, in
