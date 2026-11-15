@@ -124,6 +124,9 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   version to say that it is modified, and grant no right to the names of the authors, the name Lynkeus or
   its logo. Copies of the code that were obtained before this change keep the Apache License 2.0 under
   which they were published.
+- Each layer that Get layer offers bears the name that NASA's catalogue gives it, for example Frequency A HHHH,
+  Frequency A RTC Gamma to Sigma Factor and Frequency A HH Unwrapped Interferogram Coherence Magnitude. Layers
+  received earlier keep their names.
 - Each tab of the ribbon is declared in its own folder, and the ribbon joins them.
 - The header of the application page shows only the name of the application.
 - The keyboard focus is shown by a line of 2 pixels in the primary colour. The line shows when the

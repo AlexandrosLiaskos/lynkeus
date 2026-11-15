@@ -213,11 +213,11 @@ def test_every_tool_of_the_list_can_be_offered() -> None:
 
 def test_job_is_named_by_the_layer_and_the_product() -> None:
     request = LayerRequest.model_validate(REQUEST)
-    assert offered.layer_job_title(request) == f"Backscatter HH of {PRODUCT}"
+    assert offered.layer_job_title(request) == f"Frequency A HHHH of {PRODUCT}"
     coherence = request.model_copy(
         update={"product": "GUNW", "granule": "pair.h5", "layer": "wrappedInterferogram/VV/coherenceMagnitude"}
     )
-    assert offered.layer_job_title(coherence) == "Coherence VV, 20 m of pair"
+    assert offered.layer_job_title(coherence) == "Frequency A VV Wrapped Interferogram Coherence Magnitude of pair"
     assert offered.layer_job_title(request.model_copy(update={"layer": "other"})) == f"other of {PRODUCT}"
     inputs = offered.ToolInputs(inputs=("a", "b"), title="  Change of backscatter HH ")
     assert offered.result_job_title(inputs) == "Change of backscatter HH"
@@ -284,7 +284,7 @@ def test_wrong_inputs_are_answered_with_400_and_start_no_job(
 def test_layer_is_received_in_a_job_and_listed_in_the_session(site: Site) -> None:
     site.sign_in()
     started = site.start("get-layer", **REQUEST)
-    assert (started["processID"], started["title"]) == ("get-layer", f"Backscatter HH of {PRODUCT}")
+    assert (started["processID"], started["title"]) == ("get-layer", f"Frequency A HHHH of {PRODUCT}")
     assert started["inputs"] == REQUEST
     info = site.wait(started["jobID"])
     assert (info["status"], info["message"], info["progress"]) == ("successful", "The layer is ready.", 100)
@@ -294,7 +294,7 @@ def test_layer_is_received_in_a_job_and_listed_in_the_session(site: Site) -> Non
     assert name == info["layer"]
     assert description["url"] == f"/files/{name}/gcov-hhhh-20261021.tif"
     assert description["record"] == f"/files/{name}/gcov-hhhh-20261021.json"
-    assert (description["title"], description["kind"]) == ("Backscatter HH, 21 Oct 2026", "layer")
+    assert (description["title"], description["kind"]) == ("Frequency A HHHH, 21 Oct 2026", "layer")
     assert description["inputs"] == [f"{PRODUCT}.h5"]
     assert site.layers() == [description]
     # The folder of the layer holds its two files and nothing that the job left behind.
