@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, expect, test, vi } from "vitest";
@@ -264,4 +266,51 @@ test("a result of classes lists its classes, and its file shows no statistics of
   await screen.findByText("EPSG:32619");
   expect(valueOf("Layer", "Classes")).toBe("1 Not inundated; 2 Open water; 3 Inundated vegetation");
   expect(namesOf("File")).toEqual(["Address", "Kept on", "Reduced copies", "Value without data"]);
+});
+
+test("a result of a run with an area drawn on the map shows its statistics in the area after the group Layer", async () => {
+  const area = {
+    crs: "EPSG:3857",
+    kind: "rectangle",
+    points: [
+      [-7909000, 5270000],
+      [-7891000, 5270000],
+      [-7891000, 5284000],
+      [-7909000, 5284000],
+      [-7909000, 5270000],
+    ],
+  } as const;
+  show({
+    ...RESULT,
+    statistics: {
+      area,
+      cells: 14316,
+      mean: 0.4123,
+      deviation: 0.1789,
+      minimum: 0.0012,
+      median: 0.4011,
+      maximum: 0.9987,
+    },
+  });
+  await screen.findByText("EPSG:32619");
+  expect(screen.getAllByRole("heading", { level: 4 }).map((heading) => heading.textContent)).toEqual([
+    "Layer",
+    "Statistics in the area",
+    "Projection and grid",
+    "File",
+    "Record",
+  ]);
+  expect(namesOf("Statistics in the area")).toEqual([
+    "Area",
+    "Cells with data",
+    "Mean",
+    "Standard deviation",
+    "Lowest value",
+    "Median",
+    "Highest value",
+  ]);
+  expect(valueOf("Statistics in the area", "Area")).toBe("The rectangle drawn on the map");
+  expect(valueOf("Statistics in the area", "Cells with data")).toBe("14,316");
+  expect(valueOf("Statistics in the area", "Mean")).toBe("0.412");
+  expect(valueOf("Statistics in the area", "Highest value")).toBe("0.999");
 });

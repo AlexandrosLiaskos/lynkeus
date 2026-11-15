@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import type { LayerClass, LayerDescription } from "../shared/layer";
 
 /** The classes of Backscatter, Thematic map, with the colours of the notebook of the NISAR science team. */

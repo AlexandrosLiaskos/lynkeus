@@ -1,4 +1,6 @@
-import { act, render, screen, within } from "@testing-library/react";
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import { beforeEach, expect, test, vi } from "vitest";
@@ -249,10 +251,12 @@ test("the Escape key first hides the explanation of a pane, and the second time 
   );
   act(() => openToolPane("buffer"));
   const info = screen.getByRole("button", { name: "Information about Buffer" });
+  // The explanation shows for a focus that the keyboard has brought.
+  fireEvent.keyDown(document.body, { key: "Tab" });
   act(() => info.focus());
-  expect(screen.getByRole("tooltip").classList.contains("info-bubble--open")).toBe(true);
+  expect(screen.queryByRole("tooltip")).not.toBeNull();
   await userEvent.keyboard("{Escape}");
-  expect(screen.getByRole("tooltip").classList.contains("info-bubble--open")).toBe(false);
+  expect(screen.queryByRole("tooltip")).toBeNull();
   expect(document.activeElement).toBe(info);
   await userEvent.keyboard("{Escape}");
   expect(document.activeElement).toBe(screen.getByRole("main"));

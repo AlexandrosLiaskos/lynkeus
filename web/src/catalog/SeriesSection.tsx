@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { useId, useRef, useState, type SyntheticEvent } from "react";
 import { loadJobs } from "../data/jobs";
 import { unitWords } from "../data/layers";
@@ -39,7 +41,7 @@ export function seriesLine(series: SeriesDescription): string {
   return [
     `${String(count)} ${pairs ? "pairs" : "dates"}`,
     `${formatDay(first)} to ${formatDay(last)}`,
-    series.point ? "At a point" : "Whole area",
+    series.point ? "At a point" : series.shape ? "Drawn area" : "Whole area",
   ].join(" · ");
 }
 

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """The thematic map of the group Backscatter: the wetland inundation classification of the NISAR science team.
 
 The tool reads the layers ``HHHH`` and ``HVHV`` of one GCOV product, the radar backscatter gamma0 of the channels HH

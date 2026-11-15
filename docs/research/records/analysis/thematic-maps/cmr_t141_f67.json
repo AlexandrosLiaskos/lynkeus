@@ -1,0 +1,981 @@
+{
+ "read_utc": "2026-11-15T09:39:12.229739+00:00",
+ "collections": [
+  {
+   "product": "GCOV",
+   "collection": "NISAR_L2_GCOV_V1",
+   "concept_id": "C3622241360-ASF",
+   "maturity": "Validated",
+   "all_granules": 18538,
+   "t141_f67_url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=C3622241360-ASF&attribute%5B%5D=int%2CTRACK_NUMBER%2C141&attribute%5B%5D=int%2CFRAME_NUMBER%2C67&page_size=2000&sort_key=start_date",
+   "t141_f67_hits": 2,
+   "t141_f67_granules": [
+    {
+     "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+     "id": "G4405194348-ASF",
+     "start": "2026-10-21T23:43:30.000000Z",
+     "reference": null,
+     "secondary": null,
+     "direction": "DESCENDING",
+     "polA": [
+      "HH",
+      "HV"
+     ],
+     "polB": [
+      "HH",
+      "HV"
+     ],
+     "frequencies": [
+      "A",
+      "B"
+     ],
+     "full_frame": "TRUE",
+     "bwA": "40",
+     "version": "1.0.20",
+     "crid": "P05036"
+    },
+    {
+     "granule": "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001",
+     "id": "G4408709868-ASF",
+     "start": "2026-11-02T23:43:30.000000Z",
+     "reference": null,
+     "secondary": null,
+     "direction": "DESCENDING",
+     "polA": [
+      "HH",
+      "HV"
+     ],
+     "polB": [
+      "HH",
+      "HV"
+     ],
+     "frequencies": [
+      "A",
+      "B"
+     ],
+     "full_frame": "TRUE",
+     "bwA": "40",
+     "version": "1.0.20",
+     "crid": "P05036"
+    }
+   ],
+   "box_url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=C3622241360-ASF&bounding_box=-71.2%2C42.6%2C-70.75%2C42.95&page_size=2000&sort_key=start_date",
+   "box_hits": 5,
+   "box_by_track_frame": {
+    "T141 F67 D": 2,
+    "T32 F23 A": 1,
+    "T69 F67 D": 1,
+    "T104 F23 A": 1
+   },
+   "box_first": "2026-10-21T23:43:30.000000Z",
+   "box_last": "2026-11-02T23:43:30.000000Z"
+  },
+  {
+   "product": "GCOV",
+   "collection": "NISAR_L2_GCOV_PROVISIONAL_V1",
+   "concept_id": "C2854338529-ASF",
+   "maturity": "Provisional",
+   "all_granules": 163672,
+   "t141_f67_url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=C2854338529-ASF&attribute%5B%5D=int%2CTRACK_NUMBER%2C141&attribute%5B%5D=int%2CFRAME_NUMBER%2C67&page_size=2000&sort_key=start_date",
+   "t141_f67_hits": 9,
+   "t141_f67_granules": [
+    {
+     "granule": "NISAR_L2_PR_GCOV_023_141_D_067_4005_DHDH_A_20260623T234333_20260623T234408_P05023_N_F_J_001",
+     "id": "G4244558980-ASF",
+     "start": "2026-06-23T23:43:33.000000Z",
+     "reference": null,
+     "secondary": null,
+     "direction": "DESCENDING",
+     "polA": [
+      "HH",
+      "HV"
+     ],
+     "polB": [
+      "HH",
+      "HV"
+     ],
+     "frequencies": [
+      "A",
+      "B"
+     ],
+     "full_frame": "TRUE",
+     "bwA": "40",
+     "version": "1.0.11",
+     "crid": "P05023"
+    },
+    {
+     "granule": "NISAR_L2_PR_GCOV_024_141_D_067_4005_DHDH_A_20260705T234333_20260705T234408_P05023_N_F_J_001",
+     "id": "G4246695615-ASF",
+     "start": "2026-07-05T23:43:33.000000Z",
+     "reference": null,
+     "secondary": null,
+     "direction": "DESCENDING",
+     "polA": [
+      "HH",
+      "HV"
+     ],
+     "polB": [
+      "HH",
+      "HV"
+     ],
+     "frequencies": [
+      "A",
+      "B"
+     ],
+     "full_frame": "TRUE",
+     "bwA": "40",
+     "version": "1.0.11",
+     "crid": "P05023"
+    },
+    {
+     "granule": "NISAR_L2_PR_GCOV_025_141_D_067_4005_DHDH_A_20260717T234332_20260717T234407_P05023_N_F_J_001",
+     "id": "G4255048321-ASF",
+     "start": "2026-07-17T23:43:32.000000Z",
+     "reference": null,
+     "secondary": null,
+     "direction": "DESCENDING",
+     "polA": [
+      "HH",
+      "HV"
+     ],
+     "polB": [
+      "HH",
+      "HV"
+     ],
+     "frequencies": [
+      "A",
+      "B"
+     ],
+     "full_frame": "TRUE",
+     "bwA": "40",
+     "version": "1.0.11",
+     "crid": "P05023"
+    },
+    {
+     "granule": "NISAR_L2_PR_GCOV_027_141_D_067_4005_DHDH_A_20260810T234331_20260810T234406_P05023_N_F_J_001",
+     "id": "G4279633326-ASF",
+     "start": "2026-08-10T23:43:31.000000Z",
+     "reference": null,
+     "secondary": null,
+     "direction": "DESCENDING",
+     "polA": [
+      "HH",
+      "HV"
+     ],
+     "polB": [
+      "HH",
+      "HV"
+     ],
+     "frequencies": [
+      "A",
+      "B"
+     ],
+     "full_frame": "TRUE",
+     "bwA": "40",
+     "version": "1.0.11",
+     "crid": "P05023"
+    },
+    {
+     "granule": "NISAR_L2_PR_GCOV_028_141_D_067_4005_DHDH_A_20260822T234330_20260822T234405_P05023_N_F_J_001",
+     "id": "G4288931612-ASF",
+     "start": "2026-08-22T23:43:30.000000Z",
+     "reference": null,
+     "secondary": null,
+     "direction": "DESCENDING",
+     "polA": [
+      "HH",
+      "HV"
+     ],
+     "polB": [
+      "HH",
+      "HV"
+     ],
+     "frequencies": [
+      "A",
+      "B"
+     ],
+     "full_frame": "TRUE",
+     "bwA": "40",
+     "version": "1.0.11",
+     "crid": "P05023"
+    },
+    {
+     "granule": "NISAR_L2_PR_GCOV_029_141_D_067_4005_DHDH_A_20260903T234330_20260903T234405_P05023_N_F_J_001",
+     "id": "G4304094509-ASF",
+     "start": "2026-09-03T23:43:30.000000Z",
+     "reference": null,
+     "secondary": null,
+     "direction": "DESCENDING",
+     "polA": [
+      "HH",
+      "HV"
+     ],
+     "polB": [
+      "HH",
+      "HV"
+     ],
+     "frequencies": [
+      "A",
+      "B"
+     ],
+     "full_frame": "TRUE",
+     "bwA": "40",
+     "version": "1.0.11",
+     "crid": "P05023"
+    },
+    {
+     "granule": "NISAR_L2_PR_GCOV_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001",
+     "id": "G4314749749-ASF",
+     "start": "2026-09-15T23:43:30.000000Z",
+     "reference": null,
+     "secondary": null,
+     "direction": "DESCENDING",
+     "polA": [
+      "HH",
+      "HV"
+     ],
+     "polB": [
+      "HH",
+      "HV"
+     ],
+     "frequencies": [
+      "A",
+      "B"
+     ],
+     "full_frame": "TRUE",
+     "bwA": "40",
+     "version": "1.0.11",
+     "crid": "P05023"
+    },
+    {
+     "granule": "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001",
+     "id": "G4328561952-ASF",
+     "start": "2026-09-27T23:43:30.000000Z",
+     "reference": null,
+     "secondary": null,
+     "direction": "DESCENDING",
+     "polA": [
+      "HH",
+      "HV"
+     ],
+     "polB": [
+      "HH",
+      "HV"
+     ],
+     "frequencies": [
+      "A",
+      "B"
+     ],
+     "full_frame": "TRUE",
+     "bwA": "40",
+     "version": "1.0.11",
+     "crid": "P05023"
+    },
+    {
+     "granule": "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001",
+     "id": "G4359335097-ASF",
+     "start": "2026-10-09T23:43:30.000000Z",
+     "reference": null,
+     "secondary": null,
+     "direction": "DESCENDING",
+     "polA": [
+      "HH",
+      "HV"
+     ],
+     "polB": [
+      "HH",
+      "HV"
+     ],
+     "frequencies": [
+      "A",
+      "B"
+     ],
+     "full_frame": "TRUE",
+     "bwA": "40",
+     "version": "1.0.11",
+     "crid": "P05023"
+    }
+   ],
+   "box_url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=C2854338529-ASF&bounding_box=-71.2%2C42.6%2C-70.75%2C42.95&page_size=2000&sort_key=start_date",
+   "box_hits": 37,
+   "box_by_track_frame": {
+    "T69 F67 D": 9,
+    "T104 F23 A": 9,
+    "T141 F67 D": 9,
+    "T32 F23 A": 9,
+    "T69 F66 D": 1
+   },
+   "box_first": "2026-06-18T23:51:53.000000Z",
+   "box_last": "2026-10-19T09:42:32.000000Z"
+  },
+  {
+   "product": "GCOV",
+   "collection": "NISAR_L2_GCOV_BETA_V1",
+   "concept_id": "C3622214170-ASF",
+   "maturity": "Beta",
+   "all_granules": 23527,
+   "t141_f67_url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=C3622214170-ASF&attribute%5B%5D=int%2CTRACK_NUMBER%2C141&attribute%5B%5D=int%2CFRAME_NUMBER%2C67&page_size=2000&sort_key=start_date",
+   "t141_f67_hits": 2,
+   "t141_f67_granules": [
+    {
+     "granule": "NISAR_L2_PR_GCOV_007_141_D_067_4005_DHDH_A_20251213T234332_20251213T234407_X05009_N_F_J_001",
+     "id": "G4058456731-ASF",
+     "start": "2025-12-13T23:43:32.000000Z",
+     "reference": null,
+     "secondary": null,
+     "direction": "DESCENDING",
+     "polA": [
+      "HH",
+      "HV"
+     ],
+     "polB": [
+      "HH",
+      "HV"
+     ],
+     "frequencies": [
+      "A",
+      "B"
+     ],
+     "full_frame": "TRUE",
+     "bwA": "40",
+     "version": "1.0.2",
+     "crid": "X05009"
+    },
+    {
+     "granule": "NISAR_L2_PR_GCOV_008_141_D_067_4005_DHDH_A_20251225T234333_20251225T234408_X05009_N_F_J_001",
+     "id": "G4058594965-ASF",
+     "start": "2025-12-25T23:43:33.000000Z",
+     "reference": null,
+     "secondary": null,
+     "direction": "DESCENDING",
+     "polA": [
+      "HH",
+      "HV"
+     ],
+     "polB": [
+      "HH",
+      "HV"
+     ],
+     "frequencies": [
+      "A",
+      "B"
+     ],
+     "full_frame": "TRUE",
+     "bwA": "40",
+     "version": "1.0.2",
+     "crid": "X05009"
+    }
+   ],
+   "box_url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=C3622214170-ASF&bounding_box=-71.2%2C42.6%2C-70.75%2C42.95&page_size=2000&sort_key=start_date",
+   "box_hits": 11,
+   "box_by_track_frame": {
+    "T69 F66 D": 1,
+    "T69 F67 D": 8,
+    "T141 F67 D": 2
+   },
+   "box_first": "2025-10-21T23:51:16.000000Z",
+   "box_last": "2026-01-13T23:51:54.000000Z"
+  },
+  {
+   "product": "GUNW",
+   "collection": "NISAR_L2_GUNW_V1",
+   "concept_id": "C3622247503-ASF",
+   "maturity": "Validated",
+   "all_granules": 140,
+   "t141_f67_url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=C3622247503-ASF&attribute%5B%5D=int%2CTRACK_NUMBER%2C141&attribute%5B%5D=int%2CFRAME_NUMBER%2C67&page_size=2000&sort_key=start_date",
+   "t141_f67_hits": 1,
+   "t141_f67_granules": [
+    {
+     "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+     "id": "G4409879710-ASF",
+     "start": "2026-10-09T23:43:30.000000Z",
+     "reference": "2026-10-09T23:43:30.000000Z",
+     "secondary": "2026-10-21T23:43:30.000000Z",
+     "direction": "DESCENDING",
+     "polA": [
+      "HH"
+     ],
+     "polB": null,
+     "frequencies": [
+      "A"
+     ],
+     "full_frame": "TRUE",
+     "bwA": "40",
+     "version": "1.0.20",
+     "crid": "P05036"
+    }
+   ],
+   "box_url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=C3622247503-ASF&bounding_box=-71.2%2C42.6%2C-70.75%2C42.95&page_size=2000&sort_key=start_date",
+   "box_hits": 1,
+   "box_by_track_frame": {
+    "T141 F67 D": 1
+   },
+   "box_first": "2026-10-09T23:43:30.000000Z",
+   "box_last": "2026-10-09T23:43:30.000000Z"
+  },
+  {
+   "product": "GUNW",
+   "collection": "NISAR_L2_GUNW_PROVISIONAL_V1",
+   "concept_id": "C2854335566-ASF",
+   "maturity": "Provisional",
+   "all_granules": 94150,
+   "t141_f67_url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=C2854335566-ASF&attribute%5B%5D=int%2CTRACK_NUMBER%2C141&attribute%5B%5D=int%2CFRAME_NUMBER%2C67&page_size=2000&sort_key=start_date",
+   "t141_f67_hits": 8,
+   "t141_f67_granules": [
+    {
+     "granule": "NISAR_L2_PR_GUNW_023_141_D_067_024_4000_SH_20260623T234333_20260623T234408_20260705T234333_20260705T234408_P05023_N_F_J_001",
+     "id": "G4247628567-ASF",
+     "start": "2026-06-23T23:43:33.000000Z",
+     "reference": "2026-06-23T23:43:33.000000Z",
+     "secondary": "2026-07-05T23:43:33.000000Z",
+     "direction": "DESCENDING",
+     "polA": [
+      "HH"
+     ],
+     "polB": null,
+     "frequencies": [
+      "A"
+     ],
+     "full_frame": "TRUE",
+     "bwA": "40",
+     "version": "1.0.11",
+     "crid": "P05023"
+    },
+    {
+     "granule": "NISAR_L2_PR_GUNW_024_141_D_067_025_4000_SH_20260705T234333_20260705T234408_20260717T234332_20260717T234407_P05023_N_F_J_001",
+     "id": "G4255469284-ASF",
+     "start": "2026-07-05T23:43:33.000000Z",
+     "reference": "2026-07-05T23:43:33.000000Z",
+     "secondary": "2026-07-17T23:43:32.000000Z",
+     "direction": "DESCENDING",
+     "polA": [
+      "HH"
+     ],
+     "polB": null,
+     "frequencies": [
+      "A"
+     ],
+     "full_frame": "TRUE",
+     "bwA": "40",
+     "version": "1.0.11",
+     "crid": "P05023"
+    },
+    {
+     "granule": "NISAR_L2_PR_GUNW_025_141_D_067_027_4000_SH_20260717T234332_20260717T234407_20260810T234331_20260810T234406_P05023_N_F_J_001",
+     "id": "G4279902284-ASF",
+     "start": "2026-07-17T23:43:32.000000Z",
+     "reference": "2026-07-17T23:43:32.000000Z",
+     "secondary": "2026-08-10T23:43:31.000000Z",
+     "direction": "DESCENDING",
+     "polA": [
+      "HH"
+     ],
+     "polB": null,
+     "frequencies": [
+      "A"
+     ],
+     "full_frame": "TRUE",
+     "bwA": "40",
+     "version": "1.0.11",
+     "crid": "P05023"
+    },
+    {
+     "granule": "NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001",
+     "id": "G4289042265-ASF",
+     "start": "2026-08-10T23:43:31.000000Z",
+     "reference": "2026-08-10T23:43:31.000000Z",
+     "secondary": "2026-08-22T23:43:30.000000Z",
+     "direction": "DESCENDING",
+     "polA": [
+      "HH"
+     ],
+     "polB": null,
+     "frequencies": [
+      "A"
+     ],
+     "full_frame": "TRUE",
+     "bwA": "40",
+     "version": "1.0.11",
+     "crid": "P05023"
+    },
+    {
+     "granule": "NISAR_L2_PR_GUNW_028_141_D_067_029_4000_SH_20260822T234330_20260822T234405_20260903T234330_20260903T234405_P05023_N_F_J_001",
+     "id": "G4299649727-ASF",
+     "start": "2026-08-22T23:43:30.000000Z",
+     "reference": "2026-08-22T23:43:30.000000Z",
+     "secondary": "2026-09-03T23:43:30.000000Z",
+     "direction": "DESCENDING",
+     "polA": [
+      "HH"
+     ],
+     "polB": null,
+     "frequencies": [
+      "A"
+     ],
+     "full_frame": "TRUE",
+     "bwA": "40",
+     "version": "1.0.11",
+     "crid": "P05023"
+    },
+    {
+     "granule": "NISAR_L2_PR_GUNW_029_141_D_067_030_4000_SH_20260903T234330_20260903T234405_20260915T234330_20260915T234405_P05023_N_F_J_001",
+     "id": "G4314912627-ASF",
+     "start": "2026-09-03T23:43:30.000000Z",
+     "reference": "2026-09-03T23:43:30.000000Z",
+     "secondary": "2026-09-15T23:43:30.000000Z",
+     "direction": "DESCENDING",
+     "polA": [
+      "HH"
+     ],
+     "polB": null,
+     "frequencies": [
+      "A"
+     ],
+     "full_frame": "TRUE",
+     "bwA": "40",
+     "version": "1.0.11",
+     "crid": "P05023"
+    },
+    {
+     "granule": "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001",
+     "id": "G4328856513-ASF",
+     "start": "2026-09-15T23:43:30.000000Z",
+     "reference": "2026-09-15T23:43:30.000000Z",
+     "secondary": "2026-09-27T23:43:30.000000Z",
+     "direction": "DESCENDING",
+     "polA": [
+      "HH"
+     ],
+     "polB": null,
+     "frequencies": [
+      "A"
+     ],
+     "full_frame": "TRUE",
+     "bwA": "40",
+     "version": "1.0.11",
+     "crid": "P05023"
+    },
+    {
+     "granule": "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001",
+     "id": "G4359740150-ASF",
+     "start": "2026-09-27T23:43:30.000000Z",
+     "reference": "2026-09-27T23:43:30.000000Z",
+     "secondary": "2026-10-09T23:43:30.000000Z",
+     "direction": "DESCENDING",
+     "polA": [
+      "HH"
+     ],
+     "polB": null,
+     "frequencies": [
+      "A"
+     ],
+     "full_frame": "TRUE",
+     "bwA": "40",
+     "version": "1.0.11",
+     "crid": "P05023"
+    }
+   ],
+   "box_url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=C2854335566-ASF&bounding_box=-71.2%2C42.6%2C-70.75%2C42.95&page_size=2000&sort_key=start_date",
+   "box_hits": 33,
+   "box_by_track_frame": {
+    "T69 F67 D": 8,
+    "T104 F23 A": 8,
+    "T141 F67 D": 8,
+    "T32 F23 A": 8,
+    "T69 F66 D": 1
+   },
+   "box_first": "2026-06-18T23:51:53.000000Z",
+   "box_last": "2026-10-07T09:42:32.000000Z"
+  },
+  {
+   "product": "GUNW",
+   "collection": "NISAR_L2_GUNW_BETA_V1",
+   "concept_id": "C2850261892-ASF",
+   "maturity": "Beta",
+   "all_granules": 10217,
+   "t141_f67_url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=C2850261892-ASF&attribute%5B%5D=int%2CTRACK_NUMBER%2C141&attribute%5B%5D=int%2CFRAME_NUMBER%2C67&page_size=2000&sort_key=start_date",
+   "t141_f67_hits": 1,
+   "t141_f67_granules": [
+    {
+     "granule": "NISAR_L2_PR_GUNW_007_141_D_067_008_4000_SH_20251213T234332_20251213T234407_20251225T234333_20251225T234408_X05010_N_F_J_001",
+     "id": "G4058461744-ASF",
+     "start": "2025-12-13T23:43:32.000000Z",
+     "reference": "2025-12-13T23:43:32.000000Z",
+     "secondary": "2025-12-25T23:43:33.000000Z",
+     "direction": "DESCENDING",
+     "polA": [
+      "HH"
+     ],
+     "polB": null,
+     "frequencies": [
+      "A"
+     ],
+     "full_frame": "TRUE",
+     "bwA": "40",
+     "version": "1.0.2",
+     "crid": "X05010"
+    }
+   ],
+   "box_url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=C2850261892-ASF&bounding_box=-71.2%2C42.6%2C-70.75%2C42.95&page_size=2000&sort_key=start_date",
+   "box_hits": 8,
+   "box_by_track_frame": {
+    "T69 F66 D": 1,
+    "T69 F67 D": 6,
+    "T141 F67 D": 1
+   },
+   "box_first": "2025-10-21T23:51:16.000000Z",
+   "box_last": "2026-01-01T23:51:53.000000Z"
+  },
+  {
+   "product": "GOFF",
+   "collection": "NISAR_L2_GOFF_V1",
+   "concept_id": "C3622250865-ASF",
+   "maturity": "Validated",
+   "all_granules": 32,
+   "t141_f67_url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=C3622250865-ASF&attribute%5B%5D=int%2CTRACK_NUMBER%2C141&attribute%5B%5D=int%2CFRAME_NUMBER%2C67&page_size=2000&sort_key=start_date",
+   "t141_f67_hits": 0,
+   "t141_f67_granules": [],
+   "box_url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=C3622250865-ASF&bounding_box=-71.2%2C42.6%2C-70.75%2C42.95&page_size=2000&sort_key=start_date",
+   "box_hits": 0,
+   "box_by_track_frame": {},
+   "box_first": null,
+   "box_last": null
+  },
+  {
+   "product": "GOFF",
+   "collection": "NISAR_L2_GOFF_PROVISIONAL_V1",
+   "concept_id": "C2854341702-ASF",
+   "maturity": "Provisional",
+   "all_granules": 27717,
+   "t141_f67_url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=C2854341702-ASF&attribute%5B%5D=int%2CTRACK_NUMBER%2C141&attribute%5B%5D=int%2CFRAME_NUMBER%2C67&page_size=2000&sort_key=start_date",
+   "t141_f67_hits": 0,
+   "t141_f67_granules": [],
+   "box_url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=C2854341702-ASF&bounding_box=-71.2%2C42.6%2C-70.75%2C42.95&page_size=2000&sort_key=start_date",
+   "box_hits": 0,
+   "box_by_track_frame": {},
+   "box_first": null,
+   "box_last": null
+  },
+  {
+   "product": "GOFF",
+   "collection": "NISAR_L2_GOFF_BETA_V1",
+   "concept_id": "C2850263910-ASF",
+   "maturity": "Beta",
+   "all_granules": 3666,
+   "t141_f67_url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=C2850263910-ASF&attribute%5B%5D=int%2CTRACK_NUMBER%2C141&attribute%5B%5D=int%2CFRAME_NUMBER%2C67&page_size=2000&sort_key=start_date",
+   "t141_f67_hits": 0,
+   "t141_f67_granules": [],
+   "box_url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=C2850263910-ASF&bounding_box=-71.2%2C42.6%2C-70.75%2C42.95&page_size=2000&sort_key=start_date",
+   "box_hits": 0,
+   "box_by_track_frame": {},
+   "box_first": null,
+   "box_last": null
+  },
+  {
+   "product": "SME2",
+   "collection": "NISAR_L3_SME2_PROVISIONAL_V1",
+   "concept_id": "C2854344945-ASF",
+   "maturity": "Provisional",
+   "all_granules": 103943,
+   "t141_f67_url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=C2854344945-ASF&attribute%5B%5D=int%2CTRACK_NUMBER%2C141&attribute%5B%5D=int%2CFRAME_NUMBER%2C67&page_size=2000&sort_key=start_date",
+   "t141_f67_hits": 9,
+   "t141_f67_granules": [
+    {
+     "granule": "NISAR_L3_PR_SME2_023_141_D_067_4005_DHDH_A_20260623T234333_20260623T234408_P05023_N_F_J_001",
+     "id": "G4249745130-ASF",
+     "start": "2026-06-23T23:43:33.000000Z",
+     "reference": null,
+     "secondary": null,
+     "direction": "DESCENDING",
+     "polA": [
+      "HH",
+      "HV"
+     ],
+     "polB": [
+      "HH",
+      "HV"
+     ],
+     "frequencies": [
+      "A",
+      "B"
+     ],
+     "full_frame": "TRUE",
+     "bwA": null,
+     "version": "1.0.11",
+     "crid": "P05023"
+    },
+    {
+     "granule": "NISAR_L3_PR_SME2_024_141_D_067_4005_DHDH_A_20260705T234333_20260705T234408_P05023_N_F_J_001",
+     "id": "G4254093072-ASF",
+     "start": "2026-07-05T23:43:33.000000Z",
+     "reference": null,
+     "secondary": null,
+     "direction": "DESCENDING",
+     "polA": [
+      "HH",
+      "HV"
+     ],
+     "polB": [
+      "HH",
+      "HV"
+     ],
+     "frequencies": [
+      "A",
+      "B"
+     ],
+     "full_frame": "TRUE",
+     "bwA": null,
+     "version": "1.0.11",
+     "crid": "P05023"
+    },
+    {
+     "granule": "NISAR_L3_PR_SME2_025_141_D_067_4005_DHDH_A_20260717T234332_20260717T234407_P05023_N_F_J_001",
+     "id": "G4263203106-ASF",
+     "start": "2026-07-17T23:43:32.000000Z",
+     "reference": null,
+     "secondary": null,
+     "direction": "DESCENDING",
+     "polA": [
+      "HH",
+      "HV"
+     ],
+     "polB": [
+      "HH",
+      "HV"
+     ],
+     "frequencies": [
+      "A",
+      "B"
+     ],
+     "full_frame": "TRUE",
+     "bwA": null,
+     "version": "1.0.11",
+     "crid": "P05023"
+    },
+    {
+     "granule": "NISAR_L3_PR_SME2_027_141_D_067_4005_DHDH_A_20260810T234331_20260810T234406_P05023_N_F_J_001",
+     "id": "G4279643830-ASF",
+     "start": "2026-08-10T23:43:31.000000Z",
+     "reference": null,
+     "secondary": null,
+     "direction": "DESCENDING",
+     "polA": [
+      "HH",
+      "HV"
+     ],
+     "polB": [
+      "HH",
+      "HV"
+     ],
+     "frequencies": [
+      "A",
+      "B"
+     ],
+     "full_frame": "TRUE",
+     "bwA": null,
+     "version": "1.0.11",
+     "crid": "P05023"
+    },
+    {
+     "granule": "NISAR_L3_PR_SME2_028_141_D_067_4005_DHDH_A_20260822T234330_20260822T234405_P05023_N_F_J_001",
+     "id": "G4288948384-ASF",
+     "start": "2026-08-22T23:43:30.000000Z",
+     "reference": null,
+     "secondary": null,
+     "direction": "DESCENDING",
+     "polA": [
+      "HH",
+      "HV"
+     ],
+     "polB": [
+      "HH",
+      "HV"
+     ],
+     "frequencies": [
+      "A",
+      "B"
+     ],
+     "full_frame": "TRUE",
+     "bwA": null,
+     "version": "1.0.11",
+     "crid": "P05023"
+    },
+    {
+     "granule": "NISAR_L3_PR_SME2_029_141_D_067_4005_DHDH_A_20260903T234330_20260903T234405_P05023_N_F_J_001",
+     "id": "G4304107461-ASF",
+     "start": "2026-09-03T23:43:30.000000Z",
+     "reference": null,
+     "secondary": null,
+     "direction": "DESCENDING",
+     "polA": [
+      "HH",
+      "HV"
+     ],
+     "polB": [
+      "HH",
+      "HV"
+     ],
+     "frequencies": [
+      "A",
+      "B"
+     ],
+     "full_frame": "TRUE",
+     "bwA": null,
+     "version": "1.0.11",
+     "crid": "P05023"
+    },
+    {
+     "granule": "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001",
+     "id": "G4314760500-ASF",
+     "start": "2026-09-15T23:43:30.000000Z",
+     "reference": null,
+     "secondary": null,
+     "direction": "DESCENDING",
+     "polA": [
+      "HH",
+      "HV"
+     ],
+     "polB": [
+      "HH",
+      "HV"
+     ],
+     "frequencies": [
+      "A",
+      "B"
+     ],
+     "full_frame": "TRUE",
+     "bwA": null,
+     "version": "1.0.11",
+     "crid": "P05023"
+    },
+    {
+     "granule": "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001",
+     "id": "G4328574868-ASF",
+     "start": "2026-09-27T23:43:30.000000Z",
+     "reference": null,
+     "secondary": null,
+     "direction": "DESCENDING",
+     "polA": [
+      "HH",
+      "HV"
+     ],
+     "polB": [
+      "HH",
+      "HV"
+     ],
+     "frequencies": [
+      "A",
+      "B"
+     ],
+     "full_frame": "TRUE",
+     "bwA": null,
+     "version": "1.0.11",
+     "crid": "P05023"
+    },
+    {
+     "granule": "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001",
+     "id": "G4359373353-ASF",
+     "start": "2026-10-09T23:43:30.000000Z",
+     "reference": null,
+     "secondary": null,
+     "direction": "DESCENDING",
+     "polA": [
+      "HH",
+      "HV"
+     ],
+     "polB": [
+      "HH",
+      "HV"
+     ],
+     "frequencies": [
+      "A",
+      "B"
+     ],
+     "full_frame": "TRUE",
+     "bwA": null,
+     "version": "1.0.11",
+     "crid": "P05023"
+    }
+   ],
+   "box_url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=C2854344945-ASF&bounding_box=-71.2%2C42.6%2C-70.75%2C42.95&page_size=2000&sort_key=start_date",
+   "box_hits": 33,
+   "box_by_track_frame": {
+    "T69 F67 D": 9,
+    "T104 F23 A": 9,
+    "T141 F67 D": 9,
+    "T32 F23 A": 5,
+    "T69 F66 D": 1
+   },
+   "box_first": "2026-06-18T23:51:53.000000Z",
+   "box_last": "2026-10-19T09:42:32.000000Z"
+  },
+  {
+   "product": "SME2",
+   "collection": "NISAR_L3_SME2_BETA_V1",
+   "concept_id": "C2850265000-ASF",
+   "maturity": "Beta",
+   "all_granules": 13881,
+   "t141_f67_url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=C2850265000-ASF&attribute%5B%5D=int%2CTRACK_NUMBER%2C141&attribute%5B%5D=int%2CFRAME_NUMBER%2C67&page_size=2000&sort_key=start_date",
+   "t141_f67_hits": 2,
+   "t141_f67_granules": [
+    {
+     "granule": "NISAR_L3_PR_SME2_007_141_D_067_4005_DHDH_A_20251213T234332_20251213T234407_X05010_N_F_J_001",
+     "id": "G4058441365-ASF",
+     "start": "2025-12-13T23:43:32.000000Z",
+     "reference": null,
+     "secondary": null,
+     "direction": "DESCENDING",
+     "polA": [
+      "HH",
+      "HV"
+     ],
+     "polB": [
+      "HH",
+      "HV"
+     ],
+     "frequencies": [
+      "A",
+      "B"
+     ],
+     "full_frame": "TRUE",
+     "bwA": null,
+     "version": "1.0.2",
+     "crid": "X05010"
+    },
+    {
+     "granule": "NISAR_L3_PR_SME2_008_141_D_067_4005_DHDH_A_20251225T234333_20251225T234408_X05010_N_F_J_001",
+     "id": "G4058528737-ASF",
+     "start": "2025-12-25T23:43:33.000000Z",
+     "reference": null,
+     "secondary": null,
+     "direction": "DESCENDING",
+     "polA": [
+      "HH",
+      "HV"
+     ],
+     "polB": [
+      "HH",
+      "HV"
+     ],
+     "frequencies": [
+      "A",
+      "B"
+     ],
+     "full_frame": "TRUE",
+     "bwA": null,
+     "version": "1.0.2",
+     "crid": "X05010"
+    }
+   ],
+   "box_url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?collection_concept_id=C2850265000-ASF&bounding_box=-71.2%2C42.6%2C-70.75%2C42.95&page_size=2000&sort_key=start_date",
+   "box_hits": 11,
+   "box_by_track_frame": {
+    "T69 F66 D": 1,
+    "T69 F67 D": 8,
+    "T141 F67 D": 2
+   },
+   "box_first": "2025-10-21T23:51:16.000000Z",
+   "box_last": "2026-01-13T23:51:54.000000Z"
+  }
+ ]
+}

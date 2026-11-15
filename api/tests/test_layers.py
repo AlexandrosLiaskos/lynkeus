@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """Tests of the formats that connect the parts."""
 
 from datetime import date
@@ -43,6 +45,7 @@ def test_layer_description_is_read_and_written_in_the_same_form() -> None:
         "ends": None,
         "classes": None,
         "frequency": None,
+        "statistics": None,
         "range": [-25.0, 0.0],
     }
 
@@ -57,6 +60,7 @@ def test_layer_stored_without_the_name_of_its_layer_is_read() -> None:
         "ends": None,
         "classes": None,
         "frequency": None,
+        "statistics": None,
         "range": [-25.0, 0.0],
     }
     assert LayerDescription.model_validate_json(layer.model_dump_json()) == layer

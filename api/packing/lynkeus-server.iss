@@ -1,3 +1,5 @@
+; SPDX-License-Identifier: AGPL-3.0-only
+; Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 ; The installer of Lynkeus Server for Windows, for Inno Setup 6.3 or later. ``pack.py`` compiles it with
 ; /DVersion=<version> after PyInstaller has made the folder ..\dist\Lynkeus Server.
 ;
@@ -30,6 +32,7 @@ WizardStyle=modern
 CloseApplications=yes
 UninstallDisplayName=Lynkeus Server
 LicenseFile=..\..\LICENSE
+InfoBeforeFile=..\..\NOTICE
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"

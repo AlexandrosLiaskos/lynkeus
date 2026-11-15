@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """Tests of the run of an analysis tool.
 
 No tool is finished yet, so a stand-in is registered for the time of a test.
@@ -16,14 +18,16 @@ import numpy as np
 import pytest
 import rasterio
 from numpy.typing import NDArray
+from rasterio.warp import transform
 
 from lynkeus import __version__
 from lynkeus.analysis import TOOLS
 from lynkeus.analysis.backscatter import backscatter_state
 from lynkeus.analysis.inundation import CLASSES, backscatter_map
-from lynkeus.layers import AnalysisResult, LayerDescription, ToolRun
+from lynkeus.areas import cells_inside, statistics_inside
+from lynkeus.layers import AnalysisResult, LayerDescription, Shape, ToolRun
 from lynkeus.tools import run_tool
-from lynkeus.writing import LayerError, read_layer, write_layer
+from lynkeus.writing import LayerError, grid_of, read_layer, write_layer
 from tests.records import LAYERS, stac_faults
 
 METHOD = "Reference of the method of the stand-in"
@@ -290,3 +294,68 @@ def test_fault_of_a_tool_is_reported_as_one(tmp_path: Path, monkeypatch: pytest.
     with pytest.raises(LayerError, match="internal error") as caught:
         run(tmp_path)
     assert isinstance(caught.value.__cause__, ZeroDivisionError)
+
+
+# The statistics inside an area drawn on the map
+
+
+def test_result_holds_the_statistics_of_its_values_inside_the_area_of_the_run(tmp_path: Path) -> None:
+    grid = grid_of(LAYERS_OF_SESSION["first"][1])
+    a, _, c, _, e, f = grid.transform
+    corners = [(c + a * column, f + e * row) for column, row in ((10.3, 7.6), (90.1, 7.6), (10.3, 100.2))]
+    area = Shape(crs=grid.crs, kind="polygon", points=(*corners, corners[0]))
+    reports: list[tuple[int, str]] = []
+    description = run(tmp_path, reports, area=area)
+    values, _ = read_layer(tmp_path / "backscatter-change.tif")
+    expected = statistics_inside(values, cells_inside(area, grid), area)
+    assert description.statistics == expected
+    assert expected.cells > 1000
+    assert (60, "Computing the statistics in the area.") in reports
+    record = json.loads((tmp_path / "backscatter-change.json").read_text(encoding="utf-8"))
+    assert record["properties"]["lynkeus:area_statistics"] == {
+        "area": {"crs": grid.crs, "kind": "polygon", "points": [list(point) for point in area.points]},
+        "rule": "A cell is counted when its centre lies inside the area and it holds a value.",
+        "count": expected.cells,
+        "mean": expected.mean,
+        "stddev": expected.deviation,
+        "minimum": expected.minimum,
+        "median": expected.median,
+        "maximum": expected.maximum,
+    }
+    assert stac_faults(record) == []
+
+
+def test_an_area_of_the_map_is_placed_on_the_grid_of_the_result(tmp_path: Path) -> None:
+    grid = grid_of(LAYERS_OF_SESSION["first"][1])
+    a, _, c, _, e, f = grid.transform
+    xs, ys = transform(grid.crs, "EPSG:3857", [c + a * 20, c + a * 100], [f + e * 110, f + e * 30])
+    area = Shape(
+        crs="EPSG:3857",
+        kind="rectangle",
+        points=((xs[0], ys[0]), (xs[1], ys[0]), (xs[1], ys[1]), (xs[0], ys[1]), (xs[0], ys[0])),
+    )
+    statistics = run(tmp_path, area=area).statistics
+    values, _ = read_layer(tmp_path / "backscatter-change.tif")
+    inside = cells_inside(area, grid)
+    assert statistics is not None
+    assert statistics.cells == int(np.count_nonzero(inside & ~np.isnan(values)))
+    assert statistics.cells > 1000
+
+
+def test_result_of_a_run_without_an_area_has_no_statistics_in_one(tmp_path: Path) -> None:
+    assert run(tmp_path).statistics is None
+    record = json.loads((tmp_path / "backscatter-change.json").read_text(encoding="utf-8"))
+    assert "lynkeus:area_statistics" not in record["properties"]
+
+
+def test_area_that_lies_outside_the_result_gives_no_cell(tmp_path: Path) -> None:
+    grid = grid_of(LAYERS_OF_SESSION["first"][1])
+    a, _, c, _, e, f = grid.transform
+    corners = [(c - a * 50, f), (c - a * 10, f), (c - a * 10, f + e * 40)]
+    area = Shape(crs=grid.crs, kind="polygon", points=(*corners, corners[0]))
+    statistics = run(tmp_path, area=area).statistics
+    assert statistics is not None
+    assert (statistics.cells, statistics.mean, statistics.median) == (0, None, None)
+    record = json.loads((tmp_path / "backscatter-change.json").read_text(encoding="utf-8"))
+    assert record["properties"]["lynkeus:area_statistics"]["count"] == 0
+    assert "mean" not in record["properties"]["lynkeus:area_statistics"]

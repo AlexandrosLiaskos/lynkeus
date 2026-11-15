@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { formatDay, pairDays, type Product } from "../data/products";
 
 /** The ways in which the list of products can be grouped, with the words that name them. */

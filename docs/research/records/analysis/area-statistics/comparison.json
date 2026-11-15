@@ -1,0 +1,531 @@
+{
+ "runs": {
+  "backscatter-state-rectangle": {
+   "same_cells": true,
+   "same_values": true,
+   "exact": {
+    "mean": -6.561588559447673,
+    "deviation": 4.1465576447307,
+    "ulps_lynkeus": {
+     "mean": 1,
+     "deviation": 0
+    },
+    "ulps_gdal": {
+     "mean": 7,
+     "deviation": 40
+    }
+   },
+   "cells": {
+    "lynkeus": 1636536,
+    "gdal": 1636536.0,
+    "equal": true,
+    "difference": 0.0,
+    "relative": 0.0,
+    "ulps": 0
+   },
+   "mean": {
+    "lynkeus": -6.561588559447672,
+    "gdal": -6.561588559447679,
+    "equal": false,
+    "difference": -7.105427357601002e-15,
+    "relative": 1.0828821851943591e-15,
+    "ulps": 8
+   },
+   "deviation": {
+    "lynkeus": 4.1465576447307,
+    "gdal": 4.146557644730736,
+    "equal": false,
+    "difference": 3.552713678800501e-14,
+    "relative": 8.567862750720864e-15,
+    "ulps": 40
+   },
+   "minimum": {
+    "lynkeus": -27.58378791809082,
+    "gdal": -27.58378791809082,
+    "equal": true,
+    "difference": 0.0,
+    "relative": -0.0,
+    "ulps": 0
+   },
+   "median": {
+    "lynkeus": -5.996809005737305,
+    "gdal": -5.996809005737305,
+    "equal": true,
+    "difference": 0.0,
+    "relative": -0.0,
+    "ulps": 0
+   },
+   "maximum": {
+    "lynkeus": 28.929813385009766,
+    "gdal": 28.929813385009766,
+    "equal": true,
+    "difference": 0.0,
+    "relative": 0.0,
+    "ulps": 0
+   },
+   "record_equals_description": true
+  },
+  "backscatter-state-polygon": {
+   "same_cells": true,
+   "same_values": true,
+   "exact": {
+    "mean": -8.980855716722765,
+    "deviation": 5.369301405067645,
+    "ulps_lynkeus": {
+     "mean": 0,
+     "deviation": 0
+    },
+    "ulps_gdal": {
+     "mean": 1,
+     "deviation": 156
+    }
+   },
+   "cells": {
+    "lynkeus": 844889,
+    "gdal": 844889.0,
+    "equal": true,
+    "difference": 0.0,
+    "relative": 0.0,
+    "ulps": 0
+   },
+   "mean": {
+    "lynkeus": -8.980855716722765,
+    "gdal": -8.980855716722767,
+    "equal": false,
+    "difference": -1.7763568394002505e-15,
+    "relative": 1.9779371759559532e-16,
+    "ulps": 1
+   },
+   "deviation": {
+    "lynkeus": 5.369301405067645,
+    "gdal": 5.369301405067784,
+    "equal": false,
+    "difference": 1.3855583347321954e-13,
+    "relative": 2.5805188239655906e-14,
+    "ulps": 156
+   },
+   "minimum": {
+    "lynkeus": -27.893733978271484,
+    "gdal": -27.893733978271484,
+    "equal": true,
+    "difference": 0.0,
+    "relative": -0.0,
+    "ulps": 0
+   },
+   "median": {
+    "lynkeus": -8.215362548828125,
+    "gdal": -8.215362548828125,
+    "equal": true,
+    "difference": 0.0,
+    "relative": -0.0,
+    "ulps": 0
+   },
+   "maximum": {
+    "lynkeus": 30.715600967407227,
+    "gdal": 30.715600967407227,
+    "equal": true,
+    "difference": 0.0,
+    "relative": 0.0,
+    "ulps": 0
+   },
+   "record_equals_description": true
+  },
+  "backscatter-state-across-the-edge": {
+   "same_cells": true,
+   "same_values": true,
+   "exact": {
+    "mean": -13.788936097075057,
+    "deviation": 5.169261430280264,
+    "ulps_lynkeus": {
+     "mean": 0,
+     "deviation": 0
+    },
+    "ulps_gdal": {
+     "mean": 2,
+     "deviation": 65
+    }
+   },
+   "cells": {
+    "lynkeus": 720547,
+    "gdal": 720547.0,
+    "equal": true,
+    "difference": 0.0,
+    "relative": 0.0,
+    "ulps": 0
+   },
+   "mean": {
+    "lynkeus": -13.788936097075057,
+    "gdal": -13.788936097075053,
+    "equal": false,
+    "difference": 3.552713678800501e-15,
+    "relative": -2.576495861456716e-16,
+    "ulps": 2
+   },
+   "deviation": {
+    "lynkeus": 5.169261430280264,
+    "gdal": 5.169261430280322,
+    "equal": false,
+    "difference": 5.773159728050814e-14,
+    "relative": 1.1168248706155702e-14,
+    "ulps": 65
+   },
+   "minimum": {
+    "lynkeus": -29.06432342529297,
+    "gdal": -29.06432342529297,
+    "equal": true,
+    "difference": 0.0,
+    "relative": -0.0,
+    "ulps": 0
+   },
+   "median": {
+    "lynkeus": -14.979406356811523,
+    "gdal": -14.979406356811523,
+    "equal": true,
+    "difference": 0.0,
+    "relative": -0.0,
+    "ulps": 0
+   },
+   "maximum": {
+    "lynkeus": 28.258670806884766,
+    "gdal": 28.258670806884766,
+    "equal": true,
+    "difference": 0.0,
+    "relative": 0.0,
+    "ulps": 0
+   },
+   "record_equals_description": true
+  },
+  "coherence-state-rectangle": {
+   "same_cells": true,
+   "same_values": true,
+   "exact": {
+    "mean": 0.5377536318456524,
+    "deviation": 0.14473926018347813,
+    "ulps_lynkeus": {
+     "mean": 0,
+     "deviation": 0
+    },
+    "ulps_gdal": {
+     "mean": 0,
+     "deviation": 78
+    }
+   },
+   "cells": {
+    "lynkeus": 409132,
+    "gdal": 409132.0,
+    "equal": true,
+    "difference": 0.0,
+    "relative": 0.0,
+    "ulps": 0
+   },
+   "mean": {
+    "lynkeus": 0.5377536318456524,
+    "gdal": 0.5377536318456524,
+    "equal": true,
+    "difference": 0.0,
+    "relative": 0.0,
+    "ulps": 0
+   },
+   "deviation": {
+    "lynkeus": 0.14473926018347813,
+    "gdal": 0.1447392601834803,
+    "equal": false,
+    "difference": 2.1649348980190553e-15,
+    "relative": 1.4957482132178128e-14,
+    "ulps": 78
+   },
+   "minimum": {
+    "lynkeus": 0.008911311626434326,
+    "gdal": 0.008911311626434326,
+    "equal": true,
+    "difference": 0.0,
+    "relative": 0.0,
+    "ulps": 0
+   },
+   "median": {
+    "lynkeus": 0.5491892993450165,
+    "gdal": 0.5491892993450165,
+    "equal": true,
+    "difference": 0.0,
+    "relative": 0.0,
+    "ulps": 0
+   },
+   "maximum": {
+    "lynkeus": 0.9939855933189392,
+    "gdal": 0.9939855933189392,
+    "equal": true,
+    "difference": 0.0,
+    "relative": 0.0,
+    "ulps": 0
+   },
+   "record_equals_description": true
+  },
+  "coherence-state-polygon": {
+   "same_cells": true,
+   "same_values": true,
+   "exact": {
+    "mean": 0.502163065967921,
+    "deviation": 0.19485275309961456,
+    "ulps_lynkeus": {
+     "mean": 0,
+     "deviation": 0
+    },
+    "ulps_gdal": {
+     "mean": 0,
+     "deviation": 23
+    }
+   },
+   "cells": {
+    "lynkeus": 211222,
+    "gdal": 211222.0,
+    "equal": true,
+    "difference": 0.0,
+    "relative": 0.0,
+    "ulps": 0
+   },
+   "mean": {
+    "lynkeus": 0.502163065967921,
+    "gdal": 0.502163065967921,
+    "equal": true,
+    "difference": 0.0,
+    "relative": 0.0,
+    "ulps": 0
+   },
+   "deviation": {
+    "lynkeus": 0.19485275309961456,
+    "gdal": 0.19485275309961392,
+    "equal": false,
+    "difference": -6.38378239159465e-16,
+    "relative": -3.276208465133192e-15,
+    "ulps": 23
+   },
+   "minimum": {
+    "lynkeus": 0.01701328344643116,
+    "gdal": 0.01701328344643116,
+    "equal": true,
+    "difference": 0.0,
+    "relative": 0.0,
+    "ulps": 0
+   },
+   "median": {
+    "lynkeus": 0.5312507450580597,
+    "gdal": 0.5312507450580597,
+    "equal": true,
+    "difference": 0.0,
+    "relative": 0.0,
+    "ulps": 0
+   },
+   "maximum": {
+    "lynkeus": 0.9901248812675476,
+    "gdal": 0.9901248812675476,
+    "equal": true,
+    "difference": 0.0,
+    "relative": 0.0,
+    "ulps": 0
+   },
+   "record_equals_description": true
+  },
+  "coherence-state-across-the-edge": {
+   "same_cells": true,
+   "same_values": true,
+   "exact": {
+    "mean": 0.31144953471714387,
+    "deviation": 0.20114590636919483,
+    "ulps_lynkeus": {
+     "mean": 0,
+     "deviation": 1
+    },
+    "ulps_gdal": {
+     "mean": 0,
+     "deviation": 14
+    }
+   },
+   "cells": {
+    "lynkeus": 180139,
+    "gdal": 180139.0,
+    "equal": true,
+    "difference": 0.0,
+    "relative": 0.0,
+    "ulps": 0
+   },
+   "mean": {
+    "lynkeus": 0.31144953471714387,
+    "gdal": 0.31144953471714387,
+    "equal": true,
+    "difference": 0.0,
+    "relative": 0.0,
+    "ulps": 0
+   },
+   "deviation": {
+    "lynkeus": 0.2011459063691948,
+    "gdal": 0.20114590636919444,
+    "equal": false,
+    "difference": -3.608224830031759e-16,
+    "relative": -1.7938345826481873e-15,
+    "ulps": 13
+   },
+   "minimum": {
+    "lynkeus": 0.007777792401611805,
+    "gdal": 0.007777792401611805,
+    "equal": true,
+    "difference": 0.0,
+    "relative": 0.0,
+    "ulps": 0
+   },
+   "median": {
+    "lynkeus": 0.23657092452049255,
+    "gdal": 0.23657092452049255,
+    "equal": true,
+    "difference": 0.0,
+    "relative": 0.0,
+    "ulps": 0
+   },
+   "maximum": {
+    "lynkeus": 0.9935879111289978,
+    "gdal": 0.9935879111289978,
+    "equal": true,
+    "difference": 0.0,
+    "relative": 0.0,
+    "ulps": 0
+   },
+   "record_equals_description": true
+  }
+ },
+ "series": {
+  "backscatter-series": [
+   {
+    "dates": [
+     "2026-09-27"
+    ],
+    "lynkeus": {
+     "value": -5.000344991140121,
+     "cells": 844889
+    },
+    "gdal": {
+     "mean": 0.31620264678344495,
+     "count": 844889.0,
+     "value": -5.000344991140121
+    },
+    "cells_equal": true,
+    "cells_zero_or_below": 0,
+    "difference": 0.0,
+    "ulps": 0
+   },
+   {
+    "dates": [
+     "2026-10-09"
+    ],
+    "lynkeus": {
+     "value": -5.437217610885132,
+     "cells": 844888
+    },
+    "gdal": {
+     "mean": 0.2859421898976722,
+     "count": 844888.0,
+     "value": -5.437217610885132
+    },
+    "cells_equal": true,
+    "cells_zero_or_below": 0,
+    "difference": 0.0,
+    "ulps": 0
+   },
+   {
+    "dates": [
+     "2026-10-21"
+    ],
+    "lynkeus": {
+     "value": -5.405973677611534,
+     "cells": 844889
+    },
+    "gdal": {
+     "mean": 0.28800672733450133,
+     "count": 844889.0,
+     "value": -5.405973677611534
+    },
+    "cells_equal": true,
+    "cells_zero_or_below": 0,
+    "difference": 0.0,
+    "ulps": 0
+   },
+   {
+    "dates": [
+     "2026-11-02"
+    ],
+    "lynkeus": {
+     "value": -5.425515800865233,
+     "cells": 844892
+    },
+    "gdal": {
+     "mean": 0.28671368325753466,
+     "count": 844892.0,
+     "value": -5.425515800865233
+    },
+    "cells_equal": true,
+    "cells_zero_or_below": 0,
+    "difference": 0.0,
+    "ulps": 0
+   }
+  ],
+  "coherence-series": [
+   {
+    "dates": [
+     "2026-09-15",
+     "2026-09-27"
+    ],
+    "lynkeus": {
+     "value": 0.3395684230586152,
+     "cells": 211222
+    },
+    "gdal": {
+     "mean": 0.3395684230586152,
+     "count": 211222.0,
+     "value": 0.3395684230586152
+    },
+    "cells_equal": true,
+    "cells_zero_or_below": 0,
+    "difference": 0.0,
+    "ulps": 0
+   },
+   {
+    "dates": [
+     "2026-09-27",
+     "2026-10-09"
+    ],
+    "lynkeus": {
+     "value": 0.32869125230700297,
+     "cells": 211222
+    },
+    "gdal": {
+     "mean": 0.32869125230700297,
+     "count": 211222.0,
+     "value": 0.32869125230700297
+    },
+    "cells_equal": true,
+    "cells_zero_or_below": 0,
+    "difference": 0.0,
+    "ulps": 0
+   },
+   {
+    "dates": [
+     "2026-10-09",
+     "2026-10-21"
+    ],
+    "lynkeus": {
+     "value": 0.502163065967921,
+     "cells": 211222
+    },
+    "gdal": {
+     "mean": 0.502163065967921,
+     "count": 211222.0,
+     "value": 0.502163065967921
+    },
+    "cells_equal": true,
+    "cells_zero_or_below": 0,
+    "difference": 0.0,
+    "ulps": 0
+   }
+  ]
+ },
+ "gdal_version": "GDAL 3.12.2 \"Chicoutimi\", released 2026/02/03",
+ "gdal_image": "ghcr.io/osgeo/gdal@sha256:3775c7530eb68f95b8c67853da1e1e99a607e32a87f3d433440b8b562079f645"
+}

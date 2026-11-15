@@ -1,8 +1,10 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, expect, test, vi } from "vitest";
 import { MenuButton } from "../menu/MenuButton";
-import { HOVER_DELAY } from "../tooltip/Tooltip";
+import { restPointerOn, takePointerOff } from "../tooltip/pointer";
 import { IconButton } from "./IconButton";
 import { Toolbar } from "./Toolbar";
 
@@ -58,24 +60,21 @@ test("an inactive button takes the focus, does nothing and is described by what 
 });
 
 test("an active button has no description, and its reason is not shown", () => {
+  vi.useFakeTimers();
   render(<IconButton icon="delete" label="Remove" reason="The basemap cannot be removed." onClick={vi.fn()} />);
   expect(button("Remove").hasAttribute("aria-describedby")).toBe(false);
-  expect(screen.getByRole("tooltip", { hidden: true }).textContent).toBe("Remove");
+  restPointerOn(button("Remove"));
+  expect(screen.getByRole("tooltip").textContent).toBe("Remove");
 });
 
 test("the name of an icon button shows in a tooltip while the pointer rests on it", () => {
   vi.useFakeTimers();
   render(<IconButton icon="zoom_in" label="Zoom to the layer" onClick={vi.fn()} />);
-  const tooltip = screen.getByRole("tooltip", { hidden: true });
-  expect(tooltip.hidden).toBe(true);
-  fireEvent.pointerEnter(button("Zoom to the layer"));
-  act(() => {
-    vi.advanceTimersByTime(HOVER_DELAY);
-  });
-  expect(tooltip.hidden).toBe(false);
-  expect(tooltip.textContent).toBe("Zoom to the layer");
-  fireEvent.pointerLeave(button("Zoom to the layer"));
-  expect(tooltip.hidden).toBe(true);
+  expect(screen.queryByRole("tooltip")).toBeNull();
+  restPointerOn(button("Zoom to the layer"));
+  expect(screen.getByRole("tooltip").textContent).toBe("Zoom to the layer");
+  takePointerOff(button("Zoom to the layer"));
+  expect(screen.queryByRole("tooltip")).toBeNull();
 });
 
 test("the toolbar is named, and the Tab key reaches it once", async () => {

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """The files of a layer.
 
 Lynkeus keeps every layer, whether received from NASA or computed by an
@@ -33,7 +35,7 @@ from rasterio.transform import Affine
 from rasterio.warp import transform
 
 from lynkeus import __version__
-from lynkeus.layers import LayerClass, LayerDescription
+from lynkeus.layers import AreaStatistics, LayerClass, LayerDescription
 
 type Rule = Literal["percentiles", "symmetric", "extremes"]
 """A rule that gives the range of a legend from the values of the layer."""
@@ -262,6 +264,7 @@ def write_layer(
     links: Sequence[Mapping[str, str]] = (),
     averaged: bool = True,
     decibels: bool = False,
+    area_statistics: AreaStatistics | None = None,
 ) -> LayerDescription:
     """Write the two files of a layer and return its description.
 
@@ -337,6 +340,11 @@ def write_layer(
         then the decibels of the mean of the linear power, so that a reduced
         copy equals the conversion to decibels of the reduced copy of the
         power. It needs ``averaged``.
+    area_statistics : AreaStatistics, optional
+        The statistics of a result inside an area drawn on the map. Only a
+        result may have them. They stand in the description and in the
+        record, as ``lynkeus:area_statistics`` of its properties, and not in
+        the GeoTIFF.
 
     Returns
     -------
@@ -386,6 +394,7 @@ def write_layer(
         program=PROGRAM,
         method=method,
         record=f"{address}/{name}.json",
+        statistics=area_statistics,
     )
     created = datetime.now(UTC).replace(microsecond=0)
     record = _record(description, grid, statistics, created, name, lineage, level, links)
@@ -683,6 +692,8 @@ def _record(
         properties["proj:wkt2"] = CRS.from_string(grid.crs).to_wkt(version="WKT2_2019")
     if level is not None:
         properties["processing:level"] = level
+    if description.statistics is not None:
+        properties["lynkeus:area_statistics"] = _area_record(description.statistics)
     band: dict[str, Any] = {
         "description": description.quantity,
         "data_type": "float32",
@@ -725,6 +736,28 @@ def _record(
         "properties": properties,
         "links": [dict(link) for link in links],
         "assets": {"data": asset},
+    }
+
+
+def _area_record(statistics: AreaStatistics) -> dict[str, Any]:
+    """Return the statistics of a result inside an area in the form of its record.
+
+    The names of the statistics are those of the Statistics Object of STAC 1.1.0 (count, mean, stddev, minimum
+    and maximum), with the median beside them.
+    """
+    area = statistics.area
+    values = {
+        "mean": statistics.mean,
+        "stddev": statistics.deviation,
+        "minimum": statistics.minimum,
+        "median": statistics.median,
+        "maximum": statistics.maximum,
+    }
+    return {
+        "area": {"crs": area.crs, "kind": area.kind, "points": [list(point) for point in area.points]},
+        "rule": "A cell is counted when its centre lies inside the area and it holds a value.",
+        "count": statistics.cells,
+        **({} if statistics.cells == 0 else values),
     }
 
 

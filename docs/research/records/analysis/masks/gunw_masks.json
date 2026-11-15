@@ -1,0 +1,963 @@
+{
+ "measured_utc": "2026-11-15T19:22:55Z",
+ "errors": [],
+ "environment": {
+  "python": "3.13.18",
+  "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+  "hdf5": "2.0.0",
+  "gdal_in_rasterio": "3.12.2",
+  "packages": {
+   "earthaccess": "0.19.0",
+   "h5py": "3.16.0",
+   "numpy": "2.5.4",
+   "rasterio": "1.5.2",
+   "fsspec": "2026.9.0"
+  },
+  "earthdata_login": true
+ },
+ "elapsed_s": 206.7,
+ "pairs": {
+  "20260717-20260810": {
+   "granule": "NISAR_L2_PR_GUNW_025_141_D_067_027_4000_SH_20260717T234332_20260717T234407_20260810T234331_20260810T234406_P05023_N_F_J_001",
+   "concept_id": "G4279902284-ASF",
+   "collection": "NISAR_L2_GUNW_PROVISIONAL_V1",
+   "url": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GUNW_PROVISIONAL_V1/NISAR_L2_PR_GUNW_025_141_D_067_027_4000_SH_20260717T234332_20260717T234407_20260810T234331_20260810T234406_P05023_N_F_J_001/NISAR_L2_PR_GUNW_025_141_D_067_027_4000_SH_20260717T234332_20260717T234407_20260810T234331_20260810T234406_P05023_N_F_J_001.h5",
+   "product_version": "1.0.11",
+   "product_specification_version": "1.5.0",
+   "members": {
+    "wrappedInterferogram": [
+     "HH",
+     "mask",
+     "projection",
+     "xCoordinateSpacing",
+     "xCoordinates",
+     "yCoordinateSpacing",
+     "yCoordinates"
+    ],
+    "wrappedInterferogram/HH": [
+     "coherenceMagnitude",
+     "projection",
+     "wrappedInterferogram",
+     "xCoordinateSpacing",
+     "xCoordinates",
+     "yCoordinateSpacing",
+     "yCoordinates"
+    ],
+    "unwrappedInterferogram": [
+     "HH",
+     "mask",
+     "projection",
+     "xCoordinateSpacing",
+     "xCoordinates",
+     "yCoordinateSpacing",
+     "yCoordinates"
+    ],
+    "unwrappedInterferogram/HH": [
+     "coherenceMagnitude",
+     "connectedComponents",
+     "ionospherePhaseScreen",
+     "ionospherePhaseScreenUncertainty",
+     "projection",
+     "unwrappedPhase",
+     "xCoordinateSpacing",
+     "xCoordinates",
+     "yCoordinateSpacing",
+     "yCoordinates"
+    ]
+   },
+   "mask_datasets": {
+    "wrappedInterferogram/mask": {
+     "dtype": "uint32",
+     "shape": [
+      17820,
+      18036
+     ],
+     "attrs": {
+      "_FillValue": 255,
+      "description": "Combination of a water mask, a mask of subswaths of valid samples, and data anomalies in the reference RSLC and the geometrically coregistered secondary RSLC. Each pixel value is encoded as a 32-bit unsigned integer. Bits 0-7 represent subswath encoding, where the most significant digit represents the water flag of that pixel in the reference RSLC, where 1 is water and 0 is non-water; the second most significant digit corresponds to the subswath number of the reference RSLC, and the least significant digit corresponds to the subswath number of the secondary RSLC; a value of 0 in either digit indicates an invalid sample in the corresponding RSLC. Bits 8-15 represent bitwise anomaly flags for the secondary RSLC, and bits 16-23 represent bitwise anomaly flags for the reference RSLC, with each bit corresponding to a specific anomaly condition. A value of 0 in the anomaly bits indicates that no anomaly is detected in the corresponding RSLC. Bits 24-31 are reserved for future use",
+      "disclaimer": "Water Mask for the NASA-ISRO NISAR mission version 0.5, derived through analysis and processing of multiple input datasets, referenced to the WGS84 ellipsoid. Water mask derived at the Jet Propulsion Laboratory, California Institute of Technology, under contract with NASA, using multiple open datasets: JRC Global Surface Water v1.3 (Pekel et al 2016, Nature 540, 418-422,  EC JRC/Google); ESA WorldCover 10 m 2020 ( ESA WorldCover project 2020 / Contains modified Copernicus Sentinel data (2020) processed by ESA WorldCover consortium); OpenStreetMap Water Polygons ( OpenStreetMap contributors, ODbL 1.0); MEaSUREs GIMP Mask v1 (Howat 2017, doi:10.5067/B8X58MQBFUPA; Howat et al 2014). All trademarks and rights remain with their respective owners; NISAR mission organizations assume no liability for use of this product.",
+      "grid_mapping": "projection",
+      "percentage_water": 54.14273803061043,
+      "valid_min": 0
+     },
+     "fillvalue_of_dataset": "np.uint32(0)"
+    },
+    "wrappedInterferogram/HH/validDataMask": "absent",
+    "unwrappedInterferogram/mask": {
+     "dtype": "uint32",
+     "shape": [
+      4455,
+      4509
+     ],
+     "attrs": {
+      "_FillValue": 255,
+      "description": "Combination of a water mask, a mask of subswaths of valid samples, and data anomalies in the reference RSLC and the geometrically coregistered secondary RSLC. Each pixel value is encoded as a 32-bit unsigned integer. Bits 0-7 represent subswath encoding, where the most significant digit represents the water flag of that pixel in the reference RSLC, where 1 is water and 0 is non-water; the second most significant digit corresponds to the subswath number of the reference RSLC, and the least significant digit corresponds to the subswath number of the secondary RSLC; a value of 0 in either digit indicates an invalid sample in the corresponding RSLC. Bits 8-15 represent bitwise anomaly flags for the secondary RSLC, and bits 16-23 represent bitwise anomaly flags for the reference RSLC, with each bit corresponding to a specific anomaly condition. A value of 0 in the anomaly bits indicates that no anomaly is detected in the corresponding RSLC. Bit 24 indicates a bit mask for ionospheric phase mask used during filtering of ionospheric phase. This ionospheric phase mask indicates pixels which were masked out and filled with interpolated data. Bits 25-31 are reserved for future use",
+      "disclaimer": "Water Mask for the NASA-ISRO NISAR mission version 0.5, derived through analysis and processing of multiple input datasets, referenced to the WGS84 ellipsoid. Water mask derived at the Jet Propulsion Laboratory, California Institute of Technology, under contract with NASA, using multiple open datasets: JRC Global Surface Water v1.3 (Pekel et al 2016, Nature 540, 418-422,  EC JRC/Google); ESA WorldCover 10 m 2020 ( ESA WorldCover project 2020 / Contains modified Copernicus Sentinel data (2020) processed by ESA WorldCover consortium); OpenStreetMap Water Polygons ( OpenStreetMap contributors, ODbL 1.0); MEaSUREs GIMP Mask v1 (Howat 2017, doi:10.5067/B8X58MQBFUPA; Howat et al 2014). All trademarks and rights remain with their respective owners; NISAR mission organizations assume no liability for use of this product.",
+      "grid_mapping": "projection",
+      "percentage_water": 54.112107497189186,
+      "valid_min": 0
+     },
+     "fillvalue_of_dataset": "np.uint32(0)"
+    },
+    "unwrappedInterferogram/HH/validDataMask": "absent"
+   },
+   "20m": {
+    "received_file": "gunw-wrappedinterferogram-hh-coherencemagnitude-20260717-20260810.tif",
+    "received_file_sha256": "792dcdfe4a311d5650ac5a245ac944885a9a454e85c97f15e4956da7aaf4c02b",
+    "window": {
+     "columns_rows": [
+      1886,
+      1985
+     ],
+     "crs": "EPSG:32619",
+     "transform": [
+      20.0,
+      0.0,
+      319520.0,
+      0.0,
+      -20.0,
+      4757600.0
+     ],
+     "product_first_column_row": [
+      6832,
+      6452
+     ],
+     "product_columns_rows": [
+      18036,
+      17820
+     ],
+     "largest_centre_difference_m": [
+      0.0,
+      0.0
+     ]
+    },
+    "alignment_check_coherence": {
+     "cells": 262144,
+     "value_in_both": 262144,
+     "value_in_received_only": 0,
+     "value_in_product_only": 0,
+     "values_that_differ": 0
+    },
+    "mask_read_seconds": 7.5,
+    "mask_sha256": "6effd309f4c8e6f14c19d00a2b5439c638759bdf6ebbde478f650c9d9243dfac",
+    "mask_values": {
+     "11": 3262628,
+     "111": 481082
+    },
+    "coherence_received": {
+     "nan": 164618,
+     "below_0": 0,
+     "above_1": 0
+    },
+    "coherence_state": {
+     "cells_with_a_value": 3579092,
+     "values_where_mask_fill": 0,
+     "values_where_mask_invalid_subswath": 0,
+     "values_where_mask_water": 445631,
+     "values_where_mask_anomaly": 0,
+     "values_where_mask_ionosphere_filled": 0,
+     "values_where_mask_other_high_bits": 0
+    }
+   }
+  },
+  "20260810-20260822": {
+   "granule": "NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001",
+   "concept_id": "G4289042265-ASF",
+   "collection": "NISAR_L2_GUNW_PROVISIONAL_V1",
+   "url": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GUNW_PROVISIONAL_V1/NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001/NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001.h5",
+   "product_version": "1.0.11",
+   "product_specification_version": "1.5.0",
+   "members": {
+    "wrappedInterferogram": [
+     "HH",
+     "mask",
+     "projection",
+     "xCoordinateSpacing",
+     "xCoordinates",
+     "yCoordinateSpacing",
+     "yCoordinates"
+    ],
+    "wrappedInterferogram/HH": [
+     "coherenceMagnitude",
+     "projection",
+     "wrappedInterferogram",
+     "xCoordinateSpacing",
+     "xCoordinates",
+     "yCoordinateSpacing",
+     "yCoordinates"
+    ],
+    "unwrappedInterferogram": [
+     "HH",
+     "mask",
+     "projection",
+     "xCoordinateSpacing",
+     "xCoordinates",
+     "yCoordinateSpacing",
+     "yCoordinates"
+    ],
+    "unwrappedInterferogram/HH": [
+     "coherenceMagnitude",
+     "connectedComponents",
+     "ionospherePhaseScreen",
+     "ionospherePhaseScreenUncertainty",
+     "projection",
+     "unwrappedPhase",
+     "xCoordinateSpacing",
+     "xCoordinates",
+     "yCoordinateSpacing",
+     "yCoordinates"
+    ]
+   },
+   "mask_datasets": {
+    "wrappedInterferogram/mask": {
+     "dtype": "uint32",
+     "shape": [
+      17820,
+      18036
+     ],
+     "attrs": {
+      "_FillValue": 255,
+      "description": "Combination of a water mask, a mask of subswaths of valid samples, and data anomalies in the reference RSLC and the geometrically coregistered secondary RSLC. Each pixel value is encoded as a 32-bit unsigned integer. Bits 0-7 represent subswath encoding, where the most significant digit represents the water flag of that pixel in the reference RSLC, where 1 is water and 0 is non-water; the second most significant digit corresponds to the subswath number of the reference RSLC, and the least significant digit corresponds to the subswath number of the secondary RSLC; a value of 0 in either digit indicates an invalid sample in the corresponding RSLC. Bits 8-15 represent bitwise anomaly flags for the secondary RSLC, and bits 16-23 represent bitwise anomaly flags for the reference RSLC, with each bit corresponding to a specific anomaly condition. A value of 0 in the anomaly bits indicates that no anomaly is detected in the corresponding RSLC. Bits 24-31 are reserved for future use",
+      "disclaimer": "Water Mask for the NASA-ISRO NISAR mission version 0.5, derived through analysis and processing of multiple input datasets, referenced to the WGS84 ellipsoid. Water mask derived at the Jet Propulsion Laboratory, California Institute of Technology, under contract with NASA, using multiple open datasets: JRC Global Surface Water v1.3 (Pekel et al 2016, Nature 540, 418-422,  EC JRC/Google); ESA WorldCover 10 m 2020 ( ESA WorldCover project 2020 / Contains modified Copernicus Sentinel data (2020) processed by ESA WorldCover consortium); OpenStreetMap Water Polygons ( OpenStreetMap contributors, ODbL 1.0); MEaSUREs GIMP Mask v1 (Howat 2017, doi:10.5067/B8X58MQBFUPA; Howat et al 2014). All trademarks and rights remain with their respective owners; NISAR mission organizations assume no liability for use of this product.",
+      "grid_mapping": "projection",
+      "percentage_water": 54.14273803061043,
+      "valid_min": 0
+     },
+     "fillvalue_of_dataset": "np.uint32(0)"
+    },
+    "wrappedInterferogram/HH/validDataMask": "absent",
+    "unwrappedInterferogram/mask": {
+     "dtype": "uint32",
+     "shape": [
+      4455,
+      4509
+     ],
+     "attrs": {
+      "_FillValue": 255,
+      "description": "Combination of a water mask, a mask of subswaths of valid samples, and data anomalies in the reference RSLC and the geometrically coregistered secondary RSLC. Each pixel value is encoded as a 32-bit unsigned integer. Bits 0-7 represent subswath encoding, where the most significant digit represents the water flag of that pixel in the reference RSLC, where 1 is water and 0 is non-water; the second most significant digit corresponds to the subswath number of the reference RSLC, and the least significant digit corresponds to the subswath number of the secondary RSLC; a value of 0 in either digit indicates an invalid sample in the corresponding RSLC. Bits 8-15 represent bitwise anomaly flags for the secondary RSLC, and bits 16-23 represent bitwise anomaly flags for the reference RSLC, with each bit corresponding to a specific anomaly condition. A value of 0 in the anomaly bits indicates that no anomaly is detected in the corresponding RSLC. Bit 24 indicates a bit mask for ionospheric phase mask used during filtering of ionospheric phase. This ionospheric phase mask indicates pixels which were masked out and filled with interpolated data. Bits 25-31 are reserved for future use",
+      "disclaimer": "Water Mask for the NASA-ISRO NISAR mission version 0.5, derived through analysis and processing of multiple input datasets, referenced to the WGS84 ellipsoid. Water mask derived at the Jet Propulsion Laboratory, California Institute of Technology, under contract with NASA, using multiple open datasets: JRC Global Surface Water v1.3 (Pekel et al 2016, Nature 540, 418-422,  EC JRC/Google); ESA WorldCover 10 m 2020 ( ESA WorldCover project 2020 / Contains modified Copernicus Sentinel data (2020) processed by ESA WorldCover consortium); OpenStreetMap Water Polygons ( OpenStreetMap contributors, ODbL 1.0); MEaSUREs GIMP Mask v1 (Howat 2017, doi:10.5067/B8X58MQBFUPA; Howat et al 2014). All trademarks and rights remain with their respective owners; NISAR mission organizations assume no liability for use of this product.",
+      "grid_mapping": "projection",
+      "percentage_water": 54.112107497189186,
+      "valid_min": 0
+     },
+     "fillvalue_of_dataset": "np.uint32(0)"
+    },
+    "unwrappedInterferogram/HH/validDataMask": "absent"
+   },
+   "20m": {
+    "received_file": "gunw-wrappedinterferogram-hh-coherencemagnitude-20260810-20260822.tif",
+    "received_file_sha256": "2d33f96db6c007145472e17e1d9438c5d6535742372d1741edcd7b3b592ba5a8",
+    "window": {
+     "columns_rows": [
+      1886,
+      1985
+     ],
+     "crs": "EPSG:32619",
+     "transform": [
+      20.0,
+      0.0,
+      319520.0,
+      0.0,
+      -20.0,
+      4757600.0
+     ],
+     "product_first_column_row": [
+      6832,
+      6452
+     ],
+     "product_columns_rows": [
+      18036,
+      17820
+     ],
+     "largest_centre_difference_m": [
+      0.0,
+      0.0
+     ]
+    },
+    "alignment_check_coherence": {
+     "cells": 262144,
+     "value_in_both": 262144,
+     "value_in_received_only": 0,
+     "value_in_product_only": 0,
+     "values_that_differ": 0
+    },
+    "mask_read_seconds": 5.7,
+    "mask_sha256": "6effd309f4c8e6f14c19d00a2b5439c638759bdf6ebbde478f650c9d9243dfac",
+    "mask_values": {
+     "11": 3262628,
+     "111": 481082
+    },
+    "coherence_received": {
+     "nan": 164618,
+     "below_0": 0,
+     "above_1": 0
+    },
+    "coherence_state": {
+     "cells_with_a_value": 3579092,
+     "values_where_mask_fill": 0,
+     "values_where_mask_invalid_subswath": 0,
+     "values_where_mask_water": 445631,
+     "values_where_mask_anomaly": 0,
+     "values_where_mask_ionosphere_filled": 0,
+     "values_where_mask_other_high_bits": 0
+    }
+   }
+  },
+  "20260915-20260927": {
+   "granule": "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001",
+   "concept_id": "G4328856513-ASF",
+   "collection": "NISAR_L2_GUNW_PROVISIONAL_V1",
+   "url": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GUNW_PROVISIONAL_V1/NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001/NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+   "product_version": "1.0.11",
+   "product_specification_version": "1.5.0",
+   "members": {
+    "wrappedInterferogram": [
+     "HH",
+     "mask",
+     "projection",
+     "xCoordinateSpacing",
+     "xCoordinates",
+     "yCoordinateSpacing",
+     "yCoordinates"
+    ],
+    "wrappedInterferogram/HH": [
+     "coherenceMagnitude",
+     "projection",
+     "wrappedInterferogram",
+     "xCoordinateSpacing",
+     "xCoordinates",
+     "yCoordinateSpacing",
+     "yCoordinates"
+    ],
+    "unwrappedInterferogram": [
+     "HH",
+     "mask",
+     "projection",
+     "xCoordinateSpacing",
+     "xCoordinates",
+     "yCoordinateSpacing",
+     "yCoordinates"
+    ],
+    "unwrappedInterferogram/HH": [
+     "coherenceMagnitude",
+     "connectedComponents",
+     "ionospherePhaseScreen",
+     "ionospherePhaseScreenUncertainty",
+     "projection",
+     "unwrappedPhase",
+     "xCoordinateSpacing",
+     "xCoordinates",
+     "yCoordinateSpacing",
+     "yCoordinates"
+    ]
+   },
+   "mask_datasets": {
+    "wrappedInterferogram/mask": {
+     "dtype": "uint32",
+     "shape": [
+      17820,
+      18036
+     ],
+     "attrs": {
+      "_FillValue": 255,
+      "description": "Combination of a water mask, a mask of subswaths of valid samples, and data anomalies in the reference RSLC and the geometrically coregistered secondary RSLC. Each pixel value is encoded as a 32-bit unsigned integer. Bits 0-7 represent subswath encoding, where the most significant digit represents the water flag of that pixel in the reference RSLC, where 1 is water and 0 is non-water; the second most significant digit corresponds to the subswath number of the reference RSLC, and the least significant digit corresponds to the subswath number of the secondary RSLC; a value of 0 in either digit indicates an invalid sample in the corresponding RSLC. Bits 8-15 represent bitwise anomaly flags for the secondary RSLC, and bits 16-23 represent bitwise anomaly flags for the reference RSLC, with each bit corresponding to a specific anomaly condition. A value of 0 in the anomaly bits indicates that no anomaly is detected in the corresponding RSLC. Bits 24-31 are reserved for future use",
+      "disclaimer": "Water Mask for the NASA-ISRO NISAR mission version 0.5, derived through analysis and processing of multiple input datasets, referenced to the WGS84 ellipsoid. Water mask derived at the Jet Propulsion Laboratory, California Institute of Technology, under contract with NASA, using multiple open datasets: JRC Global Surface Water v1.3 (Pekel et al 2016, Nature 540, 418-422,  EC JRC/Google); ESA WorldCover 10 m 2020 ( ESA WorldCover project 2020 / Contains modified Copernicus Sentinel data (2020) processed by ESA WorldCover consortium); OpenStreetMap Water Polygons ( OpenStreetMap contributors, ODbL 1.0); MEaSUREs GIMP Mask v1 (Howat 2017, doi:10.5067/B8X58MQBFUPA; Howat et al 2014). All trademarks and rights remain with their respective owners; NISAR mission organizations assume no liability for use of this product.",
+      "grid_mapping": "projection",
+      "percentage_water": 54.14273803061043,
+      "valid_min": 0
+     },
+     "fillvalue_of_dataset": "np.uint32(0)"
+    },
+    "wrappedInterferogram/HH/validDataMask": "absent",
+    "unwrappedInterferogram/mask": {
+     "dtype": "uint32",
+     "shape": [
+      4455,
+      4509
+     ],
+     "attrs": {
+      "_FillValue": 255,
+      "description": "Combination of a water mask, a mask of subswaths of valid samples, and data anomalies in the reference RSLC and the geometrically coregistered secondary RSLC. Each pixel value is encoded as a 32-bit unsigned integer. Bits 0-7 represent subswath encoding, where the most significant digit represents the water flag of that pixel in the reference RSLC, where 1 is water and 0 is non-water; the second most significant digit corresponds to the subswath number of the reference RSLC, and the least significant digit corresponds to the subswath number of the secondary RSLC; a value of 0 in either digit indicates an invalid sample in the corresponding RSLC. Bits 8-15 represent bitwise anomaly flags for the secondary RSLC, and bits 16-23 represent bitwise anomaly flags for the reference RSLC, with each bit corresponding to a specific anomaly condition. A value of 0 in the anomaly bits indicates that no anomaly is detected in the corresponding RSLC. Bit 24 indicates a bit mask for ionospheric phase mask used during filtering of ionospheric phase. This ionospheric phase mask indicates pixels which were masked out and filled with interpolated data. Bits 25-31 are reserved for future use",
+      "disclaimer": "Water Mask for the NASA-ISRO NISAR mission version 0.5, derived through analysis and processing of multiple input datasets, referenced to the WGS84 ellipsoid. Water mask derived at the Jet Propulsion Laboratory, California Institute of Technology, under contract with NASA, using multiple open datasets: JRC Global Surface Water v1.3 (Pekel et al 2016, Nature 540, 418-422,  EC JRC/Google); ESA WorldCover 10 m 2020 ( ESA WorldCover project 2020 / Contains modified Copernicus Sentinel data (2020) processed by ESA WorldCover consortium); OpenStreetMap Water Polygons ( OpenStreetMap contributors, ODbL 1.0); MEaSUREs GIMP Mask v1 (Howat 2017, doi:10.5067/B8X58MQBFUPA; Howat et al 2014). All trademarks and rights remain with their respective owners; NISAR mission organizations assume no liability for use of this product.",
+      "grid_mapping": "projection",
+      "percentage_water": 54.112107497189186,
+      "valid_min": 0
+     },
+     "fillvalue_of_dataset": "np.uint32(0)"
+    },
+    "unwrappedInterferogram/HH/validDataMask": "absent"
+   },
+   "20m": {
+    "received_file": "gunw-wrappedinterferogram-hh-coherencemagnitude-20260915-20260927.tif",
+    "received_file_sha256": "ca3f576585ac53aa5088ec05b057d30d1da03720b3048b0e6d1ba045dbdf5dbe",
+    "window": {
+     "columns_rows": [
+      1886,
+      1985
+     ],
+     "crs": "EPSG:32619",
+     "transform": [
+      20.0,
+      0.0,
+      319520.0,
+      0.0,
+      -20.0,
+      4757600.0
+     ],
+     "product_first_column_row": [
+      6832,
+      6452
+     ],
+     "product_columns_rows": [
+      18036,
+      17820
+     ],
+     "largest_centre_difference_m": [
+      0.0,
+      0.0
+     ]
+    },
+    "alignment_check_coherence": {
+     "cells": 262144,
+     "value_in_both": 262144,
+     "value_in_received_only": 0,
+     "value_in_product_only": 0,
+     "values_that_differ": 0
+    },
+    "mask_read_seconds": 8.1,
+    "mask_sha256": "6effd309f4c8e6f14c19d00a2b5439c638759bdf6ebbde478f650c9d9243dfac",
+    "mask_values": {
+     "11": 3262628,
+     "111": 481082
+    },
+    "coherence_received": {
+     "nan": 164618,
+     "below_0": 0,
+     "above_1": 0
+    },
+    "coherence_state": {
+     "cells_with_a_value": 3579092,
+     "values_where_mask_fill": 0,
+     "values_where_mask_invalid_subswath": 0,
+     "values_where_mask_water": 445631,
+     "values_where_mask_anomaly": 0,
+     "values_where_mask_ionosphere_filled": 0,
+     "values_where_mask_other_high_bits": 0
+    }
+   }
+  },
+  "20260927-20261009": {
+   "granule": "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001",
+   "concept_id": "G4359740150-ASF",
+   "collection": "NISAR_L2_GUNW_PROVISIONAL_V1",
+   "url": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GUNW_PROVISIONAL_V1/NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001/NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+   "product_version": "1.0.11",
+   "product_specification_version": "1.5.0",
+   "members": {
+    "wrappedInterferogram": [
+     "HH",
+     "mask",
+     "projection",
+     "xCoordinateSpacing",
+     "xCoordinates",
+     "yCoordinateSpacing",
+     "yCoordinates"
+    ],
+    "wrappedInterferogram/HH": [
+     "coherenceMagnitude",
+     "projection",
+     "wrappedInterferogram",
+     "xCoordinateSpacing",
+     "xCoordinates",
+     "yCoordinateSpacing",
+     "yCoordinates"
+    ],
+    "unwrappedInterferogram": [
+     "HH",
+     "mask",
+     "projection",
+     "xCoordinateSpacing",
+     "xCoordinates",
+     "yCoordinateSpacing",
+     "yCoordinates"
+    ],
+    "unwrappedInterferogram/HH": [
+     "coherenceMagnitude",
+     "connectedComponents",
+     "ionospherePhaseScreen",
+     "ionospherePhaseScreenUncertainty",
+     "projection",
+     "unwrappedPhase",
+     "xCoordinateSpacing",
+     "xCoordinates",
+     "yCoordinateSpacing",
+     "yCoordinates"
+    ]
+   },
+   "mask_datasets": {
+    "wrappedInterferogram/mask": {
+     "dtype": "uint32",
+     "shape": [
+      17820,
+      18036
+     ],
+     "attrs": {
+      "_FillValue": 255,
+      "description": "Combination of a water mask, a mask of subswaths of valid samples, and data anomalies in the reference RSLC and the geometrically coregistered secondary RSLC. Each pixel value is encoded as a 32-bit unsigned integer. Bits 0-7 represent subswath encoding, where the most significant digit represents the water flag of that pixel in the reference RSLC, where 1 is water and 0 is non-water; the second most significant digit corresponds to the subswath number of the reference RSLC, and the least significant digit corresponds to the subswath number of the secondary RSLC; a value of 0 in either digit indicates an invalid sample in the corresponding RSLC. Bits 8-15 represent bitwise anomaly flags for the secondary RSLC, and bits 16-23 represent bitwise anomaly flags for the reference RSLC, with each bit corresponding to a specific anomaly condition. A value of 0 in the anomaly bits indicates that no anomaly is detected in the corresponding RSLC. Bits 24-31 are reserved for future use",
+      "disclaimer": "Water Mask for the NASA-ISRO NISAR mission version 0.5, derived through analysis and processing of multiple input datasets, referenced to the WGS84 ellipsoid. Water mask derived at the Jet Propulsion Laboratory, California Institute of Technology, under contract with NASA, using multiple open datasets: JRC Global Surface Water v1.3 (Pekel et al 2016, Nature 540, 418-422,  EC JRC/Google); ESA WorldCover 10 m 2020 ( ESA WorldCover project 2020 / Contains modified Copernicus Sentinel data (2020) processed by ESA WorldCover consortium); OpenStreetMap Water Polygons ( OpenStreetMap contributors, ODbL 1.0); MEaSUREs GIMP Mask v1 (Howat 2017, doi:10.5067/B8X58MQBFUPA; Howat et al 2014). All trademarks and rights remain with their respective owners; NISAR mission organizations assume no liability for use of this product.",
+      "grid_mapping": "projection",
+      "percentage_water": 54.14273803061043,
+      "valid_min": 0
+     },
+     "fillvalue_of_dataset": "np.uint32(0)"
+    },
+    "wrappedInterferogram/HH/validDataMask": "absent",
+    "unwrappedInterferogram/mask": {
+     "dtype": "uint32",
+     "shape": [
+      4455,
+      4509
+     ],
+     "attrs": {
+      "_FillValue": 255,
+      "description": "Combination of a water mask, a mask of subswaths of valid samples, and data anomalies in the reference RSLC and the geometrically coregistered secondary RSLC. Each pixel value is encoded as a 32-bit unsigned integer. Bits 0-7 represent subswath encoding, where the most significant digit represents the water flag of that pixel in the reference RSLC, where 1 is water and 0 is non-water; the second most significant digit corresponds to the subswath number of the reference RSLC, and the least significant digit corresponds to the subswath number of the secondary RSLC; a value of 0 in either digit indicates an invalid sample in the corresponding RSLC. Bits 8-15 represent bitwise anomaly flags for the secondary RSLC, and bits 16-23 represent bitwise anomaly flags for the reference RSLC, with each bit corresponding to a specific anomaly condition. A value of 0 in the anomaly bits indicates that no anomaly is detected in the corresponding RSLC. Bit 24 indicates a bit mask for ionospheric phase mask used during filtering of ionospheric phase. This ionospheric phase mask indicates pixels which were masked out and filled with interpolated data. Bits 25-31 are reserved for future use",
+      "disclaimer": "Water Mask for the NASA-ISRO NISAR mission version 0.5, derived through analysis and processing of multiple input datasets, referenced to the WGS84 ellipsoid. Water mask derived at the Jet Propulsion Laboratory, California Institute of Technology, under contract with NASA, using multiple open datasets: JRC Global Surface Water v1.3 (Pekel et al 2016, Nature 540, 418-422,  EC JRC/Google); ESA WorldCover 10 m 2020 ( ESA WorldCover project 2020 / Contains modified Copernicus Sentinel data (2020) processed by ESA WorldCover consortium); OpenStreetMap Water Polygons ( OpenStreetMap contributors, ODbL 1.0); MEaSUREs GIMP Mask v1 (Howat 2017, doi:10.5067/B8X58MQBFUPA; Howat et al 2014). All trademarks and rights remain with their respective owners; NISAR mission organizations assume no liability for use of this product.",
+      "grid_mapping": "projection",
+      "percentage_water": 54.112107497189186,
+      "valid_min": 0
+     },
+     "fillvalue_of_dataset": "np.uint32(0)"
+    },
+    "unwrappedInterferogram/HH/validDataMask": "absent"
+   },
+   "20m": {
+    "received_file": "gunw-wrappedinterferogram-hh-coherencemagnitude-20260927-20261009.tif",
+    "received_file_sha256": "218e249a090fbb6dbfee23ada1d298071cc587c3b5b00fc6a31fc7235d86858b",
+    "window": {
+     "columns_rows": [
+      1886,
+      1985
+     ],
+     "crs": "EPSG:32619",
+     "transform": [
+      20.0,
+      0.0,
+      319520.0,
+      0.0,
+      -20.0,
+      4757600.0
+     ],
+     "product_first_column_row": [
+      6832,
+      6452
+     ],
+     "product_columns_rows": [
+      18036,
+      17820
+     ],
+     "largest_centre_difference_m": [
+      0.0,
+      0.0
+     ]
+    },
+    "alignment_check_coherence": {
+     "cells": 262144,
+     "value_in_both": 262144,
+     "value_in_received_only": 0,
+     "value_in_product_only": 0,
+     "values_that_differ": 0
+    },
+    "mask_read_seconds": 6.1,
+    "mask_sha256": "6effd309f4c8e6f14c19d00a2b5439c638759bdf6ebbde478f650c9d9243dfac",
+    "mask_values": {
+     "11": 3262628,
+     "111": 481082
+    },
+    "coherence_received": {
+     "nan": 164618,
+     "below_0": 0,
+     "above_1": 0
+    },
+    "coherence_state": {
+     "cells_with_a_value": 3579092,
+     "values_where_mask_fill": 0,
+     "values_where_mask_invalid_subswath": 0,
+     "values_where_mask_water": 445631,
+     "values_where_mask_anomaly": 0,
+     "values_where_mask_ionosphere_filled": 0,
+     "values_where_mask_other_high_bits": 0
+    }
+   },
+   "80m": {
+    "received_file": "gunw-unwrappedinterferogram-hh-coherencemagnitude-20260927-20261009.tif",
+    "received_file_sha256": "963a02eb5aff5230902a19078dc74d1cb7556ceeafbe66cfc5ef2f2ebe563e52",
+    "window": {
+     "columns_rows": [
+      471,
+      496
+     ],
+     "crs": "EPSG:32619",
+     "transform": [
+      80.0,
+      0.0,
+      319520.0,
+      0.0,
+      -80.0,
+      4757600.0
+     ],
+     "product_first_column_row": [
+      1708,
+      1613
+     ],
+     "product_columns_rows": [
+      4509,
+      4455
+     ],
+     "largest_centre_difference_m": [
+      0.0,
+      0.0
+     ]
+    },
+    "alignment_check_coherence": {
+     "cells": 221841,
+     "value_in_both": 216858,
+     "value_in_received_only": 0,
+     "value_in_product_only": 4983,
+     "values_that_differ": 0
+    },
+    "mask_read_seconds": 4.6,
+    "mask_sha256": "8c890ae942327399ebc2b1b62fc1803a53941aac95be6a15387bedba94e83312",
+    "mask_values": {
+     "11": 84089,
+     "111": 24535,
+     "16777228": 119829,
+     "16777340": 5163
+    },
+    "coherence_received": {
+     "nan": 9923,
+     "below_0": 0,
+     "above_1": 0
+    },
+    "coherence_state": {
+     "cells_with_a_value": 223693,
+     "values_where_mask_fill": 0,
+     "values_where_mask_invalid_subswath": 0,
+     "values_where_mask_water": 27681,
+     "values_where_mask_anomaly": 0,
+     "values_where_mask_ionosphere_filled": 120109,
+     "values_where_mask_other_high_bits": 0
+    }
+   }
+  },
+  "20261009-20261021": {
+   "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+   "concept_id": "G4409879710-ASF",
+   "collection": "NISAR_L2_GUNW_V1",
+   "url": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/L2_L_GUNW/NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001/NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+   "product_version": "1.0.20",
+   "product_specification_version": "1.6.0",
+   "members": {
+    "wrappedInterferogram": [
+     "HH",
+     "mask",
+     "projection",
+     "xCoordinateSpacing",
+     "xCoordinates",
+     "yCoordinateSpacing",
+     "yCoordinates"
+    ],
+    "wrappedInterferogram/HH": [
+     "coherenceMagnitude",
+     "projection",
+     "validDataMask",
+     "wrappedInterferogram",
+     "xCoordinateSpacing",
+     "xCoordinates",
+     "yCoordinateSpacing",
+     "yCoordinates"
+    ],
+    "unwrappedInterferogram": [
+     "HH",
+     "mask",
+     "projection",
+     "xCoordinateSpacing",
+     "xCoordinates",
+     "yCoordinateSpacing",
+     "yCoordinates"
+    ],
+    "unwrappedInterferogram/HH": [
+     "coherenceMagnitude",
+     "connectedComponents",
+     "ionospherePhaseScreen",
+     "ionospherePhaseScreenUncertainty",
+     "projection",
+     "unwrappedPhase",
+     "validDataMask",
+     "xCoordinateSpacing",
+     "xCoordinates",
+     "yCoordinateSpacing",
+     "yCoordinates"
+    ]
+   },
+   "mask_datasets": {
+    "wrappedInterferogram/mask": {
+     "dtype": "uint32",
+     "shape": [
+      17820,
+      18036
+     ],
+     "attrs": {
+      "_FillValue": 255,
+      "description": "Combination of a water mask, a mask of subswaths of valid samples, and data anomalies in the reference RSLC and the geometrically coregistered secondary RSLC. Each pixel value is encoded as a 32-bit unsigned integer. Bits 0-7 represent subswath encoding, where the most significant digit represents the water flag of that pixel in the reference RSLC, where 1 is water and 0 is non-water; the second most significant digit corresponds to the subswath number of the reference RSLC, and the least significant digit corresponds to the subswath number of the secondary RSLC; a value of 0 in either digit indicates an invalid sample in the corresponding RSLC. Bits 8-15 represent bitwise anomaly flags for the secondary RSLC, and bits 16-23 represent bitwise anomaly flags for the reference RSLC, with each bit corresponding to a specific anomaly condition. A value of 0 in the anomaly bits indicates that no anomaly is detected in the corresponding RSLC. Bits 24-31 are reserved for future use",
+      "disclaimer": "Water Mask for the NASA-ISRO NISAR mission version 0.5, derived through analysis and processing of multiple input datasets, referenced to the WGS84 ellipsoid. Water mask derived at the Jet Propulsion Laboratory, California Institute of Technology, under contract with NASA, using multiple open datasets: JRC Global Surface Water v1.3 (Pekel et al 2016, Nature 540, 418-422,  EC JRC/Google); ESA WorldCover 10 m 2020 ( ESA WorldCover project 2020 / Contains modified Copernicus Sentinel data (2020) processed by ESA WorldCover consortium); OpenStreetMap Water Polygons ( OpenStreetMap contributors, ODbL 1.0); MEaSUREs GIMP Mask v1 (Howat 2017, doi:10.5067/B8X58MQBFUPA; Howat et al 2014). All trademarks and rights remain with their respective owners; NISAR mission organizations assume no liability for use of this product.",
+      "grid_mapping": "projection",
+      "percentage_water": 49.047779756395656,
+      "valid_min": 0
+     },
+     "fillvalue_of_dataset": "np.uint32(0)"
+    },
+    "wrappedInterferogram/HH/validDataMask": {
+     "dtype": "uint8",
+     "shape": [
+      17820,
+      18036
+     ],
+     "attrs": {
+      "_FillValue": 255,
+      "description": "Valid mask for the HH layers: bit 1 = reference (1=valid, 0=invalid), bit 0 = secondary (1=valid, 0=invalid). Valid represents fully focused data and invalid represents partially focused or missing data",
+      "grid_mapping": "projection",
+      "long_name": "Valid data mask",
+      "units": "1",
+      "valid_min": 0,
+      "valid_pixel_fraction": 0.9572341564945768
+     },
+     "fillvalue_of_dataset": "np.uint8(0)"
+    },
+    "unwrappedInterferogram/mask": {
+     "dtype": "uint32",
+     "shape": [
+      4455,
+      4509
+     ],
+     "attrs": {
+      "_FillValue": 255,
+      "description": "Combination of a water mask, a mask of subswaths of valid samples, and data anomalies in the reference RSLC and the geometrically coregistered secondary RSLC. Each pixel value is encoded as a 32-bit unsigned integer. Bits 0-7 represent subswath encoding, where the most significant digit represents the water flag of that pixel in the reference RSLC, where 1 is water and 0 is non-water; the second most significant digit corresponds to the subswath number of the reference RSLC, and the least significant digit corresponds to the subswath number of the secondary RSLC; a value of 0 in either digit indicates an invalid sample in the corresponding RSLC. Bits 8-15 represent bitwise anomaly flags for the secondary RSLC, and bits 16-23 represent bitwise anomaly flags for the reference RSLC, with each bit corresponding to a specific anomaly condition. A value of 0 in the anomaly bits indicates that no anomaly is detected in the corresponding RSLC. Bit 24 indicates a bit mask for ionospheric phase mask used during filtering of ionospheric phase. This ionospheric phase mask indicates pixels which were masked out and filled with interpolated data. Bits 25-31 are reserved for future use",
+      "disclaimer": "Water Mask for the NASA-ISRO NISAR mission version 0.5, derived through analysis and processing of multiple input datasets, referenced to the WGS84 ellipsoid. Water mask derived at the Jet Propulsion Laboratory, California Institute of Technology, under contract with NASA, using multiple open datasets: JRC Global Surface Water v1.3 (Pekel et al 2016, Nature 540, 418-422,  EC JRC/Google); ESA WorldCover 10 m 2020 ( ESA WorldCover project 2020 / Contains modified Copernicus Sentinel data (2020) processed by ESA WorldCover consortium); OpenStreetMap Water Polygons ( OpenStreetMap contributors, ODbL 1.0); MEaSUREs GIMP Mask v1 (Howat 2017, doi:10.5067/B8X58MQBFUPA; Howat et al 2014). All trademarks and rights remain with their respective owners; NISAR mission organizations assume no liability for use of this product.",
+      "grid_mapping": "projection",
+      "percentage_water": 49.00521674059392,
+      "valid_min": 0
+     },
+     "fillvalue_of_dataset": "np.uint32(0)"
+    },
+    "unwrappedInterferogram/HH/validDataMask": {
+     "dtype": "uint8",
+     "shape": [
+      4455,
+      4509
+     ],
+     "attrs": {
+      "_FillValue": 255,
+      "description": "Valid mask for the HH layers: bit 1 = reference (1=valid, 0=invalid), bit 0 = secondary (1=valid, 0=invalid). Valid represents fully focused data and invalid represents partially focused or missing data",
+      "grid_mapping": "projection",
+      "long_name": "Valid data mask",
+      "units": "1",
+      "valid_min": 0,
+      "valid_pixel_fraction": 0.9575935030480014
+     },
+     "fillvalue_of_dataset": "np.uint8(0)"
+    }
+   },
+   "20m": {
+    "received_file": "gunw-wrappedinterferogram-hh-coherencemagnitude-20261009-20261021.tif",
+    "received_file_sha256": "93b623fe0563dbdc34ccce3e9db22aa6f57dca4763429ae93fac8d9bf5117b69",
+    "window": {
+     "columns_rows": [
+      1886,
+      1985
+     ],
+     "crs": "EPSG:32619",
+     "transform": [
+      20.0,
+      0.0,
+      319520.0,
+      0.0,
+      -20.0,
+      4757600.0
+     ],
+     "product_first_column_row": [
+      6832,
+      6452
+     ],
+     "product_columns_rows": [
+      18036,
+      17820
+     ],
+     "largest_centre_difference_m": [
+      0.0,
+      0.0
+     ]
+    },
+    "alignment_check_coherence": {
+     "cells": 262144,
+     "value_in_both": 262144,
+     "value_in_received_only": 0,
+     "value_in_product_only": 0,
+     "values_that_differ": 0
+    },
+    "mask_read_seconds": 8.7,
+    "mask_sha256": "6effd309f4c8e6f14c19d00a2b5439c638759bdf6ebbde478f650c9d9243dfac",
+    "mask_values": {
+     "11": 3262628,
+     "111": 481082
+    },
+    "validDataMask_read_seconds": 1.8,
+    "validDataMask_sha256": "b6fd734f2864d909ca3208a988861a2ace0599c64e4166d4dedd6cc13d676951",
+    "validDataMask_values": {
+     "3": 3743710
+    },
+    "coherence_received": {
+     "nan": 164618,
+     "below_0": 0,
+     "above_1": 0
+    },
+    "coherence_state": {
+     "cells_with_a_value": 3579092,
+     "values_where_mask_fill": 0,
+     "values_where_mask_invalid_subswath": 0,
+     "values_where_mask_water": 445631,
+     "values_where_mask_anomaly": 0,
+     "values_where_mask_ionosphere_filled": 0,
+     "values_where_mask_other_high_bits": 0,
+     "values_where_validDataMask_fill": 0,
+     "values_where_validDataMask_invalid": 0,
+     "values_where_validDataMask_other_bits": 0
+    }
+   },
+   "80m": {
+    "received_file": "gunw-unwrappedinterferogram-hh-coherencemagnitude-20261009-20261021.tif",
+    "received_file_sha256": "5d1b5e8c5153acdbcdeff9b24885165db39ed73b158781ad4bf0c7a2f048f368",
+    "window": {
+     "columns_rows": [
+      471,
+      496
+     ],
+     "crs": "EPSG:32619",
+     "transform": [
+      80.0,
+      0.0,
+      319520.0,
+      0.0,
+      -80.0,
+      4757600.0
+     ],
+     "product_first_column_row": [
+      1708,
+      1613
+     ],
+     "product_columns_rows": [
+      4509,
+      4455
+     ],
+     "largest_centre_difference_m": [
+      0.0,
+      0.0
+     ]
+    },
+    "alignment_check_coherence": {
+     "cells": 221841,
+     "value_in_both": 216858,
+     "value_in_received_only": 0,
+     "value_in_product_only": 4983,
+     "values_that_differ": 0
+    },
+    "mask_read_seconds": 5.2,
+    "mask_sha256": "30f52a3fe208b8aee4f5f6bc890c5b7a1a5f525ef0daaaa33ada0d75974caea7",
+    "mask_values": {
+     "11": 4009,
+     "111": 23876,
+     "16777227": 199909,
+     "16777327": 5822
+    },
+    "validDataMask_read_seconds": 5.6,
+    "validDataMask_sha256": "9473bc377b5c0ebfd034d53ee797ca6670b08c9559fd01de912463c4063cfa81",
+    "validDataMask_values": {
+     "3": 233616
+    },
+    "coherence_received": {
+     "nan": 9923,
+     "below_0": 0,
+     "above_1": 0
+    },
+    "coherence_state": {
+     "cells_with_a_value": 223693,
+     "values_where_mask_fill": 0,
+     "values_where_mask_invalid_subswath": 0,
+     "values_where_mask_water": 27681,
+     "values_where_mask_anomaly": 0,
+     "values_where_mask_ionosphere_filled": 197606,
+     "values_where_mask_other_high_bits": 0,
+     "values_where_validDataMask_fill": 0,
+     "values_where_validDataMask_invalid": 0,
+     "values_where_validDataMask_other_bits": 0
+    }
+   }
+  }
+ },
+ "coherence_change": {
+  "20m 20260810-20260822 to 20260915-20260927": {
+   "cells_with_a_value": 3579092,
+   "values_where_mask_anomaly": 0,
+   "values_where_mask_fill": 0,
+   "values_where_mask_invalid_subswath": 0,
+   "values_where_mask_ionosphere_filled": 0,
+   "values_where_mask_other_high_bits": 0,
+   "values_where_mask_water": 445631
+  },
+  "20m 20260915-20260927 to 20260927-20261009": {
+   "cells_with_a_value": 3579092,
+   "values_where_mask_anomaly": 0,
+   "values_where_mask_fill": 0,
+   "values_where_mask_invalid_subswath": 0,
+   "values_where_mask_ionosphere_filled": 0,
+   "values_where_mask_other_high_bits": 0,
+   "values_where_mask_water": 445631
+  },
+  "20m 20260915-20260927 to 20261009-20261021": {
+   "cells_with_a_value": 3579092,
+   "values_where_mask_anomaly": 0,
+   "values_where_mask_fill": 0,
+   "values_where_mask_invalid_subswath": 0,
+   "values_where_mask_ionosphere_filled": 0,
+   "values_where_mask_other_high_bits": 0,
+   "values_where_mask_water": 445631,
+   "values_where_validDataMask_fill": 0,
+   "values_where_validDataMask_invalid": 0,
+   "values_where_validDataMask_other_bits": 0
+  },
+  "20m 20260927-20261009 to 20261009-20261021": {
+   "cells_with_a_value": 3579092,
+   "values_where_mask_anomaly": 0,
+   "values_where_mask_fill": 0,
+   "values_where_mask_invalid_subswath": 0,
+   "values_where_mask_ionosphere_filled": 0,
+   "values_where_mask_other_high_bits": 0,
+   "values_where_mask_water": 445631,
+   "values_where_validDataMask_fill": 0,
+   "values_where_validDataMask_invalid": 0,
+   "values_where_validDataMask_other_bits": 0
+  },
+  "80m 20260927-20261009 to 20261009-20261021": {
+   "cells_with_a_value": 223693,
+   "values_where_mask_anomaly": 0,
+   "values_where_mask_fill": 0,
+   "values_where_mask_invalid_subswath": 0,
+   "values_where_mask_ionosphere_filled": 202862,
+   "values_where_mask_other_high_bits": 0,
+   "values_where_mask_water": 27681,
+   "values_where_validDataMask_fill": 0,
+   "values_where_validDataMask_invalid": 0,
+   "values_where_validDataMask_other_bits": 0
+  }
+ },
+ "ended_utc": "2026-11-15T19:26:22Z"
+}

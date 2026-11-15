@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """The reading of an input value that a request gives by reference.
 
 OGC API - Processes lets a request give an input value as a link instead of
@@ -27,6 +29,26 @@ type Reader = Callable[[str], object]
 
 class UnreadableReferenceError(Exception):
     """The value of a link could not be read. The message is a sentence for the visitor."""
+
+
+REFUSED = "This server does not read an input value given as a link. Give the value itself."
+"""The sentence for a request that gives an input value as a link to a server that reads no link."""
+
+
+def refuse_reference(_address: str) -> object:
+    """Refuse the link of an input value without opening a connection.
+
+    The web service installs this function in place of :func:`read_reference`. A request reaches the
+    reading of its links before its sign-in is checked, and the reading has a time limit for each step
+    of the exchange but none for the whole of it. A host that answers very slowly therefore holds a
+    thread for as long as it likes, and the sign-in, the search and the jobs wait for the same threads.
+
+    Raises
+    ------
+    UnreadableReferenceError
+        Always.
+    """
+    raise UnreadableReferenceError(REFUSED)
 
 
 def _is_public(text: str) -> bool:

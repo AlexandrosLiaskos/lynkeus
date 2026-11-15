@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 /**
  * The explanations of the search and of its fields, one for each title, in one place. Each one shows from the
  * button beside its title.

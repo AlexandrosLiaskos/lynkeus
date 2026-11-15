@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """The own servers of the visitors, on the side of the project server.
 
 A visitor may connect computers of his own, which run the program Lynkeus

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
@@ -75,6 +77,17 @@ test("each series shows its name, its quantity with the unit, and its dates with
   ]);
   expect(seriesLine(series())).toBe("4 dates · 27 Sep 2026 to 2 Nov 2026 · Whole area");
   expect(seriesLine(pairSeries())).toBe("3 pairs · 15 Sep 2026 to 21 Oct 2026 · At a point");
+  const shape = {
+    crs: "EPSG:3857",
+    kind: "polygon",
+    points: [
+      [0, 0],
+      [10, 0],
+      [10, 10],
+      [0, 0],
+    ],
+  } as const;
+  expect(seriesLine(series({ shape }))).toBe("4 dates · 27 Sep 2026 to 2 Nov 2026 · Drawn area");
 });
 
 test("the item of a series shows the command Show, and its menu holds Rename and Remove", async () => {

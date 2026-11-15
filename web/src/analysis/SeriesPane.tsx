@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { unitWords } from "../data/layers";
 import { SERIES_PANE, seriesStore, shownSeriesStore } from "../data/series";
 import { formatAngle } from "../map/coordinates";
@@ -7,6 +9,7 @@ import { PropertyList } from "../shared/properties/PropertyList";
 import type { SeriesDescription, SeriesEntry } from "../shared/series";
 import { useStore } from "../shared/store";
 import { InfoPane } from "../shared/toolpane/InfoPane";
+import { shapeWords } from "./analysisArea";
 import { daysWords } from "./series";
 import { SeriesChart } from "./SeriesChart";
 
@@ -33,11 +36,12 @@ export function ofPairs(series: SeriesDescription): boolean {
   return series.entries.some((entry) => entry.dates.length > 1);
 }
 
-/** State the place of a series: the whole area of its layers, or its point. */
+/** State the place of a series: its point, the area drawn on the map, or the whole area of its layers. */
 export function placeWords(series: SeriesDescription): string {
-  return series.point
-    ? `At the point ${formatAngle(series.point.latitude, "latitude")}, ${formatAngle(series.point.longitude, "longitude")}`
-    : "Whole area of the layers";
+  if (series.point) {
+    return `At the point ${formatAngle(series.point.latitude, "latitude")}, ${formatAngle(series.point.longitude, "longitude")}`;
+  }
+  return series.shape ? shapeWords(series.shape) : "Whole area of the layers";
 }
 
 /** State how the value of a date was made from the cells of its layer. */
@@ -45,9 +49,10 @@ export function reductionWords(series: SeriesDescription): string {
   if (series.point) {
     return "The value of the cell that holds the point";
   }
+  const cells = series.shape ? "the cells inside the area" : "the cells";
   return series.reduction === "mean-power"
-    ? "The mean of the power of the cells, given in decibels"
-    : "The mean of the cells that hold a value";
+    ? `The mean of the power of ${cells}, given in decibels`
+    : `The mean of ${cells} that hold a value`;
 }
 
 /** The rows of the table of a series: the date or the pair, the value and the number of cells of each entry. */

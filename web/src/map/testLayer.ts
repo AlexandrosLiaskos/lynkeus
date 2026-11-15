@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import type { LayerDescription } from "../shared/layer";
 
 /** Return the description of a layer of radar backscatter, for the tests of the tools that read the layers. */

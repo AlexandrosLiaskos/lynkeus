@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 /**
  * Return the place of the tab that takes the focus after a key is pressed on a tab, or undefined for a key that
  * does not move it. The left and right arrow keys move to the tab beside, and pass from the last tab to the first

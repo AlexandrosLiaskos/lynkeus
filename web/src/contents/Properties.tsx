@@ -1,5 +1,8 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { useEffect, useState } from "react";
 import { Dialog } from "../shared/dialog/Dialog";
+import { statisticsRows } from "../analysis/analysisArea";
 import type { LayerDescription } from "../shared/layer";
 import { mapLayersStore } from "../shared/mapLayers";
 import { Notice } from "../shared/notice/Notice";
@@ -173,8 +176,10 @@ function fileRows(cog: Cog, unit: string, classes: boolean): Property[] {
 
 /**
  * The properties of one layer as a list of names and values in four groups: the layer, the projection and the
- * grid, the file and the record. The file of the layer is read for its projection, its grid and its values;
- * until it is read, and when it cannot be read, a notice above the list says so and the list shows the rest.
+ * grid, the file and the record. A result of a run with an area drawn on the map has a fifth group after the
+ * first, its statistics in the area, which its description holds. The file of the layer is read for its
+ * projection, its grid and its values; until it is read, and when it cannot be read, a notice above the list says
+ * so and the list shows the rest.
  */
 function PropertiesOf({ layer }: { layer: LayerDescription }) {
   const [cog, setCog] = useState<Cog | "reading" | "failed">("reading");
@@ -202,6 +207,15 @@ function PropertiesOf({ layer }: { layer: LayerDescription }) {
   const file = [addressRow(layer.url, "The file is a Cloud Optimized GeoTIFF."), keptRow(layer.url, servers)];
   const groups: PropertyGroup[] = [
     { title: "Layer", rows: layerRows(layer) },
+    ...(layer.statistics
+      ? [
+          {
+            title: "Statistics in the area",
+            // Classes have no mean, deviation or median: a layer of classes keeps the area and its cells with data.
+            rows: statisticsRows(layer.statistics, formatUnit(layer.unit)).slice(0, layer.classes ? 2 : undefined),
+          },
+        ]
+      : []),
     ...(typeof cog === "string" ? [] : [{ title: "Projection and grid", rows: gridRows(cog) }]),
     {
       title: "File",

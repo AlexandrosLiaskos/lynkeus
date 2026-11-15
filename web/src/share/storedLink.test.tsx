@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { render } from "@testing-library/react";
 import { toLonLat } from "ol/proj";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
@@ -15,8 +17,8 @@ afterEach(() => {
 });
 
 /**
- * Open the page as `App` does: the modules are loaded, which restores the stored parts, the map is created and
- * its stored view restored, and then the page is drawn, which reads the link of the address.
+ * Open the page as `Platform` does: the modules are loaded, which restores the stored parts, the map is created
+ * and its stored view restored, and then the page is drawn, which reads the link of the address.
  */
 async function openPage() {
   vi.resetModules();

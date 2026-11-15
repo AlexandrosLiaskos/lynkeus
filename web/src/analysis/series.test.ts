@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { readFileSync } from "node:fs";
 import { expect, test } from "vitest";
 import { GO_TO_FAULTS } from "../map/GoToPane";
@@ -72,6 +74,7 @@ function choices(change: Partial<SeriesChoices> = {}): SeriesChoices {
     place: "area",
     latitude: "",
     longitude: "",
+    area: null,
     title: "Backscatter of the estuary",
     ...change,
   };
@@ -218,7 +221,7 @@ test("each field states its fault, and the foot states the first of them", () =>
 });
 
 test("the words of the form are short, and the faults of the point are those of the pane Go to coordinates", () => {
-  expect(PLACES).toEqual({ area: "Whole area", point: "At a point" });
+  expect(PLACES).toEqual({ area: "For the area", point: "At a point" });
   expect(NO_LAYERS).toBe("No two layers of this session can be used together by the tool.");
   expect(ANGLE_FAULTS).toEqual({
     latitude: "Enter the latitude in degrees, from 90 S to 90 N, for example 42.8 N or 42° 48′ 30″ N.",

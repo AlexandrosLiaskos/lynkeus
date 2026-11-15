@@ -1,4 +1,5 @@
-@use "uswds-core" as uswds;
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 @use "../tokens/tokens";
 @use "../tooltip/bubble";
 
@@ -46,35 +47,17 @@
 }
 
 .info-button:hover,
-.info-button:has(+ .info-bubble--open) {
+.info-button--open {
   color: tokens.$link;
 }
 
-// The bubble is fixed to the window, at a place that the component sets, so a pane that scrolls does not cut
-// it. It keeps its size while it is not shown, so that its place can be found before it shows. Its width does
-// not depend on its place, and it leaves 8 pixels to each edge of a narrow window. The clear strips above and
-// under the text belong to the bubble, so the pointer can cross from the button to the text.
+// The bubble stands under its button, or above it at the lower edge of the window, at a place that React Aria
+// Components sets. Its width does not depend on its place, and it leaves 8 pixels to each edge of a narrow
+// window.
 .info-bubble {
-  position: fixed;
-  z-index: 100;
-  top: 0;
-  left: 0;
-  width: max-content;
-  max-width: min(16rem, calc(100vw - 1rem));
-  padding: 0.25rem 0;
-  visibility: hidden;
-  cursor: default;
-}
-
-.info-bubble--open {
-  @include bubble.appear;
-
-  visibility: visible;
-}
-
-.info-bubble-text {
   @include bubble.look;
+  @include bubble.motion;
 
-  display: block;
   padding: 0.375rem tokens.$space-2;
+  cursor: default;
 }

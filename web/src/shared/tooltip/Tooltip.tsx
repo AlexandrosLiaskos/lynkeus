@@ -1,11 +1,17 @@
-import { useEffect, useId, useRef, useState, type ReactNode } from "react";
-import { placeBubble } from "../info/place";
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
+import { useId, useRef, useState, type DOMAttributes, type ReactElement } from "react";
+import { Focusable, TooltipTrigger } from "react-aria-components";
+import { Bubble, GAP } from "./Bubble";
 
 /** The time that the pointer rests on an element before its description shows, in milliseconds. */
 export const HOVER_DELAY = 500;
 
-/** The clear strip between an element, or its row, and the description, in pixels. */
-const GAP = 4;
+/**
+ * The time that a description stays after the pointer has left its element, in milliseconds. The pointer crosses
+ * from the element onto the description in this time.
+ */
+export const LEAVE_DELAY = 500;
 
 interface TooltipProps {
   /** Name of the element. */
@@ -14,120 +20,73 @@ interface TooltipProps {
   text?: string;
   /** A second sentence, for example the reason why the element is inactive. */
   note?: string;
-  /** The element that is described. It receives the id of the description for its `aria-describedby` attribute. */
-  children: (describedBy: string) => ReactNode;
+  /**
+   * The element that is described: one element that can take the focus, such as a button. It receives the id of
+   * the description for its `aria-describedby` attribute.
+   */
+  children: (describedBy: string) => ReactElement<DOMAttributes<Element>, string>;
 }
 
-/** The place of a description in the window, and the heights of the clear strips at its two edges, in pixels. */
-interface Position {
-  left: number;
-  top: number;
-  borderTopWidth: number;
-  borderBottomWidth: number;
+/** Return how far the row of an element reaches under the element, in pixels, or zero for an element without a row. */
+function reachOfRow(element: Element | null): number {
+  const row = element?.closest("[data-tooltip-row]");
+  if (!element || !row) {
+    return 0;
+  }
+  return Math.max(0, row.getBoundingClientRect().bottom - element.getBoundingClientRect().bottom);
 }
 
 /**
  * The description of a button, or the name alone of a button that shows only an icon. It shows under the button
- * while the pointer rests on it or while the button has keyboard focus. The Escape key hides it, and the pointer
- * may move onto it without hiding it, as the criterion 1.4.13 of the Web Content Accessibility Guidelines asks.
+ * after the pointer has rested on it and while the button has keyboard focus. The Escape key hides it, and the
+ * pointer may move onto it without hiding it, as the criterion 1.4.13 of the Web Content Accessibility Guidelines
+ * asks.
  *
- * The description stays inside the window (see `placeBubble`): it moves to the left at the right edge of the
- * window, and it shows above its button when it has no room under it, as at the lower edge of the window.
+ * `TooltipTrigger` of React Aria Components times the pointer, follows the focus, and hides the description at the
+ * Escape key, at a press and half a second after the pointer has left. While a description shows, the Escape key
+ * hides it and reaches nothing else. `Bubble` places the description.
+ *
+ * The sentences of the description are in the page at all times, in an element that is not shown, so the button
+ * that carries its id in `aria-describedby` is described also while the description is not shown.
  *
  * An element that holds the button may carry the attribute `data-tooltip-row`. The description then shows under
- * that element, or above it, so that it does not cover what the element shows beside the button, as the ribbon
- * shows the name of a group.
+ * that element, so that it does not cover what the element shows under the button, as the ribbon shows the name
+ * of a group.
  */
 export function Tooltip({ title, text, note, children }: TooltipProps) {
   const id = useId();
-  const anchor = useRef<HTMLSpanElement>(null);
-  const timer = useRef<number | undefined>(undefined);
-  const bubble = useRef<HTMLSpanElement>(null);
-  const pressed = useRef(false);
-  const [position, setPosition] = useState<Position | null>(null);
-
-  const show = () => {
-    // The anchor has no box of its own, so the place is taken from the element that it holds.
-    const element = anchor.current?.firstElementChild;
-    const description = bubble.current;
-    if (!element || !description) {
-      return;
-    }
-    const box = element.getBoundingClientRect();
-    const row = element.closest("[data-tooltip-row]")?.getBoundingClientRect();
-    // The clear strip reaches from the element to the description, so the pointer can cross it.
-    const under = Math.max(0, (row?.bottom ?? box.bottom) - box.bottom) + GAP;
-    const over = Math.max(0, box.top - (row?.top ?? box.top)) + GAP;
-    // The description keeps its size while it is not shown. Its height is taken without the strips.
-    const { left, top, above } = placeBubble(
-      { left: box.left, top: box.top - over, bottom: box.bottom + under },
-      { width: description.offsetWidth, height: description.clientHeight },
-      { width: window.innerWidth, height: window.innerHeight },
+  const element = useRef<HTMLElement>(null);
+  const [reach, setReach] = useState(0);
+  const sentences =
+    text === undefined && note === undefined ? null : (
+      <>
+        {text}
+        {note ? ` ${note}` : null}
+      </>
     );
-    setPosition(
-      above
-        ? { left, top, borderTopWidth: 0, borderBottomWidth: over }
-        : { left, top: box.bottom, borderTopWidth: under, borderBottomWidth: 0 },
-    );
-  };
-
-  const hide = () => {
-    window.clearTimeout(timer.current);
-    setPosition(null);
-  };
-
-  useEffect(() => () => window.clearTimeout(timer.current), []);
-
-  // The Escape key hides the description wherever the keyboard focus is, so that a user of the pointer can
-  // also hide it without moving the pointer.
-  useEffect(() => {
-    if (!position) {
-      return;
-    }
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        window.clearTimeout(timer.current);
-        setPosition(null);
-      }
-    };
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, [position]);
 
   return (
-    <span
-      ref={anchor}
-      className="tooltip-anchor"
-      onPointerEnter={() => {
-        timer.current = window.setTimeout(show, HOVER_DELAY);
-      }}
-      onPointerLeave={hide}
-      onPointerDown={() => {
-        pressed.current = true;
-        hide();
-      }}
-      onPointerUp={() => {
-        pressed.current = false;
-      }}
-      // The description shows when the keyboard brings the focus. It stays hidden when a click does, and when
-      // the focus returns to the element after a pane or a dialog that a click had opened is closed.
-      onFocus={(event) => {
-        if (!pressed.current && event.target.matches(":focus-visible")) {
-          show();
-        }
-      }}
-      onBlur={hide}
-    >
-      {children(id)}
-      <span ref={bubble} role="tooltip" className="tooltip" hidden={!position} style={position ?? undefined}>
-        <strong className="tooltip-title">{title}</strong>
-        {text === undefined && note === undefined ? null : (
-          <span id={id}>
-            {text}
-            {note ? ` ${note}` : null}
-          </span>
-        )}
-      </span>
+    <span className="tooltip-anchor">
+      <TooltipTrigger
+        delay={HOVER_DELAY}
+        closeDelay={LEAVE_DELAY}
+        onOpenChange={(open) => {
+          if (open) {
+            setReach(reachOfRow(element.current));
+          }
+        }}
+      >
+        <Focusable ref={element}>{children(id)}</Focusable>
+        <Bubble className="tooltip" offset={GAP + reach}>
+          <strong className="tooltip-title">{title}</strong>
+          {sentences ? <span>{sentences}</span> : null}
+        </Bubble>
+      </TooltipTrigger>
+      {sentences ? (
+        <span id={id} hidden>
+          {sentences}
+        </span>
+      ) : null}
     </span>
   );
 }

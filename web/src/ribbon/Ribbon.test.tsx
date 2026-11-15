@@ -1,7 +1,9 @@
-import { act, fireEvent, render, screen, within } from "@testing-library/react";
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, expect, test, vi } from "vitest";
-import { HOVER_DELAY } from "../shared/tooltip/Tooltip";
+import { restPointerOn, takePointerOff } from "../shared/tooltip/pointer";
 import { NOT_YET_AVAILABLE, reasonOf, Ribbon } from "./Ribbon";
 import type { RibbonTab } from "./types";
 
@@ -82,16 +84,24 @@ test("a finished button that lacks something is inactive, says what it lacks and
   render(<Ribbon tabs={TABS} actions={{ ready: { run, missing: "Select a layer in the Contents pane." } }} />);
   const ready = screen.getByRole("button", { name: "Ready" });
   expect(ready.getAttribute("aria-disabled")).toBe("true");
-  const tip = document.getElementById(ready.getAttribute("aria-describedby") ?? "")?.parentElement;
-  expect(tip?.textContent).toBe("ReadyDoes its work. Select a layer in the Contents pane.");
+  const sentences = document.getElementById(ready.getAttribute("aria-describedby") ?? "");
+  expect(sentences?.textContent).toBe("Does its work. Select a layer in the Contents pane.");
   await userEvent.click(ready);
   expect(run).not.toHaveBeenCalled();
 });
 
 test("the description of every button reads its name first and then its sentence", () => {
+  vi.useFakeTimers();
   render(<Ribbon tabs={TABS} actions={{ ready: { run: vi.fn() } }} />);
-  const tips = screen.getAllByRole("tooltip", { hidden: true });
-  expect(tips.map((tip) => [tip.firstElementChild?.tagName, tip.textContent])).toEqual([
+  const tips = ["Ready", "Later", "Collapse the ribbon"].map((name) => {
+    const button = screen.getByRole("button", { name });
+    restPointerOn(button);
+    const tip = screen.getByRole("tooltip");
+    const read = [tip.firstElementChild?.tagName, tip.textContent];
+    takePointerOff(button);
+    return read;
+  });
+  expect(tips).toEqual([
     ["STRONG", "ReadyDoes its work."],
     ["STRONG", "LaterWill do its work. Not yet available."],
     [
@@ -103,60 +113,44 @@ test("the description of every button reads its name first and then its sentence
 
 test("the description shows on keyboard focus and hides on the Escape key", async () => {
   render(<Ribbon tabs={TABS} actions={{ ready: { run: vi.fn() } }} />);
-  const group = screen.getByRole("group", { name: "Group" });
-  const [tip] = within(group).getAllByRole("tooltip", { hidden: true });
-  expect(tip?.hidden).toBe(true);
+  expect(screen.queryByRole("tooltip")).toBeNull();
   await userEvent.tab();
   await userEvent.tab();
   expect(document.activeElement).toBe(screen.getByRole("button", { name: "Ready" }));
-  expect(tip?.hidden).toBe(false);
-  expect(tip?.textContent).toBe("ReadyDoes its work.");
+  expect(screen.getByRole("tooltip").textContent).toBe("ReadyDoes its work.");
   await userEvent.keyboard("{Escape}");
-  expect(tip?.hidden).toBe(true);
+  expect(screen.queryByRole("tooltip")).toBeNull();
 });
 
 test("the description shows after the pointer rests on a button and hides when it leaves", () => {
   vi.useFakeTimers();
   render(<Ribbon tabs={TABS} actions={{}} />);
   const later = screen.getByRole("button", { name: "Later" });
-  const tip = document.getElementById(later.getAttribute("aria-describedby") ?? "")?.parentElement;
-  fireEvent.pointerEnter(later);
-  expect(tip?.hidden).toBe(true);
-  act(() => {
-    vi.advanceTimersByTime(HOVER_DELAY);
-  });
-  expect(tip?.hidden).toBe(false);
-  fireEvent.pointerLeave(later);
-  expect(tip?.hidden).toBe(true);
+  expect(screen.queryByRole("tooltip")).toBeNull();
+  restPointerOn(later);
+  expect(screen.getByRole("tooltip").textContent).toBe("LaterWill do its work. Not yet available.");
+  takePointerOff(later);
+  expect(screen.queryByRole("tooltip")).toBeNull();
 });
 
 test("the Escape key hides a description that the pointer opened, without keyboard focus on its button", () => {
   vi.useFakeTimers();
   render(<Ribbon tabs={TABS} actions={{}} />);
   const later = screen.getByRole("button", { name: "Later" });
-  const tip = document.getElementById(later.getAttribute("aria-describedby") ?? "")?.parentElement;
-  fireEvent.pointerEnter(later);
-  act(() => {
-    vi.advanceTimersByTime(HOVER_DELAY);
-  });
+  restPointerOn(later);
   expect(document.activeElement).toBe(document.body);
-  expect(tip?.hidden).toBe(false);
+  expect(screen.queryByRole("tooltip")).not.toBeNull();
   fireEvent.keyDown(document.body, { key: "Escape" });
-  expect(tip?.hidden).toBe(true);
+  expect(screen.queryByRole("tooltip")).toBeNull();
 });
 
-test("the description shows under the panel of the ribbon, with a clear strip from the button to it", async () => {
+test("the description shows under the panel of the ribbon, 4 pixels from it", () => {
+  vi.useFakeTimers();
   render(<Ribbon tabs={TABS} actions={{ ready: { run: vi.fn() } }} />);
-  const ready = screen.getByRole("button", { name: "Ready" });
-  vi.spyOn(ready, "getBoundingClientRect").mockReturnValue({ left: 10, bottom: 100 } as DOMRect);
-  vi.spyOn(screen.getByRole("tabpanel"), "getBoundingClientRect").mockReturnValue({ bottom: 120 } as DOMRect);
-  await userEvent.tab();
-  await userEvent.tab();
-  const tip = document.getElementById(ready.getAttribute("aria-describedby") ?? "")?.parentElement;
-  expect(tip?.hidden).toBe(false);
-  expect(tip?.style.left).toBe("10px");
-  expect(tip?.style.top).toBe("100px");
-  expect(tip?.style.borderTopWidth).toBe("24px");
+  // The page of the test gives every element the place 0, so the button ends at 0. The panel ends 20 pixels lower.
+  vi.spyOn(screen.getByRole("tabpanel"), "getBoundingClientRect").mockReturnValue({ bottom: 20 } as DOMRect);
+  restPointerOn(screen.getByRole("button", { name: "Ready" }));
+  expect(screen.getByRole("tooltip").style.top).toBe("24px");
 });
 
 // The tests of the keyboard use a first tab with two groups of buttons.
@@ -255,9 +249,7 @@ test("an unfinished button takes the focus from an arrow key and shows its descr
   const later = screen.getByRole("button", { name: "Later" });
   expect(document.activeElement).toBe(later);
   expect(later.getAttribute("aria-disabled")).toBe("true");
-  const tip = document.getElementById(later.getAttribute("aria-describedby") ?? "")?.parentElement;
-  expect(tip?.hidden).toBe(false);
-  expect(tip?.textContent).toBe("LaterWill do its work. Not yet available.");
+  expect(screen.getByRole("tooltip").textContent).toBe("LaterWill do its work. Not yet available.");
 });
 
 test("the down arrow key moves from a tab to the buttons, and the up arrow key back to the tab", async () => {
@@ -431,6 +423,11 @@ test("on a collapsed ribbon the down arrow key shows the groups and moves the fo
   await userEvent.keyboard("{ArrowLeft}{ArrowDown}");
   expect(focused()).toBe("button Ready");
   expect(screen.getByRole("group", { name: "Group" })).toBeDefined();
+  // The first Escape key hides the description of the button and reaches nothing else. The second one hides the
+  // groups.
+  await userEvent.keyboard("{Escape}");
+  expect(screen.queryByRole("tooltip")).toBeNull();
+  expect(screen.getByRole("group", { name: "Group" })).toBeDefined();
   await userEvent.keyboard("{Escape}");
   expect(screen.queryByRole("toolbar")).toBeNull();
   expect(focused()).toBe("tab First");
@@ -438,17 +435,13 @@ test("on a collapsed ribbon the down arrow key shows the groups and moves the fo
 
 test("the description of a button that an arrow key reaches shows under the panel of the ribbon", async () => {
   render(<Ribbon tabs={TWO_GROUPS} actions={{ ready: { run: vi.fn() } }} />);
-  const later = screen.getByRole("button", { name: "Later" });
-  vi.spyOn(later, "getBoundingClientRect").mockReturnValue({ left: 60, bottom: 100 } as DOMRect);
-  vi.spyOn(screen.getByRole("tabpanel"), "getBoundingClientRect").mockReturnValue({ bottom: 120 } as DOMRect);
+  // The page of the test gives the button a lower edge of 0. The panel ends 20 pixels lower.
+  vi.spyOn(screen.getByRole("tabpanel"), "getBoundingClientRect").mockReturnValue({ bottom: 20 } as DOMRect);
   await userEvent.tab();
   await userEvent.tab();
   await userEvent.keyboard("{ArrowRight}");
-  const tip = document.getElementById(later.getAttribute("aria-describedby") ?? "")?.parentElement;
-  expect(tip?.hidden).toBe(false);
-  expect(tip?.style.left).toBe("60px");
-  expect(tip?.style.top).toBe("100px");
-  expect(tip?.style.borderTopWidth).toBe("24px");
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: "Later" }));
+  expect(screen.getByRole("tooltip").style.top).toBe("24px");
 });
 
 test("the description shows under the groups that a collapsed ribbon shows for a while", async () => {
@@ -459,27 +452,23 @@ test("the description shows under the groups that a collapsed ribbon shows for a
   await userEvent.keyboard("{ArrowDown}");
   const ready = screen.getByRole("button", { name: "Ready" });
   expect(document.activeElement).toBe(ready);
-  const tip = document.getElementById(ready.getAttribute("aria-describedby") ?? "")?.parentElement;
-  expect(tip?.hidden).toBe(false);
-  // The simulated browser gives the button a bottom edge of 0, so the clear strip is 120 pixels and the gap of 4.
-  expect(tip?.style.borderTopWidth).toBe("124px");
+  // The page of the test gives the button a lower edge of 0, so the description stands 120 pixels and the gap of
+  // 4 pixels lower.
+  expect(screen.getByRole("tooltip").style.top).toBe("124px");
 });
 
 test("the description of the button that collapses the ribbon shows under the whole ribbon", async () => {
   const { container } = render(<Ribbon tabs={TWO_GROUPS} actions={{ ready: { run: vi.fn() } }} />);
   const collapse = screen.getByRole("button", { name: "Collapse the ribbon" });
-  vi.spyOn(collapse, "getBoundingClientRect").mockReturnValue({ left: 10, bottom: 28 } as DOMRect);
   const ribbon = container.firstElementChild;
   expect(ribbon?.className).toBe("ribbon");
+  // The page of the test gives the button a lower edge of 0. The ribbon ends 96 pixels lower.
   if (ribbon) {
-    vi.spyOn(ribbon, "getBoundingClientRect").mockReturnValue({ bottom: 124 } as DOMRect);
+    vi.spyOn(ribbon, "getBoundingClientRect").mockReturnValue({ bottom: 96 } as DOMRect);
   }
   await userEvent.tab();
   await userEvent.tab();
   await userEvent.tab();
   expect(document.activeElement).toBe(collapse);
-  const tip = document.getElementById(collapse.getAttribute("aria-describedby") ?? "")?.parentElement;
-  expect(tip?.hidden).toBe(false);
-  expect(tip?.style.top).toBe("28px");
-  expect(tip?.style.borderTopWidth).toBe("100px");
+  expect(screen.getByRole("tooltip").style.top).toBe("100px");
 });
