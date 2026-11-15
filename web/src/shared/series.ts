@@ -16,6 +16,15 @@ export interface Cell {
   latitude: number;
 }
 
+/**
+ * The reference point of a series whose values are relative to one, with the cell of the grid of the layers that
+ * holds it. The fields are those of `Reference` in `api/src/lynkeus/layers.py`.
+ */
+export interface Reference {
+  point: Point;
+  cell: Cell;
+}
+
 /** One date of a series: the value of one input layer. */
 export interface SeriesEntry {
   /** Date or dates of the layer, each as year-month-day: one date for an acquisition, two for a pair. */
@@ -53,11 +62,20 @@ export interface SeriesDescription {
   point: Point | null;
   /** The cell of the grid of the layers that holds the point. It is given when, and only when, `point` is. */
   cell: Cell | null;
+  /**
+   * The reference point of a series whose values are relative to one, with its cell, or null. Such a series is a
+   * series at a point, and it gives the product files of the pairs from which its values were computed.
+   */
+  reference: Reference | null;
   /** The smallest rectangle in longitude and latitude that holds the grid of the input layers. */
   area: Area;
   /** The dates of the series with their values, the earliest first. */
   entries: readonly SeriesEntry[];
-  /** Names of the product files used, in the order of `entries`. */
+  /**
+   * Names of the product files used, in the order of `entries`. A series relative to a reference point gives the
+   * files of the pairs from which its values were computed, the earliest pair first, at least one for each date
+   * after the first.
+   */
   inputs: readonly string[];
   /** Name of the layer inside each product, for example "HHHH". */
   layer: string;
@@ -75,6 +93,8 @@ export interface SeriesInputs {
   title: string;
   /** The point of the series, or no field for the whole area of the layers. */
   point?: Point;
+  /** The reference point of a series that is relative to one. Only Surface displacement, Series takes one. */
+  reference?: Point;
 }
 
 const ID = /^[a-z0-9]+(-[a-z0-9]+)*$/;
@@ -133,10 +153,16 @@ function datesKey(entry: SeriesEntry): string {
   return entry.dates.join(" ");
 }
 
+/** Tell whether a value is the reference point of a series: a point and the cell that holds it. */
+export function isReference(value: unknown): value is Reference {
+  return isRecord(value) && isPoint(value.point) && isCell(value.cell);
+}
+
 /**
  * Tell whether a value that the server sent is a series description. The checks are those that the server makes
- * on its own format: the point and the cell stand together, each entry has one product file, and the entries
- * have different dates, the earliest first.
+ * on its own format: the point and the cell stand together, a series relative to a reference point is a series
+ * at a point, each entry has one product file, or a series relative to a reference point has one for each date
+ * after the first at least, and the entries have different dates, the earliest first.
  */
 export function isSeriesDescription(value: unknown): value is SeriesDescription {
   if (!isRecord(value)) {
@@ -146,6 +172,7 @@ export function isSeriesDescription(value: unknown): value is SeriesDescription 
   const range = value.range ?? null;
   const point = value.point ?? null;
   const cell = value.cell ?? null;
+  const reference = value.reference ?? null;
   if (
     typeof id !== "string" ||
     !ID.test(id) ||
@@ -157,7 +184,7 @@ export function isSeriesDescription(value: unknown): value is SeriesDescription 
     entries.length === 0 ||
     !entries.every(isSeriesEntry) ||
     !Array.isArray(inputs) ||
-    inputs.length !== entries.length ||
+    (reference === null ? inputs.length !== entries.length : inputs.length < entries.length - 1) ||
     !inputs.every(isText)
   ) {
     return false;
@@ -169,6 +196,9 @@ export function isSeriesDescription(value: unknown): value is SeriesDescription 
     return false;
   }
   if (point === null ? cell !== null : !isPoint(point) || !isCell(cell)) {
+    return false;
+  }
+  if (reference !== null && (point === null || !isReference(reference))) {
     return false;
   }
   const keys = entries.map(datesKey);

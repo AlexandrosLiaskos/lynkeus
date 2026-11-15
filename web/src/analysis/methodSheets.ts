@@ -341,4 +341,41 @@ export const METHODS: Record<SheetTool, Method> = {
       },
     ],
   },
+  "displacement-series": {
+    title: "Surface displacement, Series",
+    rows: [
+      {
+        name: "What it shows",
+        text: "The movement of the ground at a point toward or away from the radar on each date of a network of pairs, counted from the first date and relative to a reference point that you choose.",
+      },
+      {
+        name: "Input",
+        text: "The Unwrapped phase and Connected components layers of 2 to 25 GUNW pairs of one track, direction and frame, whose pairs link all their dates. A point and a reference point, each given by its latitude and longitude.",
+      },
+      {
+        name: "Formula",
+        text: "In each pair the phase of the reference point is subtracted from that of the point, the small-baseline inversion with equal weights and the minimum-norm velocity gives the phase of each date, and `d = -wavelength / (4 * pi) * phase`.",
+      },
+      {
+        name: "Result",
+        text: "A series in metres, one value for each date, positive toward the radar and 0 on the first date. It is shown as a chart and a table, and it has no file.",
+      },
+      {
+        name: "How to read",
+        text: "Each value is the movement of the point since the first date minus that of the reference point, so choose the reference on ground that you take as stable, near the point and at a similar height. A pair in which the point has no reliable phase, or lies in another connected component than the reference, is left out at the point, and the pairs used are listed with the series.",
+      },
+      {
+        name: "Limits",
+        text: "The values are relative to the reference point and along the line of sight only, without a correction of the troposphere, the ionosphere or the solid Earth tides, and every pair has the same weight. The series of the test area mixes eight provisional pairs and one validated pair of the same major release, and whether they compare without a correction is not confirmed. The test area holds one chain of nine pairs, so no pair was redundant, and no ground with a known movement was compared.",
+      },
+      {
+        name: "Checked",
+        text: "At five points with one reference point of the test area (nine pairs, 23 Jun to 21 Oct 2026), the values differ by at most 0.000000013 m from those of MintPy 1.6.4 on the same layers, which computes in 32-bit numbers, and by at most 0.000000082 m on a made-up network of 17 pairs.",
+      },
+      {
+        name: "References",
+        text: "[Berardino et al. (2002)](https://doi.org/10.1109/TGRS.2002.803792) and [Yunjun et al. (2019)](https://doi.org/10.1016/j.cageo.2019.104331), cited and not read in full. [MintPy](https://github.com/insarlab/MintPy) 1.6.4, with its template of options. [NISAR L2 GUNW Product Specification, JPL D-102272 Rev E](https://nisar-docs.asf.alaska.edu/product-specification/).",
+      },
+    ],
+  },
 };

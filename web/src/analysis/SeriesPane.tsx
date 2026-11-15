@@ -4,10 +4,10 @@ import { formatAngle } from "../map/coordinates";
 import { EmptyState } from "../shared/empty/EmptyState";
 import { setPaneOpen } from "../shared/panes";
 import { PropertyList } from "../shared/properties/PropertyList";
-import type { SeriesDescription, SeriesEntry } from "../shared/series";
+import type { Cell, SeriesDescription, SeriesEntry } from "../shared/series";
 import { useStore } from "../shared/store";
 import { InfoPane } from "../shared/toolpane/InfoPane";
-import { daysWords } from "./series";
+import { daysWords, pairDatesOf } from "./series";
 import { SeriesChart } from "./SeriesChart";
 
 /** What the "i" beside the title of the pane says. */
@@ -18,9 +18,12 @@ export const NO_VALUE = "no value";
 
 const COUNT = new Intl.NumberFormat("en-GB");
 
-/** Write the value of an entry: two decimals for decibels, three for a quantity without unit, or "no value". */
+/**
+ * Write the value of an entry: two decimals for decibels, three for a quantity without unit and for metres (one
+ * millimetre), or "no value".
+ */
 export function valueWords(value: number | null, unit: string): string {
-  return value === null ? NO_VALUE : value.toFixed(unit === "1" ? 3 : 2).replace("-", "−");
+  return value === null ? NO_VALUE : value.toFixed(unit === "1" || unit === "m" ? 3 : 2).replace("-", "−");
 }
 
 /** Write a number of cells with its thousands apart, as "14,316,415". */
@@ -42,6 +45,9 @@ export function placeWords(series: SeriesDescription): string {
 
 /** State how the value of a date was made from the cells of its layer. */
 export function reductionWords(series: SeriesDescription): string {
+  if (series.reference) {
+    return "The movement at the cell of the point since the first date, relative to the cell of the reference point";
+  }
   if (series.point) {
     return "The value of the cell that holds the point";
   }
@@ -59,12 +65,39 @@ export function tableRows(series: SeriesDescription): [string, string, string][]
   ]);
 }
 
+/** Write a cell of the grid of the layers with its row, its column and its centre. */
+function cellWords(cell: Cell): string {
+  return `Row ${String(cell.row)}, column ${String(cell.column)}, with its centre at ${formatAngle(cell.latitude, "latitude")}, ${formatAngle(cell.longitude, "longitude")}`;
+}
+
+/**
+ * The rows of the product files of a series: each file under the date or the pair of its entry, or, for a series
+ * relative to a reference point, under the pair of dates that the name of the file states.
+ */
+export function fileRows(series: SeriesDescription): { id: string; name: string; value: string; copy: true }[] {
+  if (series.reference) {
+    return series.inputs.map((file) => ({
+      id: file,
+      name: daysWords(pairDatesOf(file)) || "Pair",
+      value: file,
+      copy: true,
+    }));
+  }
+  return series.entries.map((entry, index) => ({
+    id: series.inputs[index] ?? String(index),
+    name: daysWords(entry.dates),
+    value: series.inputs[index] ?? "",
+    copy: true,
+  }));
+}
+
 /**
  * One series: its name, its quantity with the unit, its chart, the table of its entries, which gives the same
- * values as text, and the facts of its description as a list of names and values.
+ * values as text, and the facts of its description as a list of names and values. A series relative to a
+ * reference point states the reference point and its cell after the point and its cell.
  */
 export function SeriesView({ series }: { series: SeriesDescription }) {
-  const { cell } = series;
+  const { cell, reference } = series;
   return (
     <div className="series">
       <p className="item-title">{series.title}</p>
@@ -103,8 +136,21 @@ export function SeriesView({ series }: { series: SeriesDescription }) {
                 ? [
                     {
                       name: "Cell",
-                      value: `Row ${String(cell.row)}, column ${String(cell.column)}, with its centre at ${formatAngle(cell.latitude, "latitude")}, ${formatAngle(cell.longitude, "longitude")}`,
+                      value: cellWords(cell),
                       info: "The cell of the grid of the layers that holds the point. Rows and columns are counted from 0.",
+                    },
+                  ]
+                : []),
+              ...(reference
+                ? [
+                    {
+                      name: "Reference point",
+                      value: `${formatAngle(reference.point.latitude, "latitude")}, ${formatAngle(reference.point.longitude, "longitude")}`,
+                    },
+                    {
+                      name: "Reference cell",
+                      value: cellWords(reference.cell),
+                      info: "The cell of the grid of the layers that holds the reference point. Rows and columns are counted from 0.",
                     },
                   ]
                 : []),
@@ -116,12 +162,7 @@ export function SeriesView({ series }: { series: SeriesDescription }) {
           },
           {
             title: "Product files",
-            rows: series.entries.map((entry, index) => ({
-              id: series.inputs[index] ?? String(index),
-              name: daysWords(entry.dates),
-              value: series.inputs[index] ?? "",
-              copy: true,
-            })),
+            rows: fileRows(series),
           },
         ]}
       />

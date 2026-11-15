@@ -115,6 +115,7 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   from the ISO XML file of the product.
 - The sources of Surface displacement, One pair in the dialog Sources of the Help tab.
 - The analysis tools Backscatter, Series and Coherence, Series: the values of many dates against time, at a point or for the area, shown as a chart with a table in the pane Series and listed under Series in the Catalog pane.
+- The analysis tool Surface displacement, Series: the movement of the ground at a point over many dates, relative to a reference point that the visitor gives, from a network of GUNW pairs, with its form in the tool pane, its method sheet and its research note.
 
 ### Changed
 

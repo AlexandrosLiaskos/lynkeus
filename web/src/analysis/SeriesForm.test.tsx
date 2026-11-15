@@ -15,9 +15,16 @@ import { resetPanes } from "../shared/panes";
 import type { ServerName } from "../shared/servers";
 import { rowOf } from "./methods";
 import { METHODS } from "./methodSheets";
-import { ANGLE_FAULTS, NO_LAYERS, SERIES_TOOLS, type SeriesTool } from "./series";
-import { ABOUT_SERIES, ownServerSentence, RECEIVE_SERIES, SeriesForm, seriesRunOf } from "./SeriesForm";
-import { coherence, laterTerm, term } from "./testLayers";
+import {
+  ANGLE_FAULTS,
+  NO_LAYERS,
+  noComponentsSentence,
+  REFERENCE_FAULTS,
+  SERIES_TOOLS,
+  type SeriesTool,
+} from "./series";
+import { ABOUT_RELATIVE, ABOUT_SERIES, ownServerSentence, RECEIVE_SERIES, SeriesForm, seriesRunOf } from "./SeriesForm";
+import { coherence, components, GUNW_SEP, laterTerm, phase, term } from "./testLayers";
 import type { Started } from "./ToolForm";
 
 let server: StandIn;
@@ -312,4 +319,69 @@ test("a job that the form started is followed to its end, and the foot offers th
   expect(screen.getByText("The series is ready. It is under Series in the Catalog pane.")).toBeDefined();
   await userEvent.click(screen.getByRole("button", { name: "Show the series" }));
   expect(shownSeriesStore.get()).toBe(series().id);
+});
+
+/** The layers Unwrapped phase and Connected components of two pairs of the pilot area. */
+const PHASE_SEP = phase({
+  id: "phase-sep",
+  title: "Unwrapped phase HH, 27 Sep 2026 to 9 Oct 2026",
+  dates: ["2026-09-27", "2026-10-09"],
+  inputs: [GUNW_SEP],
+});
+const LABELS_SEP = components({
+  id: "labels-sep",
+  title: "Connected components HH, 27 Sep 2026 to 9 Oct 2026",
+  dates: ["2026-09-27", "2026-10-09"],
+  inputs: [GUNW_SEP],
+});
+
+test("the explanations of the form of Surface displacement, Series are one sentence each", () => {
+  for (const sentence of Object.values(ABOUT_RELATIVE)) {
+    expect(sentence.endsWith(".")).toBe(true);
+    expect(sentence).not.toMatch(/\. [A-Z]/);
+  }
+  expect(RECEIVE_SERIES["displacement-series"]).toBe(
+    "Get the Unwrapped phase and Connected components layers of two or more GUNW pairs of one track and frame.",
+  );
+});
+
+test("the form of Surface displacement, Series takes the pairs, a point and a reference point, and has no place", async () => {
+  show("displacement-series", [phase(), components(), PHASE_SEP, LABELS_SEP]);
+  expect(boxes()).toEqual([
+    ["Unwrapped phase HH, 27 Sep 2026 to 9 Oct 2026", true],
+    ["Unwrapped phase HH, 9 Oct 2026 to 21 Oct 2026", true],
+  ]);
+  expect(screen.queryByLabelText("Whole area")).toBeNull();
+  expect(screen.queryByLabelText("At a point")).toBeNull();
+  const title = "Series of surface displacement HH, 27 Sep 2026 to 21 Oct 2026";
+  expect(screen.getByLabelText<HTMLInputElement>("Series name").value).toBe(title);
+  expect(missing()).toBe(ANGLE_FAULTS.latitude);
+  await userEvent.type(screen.getByLabelText("Latitude"), "42.8126");
+  await userEvent.type(screen.getByLabelText("Longitude"), "-70.8726");
+  // The reference point is still missing.
+  expect(missing()).toBe(REFERENCE_FAULTS.latitude);
+  await userEvent.type(screen.getByLabelText("Reference latitude"), "42.7761");
+  await userEvent.type(screen.getByLabelText("Reference longitude"), "71.0772 W");
+  expect(missing()).toBeNull();
+  await userEvent.click(runButton());
+  expect(server.sent("POST")).toEqual([
+    {
+      method: "POST",
+      address: "/api/processes/displacement-series/execution",
+      content: {
+        inputs: {
+          inputs: ["phase-sep", "labels-sep", "phase-hh", "components-hh"],
+          title,
+          point: { longitude: -70.8726, latitude: 42.8126 },
+          reference: { longitude: -71.0772, latitude: 42.7761 },
+        },
+      },
+    },
+  ]);
+});
+
+test("the form of Surface displacement, Series states a pair whose Connected components layer is missing", () => {
+  show("displacement-series", [phase(), PHASE_SEP, LABELS_SEP]);
+  expect(missing()).toBe(noComponentsSentence(phase()));
+  expect(runButton().getAttribute("aria-disabled")).toBe("true");
 });

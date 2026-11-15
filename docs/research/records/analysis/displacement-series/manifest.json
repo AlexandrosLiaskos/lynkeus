@@ -1,0 +1,132 @@
+{
+ "dates": [
+  "20260623",
+  "20260705",
+  "20260717",
+  "20260810",
+  "20260822",
+  "20260903",
+  "20260915",
+  "20260927",
+  "20261009",
+  "20261021"
+ ],
+ "pairs": [
+  {
+   "key": "0623_0705",
+   "date12": "20260623_20260705",
+   "phase": "gunw-unwrappedinterferogram-hh-unwrappedphase-20260623-20260705.tif",
+   "components": "gunw-unwrappedinterferogram-hh-connectedcomponents-20260623-20260705.tif",
+   "frequency": 1239000000.0
+  },
+  {
+   "key": "0705_0717",
+   "date12": "20260705_20260717",
+   "phase": "gunw-unwrappedinterferogram-hh-unwrappedphase-20260705-20260717.tif",
+   "components": "gunw-unwrappedinterferogram-hh-connectedcomponents-20260705-20260717.tif",
+   "frequency": 1239000000.0
+  },
+  {
+   "key": "0717_0810",
+   "date12": "20260717_20260810",
+   "phase": "gunw-unwrappedinterferogram-hh-unwrappedphase-20260717-20260810.tif",
+   "components": "gunw-unwrappedinterferogram-hh-connectedcomponents-20260717-20260810.tif",
+   "frequency": 1239000000.0
+  },
+  {
+   "key": "0810_0822",
+   "date12": "20260810_20260822",
+   "phase": "gunw-unwrappedinterferogram-hh-unwrappedphase-20260810-20260822.tif",
+   "components": "gunw-unwrappedinterferogram-hh-connectedcomponents-20260810-20260822.tif",
+   "frequency": 1239000000.0
+  },
+  {
+   "key": "0822_0903",
+   "date12": "20260822_20260903",
+   "phase": "gunw-unwrappedinterferogram-hh-unwrappedphase-20260822-20260903.tif",
+   "components": "gunw-unwrappedinterferogram-hh-connectedcomponents-20260822-20260903.tif",
+   "frequency": 1239000000.0
+  },
+  {
+   "key": "0903_0915",
+   "date12": "20260903_20260915",
+   "phase": "gunw-unwrappedinterferogram-hh-unwrappedphase-20260903-20260915.tif",
+   "components": "gunw-unwrappedinterferogram-hh-connectedcomponents-20260903-20260915.tif",
+   "frequency": 1239000000.0
+  },
+  {
+   "key": "0915_0927",
+   "date12": "20260915_20260927",
+   "phase": "gunw-unwrappedinterferogram-hh-unwrappedphase-20260915-20260927.tif",
+   "components": "gunw-unwrappedinterferogram-hh-connectedcomponents-20260915-20260927.tif",
+   "frequency": 1239000000.0
+  },
+  {
+   "key": "0927_1009",
+   "date12": "20260927_20261009",
+   "phase": "gunw-unwrappedinterferogram-hh-unwrappedphase-20260927-20261009.tif",
+   "components": "gunw-unwrappedinterferogram-hh-connectedcomponents-20260927-20261009.tif",
+   "frequency": 1239000000.0
+  },
+  {
+   "key": "1009_1021",
+   "date12": "20261009_20261021",
+   "phase": "gunw-unwrappedinterferogram-hh-unwrappedphase-20261009-20261021.tif",
+   "components": "gunw-unwrappedinterferogram-hh-connectedcomponents-20261009-20261021.tif",
+   "frequency": 1239000000.0
+  }
+ ],
+ "grid": {
+  "crs": "EPSG:32619",
+  "transform": [
+   80.0,
+   0.0,
+   319520.0,
+   0.0,
+   -80.0,
+   4757600.0
+  ],
+  "width": 471,
+  "height": 496
+ },
+ "reference": [
+  244,
+  131
+ ],
+ "reference_point": {
+  "longitude": -71.0772,
+  "latitude": 42.7761
+ },
+ "points": {
+  "p1": [
+   214,
+   210
+  ],
+  "p2": [
+   354,
+   311
+  ],
+  "p3": [
+   417,
+   104
+  ],
+  "p4": [
+   78,
+   407
+  ],
+  "p5": [
+   198,
+   342
+  ]
+ },
+ "demos": {
+  "q1": [
+   213,
+   210
+  ],
+  "r0": [
+   246,
+   132
+  ]
+ }
+}

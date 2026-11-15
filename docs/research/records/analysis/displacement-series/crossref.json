@@ -1,0 +1,94 @@
+{
+ "read": "15 Nov 2026",
+ "address": "https://api.crossref.org/works/<DOI>",
+ "works": {
+  "10.1109/TGRS.2002.803792": {
+   "title": [
+    "A new algorithm for surface deformation monitoring based on small baseline differential SAR interferograms"
+   ],
+   "container-title": [
+    "IEEE Transactions on Geoscience and Remote Sensing"
+   ],
+   "volume": "40",
+   "issue": "11",
+   "page": "2375-2383",
+   "article-number": null,
+   "publisher": "Institute of Electrical and Electronics Engineers (IEEE)",
+   "license": null,
+   "author": [
+    "Berardino, P.",
+    "Fornaro, G.",
+    "Lanari, R.",
+    "Sansosti, E."
+   ],
+   "issued": {
+    "date-parts": [
+     [
+      2002,
+      11
+     ]
+    ]
+   }
+  },
+  "10.1016/j.cageo.2019.104331": {
+   "title": [
+    "Small baseline InSAR time series analysis: Unwrapping error correction and noise reduction"
+   ],
+   "container-title": [
+    "Computers &amp; Geosciences"
+   ],
+   "volume": "133",
+   "issue": null,
+   "page": "104331",
+   "article-number": "104331",
+   "publisher": "Elsevier BV",
+   "license": [
+    {
+     "start": {
+      "date-parts": [
+       [
+        2019,
+        12,
+        1
+       ]
+      ],
+      "date-time": "2019-12-01T00:00:00Z",
+      "timestamp": 1575158400000
+     },
+     "content-version": "tdm",
+     "delay-in-days": 0,
+     "URL": "https://www.elsevier.com/tdm/userlicense/1.0/"
+    },
+    {
+     "start": {
+      "date-parts": [
+       [
+        2019,
+        12,
+        1
+       ]
+      ],
+      "date-time": "2019-12-01T00:00:00Z",
+      "timestamp": 1575158400000
+     },
+     "content-version": "tdm",
+     "delay-in-days": 0,
+     "URL": "https://www.elsevier.com/legal/tdmrep-license"
+    }
+   ],
+   "author": [
+    "Yunjun, Zhang",
+    "Fattahi, Heresh",
+    "Amelung, Falk"
+   ],
+   "issued": {
+    "date-parts": [
+     [
+      2019,
+      12
+     ]
+    ]
+   }
+  }
+ }
+}

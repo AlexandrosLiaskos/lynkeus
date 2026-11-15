@@ -2,12 +2,13 @@ import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, test } from "vitest";
 import { resetSeries, SERIES_PANE, seriesStore, showSeries } from "../data/series";
-import { pairSeries, series, seriesItem } from "../data/testSeries";
+import { displacementSeries, pairSeries, series, seriesItem } from "../data/testSeries";
 import { dockStore, resetDock } from "../shared/dock/dock";
 import { panesStore, resetPanes } from "../shared/panes";
 import { FIRST_WIDTH, FRAME, SeriesChart } from "./SeriesChart";
 import {
   cellsWords,
+  fileRows,
   NO_VALUE,
   ofPairs,
   placeWords,
@@ -193,4 +194,47 @@ test("when the series has left the session, the pane says how another one is cho
   panesStore.set({ ...panesStore.get(), catalog: { ...panesStore.get().catalog, open: false } });
   await userEvent.click(within(pane).getByRole("button", { name: "Show the Catalog pane" }));
   expect(panesStore.get().catalog.open).toBe(true);
+});
+
+test("a series relative to a reference point states the reference and lists the files of its pairs", () => {
+  const relative = displacementSeries();
+  render(<SeriesView series={relative} />);
+  const table = screen.getByRole("table", { name: `Values of the series ${relative.title}` });
+  expect(
+    within(table)
+      .getAllByRole("columnheader")
+      .map((head) => head.textContent),
+  ).toEqual(["Date", "Value (m)", "Cells"]);
+  const rows = rowsOf(table);
+  expect(rows).toHaveLength(10);
+  expect(rows[0]).toEqual(["23 Jun 2026", "0.000", "1"]);
+  expect(rows[1]).toEqual(["5 Jul 2026", "0.057", "1"]);
+  expect(rows[9]).toEqual(["21 Oct 2026", "−0.033", "1"]);
+  expect(valueWords(-0.016184734606434117, "m")).toBe("−0.016");
+  expect(valueOf("Place")).toBe("At the point 42.81260° N, 70.87260° W");
+  expect(valueOf("Reference point")).toBe("42.77610° N, 71.07720° W");
+  expect(valueOf("Reference cell")).toContain("Row 244, column 131, with its centre at");
+  expect(valueOf("Value of a date")).toBe(
+    "The movement at the cell of the point since the first date, relative to the cell of the reference point",
+  );
+  expect(reductionWords(relative)).toBe(valueOf("Value of a date"));
+  expect(fileRows(relative).map(({ name }) => name)).toEqual([
+    "23 Jun 2026 to 5 Jul 2026",
+    "5 Jul 2026 to 17 Jul 2026",
+    "17 Jul 2026 to 10 Aug 2026",
+    "10 Aug 2026 to 22 Aug 2026",
+    "22 Aug 2026 to 3 Sep 2026",
+    "3 Sep 2026 to 15 Sep 2026",
+    "15 Sep 2026 to 27 Sep 2026",
+    "27 Sep 2026 to 9 Oct 2026",
+    "9 Oct 2026 to 21 Oct 2026",
+  ]);
+  expect(valueOf("17 Jul 2026 to 10 Aug 2026")).toBe(relative.inputs[2]);
+  // A series that is not relative to a reference point names each file by the date of its entry.
+  expect(fileRows(series()).map(({ name }) => name)).toEqual([
+    "27 Sep 2026",
+    "9 Oct 2026",
+    "21 Oct 2026",
+    "2 Nov 2026",
+  ]);
 });

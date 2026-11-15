@@ -1,0 +1,801 @@
+{
+ "made": "15 Nov 2026",
+ "what": "The layers unwrappedPhase and connectedComponents of the nine GUNW pairs of the pilot area, received by a private copy of the web service with the process get-layer (commit fef2618 of main, image built from api/), clipped to the box -71.20, 42.60, -70.75, 42.95",
+ "started": "2026-11-15T18:47:05Z",
+ "ended": "2026-11-15T18:59:36Z",
+ "signed_in": true,
+ "layers": {
+  "phase_0623_0705": {
+   "inputs": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_023_141_D_067_024_4000_SH_20260623T234333_20260623T234408_20260705T234333_20260705T234408_P05023_N_F_J_001",
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T18:47:07Z",
+   "ended": "2026-11-15T18:48:35Z",
+   "status": "successful",
+   "job": "abfa6e3cd5064e5c64e745d77079cb7a",
+   "message": "The layer is ready.",
+   "description": {
+    "id": "91c019fa36814c7d3338c54f5c203d72",
+    "title": "Unwrapped phase HH, 23 Jun 2026 to 5 Jul 2026",
+    "kind": "layer",
+    "url": "/files/91c019fa36814c7d3338c54f5c203d72/gunw-unwrappedinterferogram-hh-unwrappedphase-20260623-20260705.tif",
+    "quantity": "Unwrapped interferometric phase, HH",
+    "unit": "rad",
+    "range": [
+     -7.6936516761779785,
+     7.6936516761779785
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-06-23",
+     "2026-07-05"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_023_141_D_067_024_4000_SH_20260623T234333_20260623T234408_20260705T234333_20260705T234408_P05023_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "ends": null,
+    "frequency": 1239000000.0,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/91c019fa36814c7d3338c54f5c203d72/gunw-unwrappedinterferogram-hh-unwrappedphase-20260623-20260705.json"
+   }
+  },
+  "comp_0623_0705": {
+   "inputs": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_023_141_D_067_024_4000_SH_20260623T234333_20260623T234408_20260705T234333_20260705T234408_P05023_N_F_J_001",
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T18:47:07Z",
+   "ended": "2026-11-15T18:48:26Z",
+   "status": "successful",
+   "job": "e6441d00205296352843c0f7da93fa8b",
+   "message": "The layer is ready.",
+   "description": {
+    "id": "a4d300455e7a08515aacf4bc0622d755",
+    "title": "Connected components HH, 23 Jun 2026 to 5 Jul 2026",
+    "kind": "layer",
+    "url": "/files/a4d300455e7a08515aacf4bc0622d755/gunw-unwrappedinterferogram-hh-connectedcomponents-20260623-20260705.tif",
+    "quantity": "Connected component of the phase unwrapping, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "tab10",
+    "dates": [
+     "2026-06-23",
+     "2026-07-05"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_023_141_D_067_024_4000_SH_20260623T234333_20260623T234408_20260705T234333_20260705T234408_P05023_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "ends": null,
+    "frequency": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/a4d300455e7a08515aacf4bc0622d755/gunw-unwrappedinterferogram-hh-connectedcomponents-20260623-20260705.json"
+   }
+  },
+  "phase_0705_0717": {
+   "inputs": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_024_141_D_067_025_4000_SH_20260705T234333_20260705T234408_20260717T234332_20260717T234407_P05023_N_F_J_001",
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T18:47:07Z",
+   "ended": "2026-11-15T18:49:28Z",
+   "status": "successful",
+   "job": "6a51babf82906e8078ceba80706d3f84",
+   "message": "The layer is ready.",
+   "description": {
+    "id": "54c0e94bbac3cbbd4326ce7f474ad635",
+    "title": "Unwrapped phase HH, 5 Jul 2026 to 17 Jul 2026",
+    "kind": "layer",
+    "url": "/files/54c0e94bbac3cbbd4326ce7f474ad635/gunw-unwrappedinterferogram-hh-unwrappedphase-20260705-20260717.tif",
+    "quantity": "Unwrapped interferometric phase, HH",
+    "unit": "rad",
+    "range": [
+     -15.918170928955078,
+     15.918170928955078
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-07-05",
+     "2026-07-17"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_024_141_D_067_025_4000_SH_20260705T234333_20260705T234408_20260717T234332_20260717T234407_P05023_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "ends": null,
+    "frequency": 1239000000.0,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/54c0e94bbac3cbbd4326ce7f474ad635/gunw-unwrappedinterferogram-hh-unwrappedphase-20260705-20260717.json"
+   }
+  },
+  "comp_0705_0717": {
+   "inputs": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_024_141_D_067_025_4000_SH_20260705T234333_20260705T234408_20260717T234332_20260717T234407_P05023_N_F_J_001",
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T18:47:07Z",
+   "ended": "2026-11-15T18:49:50Z",
+   "status": "successful",
+   "job": "c8e1d15bcc828fa1d1b9cd11fc0e912c",
+   "message": "The layer is ready.",
+   "description": {
+    "id": "233cc92e295d717387620e5a316bbbb5",
+    "title": "Connected components HH, 5 Jul 2026 to 17 Jul 2026",
+    "kind": "layer",
+    "url": "/files/233cc92e295d717387620e5a316bbbb5/gunw-unwrappedinterferogram-hh-connectedcomponents-20260705-20260717.tif",
+    "quantity": "Connected component of the phase unwrapping, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "tab10",
+    "dates": [
+     "2026-07-05",
+     "2026-07-17"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_024_141_D_067_025_4000_SH_20260705T234333_20260705T234408_20260717T234332_20260717T234407_P05023_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "ends": null,
+    "frequency": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/233cc92e295d717387620e5a316bbbb5/gunw-unwrappedinterferogram-hh-connectedcomponents-20260705-20260717.json"
+   }
+  },
+  "phase_0717_0810": {
+   "inputs": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_025_141_D_067_027_4000_SH_20260717T234332_20260717T234407_20260810T234331_20260810T234406_P05023_N_F_J_001",
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T18:49:50Z",
+   "ended": "2026-11-15T18:51:35Z",
+   "status": "successful",
+   "job": "27ed56fbb595aa6c3ebeab9532bce71a",
+   "message": "The layer is ready.",
+   "description": {
+    "id": "cf9c7da80b925ae84ada52d847ccfab5",
+    "title": "Unwrapped phase HH, 17 Jul 2026 to 10 Aug 2026",
+    "kind": "layer",
+    "url": "/files/cf9c7da80b925ae84ada52d847ccfab5/gunw-unwrappedinterferogram-hh-unwrappedphase-20260717-20260810.tif",
+    "quantity": "Unwrapped interferometric phase, HH",
+    "unit": "rad",
+    "range": [
+     -2.8121016025543213,
+     2.8121016025543213
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-07-17",
+     "2026-08-10"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_025_141_D_067_027_4000_SH_20260717T234332_20260717T234407_20260810T234331_20260810T234406_P05023_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "ends": null,
+    "frequency": 1239000000.0,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/cf9c7da80b925ae84ada52d847ccfab5/gunw-unwrappedinterferogram-hh-unwrappedphase-20260717-20260810.json"
+   }
+  },
+  "comp_0717_0810": {
+   "inputs": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_025_141_D_067_027_4000_SH_20260717T234332_20260717T234407_20260810T234331_20260810T234406_P05023_N_F_J_001",
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T18:49:50Z",
+   "ended": "2026-11-15T18:51:22Z",
+   "status": "successful",
+   "job": "1d606c07f458f07ba148a885e0299bd2",
+   "message": "The layer is ready.",
+   "description": {
+    "id": "d7f6ea6b68065a5583ceeae82cdfd2ca",
+    "title": "Connected components HH, 17 Jul 2026 to 10 Aug 2026",
+    "kind": "layer",
+    "url": "/files/d7f6ea6b68065a5583ceeae82cdfd2ca/gunw-unwrappedinterferogram-hh-connectedcomponents-20260717-20260810.tif",
+    "quantity": "Connected component of the phase unwrapping, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "tab10",
+    "dates": [
+     "2026-07-17",
+     "2026-08-10"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_025_141_D_067_027_4000_SH_20260717T234332_20260717T234407_20260810T234331_20260810T234406_P05023_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "ends": null,
+    "frequency": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/d7f6ea6b68065a5583ceeae82cdfd2ca/gunw-unwrappedinterferogram-hh-connectedcomponents-20260717-20260810.json"
+   }
+  },
+  "phase_0810_0822": {
+   "inputs": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001",
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T18:49:50Z",
+   "ended": "2026-11-15T18:52:14Z",
+   "status": "successful",
+   "job": "0bd8310d696571b83ac92ccc8ee56234",
+   "message": "The layer is ready.",
+   "description": {
+    "id": "3e99f437cd5f87adabab8743ec9c4219",
+    "title": "Unwrapped phase HH, 10 Aug 2026 to 22 Aug 2026",
+    "kind": "layer",
+    "url": "/files/3e99f437cd5f87adabab8743ec9c4219/gunw-unwrappedinterferogram-hh-unwrappedphase-20260810-20260822.tif",
+    "quantity": "Unwrapped interferometric phase, HH",
+    "unit": "rad",
+    "range": [
+     -20.780746459960938,
+     20.780746459960938
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-08-10",
+     "2026-08-22"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "ends": null,
+    "frequency": 1239000000.0,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/3e99f437cd5f87adabab8743ec9c4219/gunw-unwrappedinterferogram-hh-unwrappedphase-20260810-20260822.json"
+   }
+  },
+  "comp_0810_0822": {
+   "inputs": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001",
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T18:49:50Z",
+   "ended": "2026-11-15T18:52:38Z",
+   "status": "successful",
+   "job": "a37eb376e2bcae3b7e5664087c110949",
+   "message": "The layer is ready.",
+   "description": {
+    "id": "6e27a5792c6a75485081122f1c4dd053",
+    "title": "Connected components HH, 10 Aug 2026 to 22 Aug 2026",
+    "kind": "layer",
+    "url": "/files/6e27a5792c6a75485081122f1c4dd053/gunw-unwrappedinterferogram-hh-connectedcomponents-20260810-20260822.tif",
+    "quantity": "Connected component of the phase unwrapping, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "tab10",
+    "dates": [
+     "2026-08-10",
+     "2026-08-22"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "ends": null,
+    "frequency": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/6e27a5792c6a75485081122f1c4dd053/gunw-unwrappedinterferogram-hh-connectedcomponents-20260810-20260822.json"
+   }
+  },
+  "phase_0822_0903": {
+   "inputs": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_028_141_D_067_029_4000_SH_20260822T234330_20260822T234405_20260903T234330_20260903T234405_P05023_N_F_J_001",
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T18:52:38Z",
+   "ended": "2026-11-15T18:53:59Z",
+   "status": "successful",
+   "job": "1d64e938dfa72404ae26c8bcbf41ffde",
+   "message": "The layer is ready.",
+   "description": {
+    "id": "22667544c81a2ca85b4f37dbfbb15011",
+    "title": "Unwrapped phase HH, 22 Aug 2026 to 3 Sep 2026",
+    "kind": "layer",
+    "url": "/files/22667544c81a2ca85b4f37dbfbb15011/gunw-unwrappedinterferogram-hh-unwrappedphase-20260822-20260903.tif",
+    "quantity": "Unwrapped interferometric phase, HH",
+    "unit": "rad",
+    "range": [
+     -11.089272499084473,
+     11.089272499084473
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-08-22",
+     "2026-09-03"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_028_141_D_067_029_4000_SH_20260822T234330_20260822T234405_20260903T234330_20260903T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "ends": null,
+    "frequency": 1239000000.0,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/22667544c81a2ca85b4f37dbfbb15011/gunw-unwrappedinterferogram-hh-unwrappedphase-20260822-20260903.json"
+   }
+  },
+  "comp_0822_0903": {
+   "inputs": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_028_141_D_067_029_4000_SH_20260822T234330_20260822T234405_20260903T234330_20260903T234405_P05023_N_F_J_001",
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T18:52:38Z",
+   "ended": "2026-11-15T18:53:55Z",
+   "status": "successful",
+   "job": "80347f77d8c5aae4183b5a301624bb54",
+   "message": "The layer is ready.",
+   "description": {
+    "id": "0e1745af02e6590fc2b6954360a1e104",
+    "title": "Connected components HH, 22 Aug 2026 to 3 Sep 2026",
+    "kind": "layer",
+    "url": "/files/0e1745af02e6590fc2b6954360a1e104/gunw-unwrappedinterferogram-hh-connectedcomponents-20260822-20260903.tif",
+    "quantity": "Connected component of the phase unwrapping, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "tab10",
+    "dates": [
+     "2026-08-22",
+     "2026-09-03"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_028_141_D_067_029_4000_SH_20260822T234330_20260822T234405_20260903T234330_20260903T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "ends": null,
+    "frequency": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/0e1745af02e6590fc2b6954360a1e104/gunw-unwrappedinterferogram-hh-connectedcomponents-20260822-20260903.json"
+   }
+  },
+  "phase_0903_0915": {
+   "inputs": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_029_141_D_067_030_4000_SH_20260903T234330_20260903T234405_20260915T234330_20260915T234405_P05023_N_F_J_001",
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T18:52:39Z",
+   "ended": "2026-11-15T18:54:58Z",
+   "status": "successful",
+   "job": "a1dfe9197b18b130c6469d56bdfaed28",
+   "message": "The layer is ready.",
+   "description": {
+    "id": "491a583799db19bfeef527652478d9dc",
+    "title": "Unwrapped phase HH, 3 Sep 2026 to 15 Sep 2026",
+    "kind": "layer",
+    "url": "/files/491a583799db19bfeef527652478d9dc/gunw-unwrappedinterferogram-hh-unwrappedphase-20260903-20260915.tif",
+    "quantity": "Unwrapped interferometric phase, HH",
+    "unit": "rad",
+    "range": [
+     -2.0050697326660156,
+     2.0050697326660156
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-09-03",
+     "2026-09-15"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_029_141_D_067_030_4000_SH_20260903T234330_20260903T234405_20260915T234330_20260915T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "ends": null,
+    "frequency": 1239000000.0,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/491a583799db19bfeef527652478d9dc/gunw-unwrappedinterferogram-hh-unwrappedphase-20260903-20260915.json"
+   }
+  },
+  "comp_0903_0915": {
+   "inputs": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_029_141_D_067_030_4000_SH_20260903T234330_20260903T234405_20260915T234330_20260915T234405_P05023_N_F_J_001",
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T18:52:39Z",
+   "ended": "2026-11-15T18:55:24Z",
+   "status": "successful",
+   "job": "3d169c8d843495d4c4dbdd84a48fa339",
+   "message": "The layer is ready.",
+   "description": {
+    "id": "823009032281cc3fa802f1491047c4cf",
+    "title": "Connected components HH, 3 Sep 2026 to 15 Sep 2026",
+    "kind": "layer",
+    "url": "/files/823009032281cc3fa802f1491047c4cf/gunw-unwrappedinterferogram-hh-connectedcomponents-20260903-20260915.tif",
+    "quantity": "Connected component of the phase unwrapping, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "tab10",
+    "dates": [
+     "2026-09-03",
+     "2026-09-15"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_029_141_D_067_030_4000_SH_20260903T234330_20260903T234405_20260915T234330_20260915T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "ends": null,
+    "frequency": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/823009032281cc3fa802f1491047c4cf/gunw-unwrappedinterferogram-hh-connectedcomponents-20260903-20260915.json"
+   }
+  },
+  "phase_0915_0927": {
+   "inputs": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001",
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T18:55:24Z",
+   "ended": "2026-11-15T18:56:13Z",
+   "status": "successful",
+   "job": "d0741510899aac8b1db837b42b83d932",
+   "message": "The layer is ready.",
+   "description": {
+    "id": "8679fa26a336888639f5c63a3803b063",
+    "title": "Unwrapped phase HH, 15 Sep 2026 to 27 Sep 2026",
+    "kind": "layer",
+    "url": "/files/8679fa26a336888639f5c63a3803b063/gunw-unwrappedinterferogram-hh-unwrappedphase-20260915-20260927.tif",
+    "quantity": "Unwrapped interferometric phase, HH",
+    "unit": "rad",
+    "range": [
+     -7.430202960968018,
+     7.430202960968018
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-09-15",
+     "2026-09-27"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "ends": null,
+    "frequency": 1239000000.0,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/8679fa26a336888639f5c63a3803b063/gunw-unwrappedinterferogram-hh-unwrappedphase-20260915-20260927.json"
+   }
+  },
+  "comp_0915_0927": {
+   "inputs": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001",
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T18:55:24Z",
+   "ended": "2026-11-15T18:56:09Z",
+   "status": "successful",
+   "job": "bef11f196883e0feb485577f8c3115f9",
+   "message": "The layer is ready.",
+   "description": {
+    "id": "6ab7ee4407ee64545b7b8611ed96e4e7",
+    "title": "Connected components HH, 15 Sep 2026 to 27 Sep 2026",
+    "kind": "layer",
+    "url": "/files/6ab7ee4407ee64545b7b8611ed96e4e7/gunw-unwrappedinterferogram-hh-connectedcomponents-20260915-20260927.tif",
+    "quantity": "Connected component of the phase unwrapping, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "tab10",
+    "dates": [
+     "2026-09-15",
+     "2026-09-27"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "ends": null,
+    "frequency": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/6ab7ee4407ee64545b7b8611ed96e4e7/gunw-unwrappedinterferogram-hh-connectedcomponents-20260915-20260927.json"
+   }
+  },
+  "phase_0927_1009": {
+   "inputs": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001",
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T18:55:24Z",
+   "ended": "2026-11-15T18:56:53Z",
+   "status": "successful",
+   "job": "73eb76cde9e5ee01c9a807fca9f5ecff",
+   "message": "The layer is ready.",
+   "description": {
+    "id": "f0418f8d8f189f118e25fb85b829ca78",
+    "title": "Unwrapped phase HH, 27 Sep 2026 to 9 Oct 2026",
+    "kind": "layer",
+    "url": "/files/f0418f8d8f189f118e25fb85b829ca78/gunw-unwrappedinterferogram-hh-unwrappedphase-20260927-20261009.tif",
+    "quantity": "Unwrapped interferometric phase, HH",
+    "unit": "rad",
+    "range": [
+     -6.882211208343506,
+     6.882211208343506
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-09-27",
+     "2026-10-09"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "ends": null,
+    "frequency": 1239000000.0,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/f0418f8d8f189f118e25fb85b829ca78/gunw-unwrappedinterferogram-hh-unwrappedphase-20260927-20261009.json"
+   }
+  },
+  "comp_0927_1009": {
+   "inputs": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001",
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T18:55:24Z",
+   "ended": "2026-11-15T18:57:21Z",
+   "status": "successful",
+   "job": "18e6f1ab9c4b6cb31cb6dc3acb673fde",
+   "message": "The layer is ready.",
+   "description": {
+    "id": "af8280ff734aed8b2f46e18aa33ed2b5",
+    "title": "Connected components HH, 27 Sep 2026 to 9 Oct 2026",
+    "kind": "layer",
+    "url": "/files/af8280ff734aed8b2f46e18aa33ed2b5/gunw-unwrappedinterferogram-hh-connectedcomponents-20260927-20261009.tif",
+    "quantity": "Connected component of the phase unwrapping, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "tab10",
+    "dates": [
+     "2026-09-27",
+     "2026-10-09"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "ends": null,
+    "frequency": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/af8280ff734aed8b2f46e18aa33ed2b5/gunw-unwrappedinterferogram-hh-connectedcomponents-20260927-20261009.json"
+   }
+  },
+  "phase_1009_1021": {
+   "inputs": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T18:57:21Z",
+   "ended": "2026-11-15T18:59:36Z",
+   "status": "successful",
+   "job": "332a79a7cf67a3372af1ab2ba35113ff",
+   "message": "The layer is ready.",
+   "description": {
+    "id": "0ce081c4817e5ca669019d8a84a5f9cd",
+    "title": "Unwrapped phase HH, 9 Oct 2026 to 21 Oct 2026",
+    "kind": "layer",
+    "url": "/files/0ce081c4817e5ca669019d8a84a5f9cd/gunw-unwrappedinterferogram-hh-unwrappedphase-20261009-20261021.tif",
+    "quantity": "Unwrapped interferometric phase, HH",
+    "unit": "rad",
+    "range": [
+     -4.257588863372803,
+     4.257588863372803
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-10-09",
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "ends": null,
+    "frequency": 1239000000.0,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/0ce081c4817e5ca669019d8a84a5f9cd/gunw-unwrappedinterferogram-hh-unwrappedphase-20261009-20261021.json"
+   }
+  },
+  "comp_1009_1021": {
+   "inputs": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T18:57:21Z",
+   "ended": "2026-11-15T18:58:20Z",
+   "status": "successful",
+   "job": "bfef63c44b5932d2e16ef2be4152a091",
+   "message": "The layer is ready.",
+   "description": {
+    "id": "0d5e7ca66cad19fa9122ddf884636b52",
+    "title": "Connected components HH, 9 Oct 2026 to 21 Oct 2026",
+    "kind": "layer",
+    "url": "/files/0d5e7ca66cad19fa9122ddf884636b52/gunw-unwrappedinterferogram-hh-connectedcomponents-20261009-20261021.tif",
+    "quantity": "Connected component of the phase unwrapping, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "tab10",
+    "dates": [
+     "2026-10-09",
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "ends": null,
+    "frequency": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/0d5e7ca66cad19fa9122ddf884636b52/gunw-unwrappedinterferogram-hh-connectedcomponents-20261009-20261021.json"
+   }
+  }
+ }
+}

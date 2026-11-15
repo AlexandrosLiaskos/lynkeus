@@ -1,0 +1,1918 @@
+{
+ "made": "15 Nov 2026",
+ "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+ "python": "3.13.18",
+ "numpy": "2.5.4",
+ "rasterio": "1.5.2",
+ "program": "Lynkeus 0.1.0",
+ "constants": {
+  "RCOND": 1e-05,
+  "DAYS_PER_YEAR": 365.25,
+  "SPEED_OF_LIGHT": 299792458.0
+ },
+ "pairs": {
+  "0623_0705": {
+   "product": "NISAR_L2_PR_GUNW_023_141_D_067_024_4000_SH_20260623T234333_20260623T234408_20260705T234333_20260705T234408_P05023_N_F_J_001.h5",
+   "dates": [
+    "2026-06-23",
+    "2026-07-05"
+   ],
+   "phase": {
+    "id": "91c019fa36814c7d3338c54f5c203d72",
+    "title": "Unwrapped phase HH, 23 Jun 2026 to 5 Jul 2026",
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "unit": "rad",
+    "frequency": 1239000000.0,
+    "file": "gunw-unwrappedinterferogram-hh-unwrappedphase-20260623-20260705.tif",
+    "file_sha256": "fe3f9111eeff7fdbb6085288c5f9941a04dd1af508d227ba8a377f8069f15b26",
+    "values_sha256": "c5277319e92f1988a155ac52056a67669298ac26939d07270df85fa8ed23f52e",
+    "cells_with_value": 223693,
+    "zero_phases_with_a_label_above_0": 0
+   },
+   "components": {
+    "id": "a4d300455e7a08515aacf4bc0622d755",
+    "title": "Connected components HH, 23 Jun 2026 to 5 Jul 2026",
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "unit": "1",
+    "file": "gunw-unwrappedinterferogram-hh-connectedcomponents-20260623-20260705.tif",
+    "file_sha256": "85c2c33045789f9431ed9b4f2ad9d275744ff6799d07a345ff63cf577bc5dd44",
+    "values_sha256": "08c8113aa28962120cd40dc233ed6391940a037bb0577e1464352d748b5c2b07",
+    "labels": {
+     "0": 44116,
+     "1": 179577
+    },
+    "cells_without_label": 9923,
+    "cells_with_a_phase_and_no_label": 0
+   }
+  },
+  "0705_0717": {
+   "product": "NISAR_L2_PR_GUNW_024_141_D_067_025_4000_SH_20260705T234333_20260705T234408_20260717T234332_20260717T234407_P05023_N_F_J_001.h5",
+   "dates": [
+    "2026-07-05",
+    "2026-07-17"
+   ],
+   "phase": {
+    "id": "54c0e94bbac3cbbd4326ce7f474ad635",
+    "title": "Unwrapped phase HH, 5 Jul 2026 to 17 Jul 2026",
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "unit": "rad",
+    "frequency": 1239000000.0,
+    "file": "gunw-unwrappedinterferogram-hh-unwrappedphase-20260705-20260717.tif",
+    "file_sha256": "8dc79acfc3e3271f9cdf279a70a87c162f1706e2a361fcfc1dee17958386d904",
+    "values_sha256": "f95610f10aa23b05d44a7b79f2ab3982ae7dc495c4b3c092e83297fd026c51a0",
+    "cells_with_value": 223693,
+    "zero_phases_with_a_label_above_0": 0
+   },
+   "components": {
+    "id": "233cc92e295d717387620e5a316bbbb5",
+    "title": "Connected components HH, 5 Jul 2026 to 17 Jul 2026",
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "unit": "1",
+    "file": "gunw-unwrappedinterferogram-hh-connectedcomponents-20260705-20260717.tif",
+    "file_sha256": "3867b80d42a1c0da77025d37ce6a43953b7d7ec086d078693a8807d7cfc08947",
+    "values_sha256": "effaa06d93e7e8ed41300a155e1ecf12b22614c3d717ce6ccc6eb2d08800bc64",
+    "labels": {
+     "0": 24986,
+     "1": 198707
+    },
+    "cells_without_label": 9923,
+    "cells_with_a_phase_and_no_label": 0
+   }
+  },
+  "0717_0810": {
+   "product": "NISAR_L2_PR_GUNW_025_141_D_067_027_4000_SH_20260717T234332_20260717T234407_20260810T234331_20260810T234406_P05023_N_F_J_001.h5",
+   "dates": [
+    "2026-07-17",
+    "2026-08-10"
+   ],
+   "phase": {
+    "id": "cf9c7da80b925ae84ada52d847ccfab5",
+    "title": "Unwrapped phase HH, 17 Jul 2026 to 10 Aug 2026",
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "unit": "rad",
+    "frequency": 1239000000.0,
+    "file": "gunw-unwrappedinterferogram-hh-unwrappedphase-20260717-20260810.tif",
+    "file_sha256": "5c8a2fa3135c2c94126e8e7cc2358ee994218b911d537ea494870323a69903d3",
+    "values_sha256": "d2af9d63111256e9e3f7b86feb0850f6b7630f4a16aa13f3acfad700dda28cc5",
+    "cells_with_value": 223693,
+    "zero_phases_with_a_label_above_0": 0
+   },
+   "components": {
+    "id": "d7f6ea6b68065a5583ceeae82cdfd2ca",
+    "title": "Connected components HH, 17 Jul 2026 to 10 Aug 2026",
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "unit": "1",
+    "file": "gunw-unwrappedinterferogram-hh-connectedcomponents-20260717-20260810.tif",
+    "file_sha256": "8ff066aa1a64fdf37d47bb0cf9d84361b6fc78001aea370ad089103f123f878f",
+    "values_sha256": "d3724abd1b9302a66532142033bb1148833f27a0638b4fc24d0f6ce84a5878fe",
+    "labels": {
+     "0": 25927,
+     "1": 197766
+    },
+    "cells_without_label": 9923,
+    "cells_with_a_phase_and_no_label": 0
+   }
+  },
+  "0810_0822": {
+   "product": "NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001.h5",
+   "dates": [
+    "2026-08-10",
+    "2026-08-22"
+   ],
+   "phase": {
+    "id": "3e99f437cd5f87adabab8743ec9c4219",
+    "title": "Unwrapped phase HH, 10 Aug 2026 to 22 Aug 2026",
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "unit": "rad",
+    "frequency": 1239000000.0,
+    "file": "gunw-unwrappedinterferogram-hh-unwrappedphase-20260810-20260822.tif",
+    "file_sha256": "12d2be2c15a9da8a517b309dabd686c1b336d4421ce21063a7dfdbafcf62e98f",
+    "values_sha256": "72c37504bdd924a0c973eb7cf55bd1c54c955ef0f4899c8f37a2f048b7e74536",
+    "cells_with_value": 223693,
+    "zero_phases_with_a_label_above_0": 0
+   },
+   "components": {
+    "id": "6e27a5792c6a75485081122f1c4dd053",
+    "title": "Connected components HH, 10 Aug 2026 to 22 Aug 2026",
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "unit": "1",
+    "file": "gunw-unwrappedinterferogram-hh-connectedcomponents-20260810-20260822.tif",
+    "file_sha256": "612c48cfe85305272167e1c5661ea19b75a8490faada54f25ab8bb4cd12ac9db",
+    "values_sha256": "90ccc8728b5d2bcf2c92b0e0af929f4acc66b164ba427dc84dac1f6e1780489d",
+    "labels": {
+     "0": 27221,
+     "1": 196472
+    },
+    "cells_without_label": 9923,
+    "cells_with_a_phase_and_no_label": 0
+   }
+  },
+  "0822_0903": {
+   "product": "NISAR_L2_PR_GUNW_028_141_D_067_029_4000_SH_20260822T234330_20260822T234405_20260903T234330_20260903T234405_P05023_N_F_J_001.h5",
+   "dates": [
+    "2026-08-22",
+    "2026-09-03"
+   ],
+   "phase": {
+    "id": "22667544c81a2ca85b4f37dbfbb15011",
+    "title": "Unwrapped phase HH, 22 Aug 2026 to 3 Sep 2026",
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "unit": "rad",
+    "frequency": 1239000000.0,
+    "file": "gunw-unwrappedinterferogram-hh-unwrappedphase-20260822-20260903.tif",
+    "file_sha256": "7a009a3a35f4748329de93e4b9654d0a15d62654aea2ac24c6d18c151385afd7",
+    "values_sha256": "9cb59556db9e7d145b59c17f3ab0d984941566745924093215794738d1b96902",
+    "cells_with_value": 223693,
+    "zero_phases_with_a_label_above_0": 0
+   },
+   "components": {
+    "id": "0e1745af02e6590fc2b6954360a1e104",
+    "title": "Connected components HH, 22 Aug 2026 to 3 Sep 2026",
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "unit": "1",
+    "file": "gunw-unwrappedinterferogram-hh-connectedcomponents-20260822-20260903.tif",
+    "file_sha256": "927e87310dce6feb25c0ccbc807a45a34f6c5cfcb0ef4f6969ac4dbc1315c4af",
+    "values_sha256": "72c758dea70d442028b5d91851af80ce9f0a77dc80795768d677f989ced1d2e7",
+    "labels": {
+     "0": 27491,
+     "1": 196202
+    },
+    "cells_without_label": 9923,
+    "cells_with_a_phase_and_no_label": 0
+   }
+  },
+  "0903_0915": {
+   "product": "NISAR_L2_PR_GUNW_029_141_D_067_030_4000_SH_20260903T234330_20260903T234405_20260915T234330_20260915T234405_P05023_N_F_J_001.h5",
+   "dates": [
+    "2026-09-03",
+    "2026-09-15"
+   ],
+   "phase": {
+    "id": "491a583799db19bfeef527652478d9dc",
+    "title": "Unwrapped phase HH, 3 Sep 2026 to 15 Sep 2026",
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "unit": "rad",
+    "frequency": 1239000000.0,
+    "file": "gunw-unwrappedinterferogram-hh-unwrappedphase-20260903-20260915.tif",
+    "file_sha256": "2de5b65018922aa23fb234d4a2e00a1dce74d6d246edf1c2d772465aef0badaa",
+    "values_sha256": "590eee30d2eae1bdbabcdc8934d08edc4b3f24582d0832dc49dd688053de0414",
+    "cells_with_value": 223693,
+    "zero_phases_with_a_label_above_0": 0
+   },
+   "components": {
+    "id": "823009032281cc3fa802f1491047c4cf",
+    "title": "Connected components HH, 3 Sep 2026 to 15 Sep 2026",
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "unit": "1",
+    "file": "gunw-unwrappedinterferogram-hh-connectedcomponents-20260903-20260915.tif",
+    "file_sha256": "67bdc7ad24e7e6f5ef93b641cf77971573afb56e669ac39da2965b0a7ee6cd55",
+    "values_sha256": "92bb01a07696dc9fe2b573a59e9537c851751e3131443b020f18d510b2bc404f",
+    "labels": {
+     "0": 22826,
+     "1": 200867
+    },
+    "cells_without_label": 9923,
+    "cells_with_a_phase_and_no_label": 0
+   }
+  },
+  "0915_0927": {
+   "product": "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+   "dates": [
+    "2026-09-15",
+    "2026-09-27"
+   ],
+   "phase": {
+    "id": "8679fa26a336888639f5c63a3803b063",
+    "title": "Unwrapped phase HH, 15 Sep 2026 to 27 Sep 2026",
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "unit": "rad",
+    "frequency": 1239000000.0,
+    "file": "gunw-unwrappedinterferogram-hh-unwrappedphase-20260915-20260927.tif",
+    "file_sha256": "3573741357b2e147775d6361a0006ece7ccaab01344078770530969c9358a61b",
+    "values_sha256": "2baf4c554c3c701d9a284304342b35170f57a40ea03bff32b2db86c0eab8a9a4",
+    "cells_with_value": 223693,
+    "zero_phases_with_a_label_above_0": 0
+   },
+   "components": {
+    "id": "6ab7ee4407ee64545b7b8611ed96e4e7",
+    "title": "Connected components HH, 15 Sep 2026 to 27 Sep 2026",
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "unit": "1",
+    "file": "gunw-unwrappedinterferogram-hh-connectedcomponents-20260915-20260927.tif",
+    "file_sha256": "c5d98e4b894459150920d67ee3c88bbfcd301af83d16f355a10777411ad8e9a9",
+    "values_sha256": "a53ffd9dd974c27826a506c4c834b3f4122f755a7a5daaee177510842e5cf41e",
+    "labels": {
+     "0": 47142,
+     "1": 176551
+    },
+    "cells_without_label": 9923,
+    "cells_with_a_phase_and_no_label": 0
+   }
+  },
+  "0927_1009": {
+   "product": "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+   "dates": [
+    "2026-09-27",
+    "2026-10-09"
+   ],
+   "phase": {
+    "id": "f0418f8d8f189f118e25fb85b829ca78",
+    "title": "Unwrapped phase HH, 27 Sep 2026 to 9 Oct 2026",
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "unit": "rad",
+    "frequency": 1239000000.0,
+    "file": "gunw-unwrappedinterferogram-hh-unwrappedphase-20260927-20261009.tif",
+    "file_sha256": "af6d9ff105fe71656cbf29b0af59c2f9c8ea176d4049181bb4d0ad8811622df6",
+    "values_sha256": "c9216160c03e5d7b59a107bf1e14a3a3fc8c04fb72af43434074df616fbf36f2",
+    "cells_with_value": 223693,
+    "zero_phases_with_a_label_above_0": 0
+   },
+   "components": {
+    "id": "af8280ff734aed8b2f46e18aa33ed2b5",
+    "title": "Connected components HH, 27 Sep 2026 to 9 Oct 2026",
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "unit": "1",
+    "file": "gunw-unwrappedinterferogram-hh-connectedcomponents-20260927-20261009.tif",
+    "file_sha256": "4732714bb0e30bc1bc43bd4fab3fa2e2b53b4c8e5e7740e4e168b88f799ec973",
+    "values_sha256": "1e9f90973c0326fec811a40b7cd99e3a814d9d5b7bb9231a1c876293f6ff49ba",
+    "labels": {
+     "0": 68669,
+     "1": 155024
+    },
+    "cells_without_label": 9923,
+    "cells_with_a_phase_and_no_label": 0
+   }
+  },
+  "1009_1021": {
+   "product": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+   "dates": [
+    "2026-10-09",
+    "2026-10-21"
+   ],
+   "phase": {
+    "id": "0ce081c4817e5ca669019d8a84a5f9cd",
+    "title": "Unwrapped phase HH, 9 Oct 2026 to 21 Oct 2026",
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "unit": "rad",
+    "frequency": 1239000000.0,
+    "file": "gunw-unwrappedinterferogram-hh-unwrappedphase-20261009-20261021.tif",
+    "file_sha256": "d0cfcf7a7181a27b452337d8df8df9079bc9be2bfb50120fbd50919e5dc861d8",
+    "values_sha256": "0805f9749474e1c31673ef5fc0049721d89290b1d59a7352978b0c70d88b499d",
+    "cells_with_value": 223693,
+    "zero_phases_with_a_label_above_0": 0
+   },
+   "components": {
+    "id": "0d5e7ca66cad19fa9122ddf884636b52",
+    "title": "Connected components HH, 9 Oct 2026 to 21 Oct 2026",
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "unit": "1",
+    "file": "gunw-unwrappedinterferogram-hh-connectedcomponents-20261009-20261021.tif",
+    "file_sha256": "14b49916fd7fed2994ed0a8cb910f0de3aa700372021d94013ba6df5babc2f85",
+    "values_sha256": "9636dd081dabd1bd56ac026a5f47c220fbeaadcd6543db99552c20621c19a21d",
+    "labels": {
+     "0": 26889,
+     "1": 196804
+    },
+    "cells_without_label": 9923,
+    "cells_with_a_phase_and_no_label": 0
+   }
+  }
+ },
+ "grid": {
+  "crs": "EPSG:32619",
+  "transform": [
+   80.0,
+   0.0,
+   319520.0,
+   0.0,
+   -80.0,
+   4757600.0
+  ],
+  "width": 471,
+  "height": 496
+ },
+ "cells_valid_in_every_pair": 130357,
+ "cells_valid_in_no_pair": 30630,
+ "labels_above_1_in_any_pair": 0,
+ "reference": {
+  "asked": {
+   "longitude": -71.0772,
+   "latitude": 42.7761
+  },
+  "asked_cell": [
+   244,
+   131
+  ],
+  "moved": false,
+  "point": {
+   "longitude": -71.0772,
+   "latitude": 42.7761
+  },
+  "cell": [
+   244,
+   131
+  ]
+ },
+ "points": {
+  "p1": {
+   "asked": {
+    "longitude": -71.0,
+    "latitude": 42.8
+   },
+   "asked_cell": [
+    213,
+    211
+   ],
+   "moved": true,
+   "point": {
+    "longitude": -71.00110557451146,
+    "latitude": 42.79903193144559
+   },
+   "cell": [
+    214,
+    210
+   ],
+   "moved_cells": 1.4142135623730951
+  },
+  "p2": {
+   "asked": {
+    "longitude": -70.9,
+    "latitude": 42.7
+   },
+   "asked_cell": [
+    354,
+    310
+   ],
+   "moved": true,
+   "point": {
+    "longitude": -70.89927074814058,
+    "latitude": 42.69990986472692
+   },
+   "cell": [
+    354,
+    311
+   ],
+   "moved_cells": 1.0
+  },
+  "p3": {
+   "asked": {
+    "longitude": -71.1,
+    "latitude": 42.65
+   },
+   "asked_cell": [
+    418,
+    104
+   ],
+   "moved": true,
+   "point": {
+    "longitude": -71.09980158114226,
+    "latitude": 42.651022181699446
+   },
+   "cell": [
+    417,
+    104
+   ],
+   "moved_cells": 1.0
+  },
+  "p4": {
+   "asked": {
+    "longitude": -70.8,
+    "latitude": 42.9
+   },
+   "asked_cell": [
+    78,
+    419
+   ],
+   "moved": true,
+   "point": {
+    "longitude": -70.81134013831462,
+    "latitude": 42.90016615382802
+   },
+   "cell": [
+    78,
+    407
+   ],
+   "moved_cells": 12.0
+  },
+  "p5": {
+   "asked": {
+    "longitude": -70.8726,
+    "latitude": 42.8126
+   },
+   "asked_cell": [
+    198,
+    342
+   ],
+   "moved": false,
+   "point": {
+    "longitude": -70.8726,
+    "latitude": 42.8126
+   },
+   "cell": [
+    198,
+    342
+   ]
+  }
+ },
+ "demos": {
+  "q1": {
+   "point": {
+    "longitude": -71.00112878525466,
+    "latitude": 42.79975192382038
+   },
+   "cell": [
+    213,
+    210
+   ],
+   "left_out": [
+    "0915_0927"
+   ]
+  },
+  "r0": {
+   "point": {
+    "longitude": -71.07659413497967,
+    "latitude": 42.77463464631111
+   },
+   "cell": [
+    246,
+    132
+   ],
+   "pairs_without_a_reliable_phase": [
+    "1009_1021"
+   ]
+  }
+ },
+ "series": {
+  "p1": {
+   "cell": [
+    214,
+    210
+   ],
+   "reference_cell": [
+    244,
+    131
+   ],
+   "dates": [
+    "2026-06-23",
+    "2026-07-05",
+    "2026-07-17",
+    "2026-08-10",
+    "2026-08-22",
+    "2026-09-03",
+    "2026-09-15",
+    "2026-09-27",
+    "2026-10-09",
+    "2026-10-21"
+   ],
+   "values": [
+    0.0,
+    0.02904413051287513,
+    0.015901375477671707,
+    0.02764018999790685,
+    0.02743544444074878,
+    0.02047940235531323,
+    0.017593343870990503,
+    -0.03516807127514995,
+    -0.014307244243863064,
+    -0.027356797586514638
+   ],
+   "pairs_used": [
+    "NISAR_L2_PR_GUNW_023_141_D_067_024_4000_SH_20260623T234333_20260623T234408_20260705T234333_20260705T234408_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_024_141_D_067_025_4000_SH_20260705T234333_20260705T234408_20260717T234332_20260717T234407_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_025_141_D_067_027_4000_SH_20260717T234332_20260717T234407_20260810T234331_20260810T234406_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_028_141_D_067_029_4000_SH_20260822T234330_20260822T234405_20260903T234330_20260903T234405_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_029_141_D_067_030_4000_SH_20260903T234330_20260903T234405_20260915T234330_20260915T234405_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+   ],
+   "quantity": "Displacement along the line of sight, relative to the reference point",
+   "unit": "m",
+   "method": "Small-baseline inversion of the unwrapped phase of the pairs at the cell of the point, each pair referenced to the cell of the reference point, with equal weights and the minimum-norm velocity, the first date being zero, times -wavelength/(4*pi); relative to the reference point, not corrected for the ionosphere, the troposphere or the solid Earth tides (Berardino et al., 2002, https://doi.org/10.1109/TGRS.2002.803792; Yunjun et al., 2019, https://doi.org/10.1016/j.cageo.2019.104331; MintPy 1.6.4, reference_point and ifgram_inversion with --weight-func no and --mask-dset connectComponent)",
+   "at_the_cells": {
+    "0623_0705": {
+     "phase_point": 4.221541404724121,
+     "phase_reference": 5.729949474334717,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -1.5084080696105957
+    },
+    "0705_0717": {
+     "phase_point": 10.533008575439453,
+     "phase_reference": 9.850439071655273,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 0.6825695037841797
+    },
+    "0717_0810": {
+     "phase_point": 0.08934657275676727,
+     "phase_reference": 0.6990023851394653,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -0.6096557974815369
+    },
+    "0810_0822": {
+     "phase_point": -16.750999450683594,
+     "phase_reference": -16.761632919311523,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 0.010633468627929688
+    },
+    "0822_0903": {
+     "phase_point": 8.700886726379395,
+     "phase_reference": 8.339624404907227,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 0.36126232147216797
+    },
+    "0903_0915": {
+     "phase_point": 1.2928602695465088,
+     "phase_reference": 1.142972707748413,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 0.1498875617980957
+    },
+    "0915_0927": {
+     "phase_point": 1.8959109783172607,
+     "phase_reference": -0.8442550897598267,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 2.740166187286377
+    },
+    "0927_1009": {
+     "phase_point": -5.692688941955566,
+     "phase_reference": -4.609281063079834,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -1.0834078788757324
+    },
+    "1009_1021": {
+     "phase_point": -0.19397634267807007,
+     "phase_reference": -0.8717054128646851,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 0.677729070186615
+    }
+   },
+   "referenced_phase_exactly_0": false,
+   "phase_of_the_point_exactly_0": false,
+   "function_equals_run_series": true
+  },
+  "p2": {
+   "cell": [
+    354,
+    311
+   ],
+   "reference_cell": [
+    244,
+    131
+   ],
+   "dates": [
+    "2026-06-23",
+    "2026-07-05",
+    "2026-07-17",
+    "2026-08-10",
+    "2026-08-22",
+    "2026-09-03",
+    "2026-09-15",
+    "2026-09-27",
+    "2026-10-09",
+    "2026-10-21"
+   ],
+   "values": [
+    0.0,
+    0.038631511082981546,
+    -0.010146960277376061,
+    0.013209981356706174,
+    0.05224917481522538,
+    0.046381240598396,
+    0.05660319237911187,
+    0.020486670593056967,
+    -0.017480188668030867,
+    0.006410966718700452
+   ],
+   "pairs_used": [
+    "NISAR_L2_PR_GUNW_023_141_D_067_024_4000_SH_20260623T234333_20260623T234408_20260705T234333_20260705T234408_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_024_141_D_067_025_4000_SH_20260705T234333_20260705T234408_20260717T234332_20260717T234407_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_025_141_D_067_027_4000_SH_20260717T234332_20260717T234407_20260810T234331_20260810T234406_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_028_141_D_067_029_4000_SH_20260822T234330_20260822T234405_20260903T234330_20260903T234405_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_029_141_D_067_030_4000_SH_20260903T234330_20260903T234405_20260915T234330_20260915T234405_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+   ],
+   "quantity": "Displacement along the line of sight, relative to the reference point",
+   "unit": "m",
+   "method": "Small-baseline inversion of the unwrapped phase of the pairs at the cell of the point, each pair referenced to the cell of the reference point, with equal weights and the minimum-norm velocity, the first date being zero, times -wavelength/(4*pi); relative to the reference point, not corrected for the ionosphere, the troposphere or the solid Earth tides (Berardino et al., 2002, https://doi.org/10.1109/TGRS.2002.803792; Yunjun et al., 2019, https://doi.org/10.1016/j.cageo.2019.104331; MintPy 1.6.4, reference_point and ifgram_inversion with --weight-func no and --mask-dset connectComponent)",
+   "at_the_cells": {
+    "0623_0705": {
+     "phase_point": 3.7236204147338867,
+     "phase_reference": 5.729949474334717,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -2.00632905960083
+    },
+    "0705_0717": {
+     "phase_point": 12.383750915527344,
+     "phase_reference": 9.850439071655273,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 2.5333118438720703
+    },
+    "0717_0810": {
+     "phase_point": -0.5140412449836731,
+     "phase_reference": 0.6990023851394653,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -1.2130436897277832
+    },
+    "0810_0822": {
+     "phase_point": -18.789134979248047,
+     "phase_reference": -16.761632919311523,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -2.0275020599365234
+    },
+    "0822_0903": {
+     "phase_point": 8.644375801086426,
+     "phase_reference": 8.339624404907227,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 0.3047513961791992
+    },
+    "0903_0915": {
+     "phase_point": 0.6120952367782593,
+     "phase_reference": 1.142972707748413,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -0.5308774709701538
+    },
+    "0915_0927": {
+     "phase_point": 1.0314579010009766,
+     "phase_reference": -0.8442550897598267,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 1.8757129907608032
+    },
+    "0927_1009": {
+     "phase_point": -2.6374707221984863,
+     "phase_reference": -4.609281063079834,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 1.9718103408813477
+    },
+    "1009_1021": {
+     "phase_point": -2.1124935150146484,
+     "phase_reference": -0.8717054128646851,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -1.2407881021499634
+    }
+   },
+   "referenced_phase_exactly_0": false,
+   "phase_of_the_point_exactly_0": false,
+   "function_equals_run_series": true
+  },
+  "p3": {
+   "cell": [
+    417,
+    104
+   ],
+   "reference_cell": [
+    244,
+    131
+   ],
+   "dates": [
+    "2026-06-23",
+    "2026-07-05",
+    "2026-07-17",
+    "2026-08-10",
+    "2026-08-22",
+    "2026-09-03",
+    "2026-09-15",
+    "2026-09-27",
+    "2026-10-09",
+    "2026-10-21"
+   ],
+   "values": [
+    0.0,
+    -0.016148640168246776,
+    -0.010226498876553657,
+    -0.006182375878800942,
+    0.029464615224119625,
+    0.0005881465327361344,
+    0.0017367002477795236,
+    0.0368490690250782,
+    0.006843515809411576,
+    0.040470019452310275
+   ],
+   "pairs_used": [
+    "NISAR_L2_PR_GUNW_023_141_D_067_024_4000_SH_20260623T234333_20260623T234408_20260705T234333_20260705T234408_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_024_141_D_067_025_4000_SH_20260705T234333_20260705T234408_20260717T234332_20260717T234407_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_025_141_D_067_027_4000_SH_20260717T234332_20260717T234407_20260810T234331_20260810T234406_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_028_141_D_067_029_4000_SH_20260822T234330_20260822T234405_20260903T234330_20260903T234405_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_029_141_D_067_030_4000_SH_20260903T234330_20260903T234405_20260915T234330_20260915T234405_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+   ],
+   "quantity": "Displacement along the line of sight, relative to the reference point",
+   "unit": "m",
+   "method": "Small-baseline inversion of the unwrapped phase of the pairs at the cell of the point, each pair referenced to the cell of the reference point, with equal weights and the minimum-norm velocity, the first date being zero, times -wavelength/(4*pi); relative to the reference point, not corrected for the ionosphere, the troposphere or the solid Earth tides (Berardino et al., 2002, https://doi.org/10.1109/TGRS.2002.803792; Yunjun et al., 2019, https://doi.org/10.1016/j.cageo.2019.104331; MintPy 1.6.4, reference_point and ifgram_inversion with --weight-func no and --mask-dset connectComponent)",
+   "at_the_cells": {
+    "0623_0705": {
+     "phase_point": 6.568629741668701,
+     "phase_reference": 5.729949474334717,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 0.8386802673339844
+    },
+    "0705_0717": {
+     "phase_point": 9.542872428894043,
+     "phase_reference": 9.850439071655273,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -0.30756664276123047
+    },
+    "0717_0810": {
+     "phase_point": 0.48897069692611694,
+     "phase_reference": 0.6990023851394653,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -0.2100316882133484
+    },
+    "0810_0822": {
+     "phase_point": -18.612960815429688,
+     "phase_reference": -16.761632919311523,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -1.851327896118164
+    },
+    "0822_0903": {
+     "phase_point": 9.839324951171875,
+     "phase_reference": 8.339624404907227,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 1.4997005462646484
+    },
+    "0903_0915": {
+     "phase_point": 1.083322525024414,
+     "phase_reference": 1.142972707748413,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -0.05965018272399902
+    },
+    "0915_0927": {
+     "phase_point": -2.6678173542022705,
+     "phase_reference": -0.8442550897598267,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -1.8235622644424438
+    },
+    "0927_1009": {
+     "phase_point": -3.0509414672851562,
+     "phase_reference": -4.609281063079834,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 1.5583395957946777
+    },
+    "1009_1021": {
+     "phase_point": -2.6180992126464844,
+     "phase_reference": -0.8717054128646851,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -1.7463937997817993
+    }
+   },
+   "referenced_phase_exactly_0": false,
+   "phase_of_the_point_exactly_0": false,
+   "function_equals_run_series": true
+  },
+  "p4": {
+   "cell": [
+    78,
+    407
+   ],
+   "reference_cell": [
+    244,
+    131
+   ],
+   "dates": [
+    "2026-06-23",
+    "2026-07-05",
+    "2026-07-17",
+    "2026-08-10",
+    "2026-08-22",
+    "2026-09-03",
+    "2026-09-15",
+    "2026-09-27",
+    "2026-10-09",
+    "2026-10-21"
+   ],
+   "values": [
+    0.0,
+    0.08628256893660771,
+    0.019881160856653545,
+    0.04345308991645932,
+    0.01508338025116473,
+    0.0761878830462128,
+    0.07774408241113337,
+    -0.01637349302451589,
+    -0.021056336084835044,
+    -0.06491082369818293
+   ],
+   "pairs_used": [
+    "NISAR_L2_PR_GUNW_023_141_D_067_024_4000_SH_20260623T234333_20260623T234408_20260705T234333_20260705T234408_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_024_141_D_067_025_4000_SH_20260705T234333_20260705T234408_20260717T234332_20260717T234407_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_025_141_D_067_027_4000_SH_20260717T234332_20260717T234407_20260810T234331_20260810T234406_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_028_141_D_067_029_4000_SH_20260822T234330_20260822T234405_20260903T234330_20260903T234405_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_029_141_D_067_030_4000_SH_20260903T234330_20260903T234405_20260915T234330_20260915T234405_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+   ],
+   "quantity": "Displacement along the line of sight, relative to the reference point",
+   "unit": "m",
+   "method": "Small-baseline inversion of the unwrapped phase of the pairs at the cell of the point, each pair referenced to the cell of the reference point, with equal weights and the minimum-norm velocity, the first date being zero, times -wavelength/(4*pi); relative to the reference point, not corrected for the ionosphere, the troposphere or the solid Earth tides (Berardino et al., 2002, https://doi.org/10.1109/TGRS.2002.803792; Yunjun et al., 2019, https://doi.org/10.1016/j.cageo.2019.104331; MintPy 1.6.4, reference_point and ifgram_inversion with --weight-func no and --mask-dset connectComponent)",
+   "at_the_cells": {
+    "0623_0705": {
+     "phase_point": 1.2488609552383423,
+     "phase_reference": 5.729949474334717,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -4.481088638305664
+    },
+    "0705_0717": {
+     "phase_point": 13.298998832702637,
+     "phase_reference": 9.850439071655273,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 3.4485597610473633
+    },
+    "0717_0810": {
+     "phase_point": -0.5252066850662231,
+     "phase_reference": 0.6990023851394653,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -1.2242090702056885
+    },
+    "0810_0822": {
+     "phase_point": -15.288250923156738,
+     "phase_reference": -16.761632919311523,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 1.4733819961547852
+    },
+    "0822_0903": {
+     "phase_point": 5.166159629821777,
+     "phase_reference": 8.339624404907227,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -3.173464775085449
+    },
+    "0903_0915": {
+     "phase_point": 1.0621514320373535,
+     "phase_reference": 1.142972707748413,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -0.08082127571105957
+    },
+    "0915_0927": {
+     "phase_point": 4.043745040893555,
+     "phase_reference": -0.8442550897598267,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 4.888000011444092
+    },
+    "0927_1009": {
+     "phase_point": -4.366077423095703,
+     "phase_reference": -4.609281063079834,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 0.24320363998413086
+    },
+    "1009_1021": {
+     "phase_point": 1.405879020690918,
+     "phase_reference": -0.8717054128646851,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 2.2775845527648926
+    }
+   },
+   "referenced_phase_exactly_0": false,
+   "phase_of_the_point_exactly_0": false,
+   "function_equals_run_series": true
+  },
+  "p5": {
+   "cell": [
+    198,
+    342
+   ],
+   "reference_cell": [
+    244,
+    131
+   ],
+   "dates": [
+    "2026-06-23",
+    "2026-07-05",
+    "2026-07-17",
+    "2026-08-10",
+    "2026-08-22",
+    "2026-09-03",
+    "2026-09-15",
+    "2026-09-27",
+    "2026-10-09",
+    "2026-10-21"
+   ],
+   "values": [
+    0.0,
+    0.05738998227098248,
+    0.009576881621917619,
+    0.045624198491511586,
+    0.04217738507878396,
+    0.06664725194653955,
+    0.06784881915248117,
+    0.0026931730201448776,
+    -0.016184734606434117,
+    -0.033151987451354635
+   ],
+   "pairs_used": [
+    "NISAR_L2_PR_GUNW_023_141_D_067_024_4000_SH_20260623T234333_20260623T234408_20260705T234333_20260705T234408_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_024_141_D_067_025_4000_SH_20260705T234333_20260705T234408_20260717T234332_20260717T234407_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_025_141_D_067_027_4000_SH_20260717T234332_20260717T234407_20260810T234331_20260810T234406_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_028_141_D_067_029_4000_SH_20260822T234330_20260822T234405_20260903T234330_20260903T234405_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_029_141_D_067_030_4000_SH_20260903T234330_20260903T234405_20260915T234330_20260915T234405_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+    "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+   ],
+   "quantity": "Displacement along the line of sight, relative to the reference point",
+   "unit": "m",
+   "method": "Small-baseline inversion of the unwrapped phase of the pairs at the cell of the point, each pair referenced to the cell of the reference point, with equal weights and the minimum-norm velocity, the first date being zero, times -wavelength/(4*pi); relative to the reference point, not corrected for the ionosphere, the troposphere or the solid Earth tides (Berardino et al., 2002, https://doi.org/10.1109/TGRS.2002.803792; Yunjun et al., 2019, https://doi.org/10.1016/j.cageo.2019.104331; MintPy 1.6.4, reference_point and ifgram_inversion with --weight-func no and --mask-dset connectComponent)",
+   "at_the_cells": {
+    "0623_0705": {
+     "phase_point": 2.7493984699249268,
+     "phase_reference": 5.729949474334717,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -2.98055100440979
+    },
+    "0705_0717": {
+     "phase_point": 12.333614349365234,
+     "phase_reference": 9.850439071655273,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 2.483175277709961
+    },
+    "0717_0810": {
+     "phase_point": -1.1731164455413818,
+     "phase_reference": 0.6990023851394653,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -1.8721188306808472
+    },
+    "0810_0822": {
+     "phase_point": -16.582622528076172,
+     "phase_reference": -16.761632919311523,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 0.17901039123535156
+    },
+    "0822_0903": {
+     "phase_point": 7.068780899047852,
+     "phase_reference": 8.339624404907227,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -1.270843505859375
+    },
+    "0903_0915": {
+     "phase_point": 1.0805692672729492,
+     "phase_reference": 1.142972707748413,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -0.06240344047546387
+    },
+    "0915_0927": {
+     "phase_point": 2.5396058559417725,
+     "phase_reference": -0.8442550897598267,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 3.3838610649108887
+    },
+    "0927_1009": {
+     "phase_point": -3.6288561820983887,
+     "phase_reference": -4.609281063079834,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 0.9804248809814453
+    },
+    "1009_1021": {
+     "phase_point": 0.009489530697464943,
+     "phase_reference": -0.8717054128646851,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 0.8811949491500854
+    }
+   },
+   "referenced_phase_exactly_0": false,
+   "phase_of_the_point_exactly_0": false,
+   "function_equals_run_series": true
+  },
+  "q1": {
+   "refused": "At the point, the phase of 1 of the 9 pairs is not reliable relative to the reference point, and the other pairs do not link all the dates into one network.",
+   "at_the_cells": {
+    "0623_0705": {
+     "phase_point": 4.3333845138549805,
+     "phase_reference": 5.729949474334717,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -1.3965649604797363
+    },
+    "0705_0717": {
+     "phase_point": 10.62581729888916,
+     "phase_reference": 9.850439071655273,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 0.7753782272338867
+    },
+    "0717_0810": {
+     "phase_point": -0.6274572014808655,
+     "phase_reference": 0.6990023851394653,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -1.3264596462249756
+    },
+    "0810_0822": {
+     "phase_point": -16.960329055786133,
+     "phase_reference": -16.761632919311523,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -0.19869613647460938
+    },
+    "0822_0903": {
+     "phase_point": 9.000016212463379,
+     "phase_reference": 8.339624404907227,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 0.6603918075561523
+    },
+    "0903_0915": {
+     "phase_point": 1.791560411453247,
+     "phase_reference": 1.142972707748413,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 0.648587703704834
+    },
+    "0915_0927": {
+     "phase_point": 2.753624439239502,
+     "phase_reference": -0.8442550897598267,
+     "label_point": 0.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 3.597879409790039
+    },
+    "0927_1009": {
+     "phase_point": -5.329089164733887,
+     "phase_reference": -4.609281063079834,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": -0.7198081016540527
+    },
+    "1009_1021": {
+     "phase_point": -0.13971517980098724,
+     "phase_reference": -0.8717054128646851,
+     "label_point": 1.0,
+     "label_reference": 1.0,
+     "referenced_32_bit": 0.7319902181625366
+    }
+   },
+   "referenced_phase_exactly_0": false,
+   "phase_of_the_point_exactly_0": false
+  },
+  "r0_as_reference": {
+   "refused": "The reference point has no reliable phase in the layer \"Unwrapped phase HH, 9 Oct 2026 to 21 Oct 2026\", so choose a reference point with one in every pair."
+  },
+  "without_0717_0810": {
+   "refused": "The pairs do not link all their dates into one network, so the movement between the separate groups of dates is unknown."
+  }
+ },
+ "synthetic": {
+  "dates": [
+   "2026-06-23",
+   "2026-07-05",
+   "2026-07-17",
+   "2026-08-10",
+   "2026-08-22",
+   "2026-09-03",
+   "2026-09-15",
+   "2026-09-27",
+   "2026-10-09",
+   "2026-10-21"
+  ],
+  "links": [
+   [
+    0,
+    1
+   ],
+   [
+    1,
+    2
+   ],
+   [
+    2,
+    3
+   ],
+   [
+    3,
+    4
+   ],
+   [
+    4,
+    5
+   ],
+   [
+    5,
+    6
+   ],
+   [
+    6,
+    7
+   ],
+   [
+    7,
+    8
+   ],
+   [
+    8,
+    9
+   ],
+   [
+    0,
+    2
+   ],
+   [
+    1,
+    3
+   ],
+   [
+    2,
+    4
+   ],
+   [
+    3,
+    5
+   ],
+   [
+    4,
+    6
+   ],
+   [
+    5,
+    7
+   ],
+   [
+    6,
+    8
+   ],
+   [
+    7,
+    9
+   ]
+  ],
+  "shape": [
+   6,
+   8
+  ],
+  "seed": 20261115,
+  "frequency": 1239000000.0,
+  "phase_sha256": "bf1a30698038b3baa944cee9dd9eb6a2797d1843fa20ff24c913f39c91990bf6",
+  "labels_sha256": "4c68636df086265dc99cd055562a9eae632be99e1ac0a338ffa22ff32ed9bb8d",
+  "cells": {
+   "0,1": {
+    "refused": "At the point, the phase of 4 of the 17 pairs is not reliable relative to the reference point, and the other pairs do not link all the dates into one network."
+   },
+   "0,2": {
+    "values": [
+     0.0,
+     0.055437661869974376,
+     0.056446456799150634,
+     0.05737223546075611,
+     -0.02916471141049524,
+     0.014905800448939133,
+     -0.009568593170482455,
+     -0.024984031449973434,
+     -0.04756066982199347,
+     -0.019056857001292987
+    ],
+    "pairs_used": 17
+   },
+   "0,3": {
+    "values": [
+     0.0,
+     0.012834961903651656,
+     0.023155565618076114,
+     0.00036873037468107485,
+     -0.04403193257641921,
+     0.029107115975509693,
+     0.021754217594165338,
+     -0.05816587884463726,
+     -0.038189231617179006,
+     -0.005469264004271717
+    ],
+    "pairs_used": 17
+   },
+   "0,4": {
+    "values": [
+     0.0,
+     0.026002260353507924,
+     -0.006666001181820153,
+     -0.03391278399190487,
+     -0.07566784845897949,
+     -0.022511964523893757,
+     -0.007908327749947602,
+     -0.07165555934023986,
+     -0.06393089661833669,
+     0.03423224521003394
+    ],
+    "pairs_used": 15
+   },
+   "0,5": {
+    "values": [
+     0.0,
+     0.012418636936423668,
+     0.0959433164460907,
+     0.10203714976330257,
+     0.07940800994290899,
+     0.07780021619999797,
+     0.099546043256788,
+     0.06046216906759682,
+     0.03489205808632827,
+     0.012006211773717797
+    ],
+    "pairs_used": 16
+   },
+   "0,6": {
+    "values": [
+     0.0,
+     0.02316116638849087,
+     0.010494506610241545,
+     -0.022477031258738046,
+     -0.12051965796407407,
+     -0.08348763197710818,
+     -0.08008151444141128,
+     -0.1708016150854157,
+     -0.16382967385507471,
+     -0.17406630977623316
+    ],
+    "pairs_used": 16
+   },
+   "0,7": {
+    "values": [
+     0.0,
+     -0.015585194277532504,
+     0.011798425197893871,
+     -0.060813007997126085,
+     -0.07435645563098209,
+     -0.04577342798372848,
+     -0.0024756751158094975,
+     -0.06553039315351324,
+     -0.046437838716270656,
+     -0.10839357071385304
+    ],
+    "pairs_used": 15
+   },
+   "1,0": {
+    "values": [
+     0.0,
+     0.038640781171241485,
+     0.04501516852806655,
+     0.04423548710523581,
+     -0.004334581112119675,
+     0.0121860984533235,
+     -0.019776052982833806,
+     -0.09562809966141274,
+     -0.10611747794646698,
+     -0.12272511455859493
+    ],
+    "pairs_used": 13
+   },
+   "1,1": {
+    "values": [
+     0.0,
+     0.003968905402065591,
+     0.010186659987280139,
+     -0.03091768017161182,
+     -0.0693957642718932,
+     -0.004094170068309894,
+     -0.017772625784945515,
+     -0.11037281107993993,
+     -0.11381454259684097,
+     -0.1193819283455685
+    ],
+    "pairs_used": 16
+   },
+   "1,2": {
+    "values": [
+     0.0,
+     0.054770379045368404,
+     0.07926148429593312,
+     0.07438957999744458,
+     0.026733408121478435,
+     0.10104970765381711,
+     0.07455373500687151,
+     0.04401794630561086,
+     0.06725606740648771,
+     0.07796229943844711
+    ],
+    "pairs_used": 16
+   },
+   "1,3": {
+    "values": [
+     0.0,
+     0.004093195748769995,
+     -0.00030229732768160075,
+     -0.03987340382924459,
+     -0.07333674377894214,
+     -0.07080648751018763,
+     -0.031326735610861904,
+     -0.11304370930589949,
+     -0.13217427799978987,
+     -0.09511252149347546
+    ],
+    "pairs_used": 14
+   },
+   "1,4": {
+    "values": [
+     0.0,
+     0.027034335487862233,
+     0.06532344040724432,
+     0.060518726628146585,
+     0.031070520119601652,
+     0.06449098828447258,
+     0.07798842080278708,
+     0.005987308343525281,
+     0.010959533671948558,
+     0.033800871068639736
+    ],
+    "pairs_used": 17
+   },
+   "1,5": {
+    "values": [
+     0.0,
+     0.0008342182852043906,
+     0.03253634652518544,
+     0.022640587256379414,
+     -0.04528940055888736,
+     0.026475190152021176,
+     0.024340395123866473,
+     -0.07001057069461775,
+     -0.06815921870109302,
+     -0.03146877467573602
+    ],
+    "pairs_used": 15
+   },
+   "1,6": {
+    "values": [
+     0.0,
+     0.03774901808461044,
+     0.01487048222338642,
+     0.042019418622989683,
+     -0.0002847536605178763,
+     -0.009124597809747606,
+     0.008130515106766736,
+     -0.04290389143106789,
+     -0.033369739049415044,
+     -0.034425447671511664
+    ],
+    "pairs_used": 16
+   },
+   "1,7": {
+    "values": [
+     0.0,
+     -0.030947519273535645,
+     -0.04659390635237926,
+     -0.0522324943220916,
+     -0.10725796870902933,
+     -0.1501235655611077,
+     -0.13341744888996082,
+     -0.15177941824491264,
+     -0.16151575079908995,
+     -0.17127222454815053
+    ],
+    "pairs_used": 14
+   },
+   "2,0": {
+    "values": [
+     0.0,
+     -0.006731944779049211,
+     -0.03303297986544424,
+     -0.07095393089104979,
+     -0.11992520013807119,
+     -0.11229313038415324,
+     -0.08362588139502702,
+     -0.10714787819556952,
+     -0.06059206136428142,
+     -0.09992340670712432
+    ],
+    "pairs_used": 15
+   },
+   "2,1": {
+    "values": [
+     0.0,
+     0.028770854299428935,
+     0.030601774229161643,
+     0.00504651891319049,
+     -0.04532620396787479,
+     -0.0010688822045209906,
+     -0.03564573237235167,
+     -0.07634946874346525,
+     -0.0330667325326128,
+     -0.08125041976695656
+    ],
+    "pairs_used": 16
+   },
+   "2,2": {
+    "values": [
+     0.0,
+     0.007065037210071534,
+     -0.0008753885028192963,
+     -0.010307068235646356,
+     0.01118509489289904,
+     0.02283929970971775,
+     0.049526694747829836,
+     0.024477690446969985,
+     0.05115753180370046,
+     0.07709407300871848
+    ],
+    "pairs_used": 16
+   },
+   "2,3": {
+    "values": [
+     0.0,
+     0.05027657532111147,
+     0.08528580237631488,
+     0.05157382601871226,
+     0.00915929542082572,
+     0.07988553939738968,
+     0.13867046596153762,
+     0.08960845643482279,
+     0.050793707259599925,
+     -0.011674251748125213
+    ],
+    "pairs_used": 14
+   },
+   "2,4": {
+    "values": [
+     0.0,
+     0.02900322883875496,
+     0.045248619699056115,
+     0.029297913051787434,
+     -0.03584084042440644,
+     -0.0069218462873830424,
+     0.02660759045115248,
+     0.027007778168691435,
+     -0.010215246779068637,
+     -0.05496289196216604
+    ],
+    "pairs_used": 14
+   },
+   "2,5": {
+    "values": [
+     0.0,
+     -0.04298091125582074,
+     -0.023736954954400515,
+     -0.04074255369264715,
+     -0.0668096527009474,
+     -0.06528733758096514,
+     -0.00990683826288193,
+     -0.09689748862576295,
+     -0.0559850774604582,
+     -0.016681797883826528
+    ],
+    "pairs_used": 15
+   },
+   "2,6": {
+    "values": [
+     0.0,
+     0.03440629652111538,
+     0.08951467343675235,
+     0.043765677274275036,
+     -0.018690853850376877,
+     -0.035780002416980226,
+     -0.03272616722549136,
+     -0.04481453023850989,
+     -0.10630108742252638,
+     -0.1066364192800568
+    ],
+    "pairs_used": 15
+   },
+   "2,7": {
+    "values": [
+     0.0,
+     -0.013190163430471613,
+     -0.012277872458736185,
+     -0.030521112944747766,
+     -0.09763999241967457,
+     -0.13987108703560297,
+     -0.1969242531295944,
+     -0.3057524008985241,
+     -0.3605239514591395,
+     -0.3543538098159849
+    ],
+    "pairs_used": 14
+   },
+   "3,0": {
+    "values": [
+     0.0,
+     0.028517403439137824,
+     0.07038177265320641,
+     0.017986044854966392,
+     -0.018889520586468915,
+     0.027001891515317972,
+     -0.019979084146581748,
+     -0.043870061916651534,
+     -0.06621918475268863,
+     -0.08070685992577163
+    ],
+    "pairs_used": 13
+   },
+   "3,1": {
+    "values": [
+     0.0,
+     0.006229487632572352,
+     -0.0019222011762887953,
+     0.030765218706979007,
+     -0.022713417573671305,
+     -0.029469386936720115,
+     0.02272797690022543,
+     -0.012034854829647012,
+     0.035200774977111556,
+     0.007516176195788487
+    ],
+    "pairs_used": 15
+   },
+   "3,2": {
+    "values": [
+     0.0,
+     0.005369938876788155,
+     0.05313833057429728,
+     0.04319465613565734,
+     -0.0005716029982158758,
+     0.022626542002316792,
+     0.02445118225760916,
+     0.014978128044095705,
+     -0.025726284590233805,
+     -0.03296094589887648
+    ],
+    "pairs_used": 14
+   },
+   "3,3": {
+    "values": [
+     0.0,
+     -0.03639668425285721,
+     -0.010818219656946671,
+     -0.039084316291189386,
+     -0.08164744397938171,
+     -0.051641041498298526,
+     -0.039834219816854664,
+     -0.08798327313094208,
+     -0.07893442974643912,
+     -0.08979815376935506
+    ],
+    "pairs_used": 16
+   },
+   "3,4": {
+    "values": [
+     0.0,
+     0.08221396752843167,
+     0.050558673910687205,
+     0.04299292813194585,
+     -0.01711856378038398,
+     0.0032009953626540998,
+     0.04732246906999342,
+     -0.006018914068829253,
+     -0.006597622414172827,
+     -0.020316819819514154
+    ],
+    "pairs_used": 17
+   },
+   "3,5": {
+    "values": [
+     0.0,
+     0.027334611971539812,
+     0.014854415141615203,
+     0.010521280193659728,
+     -0.02363055698122723,
+     0.018782505568994946,
+     0.020707989385696946,
+     -0.032055062927956464,
+     -0.010434339973858916,
+     -0.0037005802940480842
+    ],
+    "pairs_used": 16
+   },
+   "3,6": {
+    "values": [
+     0.0,
+     -0.011004780810104068,
+     -0.007956999043588797,
+     -0.024618655372328224,
+     -0.0910599539465508,
+     -0.10071349487586467,
+     -0.10446363929059273,
+     -0.1575985716189355,
+     -0.15639323773744124,
+     -0.2005598532961505
+    ],
+    "pairs_used": 14
+   },
+   "3,7": {
+    "values": [
+     0.0,
+     0.0018450860872663332,
+     0.025990740738005197,
+     0.023725130915847863,
+     -0.02137038982938534,
+     -0.03122995078419412,
+     -0.012439365654186437,
+     -0.09218920820119018,
+     -0.10139713071601003,
+     -0.13009429752179705
+    ],
+    "pairs_used": 15
+   },
+   "4,0": {
+    "values": [
+     0.0,
+     -0.004081050611186542,
+     -0.009176857732441658,
+     -0.045358008456319855,
+     -0.062230841272113285,
+     -0.08813171761167124,
+     -0.06654864239807115,
+     -0.06420316112446556,
+     -0.06485826340584076,
+     -0.12598975770038284
+    ],
+    "pairs_used": 16
+   },
+   "4,1": {
+    "refused": "At the point, the phase of 3 of the 17 pairs is not reliable relative to the reference point, and the other pairs do not link all the dates into one network."
+   },
+   "4,2": {
+    "values": [
+     0.0,
+     0.017921672539550276,
+     0.06513681952441394,
+     0.03837830648170614,
+     0.01061072169047775,
+     0.027958672877176165,
+     0.0416333359095191,
+     -0.00028502308592210415,
+     -0.003301159268946049,
+     -0.0196257520765371
+    ],
+    "pairs_used": 14
+   },
+   "4,3": {
+    "values": [
+     0.0,
+     0.005990462713946622,
+     -0.0284733542868652,
+     -0.11174910279645253,
+     -0.17289200049979195,
+     -0.1833367227590371,
+     -0.2067507617764981,
+     -0.22956599215002893,
+     -0.24228363608235695,
+     -0.27844073633325195
+    ],
+    "pairs_used": 16
+   },
+   "4,4": {
+    "values": [
+     0.0,
+     -0.04150212657875012,
+     -0.05860201154777604,
+     -0.0935271261221005,
+     -0.17061930542979453,
+     -0.1770148869583969,
+     -0.18665544397552927,
+     -0.27577257001938643,
+     -0.2498032373376705,
+     -0.24651655160185987
+    ],
+    "pairs_used": 17
+   },
+   "4,5": {
+    "values": [
+     0.0,
+     -0.0015179425694051426,
+     0.013866771457836583,
+     -0.016781050914679383,
+     -0.07439359176069132,
+     -0.059649473727666893,
+     -0.045456177414741464,
+     -0.08399215592791871,
+     -0.06444187167403109,
+     -0.07600828895406136
+    ],
+    "pairs_used": 15
+   },
+   "4,6": {
+    "values": [
+     0.0,
+     -0.025557639614709884,
+     -0.04601992895991782,
+     -0.0048156292764805035,
+     -0.03585370607362167,
+     -0.02754663252551909,
+     -0.0362709371208833,
+     -0.08668127647886638,
+     -0.04265999468775561,
+     -0.037221975643175004
+    ],
+    "pairs_used": 12
+   },
+   "4,7": {
+    "values": [
+     0.0,
+     0.012086582892755198,
+     0.004575071140630306,
+     -0.016348758711459986,
+     -0.08299885840323447,
+     -0.04306273491788284,
+     -0.08820652547107913,
+     -0.17775800732111233,
+     -0.15322473048795857,
+     -0.1268459778172474
+    ],
+    "pairs_used": 17
+   },
+   "5,0": {
+    "values": [
+     0.0,
+     -0.003936319466781958,
+     0.003916221349086036,
+     0.003332426533860013,
+     -0.053142719971856024,
+     0.037964131724982066,
+     0.06332994701210137,
+     0.030562845411615212,
+     0.026114611581480554,
+     0.02149012761775638
+    ],
+    "pairs_used": 15
+   },
+   "5,1": {
+    "values": [
+     0.0,
+     0.03257873260010339,
+     0.03839904683357862,
+     0.049110403618131224,
+     0.047480465439196165,
+     0.06294448529274128,
+     0.04902725162086632,
+     0.06221280321429132,
+     0.0360868726908478,
+     0.006177516771350481
+    ],
+    "pairs_used": 15
+   },
+   "5,2": {
+    "values": [
+     0.0,
+     -0.028159881047191106,
+     -0.020958150031550327,
+     -0.021137584722578553,
+     -0.06430518656964469,
+     -0.0038040094818786096,
+     0.05572069213696196,
+     0.02053072171116815,
+     0.028360228214645615,
+     0.02258844079322142
+    ],
+    "pairs_used": 13
+   },
+   "5,3": {
+    "values": [
+     0.0,
+     -0.00978774007985356,
+     0.003702045649934596,
+     -0.027075136218844477,
+     -0.08253876279437056,
+     -0.0839173938044071,
+     -0.09057092438252197,
+     -0.14806291868787777,
+     -0.10063269788901247,
+     -0.09009606404805189
+    ],
+    "pairs_used": 16
+   },
+   "5,4": {
+    "values": [
+     0.0,
+     0.03945190151115773,
+     -0.00591319055962881,
+     -0.04277126655293899,
+     -0.13489000899973466,
+     -0.12169989142741945,
+     -0.05764027265227821,
+     -0.16301940097424844,
+     -0.18861946224953952,
+     -0.15806275208744838
+    ],
+    "pairs_used": 16
+   },
+   "5,5": {
+    "values": [
+     0.0,
+     0.020057289194896223,
+     -0.0036773599983818206,
+     -0.08440617189277579,
+     -0.12580842372085707,
+     -0.10145406736229562,
+     -0.097688304813937,
+     -0.15277922193666366,
+     -0.1894017176285122,
+     -0.1817044231748435
+    ],
+    "pairs_used": 14
+   },
+   "5,6": {
+    "values": [
+     0.0,
+     0.017564398140159528,
+     0.03513243263667866,
+     0.01621363930861988,
+     -0.026189353857300104,
+     0.02339328196606173,
+     0.029944022235907825,
+     -0.04113785049510585,
+     -0.020756343081780135,
+     -0.03774727746616886
+    ],
+    "pairs_used": 16
+   },
+   "5,7": {
+    "values": [
+     0.0,
+     -0.011142041469270463,
+     -0.020004905105323476,
+     -0.004159707813145819,
+     -0.08138340317247424,
+     -0.02880306143384965,
+     -0.022373170531893506,
+     -0.07148415545769661,
+     -0.0355060189405473,
+     -0.06010401785223802
+    ],
+    "pairs_used": 17
+   }
+  }
+ }
+}

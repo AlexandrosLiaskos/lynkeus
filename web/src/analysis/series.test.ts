@@ -8,19 +8,27 @@ import {
   daysWords,
   FEWEST_LAYERS,
   firstChoice,
+  FREQUENCIES,
+  isRelative,
+  linksAllDates,
   majorRelease,
   missingOfSeries,
   MOST_LAYERS,
   NO_LAYERS,
+  noComponentsSentence,
+  noFrequencySentence,
+  pairDatesOf,
   PLACES,
   READS_AS,
+  REFERENCE_FAULTS,
   SERIES_TOOLS,
   seriesGroups,
   seriesTitle,
   SHEET_TOOLS,
+  UNLINKED,
   type SeriesChoices,
 } from "./series";
-import { coherence, laterTerm, term } from "./testLayers";
+import { coherence, components, GUNW_JUL, GUNW_PAIR, GUNW_SEP, laterTerm, phase, term } from "./testLayers";
 import { FINISHED_TOOLS } from "./tools";
 
 const read = (file: string) => readFileSync(`../api/src/lynkeus/${file}`, "utf8");
@@ -77,11 +85,11 @@ function choices(change: Partial<SeriesChoices> = {}): SeriesChoices {
   };
 }
 
-test("the Series tools are the two that the server offers, and each has a method sheet", () => {
-  expect(SERIES_TOOLS).toEqual(["backscatter-series", "coherence-series"]);
+test("the Series tools are the three that the server offers, and each has a method sheet", () => {
+  expect(SERIES_TOOLS).toEqual(["backscatter-series", "coherence-series", "displacement-series"]);
   expect(SHEET_TOOLS).toEqual([...FINISHED_TOOLS, ...SERIES_TOOLS]);
   expect(read("analysis/__init__.py")).toContain(
-    'SERIES_TOOLS: dict[str, SeriesFunction] = {\n    "backscatter-series": backscatter_series,\n    "coherence-series": coherence_series,\n}',
+    'SERIES_TOOLS: dict[str, SeriesFunction] = {\n    "backscatter-series": backscatter_series,\n    "coherence-series": coherence_series,\n    "displacement-series": displacement_series,\n}',
   );
   for (const tool of SERIES_TOOLS) {
     expect(readFileSync(`../docs/methods/${tool}.md`, "utf8")).toContain(`| Tool | \`${tool}\` `);
@@ -89,7 +97,11 @@ test("the Series tools are the two that the server offers, and each has a method
 });
 
 test("a Series tool reads the layers of the tool of one date, and the limits of the server on their number", () => {
-  expect(READS_AS).toEqual({ "backscatter-series": "backscatter-state", "coherence-series": "coherence-state" });
+  expect(READS_AS).toEqual({
+    "backscatter-series": "backscatter-state",
+    "coherence-series": "coherence-state",
+    "displacement-series": "displacement-state",
+  });
   const server = read("analysis/series.py");
   expect(server).toContain('_TERMS = re.compile(r"HHHH|HVHV|VHVH|VVVV|RHRH|RVRV")');
   expect(server).toContain(
@@ -226,4 +238,128 @@ test("the words of the form are short, and the faults of the point are those of 
   });
   expect(ANGLE_FAULTS.latitude).toBe(GO_TO_FAULTS.latitude);
   expect(ANGLE_FAULTS.longitude).toBe(GO_TO_FAULTS.longitude);
+});
+
+/** The layers Unwrapped phase and Connected components of three pairs of the pilot area. */
+const PHASE_SEP = phase({
+  id: "phase-sep",
+  title: "Unwrapped phase HH, 27 Sep 2026 to 9 Oct 2026",
+  dates: ["2026-09-27", "2026-10-09"],
+  inputs: [GUNW_SEP],
+});
+const PHASE_OCT = phase({ id: "phase-oct" });
+const PHASE_JUL = phase({
+  id: "phase-jul",
+  title: "Unwrapped phase HH, 17 Jul 2026 to 10 Aug 2026",
+  dates: ["2026-07-17", "2026-08-10"],
+  inputs: [GUNW_JUL],
+});
+const LABELS_SEP = components({ id: "labels-sep", dates: ["2026-09-27", "2026-10-09"], inputs: [GUNW_SEP] });
+const LABELS_OCT = components({ id: "labels-oct" });
+const LABELS_JUL = components({ id: "labels-jul", dates: ["2026-07-17", "2026-08-10"], inputs: [GUNW_JUL] });
+const SESSION = [PHASE_OCT, LABELS_OCT, PHASE_SEP, LABELS_SEP, PHASE_JUL, LABELS_JUL];
+
+function relative(change: Partial<SeriesChoices> = {}, session = SESSION): SeriesChoices {
+  return {
+    group: [PHASE_SEP, PHASE_OCT],
+    chosen: ["phase-sep", "phase-oct"],
+    place: "area",
+    latitude: "42.8",
+    longitude: "-71.0",
+    title: "Displacement at the bridge",
+    relative: { session, latitude: "42.7761", longitude: "71.0772 W" },
+    ...change,
+  };
+}
+
+test("only Surface displacement, Series is relative to a reference point, and it reads the layers of One pair", () => {
+  expect(SERIES_TOOLS.filter(isRelative)).toEqual(["displacement-series"]);
+  const [group, ...others] = seriesGroups("displacement-series", SESSION);
+  expect(others).toEqual([]);
+  expect(group?.name).toBe("unwrappedInterferogram/HH/unwrappedPhase, track 141, frame 67, descending, release P05");
+  expect(group?.layers.map((layer) => layer.id)).toEqual(["phase-jul", "phase-sep", "phase-oct"]);
+  expect(seriesTitle("displacement-series", [PHASE_SEP, PHASE_OCT])).toBe(
+    "Series of surface displacement HH, 27 Sep 2026 to 21 Oct 2026",
+  );
+});
+
+test("a series relative to a reference point sends each phase with its connected components, the point and the reference", () => {
+  const sound = checkSeries(relative());
+  expect(sound.faults).toEqual({
+    layers: null,
+    latitude: null,
+    longitude: null,
+    referenceLatitude: null,
+    referenceLongitude: null,
+    title: null,
+  });
+  expect(sound.inputs).toEqual({
+    inputs: ["phase-sep", "labels-sep", "phase-oct", "labels-oct"],
+    title: "Displacement at the bridge",
+    point: { longitude: -71, latitude: 42.8 },
+    reference: { longitude: -71.0772, latitude: 42.7761 },
+  });
+  // The place is always the point, whatever the choice of the place holds.
+  expect(checkSeries(relative({ place: "point" })).inputs).toEqual(sound.inputs);
+});
+
+test("the layers of a series relative to a reference point state the first fault of the server", () => {
+  const silent = { ...PHASE_OCT, frequency: null };
+  expect(checkSeries(relative({ group: [PHASE_SEP, silent] })).faults.layers).toBe(noFrequencySentence(silent));
+  expect(noFrequencySentence(PHASE_OCT)).toBe(
+    'The layer "Unwrapped phase HH, 9 Oct 2026 to 21 Oct 2026" does not record the frequency of the radar, so get it again with Get layer.',
+  );
+  const alone = checkSeries(relative({}, [PHASE_OCT, PHASE_SEP, LABELS_SEP]));
+  expect(alone.faults.layers).toBe(noComponentsSentence(PHASE_OCT));
+  expect(alone.inputs).toBeNull();
+  const wider = { ...PHASE_OCT, frequency: 1257500000 };
+  expect(checkSeries(relative({ group: [PHASE_SEP, wider] })).faults.layers).toBe(FREQUENCIES);
+  const gap = checkSeries(relative({ group: [PHASE_JUL, PHASE_SEP], chosen: ["phase-jul", "phase-sep"] }));
+  expect(gap.faults.layers).toBe(UNLINKED);
+  expect(UNLINKED).toBe(
+    "The chosen pairs do not link all their dates into one network, so add a pair that joins them.",
+  );
+  const nowhere = checkSeries(relative({ relative: { session: SESSION, latitude: "", longitude: "200" } }));
+  expect([nowhere.faults.referenceLatitude, nowhere.faults.referenceLongitude]).toEqual([
+    REFERENCE_FAULTS.latitude,
+    REFERENCE_FAULTS.longitude,
+  ]);
+  expect(missingOfSeries(nowhere.faults)).toBe(REFERENCE_FAULTS.latitude);
+  expect(missingOfSeries({ ...nowhere.faults, referenceLatitude: null })).toBe(REFERENCE_FAULTS.longitude);
+});
+
+test("the dates of a pair are read from the name of its file, and pairs link their dates through shared dates", () => {
+  expect(pairDatesOf(GUNW_PAIR)).toEqual(["2026-10-09", "2026-10-21"]);
+  expect(pairDatesOf(GUNW_JUL)).toEqual(["2026-07-17", "2026-08-10"]);
+  expect(pairDatesOf("gunw.tif")).toEqual([]);
+  expect(read("analysis/displacement.py")).toContain(
+    String.raw`_TIMES = re.compile(r"_(\d{8}T\d{6})_\d{8}T\d{6}_(\d{8}T\d{6})_\d{8}T\d{6}_")`,
+  );
+  expect(
+    linksAllDates([
+      ["a", "b"],
+      ["b", "c"],
+      ["c", "d"],
+    ]),
+  ).toBe(true);
+  expect(
+    linksAllDates([
+      ["c", "d"],
+      ["a", "b"],
+      ["b", "c"],
+    ]),
+  ).toBe(true);
+  expect(
+    linksAllDates([
+      ["a", "b"],
+      ["c", "d"],
+    ]),
+  ).toBe(false);
+  expect(
+    linksAllDates([
+      ["a", "b"],
+      ["c", "d"],
+      ["a", "d"],
+    ]),
+  ).toBe(true);
 });

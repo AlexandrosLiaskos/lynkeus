@@ -4,7 +4,7 @@ import { beforeEach, expect, test } from "vitest";
 import { Ribbon } from "../ribbon/Ribbon";
 import { dockStore, resetDock } from "../shared/dock/dock";
 import { useAnalysisActions } from "./actions";
-import { ANALYSIS_TAB, DISPLACEMENT_STATE } from "./tab";
+import { ANALYSIS_TAB, DISPLACEMENT_SERIES, DISPLACEMENT_STATE } from "./tab";
 import { SHEET_TOOLS } from "./series";
 
 /** The Analysis tab as the page holds it: its buttons with their actions. */
@@ -19,7 +19,7 @@ function buttonsOf(group: string): HTMLElement[] {
 
 beforeEach(resetDock);
 
-test("exactly the buttons of the nine finished tools have an action", () => {
+test("exactly the buttons of the ten finished tools have an action", () => {
   const actions = renderHook(useAnalysisActions).result.current;
   expect(Object.keys(actions)).toEqual([
     "backscatter-state",
@@ -31,6 +31,7 @@ test("exactly the buttons of the nine finished tools have an action", () => {
     "soil-moisture-change",
     "backscatter-series",
     "coherence-series",
+    "displacement-series",
   ]);
   expect(Object.keys(actions)).toEqual([...SHEET_TOOLS]);
   const declared = ANALYSIS_TAB.groups.flatMap(({ tools }) => tools.map(({ id }) => id));
@@ -40,7 +41,7 @@ test("exactly the buttons of the nine finished tools have an action", () => {
   }
 });
 
-test("the nine finished buttons are active, and every other button of the tab is inactive", () => {
+test("the ten finished buttons are active, and every other button of the tab is inactive", () => {
   render(<AnalysisTab />);
   const inactive = Object.fromEntries(
     ANALYSIS_TAB.groups.map(({ label }) => [
@@ -51,7 +52,7 @@ test("the nine finished buttons are active, and every other button of the tab is
   expect(inactive).toEqual({
     Backscatter: [false, false, false, true],
     Coherence: [false, false, false, true],
-    "Surface displacement": [false, true, true, true],
+    "Surface displacement": [false, true, false, true],
     "Soil moisture": [false, false, true, true],
   });
 });
@@ -60,7 +61,7 @@ test("the button of a finished tool opens the tool pane of that tool, and an ina
   render(<AnalysisTab />);
   const [oneDate, change, series] = buttonsOf("Backscatter");
   const [onePair, coherenceChange, coherenceSeries] = buttonsOf("Coherence");
-  const [displacement, displacementChange] = buttonsOf("Surface displacement");
+  const [displacement, displacementChange, displacementSeries] = buttonsOf("Surface displacement");
   const [moisture, moistureChange, , moistureMap] = buttonsOf("Soil moisture");
   if (
     !oneDate ||
@@ -71,6 +72,7 @@ test("the button of a finished tool opens the tool pane of that tool, and an ina
     !coherenceSeries ||
     !displacement ||
     !displacementChange ||
+    !displacementSeries ||
     !moisture ||
     !moistureChange ||
     !moistureMap
@@ -101,14 +103,16 @@ test("the button of a finished tool opens the tool pane of that tool, and an ina
   expect(dockStore.get().tools).toEqual(all);
   await userEvent.click(displacement);
   expect(dockStore.get().tools).toEqual([...all, "displacement-state"]);
+  await userEvent.click(displacementSeries);
+  expect(dockStore.get().tools).toEqual([...all, "displacement-state", "displacement-series"]);
 });
 
-test("the button One pair of Surface displacement says in one sentence what its map shows", () => {
+test("the buttons One pair and Series of Surface displacement say in one sentence what they show", () => {
   const group = ANALYSIS_TAB.groups.find(({ label }) => label === "Surface displacement");
   expect(group?.tools.map(({ id, description }) => [id, description])).toEqual([
     ["displacement-state", DISPLACEMENT_STATE],
     ["displacement-change", "Maps the change in surface displacement between two pairs of dates."],
-    ["displacement-series", "Plots the surface displacement of many pairs of dates, at a point or for the area."],
+    ["displacement-series", DISPLACEMENT_SERIES],
     [
       "displacement-map",
       "Maps classes that a published algorithm of the NISAR science team derives from the surface displacement.",
@@ -118,6 +122,10 @@ test("the button One pair of Surface displacement says in one sentence what its 
     "Maps the movement of the ground toward or away from the radar between the two dates of one pair.",
   );
   expect(DISPLACEMENT_STATE).toMatch(/^[A-Z][^.]*\.$/);
+  expect(DISPLACEMENT_SERIES).toBe(
+    "Plots the movement of the ground at a point over many dates, relative to a reference point.",
+  );
+  expect(DISPLACEMENT_SERIES).toMatch(/^[A-Z][^.]*\.$/);
 });
 
 test("the buttons of the three new tools say in one sentence what the tool maps", () => {
