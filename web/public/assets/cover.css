@@ -1,0 +1,23 @@
+/*
+ * The dark ground of the first paint. It covers the window from the moment the page is read until the welcome
+ * screen stands, so that neither an empty white window nor the application shows for a moment before it. The
+ * welcome screen removes it. Its colour is the ground of the welcome screen.
+ */
+#cover {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  background: #040610;
+}
+
+/* Without JavaScript the ground stays, and the sentence of the page stands on it. */
+noscript {
+  position: fixed;
+  z-index: 1001;
+  top: 45%;
+  right: 0;
+  left: 0;
+  color: #fff;
+  font-family: system-ui, sans-serif;
+  text-align: center;
+}
