@@ -76,10 +76,7 @@ export function Welcome({ load = visits }: WelcomeProps) {
   return (
     <dialog ref={dialog} className="welcome" aria-labelledby={titleId} onClick={onClick}>
       <div className="welcome-poster">
-        <p className="welcome-mark">
-          <img src="/assets/lynkeus-mark.svg" alt="" />
-          Team Lynkeus
-        </p>
+        <img className="welcome-mark" src="/assets/lynkeus-mark.svg" alt="" />
         <header className="welcome-masthead">
           <p className="welcome-kind">{WELCOME.kind}</p>
           <h2 className="welcome-title" id={titleId} ref={title} tabIndex={-1}>
@@ -99,7 +96,7 @@ export function Welcome({ load = visits }: WelcomeProps) {
           <section className="welcome-team">
             <h3 className="welcome-label">Research team</h3>
             <ul>
-              {WELCOME.team.map(({ name, initials, address, label }) => (
+              {WELCOME.team.map(({ name, photo, initials, address, label }) => (
                 <li key={name}>
                   <a
                     href={address}
@@ -107,9 +104,13 @@ export function Welcome({ load = visits }: WelcomeProps) {
                     title={address.replace(/^mailto:/, "")}
                     {...(address.startsWith("mailto:") ? {} : { target: "_blank", rel: "noreferrer" })}
                   >
-                    <span className="welcome-avatar" aria-hidden="true">
-                      {initials}
-                    </span>
+                    {photo === null ? (
+                      <span className="welcome-avatar" aria-hidden="true">
+                        {initials}
+                      </span>
+                    ) : (
+                      <img className="welcome-avatar" src={`/assets/welcome/${photo}`} alt="" />
+                    )}
                     <span className="welcome-name">{name}</span>
                   </a>
                 </li>
