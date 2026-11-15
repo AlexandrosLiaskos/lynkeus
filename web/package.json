@@ -15,8 +15,11 @@
     "format": "prettier --check .",
     "lint": "eslint .",
     "style": "stylelint \"src/**/*.scss\"",
-    "types": "tsc",
-    "test": "vitest run"
+    "types": "tsc && tsc -p e2e",
+    "test": "vitest run",
+    "browsers": "playwright test",
+    "loading": "lhci collect && lhci collect --additive --settings.preset=desktop && lhci upload",
+    "bundle-map": "LYNKEUS_BUNDLE_MAP=1 vite build"
   },
   "dependencies": {
     "@fontsource/eb-garamond": "5.3.0",

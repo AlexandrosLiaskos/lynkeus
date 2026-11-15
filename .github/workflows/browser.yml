@@ -1,0 +1,76 @@
+name: Browser checks
+
+on:
+  push:
+    branches: [main]
+    paths: ["web/**", ".github/workflows/browser.yml"]
+  pull_request:
+    paths: ["web/**", ".github/workflows/browser.yml"]
+  workflow_dispatch:
+    inputs:
+      address:
+        description: Address of a running site to check instead of the built files, for example https://lynkeus.nkua.cloud
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  browsers:
+    name: Browsers (Playwright, axe-core, Lighthouse)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: web
+    env:
+      LYNKEUS_ADDRESS: ${{ inputs.address }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install the packages
+        run: npm ci
+      - name: Install the browsers
+        run: npx playwright install --with-deps chromium firefox webkit
+      - name: Build
+        run: npm run build
+      - name: Flows in Chromium, Firefox and WebKit
+        run: npm run browsers
+      # The loading report and the bundle map only report: they have no limit that fails the run.
+      - name: Loading (Lighthouse, 3 runs as a phone and 3 runs as a desktop computer)
+        if: ${{ !cancelled() }}
+        run: npm run loading
+      - name: Bundle map
+        if: ${{ !cancelled() }}
+        run: npm run bundle-map
+      - name: Keep the report of the flows
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: web/playwright-report
+          retention-days: 14
+      - name: Keep the findings of the flows
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: findings
+          path: web/findings
+          retention-days: 14
+      - name: Keep the loading report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report
+          path: web/lighthouse-report
+          retention-days: 14
+      - name: Keep the bundle map
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-map
+          path: web/bundle-map
+          retention-days: 14
