@@ -371,7 +371,7 @@ export const METHODS: Record<Sheet, Method> = {
       },
       {
         name: "Checked",
-        text: "With three areas on a backscatter result and a coherence result of the pilot area, `gdal raster zonal-stats` of GDAL 3.12.2 counts the same cells and gives the same lowest value, median and highest value, and the mean and the standard deviation agree to 12 decimal places (lower Merrimack River, Oct 2026).",
+        text: "With three areas on a backscatter result and a coherence result of the pilot area, `gdal raster zonal-stats` of GDAL 3.12.2 counts the same cells, with the same values, and gives the same lowest and highest value. The median of the values that it lists is the same, and the mean and the standard deviation agree to 12 decimal places (lower Merrimack River, Oct 2026).",
       },
       {
         name: "References",
