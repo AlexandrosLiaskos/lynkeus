@@ -1,35 +1,69 @@
 @use "uswds-core" as uswds;
+@use "../shared/tokens/tokens";
 
-// The status bar: one row under the map, in the colours of the ribbon. The figures have one width each, and
-// every value stands in a field of one width, so the bar keeps its form while the values change.
+// The status bar: one row under the map, in the colours of the ribbon and in the small text of the page. The
+// figures have one width each, and every value stands in a field of one width, so the bar keeps its form while
+// the values change. In a window that is too narrow for one row, the items go on to a second row and none is
+// left out or shortened.
 .statusbar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  column-gap: 0.75rem;
-  min-height: 1.625rem;
-  padding: 0 0.5rem;
+  min-height: tokens.$row;
+  // The line before the first item of a row stands one pixel outside the bar and is not drawn. The list of
+  // scales, which opens upwards, is not clipped.
+  overflow-x: clip;
   border-top: 1px solid uswds.color("base-light");
   background: uswds.color("base-lightest");
-  color: uswds.color("ink");
-  font-size: 0.75rem;
+  color: tokens.$ink;
+  font-size: tokens.$text-small;
   font-variant-numeric: tabular-nums;
-  line-height: 1.5rem;
+  line-height: tokens.$target;
 }
 
-// A part of the bar: a name and its value. In a window that is too narrow for one row, the parts go on to a
-// second row and none is left out.
+// A short line of 12 pixels stands between two items of the bar, 8 pixels from the text on each side.
+@mixin separated {
+  position: relative;
+  margin: 0 0 0 -1px;
+  padding: 0 tokens.$space-2;
+
+  &::before {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 1px;
+    height: tokens.$space-3;
+    background: uswds.color("base-light");
+    content: "";
+    transform: translateY(-50%);
+  }
+}
+
+// An item of the bar: its name and its value, 8 pixels apart, in one line.
 .statusbar-item {
+  @include separated;
+
   display: flex;
   align-items: center;
-  gap: 0.375rem;
-  min-height: 1.625rem;
+  gap: tokens.$space-2;
+  min-height: tokens.$row;
   white-space: nowrap;
 }
 
-// The parts from this one on stand at the right end of the bar.
-.statusbar-item--end {
+// The credits of the layers are the last item of the bar.
+.statusbar > .credits {
+  @include separated;
+}
+
+// The state of loading and the items after it stand at the right end of the bar. The state is one word, shown
+// only while the map loads, so no line stands before it or after it.
+.statusbar-loading {
   margin-left: auto;
+}
+
+.statusbar-loading::before,
+.statusbar-loading + *::before {
+  content: none;
 }
 
 // The name of the projection, its code and the brackets around the code stand together as one text.
@@ -38,13 +72,14 @@
 }
 
 .statusbar-label {
-  color: uswds.color("base-dark");
+  color: tokens.$secondary;
 }
 
-// A long name of a layer is cut, so that the value beside it stays in the bar.
+// A long name of a layer is shortened, so that the value beside it stays in the bar. The name of the item
+// gives it in full.
 .statusbar-layer-name {
   overflow: hidden;
-  max-width: 16rem;
+  max-width: 12rem;
   text-overflow: ellipsis;
 }
 
@@ -70,26 +105,34 @@
 
 .statusbar-scale-field,
 .statusbar-select {
-  height: 1.5rem;
+  height: tokens.$target;
   border: 1px solid uswds.color("base");
   border-radius: 0.125rem;
   background-color: uswds.color("white");
-  color: uswds.color("ink");
+  color: tokens.$ink;
   font: inherit;
   font-variant-numeric: tabular-nums;
 }
 
 .statusbar-scale-field {
   width: 7.5rem;
-  padding: 0 1.5rem 0 0.25rem;
+  padding: 0 tokens.$target 0 tokens.$space-1;
 }
 
 .statusbar-select {
   padding: 0 0.125rem;
 }
 
+// A window up to 1440 pixels wide shows the projection by its code alone, which leaves room for the other items
+// at a width of 1280 pixels. The name of the item gives the full name of the projection.
+@media (max-width: 90em) {
+  .statusbar-projection-name {
+    display: none;
+  }
+}
+
 // In a narrow window the list of formats stands beside the scale, on the first row, so that the format chosen
-// stays readable, and the projection shows its code alone.
+// stays readable.
 @media (max-width: 40em) {
   .statusbar-scale {
     order: -2;
@@ -97,10 +140,6 @@
 
   .statusbar-format {
     order: -1;
-  }
-
-  .statusbar-projection-name {
-    display: none;
   }
 }
 
@@ -111,17 +150,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: tokens.$target;
+  height: tokens.$target;
   padding: 0;
   border: 0;
   background: none;
-  color: uswds.color("base-dark");
+  color: tokens.$muted;
   cursor: pointer;
 }
 
+.statusbar-scale-open .usa-icon {
+  width: tokens.$icon;
+  height: tokens.$icon;
+}
+
 .statusbar-scale-open:hover {
-  color: uswds.color("ink");
+  color: tokens.$ink;
 }
 
 // The list of scales opens upwards, over the map.
@@ -145,30 +189,33 @@
 }
 
 .statusbar-scale-list li {
-  padding: 0 0.25rem;
+  padding: 0 tokens.$space-1;
   cursor: pointer;
 }
 
 .statusbar-scale-list li:hover {
-  background: uswds.color("base-lighter");
+  background: tokens.$hover;
 }
 
+// The scale that the arrow keys have reached is shaded in grey and carries a line of 2 pixels in the primary
+// colour, as an element with the keyboard focus does. It is not filled in blue, which marks a chosen element.
+// The keyboard focus itself stays in the field, so the line is drawn here.
 .statusbar-scale-list li[aria-selected="true"] {
-  background: uswds.color("primary");
-  color: uswds.color("white");
+  background: tokens.$hover;
+  box-shadow: inset 0 0 0 2px tokens.$link;
 }
 
 .statusbar-button {
-  height: 1.5rem;
-  padding: 0 0.375rem;
+  height: tokens.$target;
+  padding: 0 tokens.$space-2;
   border: 1px solid uswds.color("base");
   border-radius: 0.125rem;
   background: uswds.color("white");
-  color: uswds.color("ink");
+  color: tokens.$ink;
   font: inherit;
   cursor: pointer;
 }
 
 .statusbar-button:hover {
-  background: uswds.color("base-lighter");
+  background: tokens.$hover;
 }

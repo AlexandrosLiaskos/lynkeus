@@ -2,7 +2,7 @@ import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, expect, test, vi } from "vitest";
 import { HOVER_DELAY } from "../shared/tooltip/Tooltip";
-import { Ribbon } from "./Ribbon";
+import { NOT_YET_AVAILABLE, reasonOf, Ribbon } from "./Ribbon";
 import type { RibbonTab } from "./types";
 
 const TABS: readonly RibbonTab[] = [
@@ -69,6 +69,36 @@ test("every button is described by its sentence, and an unfinished one also by t
     document.getElementById(screen.getByRole("button", { name }).getAttribute("aria-describedby") ?? "")?.textContent;
   expect(describe("Ready")).toBe("Does its work.");
   expect(describe("Later")).toBe("Will do its work. Not yet available.");
+});
+
+test("the reason of an inactive button is that it is not finished, or what a finished button still needs", () => {
+  expect(reasonOf(undefined)).toBe(NOT_YET_AVAILABLE);
+  expect(reasonOf({ run: vi.fn() })).toBeUndefined();
+  expect(reasonOf({ run: vi.fn(), missing: "Select a layer." })).toBe("Select a layer.");
+});
+
+test("a finished button that lacks something is inactive, says what it lacks and does not run", async () => {
+  const run = vi.fn();
+  render(<Ribbon tabs={TABS} actions={{ ready: { run, missing: "Select a layer in the Contents pane." } }} />);
+  const ready = screen.getByRole("button", { name: "Ready" });
+  expect(ready.getAttribute("aria-disabled")).toBe("true");
+  const tip = document.getElementById(ready.getAttribute("aria-describedby") ?? "")?.parentElement;
+  expect(tip?.textContent).toBe("ReadyDoes its work. Select a layer in the Contents pane.");
+  await userEvent.click(ready);
+  expect(run).not.toHaveBeenCalled();
+});
+
+test("the description of every button reads its name first and then its sentence", () => {
+  render(<Ribbon tabs={TABS} actions={{ ready: { run: vi.fn() } }} />);
+  const tips = screen.getAllByRole("tooltip", { hidden: true });
+  expect(tips.map((tip) => [tip.firstElementChild?.tagName, tip.textContent])).toEqual([
+    ["STRONG", "ReadyDoes its work."],
+    ["STRONG", "LaterWill do its work. Not yet available."],
+    [
+      "STRONG",
+      "Collapse the ribbon (Ctrl+F1)Hides the groups of buttons and leaves the row of tabs, as a double click on a tab does.",
+    ],
+  ]);
 });
 
 test("the description shows on keyboard focus and hides on the Escape key", async () => {
@@ -305,8 +335,9 @@ test("the button that collapses the ribbon works with the keyboard and stays pre
   render(<Ribbon tabs={TWO_GROUPS} actions={{}} />);
   const collapse = screen.getByRole("button", { name: "Collapse the ribbon" });
   expect(collapse.getAttribute("aria-pressed")).toBe("false");
+  expect(collapse.getAttribute("aria-keyshortcuts")).toBe("Control+F1");
   expect(document.getElementById(collapse.getAttribute("aria-describedby") ?? "")?.textContent).toBe(
-    "Hides the groups of buttons and leaves the row of tabs. Ctrl+F1 and a double click on a tab do the same.",
+    "Hides the groups of buttons and leaves the row of tabs, as a double click on a tab does.",
   );
   collapse.focus();
   await userEvent.keyboard("{Enter}");

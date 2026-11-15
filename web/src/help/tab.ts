@@ -9,6 +9,12 @@ export const HELP_TAB = {
       label: "Help",
       tools: [
         {
+          id: "help-getting-started",
+          label: "Getting started",
+          icon: "help_outline",
+          description: "Lists the steps of the work in order, each with the button that opens its tool.",
+        },
+        {
           id: "help-methods",
           label: "Methods",
           icon: "science",
@@ -24,7 +30,8 @@ export const HELP_TAB = {
           id: "help-about",
           label: "About",
           icon: "info_outline",
-          description: "States the version, the members, the licence and the citation of Lynkeus.",
+          description:
+            "States the version, the team, the licence and the citation of Lynkeus, and the data that it stores.",
         },
       ],
     },

@@ -1,38 +1,61 @@
 @use "uswds-core" as uswds;
+@use "../shared/tokens/tokens";
 
-// The style of the elements of the Help tab.
+// The style of the elements of the Help tab. The sizes, the distances and the colours come from `shared/tokens`,
+// and the lists of names and values, the sections and the rows of a list bring their own style.
 
-.about h3,
-.sources h3 {
-  margin: 1rem 0 0.375rem;
-  font-size: inherit;
+// The pane Getting started. A step is a row of the shared list: its number or its check mark, and beside it the
+// name of the step, one sentence and its button.
+.start-step {
+  gap: tokens.$space-2;
+  padding: tokens.$space-2 0;
+  border-left: 0;
 }
 
-.about ul {
+// The number of a step, or the check mark of a step whose result exists, in a column of 24 pixels.
+.start-step-mark {
+  display: flex;
+  flex: none;
+  justify-content: center;
+  width: tokens.$target;
+  color: tokens.$secondary;
+  font-size: tokens.$text;
+  line-height: tokens.$line;
+}
+
+// The check mark has the green of a success of the design system, in the height of the line of the name.
+.start-step-mark--done {
+  align-items: center;
+  height: calc(#{tokens.$text} * #{tokens.$line});
+  color: uswds.color("success-dark");
+}
+
+.start-step-mark .usa-icon {
+  width: tokens.$icon;
+  height: tokens.$icon;
+}
+
+// The button of a step stands 8 pixels under its sentence, and the links of the step beside the button.
+.start-step-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: tokens.$space-1 tokens.$space-3;
+  margin-top: tokens.$space-2;
+}
+
+// The dialog About: two paragraphs, the facts, and the sections.
+.about > p {
+  margin: 0 0 tokens.$space-2;
+}
+
+.about-statements {
   margin: 0;
-  padding-left: 1.25rem;
+  padding-left: tokens.$space-4;
 }
 
-.about li + li {
-  margin-top: 0.375rem;
-}
-
-// The facts stand in two columns: the name of a fact and, beside it, the fact. A long address breaks where the
-// column ends.
-.about-facts {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  gap: 0.25rem 1rem;
-  margin: 0.75rem 0 0;
-}
-
-.about-facts dt {
-  color: uswds.color("base-dark");
-}
-
-.about-facts dd {
-  margin: 0;
-  overflow-wrap: anywhere;
+.about-statements li + li {
+  margin-top: tokens.$space-2;
 }
 
 // The table of the sources has five columns, which need more width than a dialog has. A dialog that holds the
@@ -48,17 +71,34 @@
   grid-template-columns: minmax(0, 1fr);
 }
 
-.sources p {
-  margin: 0;
-}
-
 .sources .usa-table-container--scrollable {
   margin: 0;
 }
 
+// The table takes the text of the dialog and the distances of the grid of 4 pixels.
 .sources .usa-table {
   width: 100%;
-  font-size: inherit;
+  margin: 0;
+  color: tokens.$ink;
+  font-size: tokens.$text;
+  line-height: tokens.$line;
+}
+
+.sources .usa-table :is(th, td) {
+  padding: tokens.$space-1 tokens.$space-2;
+  vertical-align: top;
+}
+
+// The head of a column is written as the name of a property is: in the small text and the colour of secondary
+// text. The name of a source is the title of its row.
+.sources .usa-table thead th {
+  color: tokens.$secondary;
+  font-size: tokens.$text-small;
+  font-weight: normal;
+}
+
+.sources .usa-table tbody th {
+  font-weight: bold;
 }
 
 // The scrollable frame of the design system keeps the text of a cell in one line. Here it breaks into lines, so
