@@ -4,7 +4,9 @@ import { beforeEach, expect, test, vi } from "vitest";
 import { copyText } from "../shared/clipboard";
 import type { LayerDescription } from "../shared/layer";
 import { addToMap, mapLayersStore } from "../shared/mapLayers";
-import { PropertiesWindow, wholeAddress } from "./Properties";
+import { serversStore } from "../shared/servers";
+import { LABORATORY, OFFICE, SERVERS } from "../servers/testServers";
+import { keptRow, PropertiesWindow, wholeAddress } from "./Properties";
 import { propertiesStore } from "./state";
 
 vi.mock("../shared/clipboard", () => ({ copyText: vi.fn() }));
@@ -66,6 +68,7 @@ beforeEach(() => {
   vi.mocked(copyText).mockReset().mockResolvedValue(undefined);
   mapLayersStore.set([]);
   propertiesStore.set(null);
+  serversStore.set(null);
 });
 
 test("the window lists the properties in four groups: the layer, the projection and grid, the file and the record", async () => {
@@ -92,6 +95,7 @@ test("the window lists the properties in four groups: the layer, the projection 
   expect(namesOf("Projection and grid")).toEqual(["Projection", "Size", "Cell size (m)", "Extent (m)"]);
   expect(namesOf("File")).toEqual([
     "Address",
+    "Kept on",
     "Reduced copies",
     "Value without data",
     "Lowest value",
@@ -177,7 +181,7 @@ test("a layer of a product has no method, and one product file is named without 
 test("while the file is read a notice says so, and the rest of the list is shown", async () => {
   show(RESULT);
   expect(screen.getByRole("status").textContent).toBe("Reading the file of the layer.");
-  expect(namesOf("File")).toEqual(["Address"]);
+  expect(namesOf("File")).toEqual(["Address", "Kept on"]);
   await screen.findByText("EPSG:32619");
   expect(screen.queryByText("Reading the file of the layer.")).toBeNull();
 });
@@ -198,4 +202,23 @@ test("a file that cannot be read is named in a notice, and the list keeps the la
 test("without a layer the window is closed", () => {
   const { container } = render(<PropertiesWindow />);
   expect(container.querySelector("dialog")?.open).toBe(false);
+});
+
+const fileOn = (server: string) => `/api/servers/${server}/files/fedcba9876543210fedcba9876543210/coherence.tif`;
+
+test("the file of a layer says which server keeps it", () => {
+  expect(keptRow("/files/change/coherence.tif", SERVERS.servers).value).toBe("Project server");
+  expect(keptRow(fileOn(OFFICE.id), SERVERS.servers).value).toBe('Your server "Office computer"');
+  expect(keptRow(fileOn(LABORATORY.id), SERVERS.servers).value).toBe(
+    'Your server "Laboratory server", which is not connected',
+  );
+  expect(keptRow(fileOn(OFFICE.id), []).value).toBe("An own server");
+});
+
+test("the window names the own server that keeps the file of a layer", async () => {
+  serversStore.set(SERVERS);
+  show({ ...RESULT, url: fileOn(OFFICE.id), record: fileOn(OFFICE.id).replace(".tif", ".json") });
+  await screen.findByText("EPSG:32619");
+  expect(valueOf("File", "Kept on")).toBe('Your server "Office computer"');
+  expect(valueOf("File", "Address")).toBe(fileOn(OFFICE.id));
 });
