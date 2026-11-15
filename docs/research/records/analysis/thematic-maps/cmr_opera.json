@@ -1,0 +1,118 @@
+{
+ "read_utc": "2026-11-15T09:55:05.863576+00:00",
+ "DSWX": [
+  [
+   "C2949811996-POCLOUD",
+   "OPERA_L3_DSWX-S1_V1",
+   null
+  ],
+  [
+   "C2617126679-POCLOUD",
+   "OPERA_L3_DSWX-HLS_V1",
+   null
+  ],
+  [
+   "C3294057315-ASF",
+   "OPERA_L3_DISP-S1_V1",
+   null
+  ],
+  [
+   "C3362919273-POCLOUD",
+   "OPERA_DSWX-S1_CALVAL_V1",
+   null
+  ]
+ ],
+ "OPERA_L3_DSWX*": [
+  [
+   "C2949811996-POCLOUD",
+   "OPERA_L3_DSWX-S1_V1",
+   null
+  ],
+  [
+   "C2617126679-POCLOUD",
+   "OPERA_L3_DSWX-HLS_V1",
+   null
+  ]
+ ],
+ "OPERA DIST": [
+  [
+   "C2746980408-LPCLOUD",
+   "OPERA_L3_DIST-ALERT-HLS_V1",
+   null
+  ],
+  [
+   "C2519119034-LPCLOUD",
+   "OPERA_L3_DIST-ANN-HLS_V1",
+   null
+  ],
+  [
+   "C4090131664-ASF",
+   "OPERA_L3_DIST-ALERT-S1_V1",
+   null
+  ],
+  [
+   "C3294057315-ASF",
+   "OPERA_L3_DISP-S1_V1",
+   null
+  ]
+ ],
+ "OPERA_L3_DISP*": [
+  [
+   "C3294057315-ASF",
+   "OPERA_L3_DISP-S1_V1",
+   null
+  ],
+  [
+   "C3959290248-ASF",
+   "OPERA_L3_DISP-S1-STATIC_V1",
+   null
+  ]
+ ],
+ "dswx_sar_releases": [
+  [
+   "DSWx-NI-v1.0",
+   "2026-10-07T19:03:58Z",
+   "DSWx-NI-v1.0"
+  ],
+  [
+   "DSWx-NI-v0.4.2",
+   "2026-09-09T17:01:37Z",
+   "DSWx-NI-v0.4.2"
+  ],
+  [
+   "DSWx-NI-v0.4.1",
+   "2026-07-21T21:09:05Z",
+   "DSWx-NI-v0.4.1"
+  ],
+  [
+   "DSWx-NI-v0.4",
+   "2026-06-01T23:36:00Z",
+   "DSWx-NI-v0.4"
+  ],
+  [
+   "DSWx-NI-v0.3.1",
+   "2026-05-13T00:49:03Z",
+   "DSWx-NI-v0.3.1 Gamma Patch Release"
+  ],
+  [
+   "v1.2",
+   "2025-12-06T01:01:28Z",
+   "DSWx-S1-v1.2 Final second patch release"
+  ],
+  [
+   "DSWx-NI-v0.3",
+   "2025-12-04T20:35:56Z",
+   "DSWx-NI-v0.3.0 Gamma release"
+  ],
+  [
+   "uavsar_gcov_sample",
+   "2025-09-24T01:45:40Z",
+   "uavsar_gcov_sample"
+  ]
+ ],
+ "dswx_sar_repo": {
+  "license": "Apache-2.0",
+  "pushed_at": "2026-10-15T05:55:31Z",
+  "default_branch": "main"
+ }
+}
