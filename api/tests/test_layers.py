@@ -38,14 +38,20 @@ def test_layer_description_is_read_and_written_in_the_same_form() -> None:
     layer = LayerDescription.model_validate(LAYER)
     assert layer.dates == (date(2026, 10, 20),)
     assert layer.range == (-25.0, 0.0)
-    assert layer.model_dump(mode="json") == {**LAYER, "ends": None, "range": [-25.0, 0.0]}
+    assert layer.model_dump(mode="json") == {**LAYER, "ends": None, "frequency": None, "range": [-25.0, 0.0]}
 
 
 def test_layer_stored_without_the_name_of_its_layer_is_read() -> None:
     stored = {name: value for name, value in LAYER.items() if name != "layer"}
     layer = LayerDescription.model_validate(stored)
     assert layer.layer is None
-    assert layer.model_dump(mode="json") == {**stored, "layer": None, "ends": None, "range": [-25.0, 0.0]}
+    assert layer.model_dump(mode="json") == {
+        **stored,
+        "layer": None,
+        "ends": None,
+        "frequency": None,
+        "range": [-25.0, 0.0],
+    }
     assert LayerDescription.model_validate_json(layer.model_dump_json()) == layer
 
 
@@ -188,3 +194,23 @@ def test_tool_run_is_read() -> None:
 def test_wrong_tool_run_is_rejected(change: dict[str, Any]) -> None:
     with pytest.raises(ValidationError):
         ToolRun.model_validate({"tool": "backscatter-change", "inputs": ["a"], "title": "Change", **change})
+
+
+def test_layer_received_from_nasa_may_carry_the_centre_frequency_of_its_radar_band() -> None:
+    assert "frequency" not in LAYER
+    assert LayerDescription.model_validate(LAYER).frequency is None
+    layer = LayerDescription.model_validate({**LAYER, "frequency": 1239000000.0})
+    assert layer.frequency == 1239000000.0
+    assert layer.model_dump(mode="json")["frequency"] == 1239000000.0
+
+
+@pytest.mark.parametrize("frequency", [0, -1239000000.0, "L band", float("inf")])
+def test_centre_frequency_that_is_not_a_number_above_zero_is_rejected(frequency: Any) -> None:
+    with pytest.raises(ValidationError):
+        LayerDescription.model_validate({**LAYER, "frequency": frequency})
+
+
+def test_result_of_a_tool_has_no_centre_frequency() -> None:
+    assert LayerDescription.model_validate(RESULT).frequency is None
+    with pytest.raises(ValidationError, match="it has no centre frequency of a radar band"):
+        LayerDescription.model_validate({**RESULT, "frequency": 1239000000.0})

@@ -640,3 +640,148 @@ def test_client_checks_certificates_against_the_file_that_the_environment_names(
     assert harmony._client(TOKEN).session.verify == "/etc/authority-of-curl.pem"
     monkeypatch.setenv("REQUESTS_CA_BUNDLE", "/etc/authority.pem")
     assert harmony._client(None).session.verify == "/etc/authority.pem"
+
+
+PAIR = "granule-gunw"
+PHASE = "unwrappedInterferogram/HH/unwrappedPhase"
+SMALL = Area(west=-71, south=42.75, east=-70.95, north=42.8)
+
+
+def attribute(name: str, description: str, unit: str, value: str) -> str:
+    """Write an additional attribute as the ISO XML file of a NISAR product writes it."""
+    return f"""
+        <eos:additionalAttribute>
+          <eos:EOS_AdditionalAttribute>
+            <eos:reference>
+              <eos:EOS_AdditionalAttributeDescription>
+                <eos:name>
+                  <eos:CharacterString>{name}</eos:CharacterString>
+                </eos:name>
+                <eos:description>
+                  <eos:CharacterString>{description}</eos:CharacterString>
+                </eos:description>
+                <eos:parameterUnitsOfMeasure>
+                  <eos:CharacterString>{unit}</eos:CharacterString>
+                </eos:parameterUnitsOfMeasure>
+              </eos:EOS_AdditionalAttributeDescription>
+            </eos:reference>
+            <eos:value>
+              <eos:CharacterString>{value}</eos:CharacterString>
+            </eos:value>
+          </eos:EOS_AdditionalAttribute>
+        </eos:additionalAttribute>"""
+
+
+BANDWIDTH = attribute("range bandwidth", "processed range bandwidth - frequency A", "Hz", "40000000.0")
+CENTRE = attribute("center frequency", "center frequency of the processed image - frequency A", "Hz", "1239000000.0")
+
+
+class WithMetadata(Harmony):
+    """A stand-in for the client of Harmony that also hands over the ISO XML file of the product."""
+
+    def __init__(self, file: Path, text: str | Exception) -> None:
+        super().__init__(file)
+        self.text = text
+        self.fetched: list[str] = []
+
+    def download(self, address: str, directory: str, overwrite: bool) -> "Future[str]":
+        if not address.endswith(".iso.xml"):
+            return super().download(address, directory, overwrite)
+        self.fetched.append(address)
+        future: Future[str] = Future()
+        if isinstance(self.text, Exception):
+            future.set_exception(self.text)
+        else:
+            target = Path(directory) / "product.h5.iso.xml"
+            target.write_text(f"<gmd:DS_Series>{self.text}</gmd:DS_Series>", encoding="utf-8")
+            future.set_result(str(target))
+        return future
+
+
+def phase(monkeypatch: pytest.MonkeyPatch, folder: Path, text: str | Exception, layer: str = PHASE) -> tuple[Any, Any]:
+    """Receive a layer of the pair of the pilot area with a stand-in that holds the text of its ISO XML file."""
+    file = (
+        "gunw-connectedcomponents-20261009-20261021.tif"
+        if "connected" in layer
+        else "gunw-unwrappedphase-20261009-20261021.tif"
+    )
+    visit = Visit(monkeypatch, folder, file, PAIR)
+    visit.client = WithMetadata(LAYERS / file, text)
+    description = visit.get(product="GUNW", granule=record(PAIR)["umm"]["GranuleUR"], layer=layer, area=SMALL)
+    return description, visit.client
+
+
+def test_phase_of_an_interferogram_carries_the_centre_frequency_of_its_product(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    description, client = phase(monkeypatch, tmp_path, BANDWIDTH + CENTRE)
+    assert description.unit == "rad"
+    assert description.frequency == 1239000000.0
+    name = record(PAIR)["umm"]["GranuleUR"]
+    assert len(client.fetched) == 1
+    assert client.fetched[0].startswith("https://")
+    assert client.fetched[0].endswith(f"/{name}.h5.iso.xml")
+    assert sorted(path.suffix for path in tmp_path.iterdir()) == [".json", ".tif"]
+
+
+def test_layer_of_a_backscatter_product_is_received_without_the_centre_frequency(visit: Visit) -> None:
+    assert visit.get().frequency is None
+
+
+@pytest.mark.parametrize(
+    "layer",
+    [
+        "unwrappedInterferogram/HH/connectedComponents",
+        "unwrappedInterferogram/HH/ionospherePhaseScreen",
+        "unwrappedInterferogram/HH/ionospherePhaseScreenUncertainty",
+    ],
+)
+def test_iso_xml_file_is_fetched_for_the_unwrapped_phase_only(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, layer: str
+) -> None:
+    description, client = phase(monkeypatch, tmp_path, CENTRE, layer)
+    assert description.layer == layer
+    assert description.frequency is None
+    assert client.fetched == []
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "",
+        BANDWIDTH,
+        CENTRE + CENTRE,
+        attribute("center frequency", "center frequency of the processed image - frequency B", "Hz", "1293500000.0"),
+        attribute("center frequency", "center frequency of the processed image - frequency A", "MHz", "1239.0"),
+        attribute("center frequency", "center frequency of the processed image - frequency A", "Hz", "unknown"),
+        attribute("center frequency", "center frequency of the processed image - frequency A", "Hz", "0.0"),
+        attribute("center frequency", "center frequency of the processed image - frequency A", "Hz", "nan"),
+        OSError("the archive did not answer"),
+    ],
+)
+def test_phase_is_received_without_a_centre_frequency_that_the_product_does_not_state_once(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, text: str | Exception
+) -> None:
+    description, client = phase(monkeypatch, tmp_path, text)
+    assert description.unit == "rad"
+    assert description.frequency is None
+    assert len(client.fetched) == 1
+
+
+@pytest.mark.parametrize(
+    "address", [None, "http://nisar.asf.earthdatacloud.nasa.gov/p.h5.iso.xml", "https://example.org/p.h5.iso.xml"]
+)
+def test_iso_xml_file_is_fetched_only_from_a_nasa_host_over_https(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, address: str | None
+) -> None:
+    visit = Visit(monkeypatch, tmp_path, "gunw-unwrappedphase-20261009-20261021.tif", PAIR)
+    client = WithMetadata(LAYERS / "gunw-unwrappedphase-20261009-20261021.tif", CENTRE)
+    visit.client = client
+    found = record(PAIR)
+    found["umm"]["RelatedUrls"] = [link for link in found["umm"]["RelatedUrls"] if not link["URL"].endswith(".iso.xml")]
+    if address is not None:
+        found["umm"]["RelatedUrls"].append({"URL": address, "Type": "EXTENDED METADATA"})
+    visit.catalogue.records = [found]
+    description = visit.get(product="GUNW", granule=found["umm"]["GranuleUR"], layer=PHASE, area=SMALL)
+    assert description.frequency is None
+    assert client.fetched == []
