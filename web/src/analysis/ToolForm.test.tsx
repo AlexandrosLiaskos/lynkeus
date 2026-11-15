@@ -105,11 +105,14 @@ test("the foot states that the result was computed, and where it is", () => {
     layer: "result-1",
   });
   const listed = runOf(STARTED, [done]);
-  expect(listed).toMatchObject({ state: "success", text: "The result was computed. The Catalog pane lists it." });
+  expect(listed).toMatchObject({
+    state: "success",
+    text: "The result was computed. The section Layers of the Catalog pane lists it.",
+  });
   expect(listed && "action" in listed ? listed.action?.label : null).toBe("Show the Catalog pane");
   expect(runOf(STARTED, [done], new Set(["result-1"]))).toMatchObject({
     state: "success",
-    text: "The result was computed. It is on the map and in the Catalog pane.",
+    text: "The result was computed. It is on the map and in the section Layers of the Catalog pane.",
   });
 });
 
@@ -382,7 +385,7 @@ test("a finished job is stated at the foot, with the link to the Catalog pane", 
   await userEvent.click(runButton());
   server.change("job-1", { status: "successful", message: "The result is ready.", progress: 100, layer: "result-1" });
   await act(loadJobs);
-  expect(screen.getByText("The result was computed. The Catalog pane lists it.")).toBeDefined();
+  expect(screen.getByText("The result was computed. The section Layers of the Catalog pane lists it.")).toBeDefined();
   expect(screen.getByRole("button", { name: "Show the Catalog pane" })).toBeDefined();
   expect(screen.getByRole("button", { name: "View details" })).toBeDefined();
 });

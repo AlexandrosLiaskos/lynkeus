@@ -42,7 +42,7 @@ import {
  * words of the method sheet.
  */
 export const ABOUT = {
-  tool: "The tool computes its result on the server of Lynkeus, as a job, from layers that the session has received. The Catalog pane lists the job and the result. The section Method gives the reference of the method and how to read the result.",
+  tool: "The tool computes its result on the server of Lynkeus, as a job, from layers that the session has received. The Catalog pane lists the job in its section Jobs and the result in its section Layers. The section Method gives the reference of the method and how to read the result.",
   input:
     "The list holds the layers of the session that the tool reads. A layer is received from a NISAR product with Get layer.",
   first:
@@ -130,8 +130,8 @@ export function runOf(
   }
   const place =
     typeof job.layer === "string" && onMap.has(job.layer)
-      ? "It is on the map and in the Catalog pane."
-      : "The Catalog pane lists it.";
+      ? "It is on the map and in the section Layers of the Catalog pane."
+      : "The section Layers of the Catalog pane lists it.";
   return {
     state: "success",
     text: `The result was computed. ${place}`,
