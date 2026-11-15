@@ -1,10 +1,11 @@
 import { expect, test } from "vitest";
 import { VIEW_TAB } from "./tab";
 
-test("the View tab holds the groups Windows and Show, with their buttons in order", () => {
+test("the View tab holds the groups Windows, Show and Options, with their buttons in order", () => {
   expect(VIEW_TAB.groups.map(({ label, tools }) => [label, tools.map((tool) => tool.label)])).toEqual([
     ["Windows", ["Contents", "Catalog", "Reset panes", "Full screen"]],
     ["Show", ["Status bar"]],
+    ["Options", ["Storage"]],
   ]);
 });
 
