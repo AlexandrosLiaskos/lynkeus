@@ -31,13 +31,15 @@ export const DATA_TAB = {
           id: "search-products",
           label: "Search products",
           icon: "search",
-          description: "Finds NISAR products by type, area, period, orbit and radar properties, or by name.",
+          description:
+            "Finds NISAR products in NASA's catalogue by type, area, period, orbit and radar properties, or by name, and lists them in the Catalog pane.",
         },
         {
           id: "get-layer",
           label: "Get layer",
           icon: "save_alt",
-          description: "Requests layers of the selected product from NASA, each clipped to the area.",
+          description:
+            "Requests from NASA layers of a product found with Search products, each clipped to an area, and needs a sign-in to Earthdata.",
         },
       ],
     },

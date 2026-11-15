@@ -4,6 +4,7 @@ import { dockStore, resetDock } from "../shared/dock/dock";
 import { messagesStore } from "../shared/messages/messages";
 import { useDataActions } from "./actions";
 import { resetSession, sessionStore } from "./session";
+import { DATA_TAB } from "./tab";
 import { earthdata } from "./testSignIn";
 
 beforeEach(() => {
@@ -47,4 +48,13 @@ test("the button Sign out says that nobody is signed in, and sends nothing", () 
   expect(messagesStore.get().map(({ kind, text }) => [kind, text])).toEqual([
     ["info", "You are not signed in to Earthdata."],
   ]);
+});
+
+test("the description of Get layer says what the tool needs", () => {
+  const tools = DATA_TAB.groups.flatMap((group) => [...group.tools]);
+  const description = (id: string) => tools.find((tool) => tool.id === id)?.description;
+  expect(description("get-layer")).toBe(
+    "Requests from NASA layers of a product found with Search products, each clipped to an area, and needs a sign-in to Earthdata.",
+  );
+  expect(description("search-products")).toMatch(/lists them in the Catalog pane\.$/);
 });

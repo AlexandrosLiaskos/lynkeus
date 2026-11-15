@@ -86,9 +86,7 @@ export function EarthdataAccount() {
       </button>
       {menuOpen ? (
         <div className="account-menu" id={`${id}-menu`}>
-          <p className="account-menu-text">
-            Signed in to Earthdata as <strong>{user}</strong>
-          </p>
+          <p className="account-menu-text">Signed in to Earthdata as {user}</p>
           <button type="button" className="account-menu-command" onClick={onSignOut}>
             <Icon name="logout" />
             Sign out
