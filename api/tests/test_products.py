@@ -121,12 +121,12 @@ def test_product_of_the_side_band_alone_has_no_layers() -> None:
     assert product.layers == ()
 
 
-def test_product_of_a_beta_collection_has_no_layers() -> None:
+def test_product_of_a_beta_collection_has_the_layers_of_a_validated_one() -> None:
     beta = record("granule-gcov")
     beta["meta"]["collection-concept-id"] = BETA_COLLECTIONS["GCOV"].concept_id
     product = product_from_record(beta)
     assert (product.maturity, product.channels) == ("Beta", ("HH", "HV"))
-    assert product.layers == ()
+    assert product.layers == product_from_record(record("granule-gcov")).layers != ()
 
 
 def test_soil_moisture_product_is_provisional_and_states_no_bandwidth() -> None:

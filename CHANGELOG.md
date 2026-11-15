@@ -8,6 +8,7 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 
 ### Added
 
+- Get layer receives the layers of beta products, and the description of a layer states the level of validation of its product.
 - The site of the project, with the team log as a web page that is generated from its Markdown file.
 - The service that counts page visits and stores only their total.
 - The files that deploy Lynkeus in containers and publish the team log whenever its file changes.
@@ -94,6 +95,14 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The dialog Methods of the Help tab, with the method sheet of each finished analysis tool.
 - The words at the two ends of the legend of a result of Backscatter, Change, decrease and increase, which
   the Contents pane writes beside the lowest and the highest value.
+- The work that is kept in the browser: the bookmarks, the view of the map, the panes, the area, the form of
+  the search and the layers of the map return when the page opens again. The pane Browser storage, which
+  the button Storage of the tab Options opens, switches each part on and off, states the size of its stored
+  copy and clears it.
+- The welcome window of the application page, shown when the page opens: the name and a description of the
+  platform, three facts of the NISAR satellite, the team, the developer of the site, the total of recorded page
+  visits, and the event with the logos of NASA, the NASA Space Apps Challenge and the universities of the team.
+- The mark of the team as the black silhouette of a lynx, in the title bar and the welcome window.
 
 ### Changed
 
@@ -144,6 +153,9 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   under a layer of data.
 - The form of the search is filled when its pane, or the pane of Get layer, first opens. The area of the
   search is therefore not on the map, nor in the Contents pane, when the page loads.
+- The forms of the Analysis tab show only the layer, the name of the result, the box that adds the result to
+  the map and a link Method. The page Methods of the Help tab shows for each tool eight short rows, which
+  stand in a new section In brief of its method sheet, and the address of the full sheet.
 
 ### Removed
 

@@ -9,6 +9,8 @@ import { BasemapItem, MAP_ROW_ID } from "./BasemapItem";
 import { LayerItem, nameButtonId, type LayerRowProps } from "./LayerItem";
 import { listedLayers, placeLayer, placeOf } from "./order";
 import { ShapeLayerItem } from "./ShapeLayerItem";
+// The layers of the map are kept in the browser from the moment at which the Contents pane is loaded.
+import "./storedLayers";
 import { useLayerDrawing } from "./useLayerDrawing";
 
 /** A row of the list: a layer of `mapLayersStore`, or a shape layer that another part of the interface draws. */

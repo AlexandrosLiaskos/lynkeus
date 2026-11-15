@@ -28,11 +28,11 @@ export const ABOUT = {
     licence: "Apache-2.0",
   },
   /**
-   * What the code does: `web/src/map/bookmarks.ts` keeps the bookmarks, and no other file of `web/src` uses the
-   * storage of the browser or a cookie.
+   * What the code does: `web/src/shared/storage/storage.ts` keeps the parts of the work that seven files declare,
+   * and no other file of `web/src` uses the storage of the browser or a cookie.
    */
   applicationStores:
-    "The page of the application keeps in the local storage of the browser the views of the map that the user has saved under a name, and nothing else.",
+    "The page of the application keeps in the local storage of the browser the parts of the work that the user lets it keep: the bookmarks, the view of the map, the panes, the area, the form of the search, the layers of the map and the marker of a counted visit. The pane Browser storage of the Options tab lists them, switches each one off and clears it.",
   /** What `api/src/lynkeus/routes.py` does: three of its addresses create a session. */
   sessionStarts:
     "The web service creates a session when it is asked whether the visitor is signed in to Earthdata, when the visitor signs in, and when the visitor starts a job.",

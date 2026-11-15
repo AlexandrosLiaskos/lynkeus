@@ -109,7 +109,7 @@ COLLECTIONS: Mapping[ProductType, tuple[Collection, ...]] = {
 }
 """The validated and the provisional collection of each product type. No validated soil moisture exists yet.
 
-Lynkeus receives the layers of the products of these collections.
+A search without a choice of level reads these collections.
 """
 
 BETA_COLLECTIONS: Mapping[ProductType, Collection] = {
@@ -118,7 +118,7 @@ BETA_COLLECTIONS: Mapping[ProductType, Collection] = {
     "GOFF": Collection("NISAR_L2_GOFF_BETA_V1", "C2850263910-ASF", "Beta"),
     "SME2": Collection("NISAR_L3_SME2_BETA_V1", "C2850265000-ASF", "Beta"),
 }
-"""The beta collection of each product type. Its products are searched, and no layer of them is received."""
+"""The beta collection of each product type. Its products are searched when the user chooses the beta level."""
 
 _SEARCHED: Mapping[ProductType, tuple[Collection, ...]] = {
     product: (*collections, BETA_COLLECTIONS[product]) for product, collections in COLLECTIONS.items()
@@ -547,20 +547,17 @@ def _attributes(umm: Mapping[str, Any]) -> dict[str, Any]:
     return {attribute["Name"]: attribute["Values"] for attribute in umm["AdditionalAttributes"]}
 
 
-def _layers(
-    product: ProductType, maturity: Maturity, bands: Sequence[str], channels: Sequence[str]
-) -> tuple[ProductLayer, ...]:
+def _layers(product: ProductType, bands: Sequence[str], channels: Sequence[str]) -> tuple[ProductLayer, ...]:
     """List the layers of a product that Lynkeus receives.
 
-    A product of a beta collection has none, because Lynkeus receives layers
-    from the validated and the provisional collections alone. The layers of a
-    GCOV, GUNW or GOFF product are those of its main frequency band (A), so a
-    product whose record states only the side band has none.
+    The layers of a GCOV, GUNW or GOFF product are those of its main
+    frequency band (A), so a product whose record states only the side band
+    has none. The level of validation of the product does not change them.
     """
     # The module of the layers reads this module, so it is imported here and not at the top.
     from lynkeus.harmony import layers_of
 
-    if maturity == "Beta" or (product != "SME2" and bands and "A" not in bands):
+    if product != "SME2" and bands and "A" not in bands:
         return ()
     return tuple(
         ProductLayer(name=layer.name, title=layer.title, spacing=layer.spacing)
@@ -632,7 +629,7 @@ def product_from_record(record: Mapping[str, Any]) -> Product:
                 tuple((point["Longitude"], point["Latitude"]) for point in polygon["Boundary"]["Points"])
                 for polygon in polygons
             ),
-            layers=_layers(product, collection.maturity, bands, channels),
+            layers=_layers(product, bands, channels),
         )
     except (KeyError, IndexError, TypeError, ValueError, ValidationError) as error:
         raise CatalogueError(f"a record of the catalogue could not be read: {error!r}") from error

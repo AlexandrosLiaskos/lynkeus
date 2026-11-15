@@ -71,11 +71,13 @@
 @use "contents/contents";
 @use "statusbar/statusbar";
 @use "view/view";
+@use "options/options";
 @use "share/share";
 @use "data/data";
 @use "catalog/catalog";
 @use "analysis/analysis";
 @use "help/help";
+@use "welcome/welcome";
 
 // The elements stand one under the other. The map and the panes beside it
 // take the height that the others leave.

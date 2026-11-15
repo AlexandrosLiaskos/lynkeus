@@ -5,6 +5,8 @@ import { panesStore, resetPanes, setPaneOpen, type PaneId } from "../shared/pane
 import { useStore } from "../shared/store";
 import { statusBarStore } from "../statusbar/state";
 import { canFillScreen, toggleFullScreen, useFullScreenElement } from "./fullScreen";
+// The panes are kept in the browser from the moment at which the View tab is loaded.
+import "./storedPanes";
 import type { ViewToolId } from "./tab";
 
 /**

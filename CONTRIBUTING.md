@@ -24,7 +24,7 @@ The code has three parts, and each folder belongs to one of them.
 | Part | Folders |
 |---|---|
 | Map | `web/src/map/`, `web/src/contents/`, `web/src/statusbar/`, `web/src/view/`, `web/src/share/` |
-| Data | `web/src/data/`, `web/src/catalog/`, `api/src/lynkeus/` except `analysis/` |
+| Data | `web/src/data/`, `web/src/catalog/`, `web/src/options/`, `api/src/lynkeus/` except `analysis/` |
 | Analysis | `web/src/analysis/`, `web/src/help/`, `api/src/lynkeus/analysis/`, `api/tests/analysis/`, `docs/methods/` |
 
 A change stays inside the folders of one part. The files that the parts share are changed only by the
