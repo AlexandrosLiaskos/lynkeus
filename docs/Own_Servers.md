@@ -77,11 +77,17 @@ removed the server; the program then forgets the pairing and starts a new one.
 | `POST /api/link/tasks/{id}/done` | `Done` | 204; 404 when the task is unknown or already answered |
 | `POST /api/link/tasks/{id}/bytes` | The bytes, `application/octet-stream`, with the header `Lynkeus-File-Size` (size of the whole file in bytes) | 204; 404 as above |
 | `POST /api/link/tasks/{id}/failure` | `ReadFailure` | 204; 404 as above |
+| `POST /api/link/leave` | none | 204 |
 
 The program keeps one question for tasks open at all times and asks again as soon as it is answered.
 It sends a report when it starts, whenever the state of a job changes (at most once a second) and at
 least every `REPORT_PAUSE` seconds. A server counts as connected for `CONNECTED_TIME` seconds after its
 last message. A report names a job until the project server has answered it with 204.
+
+The program sends `POST /api/link/leave` when it is quit. The project server then counts that server as not
+connected at once, until its next message: the list of the servers, the automatic choice, a request for a
+file and a new job behave as for a server that is not connected. The open question of the program ends
+with an empty list, and the tasks that wait stay for the return of the server.
 
 | Task | The own server | Answer |
 |---|---|---|
@@ -111,6 +117,10 @@ record holds as dismissed or not at all, `remove` for the layer of such a job wh
 of that name, and `limits` when a report states other limits than the owner set on the site. After the
 owner removed a server, its next question for tasks within `CONNECTED_TIME` seconds receives `forget`, and
 every other request with its key receives 401.
+
+When the web service is stopped, it answers every open question for tasks, and every request that waits
+for an answer of an own server, at once with 503 and one sentence. The program asks again, as after any
+other failure of the connection.
 
 ### A server that stops reporting
 
