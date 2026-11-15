@@ -2,7 +2,7 @@
 
 from lynkeus import mapdata
 
-__version__ = "0.1.1"
+__version__ = "0.1.0"
 
 OTHER_MAP_DATA = mapdata.use_own_map_data()
 """The variables of the environment that named the map data of another program, before the package named its own.

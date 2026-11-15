@@ -1,6 +1,6 @@
 {
   "name": "lynkeus-web",
-  "version": "0.1.1",
+  "version": "0.1.0",
   "private": true,
   "description": "Interface of Lynkeus.",
   "license": "Apache-2.0",
