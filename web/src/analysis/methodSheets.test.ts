@@ -161,7 +161,7 @@ function oneLine(text: string): string {
 test("the rows Limits of the soil moisture tools carry the share of cells that the products do not recommend", () => {
   // The research note gives the share for the cells of the pilot box that hold a value, and names the bit.
   expect(oneLine(SOIL_NOTE)).toContain(
-    "The products mark 97.9 % to 98.7 % of the cells of the pilot box that hold a value as not recommended",
+    "The provisional products mark 97.9 % to 98.7 % of the cells of the pilot box that hold a value as not recommended",
   );
   expect(oneLine(SOIL_NOTE)).toContain("The least significant bit indicates whether the retrieval is recommended");
   for (const tool of ["soil-moisture-state", "soil-moisture-change", "soil-moisture-series"] as const) {
@@ -170,7 +170,9 @@ test("the rows Limits of the soil moisture tools carry the share of cells that t
   }
   for (const tool of ["soil-moisture-state", "soil-moisture-change"] as const) {
     const limits = rowOf(METHODS[tool], "Limits");
-    expect(limits).toContain("The products themselves mark most cells as not recommended: 97.9 % to 98.7 %");
+    expect(limits).toContain(
+      "The provisional products themselves mark most cells as not recommended: 97.9 % to 98.7 %",
+    );
     expect(limits).toContain("lowest bit of the layer `retrievalQualityFlag`");
     expect(limits).toContain("so the tool leaves most of that area empty");
     expect(rowOf(METHODS[tool], "Result").toLowerCase()).toContain("the result states how many cells were left out");

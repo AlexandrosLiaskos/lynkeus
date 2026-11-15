@@ -5,7 +5,7 @@
 | Tool | `soil-moisture-state` (Analysis tab, group Soil moisture, button One date) |
 | NISAR product | SME2, Level-3 Soil Moisture on the 200 m EASE-Grid 2.0 |
 | Result | Volumetric soil moisture of one date, in cubic metres of water in a cubic metre of soil (m3 m-3) |
-| State | The comparison (D-17) was made on 15 Nov 2026 on the layers of the pilot area that NASA Harmony delivered on that day, against `gdal raster calc` of GDAL 3.12.2 with the rule of the retrieval quality flag: every cell is equal, on nine provisional dates, two beta dates and three whole frames. The products are provisional (collection `NISAR_L3_SME2_PROVISIONAL_V1`) and beta (collection `NISAR_L3_SME2_BETA_V1`); a search of the NASA catalogue for the short name `NISAR_L3_SME2_V1` gave no product for the pilot area on that day. The products mark 97.9 % to 98.7 % of the cells of the pilot area that hold a value as not recommended, and the tool leaves those cells out (section Input layers). |
+| State | The comparison (D-17) was made on 15 Nov 2026 on the layers of the pilot area that NASA Harmony delivered on that day, against `gdal raster calc` of GDAL 3.12.2 with the rule of the retrieval quality flag: every cell is equal, on nine provisional dates, two beta dates and three whole frames. The products are provisional (collection `NISAR_L3_SME2_PROVISIONAL_V1`) and beta (collection `NISAR_L3_SME2_BETA_V1`); a search of the NASA catalogue for the short name `NISAR_L3_SME2_V1` gave no product for the pilot area on that day. The provisional products mark 97.9 % to 98.7 % of the cells of the pilot area that hold a value as not recommended, the two beta products none, and the tool leaves the marked cells out (section Input layers). |
 
 ## In brief
 
@@ -16,8 +16,8 @@
 | Formula | The layer of the product in the cells whose flag has the lowest bit 0; every other cell is left out. The mission computes the soil moisture as the mean of the retrievals of up to three algorithms. |
 | Result | Cubic metres of water in a cubic metre of soil (m3 m-3). The legend runs from 0.02 to 0.60 m3 m-3 for every date, from light yellow to dark blue. The result states how many cells were left out. |
 | How to read | A higher value is a wetter soil. The mission states for the product the soil layer from 0 to 5 cm and an accuracy goal of 0.06 m3 m-3 where the vegetation is not dense. |
-| Limits | The products themselves mark most cells as not recommended: 97.9 % to 98.7 % of the cells with a value in the test area (lowest bit of the layer `retrievalQualityFlag`), so the tool leaves most of that area empty. The flag does not say why a retrieval is not recommended. Only provisional and beta products existed for the test area on 15 Nov 2026. |
-| Checked | The result equals that of the program `gdal raster calc` of GDAL 3.12.2 with the rule of the flag in every cell, on nine dates of the test area (lower Merrimack River, 23 Jun to 9 Oct 2026), two beta dates and three whole frames. The received layers equal the product files. |
+| Limits | The provisional products themselves mark most cells as not recommended: 97.9 % to 98.7 % of the cells with a value in the test area (lowest bit of the layer `retrievalQualityFlag`), so the tool leaves most of that area empty; the two beta products mark none. The flag does not say why a retrieval is not recommended. Only provisional and beta products existed for the test area on 15 Nov 2026. |
+| Checked | The result equals that of the program `gdal raster calc` of GDAL 3.12.2 with the rule of the flag in every cell, on nine dates of the test area (lower Merrimack River, 23 Jun to 9 Oct 2026), two beta dates and three whole frames. The received layers equal the product files on the three dates whose product files were read (15 Sep, 27 Sep and 9 Oct 2026). |
 | References | [NISAR L3 SME2 Product Specification, JPL D-107677 Rev C](https://nisar-docs.asf.alaska.edu/product-specification/). [NISAR L3 Soil Moisture ATBD, JPL D-107679 Release 3.3](https://nisar-docs.asf.alaska.edu/atbd/). |
 
 ## Reference
@@ -91,15 +91,17 @@ moisture were left out, for example "28,638 of the 29,238 cells with a soil mois
 because NISAR marks their retrieval as not recommended."; the foot of the tool pane, the Catalog
 pane and the Contents pane show it, and the record of the result repeats it in its lineage.
 
-Measured on 15 Nov 2026 on the layers received for the box of the pilot area: the products mark
-97.9 % to 98.7 % of the cells that hold a soil moisture as not recommended, on each of the nine
+Measured on 15 Nov 2026 on the layers received for the box of the pilot area: the products mark 97.9
+% to 98.7 % of the cells that hold a soil moisture as not recommended, on each of the nine
 provisional dates of track 141, frame 67 (`docs/research/analysis-soil-moisture.md`, part 8.4). In
 the whole frame of 9 Oct 2026, 693,642 of the 704,710 cells with a soil moisture (98.4 %) are marked
-so. In the box, every cell that the products recommend has the surface flag 0, and about 97.7 % of
-the cells that they do not recommend have bit 8 of the surface flag set, which neither the ATBD nor
-the specification Rev C names (part 8.1 of the note). The two beta products hold a soil moisture in
-682 and 326 cells of the box and mark none of them as not recommended. In every layer received the
-flag holds a value exactly where the soil moisture does.
+so. On the three dates whose product files were read (15 Sep, 27 Sep and 9 Oct 2026), every cell of
+the box that the products recommend has the surface flag 0, and about 97.7 % of the cells that they
+do not recommend have bit 8 of the surface flag set; the two documents that were read, the ATBD (JPL
+D-107679, Release 3.3) and the specification Rev C (JPL D-107677), do not explain that bit (part 8.1
+of the note). The two beta products hold a soil moisture in 682 and 326 cells of the box and mark
+none of them as not recommended. In every layer received the flag holds a value exactly where the
+soil moisture does.
 
 ### What the tool refuses
 
@@ -261,12 +263,13 @@ The exact numbers of the comparison are in `docs/research/analysis-soil-moisture
 
 ## Not yet confirmed
 
-1. What bit 8 of the surface flag marks. The products set it in about 97.7 % of the cells of the
-   pilot box that they do not recommend, and neither the ATBD nor the specification Rev C names it
-   (`docs/research/analysis-soil-moisture.md`, part 8.1). If it marks a condition under which the
-   mission still retrieves a soil moisture, such as dense vegetation, those cells could be shown
-   with a mark instead of being left out. The decision of 15 Nov 2026 leaves out every cell whose
-   bit 0 is 1 (Alexandros).
+1. What bit 8 of the surface flag marks. On the three dates whose product files were read, the
+   products set it in about 97.7 % of the cells of the pilot box that they do not recommend, and the
+   two documents that were read, the ATBD (JPL D-107679, Release 3.3) and the specification Rev C
+   (JPL D-107677), do not explain it (`docs/research/analysis-soil-moisture.md`, part 8.1). If it
+   marks a condition under which the mission still retrieves a soil moisture, such as dense
+   vegetation, those cells could be shown with a mark instead of being left out. The decision of 15
+   Nov 2026 leaves out every cell whose bit 0 is 1 (Alexandros).
 2. The specification of the version 1.0.2, which the products state. The file read is Rev C, version
    1.0.0. The product files differ from it: the layer `surfaceQualityFlag` stands under
    `/science/LSAR/SME2/grids/` and not under `ancillaryData/`, the description of the bits 1 to 3 of
