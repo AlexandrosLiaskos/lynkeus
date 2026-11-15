@@ -55,7 +55,7 @@ MAX_USER_SERVERS = 8
 FIRST_LAYER_CELLS = 25_000_000
 """The most cells of a layer of a server whose message does not state them.
 
-It is the number of the project server and of the program of version 0.1.0, which knows no other.
+It is the number of the project server and of an older program, which knows no other.
 """
 
 type ServerId = Annotated[str, Field(pattern=r"^[0-9a-f]{16}$")]
@@ -193,7 +193,7 @@ class ServerLimits(Format):
         Largest size of the files of one layer, in bytes.
     layer_cells : int
         Most cells of one layer that a job of the server receives. A message without the field comes
-        from a program of version 0.1.0 and counts as ``FIRST_LAYER_CELLS``.
+        from an older program, which does not know the limit, and counts as ``FIRST_LAYER_CELLS``.
     """
 
     running_jobs: int = Field(ge=1, le=64)

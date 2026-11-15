@@ -152,7 +152,7 @@ def test_size_of_a_layer_is_that_of_its_cells_without_compression() -> None:
     assert layer_size(100_000_000) == 534_333_334
 
 
-def test_limits_kept_by_version_0_1_0_receive_the_cells_of_a_layer(
+def test_limits_kept_by_an_older_program_receive_the_cells_of_a_layer(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.setattr(computer, "processors", lambda: 20)
@@ -166,8 +166,8 @@ def test_limits_kept_by_version_0_1_0_receive_the_cells_of_a_layer(
     }
     (tmp_path / "settings.json").write_text(json.dumps(kept), encoding="utf-8")
     settings = read_settings(tmp_path)
-    # The pairing stays. The cells are the first value of the computer; the 13 jobs of version 0.1.0 would
-    # not fit in the memory with layers of that size, and its 500 megabytes would end such a job.
+    # The pairing stays. The cells are the first value of the computer; the 13 jobs that the older program
+    # kept would not fit in the memory with layers of that size, and its 500 megabytes would end such a job.
     assert (settings.server, settings.key, settings.user) == ("0123456789abcdef", KEY, "a_visitor")
     assert settings.limits == ServerLimits(
         running_jobs=2, storage=100_000_000_000, layer_size=1_265_000_000, layer_cells=237_000_000
@@ -204,15 +204,16 @@ def test_resources_of_this_computer_are_read(tmp_path: Path) -> None:
 def test_time_of_a_job_grows_with_the_cells_above_those_of_the_project_server() -> None:
     assert computer.job_time(1_000_000) == jobs.JOB_TIME
     assert computer.job_time(harmony.MOST_CELLS) == jobs.JOB_TIME
-    # 24 seconds for every further million cells: the 600 seconds that the project server leaves for 25 million.
-    assert computer.CELL_TIME * harmony.MOST_CELLS == pytest.approx(jobs.JOB_TIME - harmony.MOST_WAIT)
+    # 24 seconds for every further million cells: 25 million more cells receive the 600 seconds that the
+    # project server leaves for its 25 million after the longest wait for NASA Harmony.
+    assert computer.job_time(2 * harmony.MOST_CELLS) - jobs.JOB_TIME == pytest.approx(jobs.JOB_TIME - harmony.MOST_WAIT)
     assert computer.job_time(26_000_000) == pytest.approx(2424)
     assert computer.job_time(255_000_000) == pytest.approx(7920)
 
 
 def test_rule_of_the_memory_lies_above_every_job_that_was_measured() -> None:
-    # The cells of the layer and the most memory that its job held, in bytes (docs/research/servers.md).
-    measured = [(15_000_000, 390_000_000), (52_063_330, 970_264_576), (104_294_556, 1_746_235_392)]
+    # The cells of the layer and the most memory that its job held, in bytes (docs/research/data.md and servers.md).
+    measured = [(3772 * 3972, 390_000_000), (52_063_330, 970_264_576), (104_294_556, 1_746_235_392)]
     for cells, memory in measured:
         assert memory < computer.job_memory(cells) < 1.15 * memory
     assert computer.job_memory(harmony.MOST_CELLS) == 600_000_000

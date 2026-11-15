@@ -25,6 +25,7 @@ from lynkeus import __version__, computer, jobs, link
 from lynkeus.computer import AlreadyRunningError, Settings, read_settings, write_settings
 from lynkeus.link import AwayError, Link, ProjectServer, job_limits
 from lynkeus.linking import (
+    FIRST_LAYER_CELLS,
     MOST_BYTES,
     DismissTask,
     Done,
@@ -624,3 +625,21 @@ def test_cells_of_a_layer_of_the_owner_set_the_time_and_the_folder_of_a_job() ->
     # 24 seconds for every million cells above 25 million.
     assert limits.job_time == pytest.approx(2400 + 230 * 24)
     assert job_limits(owner.model_copy(update={"layer_cells": 1_000_000}), others=0).job_time == jobs.JOB_TIME
+
+
+def test_body_of_every_report_states_the_cells_of_a_layer(
+    server: Link, site: Project, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # The project server tells a program that knows the limit on the cells of a layer by this field in the
+    # limits of its reports. The limits of the test hold the number that a message without the field counts
+    # as, which a report that left out the values of the format would leave out.
+    assert LIMITS.layer_cells == FIRST_LAYER_CELLS
+    monkeypatch.setattr(link, "REPORT_PAUSE", 2)
+    site.report(lambda report: True, "the first report")
+    limits = LIMITS.model_copy(update={"layer_cells": 90_000_000})
+    assert site.give(LimitsTask(id=task_name(), limits=limits)) == Done(ok=True)
+    site.report(lambda report: report.state.limits == limits, "a report of the new limits")
+    cells = [json.loads(body)["state"]["limits"]["layer_cells"] for body in site.report_bodies]
+    assert cells[0] == FIRST_LAYER_CELLS
+    assert cells[-1] == 90_000_000
+    assert site.faults == []

@@ -142,15 +142,16 @@ def read_settings(folder: Path) -> Settings:
 
     A file that is missing gives the settings of a new server. A file that cannot be read as settings
     is kept under the name ``settings-unreadable.json`` and also gives the settings of a new server, so
-    that a damaged file does not stop the program. Limits that a program of version 0.1.0 kept receive
-    the cells of a layer by the rule of the first limits (``limits_with_cells``); the pairing stays.
+    that a damaged file does not stop the program. Limits that an older program kept, which knew no limit
+    on the cells of a layer, receive that limit by the rule of the first limits (``limits_with_cells``); the
+    pairing stays.
     """
     path = folder / SETTINGS
     try:
         kept = json.loads(path.read_text(encoding="utf-8"))
         old = kept.get("limits") if isinstance(kept, dict) else None
         if isinstance(old, dict) and "layer_cells" not in old:
-            # The file was written by a program of version 0.1.0.
+            # The file was written by an older program, which knew no limit on the cells of a layer.
             kept["limits"] = limits_with_cells(old, first_limits(processors(), memory(), free_space(folder)))
         return Settings.model_validate(kept)
     except FileNotFoundError:
@@ -336,7 +337,7 @@ def first_limits(processors: int, memory: int | None, free: int) -> ServerLimits
 
 
 def limits_with_cells(kept: Mapping[str, object], first: ServerLimits) -> dict[str, object]:
-    """Add the cells of a layer to limits that a program of version 0.1.0 kept, which knew no such limit.
+    """Add the cells of a layer to limits that an older program kept, which knew no such limit.
 
     Parameters
     ----------
