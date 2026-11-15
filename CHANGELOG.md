@@ -241,3 +241,6 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   after which every new visitor was refused for up to seven days.
 - A report of a server of a visitor names at most 100 jobs. Longer reports could keep the web service busy
   and make the other requests wait.
+- The web service refuses a job of the project server that names a layer which the session does not hold,
+  before it records anything. A request without a session could start such jobs, which failed at once and
+  left a session and up to 64 kB of inputs each in the record of the server.
