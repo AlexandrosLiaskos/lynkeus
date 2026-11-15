@@ -1,0 +1,1413 @@
+{
+ "layers": {
+  "hh_21oct": {
+   "status": "successful",
+   "message": "The layer is ready.",
+   "created": "2026-11-15T06:48:26Z",
+   "started": "2026-11-15T06:48:26Z",
+   "finished": "2026-11-15T06:50:27Z",
+   "inputs": {
+    "product": "GCOV",
+    "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "layer": "HHHH",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "description": {
+    "id": "4e80e3dffd0395ca69b0a0d3d48e3731",
+    "title": "Backscatter HH, 21 Oct 2026",
+    "kind": "layer",
+    "url": "/files/4e80e3dffd0395ca69b0a0d3d48e3731/gcov-hhhh-20261021.tif",
+    "quantity": "Radar backscatter gamma nought, HH, linear power",
+    "unit": "1",
+    "range": [
+     0.011646270751953125,
+     1.185333251953125
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "HHHH",
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/4e80e3dffd0395ca69b0a0d3d48e3731/gcov-hhhh-20261021.json"
+   },
+   "file": "gcov-hhhh-20261021.tif",
+   "size_bytes": 52046916,
+   "driver_layout": "COG",
+   "compression": "DEFLATE",
+   "dtype": "float32",
+   "nodata": "nan",
+   "crs": "EPSG:32619",
+   "transform": [
+    10.0,
+    0.0,
+    319520.0,
+    0.0,
+    -10.0,
+    4757610.0
+   ],
+   "shape": [
+    3972,
+    3772
+   ],
+   "block": [
+    512,
+    512
+   ],
+   "overview_factors": [
+    2,
+    4,
+    8
+   ],
+   "band_description": "Radar backscatter gamma nought, HH, linear power",
+   "band_unit": "1",
+   "tags": {
+    "dates": "2026-10-21",
+    "inputs": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+    "method": null,
+    "TIFFTAG_SOFTWARE": "Lynkeus 0.1.0"
+   },
+   "statistics_tags": {
+    "STATISTICS_MAXIMUM": "3504.90625",
+    "STATISTICS_MEAN": "0.32862114454005925",
+    "STATISTICS_MINIMUM": "0.0006908252835273743",
+    "STATISTICS_STDDEV": "3.0014480805212083",
+    "STATISTICS_VALID_PERCENT": "95.55497309373462"
+   },
+   "record": {
+    "file": "gcov-hhhh-20261021.json",
+    "id": "4e80e3dffd0395ca69b0a0d3d48e3731",
+    "stac_version": "1.1.0",
+    "title": "Backscatter HH, 21 Oct 2026",
+    "start_datetime": "2026-10-21T00:00:00Z",
+    "end_datetime": "2026-10-21T23:59:59Z",
+    "lineage": "Layer /science/LSAR/GCOV/grids/frequencyA/HHHH of the NISAR product NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001, clipped to the area -71.2, 42.6, -70.75, 42.95 (west, south, east and north, in degrees) by NASA Harmony (job ebb001f9-38f8-4c21-b7a5-1814c4a2f6a6), and written by Lynkeus 0.1.0 with reduced copies made by averaging.",
+    "level": "L2",
+    "software": {
+     "Lynkeus": "0.1.0",
+     "GDAL": "3.12.2"
+    },
+    "links": [
+     {
+      "rel": "via",
+      "href": "https://cmr.earthdata.nasa.gov/search/concepts/G4405194348-ASF.umm_json",
+      "type": "application/json",
+      "title": "Record of the product in NASA's Common Metadata Repository"
+     }
+    ],
+    "band_name": "HHHH",
+    "band_unit": "1",
+    "band_nodata": "nan",
+    "band_statistics": {
+     "minimum": 0.0006908252835273743,
+     "maximum": 3504.90625,
+     "mean": 0.32862114454005925,
+     "stddev": 3.0014480805212083,
+     "valid_percent": 95.55497309373462
+    },
+    "band_resolution": 10.0,
+    "faults_against_the_stac_schemas": []
+   },
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "cells": 14982384,
+   "cells_without_data": 665971,
+   "sha256_of_values": "7a9f95e1034b1d9a97282c18c7a64b09a3cb2389bec58fa66f0ab19fa9494a60",
+   "sample_file": "gcov-hhhh-20261021.tif",
+   "grid_equal_to_the_sample_file": true,
+   "cells_that_differ_from_the_sample_file": 0,
+   "sha256_of_values_of_the_sample_file": "7a9f95e1034b1d9a97282c18c7a64b09a3cb2389bec58fa66f0ab19fa9494a60"
+  },
+  "hh_2nov": {
+   "status": "successful",
+   "message": "The layer is ready.",
+   "created": "2026-11-15T06:48:26Z",
+   "started": "2026-11-15T06:48:26Z",
+   "finished": "2026-11-15T06:50:26Z",
+   "inputs": {
+    "product": "GCOV",
+    "granule": "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001",
+    "layer": "HHHH",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "description": {
+    "id": "9b64086d85ace37852d91ee74fb1e847",
+    "title": "Backscatter HH, 2 Nov 2026",
+    "kind": "layer",
+    "url": "/files/9b64086d85ace37852d91ee74fb1e847/gcov-hhhh-20261102.tif",
+    "quantity": "Radar backscatter gamma nought, HH, linear power",
+    "unit": "1",
+    "range": [
+     0.009898543357849121,
+     1.214141845703125
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-11-02"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "HHHH",
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/9b64086d85ace37852d91ee74fb1e847/gcov-hhhh-20261102.json"
+   },
+   "file": "gcov-hhhh-20261102.tif",
+   "size_bytes": 52020483,
+   "driver_layout": "COG",
+   "compression": "DEFLATE",
+   "dtype": "float32",
+   "nodata": "nan",
+   "crs": "EPSG:32619",
+   "transform": [
+    10.0,
+    0.0,
+    319520.0,
+    0.0,
+    -10.0,
+    4757610.0
+   ],
+   "shape": [
+    3972,
+    3772
+   ],
+   "block": [
+    512,
+    512
+   ],
+   "overview_factors": [
+    2,
+    4,
+    8
+   ],
+   "band_description": "Radar backscatter gamma nought, HH, linear power",
+   "band_unit": "1",
+   "tags": {
+    "dates": "2026-11-02",
+    "inputs": "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5",
+    "method": null,
+    "TIFFTAG_SOFTWARE": "Lynkeus 0.1.0"
+   },
+   "statistics_tags": {
+    "STATISTICS_MAXIMUM": "3488.90625",
+    "STATISTICS_MEAN": "0.3360289584417228",
+    "STATISTICS_MINIMUM": "0.0011148601770401",
+    "STATISTICS_STDDEV": "2.9098047996205976",
+    "STATISTICS_VALID_PERCENT": "95.55499311725023"
+   },
+   "record": {
+    "file": "gcov-hhhh-20261102.json",
+    "id": "9b64086d85ace37852d91ee74fb1e847",
+    "stac_version": "1.1.0",
+    "title": "Backscatter HH, 2 Nov 2026",
+    "start_datetime": "2026-11-02T00:00:00Z",
+    "end_datetime": "2026-11-02T23:59:59Z",
+    "lineage": "Layer /science/LSAR/GCOV/grids/frequencyA/HHHH of the NISAR product NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001, clipped to the area -71.2, 42.6, -70.75, 42.95 (west, south, east and north, in degrees) by NASA Harmony (job 1c9a2336-0265-4ff1-8505-c87cabfa3b33), and written by Lynkeus 0.1.0 with reduced copies made by averaging.",
+    "level": "L2",
+    "software": {
+     "Lynkeus": "0.1.0",
+     "GDAL": "3.12.2"
+    },
+    "links": [
+     {
+      "rel": "via",
+      "href": "https://cmr.earthdata.nasa.gov/search/concepts/G4408709868-ASF.umm_json",
+      "type": "application/json",
+      "title": "Record of the product in NASA's Common Metadata Repository"
+     }
+    ],
+    "band_name": "HHHH",
+    "band_unit": "1",
+    "band_nodata": "nan",
+    "band_statistics": {
+     "minimum": 0.0011148601770401,
+     "maximum": 3488.90625,
+     "mean": 0.3360289584417228,
+     "stddev": 2.9098047996205976,
+     "valid_percent": 95.55499311725023
+    },
+    "band_resolution": 10.0,
+    "faults_against_the_stac_schemas": []
+   },
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "cells": 14982384,
+   "cells_without_data": 665968,
+   "sha256_of_values": "12fb0c0723178cbfe41ce7187b314c5e7923e6bb16ec40a824c5403ebe55b87c",
+   "sample_file": "gcov-hhhh-20261102.tif",
+   "grid_equal_to_the_sample_file": true,
+   "cells_that_differ_from_the_sample_file": 0,
+   "sha256_of_values_of_the_sample_file": "12fb0c0723178cbfe41ce7187b314c5e7923e6bb16ec40a824c5403ebe55b87c"
+  },
+  "coherence": {
+   "status": "successful",
+   "message": "The layer is ready.",
+   "created": "2026-11-15T06:48:26Z",
+   "started": "2026-11-15T06:50:26Z",
+   "finished": "2026-11-15T06:51:29Z",
+   "inputs": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "description": {
+    "id": "d3021760583f65bdfe8854964783acd6",
+    "title": "Coherence HH, 20 m, 9 Oct 2026 to 21 Oct 2026",
+    "kind": "layer",
+    "url": "/files/d3021760583f65bdfe8854964783acd6/gunw-wrappedinterferogram-hh-coherencemagnitude-20261009-20261021.tif",
+    "quantity": "Interferometric coherence magnitude, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-10-09",
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/d3021760583f65bdfe8854964783acd6/gunw-wrappedinterferogram-hh-coherencemagnitude-20261009-20261021.json"
+   },
+   "file": "gunw-wrappedinterferogram-hh-coherencemagnitude-20261009-20261021.tif",
+   "size_bytes": 15194106,
+   "driver_layout": "COG",
+   "compression": "DEFLATE",
+   "dtype": "float32",
+   "nodata": "nan",
+   "crs": "EPSG:32619",
+   "transform": [
+    20.0,
+    0.0,
+    319520.0,
+    0.0,
+    -20.0,
+    4757600.0
+   ],
+   "shape": [
+    1985,
+    1886
+   ],
+   "block": [
+    512,
+    512
+   ],
+   "overview_factors": [
+    2,
+    4
+   ],
+   "band_description": "Interferometric coherence magnitude, HH",
+   "band_unit": "1",
+   "tags": {
+    "dates": "2026-10-09, 2026-10-21",
+    "inputs": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+    "method": null,
+    "TIFFTAG_SOFTWARE": "Lynkeus 0.1.0"
+   },
+   "statistics_tags": {
+    "STATISTICS_MAXIMUM": "0.9964798092842102",
+    "STATISTICS_MEAN": "0.5062995480591644",
+    "STATISTICS_MINIMUM": "0.004557579755783081",
+    "STATISTICS_STDDEV": "0.1825008516684439",
+    "STATISTICS_VALID_PERCENT": "95.60281111517719"
+   },
+   "record": {
+    "file": "gunw-wrappedinterferogram-hh-coherencemagnitude-20261009-20261021.json",
+    "id": "d3021760583f65bdfe8854964783acd6",
+    "stac_version": "1.1.0",
+    "title": "Coherence HH, 20 m, 9 Oct 2026 to 21 Oct 2026",
+    "start_datetime": "2026-10-09T00:00:00Z",
+    "end_datetime": "2026-10-21T23:59:59Z",
+    "lineage": "Layer /science/LSAR/GUNW/grids/frequencyA/wrappedInterferogram/HH/coherenceMagnitude of the NISAR product NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001, clipped to the area -71.2, 42.6, -70.75, 42.95 (west, south, east and north, in degrees) by NASA Harmony (job b495a35f-ce19-4561-8e31-6dd99d552e43), and written by Lynkeus 0.1.0 with reduced copies made by averaging.",
+    "level": "L2",
+    "software": {
+     "Lynkeus": "0.1.0",
+     "GDAL": "3.12.2"
+    },
+    "links": [
+     {
+      "rel": "via",
+      "href": "https://cmr.earthdata.nasa.gov/search/concepts/G4409879710-ASF.umm_json",
+      "type": "application/json",
+      "title": "Record of the product in NASA's Common Metadata Repository"
+     }
+    ],
+    "band_name": "wrappedInterferogram/HH/coherenceMagnitude",
+    "band_unit": "1",
+    "band_nodata": "nan",
+    "band_statistics": {
+     "minimum": 0.004557579755783081,
+     "maximum": 0.9964798092842102,
+     "mean": 0.5062995480591644,
+     "stddev": 0.1825008516684439,
+     "valid_percent": 95.60281111517719
+    },
+    "band_resolution": 20.0,
+    "faults_against_the_stac_schemas": []
+   },
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "cells": 3743710,
+   "cells_without_data": 164618,
+   "sha256_of_values": "f29816600880f897576f065a85663c6b220de092cd3ea930577b89094a104b4d",
+   "sample_file": "gunw-coherence-20261009-20261021.tif",
+   "grid_equal_to_the_sample_file": true,
+   "cells_that_differ_from_the_sample_file": 0,
+   "sha256_of_values_of_the_sample_file": "f29816600880f897576f065a85663c6b220de092cd3ea930577b89094a104b4d"
+  },
+  "hv_2nov": {
+   "status": "successful",
+   "message": "The layer is ready.",
+   "created": "2026-11-15T06:48:26Z",
+   "started": "2026-11-15T06:50:27Z",
+   "finished": "2026-11-15T06:52:14Z",
+   "inputs": {
+    "product": "GCOV",
+    "granule": "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001",
+    "layer": "HVHV",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "description": {
+    "id": "2bf7b7356b8b60cd679687b023d96a9a",
+    "title": "Backscatter HV, 2 Nov 2026",
+    "kind": "layer",
+    "url": "/files/2bf7b7356b8b60cd679687b023d96a9a/gcov-hvhv-20261102.tif",
+    "quantity": "Radar backscatter gamma nought, HV, linear power",
+    "unit": "1",
+    "range": [
+     0.0024936795234680176,
+     0.2729759216308594
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-11-02"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "HVHV",
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/2bf7b7356b8b60cd679687b023d96a9a/gcov-hvhv-20261102.json"
+   },
+   "file": "gcov-hvhv-20261102.tif",
+   "size_bytes": 51884464,
+   "driver_layout": "COG",
+   "compression": "DEFLATE",
+   "dtype": "float32",
+   "nodata": "nan",
+   "crs": "EPSG:32619",
+   "transform": [
+    10.0,
+    0.0,
+    319520.0,
+    0.0,
+    -10.0,
+    4757610.0
+   ],
+   "shape": [
+    3972,
+    3772
+   ],
+   "block": [
+    512,
+    512
+   ],
+   "overview_factors": [
+    2,
+    4,
+    8
+   ],
+   "band_description": "Radar backscatter gamma nought, HV, linear power",
+   "band_unit": "1",
+   "tags": {
+    "dates": "2026-11-02",
+    "inputs": "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5",
+    "method": null,
+    "TIFFTAG_SOFTWARE": "Lynkeus 0.1.0"
+   },
+   "statistics_tags": {
+    "STATISTICS_MAXIMUM": "348.98828125",
+    "STATISTICS_MEAN": "0.07512412908642237",
+    "STATISTICS_MINIMUM": "0.00017571821808815002",
+    "STATISTICS_STDDEV": "0.23456019928471308",
+    "STATISTICS_VALID_PERCENT": "95.55499311725023"
+   },
+   "record": {
+    "file": "gcov-hvhv-20261102.json",
+    "id": "2bf7b7356b8b60cd679687b023d96a9a",
+    "stac_version": "1.1.0",
+    "title": "Backscatter HV, 2 Nov 2026",
+    "start_datetime": "2026-11-02T00:00:00Z",
+    "end_datetime": "2026-11-02T23:59:59Z",
+    "lineage": "Layer /science/LSAR/GCOV/grids/frequencyA/HVHV of the NISAR product NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001, clipped to the area -71.2, 42.6, -70.75, 42.95 (west, south, east and north, in degrees) by NASA Harmony (job 51a1b116-c792-48cc-add7-15d0f720f121), and written by Lynkeus 0.1.0 with reduced copies made by averaging.",
+    "level": "L2",
+    "software": {
+     "Lynkeus": "0.1.0",
+     "GDAL": "3.12.2"
+    },
+    "links": [
+     {
+      "rel": "via",
+      "href": "https://cmr.earthdata.nasa.gov/search/concepts/G4408709868-ASF.umm_json",
+      "type": "application/json",
+      "title": "Record of the product in NASA's Common Metadata Repository"
+     }
+    ],
+    "band_name": "HVHV",
+    "band_unit": "1",
+    "band_nodata": "nan",
+    "band_statistics": {
+     "minimum": 0.00017571821808815002,
+     "maximum": 348.98828125,
+     "mean": 0.07512412908642237,
+     "stddev": 0.23456019928471308,
+     "valid_percent": 95.55499311725023
+    },
+    "band_resolution": 10.0,
+    "faults_against_the_stac_schemas": []
+   },
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "cells": 14982384,
+   "cells_without_data": 665968,
+   "sha256_of_values": "12688a557674bf17e48596e4d63e8d5a7e0283cf0b61e2525e4512696e1d62bb"
+  },
+  "mask_21oct": {
+   "status": "successful",
+   "message": "The layer is ready.",
+   "created": "2026-11-15T06:52:16Z",
+   "started": "2026-11-15T06:52:16Z",
+   "finished": "2026-11-15T06:53:44Z",
+   "inputs": {
+    "product": "GCOV",
+    "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "layer": "mask",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "description": {
+    "id": "c978d85eb40832c1801901e521f72aba",
+    "title": "Mask of valid samples, 21 Oct 2026",
+    "kind": "layer",
+    "url": "/files/c978d85eb40832c1801901e521f72aba/gcov-mask-20261021.tif",
+    "quantity": "Number of the subswath of the valid samples of a cell, or 0 where a sample is not valid",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "tab10",
+    "dates": [
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "mask",
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/c978d85eb40832c1801901e521f72aba/gcov-mask-20261021.json"
+   },
+   "file": "gcov-mask-20261021.tif",
+   "size_bytes": 337049,
+   "driver_layout": "COG",
+   "compression": "DEFLATE",
+   "dtype": "float32",
+   "nodata": "nan",
+   "crs": "EPSG:32619",
+   "transform": [
+    10.0,
+    0.0,
+    319520.0,
+    0.0,
+    -10.0,
+    4757610.0
+   ],
+   "shape": [
+    3972,
+    3772
+   ],
+   "block": [
+    512,
+    512
+   ],
+   "overview_factors": [
+    2,
+    4,
+    8
+   ],
+   "band_description": "Number of the subswath of the valid samples of a cell, or 0 where a sample is not valid",
+   "band_unit": "1",
+   "tags": {
+    "dates": "2026-10-21",
+    "inputs": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+    "method": null,
+    "TIFFTAG_SOFTWARE": "Lynkeus 0.1.0"
+   },
+   "statistics_tags": {
+    "STATISTICS_MAXIMUM": "1.0",
+    "STATISTICS_MEAN": "0.9999981140562877",
+    "STATISTICS_MINIMUM": "0.0",
+    "STATISTICS_STDDEV": "0.0013732953635252607",
+    "STATISTICS_VALID_PERCENT": "95.55515330537517"
+   },
+   "record": {
+    "file": "gcov-mask-20261021.json",
+    "id": "c978d85eb40832c1801901e521f72aba",
+    "stac_version": "1.1.0",
+    "title": "Mask of valid samples, 21 Oct 2026",
+    "start_datetime": "2026-10-21T00:00:00Z",
+    "end_datetime": "2026-10-21T23:59:59Z",
+    "lineage": "Layer /science/LSAR/GCOV/grids/frequencyA/mask of the NISAR product NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001, clipped to the area -71.2, 42.6, -70.75, 42.95 (west, south, east and north, in degrees) by NASA Harmony (job 0e116b35-0c22-47c0-8b75-86cc399c580a), and written by Lynkeus 0.1.0 with reduced copies made by taking the most frequent value.",
+    "level": "L2",
+    "software": {
+     "Lynkeus": "0.1.0",
+     "GDAL": "3.12.2"
+    },
+    "links": [
+     {
+      "rel": "via",
+      "href": "https://cmr.earthdata.nasa.gov/search/concepts/G4405194348-ASF.umm_json",
+      "type": "application/json",
+      "title": "Record of the product in NASA's Common Metadata Repository"
+     }
+    ],
+    "band_name": "mask",
+    "band_unit": "1",
+    "band_nodata": "nan",
+    "band_statistics": {
+     "minimum": 0.0,
+     "maximum": 1.0,
+     "mean": 0.9999981140562877,
+     "stddev": 0.0013732953635252607,
+     "valid_percent": 95.55515330537517
+    },
+    "band_resolution": 10.0,
+    "faults_against_the_stac_schemas": []
+   },
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "cells": 14982384,
+   "cells_without_data": 665944,
+   "sha256_of_values": "c77fc82d1ef01d802c42b0d7e9003acf940bc7900fe183a3ce39f003432fbb40"
+  },
+  "components": {
+   "status": "successful",
+   "message": "The layer is ready.",
+   "created": "2026-11-15T06:52:16Z",
+   "started": "2026-11-15T06:52:17Z",
+   "finished": "2026-11-15T06:53:04Z",
+   "inputs": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "description": {
+    "id": "555acd0856274c7e3654781e3c94fd57",
+    "title": "Connected components HH, 9 Oct 2026 to 21 Oct 2026",
+    "kind": "layer",
+    "url": "/files/555acd0856274c7e3654781e3c94fd57/gunw-unwrappedinterferogram-hh-connectedcomponents-20261009-20261021.tif",
+    "quantity": "Connected component of the phase unwrapping, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "tab10",
+    "dates": [
+     "2026-10-09",
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/555acd0856274c7e3654781e3c94fd57/gunw-unwrappedinterferogram-hh-connectedcomponents-20261009-20261021.json"
+   },
+   "file": "gunw-unwrappedinterferogram-hh-connectedcomponents-20261009-20261021.tif",
+   "size_bytes": 16447,
+   "driver_layout": "COG",
+   "compression": "DEFLATE",
+   "dtype": "float32",
+   "nodata": "nan",
+   "crs": "EPSG:32619",
+   "transform": [
+    80.0,
+    0.0,
+    319520.0,
+    0.0,
+    -80.0,
+    4757600.0
+   ],
+   "shape": [
+    496,
+    471
+   ],
+   "block": [
+    512,
+    512
+   ],
+   "overview_factors": [],
+   "band_description": "Connected component of the phase unwrapping, HH",
+   "band_unit": "1",
+   "tags": {
+    "dates": "2026-10-09, 2026-10-21",
+    "inputs": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+    "method": null,
+    "TIFFTAG_SOFTWARE": "Lynkeus 0.1.0"
+   },
+   "statistics_tags": {
+    "STATISTICS_MAXIMUM": "1.0",
+    "STATISTICS_MEAN": "0.8797950762875906",
+    "STATISTICS_MINIMUM": "0.0",
+    "STATISTICS_STDDEV": "0.32520101480115843",
+    "STATISTICS_VALID_PERCENT": "95.75243134031916"
+   },
+   "record": {
+    "file": "gunw-unwrappedinterferogram-hh-connectedcomponents-20261009-20261021.json",
+    "id": "555acd0856274c7e3654781e3c94fd57",
+    "stac_version": "1.1.0",
+    "title": "Connected components HH, 9 Oct 2026 to 21 Oct 2026",
+    "start_datetime": "2026-10-09T00:00:00Z",
+    "end_datetime": "2026-10-21T23:59:59Z",
+    "lineage": "Layer /science/LSAR/GUNW/grids/frequencyA/unwrappedInterferogram/HH/connectedComponents of the NISAR product NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001, clipped to the area -71.2, 42.6, -70.75, 42.95 (west, south, east and north, in degrees) by NASA Harmony (job 96278418-38b4-44a7-bff8-ddd43264bf07), and written by Lynkeus 0.1.0 with reduced copies made by taking the most frequent value.",
+    "level": "L2",
+    "software": {
+     "Lynkeus": "0.1.0",
+     "GDAL": "3.12.2"
+    },
+    "links": [
+     {
+      "rel": "via",
+      "href": "https://cmr.earthdata.nasa.gov/search/concepts/G4409879710-ASF.umm_json",
+      "type": "application/json",
+      "title": "Record of the product in NASA's Common Metadata Repository"
+     }
+    ],
+    "band_name": "unwrappedInterferogram/HH/connectedComponents",
+    "band_unit": "1",
+    "band_nodata": "nan",
+    "band_statistics": {
+     "minimum": 0.0,
+     "maximum": 1.0,
+     "mean": 0.8797950762875906,
+     "stddev": 0.32520101480115843,
+     "valid_percent": 95.75243134031916
+    },
+    "band_resolution": 80.0,
+    "faults_against_the_stac_schemas": []
+   },
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "cells": 233616,
+   "cells_without_data": 9923,
+   "sha256_of_values": "9636dd081dabd1bd56ac026a5f47c220fbeaadcd6543db99552c20621c19a21d"
+  }
+ },
+ "results": {
+  "state_21oct": {
+   "status": "successful",
+   "message": "The layer is ready.",
+   "created": "2026-11-15T06:53:45Z",
+   "started": "2026-11-15T06:53:45Z",
+   "finished": "2026-11-15T06:54:04Z",
+   "given": [
+    "hh_21oct"
+   ],
+   "description": {
+    "id": "a7c49333c7f7dac7264461aad06341a5",
+    "title": "Backscatter HH in dB, 21 Oct 2026",
+    "kind": "result",
+    "url": "/files/a7c49333c7f7dac7264461aad06341a5/backscatter-state.tif",
+    "quantity": "Radar backscatter gamma0",
+    "unit": "dB",
+    "range": [
+     -17.824283599853516,
+     -0.8974864482879639
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "program": "Lynkeus 0.1.0",
+    "method": "10*log10 of the covariance term, the conversion that the product states in its field outputBackscatterDecibelConversionFormula (NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)",
+    "record": "/files/a7c49333c7f7dac7264461aad06341a5/backscatter-state.json"
+   },
+   "file": "backscatter-state.tif",
+   "size_bytes": 62855703,
+   "driver_layout": "COG",
+   "compression": "DEFLATE",
+   "dtype": "float32",
+   "nodata": "nan",
+   "crs": "EPSG:32619",
+   "transform": [
+    10.0,
+    0.0,
+    319520.0,
+    0.0,
+    -10.0,
+    4757610.0
+   ],
+   "shape": [
+    3972,
+    3772
+   ],
+   "block": [
+    512,
+    512
+   ],
+   "overview_factors": [
+    2,
+    4,
+    8
+   ],
+   "band_description": "Radar backscatter gamma0",
+   "band_unit": "dB",
+   "tags": {
+    "dates": "2026-10-21",
+    "inputs": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+    "method": "10*log10 of the covariance term, the conversion that the product states in its field outputBackscatterDecibelConversionFormula (NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)",
+    "TIFFTAG_SOFTWARE": "Lynkeus 0.1.0"
+   },
+   "statistics_tags": {
+    "STATISTICS_MAXIMUM": "35.4467658996582",
+    "STATISTICS_MEAN": "-7.936535687085807",
+    "STATISTICS_MINIMUM": "-31.606319427490234",
+    "STATISTICS_STDDEV": "5.33330005125269",
+    "STATISTICS_VALID_PERCENT": "95.55497309373462"
+   },
+   "record": {
+    "file": "backscatter-state.json",
+    "id": "a7c49333c7f7dac7264461aad06341a5",
+    "stac_version": "1.1.0",
+    "title": "Backscatter HH in dB, 21 Oct 2026",
+    "start_datetime": "2026-10-21T00:00:00Z",
+    "end_datetime": "2026-10-21T23:59:59Z",
+    "lineage": "Result of the analysis tool backscatter-state of Lynkeus 0.1.0 on the layers: Backscatter HH, 21 Oct 2026. Method: 10*log10 of the covariance term, the conversion that the product states in its field outputBackscatterDecibelConversionFormula (NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)",
+    "level": null,
+    "software": {
+     "Lynkeus": "0.1.0",
+     "GDAL": "3.12.2"
+    },
+    "links": [
+     {
+      "rel": "derived_from",
+      "href": "/files/4e80e3dffd0395ca69b0a0d3d48e3731/gcov-hhhh-20261021.json",
+      "type": "application/geo+json"
+     }
+    ],
+    "band_name": null,
+    "band_unit": "dB",
+    "band_nodata": "nan",
+    "band_statistics": {
+     "minimum": -31.606319427490234,
+     "maximum": 35.4467658996582,
+     "mean": -7.936535687085807,
+     "stddev": 5.33330005125269,
+     "valid_percent": 95.55497309373462
+    },
+    "band_resolution": 10.0,
+    "faults_against_the_stac_schemas": []
+   },
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "cells": 14982384,
+   "cells_without_data": 665971,
+   "cells_with_a_value": 14316413,
+   "sha256_of_values": "3b7f2dfab1694b478941937522cb512c4a72c8d496d901db6c57a75c86424c68",
+   "sha256_recorded_in_the_comparison": "3b7f2dfab1694b478941937522cb512c4a72c8d496d901db6c57a75c86424c68",
+   "sha256_equal": true,
+   "cells_that_differ_from_the_recorded_array": 0,
+   "range_recorded_in_the_comparison": [
+    -17.824283599853516,
+    -0.8974864482879639
+   ],
+   "range_equal": true,
+   "quantity_unit_colours_method_equal_to_the_comparison": true,
+   "cells_that_differ_from_the_source_program": 0,
+   "grid_equal_to_the_first_input": true,
+   "derived_from_equal_to_the_records_of_the_inputs": true,
+   "inputs_equal_to_those_of_the_input_layers": true,
+   "dates_equal_to_those_of_the_input_layers": true,
+   "reduced_copy_shape": [
+    1986,
+    1886
+   ],
+   "reduced_copy_against_the_mean_of_the_result_values": {
+    "cells_compared": 3581043,
+    "cells_with_a_value_in_one_only": 0,
+    "largest_absolute_difference": 9.5367431640625e-07,
+    "mean_difference": -2.1068484760441294e-10,
+    "percentiles_1_50_99_of_the_difference": [
+     -7.152557373046875e-07,
+     0.0,
+     7.152557373046875e-07
+    ],
+    "cells_that_differ_by_more_than_0.5": 0,
+    "cells_that_differ_by_more_than_1": 0
+   },
+   "reduced_copy_against_the_decibels_of_the_mean_power": {
+    "cells_compared": 3581043,
+    "cells_with_a_value_in_one_only": 0,
+    "largest_absolute_difference": 15.234850031091355,
+    "mean_difference": -0.49659152788303923,
+    "percentiles_1_50_99_of_the_difference": [
+     -2.7119163014373995,
+     -0.33637814413812706,
+     -0.015091109063733309
+    ],
+    "cells_that_differ_by_more_than_0.5": 1204178,
+    "cells_that_differ_by_more_than_1": 405244
+   }
+  },
+  "state_2nov": {
+   "status": "successful",
+   "message": "The layer is ready.",
+   "created": "2026-11-15T06:53:45Z",
+   "started": "2026-11-15T06:53:45Z",
+   "finished": "2026-11-15T06:54:03Z",
+   "given": [
+    "hh_2nov"
+   ],
+   "description": {
+    "id": "cc8cd497be3d9e223c522df9b78f2b3a",
+    "title": "Backscatter HH in dB, 2 Nov 2026",
+    "kind": "result",
+    "url": "/files/cc8cd497be3d9e223c522df9b78f2b3a/backscatter-state.tif",
+    "quantity": "Radar backscatter gamma0",
+    "unit": "dB",
+    "range": [
+     -18.472387313842773,
+     -0.731230616569519
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-11-02"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "program": "Lynkeus 0.1.0",
+    "method": "10*log10 of the covariance term, the conversion that the product states in its field outputBackscatterDecibelConversionFormula (NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)",
+    "record": "/files/cc8cd497be3d9e223c522df9b78f2b3a/backscatter-state.json"
+   },
+   "file": "backscatter-state.tif",
+   "size_bytes": 62921256,
+   "driver_layout": "COG",
+   "compression": "DEFLATE",
+   "dtype": "float32",
+   "nodata": "nan",
+   "crs": "EPSG:32619",
+   "transform": [
+    10.0,
+    0.0,
+    319520.0,
+    0.0,
+    -10.0,
+    4757610.0
+   ],
+   "shape": [
+    3972,
+    3772
+   ],
+   "block": [
+    512,
+    512
+   ],
+   "overview_factors": [
+    2,
+    4,
+    8
+   ],
+   "band_description": "Radar backscatter gamma0",
+   "band_unit": "dB",
+   "tags": {
+    "dates": "2026-11-02",
+    "inputs": "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5",
+    "method": "10*log10 of the covariance term, the conversion that the product states in its field outputBackscatterDecibelConversionFormula (NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)",
+    "TIFFTAG_SOFTWARE": "Lynkeus 0.1.0"
+   },
+   "statistics_tags": {
+    "STATISTICS_MAXIMUM": "35.42689514160156",
+    "STATISTICS_MEAN": "-7.920855236242337",
+    "STATISTICS_MINIMUM": "-29.52779769897461",
+    "STATISTICS_STDDEV": "5.559486308881635",
+    "STATISTICS_VALID_PERCENT": "95.55499311725023"
+   },
+   "record": {
+    "file": "backscatter-state.json",
+    "id": "cc8cd497be3d9e223c522df9b78f2b3a",
+    "stac_version": "1.1.0",
+    "title": "Backscatter HH in dB, 2 Nov 2026",
+    "start_datetime": "2026-11-02T00:00:00Z",
+    "end_datetime": "2026-11-02T23:59:59Z",
+    "lineage": "Result of the analysis tool backscatter-state of Lynkeus 0.1.0 on the layers: Backscatter HH, 2 Nov 2026. Method: 10*log10 of the covariance term, the conversion that the product states in its field outputBackscatterDecibelConversionFormula (NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)",
+    "level": null,
+    "software": {
+     "Lynkeus": "0.1.0",
+     "GDAL": "3.12.2"
+    },
+    "links": [
+     {
+      "rel": "derived_from",
+      "href": "/files/9b64086d85ace37852d91ee74fb1e847/gcov-hhhh-20261102.json",
+      "type": "application/geo+json"
+     }
+    ],
+    "band_name": null,
+    "band_unit": "dB",
+    "band_nodata": "nan",
+    "band_statistics": {
+     "minimum": -29.52779769897461,
+     "maximum": 35.42689514160156,
+     "mean": -7.920855236242337,
+     "stddev": 5.559486308881635,
+     "valid_percent": 95.55499311725023
+    },
+    "band_resolution": 10.0,
+    "faults_against_the_stac_schemas": []
+   },
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "cells": 14982384,
+   "cells_without_data": 665968,
+   "cells_with_a_value": 14316416,
+   "sha256_of_values": "8d32c8078a047d2cfccf4d8c7a9df82f91dd305d0b3663e7204fa0e3604e5c65",
+   "sha256_recorded_in_the_comparison": "8d32c8078a047d2cfccf4d8c7a9df82f91dd305d0b3663e7204fa0e3604e5c65",
+   "sha256_equal": true,
+   "cells_that_differ_from_the_recorded_array": 0,
+   "range_recorded_in_the_comparison": [
+    -18.472387313842773,
+    -0.731230616569519
+   ],
+   "range_equal": true,
+   "quantity_unit_colours_method_equal_to_the_comparison": true,
+   "cells_that_differ_from_the_source_program": 0,
+   "grid_equal_to_the_first_input": true,
+   "derived_from_equal_to_the_records_of_the_inputs": true,
+   "inputs_equal_to_those_of_the_input_layers": true,
+   "dates_equal_to_those_of_the_input_layers": true,
+   "reduced_copy_shape": [
+    1986,
+    1886
+   ],
+   "reduced_copy_against_the_mean_of_the_result_values": {
+    "cells_compared": 3581043,
+    "cells_with_a_value_in_one_only": 0,
+    "largest_absolute_difference": 9.5367431640625e-07,
+    "mean_difference": -7.996512501038011e-12,
+    "percentiles_1_50_99_of_the_difference": [
+     -9.5367431640625e-07,
+     0.0,
+     9.5367431640625e-07
+    ],
+    "cells_that_differ_by_more_than_0.5": 0,
+    "cells_that_differ_by_more_than_1": 0
+   },
+   "reduced_copy_against_the_decibels_of_the_mean_power": {
+    "cells_compared": 3581043,
+    "cells_with_a_value_in_one_only": 0,
+    "largest_absolute_difference": 15.681339741737233,
+    "mean_difference": -0.49450889286976357,
+    "percentiles_1_50_99_of_the_difference": [
+     -2.684648797885221,
+     -0.33496654942304005,
+     -0.014933983164486792
+    ],
+    "cells_that_differ_by_more_than_0.5": 1200764,
+    "cells_that_differ_by_more_than_1": 402948
+   }
+  },
+  "change": {
+   "status": "successful",
+   "message": "The layer is ready.",
+   "created": "2026-11-15T06:53:45Z",
+   "started": "2026-11-15T06:54:03Z",
+   "finished": "2026-11-15T06:54:18Z",
+   "given": [
+    "hh_21oct",
+    "hh_2nov"
+   ],
+   "description": {
+    "id": "d55de1c01732e54553c9e7a790f268cb",
+    "title": "Change of backscatter HH, 21 Oct to 2 Nov 2026",
+    "kind": "result",
+    "url": "/files/d55de1c01732e54553c9e7a790f268cb/backscatter-change.tif",
+    "quantity": "Change of radar backscatter gamma0",
+    "unit": "dB",
+    "range": [
+     -7.168050689697264,
+     7.168050689697264
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-10-21",
+     "2026-11-02"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "program": "Lynkeus 0.1.0",
+    "method": "Ratio of the backscatter of two dates, in decibels (Rignot and van Zyl, 1993, https://doi.org/10.1109/36.239913)",
+    "record": "/files/d55de1c01732e54553c9e7a790f268cb/backscatter-change.json"
+   },
+   "file": "backscatter-change.tif",
+   "size_bytes": 69599539,
+   "driver_layout": "COG",
+   "compression": "DEFLATE",
+   "dtype": "float32",
+   "nodata": "nan",
+   "crs": "EPSG:32619",
+   "transform": [
+    10.0,
+    0.0,
+    319520.0,
+    0.0,
+    -10.0,
+    4757610.0
+   ],
+   "shape": [
+    3972,
+    3772
+   ],
+   "block": [
+    512,
+    512
+   ],
+   "overview_factors": [
+    2,
+    4,
+    8
+   ],
+   "band_description": "Change of radar backscatter gamma0",
+   "band_unit": "dB",
+   "tags": {
+    "dates": "2026-10-21, 2026-11-02",
+    "inputs": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5, NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5",
+    "method": "Ratio of the backscatter of two dates, in decibels (Rignot and van Zyl, 1993, https://doi.org/10.1109/36.239913)",
+    "TIFFTAG_SOFTWARE": "Lynkeus 0.1.0"
+   },
+   "statistics_tags": {
+    "STATISTICS_MAXIMUM": "31.312570571899414",
+    "STATISTICS_MEAN": "0.015679043815749482",
+    "STATISTICS_MINIMUM": "-37.05588150024414",
+    "STATISTICS_STDDEV": "2.623544702204206",
+    "STATISTICS_VALID_PERCENT": "95.55491969769297"
+   },
+   "record": {
+    "file": "backscatter-change.json",
+    "id": "d55de1c01732e54553c9e7a790f268cb",
+    "stac_version": "1.1.0",
+    "title": "Change of backscatter HH, 21 Oct to 2 Nov 2026",
+    "start_datetime": "2026-10-21T00:00:00Z",
+    "end_datetime": "2026-11-02T23:59:59Z",
+    "lineage": "Result of the analysis tool backscatter-change of Lynkeus 0.1.0 on the layers: Backscatter HH, 21 Oct 2026, Backscatter HH, 2 Nov 2026. Method: Ratio of the backscatter of two dates, in decibels (Rignot and van Zyl, 1993, https://doi.org/10.1109/36.239913)",
+    "level": null,
+    "software": {
+     "Lynkeus": "0.1.0",
+     "GDAL": "3.12.2"
+    },
+    "links": [
+     {
+      "rel": "derived_from",
+      "href": "/files/4e80e3dffd0395ca69b0a0d3d48e3731/gcov-hhhh-20261021.json",
+      "type": "application/geo+json"
+     },
+     {
+      "rel": "derived_from",
+      "href": "/files/9b64086d85ace37852d91ee74fb1e847/gcov-hhhh-20261102.json",
+      "type": "application/geo+json"
+     }
+    ],
+    "band_name": null,
+    "band_unit": "dB",
+    "band_nodata": "nan",
+    "band_statistics": {
+     "minimum": -37.05588150024414,
+     "maximum": 31.312570571899414,
+     "mean": 0.015679043815749482,
+     "stddev": 2.623544702204206,
+     "valid_percent": 95.55491969769297
+    },
+    "band_resolution": 10.0,
+    "faults_against_the_stac_schemas": []
+   },
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "cells": 14982384,
+   "cells_without_data": 665979,
+   "cells_with_a_value": 14316405,
+   "sha256_of_values": "0333462a5e702218b06d47505367ef8b480f7532e8a9620d75939855875591a0",
+   "sha256_recorded_in_the_comparison": "0333462a5e702218b06d47505367ef8b480f7532e8a9620d75939855875591a0",
+   "sha256_equal": true,
+   "cells_that_differ_from_the_recorded_array": 0,
+   "range_recorded_in_the_comparison": [
+    -7.168050689697264,
+    7.168050689697264
+   ],
+   "range_equal": true,
+   "quantity_unit_colours_method_equal_to_the_comparison": true,
+   "cells_that_differ_from_the_source_program": 0,
+   "grid_equal_to_the_first_input": true,
+   "derived_from_equal_to_the_records_of_the_inputs": true,
+   "inputs_equal_to_those_of_the_input_layers": true,
+   "dates_equal_to_those_of_the_input_layers": true,
+   "reduced_copy_shape": [
+    1986,
+    1886
+   ],
+   "reduced_copy_against_the_mean_of_the_result_values": {
+    "cells_compared": 3581043,
+    "cells_with_a_value_in_one_only": 0,
+    "largest_absolute_difference": 9.5367431640625e-07,
+    "mean_difference": -5.351546146891093e-12,
+    "percentiles_1_50_99_of_the_difference": [
+     -1.1920928955078125e-07,
+     0.0,
+     1.1920928955078125e-07
+    ],
+    "cells_that_differ_by_more_than_0.5": 0,
+    "cells_that_differ_by_more_than_1": 0
+   },
+   "reduced_copy_against_the_decibels_of_the_ratio_of_the_mean_powers": {
+    "cells_compared": 3581043,
+    "cells_with_a_value_in_one_only": 0,
+    "largest_absolute_difference": 11.585588051056583,
+    "mean_difference": 0.0020877364925495864,
+    "percentiles_1_50_99_of_the_difference": [
+     -1.3055783003921377,
+     0.0013014177681052175,
+     1.3199721336904913
+    ],
+    "cells_that_differ_by_more_than_0.5": 758093,
+    "cells_that_differ_by_more_than_1": 168757
+   }
+  },
+  "coherence": {
+   "status": "successful",
+   "message": "The layer is ready.",
+   "created": "2026-11-15T06:53:45Z",
+   "started": "2026-11-15T06:54:04Z",
+   "finished": "2026-11-15T06:54:13Z",
+   "given": [
+    "coherence"
+   ],
+   "description": {
+    "id": "818f9d737e74e0e9f6ffed7436466710",
+    "title": "Coherence HH, 9 to 21 Oct 2026",
+    "kind": "result",
+    "url": "/files/818f9d737e74e0e9f6ffed7436466710/coherence-state.tif",
+    "quantity": "Interferometric coherence (magnitude)",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-10-09",
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "program": "Lynkeus 0.1.0",
+    "method": "Layer coherenceMagnitude of the product, unchanged (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)",
+    "record": "/files/818f9d737e74e0e9f6ffed7436466710/coherence-state.json"
+   },
+   "file": "coherence-state.tif",
+   "size_bytes": 15194288,
+   "driver_layout": "COG",
+   "compression": "DEFLATE",
+   "dtype": "float32",
+   "nodata": "nan",
+   "crs": "EPSG:32619",
+   "transform": [
+    20.0,
+    0.0,
+    319520.0,
+    0.0,
+    -20.0,
+    4757600.0
+   ],
+   "shape": [
+    1985,
+    1886
+   ],
+   "block": [
+    512,
+    512
+   ],
+   "overview_factors": [
+    2,
+    4
+   ],
+   "band_description": "Interferometric coherence (magnitude)",
+   "band_unit": "1",
+   "tags": {
+    "dates": "2026-10-09, 2026-10-21",
+    "inputs": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+    "method": "Layer coherenceMagnitude of the product, unchanged (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)",
+    "TIFFTAG_SOFTWARE": "Lynkeus 0.1.0"
+   },
+   "statistics_tags": {
+    "STATISTICS_MAXIMUM": "0.9964798092842102",
+    "STATISTICS_MEAN": "0.5062995480591644",
+    "STATISTICS_MINIMUM": "0.004557579755783081",
+    "STATISTICS_STDDEV": "0.1825008516684439",
+    "STATISTICS_VALID_PERCENT": "95.60281111517719"
+   },
+   "record": {
+    "file": "coherence-state.json",
+    "id": "818f9d737e74e0e9f6ffed7436466710",
+    "stac_version": "1.1.0",
+    "title": "Coherence HH, 9 to 21 Oct 2026",
+    "start_datetime": "2026-10-09T00:00:00Z",
+    "end_datetime": "2026-10-21T23:59:59Z",
+    "lineage": "Result of the analysis tool coherence-state of Lynkeus 0.1.0 on the layers: Coherence HH, 20 m, 9 Oct 2026 to 21 Oct 2026. Method: Layer coherenceMagnitude of the product, unchanged (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)",
+    "level": null,
+    "software": {
+     "Lynkeus": "0.1.0",
+     "GDAL": "3.12.2"
+    },
+    "links": [
+     {
+      "rel": "derived_from",
+      "href": "/files/d3021760583f65bdfe8854964783acd6/gunw-wrappedinterferogram-hh-coherencemagnitude-20261009-20261021.json",
+      "type": "application/geo+json"
+     }
+    ],
+    "band_name": null,
+    "band_unit": "1",
+    "band_nodata": "nan",
+    "band_statistics": {
+     "minimum": 0.004557579755783081,
+     "maximum": 0.9964798092842102,
+     "mean": 0.5062995480591644,
+     "stddev": 0.1825008516684439,
+     "valid_percent": 95.60281111517719
+    },
+    "band_resolution": 20.0,
+    "faults_against_the_stac_schemas": []
+   },
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "cells": 3743710,
+   "cells_without_data": 164618,
+   "cells_with_a_value": 3579092,
+   "sha256_of_values": "f29816600880f897576f065a85663c6b220de092cd3ea930577b89094a104b4d",
+   "sha256_recorded_in_the_comparison": "f29816600880f897576f065a85663c6b220de092cd3ea930577b89094a104b4d",
+   "sha256_equal": true,
+   "cells_that_differ_from_the_recorded_array": 0,
+   "range_recorded_in_the_comparison": [
+    0.0,
+    1.0
+   ],
+   "range_equal": true,
+   "quantity_unit_colours_method_equal_to_the_comparison": true,
+   "grid_equal_to_the_first_input": true,
+   "derived_from_equal_to_the_records_of_the_inputs": true,
+   "inputs_equal_to_those_of_the_input_layers": true,
+   "dates_equal_to_those_of_the_input_layers": true,
+   "reduced_copy_shape": [
+    992,
+    943
+   ],
+   "reduced_copy_against_the_mean_of_the_result_values": {
+    "cells_compared": 895703,
+    "cells_with_a_value_in_one_only": 465,
+    "largest_absolute_difference": 0.314436674118042,
+    "mean_difference": 2.382586478400612e-05,
+    "percentiles_1_50_99_of_the_difference": [
+     -0.10668748587369918,
+     -7.450580596923828e-06,
+     0.10687829300761219
+    ],
+    "cells_that_differ_by_more_than_0.5": 0,
+    "cells_that_differ_by_more_than_1": 0
+   }
+  }
+ }
+}

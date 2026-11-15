@@ -33,6 +33,9 @@ on 31 Oct 2026, were withdrawn; no statement of this note rests on them.
 | Names, units and no-data values of the layers of SME2 | Not checked. It is due before the soil moisture tools (level 2). | |
 | The source program for the comparison of each level-1 tool | The ASF NISAR Cookbook for the two backscatter tools. ISCE3, the program of the mission, for the coherence layer. See part 3. | Part 3 |
 
+This note numbers the cells of the notebook from 0, in the order of the notebook file: cell 24 is
+its 25th cell, which Jupyter shows as `In [11]`.
+
 ## 2. Layers that the three tools use
 
 ### 2.1 GCOV
@@ -50,7 +53,7 @@ differs from version 1.5.0 in `inputDataExceptionMask` only.
 
 | Layer (under `/science/LSAR/GCOV/grids/frequency[A or B]/`) | Type | Unit | No data | Meaning | Place in the specification |
 |---|---|---|---|---|---|
-| `HHHH`, `HVHV`, `VHVH`, `VVVV`, `RHRH`, `RVRV` | Float32 | `1` | `nan` | Diagonal covariance terms: the backscatter of each channel, `valid_min` 0 | Section 2.2; Table 5-3, pages 36 to 42 (frequencyA) and 44 to 49 (frequencyB) |
+| `HHHH`, `HVHV`, `VHVH`, `VVVV`, `RHRH`, `RVRV` | Float32 | `1` | `nan` | Diagonal covariance terms: the backscatter of each channel, `valid_min` 0 | Section 2.2; Table 5-3, pages 36 to 42 (frequencyA) and 44 to 50 (frequencyB) |
 | `mask` | UByte | none | `255` | `0` invalid or partially focused; `1` to `5` valid, with the number of the sub-swath from which most of the radar samples came; `255` outside the acquisition | Section 4.3.3, pages 24 and 25; Table 5-3, page 36 |
 | `numberOfLooks` | Float32 | `1` | `nan` | Number of radar-grid pixels averaged for each cell | Section 4.3.2; Table 5-3, page 35 |
 | `rtcGammaToSigmaFactor` | Float32 | `1` | `nan` | Factor that turns gamma0 into sigma0 | Section 4.3.1; Table 5-3, page 36 |
@@ -71,7 +74,7 @@ product of the pilot area follows version 1.6.0, which is public as the file `ni
 
 | Layer (under `/science/LSAR/GUNW/grids/frequencyA/`) | Type | Unit | No data | Spacing | Place in the specification |
 |---|---|---|---|---|---|
-| `unwrappedInterferogram/[HH or VV]/coherenceMagnitude` | Float32 | `1` | `nan` | 80 m | Section 2.2; Table 3-11; page 35 |
+| `unwrappedInterferogram/[HH or VV]/coherenceMagnitude` | Float32 | `1` | `nan` | 80 m | Section 2.2; Table 3-11; pages 35 and 36 |
 | `wrappedInterferogram/[HH or VV]/coherenceMagnitude` | Float32 | `1` | `nan` | 20 m | Section 2.2; Table 3-11; pages 36 and 37 |
 | `unwrappedInterferogram/mask`, `wrappedInterferogram/mask` | UByte in Rev E; unsigned 32-bit in versions 1.5.0 and 1.6.0 | none | `255` | as the group | Rev E, pages 31 and 36: a three-digit number (water flag, sub-swath of the reference, sub-swath of the secondary; a digit 0 is an invalid sample). `nisar_L2_GUNW.xml`, versions 1.5.0 and 1.6.0: bits 0 to 7 hold that number, bits 8 to 15 anomaly flags of the secondary, bits 16 to 23 anomaly flags of the reference, bit 24 (unwrapped group only) the cells masked and filled in the ionospheric filtering |
 | `[unwrappedInterferogram or wrappedInterferogram]/[HH or VV]/validDataMask` | unsigned 8-bit | `1` | `255` | as the group | New in version 1.6.0 (`nisar_L2_GUNW.xml`): bit 1 for the reference and bit 0 for the secondary; 1 is valid (fully focused) |
@@ -131,8 +134,9 @@ part records the sources behind them. Part 5 records how GIS programs offer each
    dates of the data cube of the notebook. The tool receives one date and applies the same line to
    that date (part 4.2).
 5. **Rules of the code.** A cell is no data where the input is `nan`, zero, negative or infinite.
-   The tool refuses an input that is not one layer of one GCOV product file with the unit `1` and
-   one date, a result without any value and a legend without a range. A refusal is raised as
+   The tool refuses an input that is not one diagonal covariance term of one GCOV product file with
+   the unit `1` and one date, a layer whose description does not hold the name of its layer inside
+   the product, a result without any value and a legend without a range. A refusal is raised as
    `lynkeus.writing.LayerError` with one sentence for the visitor. The method sheet lists the refusals. Part 7,
    point 10, gives what the server does with a refusal.
 6. **Limits.**
@@ -140,15 +144,20 @@ part records the sources behind them. Part 5 records how GIS programs offer each
       Part 4.4 gives the evidence of the pilot area and what it does not show. In `main` at commit
       `0ad795b` the Data part offers the mask as a layer of its own and does not apply it to the
       terms (`api/src/lynkeus/harmony.py`, line 291).
-   2. The layer description (`LayerDescription` in `api/src/lynkeus/layers.py`) has no field for the
-      name of the layer inside the product. The layer request has it (`LayerRequest.layer`), and it
-      is not carried into a field of its own. In `main` at commit `0ad795b`, `_get_layer` puts the
-      name only into the names of the two files of the layer, in lower-case letters and with a
-      hyphen for every other character (`api/src/lynkeus/harmony.py`, line 236), so it stands in
-      that form inside `url` and `record` (`api/src/lynkeus/writing.py`, lines 330 and 339), and
-      into the texts `title` and `quantity`. The checks of the final code read none of these four.
-      The tool therefore cannot verify that its input is a backscatter term. Part 3.4 names the
-      other layers that pass its checks.
+   2. The name of the layer inside the product is the field `layer` of the layer description
+      (`LayerDescription` in `api/src/lynkeus/layers.py`), added on 15 Nov 2026. `_get_layer` gives
+      it the name of the layer request (`LayerRequest.layer`), and `write_layer` writes it into the
+      description and, as the field `name` of the band, into the STAC record. STAC 1.1.0 defines
+      the name of a band as "typically the name the data provider uses for the band" (common
+      metadata, Band Object,
+      <https://github.com/radiantearth/stac-spec/blob/v1.1.0/commons/common-metadata.md#band-object>,
+      read 15 Nov 2026). A result of a tool has no name. A description that was stored before the
+      field existed is read with the value `None`, and the tools refuse such a layer with a
+      sentence that asks the visitor to receive it again. The tool accepts the six diagonal terms of
+      Table 5-3 of the specification, which have the type Float32, and refuses every other name;
+      the seven other terms of the table have the type CFloat32. The field does not name the
+      frequency: the Data part receives the layers of the group `frequencyA` only (`_GROUPS` in
+      `api/src/lynkeus/harmony.py`). Part 3.4 gives the refusals and what was tried.
    3. The range of the legend is computed for each result. Two dates then have different ranges
       (part 4.2), which matters when two dates are compared side by side.
    4. The layer `inputDataExceptionMask` is not used.
@@ -172,9 +181,10 @@ part records the sources behind them. Part 5 records how GIS programs offer each
    of a threshold; the sheet sets no threshold. Parts 5.5 and 5.7 give the research on the colours.
 5. **Rules of the code.** A cell is no data where either input is `nan`, zero, negative or infinite,
    or where the ratio is beyond the range of 32-bit numbers. The tool refuses inputs that are not
-   two layers of GCOV product files with the unit `1` and one date each, two arrays of different
-   size, two products that are not of the same track, direction and frame, a first layer that is not
-   of the earlier date, a result without any value and a legend without a range.
+   two diagonal covariance terms of GCOV product files with the unit `1` and one date each, two
+   arrays of different size, two different terms, two products that are not of the same instrument,
+   track, direction and frame, a first layer that is not of the earlier date, a result without any
+   value and a legend without a range.
 6. **Limits.**
    1. The tool does not resample. The function receives no coordinates. In `main` at commit
       `0ad795b`, `run_tool` reads the layers and refuses layers whose grids differ in projection,
@@ -182,10 +192,10 @@ part records the sources behind them. Part 5 records how GIS programs offer each
       89; `Grid` in `api/src/lynkeus/writing.py`, lines 71 to 92). The GCOV specification does not
       state that two products of one track and frame share one grid (Appendix B, page 89, says that
       the projection of a frame is held constant).
-   2. The tool cannot verify that its two inputs are the same term of the same frequency (limit 2 of
-      part 3.1). The terms of the four channels that the Data part offers carry the same unit, and
-      in the trial of part 3.4 the tool accepted `HHHH` with `HVHV`. It does not compare the
-      instrument (`L` or `S`) of the two file names.
+   2. The tool compares the names of its two layers inside their products (limit 2 of part 3.1) and
+      refuses two different terms, for example `HHHH` with `HVHV`. It compares the instrument (`L`
+      or `S`) of the two file names together with the track, the direction and the frame. The two
+      terms are of the same frequency, because the Data part receives the group `frequencyA` only.
    3. The tool does not read the masks (part 4.4).
    4. A ratio that 32-bit numbers hold only as a subnormal number (below 1.18e-38, a change below
       −379.3 dB) gives a value with few digits. The review of the first version of the code measured
@@ -211,66 +221,95 @@ part records the sources behind them. Part 5 records how GIS programs offer each
    change of the surface. The full texts were not read.
 3. **Source program.** ISCE3 produced the layer. Licence Apache-2.0 (file `LICENSE` at tag
    `v0.25.21`). The comparison of D-17 is the identity of the result with the layer as NASA Harmony
-   delivered it (part 4.5). The layer of the original HDF5 file was not compared.
+   delivered it (part 4.5). On 15 Nov 2026 the layer of the original HDF5 product file was compared
+   for the whole rectangle of the sample: the 3,579,092 cells that hold a value in the sample equal
+   the product bit for bit (`step4_record.json`).
 4. **Legend.** nisarqa draws the coherence magnitude in grey from 0 to 1 (`cmap="gray"`, `vmin=0.0`,
    `vmax=1.0`; files `src/nisarqa/processing/insar/unwrapped_coh_mag.py` and
    `wrapped_phase_image_and_coh_mag.py`, commit `a8bc425`).
-5. **Rules of the code.** The tool refuses an input that is not one layer of one GUNW product file
-   with the unit `1` and two dates, a layer without any value, and a layer with a value outside 0
-   to 1. One such cell refuses the whole layer.
+5. **Rules of the code.** The tool refuses an input that is not one of the four layers
+   `coherenceMagnitude` of one GUNW product file with the unit `1` and two dates, a layer whose
+   description does not hold the name of its layer inside the product, a layer without any value,
+   and a layer with a value outside 0 to 1. One such cell refuses the whole layer.
 6. **Limits.**
    1. The GUNW layers `mask` and `validDataMask` are not used. Part 2.2 gives their meaning.
    2. The workflow `python/packages/nisar/workflows/crossmul.py` of ISCE3 0.25.21 (lines 65 and 67)
       creates `isce3.signal.Crossmul`, the class of the formula, or `isce3.cuda.signal.Crossmul`.
       Which of the two the mission runs, and how the 80 m layer is derived, was not traced.
-   3. The tool cannot verify that its input is the layer `coherenceMagnitude` (limit 2 of part 3.1).
-      Part 3.4 names the two other layers of a GUNW product that can pass its checks.
+   3. The tool reads the name of the layer inside the product (limit 2 of part 3.1). It accepts the
+      four layers `coherenceMagnitude` that the specification lists (pages 35 to 37): those of the
+      unwrapped and of the wrapped interferogram, for the channels HH and VV. Part 3.4 gives what
+      was tried.
 
-### 3.4 Layers that the checks cannot tell apart
+### 3.4 Layers that the tools refuse by their names
 
-The checks of a tool read the kind, the product file, the unit and the number of dates of a layer
-(method sheets, section What the tool refuses). In `main` at commit `0ad795b` the Data part writes
-these values for every layer that it receives (`_get_layer` in `api/src/lynkeus/harmony.py`, lines
-203 to 262), and it offers more layers with the unit `1` than the tools read:
+A tool reads the kind, the product file, the name of the layer inside the product, the unit and the
+number of dates of a layer (method sheets, section What the tool refuses). The Data part offers
+more layers with the unit `1` than the tools read (`_layers`, `_interferogram_layers` and `_offsets`
+in `api/src/lynkeus/harmony.py`):
 
-| Product | Layer | Unit | Lines of `harmony.py` | Read by |
-|---|---|---|---|---|
-| GCOV | The terms `HHHH`, `HVHV`, `VHVH` and `VVVV` | `1` | 271 to 276 | `backscatter-state`, `backscatter-change` |
-| GCOV | `rtcGammaToSigmaFactor` | `1` | 277 to 287 | No tool |
-| GCOV | `numberOfLooks` | `1` | 289 | No tool |
-| GCOV | `mask` | `1` | 291 | No tool |
-| GUNW | `coherenceMagnitude` of the unwrapped interferogram (80 m) and of the wrapped interferogram (20 m) | `1` | 333 and 344 | `coherence-state` |
-| GUNW | `connectedComponents` of the unwrapped interferogram | `1` | 323 to 332 | No tool |
-| GUNW | `correlationSurfacePeak` of the pixel offsets, with the legend 0 to 1 | `1` | 381 to 389 | No tool |
+| Product | Layer | Unit | Read by |
+|---|---|---|---|
+| GCOV | The terms `HHHH`, `HVHV`, `VHVH` and `VVVV` | `1` | `backscatter-state`, `backscatter-change` |
+| GCOV | `rtcGammaToSigmaFactor` | `1` | No tool |
+| GCOV | `numberOfLooks` | `1` | No tool |
+| GCOV | `mask` | `1` | No tool |
+| GUNW | `coherenceMagnitude` of the unwrapped interferogram (80 m) and of the wrapped interferogram (20 m) | `1` | `coherence-state` |
+| GUNW | `connectedComponents` of the unwrapped interferogram | `1` | No tool |
+| GUNW | `correlationSurfacePeak` of the pixel offsets, with the legend 0 to 1 | `1` | No tool |
 
-The other layers of a GUNW product that `main` offers carry the unit `rad` or `m`, and the check of
-the unit refuses them. The layers of GOFF and SME2 products are refused by the check of the product
-file.
+The other layers of a GUNW product that the Data part offers carry the unit `rad` or `m`. The
+layers of GOFF and SME2 products are refused by the check of the product file.
 
-The trial below called the three functions of the final code directly, on a local copy (Python
-3.13.18, NumPy 2.5.4, Windows-11-10.0.26300-SP0), with made-up arrays of 2 rows and 3 columns and
-with descriptions that carry the kind, the unit, the number of dates and the product file name that
-`harmony.py` writes. It was not made on the server, not through the web service and not on received
-layers, so it is provisional. The record is `trial_layers_local.json`.
+All layers of the table carry the kind, the product file, the unit and the number of dates that a
+tool expects. A tool tells them apart by the field `layer` of the layer description (part 3.1,
+limit 2), and it refuses a layer that it does not read with one sentence for the visitor.
 
-| Tool | Input | Outcome |
+The tests of `api/tests/analysis/` call the three functions with made-up arrays and with
+descriptions that carry the field. They cover, for the two backscatter tools, each of the six
+diagonal terms (accepted) and the names `mask`, `numberOfLooks`, `rtcGammaToSigmaFactor`, `HHHV`,
+`HHVV`, `inputDataExceptionMask` and `hhhh` (refused); for Backscatter, Change, two different terms
+and two products that differ in the instrument, the track, the direction or the frame; for
+Coherence, One pair, the four layers `coherenceMagnitude` (accepted) and eleven other names, among
+them `unwrappedInterferogram/HH/connectedComponents` and `pixelOffsets/HH/correlationSurfacePeak`
+(refused); and, for all three tools, a description without the field.
+
+On 15 Nov 2026 the refusals were tried through the web service, as jobs on layers that the process
+`get-layer` had received for the pilot area (part 4.7). Each job failed, and its message was the
+sentence below. The record is `jobs.json`.
+
+| Tool | Input layers | Message of the failed job |
 |---|---|---|
-| `backscatter-state` | GCOV layer mask | accepted; returned as "Radar backscatter gamma0", unit `dB` |
-| `backscatter-state` | GCOV layer numberOfLooks | accepted; returned as "Radar backscatter gamma0", unit `dB` |
-| `backscatter-state` | GCOV layer rtcGammaToSigmaFactor | accepted; returned as "Radar backscatter gamma0", unit `dB` |
-| `backscatter-change` | GCOV term HHHH of the earlier date and term HVHV of the later date | accepted; returned as "Change of radar backscatter gamma0", unit `dB` |
-| `backscatter-change` | GCOV layer numberOfLooks of the earlier date and term HHHH of the later date | accepted; returned as "Change of radar backscatter gamma0", unit `dB` |
-| `backscatter-change` | GCOV layer mask of both dates, two equal arrays | refused: "The values of the result are too alike to give the legend a range." |
-| `backscatter-change` | GCOV layer mask of both dates, arrays that differ in one cell | accepted; returned as "Change of radar backscatter gamma0", unit `dB` |
-| `coherence-state` | GUNW layer connectedComponents with the values 0 and 1 | accepted; returned as "Interferometric coherence (magnitude)", unit `1` |
-| `coherence-state` | GUNW layer connectedComponents with the values 0, 1 and 2 | refused: "The input layer holds values outside 0 to 1, so it is not a coherence magnitude." |
-| `coherence-state` | GUNW layer pixelOffsets/HH/correlationSurfacePeak | accepted; returned as "Interferometric coherence (magnitude)", unit `1` |
-| `coherence-state` | GUNW layer unwrappedPhase (unit rad) | refused: "The layer "Unwrapped phase HH, 2026-10-09 to 2026-10-21" has the unit rad, and the tool reads the unit 1." |
+| `backscatter-state` | GCOV `mask` of 21 Oct 2026 | The layer "Mask of valid samples, 21 Oct 2026" is the layer mask of its product, and the tool reads a diagonal covariance term (HHHH, HVHV, VHVH, VVVV, RHRH or RVRV). |
+| `backscatter-state` | GUNW `wrappedInterferogram/HH/coherenceMagnitude` | The layer "Coherence HH, 20 m, 9 Oct 2026 to 21 Oct 2026" is not a layer received from one NISAR GCOV product. |
+| `backscatter-state` | The result of `backscatter-state` for 21 Oct 2026 | The layer "Backscatter HH in dB, 21 Oct 2026" is not a layer received from one NISAR GCOV product. |
+| `backscatter-state` | `HHHH` of 21 Oct 2026 and `HHHH` of 2 Nov 2026 | The number of input layers must be 1, and it is 2. |
+| `backscatter-state` | `HHHH` of 2 Nov 2026, with the field `layer` taken out of its stored description | The layer "Backscatter HH, 2 Nov 2026" does not record which layer of its product it is; receive it again with Get layer. |
+| `backscatter-change` | `HHHH` of 2 Nov 2026, then `HHHH` of 21 Oct 2026 | The first layer must be of an earlier date than the second. |
+| `backscatter-change` | `HHHH` of 21 Oct 2026, then `HVHV` of 2 Nov 2026 | The two layers are not the same covariance term: the first is HHHH and the second is HVHV. |
+| `backscatter-change` | `mask` of 21 Oct 2026, then `HHHH` of 2 Nov 2026 | The layer "Mask of valid samples, 21 Oct 2026" is the layer mask of its product, and the tool reads a diagonal covariance term (HHHH, HVHV, VHVH, VVVV, RHRH or RVRV). |
+| `backscatter-change` | `HHHH` of 21 Oct 2026 alone | The number of input layers must be 2, and it is 1. |
+| `backscatter-change` | `HHHH` of 21 Oct 2026, then `HHHH` of 2 Nov 2026 without the field `layer` | The layer "Backscatter HH, 2 Nov 2026" does not record which layer of its product it is; receive it again with Get layer. |
+| `coherence-state` | GCOV `HHHH` of 21 Oct 2026 | The layer "Backscatter HH, 21 Oct 2026" is not a layer received from one NISAR GUNW product. |
+| `coherence-state` | GUNW `unwrappedInterferogram/HH/connectedComponents` | The layer "Connected components HH, 9 Oct 2026 to 21 Oct 2026" is the layer unwrappedInterferogram/HH/connectedComponents of its product, and the tool reads the layer coherenceMagnitude. |
 
-8 of the 11 inputs were accepted and 3 refused. A layer that is accepted is returned under the
-quantity of the tool: a mask or a number of looks becomes radar backscatter in decibels. The
-description tells the layers apart only by `title` and `quantity`, which are texts for the visitor.
-Part 7, point 9, asks for the field that would let the tools check the name of the layer.
+Three further refusals of the same trial come from the server and not from a tool. `run_tool`
+refused `HHHH` of 21 Oct 2026 with the coherence layer for Backscatter, Change with the sentence
+"The layers of the analysis do not have the same grid.", and the name of a layer that the session
+does not hold with "A layer of the analysis no longer exists." The web service refused a request
+that gives one layer twice, before it made a job, with the status 400 and the sentence "The input
+inputs is not valid: a layer is given more than once."
+
+For the layer without the field, the trial took the field `layer` out of the description of a
+received layer in the record file of the private copy of the service, and put it back afterwards.
+No layer that an earlier version of Lynkeus had stored was at hand. The service listed that layer
+without the field (`GET /api/layers` returns the stored description), and the interface reads such
+a description (`isLayerDescription` in `web/src/shared/layer.ts`).
+
+Not tried through the service: the terms `VHVH`, `VVVV`, `RHRH` and `RVRV`; the layers
+`numberOfLooks`, `rtcGammaToSigmaFactor` and `correlationSurfacePeak`; and two products of
+different instruments, tracks, directions or frames, because `run_tool` compares the grids of two
+layers before it calls a tool and no two such layers on one grid were received.
 
 ## 4. What was measured on real files
 
@@ -278,11 +317,24 @@ The files are the three sample files of the pilot area: the lower Merrimack Rive
 42.60, −70.75, 42.95 (west, south, east, north), track 141, frame 67, descending. NASA Harmony
 delivered each file as a GeoTIFF clipped to the box, from a product of a validated collection
 (`NISAR_L2_GCOV_V1`, `NISAR_L2_GUNW_V1`). The file `samples.json` of the team folder lists them.
-Every number of this part is copied from the record of its measurement: `d17_comparison.json`
-(SHA-256 `1def0f031af2893e9c997c420df57c5e00ecefc988f7866793b615530cdec056`) for parts 4.1 to 4.3,
-4.5 and 4.6, and `mask_evidence.json` (SHA-256
-`579b1ca6556d648be59008546be60c1cd945a22b68c718934b82bcdb27e2dc9d`) for part 4.4. All measurements
-were made on 14 Nov 2026, at full resolution.
+Every number of this part is copied from a record that the repository keeps in
+`docs/research/records/analysis/`.
+
+| Record | SHA-256 | What it holds |
+|---|---|---|
+| `comparison.json` | `30e521ff531e756accf16544ec15a08c8bc5f49cc0f4236a449e88542e714944` | The comparison of the three tools with the source program, made on 15 Nov 2026 (parts 4.1 to 4.3, 4.5 and 4.6) |
+| `source_side.json` | `7c36dc764d2d2f59c1dffaeeaa564723c40b56fd004a99c16243000aafa96f1a` | The statements of the notebook that this comparison executed, and their environment |
+| `lynkeus_side.json` | `8581930514ecb74432b701e5b4b14a6cb3a770b3e5e91b7e6de60f8285788a2d` | The sample files and the results of the three tools in this comparison |
+| `mask_measurement.json` | `2d1c6263edff0ad3ba1d12ebca0a769dd2f8121c4e604eba8d8ba69cee77e79c` | The mask files of the two sample products against the `HHHH` samples, measured on 15 Nov 2026 (part 4.4) |
+| `step4_record.json` | `48a526504006e4e668470b8994e848c74d77abbbd51940c4ce341f3012a659f9` | The layers `HHHH`, `mask` and `coherenceMagnitude` and the metadata fields of the three product files (HDF5), read at the ASF DAAC on 15 Nov 2026 and compared with the sample files (parts 4.4 and 4.6). The paths that it holds under `/data/work/` are values of the metadata of the products |
+| `step4b_record.json` | `6f3e1d07992d10491f20a9de4dfc894b603ebff824cd480e835626367d2a650e` | The cells that NASA Harmony emptied in the samples and in the mask files, against the box of the request (parts 4.4 and 4.6) |
+| `samples_check.json` | `9f6b7bbf1d1a8efae017bff701cf91bf80695df217e5100089b685e56f4bf88e` | The three tools of the branch `analysis` on the sample files, against the arrays of the comparison of 14 Nov 2026 (part 4.6) |
+| `jobs.json` | `a5b09d9d04e4e0b5ca94531e55b66ceaa30836bcc8db5f79f8c65d9731855929` | The jobs of the first run of the tools through the web service, on 15 Nov 2026 (parts 3.4 and 4.7). The field `service`, the address of the private copy of the service, was removed from the stored copy |
+| `jobs_check.json` | `c96ef649c32d94535702be913e539886d214e5ae9e5b5e1149c93762e32c95c7` | The files and the records that these jobs wrote, read back (part 4.7) |
+
+The measurements of parts 4.1 to 4.5 were first made on 14 Nov 2026 and were repeated on 15 Nov
+2026 with a second set of scripts, written separately (part 4.6). The records of 14 Nov 2026 are
+not kept in the repository. All measurements were made at full resolution.
 
 ### 4.1 The sample files
 
@@ -307,6 +359,12 @@ were made on 14 Nov 2026, at full resolution.
 The SHA-256 of each file, its lowest and highest value and its number of cells with a value equal
 those of `samples.json`. No sample holds a zero, a negative or an infinite cell. The two GCOV files
 have the same grid.
+
+Each file is the rectangle in the projection that encloses the requested box. NASA Harmony fills
+the cells whose centre lies outside the box with the no-data value: 665,944 cells of the 10 m grid
+and 164,618 cells of the 20 m grid. Of the cells with `nan` of the GCOV files, 665,942 hold a value
+in the product; the others (29 on 21 Oct 2026, 26 on 2 Nov 2026) hold `nan` in the product as well
+(`step4_record.json`, `step4b_record.json`).
 
 ### 4.2 Backscatter, One date
 
@@ -383,26 +441,58 @@ of the `HHHH` sample of its date: the same size, transform, projection and bound
 | Band tag `max_value` of the `HHHH` sample | `51839.094` | `24645.711` |
 
 1. On both dates the cells of `HHHH` without data are exactly the cells with mask `0` or `255`.
+   The 665,944 cells with the value `255` are not cells outside the acquisition. They are the cells
+   of the file whose centre lies outside the requested box, which NASA Harmony fills with the
+   no-data value. In the product files these cells hold the mask `1` (665,942 cells) or `0` (2
+   cells), and no cell of the rectangle holds `255` (table below).
 2. 16 cells have mask `0` on both dates, and the mask differs between the two dates in 19 cells. Of
    the 14,316,405 cells with mask `1` on both dates, all hold a value of the change; 0 cells hold a
    value of the change where either mask is `0` or `255`.
+   In the product files, over the whole rectangle, the pairs of mask values are `0`, `0` in 16
+   cells; `0`, `1` in 13; `1`, `0` in 10; and `1`, `1` in 14,982,345, all of which hold a value of
+   the change. The masks of the product differ in 23 cells (`step4_record.json`).
 3. Applying the mask would turn 0 cells of the change into no data. No legend of the pilot area
    would change.
 4. The band tags `min_value` and `max_value` lie outside the range of the values of the box (part
-   4.1). They are read here as the statistics that the product records for the layer of the whole
-   frame (part 7, point 3). The frame then holds values far below any value of the box.
+   4.1). They are attributes of the layer `HHHH` in the product file, where the layer has 36,072
+   by 35,640 cells: `min_value` is `1.6706226695065618e-16` and `max_value` is `51839.09375` on
+   21 Oct 2026, and `7.268607434326375e-17` and `24645.7109375` on 2 Nov 2026
+   (`step4_record.json`). The files of the box carry the same values as band tags. The frame
+   therefore holds values far below any value of the box.
+
+The layers were also read from the two product files (HDF5) at the ASF DAAC on 15 Nov 2026, over
+the rectangle of each sample (`step4_record.json`, `step4b_record.json`).
+
+| | 21 Oct 2026 | 2 Nov 2026 |
+|---|---|---|
+| Cells of the rectangle | 14,982,384 | 14,982,384 |
+| Cells with mask `0` in the product; with mask `1` | 29; 14,982,355 | 26; 14,982,358 |
+| Cells with mask `0` in the product that hold `nan` in `HHHH` of the product | 29 | 26 |
+| Cells with a value of `HHHH` in the product where its mask is `0` | 0 | 0 |
+| Cells with `nan` in `HHHH` of the product where its mask is `1` | 0 | 0 |
+| Cells with a value in the product and no data in the `HHHH` sample | 665,942 | 665,942 |
+| Of these, cells whose centre lies outside the box of the request | 665,942 | 665,942 |
+| Cells with `255` in the mask file of Harmony; of these, with mask `0` in the product | 665,944; 2 | 665,944; 2 |
+| Cells with `255` in the mask file whose centre lies inside the box | 0 | 0 |
+| Other cells of the mask file that differ from the mask of the product | 0 | 0 |
+| Fields `validSamplesSubSwathMaskingApplied` and `shadowMaskingApplied` of the product | `False`, `False` | `False`, `False` |
+| Field `/science/LSAR/identification/isDithered` of the product | `True` | `True` |
+
+In these two products every cell with mask `0` holds `nan` in `HHHH` in the product file itself.
+Harmony emptied the cells whose centre lies outside the box of the request and no other cell, in
+the samples and in the mask files; inside the box its mask files equal the mask of the product.
 
 What the evidence does not show:
 
 1. That the mask is unnecessary elsewhere. It is one box on a coast, two dates of one track and
    frame, and the term `HHHH` of frequency A only.
 2. How `HHHH` behaves where sub-swaths meet. The only valid value in the box is `1`. Section 4.3.3
-   of the specification says that a product of an acquisition with dithered pulse repetition
-   frequency has the value 1 throughout; whether these acquisitions are of that kind was not read.
-3. Why the cells with mask `0` hold `nan`. The files cannot tell whether the product itself holds
-   `nan` there or whether Harmony set it. The fields `validSamplesSubSwathMaskingApplied` and
-   `shadowMaskingApplied` of the product of 21 Oct 2026 read `False`; the same fields of the product
-   of 2 Nov 2026 were not read.
+   of the specification (page 25) says that a product of an acquisition with dithered pulse
+   repetition frequency holds one sub-swath, so that the valid part of its mask is 1; the field
+   `isDithered` of both products reads `True`. These products therefore hold no boundary between
+   sub-swaths.
+3. Why the product holds `nan` in the cells with mask `0`. The two masking fields read `False` on
+   both dates; which step of the processing sets these cells was not read.
 4. Anything about provisional products.
 5. The reduced copies (overviews) inside the mask files, which were not examined.
 
@@ -423,32 +513,120 @@ layers and the four `coherenceMagnitude` layers (lists saved on 14 Nov 2026).
 | Cells of the result that differ from the values of the sample file | 0 |
 | Legend | `0.0` to `1.0` |
 
-The result is bit-identical to the values of the sample file, and it is the input array itself. The
-comparison is with the layer as NASA Harmony delivered it, not with the original HDF5 product file.
+The result is bit-identical to the values of the sample file, and it is the input array itself. On
+15 Nov 2026 the layer of the original HDF5 product file was compared for the whole rectangle of the
+sample: the 3,579,092 cells that hold a value in the sample equal the product bit for bit
+(`step4_record.json`).
 
 ### 4.6 How the comparison was run
 
+The comparison was made twice, with two sets of scripts that were written separately, and both
+gave the same result: the arrays of the tools and of the source program are bit-identical and the
+legends are equal. The first run was made on 14 Nov 2026; its record is not kept in the
+repository. The table describes the second run, of 15 Nov 2026, from its records
+(`comparison.json`, `source_side.json`, `lynkeus_side.json`).
+
 | | |
 |---|---|
-| Machine | Linux 6.8.0-146-generic x86_64, AMD EPYC 9354P 32-Core Processor, 2 CPUs, 7940 MB |
-| Containers | Image `python:3.13-slim` (`sha256:e48f59cdba69a3cbd9ed2cf0f348d90d45a8d350d98134cf1070bc106ee9ed90`), limited with `--cpus 1 --memory 2g` |
-| Run | Started 2026-11-14T16:47:24Z. The outputs of the source program were reused from the first run, started 2026-11-14T15:58:13Z, ended 2026-11-14T16:06:07Z; not computed again. The result arrays of this run have the same SHA-256 as those of the first run |
-| Lynkeus | `main` at commit `22167b4e602945dabb950794e123092fa58a9236` with the code of the three tools (archive with SHA-256 `113b31e9bf66017fd85ee9df55c46cfc776e08e8152e3282406bc9ecf4f5accd`; the code of this pull request differs from it in the class of the refusals, which is `lynkeus.writing.LayerError` in place of a class of this part, and in the tests; the lines that compute the results and the legends are the same); `uv sync --frozen` with uv 0.13.8; Python 3.13.18, numpy 2.5.4, pydantic 2.14.3. The files were read with rasterio 1.5.2 (GDAL 3.12.2), added for the run only |
-| Source program | The notebook at commit `17b69c87a7320610740be7f2c7e605601cb7fe43` (SHA-256 of the file `a6373e20921ab15989c82aa1f13d7c4d93eea87e4a5981f12d3a0f48af92cc7f`). The statements of cells 12, 13, 16, 24, 26, 54, 56 and 59 were taken from the file and executed as written, with the term `HHHH`, without the window of cell 16 and with the dates of the samples |
-| Environment of the source program | Python 3.13.18, numpy 2.5.3, xarray 2026.7.0, dask 2025.12.0, rioxarray 0.22.0, rasterio 1.4.4: the versions of the lock file of the Cookbook (`pixi.lock`, SHA-256 `c6891fc29b850e83c5bb6409cf733432a1be5e469752bd3581726b071cabbb50`, environment `isce3`, platform `linux-64`), installed with pip |
-| Differences from the lock file | Python 3.13.18 (lock file 3.13.0); pip 26.2.2 (lock file 25.3); wheels of PyPI, not the conda-forge builds; GDAL 3.10.3 inside the rasterio wheel (lock file: libgdal-core 3.11.5); only the 27 packages that the executed statements need. The Debian package libexpat1 was added inside both containers, because the rasterio wheels load it |
-| Input of both sides | The same values: the SHA-256 of the array values is equal on both sides for both dates. The cube of the source program had one dask chunk for each date; the same statements on chunks of 1024 by 1024 cells gave the same bytes and the same legends |
-| Memory | Peak resident memory during the first call: 331,088 kB (One date, 21 Oct 2026), 494,568 kB (Change) and 116,840 kB (Coherence). The figure holds the interpreter, the libraries and the input arrays of a function that was called directly. The `api` container was limited with `mem_limit: 1g` in `compose.yaml` at commit `22167b4`; at commit `0ad795b` it is limited with `mem_limit: 2g` (line 27), and 2 jobs run at once (`MAX_RUNNING_JOBS` in `api/src/lynkeus/jobs.py`, line 34). No job of a tool was measured |
+| Platform | `Linux-6.8.0-146-generic-x86_64-with-glibc2.41`, Python 3.13.18 on both sides |
+| Lynkeus | The three functions of this part, with numpy 2.5.4 and pydantic 2.14.3. The files were read with rasterio 1.5.2 (GDAL 3.12.2) |
+| Source program | The notebook at commit `17b69c87a7320610740be7f2c7e605601cb7fe43` (SHA-256 of the file `a6373e20921ab15989c82aa1f13d7c4d93eea87e4a5981f12d3a0f48af92cc7f`, 74 cells). Statements of the cells 11, 12, 13, 16, 24, 26, 54, 56, 58 and 59 were executed |
+| Statements replaced | Cell 11 opens HDF5 product files; the two GeoTIFF samples were opened with `rioxarray.open_rasterio` in its place. Cell 12 reads the time from the name of the product file; the names of `samples.json` were given. The statement of cell 13 that reads the projection was not executed. Cell 16: the term `HHHH` in place of `HVHV`, and the whole box without the window of 3000 by 3000 cells. Cell 54: the dates of the samples. The quantile line of cell 26 was also executed on each date alone |
+| Environment of the source program | numpy 2.5.3, xarray 2026.7.0, dask 2025.12.0, rioxarray 0.22.0, rasterio 1.4.4 (GDAL 3.10.3), matplotlib 3.11.2; 29 packages in all |
+| Input of both sides | The same values: the record states that the inputs are equal on both sides for both dates. The statements were executed twice, with the cube as dask arrays (`chunks="auto"`) and in memory, and the two variants gave the same arrays and the same legends |
+
+On 15 Nov 2026 the three functions of the branch `analysis`, with the checks of the name of the
+layer, were also run on the sample files in the image of the web service (commit `d9d54d5`, numpy
+2.5.4). The SHA-256 of each result array and each legend equal those of the first run, and each
+backscatter array is bit-identical to the array of the source program of that run
+(`samples_check.json`).
 
 What the comparison does not show:
 
 1. The cells in which the tools give no data and the source program does not. The samples hold no
    zero, negative or infinite cell, and no pair of cells whose ratio 32-bit numbers cannot hold. The
    tests of `api/tests/analysis/` cover these cells on made-up grids.
-2. Whether Harmony delivers the values of the HDF5 layer unchanged. The source program was given the
-   GeoTIFF samples, not the HDF5 product files that the notebook opens.
-3. The conda-forge builds of the lock file and Python 3.13.0, which were not used.
+2. The source program on the HDF5 product files that the notebook opens: it was given the GeoTIFF
+   samples. The values of the samples were compared with the product files on 15 Nov 2026
+   (`step4_record.json`): every cell that holds a value in a sample holds the same value in the
+   product file, with a largest difference of 0.0, for 14,316,413 cells (`HHHH`, 21 Oct 2026),
+   14,316,416 cells (`HHHH`, 2 Nov 2026) and 3,579,092 cells (`coherenceMagnitude` at 20 m). The
+   other cells of each sample hold no data; the product holds a value in 665,942, 665,942 and
+   164,618 of them, and the centre of each of these lies outside the box of the request
+   (`step4b_record.json`).
+3. The conda-forge builds of the lock file of the Cookbook and its Python 3.13.0, which were not
+   used.
 4. Other areas and dates. One pair of dates and one area were compared.
+
+### 4.7 The first jobs of the tools through the web service
+
+On 15 Nov 2026, from 06:48 to 06:55 UTC, the three tools ran as jobs of a private copy of the web
+service. The copy was a container of the image built from `api/` of the branch `analysis` at commit
+`d9d54d5`, with the settings of `compose.yaml` (read-only file system, user 10001, init process,
+2 gigabytes of memory), one processor, a data folder of its own and a port bound to the machine
+itself. A program signed in to the service with a user token of the Earthdata account of the
+server, started every job with `POST /api/processes/<name>/execution` and read its state and its
+result from `/api/jobs/`. The records are `jobs.json` and `jobs_check.json`.
+
+The process `get-layer` received six layers for the box −71.20, 42.60, −70.75, 42.95.
+
+| Layer (field `layer`) | Product | Time of the job, from its start | Cells without data | Against the sample file |
+|---|---|---|---|---|
+| `HHHH` | GCOV of 21 Oct 2026 | 121 s | 665,971 of 14,982,384 | Same grid; 0 cells differ |
+| `HHHH` | GCOV of 2 Nov 2026 | 120 s | 665,968 of 14,982,384 | Same grid; 0 cells differ |
+| `wrappedInterferogram/HH/coherenceMagnitude` | GUNW of 9 to 21 Oct 2026 | 63 s | 164,618 of 3,743,710 | Same grid; 0 cells differ |
+| `HVHV` | GCOV of 2 Nov 2026 | 107 s | 665,968 of 14,982,384 | No sample |
+| `mask` | GCOV of 21 Oct 2026 | 88 s | 665,944 of 14,982,384 | No sample |
+| `unwrappedInterferogram/HH/connectedComponents` | GUNW of 9 to 21 Oct 2026 | 47 s | 9,923 of 233,616 | No sample |
+
+Each description carries the name of the layer in the field `layer`, and each STAC record carries
+it as the `name` of the band. Each file is valid for `cog_validate` in strict mode, and each record
+is valid against the schemas of STAC 1.1.0 and of its extensions.
+
+The four jobs of the tools ended as `successful`.
+
+| | Backscatter, One date, 21 Oct 2026 | Backscatter, One date, 2 Nov 2026 | Backscatter, Change | Coherence, One pair |
+|---|---|---|---|---|
+| Time of the job, from its start | 19 s | 18 s | 15 s | 9 s |
+| Size of the file (bytes) | 62,855,703 | 62,921,256 | 69,599,539 | 15,194,288 |
+| Cells with a value; without data | 14,316,413; 665,971 | 14,316,416; 665,968 | 14,316,405; 665,979 | 3,579,092; 164,618 |
+| Cells that differ from the array of the comparison (part 4.6) | 0 | 0 | 0 | 0 |
+| Cells that differ from the array of the source program | 0 | 0 | 0 | not applicable |
+| `unit` | dB | dB | dB | `1` |
+| `range` | `-17.824283599853516`, `-0.8974864482879639` | `-18.472387313842773`, `-0.731230616569519` | `-7.168050689697264`, `7.168050689697264` | `0.0`, `1.0` |
+| `colours` | `grey` | `grey` | `RdBu` | `grey` |
+| `dates` | 2026-10-21 | 2026-11-02 | 2026-10-21, 2026-11-02 | 2026-10-09, 2026-10-21 |
+| Reduced copies (factors) | 2, 4, 8 | 2, 4, 8 | 2, 4, 8 | 2, 4 |
+
+For each result, the SHA-256 of the values read back from the file equals that of the comparison;
+the grid is that of the input layers; `inputs` holds the product files of the input layers;
+`method`, `quantity`, `unit`, `range` and `colours` are those that the function returns; the field
+`layer` is null; the band of the record has the unit of the result, the no-data value `nan` and no
+`name`; the links `derived_from` of the record lead to the records of the input layers, in their
+order; the file is valid for `cog_validate` in strict mode; and the record is valid against the
+schemas.
+
+The reduced copies (overviews) of a result are made by `write_layer` with the resampling `AVERAGE`
+of GDAL, as for a received layer, because `run_tool` does not say otherwise. For a result in
+decibels this averages decibel values, and `write_layer` states in its documentation string that
+the values averaged for a power must be linear. Measured on the first reduced copy (factor 2;
+3,581,043 cells with a value):
+
+| | Backscatter, One date, 21 Oct 2026 | Backscatter, One date, 2 Nov 2026 | Backscatter, Change |
+|---|---|---|---|
+| Largest difference of the reduced copy from the mean of the four decibel values (dB) | `9.5367431640625e-07` | `9.5367431640625e-07` | `9.5367431640625e-07` |
+| Compared with | the decibels of the mean power of the four cells | the same | the decibels of the ratio of the mean powers of the four cells |
+| Mean difference (dB) | `-0.49659152788303923` | `-0.49450889286976357` | `0.0020877364925495864` |
+| Largest difference (dB) | `15.234850031091355` | `15.681339741737233` | `11.585588051056583` |
+| Cells that differ by more than 0.5 dB; by more than 1 dB | 1,204,178; 405,244 | 1,200,764; 402,948 | 758,093; 168,757 |
+
+The values at full resolution are not affected. A map that draws a reduced copy of a One date
+result shows values that are on average 0.5 dB lower than the decibels of the mean power. The
+correction belongs to `lynkeus.tools` and `lynkeus.writing` and is not made here (part 7, point
+17). The reduced copy of the coherence result has 992 rows for 1985 rows of the layer, so it was
+not compared block by block.
+
+Not measured: the memory of a job of a tool, and the display of a result in a browser.
 
 ## 5. How GIS programs offer these functions
 
@@ -574,15 +752,17 @@ abstracts were read.
 2. **Andreas: the mask in other areas.** Part 4.4 lists what the evidence of the pilot area does not
    show. The measurement is repeated on the next area.
 3. **Andreas: the statistics of the whole frame.** The band tags `min_value` and `max_value` of the
-   samples lie outside the range of the values of the box, so they are read here as statistics of
-   the layer of the whole frame. The place of the specification that defines them was not read, and
-   the cells of the frame that hold those values were not examined.
+   samples are attributes of the layer `HHHH` in the product files, where the layer covers the whole
+   frame (part 4.4, point 4; `step4_record.json`). The place of the specification that defines them
+   was not read, and the cells of the frame that hold those values were not examined.
 4. **Andreas: the metadata of the pilot products.** The fields
-   `outputBackscatterExpressionConvention`, `outputBackscatterNormalizationConvention`,
-   `outputBackscatterDecibelConversionFormula`, `softwareVersion` and the two fields of the
-   algorithm references were not read from the product files. Their values are known from the source
-   code of ISCE3 0.25.21 and from the NASA catalogue. The fields `productSpecificationVersion` and
-   `productVersion` were read from the files (part 2.1).
+   `outputBackscatterExpressionConvention` (`Linear power`),
+   `outputBackscatterNormalizationConvention` (`gamma0`),
+   `outputBackscatterDecibelConversionFormula` (`10*log10(<GCOV_TERM>)`), `softwareVersion`
+   (`0.25.21`), the two fields of the algorithm references, `productSpecificationVersion` (`1.6.0`),
+   `productVersion` (`1.0.20`), the two masking fields and `isDithered` were read from the two GCOV
+   product files on 15 Nov 2026, with these values on both dates (`step4_record.json`). The field
+   `softwareVersion` of the GUNW product file reads `0.25.21`.
 5. **Andreas: the text of version 1.6.0 of the specifications.** No PDF of this version is public.
    The XML files give its tables. The running text was read for versions 1.5.0 (GCOV) and 1.2.1
    (GUNW) only.
@@ -592,14 +772,15 @@ abstracts were read.
    tools. The research on the tool dialog and on the record of a result is due before the dialog is
    built.
 8. **Alexandros and Andreas: the GCOV mask.** NASA Harmony lists the mask among the variables of
-   `NISAR_L2_GCOV_V1` and delivered it for the pilot area (part 4.4). In `main` at commit `0ad795b`
-   the Data part offers the mask as a layer of its own, with the unit `1`, and does not apply it to
-   the terms (`api/src/lynkeus/harmony.py`, line 291). The tools do not read it. To be decided:
-   whether the two backscatter tools take the mask as a further input. On the pilot area it changes
-   no cell and no legend (part 4.4).
-9. **Alexandros: the name of the layer inside the product.** The layer description has no field for
-   it (part 3.1, limit 2). Without it no tool can verify which layer it received; part 3.4 names the
-   layers that pass the checks. The field changes a shared format and needs a decision of the team.
+   `NISAR_L2_GCOV_V1` and delivered it for the pilot area (part 4.4). The Data part offers the mask
+   as a layer of its own, with the unit `1`, and does not apply it to the terms (`_layers` in
+   `api/src/lynkeus/harmony.py`). The tools apply no mask, as the cells of the source program apply
+   none, and they refuse the layer `mask` as an input (part 3.4). On the pilot area the mask would
+   change no cell and no legend (part 4.4).
+9. **Alexandros: the name of the layer inside the product.** Done on 15 Nov 2026: the layer
+   description has the field `layer` (part 3.1, limit 2), the Data part fills it, and every tool
+   reads it (part 3.4). A layer that was received before the field existed has to be received
+   again before a tool accepts it.
 10. **Andreas: the refusals of the tools.** A tool raises `lynkeus.writing.LayerError` with one
     sentence for the visitor, as `api/README.md` of `main` asks of a tool (lines 32 to 34 at commit
     `0ad795b`). There `run_tool` passes a `LayerError` on and turns every other exception of a tool
@@ -609,19 +790,22 @@ abstracts were read.
     and descriptions that differ in number; an array that is not two-dimensional Float32) stays a
     `ValueError` and so is shown as an internal error. The package `lynkeus.analysis` therefore
     imports `lynkeus.writing`, and with it rasterio; the functions still read and write no file.
-    This was read in the files. No job of a tool was run, so that a refusal reaches the visitor in
-    its own words is not confirmed by a trial.
+    On 15 Nov 2026 the refusals were tried as jobs of a private copy of the web service: the
+    message of each failed job was the sentence of the tool, and `GET /api/jobs/<name>/results`
+    answered with the status 500 and the same sentence as its `detail` (part 3.4; `jobs.json`).
+    How the interface shows the sentence was not seen in a browser.
 11. **Alexandros: what the checks rely on.** The checks expect that a received layer carries the
     kind `layer`, the unit `1` and one name in `inputs`, which begins as the name of the product
     file (for example `<granule>.h5`); a folder or an address before the name is refused. At commit
     `0ad795b` the Data part writes these values (`api/src/lynkeus/harmony.py`, lines 238 to 244),
     and `run_tool` compares the grids of the layers before it calls a tool (part 3.2, limit 1). The
-    point is confirmed in the code. It stays here because a change of these values would make the
-    tools refuse every layer, and because no test of this part uses a description made by
-    `harmony.py`.
-12. **Alexandros: the records of the measurements.** The records `d17_comparison.json` and
-    `mask_evidence.json` are not in the repository. Where they are kept is not decided. The record
-    of the trial of part 3.4, `trial_layers_local.json`, is not in the repository either.
+    point is confirmed in the code and, since 15 Nov 2026, by the jobs of part 4.7, whose layers
+    were described by `harmony.py`. The checks now also expect the field `layer`. The point stays
+    here because a change of these values would make the tools refuse every layer.
+12. **Alexandros: the records of the measurements.** The records that this note quotes are kept in
+    `docs/research/records/analysis/` (part 4). The records of the first measurements, of
+    14 Nov 2026, and of the trial that part 3.4 described before 15 Nov 2026 are not kept, and the
+    note quotes none of them. The arrays of the measurements are not kept in the repository.
 13. **Alexandros: the GUNW specification.** The project folder holds Rev E (version 1.2.1), which is
     the latest PDF that the ASF DAAC links (read 14 Nov 2026). The products of the pilot area follow
     version 1.6.0, which is public as XML only (part 2.2). The ASF page names a Revision F in its
@@ -642,8 +826,14 @@ abstracts were read.
     tools in `TOOLS`, the server therefore offers them without a further change. The title of a
     process is the name of the tool with spaces, for example "Backscatter state", and its
     description is the first paragraph of the documentation string of the function (lines 141 and
-    142). The buttons of the Analysis tab have no action yet (`web/src/analysis/actions.ts`, lines 5
-    to 7). No job of a tool was run, and nothing was tried in a browser.
+    142). On 15 Nov 2026 the three tools ran as jobs of a private copy of the web service (part
+    4.7). Nothing was tried in a browser.
+17. **Alexandros: the reduced copies of a result in decibels.** `run_tool` lets `write_layer` make
+    the reduced copies of every result by averaging. For a result in decibels the reduced copy is
+    then the mean of decibel values, which is on average 0.5 dB below the decibels of the mean
+    power for the One date results of the pilot area (part 4.7). The values at full resolution are
+    correct. The correction is in `api/src/lynkeus/tools.py` or `api/src/lynkeus/writing.py`, which
+    are not files of this part.
 
 ## About
 

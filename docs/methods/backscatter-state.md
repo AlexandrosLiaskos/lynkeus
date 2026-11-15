@@ -5,7 +5,7 @@
 | Tool | `backscatter-state` (Analysis tab, group Backscatter, button One date) |
 | NISAR product | GCOV, Level-2 Geocoded Polarimetric Covariance |
 | Result | Radar backscatter gamma0, in decibels (dB) |
-| State | The comparison with the source program (D-17) was made on 14 Nov 2026 on the sample files of the pilot area. |
+| State | The comparison with the source program (D-17) was made on 14 Nov 2026 on the sample files of the pilot area. It was repeated independently on 15 Nov 2026, with other scripts, and gave the same numbers. |
 
 ## Reference
 
@@ -23,7 +23,10 @@
    specification cites this article for the terrain correction and the geocoding (reference [RD1];
    sections 2.2 and 4.3). ISCE3 writes the reference of the article into the fields
    `radiometricTerrainCorrectionAlgorithmReference` and `geocodingAlgorithmReference` of the group
-   `/science/LSAR/GCOV/metadata/processingInformation/algorithms/` (specification, Table 5-6).
+   `/science/LSAR/GCOV/metadata/processingInformation/algorithms/` (specification, Table 5-6) when
+   the terrain correction and the geocoding use the area projection (`GcovWriter.py`, lines 711 to
+   753, version 0.25.21). Both pilot products hold this reference in the two fields (read on
+   15 Nov 2026).
 4. Science Data Systems (SDS) L-SAR Product File Naming Conventions, JPL D-102255, Rev C,
    19 October 2025. Sections 3.7 and 3.8. The tool reads the product type of its input from the name
    of the product file.
@@ -41,9 +44,11 @@ The diagonal terms are real-valued and are the radar backscatter of each polaris
 terrain correction. The files state this in the group
 `/science/LSAR/GCOV/metadata/processingInformation/parameters/rtc/`, where
 `outputBackscatterExpressionConvention` is `Linear power` and
-`outputBackscatterNormalizationConvention` is `gamma0`. The specification lists the two fields
-(Table 5-6, page 71) and not their values. ISCE3 writes `Linear power` into every product and takes
-the normalisation from the run configuration, whose default is `gamma0`
+`outputBackscatterNormalizationConvention` is `gamma0`. Both pilot products hold these two values
+(read from the HDF5 product files on 15 Nov 2026). The specification lists the two fields
+(Table 5-6, page 71) and not their values. ISCE3 writes `Linear power` into every product. When the
+terrain correction is applied, it takes the normalisation from the run configuration, whose
+default is `gamma0`; otherwise it writes `beta0`
 ([`GcovWriter.py`, lines 773 to 788, version 0.25.21](https://github.com/isce-framework/isce3/blob/v0.25.21/python/packages/nisar/products/writers/GcovWriter.py#L773-L788)).
 
 ### What the tool refuses
@@ -112,15 +117,27 @@ On both dates every cell with mask `0` or `255` already holds `nan` in the `HHHH
 delivers, and every cell with mask `1` holds a value above zero. Applying the mask would therefore
 change no cell and no legend in the pilot area.
 
+The 665,944 cells with the value `255` in the mask files are not cells outside the acquisition.
+They are the cells of the file whose centre lies outside the requested box (−71.20, 42.60, −70.75,
+42.95), which NASA Harmony fills with the no-data value. In the product files these cells hold the
+mask `1` (665,942 cells) or `0` (2 cells), and no cell of the rectangle holds `255`. In the
+product, the rectangle of 3772 by 3972 cells holds mask `0` in 29 cells on 21 Oct 2026 and in 26
+cells on 2 Nov 2026, and mask `1` in all other cells. Inside the box the mask files of Harmony
+equal the mask of the product in every cell (product files read on 15 Nov 2026;
+`docs/research/analysis.md`, part 4.4).
+
 The limits of this evidence are the following.
 
 1. It is one box of 3772 by 3972 cells on a coast, two dates of one track and frame (141, 67), and
    the term `HHHH` of frequency A only.
-2. The only valid value in the box is `1`, so the box holds no boundary between sub-swaths.
-3. The files cannot tell whether the product itself holds `nan` in the cells with mask `0`, or
-   whether Harmony set it. The fields `validSamplesSubSwathMaskingApplied` and
-   `shadowMaskingApplied` of the product of 21 Oct 2026 read `False`; the same fields of the product
-   of 2 Nov 2026 were not read.
+2. The only valid value in the box is `1`, so the box holds no boundary between sub-swaths. Both products are of acquisitions with dithered pulse repetition frequency
+   (`isDithered` = `True`), for which the specification gives the value 1 throughout (section
+   4.3.3).
+3. The product itself holds `nan` in the cells with mask `0`. In the HDF5 product files, read on
+   15 Nov 2026 for the rectangle of the samples, every cell with mask `0` holds `nan` in `HHHH` (29
+   cells on 21 Oct 2026, 26 cells on 2 Nov 2026) and every cell with mask `1` holds a value. The
+   fields `validSamplesSubSwathMaskingApplied` and `shadowMaskingApplied` read `False` in both
+   products. Which step of the processing leaves these cells without data was not traced.
 4. The samples are of the validated collection. The evidence says nothing about provisional
    products.
 5. The reduced copies (overviews) inside the mask files were not examined.
@@ -128,8 +145,11 @@ The limits of this evidence are the following.
 The question stays open for other areas. The band tags of the two sample files carry a `min_value`
 of `1.6706227e-16` on 21 Oct 2026 and of `7.2686074e-17` on 2 Nov 2026, that is −157.8 dB and
 −161.4 dB. The lowest values inside the box are −31.61 dB and −29.53 dB. The tags therefore do not
-describe the box. They are read here as the statistics that the product records for the layer of the
-whole frame, which then holds values far below any value of the box. Whether the mask marks the
+describe the box. They are the attributes `min_value` and `max_value` of the layer `HHHH` of the
+whole frame in the product file, which the files of Harmony carry as band tags:
+`1.6706226695065618e-16` and `51839.09375` on 21 Oct 2026, `7.268607434326375e-17` and
+`24645.7109375` on 2 Nov 2026 (read from the HDF5 product files on 15 Nov 2026). The frame
+therefore holds values far below any value of the box. Whether the mask marks the
 cells of those values was not examined.
 
 NASA Harmony lists the mask of both frequencies among the variables of the validated collection
@@ -177,6 +197,8 @@ The range and the colour scale are those of the source program
 `quantile([0.05, 0.95])`, `cmap="grey"`, label "γ⁰ (dB)"). The quality-assurance program of the
 mission, nisarqa, clips its backscatter images to the same percentiles by default
 ([`percentile_for_clipping`, default `(5.0, 95.0)`](https://github.com/isce-framework/nisarqa/blob/a8bc425f5e8873174471d6a12fe622df338623d1/src/nisarqa/parameters/rslc_caltools_params.py)).
+This sheet numbers the cells of the notebook from 0, in the order of the notebook file: cell 24 is
+its 25th cell, which Jupyter shows as `In [11]`, and cell 26 is shown as `In [12]`.
 
 The notebook takes its percentiles over all dates of its data cube. The tool receives one date, so
 it applies the same line to that date alone. The range therefore differs from one date to another.
@@ -206,13 +228,13 @@ product (specification, section 2.2).
 | Version | Commit `17b69c8` of 3 Nov 2026, branch `main` (the repository has no release and no tag) |
 | Licence | Apache-2.0 |
 | Files compared | `gcov-hhhh-20261021.tif` (SHA-256 `e808a7bfed69c0bd1eabc38faae539bae7aaadd81c86b1bf963900c996dffb84`), the layer `HHHH` of the product `NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001`; `gcov-hhhh-20261102.tif` (SHA-256 `f9d950ad3b30c07d6d77a3f63d1dd4c106fa1b775982c0834c35e715ac91ac43`), the layer `HHHH` of the product `NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001`. Both files are GeoTIFF as NASA Harmony delivered them, read at full resolution |
-| Platform | Linux 6.8.0-146-generic x86_64, in containers of the image `python:3.13-slim`, Python 3.13.18. Lynkeus: `main` at commit `22167b4` with the code of this tool, numpy 2.5.4. Source program: numpy 2.5.3, xarray 2026.7.0, dask 2025.12.0, rioxarray 0.22.0 and rasterio 1.4.4, the versions of the lock file of the Cookbook (`pixi.lock`, environment `isce3`, platform `linux-64`), installed with pip |
-| Differences from the lock file | Python is 3.13.18 and the lock file has 3.13.0. The packages are the wheels of PyPI, not the conda-forge builds of the lock file; GDAL inside the rasterio wheel is 3.10.3 and the lock file has libgdal-core 3.11.5. Only the 27 packages that the executed statements need were installed; of these, pip is 26.2.2 and the lock file has 25.3 |
-| Run | Started 2026-11-14T16:47:24Z, with the final code. The outputs of the source program were reused from the first run, started 2026-11-14T15:58:13Z, ended 2026-11-14T16:06:07Z; not computed again |
+| Platform | `Linux-6.8.0-146-generic-x86_64-with-glibc2.41`, Python 3.13.18. Lynkeus: the code of this tool, numpy 2.5.4. Source program: numpy 2.5.3, xarray 2026.7.0, dask 2025.12.0, rioxarray 0.22.0 and rasterio 1.4.4 (GDAL 3.10.3), the versions of the lock file of the Cookbook (`pixi.lock`, environment `isce3`, platform `linux-64`) |
+| Differences from the lock file | Python is 3.13.18 and the lock file has 3.13.0. GDAL inside rasterio is 3.10.3 and the lock file has libgdal-core 3.11.5. 29 packages were installed, not the whole environment of the lock file |
+| Run | The comparison was made twice, on 14 Nov 2026 and on 15 Nov 2026, with two sets of scripts that were written separately, and both gave the result below. The rows above describe the run of 15 Nov 2026, whose records are kept in `docs/research/records/analysis/` (`comparison.json`, `source_side.json`, `lynkeus_side.json`) |
 | Input of the source program | The notebook opens HDF5 product files (cell 11). For the comparison its data cube was built from the two GeoTIFF files, with the term `HHHH` and without the window of 3000 by 3000 cells of cell 16 |
 | Largest difference | 0.0 dB on both dates. The arrays are bit-identical: of 14,982,384 cells, 14,316,413 (21 Oct 2026) and 14,316,416 (2 Nov 2026) hold a value in both results, the others hold `nan` in both, and 0 cells hold a value in one result only |
 | Largest difference of the legend | 0.0 and 0.0 dB on both dates, against cell 26 applied to each date alone. Against cell 26 as written, over both dates, the legend of the tool differs by 0.33 and −0.09 dB (21 Oct 2026) and by −0.32 and 0.08 dB (2 Nov 2026) |
-| Not reached | The samples hold no zero, negative or infinite cell, so the comparison does not show the cells in which the tool gives no data and the statements of the notebook follow the rules of numpy. The source program was given the GeoTIFF files of Harmony, not the HDF5 product files; whether Harmony delivers the values of the HDF5 layer unchanged was not examined. One area and one pair of dates were compared |
+| Not reached | The samples hold no zero, negative or infinite cell, so the comparison does not show the cells in which the tool gives no data and the statements of the notebook follow the rules of numpy. The source program was given the GeoTIFF files of Harmony, not the HDF5 product files. On 15 Nov 2026 the layer `HHHH` was read from the two HDF5 product files for the whole rectangle of the samples: every cell that holds a value in a sample (14,316,413 cells on 21 Oct 2026 and 14,316,416 on 2 Nov 2026) equals the product bit for bit. One area and one pair of dates were compared |
 
 The exact numbers of the comparison are in `docs/research/analysis.md`, part 4.
 
@@ -227,7 +249,7 @@ The exact numbers of the comparison are in `docs/research/analysis.md`, part 4.
    A later commit of `main`, `5095ee0`, holds a scale `grey` that runs from black at the lowest
    value to white (`web/src/contents/colours.ts`, lines 54 to 57); the file was read and nothing was
    tried.
-5. That the sentence of a refusal reaches the visitor through a job of the server. The tool raises
-   `LayerError`, which `run_tool` passes on (`api/src/lynkeus/tools.py`, lines 59 to 64, at commit
-   `0ad795b` of `main`). This was read in the files; no job of a tool was run
-   (`docs/research/analysis.md`, part 7, point 10; Andreas).
+5. How the interface shows the sentence of a refusal. On 15 Nov 2026 the tool ran as a job of a
+   private copy of the web service, and each refusal that was tried ended its job as failed, with
+   the sentence of the tool as the message of the job (`docs/research/analysis.md`, parts 3.4 and
+   4.7). Nothing was seen in a browser.
