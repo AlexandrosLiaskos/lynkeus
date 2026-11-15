@@ -115,9 +115,24 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   from the ISO XML file of the product.
 - The sources of Surface displacement, One pair in the dialog Sources of the Help tab.
 - The analysis tools Backscatter, Series and Coherence, Series: the values of many dates against time, at a point or for the area, shown as a chart with a table in the pane Series and listed under Series in the Catalog pane.
+- The pane Storage of the Options tab, which shows everything that Lynkeus keeps for a visitor in four sections:
+  this browser, the project server, the servers of the visitor, and NASA and the other services. The section of
+  the project server states the layers, the series and the size of the files of the account beside their limits,
+  as numbers and as bars, and the next removal; Keep all keeps everything for the keeping time from now, and
+  Remove everything of mine removes it after a confirmation that names what goes and what stays.
+- The date until which the project server keeps each layer and series, in the Catalog pane, with the command
+  that keeps it for the keeping time from now. A row carries a warning from three days before its date, and one
+  notice of the pane says how many layers and series are removed within three days.
+- The sentence that says who reads the file of a layer at its address, in the pane Record of the Share tab and
+  in the details of a layer.
 
 ### Changed
 
+- The interface reads the limits of an account, the keeping time, the reserve of free space and the free space
+  of the project server from `GET /api/limits`, in the place of the limits of a session. No duration or size of
+  what is kept is typed in the interface. The pane Browser storage became the first section of the pane Storage.
+- The dialog About states what is kept in the statements of `docs/Storage.md`, and the explanations of the
+  sections Jobs, Layers and Series of the Catalog pane name the Earthdata account, which owns them.
 - Lynkeus is licensed under the GNU Affero General Public License, version 3, with additional terms under
   its section 7, in place of the Apache License 2.0. The terms keep the attribution to Alexandros Liaskos
   and Team Lynkeus in every copy and every work based on Lynkeus, websites included, require a modified
