@@ -1,7 +1,17 @@
 import { readFileSync } from "node:fs";
 import { expect, test } from "vitest";
 import { plain } from "./Marked";
-import { READING, READING_SENTENCES, readingOf, REFERENCE, referenceOf, summaryOf, type Block } from "./methods";
+import {
+  COPIES,
+  copiesOf,
+  READING,
+  READING_SENTENCES,
+  readingOf,
+  REFERENCE,
+  referenceOf,
+  summaryOf,
+  type Block,
+} from "./methods";
 import { METHODS } from "./methodSheets";
 import { FINISHED_TOOLS, type FinishedTool } from "./tools";
 
@@ -136,6 +146,7 @@ function expected(tool: FinishedTool) {
       { title: input, blocks: blocksOf(beforeHeading(parts(input))) },
       { title: "Formula", blocks: blocksOf(parts("Formula")) },
       { title: "Unit", blocks: blocksOf(parts("Unit")) },
+      { title: COPIES, blocks: blocksOf(parts(COPIES)) },
       { title: "Legend", blocks: legend ? blocksOf([legend]) : [] },
       { title: READING, blocks: blocksOf(parts(READING)) },
       {
@@ -163,7 +174,7 @@ test.each(FINISHED_TOOLS)("the sheet of %s holds every part that the interface s
     expect(title).not.toBe("");
     expect(blocks.length).toBeGreaterThan(0);
   }
-  const [, , , , , , comparison] = method.sections;
+  const comparison = method.sections.find(({ title }) => title.startsWith("Comparison with the source program"));
   const [table] = comparison?.blocks ?? [];
   const rows = table?.kind === "table" ? table.rows.map(([name]) => name) : [];
   expect(rows).toContain("Source program");
@@ -181,6 +192,27 @@ test.each(FINISHED_TOOLS)("the form of %s shows the first reference of the sheet
   const [list] = partsOf(sections.get(REFERENCE) ?? []);
   expect(list?.kind === "list" ? list.items[0] : undefined).toBe(referenceOf(METHODS[tool]));
   expect(referenceOf(METHODS[tool])).not.toBe("");
+});
+
+test.each(FINISHED_TOOLS)("the form of %s shows what the sheet tells the reader about the reduced copies", (tool) => {
+  const { sections } = sectionsOf(sheet(tool));
+  const texts = partsOf(sections.get(COPIES) ?? []).flatMap((part) => (part.kind === "text" ? [part.text] : []));
+  expect(texts.length).toBeGreaterThan(1);
+  expect(copiesOf(METHODS[tool])).toBe(texts.at(-1));
+  expect(copiesOf(METHODS[tool]).startsWith("For the reader: ")).toBe(true);
+});
+
+test.each(FINISHED_TOOLS)("the sections of %s stand in the order of the sheet", (tool) => {
+  expect(METHODS[tool].sections.map(({ title }) => title.replace(/ \(D-17\)$/, "").replace(/s$/, ""))).toEqual([
+    "Reference",
+    "Input layer",
+    "Formula",
+    "Unit",
+    "Reduced copies of the result",
+    "Legend",
+    "How to read the result",
+    "Comparison with the source program",
+  ]);
 });
 
 test.each(FINISHED_TOOLS)(

@@ -28,6 +28,7 @@ export interface Method {
 /** The headings of the sections that the form of a tool reads. */
 export const REFERENCE = "Reference";
 export const READING = "How to read the result";
+export const COPIES = "Reduced copies of the result";
 
 /** The number of sentences on the reading of the result that the form of a tool shows. */
 export const READING_SENTENCES = 3;
@@ -53,6 +54,17 @@ export function referenceOf(method: Method): string {
     }
   }
   return "";
+}
+
+/**
+ * Return what a sheet tells the reader of the map about the reduced copies of the result: the last paragraph of
+ * its section Reduced copies of the result, or an empty text.
+ */
+export function copiesOf(method: Method): string {
+  const texts = (sectionOf(method, COPIES)?.blocks ?? []).flatMap((block) =>
+    block.kind === "text" ? [block.text] : [],
+  );
+  return texts.at(-1) ?? "";
 }
 
 /** Return the first three sentences of the section How to read the result of a sheet, or an empty text. */

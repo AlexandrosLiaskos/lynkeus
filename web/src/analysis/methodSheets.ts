@@ -3,8 +3,9 @@ import type { FinishedTool } from "./tools";
 
 /**
  * The texts of the method sheets of the finished tools, copied from `docs/methods/`: the title of each sheet, the
- * table under its title, its sections Reference, Input layers, Formula, Unit, Legend, How to read the result
- * and Comparison with the source program, and its statement on the mask of the product. The interface is built
+ * table under its title, its sections Reference, Input layers, Formula, Unit, Reduced copies of the result,
+ * Legend, How to read the result and Comparison with the source program, and its statement on the mask of the
+ * product. The interface is built
  * without the folder `docs/`, so the texts stand here, and the test `methodSheets.test.ts` compares each of them
  * with its sheet. A change of a sheet is repeated here.
  */
@@ -93,6 +94,23 @@ export const METHODS: Record<FinishedTool, Method> = {
           {
             kind: "text",
             text: "Decibel (dB). The result is Float32 and its no-data value is `nan`.",
+          },
+        ],
+      },
+      {
+        title: "Reduced copies of the result",
+        blocks: [
+          {
+            kind: "text",
+            text: "The file of a result holds the values of the formula at full resolution. It also holds reduced copies (overviews), at the factors 2, 4 and 8 for the results of the pilot area, which the map draws when it is zoomed out. Lynkeus makes each cell of a reduced copy as the mean of the decibel values of the cells that it covers, and not as the decibels of their mean power.",
+          },
+          {
+            kind: "text",
+            text: "Measured on 15 Nov 2026 on the two results of the pilot area, at the factor 2 (3,581,043 cells with a value): the reduced copy equals the mean of the four decibel values (largest difference 9.5e-07 dB). Against the decibels of the mean power of the same four cells it is on average 0.50 dB lower on 21 Oct 2026 and 0.49 dB lower on 2 Nov 2026; 1,204,178 and 1,200,764 cells differ by more than 0.5 dB, and the largest difference is 15.2 dB and 15.7 dB (`docs/research/analysis.md`, part 4.7).",
+          },
+          {
+            kind: "text",
+            text: "For the reader: when the map is zoomed out, it shows values that are about half a decibel too low on average, and more where bright and dark cells lie side by side. The values at full zoom, and the values of the file at full resolution, are those of the formula.",
           },
         ],
       },
@@ -252,6 +270,23 @@ export const METHODS: Record<FinishedTool, Method> = {
         ],
       },
       {
+        title: "Reduced copies of the result",
+        blocks: [
+          {
+            kind: "text",
+            text: "The file of a result holds the values of the formula at full resolution. It also holds reduced copies (overviews), at the factors 2, 4 and 8 for the result of the pilot area, which the map draws when it is zoomed out. Lynkeus makes each cell of a reduced copy as the mean of the decibel values of the change of the cells that it covers. It is not the change of the mean backscatter of these cells, which cannot be derived from the result alone.",
+          },
+          {
+            kind: "text",
+            text: "Measured on 15 Nov 2026 on the result of the pilot pair, at the factor 2 (3,581,043 cells with a value): the reduced copy equals the mean of the four decibel values (largest difference 9.5e-07 dB). Against the decibels of the ratio of the mean powers of the same four cells, the mean difference is 0.002 dB, 758,093 cells differ by more than 0.5 dB, and the largest difference is 11.6 dB (`docs/research/analysis.md`, part 4.7).",
+          },
+          {
+            kind: "text",
+            text: "For the reader: when the map is zoomed out, a cell shows the mean of the changes of the cells that it covers, which can differ by more than a decibel from the change of their mean backscatter. The values at full zoom, and the values of the file at full resolution, are those of the formula.",
+          },
+        ],
+      },
+      {
         title: "Legend",
         blocks: [
           {
@@ -400,6 +435,19 @@ export const METHODS: Record<FinishedTool, Method> = {
           {
             kind: "text",
             text: "None (the product gives the unit `1`). The values lie between 0 and 1; the specification does not state this range, which follows from the formula above. The result is Float32 and its no-data value is `nan`.",
+          },
+        ],
+      },
+      {
+        title: "Reduced copies of the result",
+        blocks: [
+          {
+            kind: "text",
+            text: "The file of a result holds the values of the layer at full resolution. It also holds reduced copies (overviews), at the factors 2 and 4 for the result of the pilot area, which the map draws when it is zoomed out. Lynkeus makes each cell of a reduced copy as the mean of the coherence values of the cells that it covers, as it does for the layer that it receives. The reduced copies of this result were not measured.",
+          },
+          {
+            kind: "text",
+            text: "For the reader: when the map is zoomed out, a cell shows the mean coherence of the cells that it covers. It is not a coherence estimated at that coarser resolution: Lynkeus does not hold the complex images from which the mission estimates the coherence. The values at full zoom, and the values of the file at full resolution, are those of the product.",
           },
         ],
       },
