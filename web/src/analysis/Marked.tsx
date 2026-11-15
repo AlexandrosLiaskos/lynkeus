@@ -54,23 +54,3 @@ export function marked(text: string): ReactNode[] {
 export function Marked({ text }: { text: string }) {
   return <>{marked(text)}</>;
 }
-
-/** Return a text of a method sheet without its marks: the words alone, and an address without its brackets. */
-export function plain(text: string): string {
-  return text.replace(
-    MARK,
-    (_whole, code?: string, words?: string, _address?: string, bare?: string) =>
-      code ?? (words === undefined ? (bare ?? "") : plain(words)),
-  );
-}
-
-/**
- * Return the first sentences of a text. A sentence ends with a full stop that is followed by a space and a
- * capital letter, or with the end of the text.
- */
-export function firstSentences(text: string, count: number): string {
-  return text
-    .split(/(?<=\.)\s+(?=[A-Z])/)
-    .slice(0, count)
-    .join(" ");
-}

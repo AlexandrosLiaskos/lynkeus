@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { expect, test } from "vitest";
-import { firstSentences, Marked, plain } from "./Marked";
+import { Marked } from "./Marked";
 
 test("a text without marks is shown as it is", () => {
   const { container } = render(<Marked text="Decibel (dB). The result is Float32." />);
@@ -44,22 +44,10 @@ test("a link to a file of the repository shows its words without a link", () => 
   expect(screen.queryByRole("link")).toBeNull();
 });
 
-test("a text without its marks keeps its words and its addresses", () => {
-  expect(plain("The layer `mask` of [the product](https://example.org/p), see <https://example.org/q>.")).toBe(
-    "The layer mask of the product, see https://example.org/q.",
+test("a formula between grave accents keeps its bars and its angle brackets", () => {
+  const { container } = render(
+    <Marked text="The mission computes it as `|<s1 * conj(s2)>| / sqrt(<|s1|^2> * <|s2|^2>)`." />,
   );
-  expect(plain("[`GcovWriter.py`, lines 1 to 2](https://example.org/writer)")).toBe("GcovWriter.py, lines 1 to 2");
-  expect(plain("No mark.")).toBe("No mark.");
-});
-
-test("the first sentences of a text end at a full stop before a capital letter", () => {
-  const text = "Near 1, they are alike; near 0, they are not. A low value (Touzi et al., 1999). The third. The fourth.";
-  expect(firstSentences(text, 1)).toBe("Near 1, they are alike; near 0, they are not.");
-  expect(firstSentences(text, 3)).toBe(
-    "Near 1, they are alike; near 0, they are not. A low value (Touzi et al., 1999). The third.",
-  );
-  expect(firstSentences(text, 9)).toBe(text);
-  expect(firstSentences("3 dB is about a factor of two. no capital follows.", 1)).toBe(
-    "3 dB is about a factor of two. no capital follows.",
-  );
+  expect(container.querySelector("code")?.textContent).toBe("|<s1 * conj(s2)>| / sqrt(<|s1|^2> * <|s2|^2>)");
+  expect(container.querySelector("a")).toBeNull();
 });

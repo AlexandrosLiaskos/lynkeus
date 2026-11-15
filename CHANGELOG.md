@@ -147,6 +147,9 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   under a layer of data.
 - The form of the search is filled when its pane, or the pane of Get layer, first opens. The area of the
   search is therefore not on the map, nor in the Contents pane, when the page loads.
+- The forms of the Analysis tab show only the layer, the name of the result, the box that adds the result to
+  the map and a link Method. The page Methods of the Help tab shows for each tool eight short rows, which
+  stand in a new section In brief of its method sheet, and the address of the full sheet.
 
 ### Removed
 
