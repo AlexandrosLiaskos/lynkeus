@@ -16,9 +16,23 @@ export const SLIDE_TIME = 700;
 /** How far upward a drag must go to open the page, in pixels. */
 const DRAG_LIMIT = 80;
 
-/** Tell whether an event began on a link or a button of the screen, which then keeps its own meaning. */
+/** How far the pointer may move between its press and its release for the two to count as a click, in pixels. */
+const CLICK_LIMIT = 6;
+
+/** Tell whether an event began on a link, a button or the note of the image, which then keeps its own meaning. */
 function onControl(target: EventTarget): boolean {
-  return target instanceof Element && target.closest("a, button") !== null;
+  return target instanceof Element && target.closest("a, button, .welcome-credit") !== null;
+}
+
+/**
+ * Tell whether a key opens the page. Enter, Space, the arrows and the keys that write a character do. The Tab
+ * key moves between the links, and a key held with Control, Alt or the Meta key is a command of the browser.
+ */
+function opens(event: KeyboardEvent): boolean {
+  if (event.ctrlKey || event.altKey || event.metaKey) {
+    return false;
+  }
+  return event.key.length === 1 || ["Enter", "ArrowUp", "ArrowDown", "PageUp", "PageDown"].includes(event.key);
 }
 
 interface WelcomeProps {
@@ -33,10 +47,10 @@ interface WelcomeProps {
  * universities of the team. Every member, the event and every logo is a link. A small letter i in the lower left
  * corner names the source of the image.
  *
- * The visitor slides the screen up to enter: with the button at the middle of its foot, by dragging it upward, by
- * scrolling, or
- * with the Enter, Space, Up or Escape key. The screen then moves up out of the window and the page stands under
- * it.
+ * The visitor enters as on the lock screen of a computer, by any of the first things a visitor tries: a click or a
+ * tap anywhere on the screen, the button at the middle of its foot, a drag upward, a scroll, or a key. The screen
+ * then moves up out of the window and the page stands under it. Until the visitor touches it, the screen lifts a
+ * little every few seconds and shows the edge of the page under it, so that nobody takes it for the whole site.
  *
  * It is the dialog element of the browser, opened as a modal, so the browser keeps the keyboard focus inside it
  * until the visitor enters.
@@ -47,6 +61,8 @@ export function Welcome({ count = visits }: WelcomeProps) {
   // The height of the pointer where a drag began, and null while nothing is dragged.
   const drag = useRef<number | null>(null);
   const [leaving, setLeaving] = useState(false);
+  // Whether the screen still lifts a little now and then, which it does until the visitor touches it.
+  const [hinting, setHinting] = useState(true);
 
   useEffect(() => {
     const element = dialog.current;
@@ -85,7 +101,7 @@ export function Welcome({ count = visits }: WelcomeProps) {
   };
 
   const onKeyDown = (event: KeyboardEvent<HTMLDialogElement>) => {
-    if (["Enter", " ", "ArrowUp"].includes(event.key) && !onControl(event.target)) {
+    if (opens(event) && !onControl(event.target)) {
       event.preventDefault();
       enter();
     }
@@ -108,6 +124,7 @@ export function Welcome({ count = visits }: WelcomeProps) {
   const onPointerDown = (event: PointerEvent<HTMLDialogElement>) => {
     if (event.button === 0 && !onControl(event.target)) {
       drag.current = event.clientY;
+      setHinting(false);
     }
   };
 
@@ -120,14 +137,15 @@ export function Welcome({ count = visits }: WelcomeProps) {
     }
   };
 
-  // A drag that went far enough opens the page, and a shorter one lets the screen return.
+  // A drag upward that went far enough opens the page, and so does a click, which hardly moves the pointer. A
+  // shorter drag lets the screen return.
   const onPointerEnd = (event: PointerEvent<HTMLDialogElement>) => {
     if (drag.current === null) {
       return;
     }
     const moved = drag.current - event.clientY;
     drag.current = null;
-    if (moved > DRAG_LIMIT) {
+    if (moved > DRAG_LIMIT || (event.type === "pointerup" && Math.abs(moved) <= CLICK_LIMIT)) {
       enter();
     } else {
       event.currentTarget.style.transition = "";
@@ -138,7 +156,7 @@ export function Welcome({ count = visits }: WelcomeProps) {
   return (
     <dialog
       ref={dialog}
-      className={leaving ? "welcome welcome-leaving" : "welcome"}
+      className={leaving ? "welcome welcome-leaving" : hinting ? "welcome welcome-hinting" : "welcome"}
       aria-label={`${WELCOME.name}: ${WELCOME.subtitle}`}
       tabIndex={-1}
       onCancel={onCancel}
