@@ -410,6 +410,21 @@ def _layers(product: ProductType, channels: Sequence[str]) -> tuple[_Layer, ...]
                 200,
             )
         )
+        # Whole numbers whose lowest bit is set where the mission does not recommend the retrieval (JPL D-107677
+        # Rev C, page 37). The tools of the group Soil moisture leave those cells out.
+        quantity = "Retrieval quality flag of the soil moisture, whose lowest bit marks a retrieval not recommended"
+        layers.append(
+            _Layer(
+                "retrievalQualityFlag",
+                "Retrieval Quality Flag",
+                quantity,
+                "1",
+                "extremes",
+                "tab10",
+                200,
+                averaged=False,
+            )
+        )
     return tuple(layers)
 
 

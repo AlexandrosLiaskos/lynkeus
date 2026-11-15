@@ -98,6 +98,12 @@ export interface LayerDescription {
    * this field existed.
    */
   frequency?: number | null;
+  /**
+   * One sentence for the visitor that the tool gives about its result, for example how many cells it left out.
+   * Only a result may have one, when its tool gives one. A layer has null or no field, and so has a description
+   * stored before this field existed.
+   */
+  note?: string | null;
   /** Program and version that produced the file. */
   program: string;
   /** Reference of the method. A result has one, and a layer has null. */
@@ -240,6 +246,7 @@ export function isLayerDescription(value: unknown): value is LayerDescription {
   const ends = layer.ends ?? null;
   const classes = layer.classes ?? null;
   const frequency = layer.frequency ?? null;
+  const note = layer.note ?? null;
   const statistics = layer.statistics ?? null;
   return (
     [layer.id, layer.title, layer.url, layer.quantity, layer.unit, layer.colours, layer.program, layer.record].every(
@@ -258,6 +265,7 @@ export function isLayerDescription(value: unknown): value is LayerDescription {
     (classes === null || (kind === "result" && isTableOfClasses(classes, range as [number, number]))) &&
     (frequency === null ||
       (kind === "layer" && typeof frequency === "number" && Number.isFinite(frequency) && frequency > 0)) &&
+    (note === null || (kind === "result" && isText(note))) &&
     (statistics === null || (kind === "result" && isAreaStatistics(statistics))) &&
     (kind === "result" ? isText(method) : method === null)
   );

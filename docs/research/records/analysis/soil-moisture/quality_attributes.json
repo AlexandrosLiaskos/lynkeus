@@ -1,0 +1,171 @@
+{
+ "started": "2026-11-15T19:51:38+00:00",
+ "products": {
+  "20260915": {
+   "product_file": "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001.h5",
+   "layers": {
+    "soilMoisture": {
+     "dtype": "float32",
+     "shape": [
+      1620,
+      2205
+     ],
+     "attributes": {
+      "_FillValue": -9999.0,
+      "description": "Averaged soil moisture. If recommended retrievals are available, the average is computed using only the recommended retrievals. If no recommended retrievals are available, the average is computed using all retrievals",
+      "grid_mapping": "projection",
+      "long_name": "Soil moisture",
+      "max_value": 0.6029999852180481,
+      "mean_value": 0.2803003191947937,
+      "min_value": 0.03500000014901161,
+      "sample_stddev": 0.04023924842476845,
+      "units": "meter^3/meter^3"
+     }
+    },
+    "retrievalQualityFlag": {
+     "dtype": "int16",
+     "shape": [
+      1620,
+      2205
+     ],
+     "attributes": {
+      "_FillValue": -9999,
+      "description": "Soil moisture retrieval quality flag. The least significant bit indicates whether the retrieval is recommended (0 = recommended, 1 = not recommended). The second bit indicates the use of the PMI algorithm (0 = not applied, 1 = applied). The third bit indicates the use of the TSR algorithm (0 = not applied, 1 = applied). The most significant bit indicates the use of the DSG algorithm (0 = not applied, 1 = applied)",
+      "grid_mapping": "projection",
+      "long_name": "Retrieval quality flag",
+      "units": "1"
+     }
+    },
+    "surfaceQualityFlag": {
+     "dtype": "int16",
+     "shape": [
+      1620,
+      2205
+     ],
+     "attributes": {
+      "_FillValue": -9999,
+      "description": "Surface quality flag",
+      "grid_mapping": "projection",
+      "long_name": "Surface quality flag",
+      "units": "1"
+     }
+    }
+   },
+   "flag_layers_of_the_grid": [
+    "retrievalQualityFlag",
+    "surfaceQualityFlag"
+   ]
+  },
+  "20260927": {
+   "product_file": "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+   "layers": {
+    "soilMoisture": {
+     "dtype": "float32",
+     "shape": [
+      1620,
+      2205
+     ],
+     "attributes": {
+      "_FillValue": -9999.0,
+      "description": "Averaged soil moisture. If recommended retrievals are available, the average is computed using only the recommended retrievals. If no recommended retrievals are available, the average is computed using all retrievals",
+      "grid_mapping": "projection",
+      "long_name": "Soil moisture",
+      "max_value": 0.6000000238418579,
+      "mean_value": 0.3019798696041107,
+      "min_value": 0.01856086775660515,
+      "sample_stddev": 0.04128167778253555,
+      "units": "meter^3/meter^3"
+     }
+    },
+    "retrievalQualityFlag": {
+     "dtype": "int16",
+     "shape": [
+      1620,
+      2205
+     ],
+     "attributes": {
+      "_FillValue": -9999,
+      "description": "Soil moisture retrieval quality flag. The least significant bit indicates whether the retrieval is recommended (0 = recommended, 1 = not recommended). The second bit indicates the use of the PMI algorithm (0 = not applied, 1 = applied). The third bit indicates the use of the TSR algorithm (0 = not applied, 1 = applied). The most significant bit indicates the use of the DSG algorithm (0 = not applied, 1 = applied)",
+      "grid_mapping": "projection",
+      "long_name": "Retrieval quality flag",
+      "units": "1"
+     }
+    },
+    "surfaceQualityFlag": {
+     "dtype": "int16",
+     "shape": [
+      1620,
+      2205
+     ],
+     "attributes": {
+      "_FillValue": -9999,
+      "description": "Surface quality flag",
+      "grid_mapping": "projection",
+      "long_name": "Surface quality flag",
+      "units": "1"
+     }
+    }
+   },
+   "flag_layers_of_the_grid": [
+    "retrievalQualityFlag",
+    "surfaceQualityFlag"
+   ]
+  },
+  "20261009": {
+   "product_file": "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+   "layers": {
+    "soilMoisture": {
+     "dtype": "float32",
+     "shape": [
+      1620,
+      2205
+     ],
+     "attributes": {
+      "_FillValue": -9999.0,
+      "description": "Averaged soil moisture. If recommended retrievals are available, the average is computed using only the recommended retrievals. If no recommended retrievals are available, the average is computed using all retrievals",
+      "grid_mapping": "projection",
+      "long_name": "Soil moisture",
+      "max_value": 0.6000000238418579,
+      "mean_value": 0.26709237694740295,
+      "min_value": 0.019999999552965164,
+      "sample_stddev": 0.03868761658668518,
+      "units": "meter^3/meter^3"
+     }
+    },
+    "retrievalQualityFlag": {
+     "dtype": "int16",
+     "shape": [
+      1620,
+      2205
+     ],
+     "attributes": {
+      "_FillValue": -9999,
+      "description": "Soil moisture retrieval quality flag. The least significant bit indicates whether the retrieval is recommended (0 = recommended, 1 = not recommended). The second bit indicates the use of the PMI algorithm (0 = not applied, 1 = applied). The third bit indicates the use of the TSR algorithm (0 = not applied, 1 = applied). The most significant bit indicates the use of the DSG algorithm (0 = not applied, 1 = applied)",
+      "grid_mapping": "projection",
+      "long_name": "Retrieval quality flag",
+      "units": "1"
+     }
+    },
+    "surfaceQualityFlag": {
+     "dtype": "int16",
+     "shape": [
+      1620,
+      2205
+     ],
+     "attributes": {
+      "_FillValue": -9999,
+      "description": "Surface quality flag",
+      "grid_mapping": "projection",
+      "long_name": "Surface quality flag",
+      "units": "1"
+     }
+    }
+   },
+   "flag_layers_of_the_grid": [
+    "retrievalQualityFlag",
+    "surfaceQualityFlag"
+   ]
+  }
+ },
+ "ended": "2026-11-15T19:51:38+00:00"
+}

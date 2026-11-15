@@ -45,6 +45,7 @@ def test_layer_description_is_read_and_written_in_the_same_form() -> None:
         "ends": None,
         "classes": None,
         "frequency": None,
+        "note": None,
         "statistics": None,
         "range": [-25.0, 0.0],
     }
@@ -60,6 +61,7 @@ def test_layer_stored_without_the_name_of_its_layer_is_read() -> None:
         "ends": None,
         "classes": None,
         "frequency": None,
+        "note": None,
         "statistics": None,
         "range": [-25.0, 0.0],
     }
@@ -314,3 +316,26 @@ def test_result_of_a_tool_has_classes_when_and_only_when_its_reduced_copies_take
         AnalysisResult(values, "Class", "1", (1.0, 3.0), "classes", "Method", "mean", classes=classes)
     with pytest.raises(ValueError, match="when, and only when"):
         AnalysisResult(values, "Class", "1", (1.0, 3.0), "classes", "Method", "mode")
+
+
+def test_result_may_carry_the_note_of_its_tool_and_a_layer_received_from_nasa_none() -> None:
+    assert "note" not in RESULT
+    assert LayerDescription.model_validate(RESULT).note is None
+    sentence = (
+        "2 of the 5 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended."
+    )
+    result = LayerDescription.model_validate({**RESULT, "note": sentence})
+    assert result.note == sentence
+    assert LayerDescription.model_validate_json(result.model_dump_json()) == result
+    with pytest.raises(ValidationError, match="only a result has a note of its tool"):
+        LayerDescription.model_validate({**LAYER, "note": sentence})
+    with pytest.raises(ValidationError):
+        LayerDescription.model_validate({**RESULT, "note": ""})
+
+
+def test_result_of_a_tool_has_no_note_unless_it_gives_one() -> None:
+    values = np.zeros((1, 1), np.float32)
+    assert AnalysisResult(values, "Quantity", "1", (0.0, 1.0), "grey", "Method").note is None
+    assert (
+        AnalysisResult(values, "Quantity", "1", (0.0, 1.0), "grey", "Method", note="A sentence.").note == "A sentence."
+    )

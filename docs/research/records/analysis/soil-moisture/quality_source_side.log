@@ -1,0 +1,112 @@
+started 2026-11-15T19:42:30Z
+GDAL 3.12.2 "Chicoutimi", released 2026/02/03
+$ gdal raster calc -i SM=source_inputs/box-sm-20260623.tif -i FLAG=source_inputs/box-flag-20260623.tif --calc "fmod(FLAG, 2) == 0 ? SM : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/box-state-20260623.tif
+[exit code: 0]
+$ gdal raster calc -i SM=source_inputs/box-sm-20260705.tif -i FLAG=source_inputs/box-flag-20260705.tif --calc "fmod(FLAG, 2) == 0 ? SM : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/box-state-20260705.tif
+[exit code: 0]
+$ gdal raster calc -i SM=source_inputs/box-sm-20260717.tif -i FLAG=source_inputs/box-flag-20260717.tif --calc "fmod(FLAG, 2) == 0 ? SM : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/box-state-20260717.tif
+[exit code: 0]
+$ gdal raster calc -i SM=source_inputs/box-sm-20260810.tif -i FLAG=source_inputs/box-flag-20260810.tif --calc "fmod(FLAG, 2) == 0 ? SM : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/box-state-20260810.tif
+[exit code: 0]
+$ gdal raster calc -i SM=source_inputs/box-sm-20260822.tif -i FLAG=source_inputs/box-flag-20260822.tif --calc "fmod(FLAG, 2) == 0 ? SM : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/box-state-20260822.tif
+[exit code: 0]
+$ gdal raster calc -i SM=source_inputs/box-sm-20260903.tif -i FLAG=source_inputs/box-flag-20260903.tif --calc "fmod(FLAG, 2) == 0 ? SM : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/box-state-20260903.tif
+[exit code: 0]
+$ gdal raster calc -i SM=source_inputs/box-sm-20260915.tif -i FLAG=source_inputs/box-flag-20260915.tif --calc "fmod(FLAG, 2) == 0 ? SM : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/box-state-20260915.tif
+[exit code: 0]
+$ gdal raster calc -i SM=source_inputs/box-sm-20260927.tif -i FLAG=source_inputs/box-flag-20260927.tif --calc "fmod(FLAG, 2) == 0 ? SM : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/box-state-20260927.tif
+[exit code: 0]
+$ gdal raster calc -i SM=source_inputs/box-sm-20261009.tif -i FLAG=source_inputs/box-flag-20261009.tif --calc "fmod(FLAG, 2) == 0 ? SM : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/box-state-20261009.tif
+[exit code: 0]
+$ gdal raster calc -i SM=source_inputs/box-sm-beta-20251213.tif -i FLAG=source_inputs/box-flag-beta-20251213.tif --calc "fmod(FLAG, 2) == 0 ? SM : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/box-state-beta-20251213.tif
+[exit code: 0]
+$ gdal raster calc -i SM=source_inputs/box-sm-beta-20251225.tif -i FLAG=source_inputs/box-flag-beta-20251225.tif --calc "fmod(FLAG, 2) == 0 ? SM : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/box-state-beta-20251225.tif
+[exit code: 0]
+$ gdal raster calc -i SM=source_inputs/frame-sm-20260915.tif -i FLAG=source_inputs/frame-flag-20260915.tif --calc "fmod(FLAG, 2) == 0 ? SM : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/frame-state-20260915.tif
+[exit code: 0]
+$ gdal raster calc -i SM=source_inputs/frame-sm-20260927.tif -i FLAG=source_inputs/frame-flag-20260927.tif --calc "fmod(FLAG, 2) == 0 ? SM : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/frame-state-20260927.tif
+[exit code: 0]
+$ gdal raster calc -i SM=source_inputs/frame-sm-20261009.tif -i FLAG=source_inputs/frame-flag-20261009.tif --calc "fmod(FLAG, 2) == 0 ? SM : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/frame-state-20261009.tif
+[exit code: 0]
+$ gdal raster calc -i EARLIER=source_inputs/box-sm-20260623.tif -i EFLAG=source_inputs/box-flag-20260623.tif -i LATER=source_inputs/box-sm-20260705.tif -i LFLAG=source_inputs/box-flag-20260705.tif --calc "fmod(EFLAG, 2) == 0 && fmod(LFLAG, 2) == 0 ? LATER - EARLIER : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/box-change-20260623-20260705.tif
+[exit code: 0]
+$ gdal raster calc -i EARLIER=source_inputs/box-sm-20260705.tif -i EFLAG=source_inputs/box-flag-20260705.tif -i LATER=source_inputs/box-sm-20260717.tif -i LFLAG=source_inputs/box-flag-20260717.tif --calc "fmod(EFLAG, 2) == 0 && fmod(LFLAG, 2) == 0 ? LATER - EARLIER : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/box-change-20260705-20260717.tif
+[exit code: 0]
+$ gdal raster calc -i EARLIER=source_inputs/box-sm-20260717.tif -i EFLAG=source_inputs/box-flag-20260717.tif -i LATER=source_inputs/box-sm-20260810.tif -i LFLAG=source_inputs/box-flag-20260810.tif --calc "fmod(EFLAG, 2) == 0 && fmod(LFLAG, 2) == 0 ? LATER - EARLIER : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/box-change-20260717-20260810.tif
+[exit code: 0]
+$ gdal raster calc -i EARLIER=source_inputs/box-sm-20260810.tif -i EFLAG=source_inputs/box-flag-20260810.tif -i LATER=source_inputs/box-sm-20260822.tif -i LFLAG=source_inputs/box-flag-20260822.tif --calc "fmod(EFLAG, 2) == 0 && fmod(LFLAG, 2) == 0 ? LATER - EARLIER : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/box-change-20260810-20260822.tif
+[exit code: 0]
+$ gdal raster calc -i EARLIER=source_inputs/box-sm-20260822.tif -i EFLAG=source_inputs/box-flag-20260822.tif -i LATER=source_inputs/box-sm-20260903.tif -i LFLAG=source_inputs/box-flag-20260903.tif --calc "fmod(EFLAG, 2) == 0 && fmod(LFLAG, 2) == 0 ? LATER - EARLIER : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/box-change-20260822-20260903.tif
+[exit code: 0]
+$ gdal raster calc -i EARLIER=source_inputs/box-sm-20260903.tif -i EFLAG=source_inputs/box-flag-20260903.tif -i LATER=source_inputs/box-sm-20260915.tif -i LFLAG=source_inputs/box-flag-20260915.tif --calc "fmod(EFLAG, 2) == 0 && fmod(LFLAG, 2) == 0 ? LATER - EARLIER : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/box-change-20260903-20260915.tif
+[exit code: 0]
+$ gdal raster calc -i EARLIER=source_inputs/box-sm-20260915.tif -i EFLAG=source_inputs/box-flag-20260915.tif -i LATER=source_inputs/box-sm-20260927.tif -i LFLAG=source_inputs/box-flag-20260927.tif --calc "fmod(EFLAG, 2) == 0 && fmod(LFLAG, 2) == 0 ? LATER - EARLIER : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/box-change-20260915-20260927.tif
+[exit code: 0]
+$ gdal raster calc -i EARLIER=source_inputs/frame-sm-20260915.tif -i EFLAG=source_inputs/frame-flag-20260915.tif -i LATER=source_inputs/frame-sm-20260927.tif -i LFLAG=source_inputs/frame-flag-20260927.tif --calc "fmod(EFLAG, 2) == 0 && fmod(LFLAG, 2) == 0 ? LATER - EARLIER : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/frame-change-20260915-20260927.tif
+[exit code: 0]
+$ gdal raster calc -i EARLIER=source_inputs/box-sm-20260927.tif -i EFLAG=source_inputs/box-flag-20260927.tif -i LATER=source_inputs/box-sm-20261009.tif -i LFLAG=source_inputs/box-flag-20261009.tif --calc "fmod(EFLAG, 2) == 0 && fmod(LFLAG, 2) == 0 ? LATER - EARLIER : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/box-change-20260927-20261009.tif
+[exit code: 0]
+$ gdal raster calc -i EARLIER=source_inputs/frame-sm-20260927.tif -i EFLAG=source_inputs/frame-flag-20260927.tif -i LATER=source_inputs/frame-sm-20261009.tif -i LFLAG=source_inputs/frame-flag-20261009.tif --calc "fmod(EFLAG, 2) == 0 && fmod(LFLAG, 2) == 0 ? LATER - EARLIER : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/frame-change-20260927-20261009.tif
+[exit code: 0]
+$ gdal raster calc -i EARLIER=source_inputs/box-sm-20260915.tif -i EFLAG=source_inputs/box-flag-20260915.tif -i LATER=source_inputs/box-sm-20261009.tif -i LFLAG=source_inputs/box-flag-20261009.tif --calc "fmod(EFLAG, 2) == 0 && fmod(LFLAG, 2) == 0 ? LATER - EARLIER : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/box-change-20260915-20261009.tif
+[exit code: 0]
+$ gdal raster calc -i EARLIER=source_inputs/frame-sm-20260915.tif -i EFLAG=source_inputs/frame-flag-20260915.tif -i LATER=source_inputs/frame-sm-20261009.tif -i LFLAG=source_inputs/frame-flag-20261009.tif --calc "fmod(EFLAG, 2) == 0 && fmod(LFLAG, 2) == 0 ? LATER - EARLIER : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/frame-change-20260915-20261009.tif
+[exit code: 0]
+$ gdal raster calc -i EARLIER=source_inputs/box-sm-beta-20251213.tif -i EFLAG=source_inputs/box-flag-beta-20251213.tif -i LATER=source_inputs/box-sm-beta-20251225.tif -i LFLAG=source_inputs/box-flag-beta-20251225.tif --calc "fmod(EFLAG, 2) == 0 && fmod(LFLAG, 2) == 0 ? LATER - EARLIER : NaN" --ot Float32 --nodata nan --propagate-nodata --overwrite -o source_outputs/box-change-beta-20251213-beta-20251225.tif
+[exit code: 0]
+70499a58e5db6ae8c785f35131faaacc93b8abc4e486ab908588e32b8d21857c  source_inputs/box-flag-20260623.tif
+f24b5cbb10c4f54f48d8cacf0f0c097b796ae74b3a2b6af06817ce09e161f30c  source_inputs/box-flag-20260705.tif
+31c27281590f18d7ede3406e4f14fde3d4e9fb2158ca7a857494504f8c102174  source_inputs/box-flag-20260717.tif
+22b3df203048a99350b5ecf9c1e44b10dff3e71262372893bf66cfe5a7189422  source_inputs/box-flag-20260810.tif
+9ae1b61d5eb3683b57f8b80b8d206cd8b24253ebc85b790434888599c4bf017d  source_inputs/box-flag-20260822.tif
+7e19ea8b9029074a326834da404ec474ac5cfc18b3bd0d76f41a09d8e61c4b27  source_inputs/box-flag-20260903.tif
+d08fc466a5144c6ddecc1d968321182b546c5ac4a704e095c61ddf62f919f7f5  source_inputs/box-flag-20260915.tif
+79084b753a8a3fe42f0bc7b40c678b436cba27cca8270fda6a01f9eac18adf16  source_inputs/box-flag-20260927.tif
+7d06edb5cfbd0946b5476ca787b12493404aac72502c85b8aee7e93cc4533c8b  source_inputs/box-flag-20261009.tif
+f74bd52f8f5e83e3026cd33775bfb3499317dafb8745d00db5983921e94e61a0  source_inputs/box-flag-beta-20251213.tif
+4601de8c49282cad5f4aaf3fc04779512a7f8413db38a405fa72a9a1ab7f7adb  source_inputs/box-flag-beta-20251225.tif
+ab84bb8c06a797451c6df1bc9db5d7b29882dc8556e954f1babca5f4ac0c06b8  source_inputs/box-sm-20260623.tif
+ba7e1ab6587a0c9303bb9b602bb183b37f83ad8fc68c8699aa3a9775563fe46f  source_inputs/box-sm-20260705.tif
+2e3993ad27a072c7fb6a50f79104e570a0aff0734f9b1395485161e1aeb872ca  source_inputs/box-sm-20260717.tif
+c6ef592ac3aae0fd8829ab3880524ae207d37d5642a9324689a446e8aa0c8ea4  source_inputs/box-sm-20260810.tif
+7135c12bda5a741daeb51315bc7cc9310bd95c908bc62ebcd3f90c51de173200  source_inputs/box-sm-20260822.tif
+ac9cefe3ccee07f4d1521a11e794120ad2721ddc31e0274d5a29a195585374c1  source_inputs/box-sm-20260903.tif
+9d43d3c5684158dc7f03495428ba33dde26e0fa1f3937bf8da08237103daf818  source_inputs/box-sm-20260915.tif
+96704bf572bddc1070f600a0bf1adb3941ed5122a59479c6c419c73f40118cc9  source_inputs/box-sm-20260927.tif
+688a3815a0aef633167b8462a26dc6fd1301ea4250132039e6131cefe953f4b3  source_inputs/box-sm-20261009.tif
+385fa721e90f2e918ec42560e3abc9c144298b0a35fb38849b0645d2aa00e53f  source_inputs/box-sm-beta-20251213.tif
+22e4ad3bf8ae25b5c8d71a77ff1bf71d5a898e635c56c314c0b36329479cf8d2  source_inputs/box-sm-beta-20251225.tif
+fcbe305b7128b79783cebcabe730b92c970d6fcca21b1234d8752bc4d79f7507  source_inputs/frame-flag-20260915.tif
+175a58fd9274eea3f5a71b627310830de36eda11db04e3dfc109838773cb6300  source_inputs/frame-flag-20260927.tif
+695e4c29b52430ae7a689b05f1961df0fd143ec2c7183e62634f5fd0fbfd9965  source_inputs/frame-flag-20261009.tif
+2e194d7630111a71c0adcffa9436da2205e426547b6502fbd882c45abb5f7ec2  source_inputs/frame-sm-20260915.tif
+9e71d1cd9d13d687cf5f381a2a3e1e72c5025e6779d66f77989c1905fe282261  source_inputs/frame-sm-20260927.tif
+0b9ad74c474bcf94612314add359ae0677f0506996dbc996f5b4e1988918baff  source_inputs/frame-sm-20261009.tif
+b3db1c29a50b224fa9f4067f87946aaf6611bc23886a38b5ab7509ad39173917  source_outputs/box-change-20260623-20260705.tif
+1fc5274aa9a1730fe9c8b7c4f0efcf6a984e0557c41a9f7630be387f1fb9b23f  source_outputs/box-change-20260705-20260717.tif
+3f0bb329b3a6e2d9e04387c696ebb2a651437074747b8ffe722d807fc4a4a0bf  source_outputs/box-change-20260717-20260810.tif
+20e90ef343b820e6b0f8f9ace22be4bfcf8c68855283f5bea3242aaeaf469196  source_outputs/box-change-20260810-20260822.tif
+fa174f9080103eab5fa52049503b8fd5bd6acfe2e3bef1f2e682bc73b5e804a1  source_outputs/box-change-20260822-20260903.tif
+ace2877d6529c05beb5bd51d7f15398dbc384a9cd94bccd024cc928b0c7fc4b6  source_outputs/box-change-20260903-20260915.tif
+bb366bbd201d18bf075238ec798fe7429bbe3fb2e06fdb10e8980c2d69a0add9  source_outputs/box-change-20260915-20260927.tif
+c00699f61729145d65a2a1b8d467b391f19aacd917315ab7df29e209c6c50fb0  source_outputs/box-change-20260915-20261009.tif
+f38c2c908e9381a1af063e9116bbeb2f8f6a274877f6fed49a4a59da76b0868b  source_outputs/box-change-20260927-20261009.tif
+89ce6a8b67de9cfed1d360db944ad2b15db91b346910e9257123cff2991cd8d9  source_outputs/box-change-beta-20251213-beta-20251225.tif
+7a817f964ba6c6d49db07fc3a8aacf09c7690c2d1614eaa4e196f90f806e4a6d  source_outputs/box-state-20260623.tif
+32aeb203f6110cc3fd4b93767e05169dc83e2b4c0f0c3b95482d1d9729ced226  source_outputs/box-state-20260705.tif
+524c2ea3d627d736e6b35e2205241f81a2acfa4e109697b3a5d0291abe732461  source_outputs/box-state-20260717.tif
+347644b8f184eb4ae138473e9f191ace434133289049b5a5908b852f19f9beda  source_outputs/box-state-20260810.tif
+9219d794d5235edc34f2aeb39dba2de7861bf8f9c58687853814614b0e199de6  source_outputs/box-state-20260822.tif
+975d4a18c17bc8d75da956e26e673c4eb8a5a96fe174bebd5fdf8ee44b6fdad3  source_outputs/box-state-20260903.tif
+ef4cffb7e6f86769206dac277e8ed901a22f472033a55e274305ff23313088ed  source_outputs/box-state-20260915.tif
+7c8acfb70449c30c1d6f600221586dbdc6f20795513e3dce0c232d9907710108  source_outputs/box-state-20260927.tif
+81af55a365d85933b25058451229fd04c7d6940db1cc1391c7ac182479db0467  source_outputs/box-state-20261009.tif
+134bb8fa348a414db0413cb6351c4f42d6b8641c901879f9a14ca8cc57bbeb0a  source_outputs/box-state-beta-20251213.tif
+99b5d63d7bd22c9e980e04e5df053dfcdf89fd4372dafe026be9aa21e32b0a47  source_outputs/box-state-beta-20251225.tif
+79fd51f3ddfaf2c397515f683c3219abd3dec09319e928ec7294ec057465dbcc  source_outputs/frame-change-20260915-20260927.tif
+efac02c10de2282f58dc800b52d8f625650f2842dfbfecf55a9331f191991d8a  source_outputs/frame-change-20260915-20261009.tif
+547778a0f069725cf3098dbabb418355108ae116ddb41ab6b3c4d4cfc7363dc1  source_outputs/frame-change-20260927-20261009.tif
+83495d2f95dc1d04ec92b85d783bb138fbd3ec5b4bcd3f4240a0947f160d5335  source_outputs/frame-state-20260915.tif
+8c7e0f0544e264e155b59cd7fe72b99ed1293aa9960cacc868fe262020190d49  source_outputs/frame-state-20260927.tif
+d8fbc9474118507ff16f43fc7f8aad8ac284aa346b475f58dd9eb699d20f0958  source_outputs/frame-state-20261009.tif
+ended 2026-11-15T19:42:37Z

@@ -304,6 +304,11 @@ class LayerDescription(Format):
         one when it was received from NASA and the product states the
         frequency. Every other layer has none, a result has none, and a
         description stored before this field existed has none.
+    note : str or None
+        One sentence for the visitor that the tool gives about its result,
+        for example how many cells it left out. Only a result may have one,
+        when its tool gives one. A layer has none, and a description stored
+        before this field existed has none.
     program : str
         Program and version that produced the file.
     method : str or None
@@ -330,6 +335,7 @@ class LayerDescription(Format):
     ends: tuple[Text, Text] | None = None
     classes: tuple[LayerClass, ...] | None = None
     frequency: float | None = Field(default=None, gt=0)
+    note: Text | None = None
     program: Text
     method: Text | None = None
     record: Text
@@ -362,6 +368,8 @@ class LayerDescription(Format):
                 raise ValueError(
                     "the range of a layer of classes runs from the lowest to the highest value of its classes"
                 )
+        if self.kind == "layer" and self.note is not None:
+            raise ValueError("only a result has a note of its tool")
         if self.kind == "layer" and self.statistics is not None:
             raise ValueError("only a result has statistics in an area")
         return self
@@ -523,6 +531,11 @@ class SeriesDescription(Format):
         Program and version that produced the series.
     method : str
         Reference of the method.
+    note : str or None
+        One sentence for the visitor that the tool gives about the series,
+        for example how many cells it left out. A series of a tool that
+        gives none has none, and so has a description stored before this
+        field existed.
     """
 
     id: str = Field(pattern=r"^[a-z0-9]+(-[a-z0-9]+)*$")
@@ -541,6 +554,7 @@ class SeriesDescription(Format):
     layer: Text
     program: Text
     method: Text
+    note: Text | None = None
 
     @model_validator(mode="after")
     def _is_consistent(self) -> Self:
@@ -566,7 +580,9 @@ class SeriesRun(Format):
     tool : str
         Name of the button of the tool, for example ``backscatter-series``.
     inputs : tuple of str
-        The ``id`` of each input layer, in any order.
+        The ``id`` of each input layer, the dates in any order. A tool that
+        reads two layers of each date takes them one after the other, in the
+        order that its method sheet gives.
     title : str
         Name of the series.
     point : Point or None
@@ -621,6 +637,9 @@ class AnalysisResult:
         None for a result of a quantity. The cells of each class hold its
         value in ``values``. A result has classes when, and only when, its
         reduction is ``mode``.
+    note : str or None
+        One sentence for the visitor about the result, for example how many
+        cells the tool left out, or None.
 
     Raises
     ------
@@ -638,6 +657,7 @@ class AnalysisResult:
     reduction: ResultReduction = "mean"
     ends: tuple[str, str] | None = None
     classes: tuple[LayerClass, ...] | None = None
+    note: str | None = None
 
     def __post_init__(self) -> None:
         """Check that the classes and the reduction agree."""
@@ -668,6 +688,9 @@ class SeriesResult:
     range : tuple of float or None
         Lowest and highest value of the axis of the values, in ``unit``, when
         the quantity has fixed limits, or None.
+    note : str or None
+        One sentence for the visitor about the series, for example how many
+        cells the tool left out, or None.
     """
 
     entries: tuple[SeriesEntry, ...]
@@ -678,3 +701,4 @@ class SeriesResult:
     method: str
     reduction: Reduction = "mean"
     range: tuple[float, float] | None = None
+    note: str | None = None
