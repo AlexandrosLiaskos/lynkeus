@@ -3,11 +3,13 @@
 import pytest
 from pydantic import TypeAdapter, ValidationError
 
+from lynkeus.layers import LayerDescription
 from lynkeus.linking import (
     MOST_BYTES,
     USER_CODE_LETTERS,
     DismissTask,
     ForgetTask,
+    JobState,
     LimitsTask,
     Pairing,
     ReadTask,
@@ -69,3 +71,33 @@ def test_user_code_holds_two_groups_of_four_letters_without_vowels() -> None:
     for wrong in ("WDJBMJHT", "WDJB-MJH", "wdjb-mjht", "WDJA-MJHT", "WDJB-MJH1"):
         with pytest.raises(ValidationError):
             pairing(wrong)
+
+
+def test_report_of_a_job_carries_the_centre_frequency_of_its_layer() -> None:
+    layer = LayerDescription(
+        id="gunw-unwrappedphase-20261009-20261021",
+        title="Unwrapped phase HH, 9 Oct 2026 to 21 Oct 2026",
+        kind="layer",
+        url="/files/layer/gunw-unwrappedphase-20261009-20261021.tif",
+        quantity="Unwrapped interferometric phase, HH",
+        unit="rad",
+        range=(-4.0, 4.0),
+        colours="RdBu",
+        dates=("2026-10-09", "2026-10-21"),  # type: ignore[arg-type]
+        inputs=("product-file.h5",),
+        layer="unwrappedInterferogram/HH/unwrappedPhase",
+        frequency=1239000000.0,
+        program="Lynkeus 0.1.0",
+        record="/files/layer/gunw-unwrappedphase-20261009-20261021.json",
+    )
+    state = JobState(job=JOB, status="successful", progress=100, message="The layer is ready.", layer=layer, size=1)
+    report = state.model_dump_json()
+    read = JobState.model_validate_json(report)
+    assert read.layer is not None
+    assert read.layer.frequency == 1239000000.0
+    # A server program that predates the field reports a layer without it, and the layer is read without a frequency.
+    earlier = report.replace(',"frequency":1239000000.0', "")
+    assert earlier != report
+    before = JobState.model_validate_json(earlier)
+    assert before.layer is not None
+    assert before.layer.frequency is None
