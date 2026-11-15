@@ -103,6 +103,9 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   platform, three facts of the NISAR satellite, the team, the developer of the site, the total of recorded page
   visits, and the event with the logos of NASA, the NASA Space Apps Challenge and the universities of the team.
 - The mark of the team as the black silhouette of a lynx, in the title bar and the welcome window.
+- The analysis tools Coherence, Change and Soil moisture, One date and Change, on the server, with their method sheets and research notes.
+- The analysis tools Backscatter, Series and Coherence, Series, on the server, with the format of a series and the addresses that list, rename and remove the series of a session.
+- The analysis tool Surface displacement, One pair, on the server, and the centre frequency of the radar band in the description of a phase layer of a GUNW product.
 
 ### Changed
 
