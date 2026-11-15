@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 133.35 114.00" width="133.35" height="114.00">
+  <title>The constellation Lynx</title>
+  <polyline points="7.00,107.00 11.11,97.78 57.99,79.02 96.49,54.38 107.84,14.91 126.35,7.00" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="#000">
+    <circle cx="7.00" cy="107.00" r="3.61"/>
+    <circle cx="11.11" cy="97.78" r="3.15"/>
+    <circle cx="57.99" cy="79.02" r="2.84"/>
+    <circle cx="96.49" cy="54.38" r="2.54"/>
+    <circle cx="107.84" cy="14.91" r="2.79"/>
+    <circle cx="126.35" cy="7.00" r="2.66"/>
+  </g>
+</svg>
