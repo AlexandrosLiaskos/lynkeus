@@ -11,6 +11,7 @@ import {
   defaultTitle,
   FINISHED_TOOLS,
   MOST_TITLE,
+  READS,
   type FinishedTool,
 } from "./tools";
 
@@ -19,7 +20,7 @@ import {
  * process of the same name for each of them, whose result is a series and not a layer. Each one has a method
  * sheet in `docs/methods/`.
  */
-export const SERIES_TOOLS = ["backscatter-series", "coherence-series"] as const;
+export const SERIES_TOOLS = ["backscatter-series", "coherence-series", "soil-moisture-series"] as const;
 export type SeriesTool = (typeof SERIES_TOOLS)[number];
 
 /** Every finished tool that has a method sheet, in the order of the page Methods: the maps, then the series. */
@@ -33,11 +34,20 @@ export type SheetTool = (typeof SHEET_TOOLS)[number];
 export const READS_AS: Record<SeriesTool, FinishedTool> = {
   "backscatter-series": "backscatter-state",
   "coherence-series": "coherence-state",
+  "soil-moisture-series": "soil-moisture-state",
 };
 
 /** The smallest and the largest number of layers of one series, as the server takes them (`SeriesInputs`). */
 export const FEWEST_LAYERS = 2;
 export const MOST_LAYERS = 50;
+
+/**
+ * Return the largest number of dates of a series of a tool: one for each layer that the server takes, or one for
+ * each two layers when the tool takes the retrieval quality flag of each product after its layer.
+ */
+export function mostDatesOf(tool: SeriesTool): number {
+  return READS[READS_AS[tool]].quality ? MOST_LAYERS / 2 : MOST_LAYERS;
+}
 
 /**
  * The release of the processing software at the end of the name of a product file, the composite release
@@ -107,13 +117,13 @@ export function seriesGroups(tool: SeriesTool, layers: readonly LayerDescription
 
 /**
  * Return the layers of a group that the form chooses at first: every layer, and of two layers of the same
- * dates the first one, up to the largest number of layers of a series.
+ * dates the first one, up to the largest number of dates of a series, which is `most`.
  */
-export function firstChoice(group: SeriesGroup): string[] {
+export function firstChoice(group: SeriesGroup, most: number = MOST_LAYERS): string[] {
   const seen = new Set<string>();
   const chosen: string[] = [];
   for (const layer of group.layers) {
-    if (!seen.has(datesKey(layer)) && chosen.length < MOST_LAYERS) {
+    if (!seen.has(datesKey(layer)) && chosen.length < most) {
       seen.add(datesKey(layer));
       chosen.push(layer.id);
     }
@@ -166,6 +176,21 @@ export interface SeriesChoices {
   longitude: string;
   /** The name of the series, as the field holds it. */
   title: string;
+  /**
+   * For a tool that takes the retrieval quality flag of each product after its layer: the flag of a layer in the
+   * session, or null when the session holds none (`qualityOf`).
+   */
+  flagOf?: (layer: LayerDescription) => LayerDescription | null;
+  /** The largest number of dates of the series (`mostDatesOf`). */
+  most?: number;
+}
+
+/** The fault of the field Layers of the series when the session holds no retrieval quality flag of some layers. */
+export function flaglessSentence(layers: readonly LayerDescription[]): string {
+  const [one] = layers;
+  return layers.length === 1 && one
+    ? `The Retrieval Quality Flag layer of the product of ${daysWords(one.dates)} is not in the session.`
+    : `The Retrieval Quality Flag layers of the products of ${String(layers.length)} chosen dates are not in the session.`;
 }
 
 /** What is wrong with each field of the form, in one sentence, or null for a field that is in order. */
@@ -186,18 +211,32 @@ export interface SeriesChecked {
 
 /**
  * Check the choices of the form of a Series tool. A series takes 2 to 50 layers of the group, each of other
- * dates. At a point, the latitude and the longitude must be angles in degrees. The name of the series must have
- * 1 to 200 characters. Whether the point lies inside the area of the layers is checked by the server.
+ * dates, or 2 to 25 when the tool takes the retrieval quality flag of each product, which must then be in the
+ * session; the form sends each flag after its layer. At a point, the latitude and the longitude must be angles in
+ * degrees. The name of the series must have 1 to 200 characters. Whether the point lies inside the area of the
+ * layers is checked by the server.
  */
-export function checkSeries({ group, chosen, place, latitude, longitude, title }: SeriesChoices): SeriesChecked {
+export function checkSeries({
+  group,
+  chosen,
+  place,
+  latitude,
+  longitude,
+  title,
+  flagOf,
+  most = MOST_LAYERS,
+}: SeriesChoices): SeriesChecked {
   const layers = group.filter((layer) => chosen.includes(layer.id));
   const faults: SeriesFaults = { layers: null, latitude: null, longitude: null, title: null };
+  const flagless = flagOf ? layers.filter((layer) => flagOf(layer) === null) : [];
   if (layers.length < FEWEST_LAYERS) {
     faults.layers = "Choose at least two layers.";
-  } else if (layers.length > MOST_LAYERS) {
-    faults.layers = `Choose at most ${String(MOST_LAYERS)} layers.`;
+  } else if (layers.length > most) {
+    faults.layers = `Choose at most ${String(most)} layers.`;
   } else if (new Set(layers.map(datesKey)).size < layers.length) {
     faults.layers = "Two of the chosen layers have the same dates. Choose one of them.";
+  } else if (flagless.length > 0) {
+    faults.layers = flaglessSentence(flagless);
   }
   const north = place === "point" ? parseAngle(latitude, "latitude") : null;
   const east = place === "point" ? parseAngle(longitude, "longitude") : null;
@@ -214,7 +253,10 @@ export function checkSeries({ group, chosen, place, latitude, longitude, title }
   const sound = Object.values(faults).every((fault) => fault === null);
   const inputs: SeriesInputs | null = sound
     ? {
-        inputs: layers.map((layer) => layer.id),
+        inputs: layers.flatMap((layer) => {
+          const flag = flagOf?.(layer) ?? null;
+          return flag ? [layer.id, flag.id] : [layer.id];
+        }),
         title: name,
         ...(north !== null && east !== null ? { point: { longitude: east, latitude: north } } : {}),
       }

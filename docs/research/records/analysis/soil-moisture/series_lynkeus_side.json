@@ -1,0 +1,650 @@
+{
+ "started": "2026-11-15T19:43:03Z",
+ "inputs": [
+  "sm-20260623",
+  "flag-20260623",
+  "sm-20260705",
+  "flag-20260705",
+  "sm-20260717",
+  "flag-20260717",
+  "sm-20260810",
+  "flag-20260810",
+  "sm-20260822",
+  "flag-20260822",
+  "sm-20260903",
+  "flag-20260903",
+  "sm-20260915",
+  "flag-20260915",
+  "sm-20260927",
+  "flag-20260927",
+  "sm-20261009",
+  "flag-20261009"
+ ],
+ "area": {
+  "id": "comparison",
+  "title": "Comparison",
+  "kind": "series",
+  "quantity": "Soil moisture",
+  "unit": "m3 m-3",
+  "reduction": "mean",
+  "range": null,
+  "point": null,
+  "cell": null,
+  "area": {
+   "west": -71.19917046887761,
+   "south": 42.601315195302774,
+   "east": -70.75103768879417,
+   "north": 42.94974031299449
+  },
+  "entries": [
+   {
+    "dates": [
+     "2026-06-23"
+    ],
+    "value": 0.30964088599331935,
+    "cells": 402
+   },
+   {
+    "dates": [
+     "2026-07-05"
+    ],
+    "value": 0.29591542056628634,
+    "cells": 385
+   },
+   {
+    "dates": [
+     "2026-07-17"
+    ],
+    "value": 0.30459804894225456,
+    "cells": 389
+   },
+   {
+    "dates": [
+     "2026-08-10"
+    ],
+    "value": 0.2133473136514274,
+    "cells": 394
+   },
+   {
+    "dates": [
+     "2026-08-22"
+    ],
+    "value": 0.21438413817435503,
+    "cells": 400
+   },
+   {
+    "dates": [
+     "2026-09-03"
+    ],
+    "value": 0.22533851949062514,
+    "cells": 402
+   },
+   {
+    "dates": [
+     "2026-09-15"
+    ],
+    "value": 0.22151612525726383,
+    "cells": 422
+   },
+   {
+    "dates": [
+     "2026-09-27"
+    ],
+    "value": 0.25333518813323375,
+    "cells": 479
+   },
+   {
+    "dates": [
+     "2026-10-09"
+    ],
+    "value": 0.21451748485366504,
+    "cells": 600
+   }
+  ],
+  "inputs": [
+   "NISAR_L3_PR_SME2_023_141_D_067_4005_DHDH_A_20260623T234333_20260623T234408_P05023_N_F_J_001.h5",
+   "NISAR_L3_PR_SME2_024_141_D_067_4005_DHDH_A_20260705T234333_20260705T234408_P05023_N_F_J_001.h5",
+   "NISAR_L3_PR_SME2_025_141_D_067_4005_DHDH_A_20260717T234332_20260717T234407_P05023_N_F_J_001.h5",
+   "NISAR_L3_PR_SME2_027_141_D_067_4005_DHDH_A_20260810T234331_20260810T234406_P05023_N_F_J_001.h5",
+   "NISAR_L3_PR_SME2_028_141_D_067_4005_DHDH_A_20260822T234330_20260822T234405_P05023_N_F_J_001.h5",
+   "NISAR_L3_PR_SME2_029_141_D_067_4005_DHDH_A_20260903T234330_20260903T234405_P05023_N_F_J_001.h5",
+   "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001.h5",
+   "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+   "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+  ],
+  "layer": "soilMoisture",
+  "program": "Lynkeus 0.1.0",
+  "method": "Mean of the layer soilMoisture of the product over the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0) (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8, applied to the soil moisture; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C)",
+  "note": "On each date the cells whose retrieval NISAR marks as not recommended are left out: from 97.9 % to 98.7 % of the cells with a soil moisture."
+ },
+ "points": {
+  "p1": {
+   "refused_with": "No layer of the series holds a value at the point."
+  },
+  "p2": {
+   "refused_with": "NISAR marks the retrieval at the point as not recommended on every date that holds a soil moisture, so the series has no value."
+  },
+  "p3": {
+   "refused_with": "NISAR marks the retrieval at the point as not recommended on every date that holds a soil moisture, so the series has no value."
+  },
+  "p4": {
+   "refused_with": "No layer of the series holds a value at the point."
+  },
+  "p5": {
+   "refused_with": "No layer of the series holds a value at the point."
+  },
+  "r1": {
+   "id": "comparison",
+   "title": "Comparison",
+   "kind": "series",
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "reduction": "mean",
+   "range": null,
+   "point": {
+    "longitude": -71.0052,
+    "latitude": 42.9359
+   },
+   "cell": {
+    "row": 6,
+    "column": 93,
+    "longitude": -71.00518706638779,
+    "latitude": 42.93589387884806
+   },
+   "area": {
+    "west": -71.19917046887761,
+    "south": 42.601315195302774,
+    "east": -70.75103768879417,
+    "north": 42.94974031299449
+   },
+   "entries": [
+    {
+     "dates": [
+      "2026-06-23"
+     ],
+     "value": 0.3324244022369385,
+     "cells": 1
+    },
+    {
+     "dates": [
+      "2026-07-05"
+     ],
+     "value": 0.33191606402397156,
+     "cells": 1
+    },
+    {
+     "dates": [
+      "2026-07-17"
+     ],
+     "value": 0.348480224609375,
+     "cells": 1
+    },
+    {
+     "dates": [
+      "2026-08-10"
+     ],
+     "value": 0.20254668593406677,
+     "cells": 1
+    },
+    {
+     "dates": [
+      "2026-08-22"
+     ],
+     "value": 0.23046861588954926,
+     "cells": 1
+    },
+    {
+     "dates": [
+      "2026-09-03"
+     ],
+     "value": 0.19952228665351868,
+     "cells": 1
+    },
+    {
+     "dates": [
+      "2026-09-15"
+     ],
+     "value": 0.2159479856491089,
+     "cells": 1
+    },
+    {
+     "dates": [
+      "2026-09-27"
+     ],
+     "value": 0.26072826981544495,
+     "cells": 1
+    },
+    {
+     "dates": [
+      "2026-10-09"
+     ],
+     "value": 0.240587055683136,
+     "cells": 1
+    }
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_023_141_D_067_4005_DHDH_A_20260623T234333_20260623T234408_P05023_N_F_J_001.h5",
+    "NISAR_L3_PR_SME2_024_141_D_067_4005_DHDH_A_20260705T234333_20260705T234408_P05023_N_F_J_001.h5",
+    "NISAR_L3_PR_SME2_025_141_D_067_4005_DHDH_A_20260717T234332_20260717T234407_P05023_N_F_J_001.h5",
+    "NISAR_L3_PR_SME2_027_141_D_067_4005_DHDH_A_20260810T234331_20260810T234406_P05023_N_F_J_001.h5",
+    "NISAR_L3_PR_SME2_028_141_D_067_4005_DHDH_A_20260822T234330_20260822T234405_P05023_N_F_J_001.h5",
+    "NISAR_L3_PR_SME2_029_141_D_067_4005_DHDH_A_20260903T234330_20260903T234405_P05023_N_F_J_001.h5",
+    "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001.h5",
+    "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+    "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+   ],
+   "layer": "soilMoisture",
+   "program": "Lynkeus 0.1.0",
+   "method": "Mean of the layer soilMoisture of the product over the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0) (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8, applied to the soil moisture; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C)",
+   "note": "NISAR marks the retrieval at the point as recommended on every date that holds a soil moisture."
+  },
+  "r2": {
+   "id": "comparison",
+   "title": "Comparison",
+   "kind": "series",
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "reduction": "mean",
+   "range": null,
+   "point": {
+    "longitude": -70.8807,
+    "latitude": 42.9359
+   },
+   "cell": {
+    "row": 6,
+    "column": 153,
+    "longitude": -70.88070573858683,
+    "latitude": 42.93589387884806
+   },
+   "area": {
+    "west": -71.19917046887761,
+    "south": 42.601315195302774,
+    "east": -70.75103768879417,
+    "north": 42.94974031299449
+   },
+   "entries": [
+    {
+     "dates": [
+      "2026-06-23"
+     ],
+     "value": 0.34162595868110657,
+     "cells": 1
+    },
+    {
+     "dates": [
+      "2026-07-05"
+     ],
+     "value": 0.3678450584411621,
+     "cells": 1
+    },
+    {
+     "dates": [
+      "2026-07-17"
+     ],
+     "value": 0.3499976098537445,
+     "cells": 1
+    },
+    {
+     "dates": [
+      "2026-08-10"
+     ],
+     "value": 0.2109522521495819,
+     "cells": 1
+    },
+    {
+     "dates": [
+      "2026-08-22"
+     ],
+     "value": 0.23216605186462402,
+     "cells": 1
+    },
+    {
+     "dates": [
+      "2026-09-03"
+     ],
+     "value": 0.2504729628562927,
+     "cells": 1
+    },
+    {
+     "dates": [
+      "2026-09-15"
+     ],
+     "value": 0.226142019033432,
+     "cells": 1
+    },
+    {
+     "dates": [
+      "2026-09-27"
+     ],
+     "value": 0.24765948951244354,
+     "cells": 1
+    },
+    {
+     "dates": [
+      "2026-10-09"
+     ],
+     "value": 0.2116403728723526,
+     "cells": 1
+    }
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_023_141_D_067_4005_DHDH_A_20260623T234333_20260623T234408_P05023_N_F_J_001.h5",
+    "NISAR_L3_PR_SME2_024_141_D_067_4005_DHDH_A_20260705T234333_20260705T234408_P05023_N_F_J_001.h5",
+    "NISAR_L3_PR_SME2_025_141_D_067_4005_DHDH_A_20260717T234332_20260717T234407_P05023_N_F_J_001.h5",
+    "NISAR_L3_PR_SME2_027_141_D_067_4005_DHDH_A_20260810T234331_20260810T234406_P05023_N_F_J_001.h5",
+    "NISAR_L3_PR_SME2_028_141_D_067_4005_DHDH_A_20260822T234330_20260822T234405_P05023_N_F_J_001.h5",
+    "NISAR_L3_PR_SME2_029_141_D_067_4005_DHDH_A_20260903T234330_20260903T234405_P05023_N_F_J_001.h5",
+    "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001.h5",
+    "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+    "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+   ],
+   "layer": "soilMoisture",
+   "program": "Lynkeus 0.1.0",
+   "method": "Mean of the layer soilMoisture of the product over the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0) (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8, applied to the soil moisture; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C)",
+   "note": "NISAR marks the retrieval at the point as recommended on every date that holds a soil moisture."
+  },
+  "r3": {
+   "id": "comparison",
+   "title": "Comparison",
+   "kind": "series",
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "reduction": "mean",
+   "range": null,
+   "point": {
+    "longitude": -70.8351,
+    "latitude": 42.9359
+   },
+   "cell": {
+    "row": 6,
+    "column": 175,
+    "longitude": -70.8350625850598,
+    "latitude": 42.93589387884806
+   },
+   "area": {
+    "west": -71.19917046887761,
+    "south": 42.601315195302774,
+    "east": -70.75103768879417,
+    "north": 42.94974031299449
+   },
+   "entries": [
+    {
+     "dates": [
+      "2026-06-23"
+     ],
+     "value": 0.37407228350639343,
+     "cells": 1
+    },
+    {
+     "dates": [
+      "2026-07-05"
+     ],
+     "value": 0.365277498960495,
+     "cells": 1
+    },
+    {
+     "dates": [
+      "2026-07-17"
+     ],
+     "value": 0.32962164282798767,
+     "cells": 1
+    },
+    {
+     "dates": [
+      "2026-08-10"
+     ],
+     "value": 0.23115655779838562,
+     "cells": 1
+    },
+    {
+     "dates": [
+      "2026-08-22"
+     ],
+     "value": 0.23685167729854584,
+     "cells": 1
+    },
+    {
+     "dates": [
+      "2026-09-03"
+     ],
+     "value": 0.23005720973014832,
+     "cells": 1
+    },
+    {
+     "dates": [
+      "2026-09-15"
+     ],
+     "value": 0.2732848823070526,
+     "cells": 1
+    },
+    {
+     "dates": [
+      "2026-09-27"
+     ],
+     "value": 0.24582302570343018,
+     "cells": 1
+    },
+    {
+     "dates": [
+      "2026-10-09"
+     ],
+     "value": 0.23584367334842682,
+     "cells": 1
+    }
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_023_141_D_067_4005_DHDH_A_20260623T234333_20260623T234408_P05023_N_F_J_001.h5",
+    "NISAR_L3_PR_SME2_024_141_D_067_4005_DHDH_A_20260705T234333_20260705T234408_P05023_N_F_J_001.h5",
+    "NISAR_L3_PR_SME2_025_141_D_067_4005_DHDH_A_20260717T234332_20260717T234407_P05023_N_F_J_001.h5",
+    "NISAR_L3_PR_SME2_027_141_D_067_4005_DHDH_A_20260810T234331_20260810T234406_P05023_N_F_J_001.h5",
+    "NISAR_L3_PR_SME2_028_141_D_067_4005_DHDH_A_20260822T234330_20260822T234405_P05023_N_F_J_001.h5",
+    "NISAR_L3_PR_SME2_029_141_D_067_4005_DHDH_A_20260903T234330_20260903T234405_P05023_N_F_J_001.h5",
+    "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001.h5",
+    "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+    "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+   ],
+   "layer": "soilMoisture",
+   "program": "Lynkeus 0.1.0",
+   "method": "Mean of the layer soilMoisture of the product over the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0) (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8, applied to the soil moisture; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C)",
+   "note": "NISAR marks the retrieval at the point as recommended on every date that holds a soil moisture."
+  }
+ },
+ "area_dates_in_reverse_order": {
+  "id": "comparison",
+  "title": "Comparison",
+  "kind": "series",
+  "quantity": "Soil moisture",
+  "unit": "m3 m-3",
+  "reduction": "mean",
+  "range": null,
+  "point": null,
+  "cell": null,
+  "area": {
+   "west": -71.19917046887761,
+   "south": 42.601315195302774,
+   "east": -70.75103768879417,
+   "north": 42.94974031299449
+  },
+  "entries": [
+   {
+    "dates": [
+     "2026-06-23"
+    ],
+    "value": 0.30964088599331935,
+    "cells": 402
+   },
+   {
+    "dates": [
+     "2026-07-05"
+    ],
+    "value": 0.29591542056628634,
+    "cells": 385
+   },
+   {
+    "dates": [
+     "2026-07-17"
+    ],
+    "value": 0.30459804894225456,
+    "cells": 389
+   },
+   {
+    "dates": [
+     "2026-08-10"
+    ],
+    "value": 0.2133473136514274,
+    "cells": 394
+   },
+   {
+    "dates": [
+     "2026-08-22"
+    ],
+    "value": 0.21438413817435503,
+    "cells": 400
+   },
+   {
+    "dates": [
+     "2026-09-03"
+    ],
+    "value": 0.22533851949062514,
+    "cells": 402
+   },
+   {
+    "dates": [
+     "2026-09-15"
+    ],
+    "value": 0.22151612525726383,
+    "cells": 422
+   },
+   {
+    "dates": [
+     "2026-09-27"
+    ],
+    "value": 0.25333518813323375,
+    "cells": 479
+   },
+   {
+    "dates": [
+     "2026-10-09"
+    ],
+    "value": 0.21451748485366504,
+    "cells": 600
+   }
+  ],
+  "inputs": [
+   "NISAR_L3_PR_SME2_023_141_D_067_4005_DHDH_A_20260623T234333_20260623T234408_P05023_N_F_J_001.h5",
+   "NISAR_L3_PR_SME2_024_141_D_067_4005_DHDH_A_20260705T234333_20260705T234408_P05023_N_F_J_001.h5",
+   "NISAR_L3_PR_SME2_025_141_D_067_4005_DHDH_A_20260717T234332_20260717T234407_P05023_N_F_J_001.h5",
+   "NISAR_L3_PR_SME2_027_141_D_067_4005_DHDH_A_20260810T234331_20260810T234406_P05023_N_F_J_001.h5",
+   "NISAR_L3_PR_SME2_028_141_D_067_4005_DHDH_A_20260822T234330_20260822T234405_P05023_N_F_J_001.h5",
+   "NISAR_L3_PR_SME2_029_141_D_067_4005_DHDH_A_20260903T234330_20260903T234405_P05023_N_F_J_001.h5",
+   "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001.h5",
+   "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+   "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+  ],
+  "layer": "soilMoisture",
+  "program": "Lynkeus 0.1.0",
+  "method": "Mean of the layer soilMoisture of the product over the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0) (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8, applied to the soil moisture; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C)",
+  "note": "On each date the cells whose retrieval NISAR marks as not recommended are left out: from 97.9 % to 98.7 % of the cells with a soil moisture."
+ },
+ "beta": {
+  "inputs": [
+   "sm-beta-20251213",
+   "flag-beta-20251213",
+   "sm-beta-20251225",
+   "flag-beta-20251225"
+  ],
+  "area": {
+   "id": "comparison",
+   "title": "Comparison",
+   "kind": "series",
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "reduction": "mean",
+   "range": null,
+   "point": null,
+   "cell": null,
+   "area": {
+    "west": -71.19917046887761,
+    "south": 42.601315195302774,
+    "east": -70.75103768879417,
+    "north": 42.94974031299449
+   },
+   "entries": [
+    {
+     "dates": [
+      "2025-12-13"
+     ],
+     "value": 0.2762652840738422,
+     "cells": 682
+    },
+    {
+     "dates": [
+      "2025-12-25"
+     ],
+     "value": 0.2654901544100668,
+     "cells": 326
+    }
+   ],
+   "inputs": [
+    "NISAR_L3_PR_SME2_007_141_D_067_4005_DHDH_A_20251213T234332_20251213T234407_X05010_N_F_J_001.h5",
+    "NISAR_L3_PR_SME2_008_141_D_067_4005_DHDH_A_20251225T234333_20251225T234408_X05010_N_F_J_001.h5"
+   ],
+   "layer": "soilMoisture",
+   "program": "Lynkeus 0.1.0",
+   "method": "Mean of the layer soilMoisture of the product over the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0) (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8, applied to the soil moisture; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C)",
+   "note": "NISAR marks the retrieval of every cell with a soil moisture as recommended on every date."
+  },
+  "points": {
+   "p1": {
+    "refused_with": "No layer of the series holds a value at the point."
+   },
+   "p2": {
+    "refused_with": "No layer of the series holds a value at the point."
+   },
+   "p3": {
+    "refused_with": "No layer of the series holds a value at the point."
+   },
+   "p4": {
+    "refused_with": "No layer of the series holds a value at the point."
+   },
+   "p5": {
+    "refused_with": "No layer of the series holds a value at the point."
+   },
+   "r1": {
+    "refused_with": "No layer of the series holds a value at the point."
+   },
+   "r2": {
+    "refused_with": "No layer of the series holds a value at the point."
+   },
+   "r3": {
+    "refused_with": "No layer of the series holds a value at the point."
+   }
+  }
+ },
+ "refusals": {
+  "provisional and beta together": {
+   "refused_with": "The layers are not of the same major release of the processing software: \"Soil moisture, 23 Jun 2026\" is of the release P05023 and \"Soil moisture, 13 Dec 2025\" of X05010."
+  },
+  "a date without its flag": {
+   "refused_with": "The number of input layers must be even, two for each date, and it is 3."
+  },
+  "the flag of another date": {
+   "refused_with": "The layers \"Soil moisture, 23 Jun 2026\" and \"Retrieval quality flag, 5 Jul 2026\" are not of the same product file."
+  },
+  "one date": {
+   "refused_with": "A series needs at least 2 layers, and it has 1."
+  }
+ },
+ "peak_memory_kilobytes": 89360,
+ "environment": {
+  "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+  "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+  "gdal_in_rasterio": "3.12.2",
+  "packages": {
+   "numpy": "2.5.4",
+   "pydantic": "2.14.3",
+   "rasterio": "1.5.2"
+  }
+ },
+ "ended": "2026-11-15T19:43:06Z"
+}

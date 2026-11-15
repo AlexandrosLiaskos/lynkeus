@@ -165,7 +165,7 @@ test("the rows Limits of the soil moisture tools carry the share of cells that t
     "The products mark 97.9 % to 98.7 % of the cells of the pilot box that hold a value as not recommended",
   );
   expect(oneLine(SOIL_NOTE)).toContain("The least significant bit indicates whether the retrieval is recommended");
-  for (const tool of ["soil-moisture-state", "soil-moisture-change"] as const) {
+  for (const tool of ["soil-moisture-state", "soil-moisture-change", "soil-moisture-series"] as const) {
     expect(rowOf(METHODS[tool], "Limits")).toContain("97.9 % to 98.7 % of the cells with a");
     expect(rowOf(METHODS[tool], "Input")).toContain("with the layer `retrievalQualityFlag` of");
   }
@@ -177,9 +177,11 @@ test("the rows Limits of the soil moisture tools carry the share of cells that t
     expect(rowOf(METHODS[tool], "Result").toLowerCase()).toContain("the result states how many cells were left out");
     expect(oneLine(sheet(tool))).toContain("are left out because NISAR marks their retrieval as not recommended");
   }
-  expect(rowOf(METHODS["soil-moisture-state"], "Limits")).toContain(
-    "nly provisional and beta products existed for the test area on 15 Nov 2026",
-  );
+  for (const tool of ["soil-moisture-state", "soil-moisture-series"] as const) {
+    expect(rowOf(METHODS[tool], "Limits")).toContain(
+      "nly provisional and beta products existed for the test area on 15 Nov 2026",
+    );
+  }
   // The sheet states the collections of the products and the day of the search of the catalogue.
   expect(oneLine(sheet("soil-moisture-state"))).toContain(
     "The products are provisional (collection `NISAR_L3_SME2_PROVISIONAL_V1`) and beta (collection `NISAR_L3_SME2_BETA_V1`); a search of the NASA catalogue for the short name `NISAR_L3_SME2_V1` gave no product for the pilot area on that day",
@@ -238,4 +240,10 @@ test("the numbers of the summaries of the three new tools are those of their she
   );
   expect(rowOf(METHODS["soil-moisture-state"], "Checked")).toContain("on nine dates of the test area");
   expect(rowOf(METHODS["soil-moisture-change"], "Checked")).toContain("for ten pairs of dates of the test area");
+  const series = rowOf(METHODS["soil-moisture-series"], "Checked");
+  expect(series).toContain("differ by less than 0.00000003 m3 m-3 from the mean");
+  expect(series).toContain("at three points with a value on every date the values are equal");
+  expect(oneLine(sheet("soil-moisture-series"))).toContain(
+    "computed in 64-bit numbers from the same cube, the two means are equal on every date",
+  );
 });

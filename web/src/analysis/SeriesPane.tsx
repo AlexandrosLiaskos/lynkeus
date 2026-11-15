@@ -20,9 +20,12 @@ export const NO_VALUE = "no value";
 
 const COUNT = new Intl.NumberFormat("en-GB");
 
-/** Write the value of an entry: two decimals for decibels, three for a quantity without unit, or "no value". */
+/**
+ * Write the value of an entry: two decimals for decibels, three for a quantity without unit and for a volumetric
+ * soil moisture, or "no value".
+ */
 export function valueWords(value: number | null, unit: string): string {
-  return value === null ? NO_VALUE : value.toFixed(unit === "1" ? 3 : 2).replace("-", "−");
+  return value === null ? NO_VALUE : value.toFixed(unit === "dB" ? 2 : 3).replace("-", "−");
 }
 
 /** Write a number of cells with its thousands apart, as "14,316,415". */
@@ -111,6 +114,7 @@ export function SeriesView({ series }: { series: SeriesDescription }) {
                   ]
                 : []),
               { name: "Value of a date", value: reductionWords(series) },
+              ...(typeof series.note === "string" ? [{ name: "Note", value: series.note }] : []),
               { name: "Layer of the product", value: series.layer },
               { name: "Program", value: series.program },
               { name: "Method", value: series.method },

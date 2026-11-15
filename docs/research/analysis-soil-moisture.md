@@ -3,9 +3,9 @@
 | | |
 |---|---|
 | Part | Analysis tab, group Soil moisture |
-| Covers | The two tools Soil moisture One date and Soil moisture Change, and the rule by which they leave out the cells that the products do not recommend |
+| Covers | The three tools Soil moisture One date, Change and Series, and the rule by which they leave out the cells that the products do not recommend |
 | Written | 15 Nov 2026. Every source below was read on that day. |
-| Code state | The research and the comparison of parts 2 to 5 were made on the branch `analysis-level-2` at commit `05930fb`, with the two functions of this note added; part 8 on the branch `an3-soil`, from commit `d0aa71e` |
+| Code state | The research and the comparison of parts 2 to 5 were made on the branch `analysis-level-2` at commit `05930fb`, with the two functions of this note added; parts 8 and 9 on the branch `an3-soil`, from commit `d0aa71e` |
 | Pilot area | Lower Merrimack River: box −71.20, 42.60, −70.75, 42.95 (west, south, east, north); track 141, frame 67, descending |
 | Names of the tools | `soil-moisture-state`, `soil-moisture-change`, the names of the buttons |
 
@@ -14,9 +14,9 @@ of level 1: the product specification of the input layer (part 2), the published
 source program of the comparison (part 3), what was measured on real files (part 4), how GIS
 programs offer the same functions (part 5), the sources with the date on which each was read (part
 6) and what is not confirmed (part 7). Part 8 records the rule by which the tools leave out the
-cells that the products do not recommend. The tool Soil moisture Series is not part of this note.
-The button Soil moisture Thematic map was removed from the Analysis tab on 15 Nov 2026, as no
-published algorithm of the NISAR science team that derives classes from soil moisture was found
+cells that the products do not recommend, and part 9 the tool Soil moisture Series. The button Soil
+moisture Thematic map was removed from the Analysis tab on 15 Nov 2026, as no published algorithm of
+the NISAR science team that derives classes from soil moisture was found
 (`docs/research/analysis-thematic-maps.md`).
 
 ## 1. Points that this note answers
@@ -531,15 +531,15 @@ it was read.
 | NISAR L3 Soil Moisture Data Product, ATBD, JPL D-107679, Release 3.3, 28 April 2023 | <https://nisar.asf.earthdatacloud.nasa.gov/NISAR-SAMPLE-DATA/DOCS/NISAR_D-107679_L3SM_ATBD_R3.3_20230428_w-sigs.pdf> | The table of contents; pages 9, 10, 15 and 50 to 54; the passages on the ascending and the descending observations on pages 20, 22, 26, 33 and 37; the opening of sections 4.2 and 4.3; the sentence on the soil layer on page 65. The document was searched for words and was not read in full |
 | NISAR Data User Guide, pages Product Specifications and Data Processing Algorithms | <https://nisar-docs.asf.alaska.edu/product-specification/>, <https://nisar-docs.asf.alaska.edu/atbd/> | The entries of the soil moisture documents |
 | Product files of `NISAR_L3_SME2_PROVISIONAL_V1` (DOI 10.5067/NIL3SME2-P1) | ASF DAAC; the record `products.json` names the five files | The fields and layers of part 2.2 and part 4; the attributes of three layers and the flags of three files (part 8.1) |
-| Layers of nine products of `NISAR_L3_SME2_PROVISIONAL_V1` and two of `NISAR_L3_SME2_BETA_V1` (DOI 10.5067/NIL3SME2-B1) | NASA Harmony; the record `quality_layers.json` names the files | The layers `soilMoisture` and `retrievalQualityFlag` of the box (part 8) |
-| NASA Common Metadata Repository | <https://cmr.earthdata.nasa.gov/search/granules.umm_json> | The products of the box and the records of five products; the products of track 141, frame 67 in three collections of SME2 (part 8.4); the variable records of two layers of SME2 (part 8.2) |
+| Layers of nine products of `NISAR_L3_SME2_PROVISIONAL_V1` and two of `NISAR_L3_SME2_BETA_V1` (DOI 10.5067/NIL3SME2-B1) | NASA Harmony; the record `quality_layers.json` names the files | The layers `soilMoisture` and `retrievalQualityFlag` of the box (parts 8 and 9) |
+| NASA Common Metadata Repository | <https://cmr.earthdata.nasa.gov/search/granules.umm_json> | The products of the box and the records of five products; the products of track 141, frame 67 in three collections of SME2 (part 9.2); the variable records of two layers of SME2 (part 8.2) |
 | GIBS Colormap XML Documents (v1.3), `SMAP_Soil_Moisture.xml` | <https://gibs.earthdata.nasa.gov/colormaps/v1.3/SMAP_Soil_Moisture.xml> | The whole file |
 | Singh, A. (1989). Digital change detection techniques using remotely-sensed data. International Journal of Remote Sensing, 10(6), 989-1003 | <https://doi.org/10.1080/01431168908903939> | Section 4.1, pages 990 to 992, as text taken from the PDF file; the formula of the section was not legible in that text |
 | GDAL documentation, gdal raster calc | <https://gdal.org/en/stable/programs/gdal_raster_calc.html> | The synopsis, the description and the options |
 | GDAL 3.12.2 | The image `ghcr.io/osgeo/gdal:alpine-small-3.12.2`, pulled on 15 Nov 2026 | `gdal --version`; file `LICENSE.TXT`, section GDAL/OGR General |
 | ArcGIS Pro documentation 3.7 | The three pages of part 5 | The passages quoted in part 5 |
 | QGIS User Guide 3.44 | The two pages of part 5 | The passages quoted in part 5 |
-| ASF NISAR Cookbook, commit `17b69c8`; nisarqa, commit `a8bc425` | <https://github.com/ASFOpenSARlab/NISAR_Cookbook>, <https://github.com/isce-framework/nisarqa> | The lists of their files, for a notebook or a specification of SME2; none was found. |
+| ASF NISAR Cookbook, commit `17b69c8`; nisarqa, commit `a8bc425` | <https://github.com/ASFOpenSARlab/NISAR_Cookbook>, <https://github.com/isce-framework/nisarqa> | The lists of their files, for a notebook or a specification of SME2; none was found. The cells 12 to 19 and 47 of `NISAR_GCOV_Time_Series_Example.ipynb` and 15 to 20 of `NISAR_Pixel_Conversion.ipynb` (part 9.1) |
 
 ## 7. Not confirmed
 
@@ -567,21 +567,22 @@ it was read.
    not legible. The order of the two dates of the tool is that of ArcGIS Pro and not a statement
    about the article.
 9. **The web service and the browser.** The tools ran through `run_tool` and not as jobs of the web
-   service; the forms and the notes were tried in the tests of the interface only, and nothing was
-   seen in a browser.
+   service; the forms, the notes and the chart of a series were tried in the tests of the interface
+   only, and nothing was seen in a browser.
 10. **Reduced copies.** No result of the pilot area holds one.
 11. **Other areas.** One box was measured: nine provisional and two beta dates of one track and
     frame, and one date of each of two other tracks. All products are provisional or beta, of the
     instrument L.
 12. **Own servers of visitors.** A server that runs an older Lynkeus Server does not know the layer
-    `retrievalQualityFlag` or the inputs of the flag in the two tools.
+    `retrievalQualityFlag`, the inputs of the flag in the two tools, or the tool Soil moisture
+    Series.
 
 ## 8. Leaving out the cells that the products do not recommend
 
 Written on 15 Nov 2026 on the branch `an3-soil`, from commit `d0aa71e`. Parts 2 to 7 describe the
-two tools as they were before this part: they mapped every cell. Every number of part 8 is copied
-from a record of `docs/research/records/analysis/soil-moisture/`. The records were made at commit
-`d0aa71e`, before the branch took in the names that NASA's catalogue gives the layers: their
+two tools as they were before this part: they mapped every cell. Every number of parts 8 and 9 is
+copied from a record of `docs/research/records/analysis/soil-moisture/`. The records were made at
+commit `d0aa71e`, before the branch took in the names that NASA's catalogue gives the layers: their
 sentences name the layers Soil moisture and Retrieval quality flag, which Lynkeus now names Soil
 Moisture and Retrieval Quality Flag.
 
@@ -596,6 +597,10 @@ Moisture and Retrieval Quality Flag.
 | `quality_result_stats.json` | `d4722a30f5dd6623f69761f25509a986ec82a52417925c56f641298608834044` | The percentiles of each result of the box |
 | `quality_comparison.json` | `d71cd7e87f666c95fd1a2e519366f67891622aca3198b8c7defb63acf73787d0` | The results of Lynkeus against those of `gdal raster calc`, cell by cell |
 | `quality_source_side.log` | `bdda671fff402e73595abc24e388413ec284179794982b82624281260b38a993` | The commands of `gdal raster calc`, its version, and the SHA-256 of its inputs and outputs |
+| `series_manifest.json` | `149d20005b65e7567147cde80a0aa12f99d73d1f0befc9382707582f001f499d` | The layers, dates and points of the comparison of Soil moisture, Series |
+| `series_lynkeus_side.json` | `62bdddbb554f0569e6d602c38e90a5b147f30f6d324785bbe0e035a55bf7c4bb` | The series that Lynkeus computed, and its refusals |
+| `series_source_side.json` | `d6ccaee69e9093bda39343e546d34dd39220550548791163c4c3a5b7386aadde` | The statements of the Cookbook that were run, those replaced and those added, and their results |
+| `series_comparison.json` | `1bbc412bcf4185f7ff8a0b24a573731a53e45cdb5fa3f2c252c1a1937b5fa963` | The two series compared, date by date and point by point |
 
 ### 8.1 The documents and the decision
 
@@ -658,17 +663,18 @@ Each tool takes, for each date, the layer `soilMoisture` and then the layer `ret
 of the same product file. The form finds the flag by itself; when the session holds none, it says so
 in one sentence and offers the form Get layer. A cell keeps its value where the flag holds a value
 whose bit 0 is 0; every other cell is left out, also a cell whose flag holds no value. Soil
-moisture, Change keeps a cell only where both dates keep it. A result in which every cell is left
-out is refused. The result states in one sentence how many cells were left out (record
-`quality_lynkeus_side.json`):
+moisture, Change keeps a cell only where both dates keep it, and Soil moisture, Series applies the
+rule on each date (part 9). A result in which every cell is left out is refused. The result states
+in one sentence how many cells were left out (record `quality_lynkeus_side.json`):
 
 | Tool and layers of the box | Sentence of the result |
 |---|---|
 | Soil moisture, One date, 9 Oct 2026 | 28,638 of the 29,238 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended. |
 | Soil moisture, Change, 27 Sep to 9 Oct 2026 | 28,759 of the 29,238 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both. |
 | Soil moisture, One date, 13 Dec 2025 (beta) | NISAR marks the retrieval of every cell with a soil moisture as recommended, so none is left out. |
+| Soil moisture, Series, mean of the area, nine dates | On each date the cells whose retrieval NISAR marks as not recommended are left out: from 97.9 % to 98.7 % of the cells with a soil moisture. |
 
-The sentence is the field `note` of the layer description. The foot of
+The sentence is the field `note` of the layer description and of the series description. The foot of
 the tool pane, the Catalog pane and the Contents pane show it, and the record of a result repeats it
 in its lineage.
 
@@ -697,12 +703,6 @@ In the whole frames of 15 Sep, 27 Sep and 9 Oct 2026 the products mark 98.8 %, 9
 the cells with a soil moisture as not recommended (record `quality_products.json`). On 23 Jun and 5
 Jul 2026 the flag holds the values 8 and 9 only, and 27,411 cells of the box hold a soil moisture
 instead of 29,238.
-
-The NASA catalogue was searched on 15 Nov 2026 at 18:43 UTC for the products of track 141, frame 67,
-descending (record `quality_catalogue.json`). The short name `NISAR_L3_SME2_V1` gave no product.
-`NISAR_L3_SME2_PROVISIONAL_V1` (DOI 10.5067/NIL3SME2-P1) gave the nine products of the release
-`P05023` of the table, and `NISAR_L3_SME2_BETA_V1` (DOI 10.5067/NIL3SME2-B1) the two products of the
-release `X05010`.
 
 ### 8.5 The comparison with `gdal raster calc`, and the refusals
 
@@ -757,3 +757,98 @@ write no file:
 | change without the flags | `sm-20260927, sm-20261009` | The number of input layers must be 4, and it is 2. |
 | change with the later date first | `sm-20261009, flag-20261009, sm-20260927, flag-20260927` | The first layer must be of an earlier date than the second. |
 | change with the flags of the other dates | `sm-20260927, flag-20261009, sm-20261009, flag-20260927` | The layers "Soil moisture, 27 Sep 2026" and "Retrieval quality flag, 9 Oct 2026" are not of the same product file. |
+
+## 9. Soil moisture, Series
+
+### 9.1 The source program
+
+The ASF NISAR Cookbook holds no notebook of SME2 products (commit `17b69c8`; part 6). The tool
+therefore follows the notebook of the series of the backscatter,
+`NISAR_GCOV_Time_Series_Example.ipynb`, as Coherence, Series does for the coherence: the date of
+each product, a cube of the layers in the order of the dates, and the mean of each date over the
+cells with a value. The cell of a point follows `NISAR_Pixel_Conversion.ipynb`. The soil moisture
+needs no conversion to linear power, so the mean is taken of the values themselves.
+
+For the comparison, the statements of these notebooks were taken from the notebook files themselves
+and run on the cube of the soil moisture (record `series_source_side.json`; cells are numbered from
+0): cell 14 (the time of each product from the name of its file), cell 16 (the time as a
+coordinate), cell 19 (the cube), cell 47 applied to the cube of the soil moisture instead of the
+backscatter (`means = np.mean(ts, axis=(1, 2))`), and cell 20 of the pixel notebook (the cell of a
+point). Cell 12, which opens HDF5 product files, was replaced by the reading of the GeoTIFF layers;
+cell 18, which clips the layers to a box, was left out, because NASA Harmony had clipped them; the
+points replace the places of cell 18 of the pixel notebook. One statement was added for the rule of
+the flag: `ts = ts.where(flags_ts % 2 == 0)`. `np.mean` calls the method `mean` of the xarray array,
+which skips the cells without a value. The programs were numpy 2.5.3, xarray 2026.7.0, dask
+2025.12.0, rioxarray 0.22.0 and rasterio 1.4.4, in Python 3.13.
+
+### 9.2 The products of the series
+
+The NASA catalogue was searched on 15 Nov 2026 at 18:43 UTC for the products of track 141, frame 67,
+descending (record `quality_catalogue.json`). The short name `NISAR_L3_SME2_V1` gave no product.
+`NISAR_L3_SME2_PROVISIONAL_V1` (DOI 10.5067/NIL3SME2-P1) gave nine products of the release `P05023`:
+23 Jun 2026, 5 Jul 2026, 17 Jul 2026, 10 Aug 2026, 22 Aug 2026, 3 Sep 2026, 15 Sep 2026, 27 Sep
+2026, 9 Oct 2026. `NISAR_L3_SME2_BETA_V1` (DOI 10.5067/NIL3SME2-B1) gave two products of the release
+`X05010`: 13 and 25 Dec 2025. A series of one release was made of each group; the tool refuses to
+mix the two releases.
+
+### 9.3 What was measured
+
+Mean of the area of the box (records `series_lynkeus_side.json`, `series_source_side.json`,
+`series_comparison.json`). The Cookbook code keeps the cube in 32-bit numbers; the last column gives
+its mean computed in 64-bit numbers from the same cube.
+
+| Date | Cells with a soil moisture | Cells kept | Mean of Lynkeus (m3 m-3) | Mean of the Cookbook code, 32-bit (m3 m-3) | The same, 64-bit (m3 m-3) |
+|---|---|---|---|---|---|
+| 23 Jun 2026 | 27,411 | 402 | `0.30964088599331935` | `0.30964091420173645` | `0.30964088599331935` |
+| 5 Jul 2026 | 27,411 | 385 | `0.29591542056628634` | `0.295915424823761` | `0.29591542056628634` |
+| 17 Jul 2026 | 29,238 | 389 | `0.30459804894225456` | `0.30459803342819214` | `0.30459804894225456` |
+| 10 Aug 2026 | 29,238 | 394 | `0.2133473136514274` | `0.21334730088710785` | `0.2133473136514274` |
+| 22 Aug 2026 | 29,238 | 400 | `0.21438413817435503` | `0.21438412368297577` | `0.21438413817435503` |
+| 3 Sep 2026 | 29,238 | 402 | `0.22533851949062514` | `0.22533851861953735` | `0.22533851949062514` |
+| 15 Sep 2026 | 29,238 | 422 | `0.22151612525726383` | `0.22151613235473633` | `0.22151612525726383` |
+| 27 Sep 2026 | 29,238 | 479 | `0.25333518813323375` | `0.253335177898407` | `0.25333518813323375` |
+| 9 Oct 2026 | 29,238 | 600 | `0.21451748485366504` | `0.2145174890756607` | `0.21451748485366504` |
+| 13 Dec 2025 (beta) | 682 | 682 | `0.2762652840738422` | `0.27626529335975647` | `0.2762652840738422` |
+| 25 Dec 2025 (beta) | 326 | 326 | `0.2654901544100668` | `0.26549017429351807` | `0.2654901544100668` |
+
+The numbers of cells kept are equal on every date. The means of the Cookbook code as it writes them
+differ from those of Lynkeus by at most 0.000000028 m3 m-3 (provisional) and 0.000000020 m3 m-3
+(beta); in 64-bit numbers they are equal on every date. Lynkeus gives the same series when the dates
+are given in the reverse order.
+
+At eight points of the box (the five points of the earlier comparisons, and three cells with a
+recommended retrieval on every date, at least ten cells apart):
+
+| Point | Longitude, latitude | Lynkeus | Cookbook code |
+|---|---|---|---|
+| p1 | -71.0, 42.8 | Refused: No layer of the series holds a value at the point. | No value on any date (pixel 70, 96) |
+| p2 | -70.9, 42.7 | Refused: NISAR marks the retrieval at the point as not recommended on every date that holds a soil moisture, so the series has no value. | No value on any date (pixel 117, 144) |
+| p3 | -71.1, 42.65 | Refused: NISAR marks the retrieval at the point as not recommended on every date that holds a soil moisture, so the series has no value. | No value on any date (pixel 141, 47) |
+| p4 | -70.8, 42.9 | Refused: No layer of the series holds a value at the point. | No value on any date (pixel 23, 192) |
+| p5 | -70.8726, 42.8126 | Refused: No layer of the series holds a value at the point. | No value on any date (pixel 64, 157) |
+| r1 | -71.0052, 42.9359 | Nine values from the cell 6, 93; note: NISAR marks the retrieval at the point as recommended on every date that holds a soil moisture. | The same cell and the same nine values (largest difference 0.0) |
+| r2 | -70.8807, 42.9359 | Nine values from the cell 6, 153; note: NISAR marks the retrieval at the point as recommended on every date that holds a soil moisture. | The same cell and the same nine values (largest difference 0.0) |
+| r3 | -70.8351, 42.9359 | Nine values from the cell 6, 175; note: NISAR marks the retrieval at the point as recommended on every date that holds a soil moisture. | The same cell and the same nine values (largest difference 0.0) |
+
+On the two beta dates no point holds a value, in either program. The series tool refuses the layers
+below with one sentence:
+
+| Case | Sentence of the refusal |
+|---|---|
+| provisional and beta together | The layers are not of the same major release of the processing software: "Soil moisture, 23 Jun 2026" is of the release P05023 and "Soil moisture, 13 Dec 2025" of X05010. |
+| a date without its flag | The number of input layers must be even, two for each date, and it is 3. |
+| the flag of another date | The layers "Soil moisture, 23 Jun 2026" and "Retrieval quality flag, 5 Jul 2026" are not of the same product file. |
+| one date | A series needs at least 2 layers, and it has 1. |
+
+### 9.4 Limits
+
+1. A series of the area rests on 385 to 600 cells of the box, of 27,411 to 29,238 with a soil
+   moisture; the cells kept may lie in other places on other dates, so the means of two dates are
+   means of different places.
+2. At most points of the box the series has no value, because the products mark the retrieval as not
+   recommended on every date.
+3. The source program is the code of the notebook of the backscatter applied to the soil moisture,
+   with one added statement for the rule of the flag; no program of the mission for a series of the
+   soil moisture was found.
+4. All products of the pilot frame are provisional or beta. The beta products hold a soil moisture
+   in few cells and mark none as not recommended.
