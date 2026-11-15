@@ -7,8 +7,18 @@ from pathlib import Path, PurePosixPath, PureWindowsPath
 import pytest
 
 from lynkeus import computer, jobs
-from lynkeus.computer import AlreadyRunningError, Settings, data_folder, first_limits, read_settings, write_settings
-from lynkeus.linking import ServerLimits
+from lynkeus.computer import (
+    AlreadyRunningError,
+    Settings,
+    cells_in_memory,
+    data_folder,
+    first_limits,
+    job_memory,
+    layer_size,
+    read_settings,
+    write_settings,
+)
+from lynkeus.linking import FIRST_LAYER_CELLS, ServerLimits
 
 KEY = "k" * 43
 LIMITS = ServerLimits(running_jobs=3, storage=1_000, layer_size=100)
@@ -45,7 +55,7 @@ def test_settings_are_written_and_read(tmp_path: Path) -> None:
         "server": "0123456789abcdef",
         "key": KEY,
         "user": "a_visitor",
-        "limits": {"running_jobs": 3, "storage": 1000, "layer_size": 100},
+        "limits": {"running_jobs": 3, "storage": 1000, "layer_size": 100, "layer_cells": 25000000},
     }
     if sys.platform != "win32":
         assert (tmp_path / "settings.json").stat().st_mode & 0o777 == 0o600
@@ -89,27 +99,97 @@ def test_data_folder_is_held_by_one_program(tmp_path: Path) -> None:
 @pytest.mark.parametrize(
     ("processors", "memory", "free", "limits"),
     [
-        # The computer of the first trial: 20 processors, 16 gigabytes, 200 gigabytes free.
-        (20, 16_000_000_000, 200_000_000_000, (13, 100_000_000_000, 500_000_000)),
-        # The project server: 2 processors, 7.9 gigabytes.
-        (2, 7_940_000_000, 40_000_000_000, (1, 20_000_000_000, 500_000_000)),
-        (1, 1_000_000_000, 600_000_000, (1, 300_000_000, 300_000_000)),
-        (8, None, 0, (2, 0, 0)),
-        (1, None, 10, (1, 5, 5)),
-        (256, 1_000_000_000_000, 10**13, (64, 5 * 10**12, 500_000_000)),
-        (4, 600_000_000, 10**9, (1, 500_000_000, 500_000_000)),
+        # The computer of the owner: 20 processors, 16 gigabytes, 200 gigabytes free.
+        (20, 16_000_000_000, 200_000_000_000, (2, 100_000_000_000, 1_291_666_667, 242_000_000)),
+        # The project machine: 2 processors, 7.9 gigabytes.
+        (2, 7_940_000_000, 40_000_000_000, (1, 20_000_000_000, 619_666_667, 116_000_000)),
+        (1, 1_000_000_000, 600_000_000, (1, 300_000_000, 43_666_667, 8_000_000)),
+        (8, None, 0, (2, 0, 0, 25_000_000)),
+        (1, None, 10, (1, 5, 5, 25_000_000)),
+        (256, 1_000_000_000_000, 10_000_000_000_000, (7, 5_000_000_000_000, 21_334_333_334, 4_000_000_000)),
+        (4, 600_000_000, 1_000_000_000, (2, 500_000_000, 6_333_334, 1_000_000)),
+        (16, 32_000_000_000, 1_000_000_000_000, (2, 500_000_000_000, 2_625_000_000, 492_000_000)),
     ],
 )
 def test_first_limits_follow_the_computer(
-    processors: int, memory: int | None, free: int, limits: tuple[int, int, int]
+    processors: int, memory: int | None, free: int, limits: tuple[int, int, int, int]
 ) -> None:
     first = first_limits(processors, memory, free)
-    assert (first.running_jobs, first.storage, first.layer_size) == limits
+    assert (first.running_jobs, first.storage, first.layer_size, first.layer_cells) == limits
+    if memory is not None and computer.LEAST_LAYER_CELLS < first.layer_cells < computer.MOST_LAYER_CELLS:
+        # A job of the first cells fits in a quarter of the memory, and the running jobs in half of it.
+        assert job_memory(first.layer_cells) <= memory // 4 < job_memory(first.layer_cells + computer.MILLION)
+        assert first.running_jobs * job_memory(first.layer_cells) <= memory // 2
 
 
-def test_first_limits_take_the_size_of_a_layer_of_the_project_server() -> None:
-    assert first_limits(4, None, 10**12).layer_size == jobs.MAX_LAYER_SIZE
-    assert first_limits(4, None, 10**12).running_jobs == jobs.MAX_RUNNING_JOBS
+def test_first_limits_without_the_memory_are_those_of_the_project_server() -> None:
+    first = first_limits(4, None, 10**12)
+    assert (first.layer_cells, first.running_jobs) == (FIRST_LAYER_CELLS, jobs.MAX_RUNNING_JOBS)
+    assert first.layer_size == layer_size(FIRST_LAYER_CELLS) == 134_333_334
+    assert first.layer_size < jobs.MAX_LAYER_SIZE
+
+
+def test_memory_of_a_job_follows_the_cells_of_its_layer() -> None:
+    assert job_memory(0) == computer.JOB_BASE_MEMORY == 120_000_000
+    assert job_memory(25_000_000) == 520_000_000
+    assert job_memory(100_000_000) == 1_720_000_000
+    assert job_memory(100_000_000) - job_memory(99_000_000) == computer.CELL_MEMORY * 1_000_000
+
+
+def test_most_cells_of_a_job_that_fits_in_a_memory_are_whole_millions() -> None:
+    assert cells_in_memory(job_memory(50_000_000)) == 50_000_000
+    assert cells_in_memory(job_memory(50_000_000) - 1) == 49_000_000
+    assert cells_in_memory(4_000_000_000) == 242_000_000
+    # A limit on the cells of a layer lies between 1 million and 4000 million.
+    assert cells_in_memory(0) == 1_000_000
+    assert cells_in_memory(10**15) == 4_000_000_000
+
+
+def test_size_of_a_layer_is_that_of_its_cells_without_compression() -> None:
+    # 4 bytes a cell, a third more for the reduced copies, and one megabyte for the headers and the record.
+    assert layer_size(3_000_000) == 17_000_000
+    assert layer_size(25_000_000) == 134_333_334
+    assert layer_size(100_000_000) == 534_333_334
+
+
+def test_limits_kept_by_version_0_1_0_receive_the_cells_of_a_layer(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(computer, "processors", lambda: 20)
+    monkeypatch.setattr(computer, "memory", lambda: 16_000_000_000)
+    monkeypatch.setattr(computer, "free_space", lambda folder: 200_000_000_000)
+    kept = {
+        "server": "0123456789abcdef",
+        "key": KEY,
+        "user": "a_visitor",
+        "limits": {"running_jobs": 13, "storage": 100_000_000_000, "layer_size": 500_000_000},
+    }
+    (tmp_path / "settings.json").write_text(json.dumps(kept), encoding="utf-8")
+    settings = read_settings(tmp_path)
+    # The pairing stays. The cells are the first value of the computer; the 13 jobs of version 0.1.0 would
+    # not fit in the memory with layers of that size, and its 500 megabytes would end such a job.
+    assert (settings.server, settings.key, settings.user) == ("0123456789abcdef", KEY, "a_visitor")
+    assert settings.limits == ServerLimits(
+        running_jobs=2, storage=100_000_000_000, layer_size=1_291_666_667, layer_cells=242_000_000
+    )
+    assert [path.name for path in tmp_path.iterdir()] == ["settings.json"]
+    # What the owner set lower or larger stays, and the size of a layer never passes the storage.
+    kept["limits"] = {"running_jobs": 1, "storage": 1_000_000_000, "layer_size": 3_000_000_000}
+    (tmp_path / "settings.json").write_text(json.dumps(kept), encoding="utf-8")
+    assert read_settings(tmp_path).limits == ServerLimits(
+        running_jobs=1, storage=1_000_000_000, layer_size=3_000_000_000, layer_cells=242_000_000
+    )
+    kept["limits"] = {"running_jobs": 2, "storage": 1_000_000_000, "layer_size": 500_000_000}
+    (tmp_path / "settings.json").write_text(json.dumps(kept), encoding="utf-8")
+    assert read_settings(tmp_path).limits == ServerLimits(
+        running_jobs=2, storage=1_000_000_000, layer_size=1_000_000_000, layer_cells=242_000_000
+    )
+
+
+def test_limits_with_the_cells_of_a_layer_are_read_as_they_are(tmp_path: Path) -> None:
+    limits = ServerLimits(running_jobs=13, storage=1_000, layer_size=100, layer_cells=30_000_000)
+    write_settings(tmp_path, Settings(limits=limits))
+    assert read_settings(tmp_path).limits == limits
 
 
 def test_resources_of_this_computer_are_read(tmp_path: Path) -> None:

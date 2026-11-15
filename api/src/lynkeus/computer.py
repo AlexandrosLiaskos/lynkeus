@@ -18,7 +18,7 @@ from pydantic import ValidationError, model_validator
 
 from lynkeus import jobs, limits
 from lynkeus.layers import Format
-from lynkeus.linking import Key, Label, ServerId, ServerLimits
+from lynkeus.linking import FIRST_LAYER_CELLS, Key, Label, ServerId, ServerLimits
 
 SETTINGS = "settings.json"
 """The name of the settings file in the data folder."""
@@ -35,11 +35,27 @@ LOG = "log.txt"
 LOCK = "lock"
 """The name of the file in the data folder that a running program holds locked."""
 
-JOB_MEMORY = 600_000_000
-"""The memory that one job is given in the first limits, in bytes.
+JOB_BASE_MEMORY = 120_000_000
+"""The memory that a job holds whatever the cells of its layer, in bytes: the interpreter and its libraries."""
 
-A job that writes a layer of the largest size holds about 510 megabytes (``compose.yaml``).
+CELL_MEMORY = 16
+"""The memory that a job holds for every cell of the layer that it receives, in bytes.
+
+``job_memory`` gives the memory of a job from these two numbers. They are set from the jobs measured
+on real layers (``docs/research/servers.md``) and are rounded up.
 """
+
+MILLION = 1_000_000
+"""The step of a limit on the cells of a layer."""
+
+LEAST_LAYER_CELLS = 1_000_000
+"""The smallest limit on the cells of a layer that ``lynkeus.linking.ServerLimits`` takes."""
+
+MOST_LAYER_CELLS = 4_000_000_000
+"""The largest limit on the cells of a layer that ``lynkeus.linking.ServerLimits`` takes."""
+
+CELL_SIZE = 4
+"""The size of a cell in the file of a layer without compression, in bytes: a 32-bit real number."""
 
 MOST_RUNNING_JOBS = 64
 """The largest number of running jobs that ``lynkeus.linking.ServerLimits`` takes."""
@@ -116,11 +132,17 @@ def read_settings(folder: Path) -> Settings:
 
     A file that is missing gives the settings of a new server. A file that cannot be read as settings
     is kept under the name ``settings-unreadable.json`` and also gives the settings of a new server, so
-    that a damaged file does not stop the program.
+    that a damaged file does not stop the program. Limits that a program of version 0.1.0 kept receive
+    the cells of a layer by the rule of the first limits (``limits_with_cells``); the pairing stays.
     """
     path = folder / SETTINGS
     try:
-        return Settings.model_validate_json(path.read_text(encoding="utf-8"))
+        kept = json.loads(path.read_text(encoding="utf-8"))
+        old = kept.get("limits") if isinstance(kept, dict) else None
+        if isinstance(old, dict) and "layer_cells" not in old:
+            # The file was written by a program of version 0.1.0.
+            kept["limits"] = limits_with_cells(old, first_limits(processors(), memory(), free_space(folder)))
+        return Settings.model_validate(kept)
     except FileNotFoundError:
         return Settings()
     except (OSError, ValueError, ValidationError):
@@ -205,6 +227,50 @@ def free_space(folder: Path) -> int:
     return shutil.disk_usage(folder).free
 
 
+def job_memory(cells: int) -> int:
+    """Return the memory that a job holds while it receives and writes a layer, in bytes.
+
+    Parameters
+    ----------
+    cells : int
+        Cells of the layer.
+
+    Returns
+    -------
+    int
+        ``JOB_BASE_MEMORY`` and ``CELL_MEMORY`` for every cell. The project server uses this rule to
+        tell whether the running jobs of an own server fit in its memory (``docs/Own_Servers.md``).
+    """
+    return JOB_BASE_MEMORY + CELL_MEMORY * max(cells, 0)
+
+
+def cells_in_memory(memory: int) -> int:
+    """Return the most cells of a layer whose job fits in an amount of memory, in whole millions.
+
+    Parameters
+    ----------
+    memory : int
+        Memory for the job, in bytes.
+
+    Returns
+    -------
+    int
+        The largest whole number of millions of cells for which ``job_memory`` is at most ``memory``,
+        and never less than 1 million or more than 4000 million, the range of a limit.
+    """
+    cells = max(memory - JOB_BASE_MEMORY, 0) // CELL_MEMORY // MILLION * MILLION
+    return max(LEAST_LAYER_CELLS, min(cells, MOST_LAYER_CELLS))
+
+
+def layer_size(cells: int) -> int:
+    """Return the size of the two files of a layer of a number of cells that does not compress, in bytes.
+
+    The GeoTIFF holds 4 bytes for a cell and a third more for its reduced copies. One megabyte is added
+    for the headers of the file and for the STAC record.
+    """
+    return -(-cells * CELL_SIZE * 4 // 3) + MILLION
+
+
 def first_limits(processors: int, memory: int | None, free: int) -> ServerLimits:
     """Derive the first limits of a new own server from the computer. The owner changes them on the site.
 
@@ -220,20 +286,52 @@ def first_limits(processors: int, memory: int | None, free: int) -> ServerLimits
     Returns
     -------
     ServerLimits
-        Running jobs: one for every processor but one, which stays for the other programs of the
-        computer, and at most as many as fit in half of the memory at ``JOB_MEMORY`` each; when the
-        memory is not known, at most the two of the project server. Always from 1 to 64. Storage: half
-        of the free space, as on the project server. Size of a layer: that of the project server
-        (``lynkeus.jobs.MAX_LAYER_SIZE``), or the storage when that is smaller.
+        Cells of a layer: those of a job that fits in a quarter of the memory (``cells_in_memory``),
+        and 25 million when the memory is not known. Running jobs: as many jobs of that size as fit in
+        half of the memory, at most one for every processor but one, which stays for the other programs
+        of the computer; when the memory is not known, at most the two of the project server. Always
+        from 1 to 64. Storage: half of the free space, as on the project server. Size of a layer: that
+        of a file of the cells of a layer without compression (``layer_size``), or the storage when
+        that is smaller.
     """
+    cells = FIRST_LAYER_CELLS if memory is None else cells_in_memory(memory // 4)
     for_processors = max(processors - 1, 1)
-    for_memory = jobs.MAX_RUNNING_JOBS if memory is None else memory // 2 // JOB_MEMORY
+    for_memory = jobs.MAX_RUNNING_JOBS if memory is None else memory // 2 // job_memory(cells)
     storage = max(free, 0) // 2
     return ServerLimits(
         running_jobs=max(1, min(for_processors, for_memory, MOST_RUNNING_JOBS)),
         storage=storage,
-        layer_size=min(jobs.MAX_LAYER_SIZE, storage),
+        layer_size=min(layer_size(cells), storage),
+        layer_cells=cells,
     )
+
+
+def limits_with_cells(kept: Mapping[str, object], first: ServerLimits) -> dict[str, object]:
+    """Add the cells of a layer to limits that a program of version 0.1.0 kept, which knew no such limit.
+
+    Parameters
+    ----------
+    kept : mapping
+        The limits as the settings file holds them, without ``layer_cells``.
+    first : ServerLimits
+        The first limits of this computer.
+
+    Returns
+    -------
+    dict
+        The limits with the first value of the cells of a layer. So that a job of that many cells is
+        neither ended for its size nor short of memory, the size of a layer is raised to its first
+        value when it is smaller, and the running jobs are lowered to their first value when they are
+        more. The storage stays as the owner set it, and the size of a layer never passes it.
+    """
+    changed = dict(kept)
+    changed["layer_cells"] = first.layer_cells
+    running, size, storage = changed.get("running_jobs"), changed.get("layer_size"), changed.get("storage")
+    if isinstance(running, int) and running > first.running_jobs:
+        changed["running_jobs"] = first.running_jobs
+    if isinstance(size, int) and isinstance(storage, int) and size < layer_size(first.layer_cells):
+        changed["layer_size"] = min(layer_size(first.layer_cells), storage)
+    return changed
 
 
 def system_name() -> str:
