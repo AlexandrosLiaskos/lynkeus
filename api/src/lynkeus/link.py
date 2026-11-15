@@ -15,6 +15,7 @@ import hashlib
 import http.client
 import ipaddress
 import logging
+import socket
 import ssl
 import threading
 import time
@@ -374,7 +375,11 @@ class ProjectServer:
             sock = connection.sock
             if sock is not None:
                 with contextlib.suppress(OSError):
-                    sock.shutdown(2)
+                    sock.shutdown(socket.SHUT_RDWR)
+                # On Linux and macOS the shutdown ends the wait of the other thread. On Windows only the
+                # closing of the socket does, and the answer that the thread reads would keep it open.
+                with contextlib.suppress(OSError):
+                    socket.close(sock.detach())
             with contextlib.suppress(OSError):
                 connection.close()
 

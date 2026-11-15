@@ -55,6 +55,12 @@ REQUEST = {
 VARIABLE = "/science/LSAR/GCOV/grids/frequencyA/HHHH"
 FILE = LAYERS / "gcov-hhhh-20261021.tif"
 TOKEN = "a-token-of-the-journey-that-no-file-may-hold"  # noqa: S105 - it protects nothing
+QUIT_TIME = 15.0
+"""The longest time that the check waits for the leave of a program that is quit, in seconds.
+
+It is shorter than the time for which a question for tasks stays open (``lynkeus.linking.MOST_WAIT``): a
+program that is quit must not wait for the answer to its open question before it leaves.
+"""
 START_TIME = 180.0
 """The longest time that the check waits for a start of the program or of a job, in seconds."""
 
@@ -163,7 +169,7 @@ def journey(command: Sequence[str], folder: Path, whole: bool = True, window: bo
             assert site.leaves == []
             asked = time.monotonic()
             _quit(program, window)
-            site.until(lambda: site.leaves or None, "the leave of the program that is quit", START_TIME)
+            site.until(lambda: site.leaves or None, "the leave of the program that is quit", QUIT_TIME)
             measured["leave"] = round(time.monotonic() - asked, 1)
             assert program.wait(START_TIME) == 0
             assert (len(site.leaves), site.asked[-1]) == (1, "/api/link/leave")
