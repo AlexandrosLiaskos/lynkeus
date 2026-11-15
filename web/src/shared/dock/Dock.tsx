@@ -6,10 +6,12 @@ import {
   concealPanes,
   dockStore,
   frontOf,
+  hiddenOf,
   paneElementId,
   panesOf,
+  revealedOf,
   showPane,
-  shownOf,
+  stackOf,
   tabElementId,
   togglePane,
 } from "./dock";
@@ -29,59 +31,57 @@ interface DockProps {
  * or moved with the arrow keys, as the window splitter of the ARIA Authoring Practices Guide describes. A side
  * without a pane takes no room.
  *
- * The pin in the title bar of a pane makes the side hide its panes automatically, as Auto-Hide does in ArcGIS
- * Pro. The side is then a strip at the edge of the window with one tab for each pane, its name written from top
- * to bottom. A click on a tab shows its pane over the map, which keeps its size, and a second click hides it. The
- * pane also hides when the pointer is pressed, or the keyboard focus moves, outside the panes of both sides: in
- * the map or in the ribbon. Work in the panes of the other side does not hide it, so a pane of each side can show
- * at the same time.
+ * The pin in the title bar of a pane makes that pane hide automatically, as Auto-Hide does in ArcGIS Pro. The
+ * pane leaves the stack and becomes a tab in a strip at the edge of the window, its name written from top to
+ * bottom; the other panes stay in the stack, with their tabs under it. A click on the tab shows the pane over
+ * the stack and the map, and a second click hides it. The pane also hides when the pointer is pressed, or the
+ * keyboard focus moves, in the map, and when a pane of the stack is opened or brought to the front. Work in the
+ * ribbon or in the panes of the other side leaves it in place.
  */
 export function Dock({ side, icons, children }: DockProps) {
   const dock = useStore(dockStore);
   const holder = widthHolder(side);
   const { width } = useStore(panesStore)[holder];
   const drag = useRef<{ x: number; width: number } | null>(null);
-  const panes = panesOf(dock, side);
+  const stack = stackOf(dock, side);
+  const strip = hiddenOf(dock, side);
   const front = frontOf(dock, side);
-  const shown = shownOf(dock, side);
-  const autoHide = dock.autoHide[side];
-  const revealed = autoHide && shown !== null;
+  const revealed = revealedOf(dock, side);
   const place = `on the ${side} of the map`;
 
-  // A pane that shows over the map hides when the user works in the map or in the ribbon. It stays while the
-  // user works in the panes of either side, and a dialog that a pane has opened is declared inside a side.
+  // A pane that shows over the map hides when the user works in the map.
   useEffect(() => {
-    if (!revealed) {
+    if (revealed === null) {
       return;
     }
-    const onElsewhere = (event: Event) => {
-      if (event.target instanceof Element && event.target.closest(".dock") === null) {
+    const onMap = (event: Event) => {
+      if (event.target instanceof Element && event.target.closest(".workspace-map") !== null) {
         concealPanes(side);
       }
     };
-    document.addEventListener("pointerdown", onElsewhere, true);
-    document.addEventListener("focusin", onElsewhere);
+    document.addEventListener("pointerdown", onMap, true);
+    document.addEventListener("focusin", onMap);
     return () => {
-      document.removeEventListener("pointerdown", onElsewhere, true);
-      document.removeEventListener("focusin", onElsewhere);
+      document.removeEventListener("pointerdown", onMap, true);
+      document.removeEventListener("focusin", onMap);
     };
   }, [revealed, side]);
 
   // The left and right arrow keys move between the tabs, and Home and End go to the first and the last one.
   const onTabKeyDown = (event: KeyboardEvent) => {
-    const current = panes.findIndex(({ id }) => id === front);
-    const last = panes.length - 1;
+    const current = stack.findIndex(({ id }) => id === front);
+    const last = stack.length - 1;
     const index =
       event.key === "ArrowRight"
-        ? (current + 1) % panes.length
+        ? (current + 1) % stack.length
         : event.key === "ArrowLeft"
-          ? (current + last) % panes.length
+          ? (current + last) % stack.length
           : event.key === "Home"
             ? 0
             : event.key === "End"
               ? last
               : -1;
-    const next = panes[index];
+    const next = stack[index];
     if (next) {
       event.preventDefault();
       showPane(next.id);
@@ -114,20 +114,20 @@ export function Dock({ side, icons, children }: DockProps) {
   };
 
   const className =
-    panes.length === 0
+    panesOf(dock, side).length === 0
       ? "dock dock--empty"
-      : `dock dock--${side}${autoHide ? " dock--auto" : ""}${revealed ? " dock--out" : ""}`;
+      : `dock dock--${side}${stack.length === 0 ? " dock--bare" : ""}`;
 
   return (
     <div className={className} style={{ "--dock-width": `${String(width)}px` } as CSSProperties}>
-      {autoHide && panes.length > 0 ? (
+      {strip.length > 0 ? (
         <div className="dock-rail" role="group" aria-label={`Hidden panes ${place}`}>
-          {panes.map(({ id, title }) => (
+          {strip.map(({ id, title }) => (
             <button
               key={id}
               type="button"
               id={tabElementId(id)}
-              aria-expanded={id === shown}
+              aria-expanded={id === revealed}
               aria-controls={paneElementId(id)}
               onClick={() => togglePane(id)}
             >
@@ -137,26 +137,28 @@ export function Dock({ side, icons, children }: DockProps) {
           ))}
         </div>
       ) : null}
-      <div className="dock-panes">{children}</div>
-      {!autoHide && panes.length > 1 ? (
-        <div className="dock-tabs" role="tablist" aria-label={`Panes ${place}`} onKeyDown={onTabKeyDown}>
-          {panes.map(({ id, title }) => (
-            <button
-              key={id}
-              type="button"
-              role="tab"
-              id={tabElementId(id)}
-              aria-selected={id === front}
-              aria-controls={paneElementId(id)}
-              tabIndex={id === front ? 0 : -1}
-              onClick={() => showPane(id)}
-            >
-              {title}
-            </button>
-          ))}
-        </div>
-      ) : null}
-      {shown !== null ? (
+      <div className="dock-stack">
+        <div className="dock-panes">{children}</div>
+        {stack.length > 1 ? (
+          <div className="dock-tabs" role="tablist" aria-label={`Panes ${place}`} onKeyDown={onTabKeyDown}>
+            {stack.map(({ id, title }) => (
+              <button
+                key={id}
+                type="button"
+                role="tab"
+                id={tabElementId(id)}
+                aria-selected={id === front}
+                aria-controls={paneElementId(id)}
+                tabIndex={id === front ? 0 : -1}
+                onClick={() => showPane(id)}
+              >
+                {title}
+              </button>
+            ))}
+          </div>
+        ) : null}
+      </div>
+      {stack.length > 0 || revealed !== null ? (
         <div
           className="dock-edge"
           role="separator"
