@@ -11,9 +11,9 @@ export type AreaReading = { area: Area; fault: null } | { area: null; fault: str
 export const AREA_FAULTS = {
   empty: "The rectangle has no width or no height.",
   meridian: "The area crosses the meridian of 180 degrees. An area must lie on one side of that meridian.",
-  numbers: "Give the four sides of the area as numbers.",
+  numbers: "Enter the four sides of the area as numbers.",
   limits:
-    "The area is not valid. West must be smaller than east and south smaller than north. Longitude runs from -180 to 180 degrees and latitude from -90 to 90.",
+    "West must be smaller than east, and south smaller than north. Longitude runs from -180 to 180 degrees and latitude from -90 to 90 degrees.",
 } as const;
 
 function round(degrees: number): number {

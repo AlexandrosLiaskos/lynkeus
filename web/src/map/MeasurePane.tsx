@@ -1,5 +1,7 @@
 import { useId } from "react";
-import { Info } from "../shared/info/Info";
+import { EmptyState } from "../shared/empty/EmptyState";
+import { PropertyList, type Property } from "../shared/properties/PropertyList";
+import { Section } from "../shared/section/Section";
 import { useStore } from "../shared/store";
 import { ToolPane } from "../shared/toolpane/ToolPane";
 import {
@@ -17,26 +19,32 @@ import {
 import { sketchStore, type MeasureKind } from "./measureTool";
 
 const TITLES = { distance: "Measure distance", area: "Measure area" } as const;
+const NOUNS = { distance: "line", area: "polygon" } as const;
+const SKETCH_TITLES = { distance: "Line being drawn", area: "Polygon being drawn" } as const;
 
-/** One measurement: the whole, and under it the length of each segment or side. */
-function MeasurementLines({ measurement, name }: { measurement: Measurement; name: string }) {
-  const units = useStore(measureUnitsStore);
-  const { area, length, segments } = measurement;
-  return (
-    <>
-      <strong>
-        {name}:{" "}
-        {area === null
-          ? formatDistance(length, units.distance)
-          : `${formatArea(area, units.area)}, perimeter ${formatDistance(length, units.distance)}`}
-      </strong>
-      <ol className="measure-segments" aria-label={area === null ? `Segments of ${name}` : `Sides of ${name}`}>
-        {segments.map((segment, index) => (
-          <li key={index}>{formatDistance(segment, units.distance)}</li>
-        ))}
-      </ol>
-    </>
-  );
+/**
+ * Return the rows of one measurement in the chosen units: the length of a line, or the area and the perimeter
+ * of a polygon, and under them the length of each segment or side. The whole values can be copied.
+ */
+export function measurementRows(
+  { area, length, segments }: Measurement,
+  units: { distance: DistanceUnit; area: AreaUnit },
+): Property[] {
+  const whole: Property[] =
+    area === null
+      ? [{ name: "Length", value: formatDistance(length, units.distance), copy: true }]
+      : [
+          { name: "Area", value: formatArea(area, units.area), copy: true },
+          { name: "Perimeter", value: formatDistance(length, units.distance), copy: true },
+        ];
+  const part = area === null ? "Segment" : "Side";
+  return [
+    ...whole,
+    ...segments.map((segment, index) => ({
+      name: `${part} ${String(index + 1)}`,
+      value: formatDistance(segment, units.distance),
+    })),
+  ];
 }
 
 /**
@@ -48,20 +56,21 @@ export function MeasurePane({ kind }: { kind: MeasureKind }) {
   const units = useStore(measureUnitsStore);
   const measurements = useStore(measurementsStore);
   const sketch = useStore(sketchStore);
-  const noun = kind === "distance" ? "line" : "polygon";
+  const noun = NOUNS[kind];
 
   return (
     <ToolPane
       id={`measure-${kind}`}
       title={TITLES[kind]}
-      runLabel="Clear results"
+      runLabel="Clear measurements"
       onRun={() => measurementsStore.set([])}
       ready={measurements.length > 0}
+      missing="There is no measurement to clear."
       info={
         <>
-          Click the points of the {noun} on the map, and click twice on the last point. With the keyboard focus on the
-          map, the Enter key adds a point at the cross and, pressed twice at one place, ends the {noun}. The Backspace
-          key takes back the last point, and the Escape key gives up the {noun}.
+          Click the points of the {noun} on the map, and click twice on the last point to end it. With the keyboard
+          focus on the map, the Enter key adds a point at the cross and, pressed twice at one place, ends the {noun}.
+          The Backspace key removes the last point, and the Escape key discards the {noun}.
         </>
       }
     >
@@ -99,31 +108,37 @@ export function MeasurePane({ kind }: { kind: MeasureKind }) {
           </select>
         </>
       ) : null}
-      <div className="info-title map-pane-heading">
-        <h3>Results</h3>
-        <Info id={`${id}-results-info`} about="Results">
-          The lengths and the areas are measured on a sphere with a radius of{" "}
-          {new Intl.NumberFormat("en-US").format(EARTH_RADIUS)} metres, the mean radius of the WGS 84 ellipsoid. Each
-          segment is the great circle between its two points. On the ellipsoid itself a length differs by up to 0.6
-          percent and an area by up to 0.9 percent.
-        </Info>
-      </div>
       {sketch ? (
-        <div className="measure-result">
-          <MeasurementLines measurement={sketch} name={`The ${noun} being drawn`} />
-        </div>
+        <Section title={SKETCH_TITLES[sketch.kind]}>
+          <PropertyList groups={[{ rows: measurementRows(sketch, units) }]} />
+        </Section>
       ) : null}
-      {measurements.length === 0 && !sketch ? <p className="usa-hint">Nothing is measured.</p> : null}
-      <ol className="measure-results" aria-label="Finished measurements" aria-describedby={`${id}-results-info`}>
-        {measurements.map((measurement, index) => (
-          <li key={index} className="measure-result">
-            <MeasurementLines
-              measurement={measurement}
-              name={`${measurement.area === null ? "Distance" : "Area"} ${String(index + 1)}`}
-            />
-          </li>
-        ))}
-      </ol>
+      <Section
+        title="Measurements"
+        count={measurements.length}
+        info={
+          <>
+            The lengths and the areas are measured on a sphere with a radius of{" "}
+            {new Intl.NumberFormat("en-US").format(EARTH_RADIUS)} metres, the mean radius of the WGS 84 ellipsoid. Each
+            segment is the great circle between its two points. On the ellipsoid itself a length differs by up to 0.6
+            percent and an area by up to 0.9 percent.
+          </>
+        }
+      >
+        {measurements.length === 0 ? (
+          <EmptyState
+            title="No measurements"
+            text={`Click the points of a ${noun} on the map, and click twice on the last point.`}
+          />
+        ) : (
+          <PropertyList
+            groups={measurements.map((measurement, index) => ({
+              title: `${measurement.area === null ? "Distance" : "Area"} ${String(index + 1)}`,
+              rows: measurementRows(measurement, units),
+            }))}
+          />
+        )}
+      </Section>
     </ToolPane>
   );
 }

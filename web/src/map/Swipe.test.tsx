@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import OlMap from "ol/Map";
 import View from "ol/View";
@@ -8,6 +8,7 @@ import { selectedLayerStore } from "../contents/state";
 import { dockStore, openToolPane, resetDock } from "../shared/dock/dock";
 import { MapContext } from "../shared/map";
 import { mapLayersStore } from "../shared/mapLayers";
+import { panesStore, resetPanes, setPaneOpen } from "../shared/panes";
 import { swipeStore } from "./swipe";
 import { SwipeOnMap } from "./SwipeOnMap";
 import { SwipePane } from "./SwipePane";
@@ -35,6 +36,7 @@ beforeEach(() => {
   selectedLayerStore.set("october");
   swipeStore.set({ on: false, line: "upright", share: 50 });
   resetDock();
+  resetPanes();
 });
 
 test("while the swipe is on, the selected layer is cut and a line stands on the map as a slider", () => {
@@ -84,8 +86,8 @@ test("the pane names the layer, turns the line and ends the swipe", async () => 
     swipeStore.set({ ...swipeStore.get(), on: true });
     openToolPane("swipe");
   });
-  expect(screen.getByText(/below the layer Backscatter HH, 21 Oct 2026,/)).toBeDefined();
-  await userEvent.click(screen.getByLabelText("Level, moved up and down"));
+  expect(within(screen.getByRole("group", { name: "Layer" })).getByText("Backscatter HH, 21 Oct 2026")).toBeDefined();
+  await userEvent.click(screen.getByLabelText("Horizontal, moved up and down"));
   expect(swipeStore.get().line).toBe("level");
   expect(line()?.getAttribute("aria-orientation")).toBe("vertical");
   expect(line()?.style.top).toBe("50%");
@@ -98,4 +100,40 @@ test("the pane names the layer, turns the line and ends the swipe", async () => 
   await userEvent.click(screen.getByRole("button", { name: "End swipe" }));
   expect(swipeStore.get().on).toBe(false);
   expect(dockStore.get().tools).toEqual([]);
+});
+
+test("without a selected layer the pane says how to select one and shows the Contents pane", async () => {
+  start();
+  act(() => {
+    selectedLayerStore.set(null);
+    setPaneOpen("contents", false);
+    openToolPane("swipe");
+  });
+  const layer = screen.getByRole("group", { name: "Layer" });
+  expect(within(layer).getByText("No layer selected")).toBeDefined();
+  expect(within(layer).getByText("Select the layer to swipe in the Contents pane.")).toBeDefined();
+  await userEvent.click(within(layer).getByRole("button", { name: "Show Contents pane" }));
+  expect(panesStore.get().contents.open).toBe(true);
+  expect(dockStore.get().front.left).toBe("contents");
+  // The direction of the line can still be chosen.
+  expect(screen.getByLabelText("Vertical, moved left and right")).toBeDefined();
+});
+
+/** Return the explanation that describes an element. */
+function explanation(element: HTMLElement): string | undefined {
+  return document.getElementById(element.getAttribute("aria-describedby") ?? "")?.textContent;
+}
+
+test("the layer and the line are described by their explanations, and no text stands under a title", () => {
+  start();
+  act(() => openToolPane("swipe"));
+  expect(explanation(screen.getByRole("group", { name: "Layer" }))).toMatch(
+    /^The layer that is selected in the Contents pane\. The line uncovers what lies below this layer/,
+  );
+  expect(explanation(screen.getByRole("group", { name: "Line" }))).toMatch(
+    /^The layer is drawn on the left of a vertical line and under a horizontal line\. .* the Home and End keys to the edges\.$/,
+  );
+  expect(screen.getByRole("button", { name: "Information about Layer" })).toBeDefined();
+  expect(screen.getByRole("button", { name: "Information about Line" })).toBeDefined();
+  expect(document.querySelector(".usa-hint")).toBeNull();
 });

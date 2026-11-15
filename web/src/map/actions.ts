@@ -46,13 +46,28 @@ function toggleSwipe(): void {
   }
 }
 
-/** What the finished buttons of the Map tab do. */
+/** What a button of the Map tab says while it has nothing to act on. The button is then inactive. */
+export const MISSING = {
+  layer: "Select a layer in the Contents pane.",
+  area: "Set an area with a button of the group Area.",
+  noArea: "No area is set.",
+} as const;
+
+/**
+ * What the finished buttons of the Map tab do. A button that acts on the selected layer or on the area is
+ * inactive while there is none, and says what it needs.
+ */
 export function useMapActions(): ToolActions<MapToolId> {
   const map = useMap();
   const baseMap = useStore(baseMapStore);
   const graticule = useStore(graticuleStore);
   const tool = useStore(toolStore);
   const swipe = useStore(swipeStore);
+  const area = useStore(areaStore);
+  const selected = useStore(selectedLayerStore);
+  const layers = useStore(mapLayersStore);
+  // The swipe cuts a layer of the session, so the selected layer must be one of them.
+  const swipeable = layers.some(({ id }) => id === selected);
 
   useEffect(() => {
     showBaseMap(map, baseMap);
@@ -62,8 +77,8 @@ export function useMapActions(): ToolActions<MapToolId> {
     "full-extent": { run: () => showWorld(map) },
     "zoom-in": { run: () => zoomBy(map, 1) },
     "zoom-out": { run: () => zoomBy(map, -1) },
-    "zoom-to-layer": { run: () => void zoomToLayer(map) },
-    "zoom-to-area": { run: () => zoomToArea(map) },
+    "zoom-to-layer": { run: () => void zoomToLayer(map), missing: selected ? undefined : MISSING.layer },
+    "zoom-to-area": { run: () => zoomToArea(map), missing: area ? undefined : MISSING.area },
     "previous-extent": { run: () => showPreviousView(map) },
     "next-extent": { run: () => showNextView(map) },
     "go-to-coordinates": { run: () => openToolPane("go-to-coordinates") },
@@ -84,10 +99,11 @@ export function useMapActions(): ToolActions<MapToolId> {
     "area-rectangle": { run: () => toggleTool("area-rectangle"), pressed: tool === "area-rectangle" },
     "area-from-view": { run: () => setAreaFromView(map) },
     "area-from-coordinates": { run: () => openToolPane("area-from-coordinates") },
-    "area-clear": { run: () => areaStore.set(null) },
+    "area-clear": { run: () => areaStore.set(null), missing: area ? undefined : MISSING.noArea },
     identify: { run: toggleIdentify, pressed: tool === "identify" },
     "measure-distance": { run: () => toggleMeasure("measure-distance"), pressed: tool === "measure-distance" },
     "measure-area": { run: () => toggleMeasure("measure-area"), pressed: tool === "measure-area" },
-    swipe: { run: toggleSwipe, pressed: swipe.on },
+    // The button that ends a swipe stays active when its layer is no longer selected.
+    swipe: { run: toggleSwipe, pressed: swipe.on, missing: swipe.on || swipeable ? undefined : MISSING.layer },
   };
 }

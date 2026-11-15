@@ -21,10 +21,10 @@ export const BOOKMARKS_KEY = "lynkeus.bookmarks";
 export const NAME_LENGTH = 60;
 
 export const BOOKMARK_FAULTS = {
-  noName: "Give the bookmark a name.",
-  longName: `The name of a bookmark has at most ${String(NAME_LENGTH)} characters.`,
-  sameName: "Another bookmark has this name.",
-  notStored: "The browser did not store the bookmarks. They last until this page is closed.",
+  noName: "Enter a name for the view.",
+  longName: `The name is longer than ${String(NAME_LENGTH)} characters. Enter a shorter name.`,
+  sameName: "Another saved view has this name. Enter a different name.",
+  notStored: "The browser did not store the saved views. They last until this page is closed.",
 } as const;
 
 /** Tell whether a value that was read from the storage is a bookmark. */
