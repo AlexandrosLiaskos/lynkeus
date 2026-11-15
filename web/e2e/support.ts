@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { AxeBuilder } from "@axe-core/playwright";
 import { test as base, expect, type Locator, type Page, type Route, type TestInfo } from "@playwright/test";
 
@@ -64,6 +64,11 @@ async function answer(route: Route): Promise<void> {
     default:
       return json(404, { detail: "Not found." });
   }
+}
+
+/** The folder web of the repository, in which the configuration of Playwright stands. */
+function folderOfSite(info: TestInfo): string {
+  return info.config.configFile === undefined ? dirname(info.config.rootDir) : dirname(info.config.configFile);
 }
 
 /** Read the Content-Security-Policy that the web server sends with the pages of the site. */
@@ -133,7 +138,7 @@ export class Findings {
     });
     if (BUILT) {
       // `vite preview` sends no Content-Security-Policy, so the page receives the policy of nginx.conf here.
-      const policy = policyOfSite(this.info.config.rootDir);
+      const policy = policyOfSite(folderOfSite(this.info));
       await page.route(
         (address) => address.pathname === "/",
         async (route) => {
@@ -177,7 +182,7 @@ export class Findings {
     };
     const text = JSON.stringify(found, null, 2);
     await this.info.attach("findings.json", { body: text, contentType: "application/json" });
-    const folder = join(this.info.config.rootDir, "findings");
+    const folder = join(folderOfSite(this.info), "findings");
     mkdirSync(folder, { recursive: true });
     const name = `${this.info.project.name} ${this.info.title}`.replace(/[^A-Za-z0-9]+/g, "-").slice(0, 150);
     writeFileSync(join(folder, `${name}.json`), text);
