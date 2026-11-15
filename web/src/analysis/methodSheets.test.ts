@@ -4,6 +4,7 @@ import { plain } from "./Marked";
 import {
   COPIES,
   copiesOf,
+  FOR_THE_READER,
   READING,
   READING_SENTENCES,
   readingOf,
@@ -197,9 +198,11 @@ test.each(FINISHED_TOOLS)("the form of %s shows the first reference of the sheet
 test.each(FINISHED_TOOLS)("the form of %s shows what the sheet tells the reader about the reduced copies", (tool) => {
   const { sections } = sectionsOf(sheet(tool));
   const texts = partsOf(sections.get(COPIES) ?? []).flatMap((part) => (part.kind === "text" ? [part.text] : []));
-  expect(texts.length).toBeGreaterThan(1);
-  expect(copiesOf(METHODS[tool])).toBe(texts.at(-1));
-  expect(copiesOf(METHODS[tool]).startsWith("For the reader: ")).toBe(true);
+  // Each sheet writes one paragraph of the section for the reader of the map.
+  const forTheReader = texts.filter((text) => text.startsWith(FOR_THE_READER));
+  expect(FOR_THE_READER).toBe("For the reader: ");
+  expect(forTheReader).toHaveLength(1);
+  expect(copiesOf(METHODS[tool])).toBe(forTheReader[0]);
 });
 
 test.each(FINISHED_TOOLS)("the sections of %s stand in the order of the sheet", (tool) => {

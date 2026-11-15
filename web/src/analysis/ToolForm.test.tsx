@@ -425,7 +425,7 @@ test.each(FINISHED_TOOLS)(
     expect(valueOf(section, "Reference")).toBe(plain(referenceOf(method)));
     expect(valueOf(section, "Mask")).toBe(plain(method.mask));
     expect(valueOf(section, "Reduced copies")).toBe(plain(copiesOf(method)));
-    expect(copiesOf(method).startsWith("For the reader: when the map is zoomed out,")).toBe(true);
+    expect(copiesOf(method).startsWith("For the reader: when the map is zoomed out, a cell shows ")).toBe(true);
     expect(section.textContent).toContain(plain(readingOf(method)));
     expect(within(section).getByRole("button", { name: "Information about Result" })).toBeDefined();
   },

@@ -56,15 +56,20 @@ export function referenceOf(method: Method): string {
   return "";
 }
 
+/** The words with which a sheet starts the paragraph of that section that it writes for the reader of the map. */
+export const FOR_THE_READER = "For the reader: ";
+
 /**
- * Return what a sheet tells the reader of the map about the reduced copies of the result: the last paragraph of
- * its section Reduced copies of the result, or an empty text.
+ * Return what a sheet tells the reader of the map about the reduced copies of the result: the paragraph of its
+ * section Reduced copies of the result that starts with "For the reader:", or an empty text.
  */
 export function copiesOf(method: Method): string {
-  const texts = (sectionOf(method, COPIES)?.blocks ?? []).flatMap((block) =>
-    block.kind === "text" ? [block.text] : [],
-  );
-  return texts.at(-1) ?? "";
+  for (const block of sectionOf(method, COPIES)?.blocks ?? []) {
+    if (block.kind === "text" && block.text.startsWith(FOR_THE_READER)) {
+      return block.text;
+    }
+  }
+  return "";
 }
 
 /** Return the first three sentences of the section How to read the result of a sheet, or an empty text. */

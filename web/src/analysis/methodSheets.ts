@@ -102,15 +102,19 @@ export const METHODS: Record<FinishedTool, Method> = {
         blocks: [
           {
             kind: "text",
-            text: "The file of a result holds the values of the formula at full resolution. It also holds reduced copies (overviews), at the factors 2, 4 and 8 for the results of the pilot area, which the map draws when it is zoomed out. Lynkeus makes each cell of a reduced copy as the mean of the decibel values of the cells that it covers, and not as the decibels of their mean power.",
+            text: 'The file of a result holds the values of the formula at full resolution. It also holds reduced copies (overviews), at the factors 2, 4 and 8 for the results of the pilot area, which the map draws when it is zoomed out. Lynkeus makes each cell of a reduced copy as the decibels of the mean power of the cells that it covers, and not as the mean of their decibel values. To do so it returns the decibel values to linear power, averages the power as it does for the layer that it receives, and converts the mean to decibels. A reduced copy of the result is therefore the formula applied to the reduced copy of the input layer. The record of the result says: "Reduced copies made as the decibels of the mean of the linear power."',
           },
           {
             kind: "text",
-            text: "Measured on 15 Nov 2026 on the two results of the pilot area, at the factor 2 (3,581,043 cells with a value): the reduced copy equals the mean of the four decibel values (largest difference 9.5e-07 dB). Against the decibels of the mean power of the same four cells it is on average 0.50 dB lower on 21 Oct 2026 and 0.49 dB lower on 2 Nov 2026; 1,204,178 and 1,200,764 cells differ by more than 0.5 dB, and the largest difference is 15.2 dB and 15.7 dB (`docs/research/analysis.md`, part 4.7).",
+            text: "Measured on 15 Nov 2026 on the two results of the pilot area, made from the sample files of the input layers: each reduced copy of the result was compared with 10·log10 of the reduced copy of the input layer at the same factor. For both dates the largest difference is 5.7e-06 dB at the factor 2 (3,581,043 cells with a value) and 3.8e-06 dB at the factors 4 (896,214 cells) and 8 (224,943 cells), and the cells without a value are the same. The two are not equal bit for bit (at the factor 2, 1,276,943 and 1,246,927 cells differ), because Lynkeus returns 32-bit decibel values to power before it averages them, while the reduced copy of the input layer averages the power of the product. The values at full resolution are unchanged: their SHA-256 equals that of the comparison (`docs/research/analysis.md`, part 4.7).",
           },
           {
             kind: "text",
-            text: "For the reader: when the map is zoomed out, it shows values that are about half a decibel too low on average, and more where bright and dark cells lie side by side. The values at full zoom, and the values of the file at full resolution, are those of the formula.",
+            text: "Before this was changed, on 15 Nov 2026, a reduced copy was the mean of the decibel values. At the factor 2 it was on average 0.50 dB (21 Oct 2026) and 0.49 dB (2 Nov 2026) below the decibels of the mean power of the same four cells, and up to 15.2 dB and 15.7 dB (`docs/research/analysis.md`, part 4.7).",
+          },
+          {
+            kind: "text",
+            text: "For the reader: when the map is zoomed out, a cell shows the backscatter of the mean power of the cells that it covers, in decibels. The values at full zoom, and the values of the file at full resolution, are those of the formula. Not tried: a result with these reduced copies drawn in a browser.",
           },
         ],
       },
@@ -284,6 +288,10 @@ export const METHODS: Record<FinishedTool, Method> = {
             kind: "text",
             text: "For the reader: when the map is zoomed out, a cell shows the mean of the changes of the cells that it covers, which can differ by more than a decibel from the change of their mean backscatter. The values at full zoom, and the values of the file at full resolution, are those of the formula.",
           },
+          {
+            kind: "text",
+            text: 'The reduced copies of a result of Backscatter, One date are made otherwise, as the decibels of the mean power (`docs/methods/backscatter-state.md`). The function of each tool declares how its result is reduced, and the record of a result of this tool says: "Reduced copies made by averaging the values."',
+          },
         ],
       },
       {
@@ -443,7 +451,11 @@ export const METHODS: Record<FinishedTool, Method> = {
         blocks: [
           {
             kind: "text",
-            text: "The file of a result holds the values of the layer at full resolution. It also holds reduced copies (overviews), at the factors 2 and 4 for the result of the pilot area, which the map draws when it is zoomed out. Lynkeus makes each cell of a reduced copy as the mean of the coherence values of the cells that it covers, as it does for the layer that it receives. The reduced copies of this result were not measured.",
+            text: 'The file of a result holds the values of the layer at full resolution. It also holds reduced copies (overviews), at the factors 2 and 4 for the result of the pilot area, which the map draws when it is zoomed out. Lynkeus makes each cell of a reduced copy as the mean of the coherence values of the cells that it covers, as it does for the layer that it receives. The record of the result says: "Reduced copies made by averaging the values."',
+          },
+          {
+            kind: "text",
+            text: "Measured on 15 Nov 2026 on the result of the pilot pair, made from the sample file of the input layer: the reduced copies of the result are equal bit for bit to the reduced copies of the input layer, at the factor 2 (896,168 cells with a value) and at the factor 4 (224,722 cells) (`docs/research/analysis.md`, part 4.7).",
           },
           {
             kind: "text",
