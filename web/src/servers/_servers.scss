@@ -1,10 +1,16 @@
 @use "uswds-core" as uswds;
 @use "../shared/tokens/tokens";
 
-// The style of the dialog of the servers and of the field Server of a tool. The lists of names and values, the
+// The style of the pane of the servers and of the field Server of a tool. The lists of names and values, the
 // notices, the rows of a list and the form elements bring their own style.
 
-// A secondary line of the dialog: how many servers are connected, or the version of a download.
+// The content of the pane starts 8 pixels under the title bar. A notice and the empty state bring that space
+// themselves.
+.servers > :first-child:not(.notice, .empty-state) {
+  margin-top: tokens.$space-2;
+}
+
+// A secondary line of the pane: how many servers are connected, or the version of a download.
 .servers-note {
   margin: 0 0 tokens.$space-2;
   color: tokens.$secondary;
@@ -60,7 +66,7 @@
   margin: 0;
 }
 
-// The numbered steps that connect a server. The numbers stand inside the dialog.
+// The numbered steps that connect a server. The numbers stand inside the pane.
 .servers-steps {
   margin: 0 0 tokens.$group-gap;
   padding: 0 0 0 (tokens.$space-4 + tokens.$space-1);

@@ -4,6 +4,7 @@ import { layersStore, resetLayers } from "../data/layers";
 import { onSignInEnded, Refusal } from "../data/service";
 import { resetSession, sessionStore, signInEnded } from "../data/session";
 import { job, layer, showPage } from "../data/testSession";
+import { closeToolPane, dockStore, openToolPane, resetDock } from "../shared/dock/dock";
 import { mapLayersStore } from "../shared/mapLayers";
 import { messagesStore } from "../shared/messages/messages";
 import { serversStore } from "../shared/servers";
@@ -20,7 +21,7 @@ import {
   serversFaultStore,
   setServerLimits,
 } from "./requests";
-import { openServers, resetServersState, returnStore, serversDialogStore } from "./state";
+import { openAddServer, openServers, resetServersState, returnStore, SERVERS_PANE, serversViewStore } from "./state";
 import {
   CHANGE_LIMITS,
   CHANGE_NAME,
@@ -45,6 +46,7 @@ const file = (id: string) => `/api/servers/${id}/files/fedcba9876543210fedcba987
 beforeEach(() => {
   resetServers();
   resetServersState();
+  resetDock();
   resetSession();
   resetJobs();
   resetLayers();
@@ -230,7 +232,7 @@ test("the servers are read when the page loads and every half minute while the v
   expect(server.sent("GET", "/api/servers")).toHaveLength(3);
 });
 
-test("a visitor without a server is asked about again only while the dialog of the servers is open", async () => {
+test("a visitor without a server is asked about again only while the pane of the servers is open", async () => {
   vi.useFakeTimers();
   server.servers = [];
   const stop = followServers();
@@ -241,7 +243,7 @@ test("a visitor without a server is asked about again only while the dialog of t
   expect(server.sent("GET", "/api/servers")).toHaveLength(2);
   await vi.advanceTimersByTimeAsync(OPEN_POLL_TIME);
   expect(server.sent("GET", "/api/servers")).toHaveLength(3);
-  serversDialogStore.set({ open: false, view: "list", code: null });
+  closeToolPane(SERVERS_PANE);
   await vi.advanceTimersByTimeAsync(3 * POLL_TIME);
   expect(server.sent("GET", "/api/servers")).toHaveLength(3);
   stop();
@@ -274,12 +276,27 @@ test("the first answer about the session does not read the lists of the session 
   stop();
 });
 
-test("a dialog that closed for the sign-in opens again after it, with its code", () => {
+test("a pane that the visitor left for the sign-in comes to the front again after it, with its code", () => {
   sessionStore.set({ state: "signed-out" });
   const stop = followServers();
-  returnStore.set({ open: true, view: "add", code: "WDJB-MJHT" });
+  openAddServer("WDJB-MJHT");
+  // The button Sign in of the pane: the pane of the sign-in comes to the front, and the pane of the servers waits.
+  returnStore.set(true);
+  openToolPane("sign-in");
+  expect(dockStore.get().front.right).toBe("sign-in");
   sessionStore.set(SIGNED_IN);
-  expect(serversDialogStore.get()).toEqual({ open: true, view: "add", code: "WDJB-MJHT" });
-  expect(returnStore.get()).toBeNull();
+  expect(dockStore.get().front.right).toBe(SERVERS_PANE);
+  expect(dockStore.get().focus).toEqual({ id: SERVERS_PANE });
+  expect(serversViewStore.get()).toEqual({ view: "add", code: "WDJB-MJHT" });
+  expect(returnStore.get()).toBe(false);
+  stop();
+});
+
+test("a sign-in that the pane of the servers did not ask for leaves the panes as they are", () => {
+  sessionStore.set({ state: "signed-out" });
+  const stop = followServers();
+  openToolPane("sign-in");
+  sessionStore.set(SIGNED_IN);
+  expect(dockStore.get().tools).toEqual(["sign-in"]);
   stop();
 });

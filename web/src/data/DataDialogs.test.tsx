@@ -83,9 +83,9 @@ test("the page holds the pane of Get layer", () => {
   expect(screen.getByRole("complementary", { name: "Get layer" })).toBeDefined();
 });
 
-test("the page holds the dialog of the servers", () => {
+test("the page holds the pane of the servers", () => {
   standIn();
   show();
   act(() => openServers());
-  expect(screen.getByRole("dialog", { name: "Servers" })).toBeDefined();
+  expect(screen.getByRole("complementary", { name: "Servers" })).toBeDefined();
 });

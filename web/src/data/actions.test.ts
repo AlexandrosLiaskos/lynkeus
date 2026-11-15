@@ -1,7 +1,7 @@
 import { renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { dockStore, resetDock } from "../shared/dock/dock";
-import { resetServersState, serversDialogStore } from "../servers/state";
+import { resetServersState, serversViewStore } from "../servers/state";
 import { messagesStore } from "../shared/messages/messages";
 import { useDataActions } from "./actions";
 import { resetSession, sessionStore } from "./session";
@@ -61,10 +61,11 @@ test("the description of Get layer says what the tool needs", () => {
   expect(description("search-products")).toMatch(/lists them in the Catalog pane\.$/);
 });
 
-test("the button Servers opens the dialog of the servers on their list", () => {
+test("the button Servers opens the pane of the servers on their list", () => {
   const { result } = renderHook(() => useDataActions());
   result.current.servers?.run();
-  expect(serversDialogStore.get()).toEqual({ open: true, view: "list", code: null });
+  expect(dockStore.get().tools).toEqual(["servers"]);
+  expect(serversViewStore.get()).toEqual({ view: "list", code: null });
 });
 
 test("the button Servers stands in a group of its own, after the group of the Earthdata account", () => {
