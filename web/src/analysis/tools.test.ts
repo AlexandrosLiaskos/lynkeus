@@ -75,6 +75,24 @@ test("the layers that the tools read are the layers that the server accepts", ()
   expect(server("inputs")).toContain("receive it again with Get layer.");
 });
 
+test("the form sends what the process of a tool takes, and its longest name is the longest of the server", () => {
+  const offered = readFileSync("../api/src/lynkeus/offered.py", "utf8");
+  expect(offered).toContain("class ToolInputs(Format):");
+  expect(offered).toContain("    inputs: tuple[Text, ...] = Field(");
+  expect(offered).toContain(
+    "    title: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=MAX_TITLE_LENGTH)] = Field(",
+  );
+  expect(readFileSync("../api/src/lynkeus/routes.py", "utf8")).toContain(`MAX_TITLE_LENGTH = ${String(MOST_TITLE)}\n`);
+  const sent = check({
+    tool: "backscatter-state",
+    layers: [term()],
+    first: "hh-oct",
+    second: null,
+    title: "Name",
+  }).inputs;
+  expect(Object.keys(sent ?? {}).sort()).toEqual(["inputs", "title"]);
+});
+
 test("the backscatter tools do not read the other layers of a GCOV product that carry the unit 1", () => {
   for (const name of ["rtcGammaToSigmaFactor", "numberOfLooks", "mask", "HHHV", "hhhh", ""]) {
     expect(unfit("backscatter-state", term({ layer: name }))).toBe("name");
