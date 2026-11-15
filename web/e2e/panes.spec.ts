@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
-import { enter, expect, paneOf, pressTool, test } from "./support";
+import { enter, expect, isDrawn, paneOf, pressTool, test } from "./support";
 
 for (const name of ["Contents", "Catalog"]) {
   test(`the ${name} pane closes and opens again from the View tab`, async ({ page, findings }) => {
@@ -53,12 +53,13 @@ test("the Contents pane hides to the strip at the edge and shows again", async (
   const strip = page.getByRole("group", { name: "Hidden panes on the left of the map" });
   const tab = strip.getByRole("button", { name: "Contents", exact: true });
   await expect(tab).toBeVisible();
-  await expect(pane).toBeHidden();
+  await expect(tab).toHaveAttribute("aria-expanded", "false");
+  await expect.poll(() => isDrawn(pane)).toBe(false);
   await findings.scan("Contents pane hidden to the strip");
 
   await tab.click();
   await expect(tab).toHaveAttribute("aria-expanded", "true");
-  await expect(pane).toBeVisible();
+  await expect.poll(() => isDrawn(pane)).toBe(true);
   await findings.scan("Contents pane shown from the strip");
 
   await pane.getByRole("button", { name: "Pin the Contents pane" }).click();

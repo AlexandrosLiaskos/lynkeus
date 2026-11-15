@@ -232,6 +232,25 @@ export async function pressTool(page: Page, tab: string, tool: string, group?: s
   await within.getByRole("button", { name: tool, exact: true }).click();
 }
 
+/**
+ * Whether the browser draws the element: it is on the page, and neither it nor an element around it is removed
+ * from the layout, hidden or fully transparent. A pane that has left may stay on the page, transparent and inert.
+ */
+export async function isDrawn(locator: Locator): Promise<boolean> {
+  if ((await locator.count()) === 0) {
+    return false;
+  }
+  return locator.first().evaluate((element) => {
+    for (let around: Element | null = element; around; around = around.parentElement) {
+      const style = getComputedStyle(around);
+      if (style.display === "none" || style.visibility === "hidden" || Number(style.opacity) === 0) {
+        return false;
+      }
+    }
+    return true;
+  });
+}
+
 /** The pane with this title. */
 export function paneOf(page: Page, title: string): Locator {
   return page.getByRole("complementary", { name: title, exact: true });
