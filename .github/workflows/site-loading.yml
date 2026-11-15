@@ -1,0 +1,46 @@
+name: Loading of the site
+
+# Lighthouse measures a running site, by default https://lynkeus.nkua.cloud/, on a machine of GitHub: 3 runs as
+# a phone and 3 runs as a desktop computer. It is started by hand, after a deployment, because a change of main
+# is not on the site before it is deployed. The workflow Browser checks measures the built files of every change.
+
+on:
+  workflow_dispatch:
+    inputs:
+      address:
+        description: Address of the page to measure
+        required: false
+        default: https://lynkeus.nkua.cloud/
+
+permissions:
+  contents: read
+
+jobs:
+  loading:
+    name: Loading (Lighthouse)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: web
+    env:
+      ADDRESS: ${{ inputs.address }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install the packages
+        run: npm ci
+      - name: Loading (Lighthouse, 3 runs as a phone and 3 runs as a desktop computer)
+        run: |
+          npx lhci collect --config=lighthouserc.site.json --url="$ADDRESS"
+          npx lhci collect --config=lighthouserc.site.json --url="$ADDRESS" --additive --settings.preset=desktop
+          npx lhci upload --config=lighthouserc.site.json
+      - name: Keep the loading report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-site-report
+          path: web/lighthouse-report
+          retention-days: 14
