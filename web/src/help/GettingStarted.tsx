@@ -4,12 +4,12 @@ import { useSession } from "../data/session";
 import { SIGN_IN_PANE } from "../data/SignInPane";
 import { GET_LAYER_PANE, productsStore, SEARCH_PANE } from "../data/state";
 import type { ShareToolId } from "../share/tab";
-import { closeToolPane, dockStore, openToolPane } from "../shared/dock/dock";
-import { DockPane } from "../shared/dock/DockPane";
+import { openToolPane } from "../shared/dock/dock";
 import { Icon } from "../shared/icon/Icon";
 import { mapLayersStore } from "../shared/mapLayers";
 import { report } from "../shared/messages/messages";
 import { useStore } from "../shared/store";
+import { InfoPane } from "../shared/toolpane/InfoPane";
 import { GETTING_STARTED_PANE } from "./state";
 
 /** The panes of the Share tab that the last step opens, by the names of their ribbon buttons. */
@@ -108,56 +108,48 @@ function useStepsDone(): readonly boolean[] {
  * It opens only from its ribbon button.
  */
 export function GettingStartedPane() {
-  const open = useStore(dockStore).tools.includes(GETTING_STARTED_PANE);
   const done = useStepsDone();
   const next = done.indexOf(false);
 
-  if (!open) {
-    return null;
-  }
-
   return (
-    <DockPane
+    <InfoPane
       id={GETTING_STARTED_PANE}
       title="Getting started"
       info="The steps of the work, in order. A check mark stands on a step whose result exists, and the filled button opens the next step."
-      onClose={() => closeToolPane(GETTING_STARTED_PANE)}
     >
-      <div className="pane-body">
-        <ol className="item-list start-steps" aria-label="Steps of the work">
-          {STEPS.map(({ title, text, button, links = [] }, index) => (
-            <li key={title} className="item start-step" aria-current={index === next ? "step" : undefined}>
-              {done[index] ? (
-                <span className="start-step-mark start-step-mark--done" role="img" aria-label="Done">
-                  <Icon name="check_circle" />
-                </span>
-              ) : (
-                <span className="start-step-mark" aria-hidden="true">
-                  {index + 1}
-                </span>
-              )}
-              <div className="item-main">
-                <h3 className="item-title">{title}</h3>
-                <p className="item-line">{text}</p>
-                <div className="start-step-actions">
-                  <button
-                    type="button"
-                    className={index === next ? "usa-button" : "usa-button usa-button--outline"}
-                    onClick={button.run}
-                  >
-                    {button.label}
+      <ol className="item-list start-steps" aria-label="Steps of the work">
+        {STEPS.map(({ title, text, button, links = [] }, index) => (
+          <li key={title} className="item start-step" aria-current={index === next ? "step" : undefined}>
+            {done[index] ? (
+              <span className="start-step-mark start-step-mark--done" role="img" aria-label="Done">
+                <Icon name="check_circle" />
+              </span>
+            ) : (
+              <span className="start-step-mark" aria-hidden="true">
+                {index + 1}
+              </span>
+            )}
+            <div className="item-main">
+              <h3 className="item-title">{title}</h3>
+              <p className="item-line">{text}</p>
+              <div className="start-step-actions">
+                <button
+                  type="button"
+                  className={index === next ? "usa-button" : "usa-button usa-button--outline"}
+                  onClick={button.run}
+                >
+                  {button.label}
+                </button>
+                {links.map(({ label, run }) => (
+                  <button key={label} type="button" className="usa-button usa-button--unstyled" onClick={run}>
+                    {label}
                   </button>
-                  {links.map(({ label, run }) => (
-                    <button key={label} type="button" className="usa-button usa-button--unstyled" onClick={run}>
-                      {label}
-                    </button>
-                  ))}
-                </div>
+                ))}
               </div>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </DockPane>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </InfoPane>
   );
 }

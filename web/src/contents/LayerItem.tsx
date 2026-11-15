@@ -255,7 +255,8 @@ export function LayerItem({ layer, place, count, drop, onMoved, onRemoved, ...dr
         )}
         <MenuButton
           icon="more_vert"
-          label={`Commands of ${layer.title}`}
+          label="More"
+          name={`More commands of ${layer.title}`}
           items={items.map(({ label, run, disabled, checked, separated }) => ({
             label,
             onSelect: run,
@@ -290,7 +291,9 @@ export function LayerItem({ layer, place, count, drop, onMoved, onRemoved, ...dr
           </Notice>
         )}
       </div>
-      {menu && <Menu label={`Commands of ${layer.title}`} items={items} at={menu} focus="first" onClose={closeMenu} />}
+      {menu && (
+        <Menu label={`More commands of ${layer.title}`} items={items} at={menu} focus="first" onClose={closeMenu} />
+      )}
     </li>
   );
 }

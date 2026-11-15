@@ -328,3 +328,49 @@ test("the name of a group of parameters carries the arrow of a section header", 
   expect(name.tagName).toBe("SUMMARY");
   expect(name.querySelector("svg")?.getAttribute("aria-hidden")).toBe("true");
 });
+
+test("the secondary command is a link at the left end of the foot, and it does not run the tool", async () => {
+  const onRun = vi.fn();
+  const restore = vi.fn();
+  render(
+    <ToolPane id="buffer" title="Buffer" onRun={onRun} secondary={{ label: "Restore defaults", onClick: restore }}>
+      Parameters
+    </ToolPane>,
+  );
+  act(() => openToolPane("buffer"));
+  const link = screen.getByRole("button", { name: "Restore defaults" });
+  const run = screen.getByRole("button", { name: "Run" });
+  expect(link.className).toContain("usa-button--unstyled");
+  expect(link.closest(".tool-pane-foot")).not.toBeNull();
+  expect(link.compareDocumentPosition(run) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  expect(link.hasAttribute("aria-describedby")).toBe(false);
+  expect(screen.queryByRole("button", { name: "Information about Restore defaults" })).toBeNull();
+  await userEvent.click(link);
+  expect(restore).toHaveBeenCalledTimes(1);
+  expect(onRun).not.toHaveBeenCalled();
+});
+
+test("the explanation of the secondary command stands behind the button beside it and describes the link", () => {
+  render(
+    <ToolPane
+      id="buffer"
+      title="Buffer"
+      onRun={vi.fn()}
+      ready={false}
+      missing="Enter the distance."
+      secondary={{ label: "Reset display", onClick: vi.fn(), info: "The layer returns to its first display." }}
+    >
+      Parameters
+    </ToolPane>,
+  );
+  act(() => openToolPane("buffer"));
+  const link = screen.getByRole("button", { name: "Reset display" });
+  const info = screen.getByRole("button", { name: "Information about Reset display" });
+  expect(document.getElementById(link.getAttribute("aria-describedby") ?? "")?.textContent).toBe(
+    "The layer returns to its first display.",
+  );
+  expect(link.contains(info)).toBe(false);
+  // The link stands before the sentence on what is missing, and the run button after it.
+  const foot = [...(link.closest(".tool-pane-actions")?.children ?? [])];
+  expect(foot.map((element) => element.className)).toEqual(["tool-pane-secondary", "tool-pane-missing", "usa-button"]);
+});

@@ -9,24 +9,19 @@ import { formatValue, identifyStore, type IdentifiedLayer } from "./identify";
 
 /**
  * Return one group of rows for each layer, under the title of the layer: its quantity with the value and the
- * unit, and its date. A further layer of the same title takes a number after the title, because the titles of
- * the groups of a property list differ.
+ * unit, and its date. A group carries the id of its layer, so two layers of one title are two groups.
  */
 export function layerGroups(layers: readonly IdentifiedLayer[]): PropertyGroup[] {
-  const seen = new Map<string, number>();
-  return layers.map(({ title, quantity, unit, dates, value }) => {
-    const count = (seen.get(title) ?? 0) + 1;
-    seen.set(title, count);
-    return {
-      title: count === 1 ? title : `${title} (${String(count)})`,
-      rows: [
-        value === null
-          ? { name: quantity, value: "No data at this place" }
-          : { name: quantity, value: [formatValue(value), unit].join(" ").trim(), copy: true },
-        { name: dates.length === 1 ? "Date" : "Dates", value: dates.map(formatDate).join(" and ") },
-      ],
-    };
-  });
+  return layers.map(({ id, title, quantity, unit, dates, value }) => ({
+    id,
+    title,
+    rows: [
+      value === null
+        ? { name: quantity, value: "No data at this place" }
+        : { name: quantity, value: [formatValue(value), unit].join(" ").trim(), copy: true },
+      { name: dates.length === 1 ? "Date" : "Dates", value: dates.map(formatDate).join(" and ") },
+    ],
+  }));
 }
 
 /**

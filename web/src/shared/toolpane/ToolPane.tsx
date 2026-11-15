@@ -3,6 +3,7 @@ import { Dialog } from "../dialog/Dialog";
 import { closeToolPane, dockStore } from "../dock/dock";
 import { DockPane } from "../dock/DockPane";
 import { Icon } from "../icon/Icon";
+import { Info } from "../info/Info";
 import { useStore } from "../store";
 
 /**
@@ -37,6 +38,11 @@ interface ToolPaneProps {
   missing?: string;
   /** The run in progress or the outcome of the last run, or null before the first run. */
   run?: ToolPaneRun | null;
+  /**
+   * One secondary command of the tool, such as "Restore defaults": a link at the left end of the foot. `info` is
+   * its explanation, in complete sentences, which shows from the "i" beside the link.
+   */
+  secondary?: { label: string; onClick: () => void; info?: ReactNode };
   /** Called when the user stops a run. The Cancel button shows during a run only when this is given. */
   onCancel?: () => void;
   /** Called after the user has closed the pane. */
@@ -51,8 +57,8 @@ const STATE_ICONS = { success: "check_circle", warning: "warning", error: "error
  * The form of a tool, in a pane on the right of the map, as the Geoprocessing pane of ArcGIS Pro shows a tool:
  * the title, the parameters, which scroll, and at the foot the run button and, after the first run, the progress
  * with a Cancel button or the outcome with a link to the next step and a link to its details. While the tool is
- * not ready, the foot states beside the inactive run button what is still missing. The pane is not modal, so the
- * map and the ribbon stay in use.
+ * not ready, the foot states beside the inactive run button what is still missing. One secondary command of the
+ * tool stands as a link at the left end of the foot. The pane is not modal, so the map and the ribbon stay in use.
  *
  * A ribbon button opens the pane with `openToolPane(id)`, and the tool closes it with `closeToolPane(id)`. The
  * content is drawn only while the pane is open, so a component inside the pane starts again each time the pane
@@ -90,6 +96,7 @@ export function ToolPane({
   ready = true,
   missing,
   run = null,
+  secondary,
   onCancel,
   onClose,
   children,
@@ -97,6 +104,7 @@ export function ToolPane({
   const open = useStore(dockStore).tools.includes(id);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const missingId = useId();
+  const secondaryInfoId = useId();
 
   if (!open) {
     return null;
@@ -124,6 +132,23 @@ export function ToolPane({
         <div className="tool-pane-body">{children}</div>
         <div className="tool-pane-foot">
           <div className="tool-pane-actions">
+            {secondary ? (
+              <span className="tool-pane-secondary">
+                <button
+                  type="button"
+                  className="usa-button usa-button--unstyled"
+                  aria-describedby={secondary.info ? secondaryInfoId : undefined}
+                  onClick={secondary.onClick}
+                >
+                  {secondary.label}
+                </button>
+                {secondary.info ? (
+                  <Info id={secondaryInfoId} about={secondary.label}>
+                    {secondary.info}
+                  </Info>
+                ) : null}
+              </span>
+            ) : null}
             {lacking ? (
               <p className="tool-pane-missing" id={missingId} role="status">
                 {lacking}

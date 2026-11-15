@@ -34,7 +34,8 @@ interface DockPaneProps {
  *
  * The pane is not modal. The Escape key returns the keyboard focus to the map, as ArcGIS Pro documents for its
  * Contents pane, and Shift with Escape closes the pane, as ArcGIS Pro 3.0 documents for the active pane. The
- * components `Pane` and `ToolPane` are built on this one; a part of the interface uses those two.
+ * components `Pane`, `ToolPane` and `InfoPane` are built on this one. A part of the interface uses those three:
+ * `ToolPane` for the form of a tool, and `InfoPane` for a pane that runs no tool.
  */
 export function DockPane({ id, title, info, onClose, children }: DockPaneProps) {
   const dock = useStore(dockStore);

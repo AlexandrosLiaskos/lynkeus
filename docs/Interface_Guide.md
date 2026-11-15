@@ -36,6 +36,7 @@ The test `web/src/shared/tokens/tokens.test.ts` computes these values at every r
 | A section is a block that opens and closes. Its header is 28 px high: an arrow, the title in bold, the count of its items in parentheses, and its commands at the right end. | Project |
 | The title of a section is a button with `aria-expanded`. The pattern names `aria-controls` as optional; Lynkeus sets it. | [A1] |
 | A group of parameters of a tool pane looks the same as a section. | Project |
+| A docked pane that runs no tool, such as Getting started, has the title bar and the body of a tool pane and no foot. | Project |
 
 ## C. Actions
 
@@ -46,7 +47,10 @@ The test `web/src/shared/tokens/tokens.test.ts` computes these values at every r
 | Three or more commands on a list or on an item form a toolbar of icon buttons. An icon button shows the icon alone in a target of 24 px, and its name shows in a tooltip and is its accessible name. Rare commands go into a "More" menu. | [A2], [W2], [A3] |
 | The Tab key reaches a toolbar once. Inside it the Left and Right arrow keys move between the buttons. | [A2] |
 | A command stands beside the object it acts on, for example "Get layer" on a product, so that the user sees it and need not remember where it is. | [N1] no. 6 |
+| The "More" button of an item of a list is named after its item for a screen reader, for example "More commands of Athens". Its tooltip stays "More". | Project |
+| A tool pane has at most one secondary command, such as "Restore defaults". It is a link at the left end of the foot, and the run button stands at the right end. | Project |
 | An inactive button stays reachable by the keyboard (`aria-disabled`), and the interface says what is missing: the foot of a tool pane, or the tooltip of the button. | Project; [M1] |
+| A finished button of the ribbon that lacks something, such as a selected layer, is inactive: its action gives `missing`, one sentence on what the button needs, and the description of the button ends with that sentence. | Project |
 
 ## D. Guidance
 
@@ -55,8 +59,9 @@ The test `web/src/shared/tokens/tokens.test.ts` computes these values at every r
 | Empty state: a pane or a section with nothing to show states in one bold line what is missing and in one sentence how to get it, and offers one button that leads to the next step. | [N1] no. 6 and 10 |
 | Notice: a message inside a pane is one compact block with an icon, a bar at the left and at most one button. It replaces loose paragraphs. An error is announced with the role `alert`, every other notice with the role `status`. | [U3] |
 | An explanation stands behind the "i" beside a title, never as text under the title. A unit stands in the label, for example "Distance (m)". | [P2] |
-| The error of a field is written in text under that field and is linked to it with `aria-describedby`. It appears after the field is left or the run button is pressed. | [W3] for the text; place and moment are decisions of the project |
+| The error of a field is written in text under that field and is linked to it with `aria-describedby`. It appears after the field is left or the run button is pressed. Every part writes it with the shared `FieldError`, and the field carries `aria-invalid` while the error shows. | [W3] for the text; place and moment are decisions of the project |
 | While the run button is inactive, the foot of a tool pane states the first thing that is missing. After a run it states the outcome and offers the link to the next step. | [P2], [N1] no. 1 |
+| A tool pane that shows an empty state and has an inactive run button says each thing once: the empty state names the next step and offers its button, and the line of the foot says why the run button is inactive. | Project |
 | Work that lasts longer than one second shows that it goes on. Work that may last longer than ten seconds shows the share done and can be cancelled. | [N2] |
 
 ## E. Data display
@@ -85,6 +90,7 @@ The test `web/src/shared/tokens/tokens.test.ts` computes these values at every r
 | job | A request of the session to receive a layer or to run an analysis tool. | task, request |
 | area | The area of a search or of a tool. | region, area of interest |
 | outline | The ground outline of a product on the map. | footprint |
+| basemap | The bottom layer of the map, which the Map tab chooses and the Contents pane lists last. | background map |
 | session | The jobs and the layers of one visitor, which the server keeps until the session ends. | |
 | Contents pane | The pane on the left that lists the layers of the map. | layer list, table of contents |
 | Catalog pane | The pane on the right that lists products, jobs and layers. | results panel |
@@ -93,9 +99,6 @@ The test `web/src/shared/tokens/tokens.test.ts` computes these values at every r
 | Earthdata account | The account of the user at NASA. "Earthdata Login" names only NASA's service itself. | Earthdata Login account, NASA account |
 | user token | The token of Earthdata Login with which the user signs in. | key, password |
 | sign in, sign out | | log in, log out |
-
-The texts use two words for one thing in one place: the Contents pane says "basemap" and the Map tab says
-"background map". One of the two is to be chosen.
 
 ## G. Focus and motion
 
@@ -208,6 +211,7 @@ The blocks are in `web/src/shared/`. The import paths below are written from a f
 | Property | Meaning |
 |---|---|
 | `kind` | `"info"`, `"success"`, `"warning"` or `"error"`; an error is announced as an alert, the others as a status |
+| `id` | The id of the element that holds the text. A field that the notice is about carries it in `aria-describedby` |
 | `action` | `{ label, onClick }`: the one button of the notice |
 | `children` | What happened and what to do next, in at most two sentences |
 
@@ -225,7 +229,8 @@ The blocks are in `web/src/shared/`. The import paths below are written from a f
 
 | Property | Meaning |
 |---|---|
-| `groups` | A list of `{ title?, rows }` |
+| `groups` | A list of `{ id?, title?, rows }` |
+| `groups[].id`, `rows[].id` | A text that names the group among the groups, or the row among the rows of its group, and stays the same while the list changes. Without it a group is known by its title, and a row by its name, with the position among equals. Groups of one title that may change their order take one, for example the id of a layer |
 | `rows[].name` | Readable name of the property |
 | `rows[].value` | The value: a text, a number or an element |
 | `rows[].info` | Explanation behind an "i"; the name of the field in the catalogue or the service belongs here |
@@ -245,6 +250,9 @@ The blocks are in `web/src/shared/`. The import paths below are written from a f
   ]}
 />
 ```
+
+A group and a row keep their elements while other groups and rows enter and leave the list, so the list may grow
+while the user works in it. Two groups of one title are both listed.
 
 ### Toolbar and IconButton
 
@@ -278,7 +286,8 @@ A toolbar is for three or more buttons. One or two icon buttons stand without it
 
 | Property | Meaning |
 |---|---|
-| `MenuButton` `label` | Name of the button and of its menu |
+| `MenuButton` `label` | Name of the button: the text that it shows, or the text of its tooltip |
+| `MenuButton` `name` | The accessible name of the button and of its menu, where a list holds several buttons of one label: "More commands of" and the name of the item. Without it the label names both |
 | `MenuButton` `icon` | With it the button shows the icon alone and its name in a tooltip; without it, its name and an arrow |
 | `MenuButton` `items` | A list of `{ label, onSelect, disabled?, checked?, separated? }` |
 | `Menu` | The menu alone, for a menu that opens at the pointer: `label`, `items` (`{ id, label, run, disabled?, checked?, separated? }`), `at` (`{ x, y }`), `focus` (`"first"` or `"last"`), `onClose(refocus)`, `id?` |
@@ -291,6 +300,12 @@ A toolbar is for three or more buttons. One or two icon buttons stand without it
     { label: "GeoJSON", onSelect: saveGeoJson },
     { label: "Shapefile", onSelect: saveShapefile, disabled: products.length === 0, separated: true },
   ]}
+/>
+<MenuButton
+  icon="more_vert"
+  label="More"
+  name={`More commands of ${bookmark.name}`}
+  items={[{ label: "Rename", onSelect: rename }, { label: "Remove", onSelect: remove }]}
 />
 ```
 
@@ -317,15 +332,41 @@ A toolbar is for three or more buttons. One or two icon buttons stand without it
 />
 ```
 
+### FieldError
+
+`import { describedBy, FieldError } from "../shared/field/FieldError";`
+
+| Property | Meaning |
+|---|---|
+| `id` | The id of the element of the error. The field carries it in `aria-describedby` while the error shows |
+| `children` | What is wrong with the value and what to enter instead, or `null` while the field has no error |
+| `describedBy(...ids)` | A function: the value of `aria-describedby` for the ids given; an id that is `null` or empty is left out |
+
+```tsx
+<input
+  className={fault ? "usa-input usa-input--error" : "usa-input"}
+  id="buffer-distance"
+  aria-invalid={fault ? true : undefined}
+  aria-describedby={describedBy(infoId("buffer-distance"), fault && "buffer-distance-error")}
+  value={distance}
+  onChange={(event) => setDistance(event.target.value)}
+/>
+<FieldError id="buffer-distance-error">{fault}</FieldError>
+```
+
+The error is announced as an alert when it appears. A message that concerns the whole form, such as an answer of
+the server, is a `Notice` under the field; its `id` then stands in `aria-describedby` in the same way.
+
 ### ToolPane
 
 `import { ToolPane, ToolPaneGroup, type ToolPaneRun } from "../shared/toolpane/ToolPane";` The properties are
-listed in [CONTRIBUTING.md](../CONTRIBUTING.md). Two were added for part D:
+listed in [CONTRIBUTING.md](../CONTRIBUTING.md). Three carry rules of parts C and D:
 
 | Property | Meaning |
 |---|---|
 | `missing` | The first thing that the tool still lacks, in one sentence. The foot shows it beside the inactive run button while `ready` is `false` |
 | `run.action` | `{ label, onClick }` in an outcome: the link to the next step, shown after the text of the outcome |
+| `secondary` | `{ label, onClick, info? }`: the one secondary command of the tool, a link at the left end of the foot. `info` is its explanation, behind an "i" beside the link |
 
 ```tsx
 <ToolPane
@@ -335,11 +376,86 @@ listed in [CONTRIBUTING.md](../CONTRIBUTING.md). Two were added for part D:
   ready={product !== null}
   missing="Select a product in the Catalog pane."
   run={run}
+  secondary={{ label: "Restore defaults", onClick: restore }}
 >
   <ToolPaneGroup title="Output">…</ToolPaneGroup>
 </ToolPane>
 // After the run:
 setRun({ state: "success", text: "The layer was added to the map.", action: { label: "Zoom to the layer", onClick: zoom } });
+```
+
+### InfoPane
+
+`import { InfoPane } from "../shared/toolpane/InfoPane";`
+
+A pane in the stack of the tool panes that runs no tool: it has the title bar and a body that scrolls, and no
+form, no run button and no foot. It opens with `openToolPane(id)` and closes with `closeToolPane(id)`, as a tool
+pane does, and its content is drawn only while it is open.
+
+| Property | Meaning |
+|---|---|
+| `id` | Name of the pane, the same as the name of the ribbon button that opens it |
+| `title` | Name of the pane, shown at its top and on its tab |
+| `info` | What the pane shows, behind the "i" beside the title |
+| `onClose` | Called after the user has closed the pane |
+| `children` | The content |
+
+```tsx
+<InfoPane id="getting-started" title="Getting started" info="The steps of the work, in order.">
+  <ol className="item-list" aria-label="Steps of the work">
+    <li className="item">…</li>
+  </ol>
+</InfoPane>
+```
+
+### Tooltip
+
+`import { Tooltip } from "../shared/tooltip/Tooltip";` `IconButton` and `MenuButton` use it already; a part uses
+it directly for a button of its own that needs a description.
+
+| Property | Meaning |
+|---|---|
+| `title` | Name of the element, in bold when a text follows it |
+| `text` | One sentence on what the element does; an element whose name says it all has none |
+| `note` | A second sentence, for example why the element is inactive |
+| `children` | A function that receives the id of the description and returns the element, which carries that id in `aria-describedby` |
+
+```tsx
+<Tooltip title="North up" text="Turns the map so that north is at the top.">
+  {(describedBy) => (
+    <button type="button" className="statusbar-button" aria-describedby={describedBy} onClick={northUp}>
+      North up
+    </button>
+  )}
+</Tooltip>
+```
+
+The description stands under its element. At the lower edge of the window it stands above the element, and at the
+right edge it moves to the left, so it always stays inside the window.
+
+### A ribbon button that lacks something
+
+`import type { ToolActions } from "../ribbon/types";` The file `actions.ts` of a tab gives the action of each
+finished button. An action may state what the button needs before it can run:
+
+| Property of an action | Meaning |
+|---|---|
+| `run` | What the button does |
+| `pressed` | For a button that stays switched on: whether it is on |
+| `missing` | One sentence on what the button needs, for example "Select a layer in the Contents pane.", or `undefined` when it lacks nothing. The button is then inactive, it stays reachable by the keyboard, and its description ends with this sentence |
+
+```ts
+export function useMapActions(): ToolActions<MapToolId> {
+  const map = useMap();
+  const selected = useStore(selectedLayerStore);
+  return {
+    "zoom-in": { run: () => zoomBy(map, 1) },
+    "zoom-to-layer": {
+      run: () => void zoomToLayer(map),
+      missing: selected ? undefined : "Select a layer in the Contents pane.",
+    },
+  };
+}
 ```
 
 ### List rows and the padding of a pane

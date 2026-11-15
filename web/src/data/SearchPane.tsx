@@ -118,35 +118,32 @@ function SeasonDayFields({ legend, value, onChange }: SeasonDayFieldsProps) {
 }
 
 /**
- * Tell whether a group of choices is open, and give the function that closes it. A group opens when one of its
- * choices is made, also by another part of the page. It does not close when the choice is taken back, so that
- * it never closes while the user works in it.
+ * Tell whether a group of choices is open. A group opens when one of its choices is made, also by another part
+ * of the page. It does not close when the choice is taken back, so that it never closes while the user works in
+ * it.
  */
-function useOpenWhenUsed(used: boolean): [open: boolean, close: () => void] {
+function useOpenWhenUsed(used: boolean): boolean {
   const [open, setOpen] = useState(used);
   if (used && !open) {
     setOpen(true);
   }
-  return [open, () => setOpen(false)];
+  return open;
 }
 
 /**
  * The choices of the search. They are kept when the pane closes. The first time that the pane opens, they are
  * the drawn area or, without one, the view of the map, and the last 30 days. The choices that most searches
  * need stand first: what is searched, the product type, the area and the period. The choices of the orbit and of
- * the radar stand in two groups under them, which are closed while none of their choices is made. The link that
- * restores the first choices stands at the foot of the form.
+ * the radar stand in two groups under them, which are closed while none of their choices is made.
  */
-function SearchFields({ onRestore }: { onRestore: () => void }) {
+function SearchFields() {
   const map = useMap();
   const id = useId();
   const stored = useStore(searchDraftStore);
-  // The number of times that the first choices were restored. The two groups start again, closed, after each.
-  const [restored, setRestored] = useState(0);
-  const [orbitOpen, closeOrbit] = useOpenWhenUsed(
+  const orbitOpen = useOpenWhenUsed(
     stored !== null && [stored.track, stored.frame, stored.direction, stored.cycle, stored.orbit].some(Boolean),
   );
-  const [radarOpen, closeRadar] = useOpenWhenUsed(
+  const radarOpen = useOpenWhenUsed(
     stored !== null &&
       (stored.channels.length > 0 ||
         stored.sideChannels.length > 0 ||
@@ -171,14 +168,6 @@ function SearchFields({ onRestore }: { onRestore: () => void }) {
     if (current) {
       searchDraftStore.set({ ...current, ...changes });
     }
-  };
-
-  const restore = () => {
-    onRestore();
-    searchDraftStore.set(firstDraft(rectangleText(viewArea(map))));
-    closeOrbit();
-    closeRadar();
-    setRestored(restored + 1);
   };
 
   const { product } = draft;
@@ -371,7 +360,7 @@ function SearchFields({ onRestore }: { onRestore: () => void }) {
             </fieldset>
           ) : null}
 
-          <ToolPaneGroup key={`orbit-${String(restored)}`} title="Orbit" open={orbitOpen}>
+          <ToolPaneGroup title="Orbit" open={orbitOpen}>
             <div className="search-row">
               <div>
                 <FieldTitle field={`${id}-track`} title="Track">
@@ -449,7 +438,7 @@ function SearchFields({ onRestore }: { onRestore: () => void }) {
             </div>
           </ToolPaneGroup>
 
-          <ToolPaneGroup key={`radar-${String(restored)}`} title="Radar" open={radarOpen}>
+          <ToolPaneGroup title="Radar" open={radarOpen}>
             <Checks
               legend={hasSideBand ? "Channels of the main band (A)" : "Channels"}
               info={EXPLANATIONS.channels}
@@ -526,12 +515,6 @@ function SearchFields({ onRestore }: { onRestore: () => void }) {
           </ToolPaneGroup>
         </>
       )}
-
-      <p className="search-foot">
-        <button type="button" className="usa-button usa-button--unstyled" onClick={restore}>
-          Restore defaults
-        </button>
-      </p>
     </>
   );
 }
@@ -539,10 +522,21 @@ function SearchFields({ onRestore }: { onRestore: () => void }) {
 /**
  * The pane of the button Search products. The search needs no Earthdata account. The foot of the pane states
  * what is wrong with the choices, or how many products were found and that the Catalog pane lists them, with
- * the link to the next step, Get layer.
+ * the link to the next step, Get layer. The link Restore defaults, at the left end of the foot, returns the first
+ * choices with the view of the map.
  */
 export function SearchPane() {
+  const map = useMap();
   const [run, setRun] = useState<ToolPaneRun | null>(null);
+  // The number of times that the first choices were restored. The fields start again after each, so that the
+  // two groups are closed.
+  const [restored, setRestored] = useState(0);
+
+  const restore = () => {
+    setRun(null);
+    searchDraftStore.set(firstDraft(rectangleText(viewArea(map))));
+    setRestored(restored + 1);
+  };
 
   const start = () => {
     const draft = searchDraftStore.get();
@@ -581,9 +575,10 @@ export function SearchPane() {
       runLabel="Search"
       onRun={start}
       run={run}
+      secondary={{ label: "Restore defaults", onClick: restore }}
       onCancel={cancel}
     >
-      <SearchFields onRestore={() => setRun(null)} />
+      <SearchFields key={restored} />
     </ToolPane>
   );
 }
