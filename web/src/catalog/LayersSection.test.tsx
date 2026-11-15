@@ -91,7 +91,7 @@ const commandsOf = (title: string) => within(screen.getByRole("group", { name: `
 
 /** Open the menu "More" of a layer and return the names of its commands. */
 async function moreOf(title: string): Promise<string[]> {
-  await userEvent.click(commandsOf(title).getByRole("button", { name: "More" }));
+  await userEvent.click(commandsOf(title).getByRole("button", { name: `More commands of ${title}` }));
   return screen.getAllByRole("menuitem").map((command) => command.textContent);
 }
 
@@ -137,14 +137,14 @@ test("a layer shows the command that fits its state: Add to the map, and Zoom to
     commandsOf(title)
       .getAllByRole("button")
       .map((button) => button.getAttribute("aria-label") ?? button.textContent);
-  expect(shown()).toEqual(["Add to the map", "More"]);
+  expect(shown()).toEqual(["Add to the map", `More commands of ${title}`]);
   expect(await moreOf(title)).toEqual(["Zoom to", "Details", "Download GeoTIFF", "Rename", "Remove"]);
   await userEvent.keyboard("{Escape}");
   await userEvent.click(commandsOf(title).getByRole("button", { name: "Add to the map" }));
   expect(mapLayersStore.get().map(({ id }) => id)).toEqual(["back"]);
   expect(item(/^Backscatter HH/).textContent).toMatch(/57 MB · On the map$/);
   expect(screen.getByRole("status").textContent).toBe("The files take 100 MB. 1 layer is on the map.");
-  expect(shown()).toEqual(["Zoom to", "More"]);
+  expect(shown()).toEqual(["Zoom to", `More commands of ${title}`]);
   expect(await moreOf(title)).toEqual(["Remove from the map", "Details", "Download GeoTIFF", "Rename", "Remove"]);
   await choose("Remove from the map");
   expect(mapLayersStore.get()).toEqual([]);

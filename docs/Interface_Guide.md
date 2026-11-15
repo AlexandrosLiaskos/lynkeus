@@ -10,6 +10,7 @@ the rules, so that a part of the interface applies a rule by using a block and n
 | Rule | Source |
 |---|---|
 | The ribbon stands on top, the Contents pane on the left, the Catalog pane and the tool panes on the right, the status bar below. Panes of one side are stacked, with their tabs under the stack. | [P1] |
+| The pin in the title bar of a pane makes its side hide its panes automatically: the panes become tabs in a strip at the edge of the window. A click on a tab shows its pane over the map, and the pane hides again when the user works in the map or in the ribbon. A pane of each side can show at the same time. The pin of a pane that shows in this way keeps the side open again. | [P1] |
 | The form of a tool opens in a docked tool pane, never in a centred dialog. A dialog is only for a confirmation or for the details of an outcome. | Project, after [P2] |
 | An element never looks selected because it has the focus. A blue fill means "chosen", and nothing else. | Project |
 
@@ -32,7 +33,7 @@ The test `web/src/shared/tokens/tokens.test.ts` computes these values at every r
 
 | Rule | Source |
 |---|---|
-| A pane reads from top to bottom: the title bar (title, "i", close button), the body made of sections, and the foot. The foot of a tool pane holds the status line and the run button. | [P2] |
+| A pane reads from top to bottom: the title bar (title, "i", pin, close button), the body made of sections, and the foot. The foot of a tool pane holds the status line and the run button. | [P2] |
 | A section is a block that opens and closes. Its header is 28 px high: an arrow, the title in bold, the count of its items in parentheses, and its commands at the right end. | Project |
 | The title of a section is a button with `aria-expanded`. The pattern names `aria-controls` as optional; Lynkeus sets it. | [A1] |
 | A group of parameters of a tool pane looks the same as a section. | Project |
