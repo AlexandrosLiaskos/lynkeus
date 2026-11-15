@@ -161,7 +161,9 @@ def journey(command: Sequence[str], folder: Path, whole: bool = True, window: bo
                 # The pairing was forgotten, and a program that forgot its pairing does not leave. The new
                 # pairing that it asked for is confirmed, so that the program that is quit is a paired one.
                 assert site.leaves == []
-                site.confirm(site.code())
+                again = site.code()
+                site.confirm(again)
+                site.until(lambda: again not in site.codes.values() or None, "the key of the new pairing to be fetched")
                 site.report(lambda report: True, "the first report of the new pairing")
             assert site.faults == [], site.faults
             assert program.poll() is None, "the program ended by itself"
@@ -181,6 +183,7 @@ def journey(command: Sequence[str], folder: Path, whole: bool = True, window: bo
             if log.is_file():
                 sys.stderr.write(f"Log of the program:\n{log.read_text(encoding='utf-8', errors='replace')}\n")
             sys.stderr.write(f"Events of the stand-in for NASA:\n{json.dumps(web.events, indent=1)}\n")
+            sys.stderr.write(f"Last requests to the stand-in for the project server:\n{site.asked[-20:]}\n")
             raise
         finally:
             if program.poll() is None:

@@ -205,8 +205,10 @@ class _Handler(BaseHTTPRequestHandler):
             elif address.path == "/api/link/report":
                 report = Report.model_validate_json(body)
                 with project.changed:
-                    project.reports.append(report)
-                    project.report_times.append(time.monotonic())
+                    # A report that was on its way when the visitor confirmed a new pairing is not one of that pairing.
+                    if self.headers.get("Authorization") == f"Bearer {project.key}":
+                        project.reports.append(report)
+                        project.report_times.append(time.monotonic())
                     project.changed.notify_all()
                 self._answer(HTTPStatus.NO_CONTENT)
             elif address.path == "/api/link/leave":
