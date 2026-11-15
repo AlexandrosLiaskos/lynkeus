@@ -38,9 +38,6 @@ function opens(event: KeyboardEvent): boolean {
   return event.key.length === 1 || ["Enter", "ArrowUp", "ArrowDown", "PageUp", "PageDown"].includes(event.key);
 }
 
-/** The time from the start of the entrance until the screen has appeared in full, in milliseconds. */
-export const SETTLE_TIME = 1700;
-
 /** The longest time that the screen waits for its image and its typeface before it appears, in milliseconds. */
 const READY_LIMIT = 1200;
 
@@ -50,8 +47,16 @@ const FONTS = ['500 1em "EB Garamond"', 'italic 400 1em "EB Garamond"', '400 1em
 interface WelcomeProps {
   /** Count the visit. A test gives its own. */
   count?: () => Promise<number>;
-  /** Called when the screen has appeared in full, or when the visitor enters before that. */
+  /**
+   * Called when the page is wanted under the screen: when the entrance of the screen has ended, or when the
+   * visitor presses the screen or enters before that.
+   */
   onSettled?: () => void;
+  /**
+   * Whether the page stands under the screen and the browser has painted it. The screen lifts and slides away
+   * only over a page that stands, and until then it stays as it is. A screen without an owner waits for nothing.
+   */
+  standing?: boolean;
 }
 
 /**
@@ -66,16 +71,24 @@ interface WelcomeProps {
  * then moves up out of the window and the page stands under it. Until the visitor touches it, the screen lifts a
  * little every few seconds and shows the edge of the page under it, so that nobody takes it for the whole site.
  *
+ * The owner draws the page under the screen when the entrance of the screen has ended, so that the start of the
+ * page takes no time from the entrance. When the visitor enters before the page stands, the screen stays as it is
+ * until the page stands, and slides away then. So the page is never drawn while the screen slides.
+ *
  * It is the dialog element of the browser, opened as a modal, so the browser keeps the keyboard focus inside it
  * until the visitor enters.
  */
-export function Welcome({ count = visits, onSettled }: WelcomeProps) {
+export function Welcome({ count = visits, onSettled, standing = true }: WelcomeProps) {
   const dialog = useRef<HTMLDialogElement>(null);
   const content = useRef<HTMLDivElement>(null);
   const image = useRef<HTMLImageElement>(null);
   // The height of the pointer where a drag began, and null while nothing is dragged.
   const drag = useRef<number | null>(null);
-  const [leaving, setLeaving] = useState(false);
+  // Whether the visitor has asked to enter. The screen slides away when the page also stands under it.
+  const [entered, setEntered] = useState(false);
+  const leaving = entered && standing;
+  // Whether the page is wanted under the screen: the entrance has ended, or the visitor has pressed the screen.
+  const [settled, setSettled] = useState(false);
   // Whether the screen still lifts a little now and then, which it does until the visitor touches it.
   const [hinting, setHinting] = useState(true);
   // Whether the image and the typeface are at hand, so that the screen appears without a change afterwards.
@@ -115,16 +128,36 @@ export function Welcome({ count = visits, onSettled }: WelcomeProps) {
     };
   }, []);
 
-  // The owner draws the page under the screen when the screen has appeared in full.
+  // The entrance has ended when every animation of the screen that comes to an end has ended, or has been taken
+  // away. The browser tells that itself. The strokes of the button and the lift of the screen repeat without end
+  // and are not waited for. Where nothing moves, as for a visitor who has asked for less motion, the entrance has
+  // ended at once.
   useEffect(() => {
-    if (!ready || !onSettled) {
+    const element = dialog.current;
+    if (!ready || !element) {
       return;
     }
-    const timer = window.setTimeout(onSettled, SETTLE_TIME);
+    let waiting = true;
+    const entrance =
+      "getAnimations" in element
+        ? element.getAnimations({ subtree: true }).filter((each) => each.effect?.getTiming().iterations !== Infinity)
+        : [];
+    void Promise.allSettled(entrance.map((each) => each.finished)).then(() => {
+      if (waiting) {
+        setSettled(true);
+      }
+    });
     return () => {
-      window.clearTimeout(timer);
+      waiting = false;
     };
-  }, [ready, onSettled]);
+  }, [ready]);
+
+  // The owner draws the page under the screen from then on.
+  useEffect(() => {
+    if (settled) {
+      onSettled?.();
+    }
+  }, [settled, onSettled]);
 
   // The visit is counted once for each browser. The screen does not show the total, so a counter that does not
   // answer changes nothing here.
@@ -144,15 +177,16 @@ export function Welcome({ count = visits, onSettled }: WelcomeProps) {
     };
   }, [leaving]);
 
-  /** Slide the screen up from where it stands. */
+  /** Slide the screen up from where it stands, as soon as the page stands under it. */
   const enter = () => {
     const element = dialog.current;
     if (element) {
       element.style.transition = "";
       element.style.transform = "";
     }
-    onSettled?.();
-    setLeaving(true);
+    setHinting(false);
+    setSettled(true);
+    setEntered(true);
   };
 
   const onKeyDown = (event: KeyboardEvent<HTMLDialogElement>) => {
@@ -180,12 +214,15 @@ export function Welcome({ count = visits, onSettled }: WelcomeProps) {
     if (event.button === 0 && !onControl(event.target)) {
       drag.current = event.clientY;
       setHinting(false);
+      // A press is the start of a click or of a drag, so the page is wanted under the screen from this moment.
+      setSettled(true);
     }
   };
 
-  // The screen follows the pointer upward, and never below its place.
+  // The screen follows the pointer upward, and never below its place. It does not move before the page stands
+  // under it, because it would show an empty window.
   const onPointerMove = (event: PointerEvent<HTMLDialogElement>) => {
-    if (drag.current !== null) {
+    if (drag.current !== null && standing) {
       const moved = Math.min(0, event.clientY - drag.current);
       event.currentTarget.style.transition = "none";
       event.currentTarget.style.transform = `translateY(${String(moved)}px)`;
@@ -214,7 +251,7 @@ export function Welcome({ count = visits, onSettled }: WelcomeProps) {
       className={[
         "welcome",
         ready ? "welcome-ready" : "",
-        leaving ? "welcome-leaving" : hinting ? "welcome-hinting" : "",
+        leaving ? "welcome-leaving" : hinting && standing ? "welcome-hinting" : "",
       ]
         .filter(Boolean)
         .join(" ")}

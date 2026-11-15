@@ -33,8 +33,9 @@ The code has three parts, and each folder belongs to one of them.
 | Analysis | `web/src/analysis/`, `web/src/help/`, `api/src/lynkeus/analysis/`, `api/tests/analysis/`, `docs/methods/` |
 
 A change stays inside the folders of one part. The files that the parts share are changed only by the
-maintainer, who also adds every new library: `web/src/App.tsx`, `web/src/styles.scss`, `web/src/ribbon/`,
-`web/src/header/`, `web/src/shared/`, the package files, and the files outside `web/src/` and `api/src/`.
+maintainer, who also adds every new library: `web/src/App.tsx`, `web/src/Platform.tsx`, `web/src/styles.scss`,
+`web/src/ribbon/`, `web/src/header/`, `web/src/shared/`, the package files, and the files outside `web/src/` and
+`api/src/`.
 
 A tab of the ribbon is declared in its own folder. The file `tab.ts` lists its groups and buttons, and
 `actions.ts` gives the action of each finished button. A button without an action is shown in grey, so a
@@ -61,7 +62,7 @@ coherence: { run: () => openToolPane("coherence") },
 ```
 
 A component declares the pane under the same name. It is placed in the component of the tab that
-`App.tsx` already holds (`DataDialogs`, `AnalysisDialogs` and the others):
+`Platform.tsx` already holds (`DataDialogs`, `AnalysisDialogs` and the others):
 
 ```tsx
 import { useState } from "react";

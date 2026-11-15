@@ -1,0 +1,129 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
+import { useEffect, useState } from "react";
+import { useAnalysisActions } from "./analysis/actions";
+import { AnalysisDialogs } from "./analysis/AnalysisDialogs";
+import { CatalogPane } from "./catalog/CatalogPane";
+import { ContentsPane } from "./contents/ContentsPane";
+import { ContentsTools } from "./contents/ContentsTools";
+import { useDataActions } from "./data/actions";
+import { DataDialogs } from "./data/DataDialogs";
+import { EarthdataAccount } from "./data/EarthdataAccount";
+import { Header } from "./header/Header";
+import { useHelpActions } from "./help/actions";
+import { HelpDialogs } from "./help/HelpDialogs";
+import { useMapActions } from "./map/actions";
+import { createMap } from "./map/map";
+import { MapDialogs } from "./map/MapDialogs";
+import { MapView } from "./map/MapView";
+import { keepMapView } from "./map/storedView";
+import { useOptionsActions } from "./options/actions";
+import { OptionsDialogs } from "./options/OptionsDialogs";
+import { Ribbon } from "./ribbon/Ribbon";
+import { TABS } from "./ribbon/tabs";
+import type { ToolActions } from "./ribbon/types";
+import { Credits } from "./shared/credits/Credits";
+import { Dock } from "./shared/dock/Dock";
+import { MapContext, useMap } from "./shared/map";
+import { Messages } from "./shared/messages/Messages";
+import { useShareActions } from "./share/actions";
+import { ShareDialogs } from "./share/ShareDialogs";
+import { StatusBar } from "./statusbar/StatusBar";
+import { useViewActions } from "./view/actions";
+import { ViewDialogs } from "./view/ViewDialogs";
+
+/**
+ * The icon of each pane on its tab at the edge of the window, where a side that hides its panes shows them. A
+ * tool pane carries the name of the ribbon button that opens it, so it takes the icon of that button. The
+ * Contents pane and the Catalog pane take the icons of their buttons of the View tab.
+ */
+const PANE_ICONS: Readonly<Record<string, string>> = {
+  ...Object.fromEntries(
+    TABS.flatMap((tab) => tab.groups.flatMap((group) => group.tools.map(({ id, icon }) => [id, icon] as const))),
+  ),
+  contents: "list",
+  catalog: "folder",
+};
+
+/**
+ * The elements of the page, in their places: the header, the ribbon, the map between the panes of its two sides,
+ * and the status bar. The credits that must stand on the map itself are drawn over its lower right corner. Each
+ * element comes from the folder of its owner, and the ribbon receives the actions of every tab. The dialogs and
+ * the tool panes of every tab are declared inside the right side, where a tool pane is drawn; a dialog is drawn
+ * over the page wherever it is declared.
+ */
+function Page() {
+  const map = useMap();
+  const actions: ToolActions = {
+    ...useMapActions(),
+    ...useDataActions(),
+    ...useAnalysisActions(),
+    ...useViewActions(),
+    ...useShareActions(),
+    ...useOptionsActions(),
+    ...useHelpActions(),
+  };
+
+  return (
+    <>
+      <Header account={<EarthdataAccount />} />
+      <Ribbon tabs={TABS} actions={actions} />
+      <div className="workspace">
+        <Dock side="left" icons={PANE_ICONS}>
+          <ContentsPane />
+        </Dock>
+        <div className="workspace-map">
+          <MapView map={map} />
+          <Credits place="map" />
+          <Messages />
+        </div>
+        <Dock side="right" icons={PANE_ICONS}>
+          <CatalogPane />
+          <ContentsTools />
+          <MapDialogs />
+          <DataDialogs />
+          <AnalysisDialogs />
+          <ViewDialogs />
+          <ShareDialogs />
+          <OptionsDialogs />
+          <HelpDialogs />
+        </Dock>
+      </div>
+      <StatusBar />
+    </>
+  );
+}
+
+/**
+ * Create the map of the page. Its view is kept in the browser from this moment, and the stored view is restored
+ * before the page is drawn.
+ */
+function createPageMap() {
+  const map = createMap();
+  keepMapView(map);
+  return map;
+}
+
+interface PlatformProps {
+  /** Called when the elements of the page stand in the document. */
+  onMounted?: () => void;
+}
+
+/**
+ * The platform: the page with the map, the panes and the tools. It creates the map once and gives it to every
+ * element.
+ *
+ * The browser fetches it as a file of its own, with the libraries of the map, while the visitor reads the welcome
+ * screen. So the welcome screen does not wait for them.
+ */
+export function Platform({ onMounted }: PlatformProps) {
+  const [map] = useState(createPageMap);
+  useEffect(() => {
+    onMounted?.();
+  }, [onMounted]);
+  return (
+    <MapContext value={map}>
+      <Page />
+    </MapContext>
+  );
+}
