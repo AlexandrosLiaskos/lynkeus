@@ -322,9 +322,7 @@ export function crossTermsOf(first: LayerDescription, layers: readonly LayerDesc
   const kind = READS["backscatter-map"].beside;
   return kind === undefined
     ? []
-    : layers.filter(
-        (layer) => unfitAs("backscatter-map", kind, layer) === null && layer.inputs[0] === first.inputs[0],
-      );
+    : layers.filter((layer) => unfitAs("backscatter-map", kind, layer) === null && layer.inputs[0] === first.inputs[0]);
 }
 
 /**

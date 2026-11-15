@@ -164,13 +164,13 @@ function fileRows(cog: Cog, unit: string, classes: boolean): Property[] {
     ...(classes
       ? []
       : cog.statistics
-      ? [
-          { name: "Lowest value", value: write(cog.statistics.minimum) },
-          { name: "Highest value", value: write(cog.statistics.maximum) },
-          { name: "Mean", value: write(cog.statistics.mean) },
-          { name: "Standard deviation", value: write(cog.statistics.deviation) },
-        ]
-      : [{ name: "Statistics", value: "None", info: "The file states no statistics of its values." }]),
+        ? [
+            { name: "Lowest value", value: write(cog.statistics.minimum) },
+            { name: "Highest value", value: write(cog.statistics.maximum) },
+            { name: "Mean", value: write(cog.statistics.mean) },
+            { name: "Standard deviation", value: write(cog.statistics.deviation) },
+          ]
+        : [{ name: "Statistics", value: "None", info: "The file states no statistics of its values." }]),
   ];
 }
 
@@ -219,7 +219,8 @@ function PropertiesOf({ layer }: { layer: LayerDescription }) {
     ...(typeof cog === "string" ? [] : [{ title: "Projection and grid", rows: gridRows(cog) }]),
     {
       title: "File",
-      rows: typeof cog === "string" ? file : [...file, ...fileRows(cog, formatUnit(layer.unit), Boolean(layer.classes))],
+      rows:
+        typeof cog === "string" ? file : [...file, ...fileRows(cog, formatUnit(layer.unit), Boolean(layer.classes))],
     },
     { title: "Record", rows: [addressRow(layer.record, "The record is a STAC Item, which describes the layer.")] },
   ];

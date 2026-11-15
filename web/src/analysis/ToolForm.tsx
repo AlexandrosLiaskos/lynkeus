@@ -65,7 +65,8 @@ export const ABOUT = {
 export const RECEIVE: Record<FinishedTool, string> = {
   "backscatter-state": "Get a Backscatter layer of a GCOV product.",
   "backscatter-change": "Get the same Backscatter layer of two GCOV products of one track and frame.",
-  "backscatter-map": "Get the Backscatter HH layer and the Backscatter HV layer of one GCOV product, for the same area.",
+  "backscatter-map":
+    "Get the Backscatter HH layer and the Backscatter HV layer of one GCOV product, for the same area.",
   "coherence-state": "Get a Coherence layer of a GUNW product.",
   "coherence-change": "Get the same Coherence layer of two GUNW products of one track and frame.",
   "displacement-state":
