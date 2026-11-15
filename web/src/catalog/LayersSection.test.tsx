@@ -10,8 +10,9 @@ import { job, layer, standIn, type SentLayer, type StandIn } from "../data/testS
 import { MapContext } from "../shared/map";
 import { addToMap, mapLayersStore } from "../shared/mapLayers";
 import { messagesStore } from "../shared/messages/messages";
+import { layerGroups } from "./details";
 import { LayersSection, layersSentence } from "./LayersSection";
-import { openLayerStore } from "./state";
+import { layersOpenStore, markedLayerStore, showLayer } from "./state";
 
 let server: StandIn;
 
@@ -53,7 +54,8 @@ const CHANGE: SentLayer = {
 beforeEach(() => {
   resetJobs();
   resetLayers();
-  openLayerStore.set(null);
+  markedLayerStore.set(null);
+  layersOpenStore.set(true);
   mapLayersStore.set([]);
   messagesStore.set([]);
   server = standIn();
@@ -64,6 +66,7 @@ beforeEach(() => {
 afterEach(() => {
   resetJobs();
   vi.unstubAllGlobals();
+  vi.restoreAllMocks();
 });
 
 async function show(layers = [COHERENCE, CHANGE, BACKSCATTER]) {
@@ -77,54 +80,73 @@ async function show(layers = [COHERENCE, CHANGE, BACKSCATTER]) {
   await act(() => loadLayers());
 }
 
+/** The text of a layer of the list, which a click marks. */
 const item = (name: RegExp) => screen.getByRole("button", { name });
 const names = () =>
-  screen.getAllByRole("listitem").map((row) => row.querySelector(".catalog-item-title")?.textContent.split(",")[0]);
+  [...document.querySelectorAll(".layer .item-title")].map((title) => title.textContent.split(",")[0]);
 const messages = () => messagesStore.get().map(({ kind, text }) => [kind, text]);
 
-/** Show the tools of a layer and return their group. */
-async function toolsOf(name: RegExp, title: string) {
-  await userEvent.click(item(name));
-  return within(screen.getByRole("group", { name: `Tools of the layer ${title}` }));
+/** The commands of a layer: the one that the item shows and the button of the menu "More". */
+const commandsOf = (title: string) => within(screen.getByRole("group", { name: `Commands of the layer ${title}` }));
+
+/** Open the menu "More" of a layer and return the names of its commands. */
+async function moreOf(title: string): Promise<string[]> {
+  await userEvent.click(commandsOf(title).getByRole("button", { name: "More" }));
+  return screen.getAllByRole("menuitem").map((command) => command.textContent);
 }
 
-test("the section is not shown while the session has no layer", () => {
+/** Choose a command of a menu that is open. */
+const choose = (command: string) => userEvent.click(within(screen.getByRole("menu")).getByText(command));
+
+/** The rows of the property list of a dialog, each as its name and its value. */
+function rowsOf(dialog: HTMLElement): string[] {
+  return [...dialog.querySelectorAll(".property-row")].map(
+    (row) =>
+      `${row.querySelector(".property-name")?.textContent ?? ""}: ${row.querySelector(".property-value-text")?.textContent ?? ""}`,
+  );
+}
+
+test("without a layer the section says how it fills", () => {
   render(<LayersSection />, { wrapper: ({ children }) => <MapContext value={map}>{children}</MapContext> });
-  expect(screen.queryByRole("region")).toBeNull();
+  expect(screen.getByRole("button", { name: "Layers (0)" })).toBeDefined();
+  expect(screen.getByText("A layer is listed when the job that gets or computes it has finished.")).toBeDefined();
+  expect(screen.queryByRole("toolbar")).toBeNull();
 });
 
 test("each layer shows its name, its quantity with the unit, its dates and its size", async () => {
   await show();
-  expect(screen.getByRole("region", { name: "Layers" })).toBeDefined();
-  expect(screen.getByRole("status").textContent).toBe("3 layers, 100 MB. None is on the map.");
-  expect(screen.getAllByRole("listitem").map((row) => row.querySelector("button")?.textContent)).toEqual([
+  expect(screen.getByRole("button", { name: "Layers (3)", expanded: true })).toBeDefined();
+  expect(screen.getByRole("status").textContent).toBe("The files take 100 MB. No layer is on the map.");
+  expect([...document.querySelectorAll(".layer .catalog-pick")].map((text) => text.textContent)).toEqual([
     "Coherence HH, 9 and 21 Oct 2026Coherence (no unit)9 Oct 2026 and 21 Oct 2026 · 12 MB",
     "Change of backscatterChange of radar backscatter (dB)21 Oct 2026 and 2 Nov 2026 · 30 MB",
     "Backscatter HH, 21 Oct 2026Radar backscatter gamma nought, HH, linear power (no unit)21 Oct 2026 · 57 MB",
   ]);
 });
 
-test("the sentence of the section counts the layers, their size and those on the map", () => {
+test("the line of the section states the size of the files and the layers on the map", () => {
   const entry = { layer: layer(), size: 4_000_000, created: null };
-  expect(layersSentence([entry], 1)).toBe("1 layer, 4 MB. 1 is on the map.");
-  expect(layersSentence([entry, { ...entry, size: null }], 2)).toBe("2 layers. 2 are on the map.");
+  expect(layersSentence([entry], 1)).toBe("The files take 4 MB. 1 layer is on the map.");
+  expect(layersSentence([entry, { ...entry, size: null }], 2)).toBe("2 layers are on the map.");
 });
 
-test("a layer is added to the map and taken off it", async () => {
+test("a layer shows the command that fits its state: Add to the map, and Zoom to once it is on the map", async () => {
   await show();
-  const tools = await toolsOf(/^Backscatter HH/, "Backscatter HH, 21 Oct 2026");
-  expect(tools.getAllByRole("button").map((button) => button.textContent)).toEqual([
-    "Add to the map",
-    "Zoom to",
-    "Details",
-    "Rename",
-    "Remove",
-  ]);
-  await userEvent.click(tools.getByRole("button", { name: "Add to the map" }));
+  const title = "Backscatter HH, 21 Oct 2026";
+  const shown = () =>
+    commandsOf(title)
+      .getAllByRole("button")
+      .map((button) => button.getAttribute("aria-label") ?? button.textContent);
+  expect(shown()).toEqual(["Add to the map", "More"]);
+  expect(await moreOf(title)).toEqual(["Zoom to", "Details", "Download GeoTIFF", "Rename", "Remove"]);
+  await userEvent.keyboard("{Escape}");
+  await userEvent.click(commandsOf(title).getByRole("button", { name: "Add to the map" }));
   expect(mapLayersStore.get().map(({ id }) => id)).toEqual(["back"]);
   expect(item(/^Backscatter HH/).textContent).toMatch(/57 MB · On the map$/);
-  expect(screen.getByRole("status").textContent).toBe("3 layers, 100 MB. 1 is on the map.");
-  await userEvent.click(tools.getByRole("button", { name: "Remove from the map" }));
+  expect(screen.getByRole("status").textContent).toBe("The files take 100 MB. 1 layer is on the map.");
+  expect(shown()).toEqual(["Zoom to", "More"]);
+  expect(await moreOf(title)).toEqual(["Remove from the map", "Details", "Download GeoTIFF", "Rename", "Remove"]);
+  await choose("Remove from the map");
   expect(mapLayersStore.get()).toEqual([]);
   expect(layersStore.get()).toHaveLength(3);
 });
@@ -133,78 +155,92 @@ test("the map moves to the extent that the STAC record of a layer states", async
   server.files[BACKSCATTER.layer.record] = { type: "Feature", bbox: [-71.2, 42.6, -70.75, 42.95] };
   const fit = vi.spyOn(map.getView(), "fit");
   await show();
-  const tools = await toolsOf(/^Backscatter HH/, "Backscatter HH, 21 Oct 2026");
-  await userEvent.click(tools.getByRole("button", { name: "Zoom to" }));
+  await moreOf("Backscatter HH, 21 Oct 2026");
+  await choose("Zoom to");
   await vi.waitFor(() => expect(fit).toHaveBeenCalledTimes(1));
   expect(fit.mock.calls[0]?.[0]).toEqual(transformExtent([-71.2, 42.6, -70.75, 42.95], "EPSG:4326", "EPSG:3857"));
+  // A layer on the map shows the same command in its item.
+  act(() => addToMap(BACKSCATTER.layer));
+  await userEvent.click(commandsOf("Backscatter HH, 21 Oct 2026").getByRole("button", { name: "Zoom to" }));
+  await vi.waitFor(() => expect(fit).toHaveBeenCalledTimes(2));
 });
 
 test("a record that cannot be read is reported, and the map stays", async () => {
   const fit = vi.spyOn(map.getView(), "fit");
   await show();
-  const tools = await toolsOf(/^Backscatter HH/, "Backscatter HH, 21 Oct 2026");
-  await userEvent.click(tools.getByRole("button", { name: "Zoom to" }));
+  await moreOf("Backscatter HH, 21 Oct 2026");
+  await choose("Zoom to");
   await vi.waitFor(() => expect(messages()).toEqual([["error", "Not found."]]));
   expect(fit).not.toHaveBeenCalled();
 });
 
-test("the details show every field of the description, with the links to the two files", async () => {
+test("the details show every field of the description in groups, with the links to the two files", async () => {
   await show();
-  const tools = await toolsOf(/^Change of backscatter/, "Change of backscatter");
-  await userEvent.click(tools.getByRole("button", { name: "Details" }));
-  const dialog = within(screen.getByRole("dialog", { name: "Layer: Change of backscatter" }));
-  expect(dialog.getAllByRole("row").map((row) => row.textContent)).toEqual([
-    "NameChange of backscatter",
-    "KindResult of an analysis tool",
-    "QuantityChange of radar backscatter",
-    "UnitdB",
-    "Range of the legend0.01 to 0.6",
-    "Colour scalegrey",
-    "Dates of the data21 Oct 2026 and 2 Nov 2026",
-    "Product file usedNISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
-    "ProgramLynkeus 0.1.0",
-    "Methoddocs/methods/backscatter-change.md",
-    "Size of the files30 MB",
-    "Made14 Nov 2026, 16:30:00 UTC",
-    "GeoTIFF filebackscatter-hh.tif",
-    "STAC recordbackscatter-hh.json (opens in a new tab)",
-    "Identifier of the layerchange",
+  await moreOf("Change of backscatter");
+  await choose("Details");
+  const dialog = screen.getByRole("dialog", { name: "Layer: Change of backscatter" });
+  expect([...dialog.querySelectorAll(".property-group-title")].map((title) => title.textContent)).toEqual([
+    "Layer",
+    "Legend",
+    "Data",
+    "Files",
   ]);
-  const file = dialog.getByRole<HTMLAnchorElement>("link", { name: "backscatter-hh.tif" });
+  expect(rowsOf(dialog)).toEqual([
+    "Name: Change of backscatter",
+    "Kind: Result of an analysis tool",
+    "Quantity: Change of radar backscatter",
+    "Unit: dB",
+    "Identifier: change",
+    "Range: 0.01 to 0.6",
+    "Colour scale: grey",
+    "Dates of the data: 21 Oct 2026 and 2 Nov 2026",
+    "Product file used: NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "Program: Lynkeus 0.1.0",
+    "Method: docs/methods/backscatter-change.md",
+    "Size: 30 MB",
+    "Made: 14 Nov 2026, 16:30:00 UTC",
+    "GeoTIFF file: backscatter-hh.tif",
+    "STAC record: backscatter-hh.json (opens in a new tab)",
+  ]);
+  const file = within(dialog).getByRole<HTMLAnchorElement>("link", { name: "backscatter-hh.tif" });
   expect(file.getAttribute("href")).toBe(CHANGE.layer.url);
   expect(file.hasAttribute("download")).toBe(true);
-  const record = dialog.getByRole<HTMLAnchorElement>("link", { name: /^backscatter-hh\.json/ });
+  const record = within(dialog).getByRole<HTMLAnchorElement>("link", { name: /^backscatter-hh\.json/ });
   expect(record.getAttribute("href")).toBe(CHANGE.layer.record);
   expect(record.target).toBe("_blank");
+  expect(within(dialog).getByRole("button", { name: "Copy Identifier" })).toBeDefined();
 });
 
 test("a layer without a stated size, time or method shows no such field", async () => {
   await show([{ layer: BACKSCATTER.layer }]);
   expect(item(/^Backscatter HH/).textContent).toMatch(/21 Oct 2026$/);
-  const tools = await toolsOf(/^Backscatter HH/, "Backscatter HH, 21 Oct 2026");
-  await userEvent.click(tools.getByRole("button", { name: "Details" }));
-  const rows = within(screen.getByRole("dialog"))
-    .getAllByRole("row")
-    .map((row) => row.textContent);
-  expect(rows.filter((row) => /^(Method|Size|Made)/.test(row))).toEqual([]);
-  expect(rows).toContain("KindReceived from NASA");
+  const rows = layerGroups({ layer: BACKSCATTER.layer, size: null, created: null }).flatMap(({ rows: part }) =>
+    part.map(({ name, value }) => [name, value]),
+  );
+  expect(rows.filter(([name]) => name === "Method" || name === "Size" || name === "Made")).toEqual([]);
+  expect(rows).toContainEqual(["Kind", "Received from NASA"]);
 });
 
 test("the GeoTIFF file of a layer is downloaded from its address", async () => {
+  const clicked: [string | null, boolean][] = [];
+  vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(function (this: HTMLAnchorElement) {
+    clicked.push([this.getAttribute("href"), this.hasAttribute("download")]);
+  });
   await show();
-  const tools = await toolsOf(/^Coherence HH/, "Coherence HH, 9 and 21 Oct 2026");
-  const link = tools.getByRole<HTMLAnchorElement>("link", { name: "Download" });
-  expect(link.getAttribute("href")).toBe("/files/coh/coherence-hh.tif");
-  expect(link.hasAttribute("download")).toBe(true);
+  await moreOf("Coherence HH, 9 and 21 Oct 2026");
+  await choose("Download GeoTIFF");
+  expect(clicked).toEqual([["/files/coh/coherence-hh.tif", true]]);
+  expect(document.querySelector("body > a")).toBeNull();
 });
 
 test("a layer is renamed in its place", async () => {
   await show();
   addToMap(BACKSCATTER.layer);
-  const tools = await toolsOf(/^Backscatter HH/, "Backscatter HH, 21 Oct 2026");
-  await userEvent.click(tools.getByRole("button", { name: "Rename" }));
-  const field = screen.getByRole<HTMLInputElement>("textbox", { name: "New name of the layer" });
+  await moreOf("Backscatter HH, 21 Oct 2026");
+  await choose("Rename");
+  const field = screen.getByRole<HTMLInputElement>("textbox", { name: "New name" });
   expect(field.value).toBe("Backscatter HH, 21 Oct 2026");
+  expect(document.activeElement).toBe(field);
   await userEvent.clear(field);
   await userEvent.click(screen.getByRole("button", { name: "Rename" }));
   expect(screen.getByRole("alert").textContent).toBe("Give the new name of the layer.");
@@ -217,14 +253,16 @@ test("a layer is renamed in its place", async () => {
   expect(mapLayersStore.get().map(({ title }) => title)).toEqual(["Backscatter of Cape Ann"]);
   expect(messages()).toEqual([["info", 'The layer was renamed to "Backscatter of Cape Ann".']]);
   expect(screen.queryByRole("textbox")).toBeNull();
+  // The field has left the page, and the focus returns to the text of the layer.
+  await vi.waitFor(() => expect(document.activeElement).toBe(item(/^Backscatter of Cape Ann/)));
 });
 
 test("a renaming that the server refuses is stated at the field, and Cancel leaves the name", async () => {
   await show();
-  const tools = await toolsOf(/^Backscatter HH/, "Backscatter HH, 21 Oct 2026");
-  await userEvent.click(tools.getByRole("button", { name: "Rename" }));
+  await moreOf("Backscatter HH, 21 Oct 2026");
+  await choose("Rename");
   server.refuse("PATCH", "/api/layers", 400, REFUSAL);
-  await userEvent.type(screen.getByRole("textbox", { name: "New name of the layer" }), " again{Enter}");
+  await userEvent.type(screen.getByRole("textbox", { name: "New name" }), " again{Enter}");
   expect((await screen.findByRole("alert")).textContent).toBe(REFUSAL);
   await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
   expect(screen.queryByRole("textbox")).toBeNull();
@@ -236,8 +274,8 @@ test("a layer is removed only after a confirmation", async () => {
   await loadJobs();
   await show();
   addToMap(BACKSCATTER.layer);
-  const tools = await toolsOf(/^Backscatter HH/, "Backscatter HH, 21 Oct 2026");
-  await userEvent.click(tools.getByRole("button", { name: "Remove" }));
+  await moreOf("Backscatter HH, 21 Oct 2026");
+  await choose("Remove");
   const dialog = screen.getByRole<HTMLDialogElement>("dialog", { name: "Remove the layer" });
   expect(dialog.textContent).toContain(
     'The layer "Backscatter HH, 21 Oct 2026" and its files are removed from the server, and the layer leaves the map. This cannot be undone.',
@@ -247,7 +285,8 @@ test("a layer is removed only after a confirmation", async () => {
   expect(server.sent("DELETE")).toEqual([]);
   expect(layersStore.get()).toHaveLength(3);
 
-  await userEvent.click(tools.getByRole("button", { name: "Remove" }));
+  await moreOf("Backscatter HH, 21 Oct 2026");
+  await choose("Remove");
   await userEvent.click(within(dialog).getByRole("button", { name: "Remove" }));
   await vi.waitFor(() => expect(layersStore.get().map((entry) => entry.layer.id)).toEqual(["coh", "change"]));
   expect(server.sent("DELETE").map(({ address }) => address)).toEqual(["/api/layers/back"]);
@@ -259,8 +298,8 @@ test("a layer is removed only after a confirmation", async () => {
 
 test("a removal that the server refuses is reported, and the layer stays", async () => {
   await show();
-  const tools = await toolsOf(/^Backscatter HH/, "Backscatter HH, 21 Oct 2026");
-  await userEvent.click(tools.getByRole("button", { name: "Remove" }));
+  await moreOf("Backscatter HH, 21 Oct 2026");
+  await choose("Remove");
   server.refuse("DELETE", "/api/layers", 500, null);
   await userEvent.click(within(screen.getByRole("dialog")).getByRole("button", { name: "Remove" }));
   await vi.waitFor(() =>
@@ -269,16 +308,26 @@ test("a removal that the server refuses is reported, and the layer stays", async
   expect(layersStore.get()).toHaveLength(3);
 });
 
-test("the list is sorted and grouped", async () => {
+test("the header of the section sorts and groups the list", async () => {
   await show();
+  const toolbar = within(screen.getByRole("toolbar", { name: "Commands of the list of layers" }));
+  expect(toolbar.getAllByRole("button").map((button) => button.getAttribute("aria-label"))).toEqual([
+    "Sort by",
+    "Group by",
+    "Read again",
+  ]);
+  const pick = async (menu: string, command: string) => {
+    await userEvent.click(toolbar.getByRole("button", { name: menu }));
+    await choose(command);
+  };
   expect(names()).toEqual(["Coherence HH", "Change of backscatter", "Backscatter HH"]);
-  await userEvent.selectOptions(screen.getByLabelText("Sort by"), "Name");
+  await pick("Sort by", "Name");
   expect(names()).toEqual(["Backscatter HH", "Change of backscatter", "Coherence HH"]);
-  await userEvent.selectOptions(screen.getByLabelText("Sort by"), "Size, largest first");
+  await pick("Sort by", "Size, largest first");
   expect(names()).toEqual(["Backscatter HH", "Change of backscatter", "Coherence HH"]);
-  await userEvent.selectOptions(screen.getByLabelText("Sort by"), "Date of the data, latest first");
+  await pick("Sort by", "Date of the data, latest first");
   expect(names()).toEqual(["Change of backscatter", "Coherence HH", "Backscatter HH"]);
-  await userEvent.selectOptions(screen.getByLabelText("Group by"), "Received or computed");
+  await pick("Group by", "Received or computed");
   expect(screen.getAllByRole("heading", { level: 4 }).map((heading) => heading.textContent)).toEqual([
     "Result of an analysis tool (1)",
     "Received from NASA (2)",
@@ -286,19 +335,30 @@ test("the list is sorted and grouped", async () => {
   expect(names()).toEqual(["Change of backscatter", "Coherence HH", "Backscatter HH"]);
 });
 
-test("a layer that the list of jobs names shows its tools", async () => {
+test("a layer that a job shows is marked in the list, and the section opens for it", async () => {
   await show();
-  act(() => openLayerStore.set("change"));
-  expect(item(/^Change of backscatter/).getAttribute("aria-expanded")).toBe("true");
-  expect(screen.getByRole("group", { name: "Tools of the layer Change of backscatter" })).toBeDefined();
+  await userEvent.click(screen.getByRole("button", { name: "Layers (3)" }));
+  expect(layersOpenStore.get()).toBe(false);
+  act(() => showLayer("change"));
+  expect(screen.getByRole("button", { name: "Layers (3)", expanded: true })).toBeDefined();
+  const marked = item(/^Change of backscatter/);
+  expect(marked.getAttribute("aria-pressed")).toBe("true");
+  expect(marked.closest("li")?.classList.contains("item--selected")).toBe(true);
+  await userEvent.click(marked);
+  expect(markedLayerStore.get()).toBeNull();
 });
 
-test("a reading that failed is stated, with a button that reads again", async () => {
+test("a reading that failed is stated in a notice, with a button that reads again", async () => {
   server.refuse("GET", "/api/layers", 500, null);
   await show();
-  expect(screen.getByRole("alert").textContent).toMatch(/^The layers could not be read \(the server answered 500\)\./);
+  const alert = screen.getByRole("alert");
+  expect(alert.textContent).toBe("The layers could not be read (the server answered 500).");
   server.accept();
-  await userEvent.click(screen.getByRole("button", { name: "Read again" }));
+  const notice = alert.closest<HTMLElement>(".notice");
+  if (!notice) {
+    throw new Error("the fault is not in a notice");
+  }
+  await userEvent.click(within(notice).getByRole("button", { name: "Read again" }));
   await vi.waitFor(() => expect(layersFaultStore.get()).toBeNull());
   expect(names()).toHaveLength(3);
 });
@@ -306,7 +366,6 @@ test("a reading that failed is stated, with a button that reads again", async ()
 test("a layer is put on the map with the keyboard alone", async () => {
   await show();
   item(/^Coherence HH/).focus();
-  await userEvent.keyboard("{Enter}");
   await userEvent.tab();
   expect(document.activeElement?.textContent).toBe("Add to the map");
   await userEvent.keyboard(" ");

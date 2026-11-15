@@ -2,13 +2,17 @@ import type { ToolActions } from "../ribbon/types";
 import { areaStore } from "../shared/area";
 import { openToolPane } from "../shared/dock/dock";
 import { report } from "../shared/messages/messages";
+import { useStore } from "../shared/store";
 import { AREA_FILE_NAME, areaFile } from "./areaFile";
 import { saveFile } from "./download";
 import { layerFileName, saveAddress } from "./layerFile";
-import { useDataSources } from "./layerSources";
+import { citationMissing, useDataSources } from "./layerSources";
 import { siteAddress } from "./record";
-import { SELECT_A_LAYER, selectedLayer, useSelectedLayer } from "./selection";
+import { layerMissing, SELECT_A_LAYER, selectedLayer, useHasLayers, useSelectedLayer } from "./selection";
 import type { ShareToolId } from "./tab";
+
+/** What the Area button says while no area is set. */
+export const SET_AN_AREA = "Set an area in the Map tab.";
 
 /** Save the area as a GeoJSON file, or tell the user that no area is set. */
 function saveArea(): void {
@@ -42,18 +46,23 @@ function saveLayer(): void {
 }
 
 /**
- * What the finished buttons of the Share tab do. The Citation button has an action while the record of the
- * selected layer, or the records of its inputs, name the DOI of a NISAR collection.
+ * What the finished buttons of the Share tab do. A button that needs something first is inactive and states what
+ * it lacks: the Layer and Record buttons a selected layer, the Area button an area, and the Citation button a
+ * selected layer whose record, or the records of its inputs, name the DOI of a NISAR collection.
  */
 export function useShareActions(): ToolActions<ShareToolId> {
-  const sources = useDataSources(useSelectedLayer());
+  const layer = useSelectedLayer();
+  const hasLayers = useHasLayers();
+  const area = useStore(areaStore);
+  const sources = useDataSources(layer);
+  const noLayer = layer ? undefined : layerMissing(hasLayers);
   return {
-    "export-layer": { run: saveLayer },
+    "export-layer": { run: saveLayer, missing: noLayer },
     "export-map-image": { run: () => openToolPane("export-map-image") },
-    "export-record": { run: () => openToolPane("export-record") },
-    "export-area": { run: saveArea },
+    "export-record": { run: () => openToolPane("export-record"), missing: noLayer },
+    "export-area": { run: saveArea, missing: area ? undefined : SET_AN_AREA },
     "print-layout": { run: () => openToolPane("print-layout") },
     "link-to-map": { run: () => openToolPane("link-to-map") },
-    ...(sources && sources.length > 0 ? { citation: { run: () => openToolPane("citation") } } : {}),
+    citation: { run: () => openToolPane("citation"), missing: citationMissing(layer, hasLayers, sources) },
   };
 }
