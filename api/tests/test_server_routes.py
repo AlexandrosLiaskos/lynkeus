@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """Tests of the addresses of the own servers, through a web service that listens on a port.
 
 A stand-in own server (``tests.ownserver``) and the visitors connect to the

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """A stand-in for NASA's catalogue and for NASA Harmony on the network, for the checks of the whole program.
 
 Lynkeus Server is checked as it is delivered, in a process of its own and also as a packed program,

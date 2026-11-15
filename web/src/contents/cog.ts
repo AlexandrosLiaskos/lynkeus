@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import type { GeoTIFF, GeoTIFFImage } from "geotiff";
 
 /** A file that Lynkeus cannot draw. The message is one sentence for the visitor. */

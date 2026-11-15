@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """Tests of the program Lynkeus Server: what it writes, and its run on the terminal.
 
 The program is started as ``python -m lynkeus.ownserver --no-window`` on a folder of the test,

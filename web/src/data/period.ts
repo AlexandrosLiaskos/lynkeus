@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 /**
  * The earliest first day that the records of the NISAR collections of NASA's catalogue state: 1 October 2025 in
  * the beta collections, and 28 October 2025 in the provisional and the validated ones. A search of the whole

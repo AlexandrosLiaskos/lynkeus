@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """The computer on which Lynkeus Server runs: its data folder, its settings file and its resources.
 
 ``docs/Own_Servers.md`` gives the data folder of each operating system and what it holds. The

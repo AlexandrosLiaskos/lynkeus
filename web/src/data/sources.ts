@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import type { Source } from "../shared/sources";
 
 /** The methods, programs and datasets that the Data tab, the Catalog pane, the server and the frame of the page use. */

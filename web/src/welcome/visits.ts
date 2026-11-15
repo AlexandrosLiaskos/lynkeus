@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { keepInBrowser } from "../shared/storage/storage";
 
 /** The name under which the browser keeps the marker of a counted visit. */

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 /**
  * The names of the rows of the summary of a method, in the order of the section In brief of a method sheet
  * (`docs/methods/`).

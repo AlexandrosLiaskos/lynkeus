@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { version } from "../../package.json";
 import { Dialog } from "../shared/dialog/Dialog";
 import { PropertyList } from "../shared/properties/PropertyList";
@@ -5,6 +7,9 @@ import { Section } from "../shared/section/Section";
 import { useStore } from "../shared/store";
 import { ABOUT } from "./about";
 import { aboutDialogStore } from "./state";
+
+/** The authors of the citation, as a sentence names them: "A and B", or "A, B and C". */
+const AUTHORS = new Intl.ListFormat("en-GB", { type: "conjunction" }).format(ABOUT.citation.authors);
 
 /** A link to an address, written as the address. It opens in a new tab of the browser, so the page keeps its map. */
 function AddressLink({ address }: { address: string }) {
@@ -16,10 +21,13 @@ function AddressLink({ address }: { address: string }) {
 }
 
 /**
- * The dialog of the button About: what Lynkeus is, its facts as a list of names and values, and two sections
- * that open and close, the entry of the citation and the data that Lynkeus stores about a visitor. Its statements
- * are in `about.ts`. The version is read from `package.json` when the interface is built, so it is the version of
- * the interface that the visitor sees.
+ * The dialog of the button About: what Lynkeus is, its facts as a list of names and values, and three sections
+ * that open and close: the licence, the entry of the citation and the data that Lynkeus stores about a visitor.
+ * The section Licence holds the notices that the licence asks every copy of Lynkeus to keep, also a copy that runs
+ * as a website: the copyright, the licence, the warranty and the attribution of NOTICE, and the addresses of the
+ * source code, of LICENSE and of NOTICE. It is therefore the first section, and it starts open. The statements of
+ * the dialog are in `about.ts`. The version is read from `package.json` when the interface is built, so it is the
+ * version of the interface that the visitor sees.
  */
 export function AboutDialog() {
   const open = useStore(aboutDialogStore);
@@ -35,13 +43,36 @@ export function AboutDialog() {
               rows: [
                 { name: "Version", value: version },
                 { name: "Developed by", value: ABOUT.team },
-                { name: "Licence", value: `${ABOUT.copyright}. ${ABOUT.licence}` },
                 { name: "Team log", value: <AddressLink address={ABOUT.teamLog} /> },
-                { name: "Repository", value: <AddressLink address={citation.repository} /> },
               ],
             },
           ]}
         />
+
+        <Section title="Licence" info={ABOUT.terms}>
+          <div className="about-licence">
+            <p>{ABOUT.copyright}</p>
+            <p>{ABOUT.licence}</p>
+            <p>{ABOUT.warranty}</p>
+            <h4>Attribution</h4>
+            <div className="about-attribution">
+              {ABOUT.attribution.map((line) => (
+                <p key={line}>{line}</p>
+              ))}
+            </div>
+            <PropertyList
+              groups={[
+                {
+                  rows: [
+                    { name: "Source code", value: <AddressLink address={citation.repository} /> },
+                    { name: "Licence", value: <AddressLink address={ABOUT.licenceFile} /> },
+                    { name: "Notice", value: <AddressLink address={ABOUT.noticeFile} /> },
+                  ],
+                },
+              ]}
+            />
+          </div>
+        </Section>
 
         <Section title="Citation" info={ABOUT.cite}>
           <PropertyList
@@ -49,7 +80,7 @@ export function AboutDialog() {
               {
                 rows: [
                   { name: "Title", value: citation.title },
-                  { name: "Author", value: citation.author },
+                  { name: "Authors", value: AUTHORS },
                   { name: "Version", value: version },
                   { name: "Address", value: citation.site, copy: true },
                   { name: "Repository", value: citation.repository, copy: true },

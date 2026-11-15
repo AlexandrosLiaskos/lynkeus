@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 /**
  * The answer of the web service about its version, its resources and its limits (`GET /api/limits`). Its format is
  * `ServiceLimits` in `api/src/lynkeus/limits.py`. The notice about the version is written from this answer, so that

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """The version, the resources and the limits of the web service, in one answer.
 
 The interface writes its notice about the version from this answer, so that

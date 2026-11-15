@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import OlMap from "ol/Map";
@@ -480,7 +482,7 @@ test("the citation of the selected layer is shown and copied", async () => {
       "NASA Alaska Satellite Facility Distributed Active Archive Center. https://doi.org/10.5067/NIL2GCOV-V1 " +
       "Date accessed: 2026-11-14.",
   );
-  expect(citation.value).toContain("Liaskos, A. Lynkeus (Version ");
+  expect(citation.value).toContain("Liaskos, A., and Team Lynkeus. Lynkeus (Version ");
   await userEvent.click(screen.getByRole("button", { name: "Copy citation" }));
   expect(await screen.findByText("The citation was copied.")).toBeDefined();
   expect(copyText).toHaveBeenCalledWith(citation.value);

@@ -213,5 +213,9 @@ the International Astronomical Union.
 
 ## Citation and licence
 
-To cite Lynkeus, use the entry in [CITATION.cff](CITATION.cff). The code is released under the
-[Apache License 2.0](LICENSE).
+To cite Lynkeus, use the entry in [CITATION.cff](CITATION.cff). Lynkeus is free software under the
+[GNU Affero General Public License, version 3](LICENSE), with additional terms under its section 7 that
+are given in [NOTICE](NOTICE). Every copy and every work based on Lynkeus, also one that is offered as a
+service over a network, must keep the attribution to Alexandros Liaskos and Team Lynkeus that NOTICE
+gives. A modified version must say that it is modified, and by whom. The names of the authors, the name
+Lynkeus and its logo are not licensed for other works, except in that attribution.

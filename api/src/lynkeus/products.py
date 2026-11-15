@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """Search of NISAR products in NASA's catalogue.
 
 The Common Metadata Repository (CMR) of NASA holds one record for every
