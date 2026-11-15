@@ -5,7 +5,7 @@ import { Ribbon } from "../ribbon/Ribbon";
 import { dockStore, resetDock } from "../shared/dock/dock";
 import { useAnalysisActions } from "./actions";
 import { ANALYSIS_TAB, DISPLACEMENT_STATE } from "./tab";
-import { FINISHED_TOOLS } from "./tools";
+import { SHEET_TOOLS } from "./series";
 
 /** The Analysis tab as the page holds it: its buttons with their actions. */
 function AnalysisTab() {
@@ -19,7 +19,7 @@ function buttonsOf(group: string): HTMLElement[] {
 
 beforeEach(resetDock);
 
-test("exactly the buttons of the seven finished tools have an action", () => {
+test("exactly the buttons of the nine finished tools have an action", () => {
   const actions = renderHook(useAnalysisActions).result.current;
   expect(Object.keys(actions)).toEqual([
     "backscatter-state",
@@ -29,16 +29,18 @@ test("exactly the buttons of the seven finished tools have an action", () => {
     "displacement-state",
     "soil-moisture-state",
     "soil-moisture-change",
+    "backscatter-series",
+    "coherence-series",
   ]);
-  expect(Object.keys(actions)).toEqual([...FINISHED_TOOLS]);
+  expect(Object.keys(actions)).toEqual([...SHEET_TOOLS]);
   const declared = ANALYSIS_TAB.groups.flatMap(({ tools }) => tools.map(({ id }) => id));
   expect(declared).toHaveLength(16);
-  for (const tool of FINISHED_TOOLS) {
+  for (const tool of SHEET_TOOLS) {
     expect(declared).toContain(tool);
   }
 });
 
-test("the seven finished buttons are active, and every other button of the tab is inactive", () => {
+test("the nine finished buttons are active, and every other button of the tab is inactive", () => {
   render(<AnalysisTab />);
   const inactive = Object.fromEntries(
     ANALYSIS_TAB.groups.map(({ label }) => [
@@ -47,8 +49,8 @@ test("the seven finished buttons are active, and every other button of the tab i
     ]),
   );
   expect(inactive).toEqual({
-    Backscatter: [false, false, true, true],
-    Coherence: [false, false, true, true],
+    Backscatter: [false, false, false, true],
+    Coherence: [false, false, false, true],
     "Surface displacement": [false, true, true, true],
     "Soil moisture": [false, false, true, true],
   });
@@ -87,10 +89,13 @@ test("the button of a finished tool opens the tool pane of that tool, and an ina
   await userEvent.click(moisture);
   expect(dockStore.get().tools).toEqual([...opened, "coherence-change", "soil-moisture-state"]);
   await userEvent.click(moistureChange);
-  const all = [...opened, "coherence-change", "soil-moisture-state", "soil-moisture-change"];
-  expect(dockStore.get().tools).toEqual(all);
+  const maps = [...opened, "coherence-change", "soil-moisture-state", "soil-moisture-change"];
+  expect(dockStore.get().tools).toEqual(maps);
   await userEvent.click(series);
+  expect(dockStore.get().tools).toEqual([...maps, "backscatter-series"]);
   await userEvent.click(coherenceSeries);
+  const all = [...maps, "backscatter-series", "coherence-series"];
+  expect(dockStore.get().tools).toEqual(all);
   await userEvent.click(displacementChange);
   await userEvent.click(moistureMap);
   expect(dockStore.get().tools).toEqual(all);
@@ -124,4 +129,16 @@ test("the buttons of the three new tools say in one sentence what the tool maps"
   );
   expect(described["soil-moisture-state"]).toBe("Maps the soil moisture of one date.");
   expect(described["soil-moisture-change"]).toBe("Maps the change in soil moisture between two dates.");
+});
+
+test("the buttons of the two Series tools say in one sentence what the tool plots", () => {
+  const described = Object.fromEntries(
+    ANALYSIS_TAB.groups.flatMap(({ tools }) => tools.map(({ id, description }) => [id, description])),
+  );
+  expect(described["backscatter-series"]).toBe(
+    "Plots the radar backscatter of many dates, at a point or for the area.",
+  );
+  expect(described["coherence-series"]).toBe(
+    "Plots the interferometric coherence of many pairs of dates, at a point or for the area.",
+  );
 });

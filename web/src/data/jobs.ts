@@ -34,6 +34,8 @@ export interface Job {
   inputs?: Record<string, unknown> | null;
   /** The id of the layer that a successful job produced. */
   layer?: string | null;
+  /** The id of the series that a successful job of a Series tool produced, in the place of `layer`. */
+  series?: string | null;
   /** The own server of the visitor on which the job runs, or null or absent for the project server. */
   server?: ServerName | null;
 }
@@ -103,7 +105,7 @@ export function isJob(value: unknown): value is Job {
   if (!isRecord(value)) {
     return false;
   }
-  const { progress, inputs, layer, server } = value;
+  const { progress, inputs, layer, series, server } = value;
   return (
     [value.jobID, value.processID, value.title].every(isText) &&
     value.type === "process" &&
@@ -117,6 +119,7 @@ export function isJob(value: unknown): value is Job {
     progress <= 100 &&
     (isAbsent(inputs) || isRecord(inputs)) &&
     (isAbsent(layer) || isText(layer)) &&
+    (isAbsent(series) || isText(series)) &&
     (isAbsent(server) || isServerName(server))
   );
 }

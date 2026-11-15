@@ -1,4 +1,4 @@
-"""Tests of the record of the sessions, jobs and layers."""
+"""Tests of the record of the sessions, jobs, layers and series, and of the own servers."""
 
 import shutil
 import sqlite3
@@ -12,6 +12,7 @@ from lynkeus.store import (
     JobRecord,
     LayerRecord,
     PairingRecord,
+    SeriesRecord,
     ServerJobRecord,
     ServerLayerRecord,
     ServerRecord,
@@ -24,6 +25,14 @@ VERSION_1 = Path(__file__).parent / "data" / "records" / "version-1.sqlite3"
 A visitor ran three jobs of the stand-in process of ``tests.standin`` through the addresses: one
 successful, one failed and one that was dismissed after it had finished. A second visitor opened a
 session. The file holds 2 sessions, 3 jobs and 2 layers.
+"""
+
+VERSION_2 = Path(__file__).parent / "data" / "records" / "version-2.sqlite3"
+"""A record file of version 2, made on 15 November 2026 by the store of commit 14ea838 from the file of version 1.
+
+The methods of that store added one own server that received its key, one pairing in progress, and two
+jobs of the server, one of them successful with its layer. The file holds 2 sessions, 3 jobs, 2 layers,
+1 server, 1 pairing, 2 jobs of the server and 1 layer of the server.
 """
 
 
@@ -183,8 +192,8 @@ def test_file_of_version_1_is_brought_to_the_new_version_with_every_row(tmp_path
     assert [len(rows) for rows in before.values()] == [2, 3, 2]
     store = Store(path)
     try:
-        assert VERSION == 2
-        assert _version(path) == 2
+        assert VERSION == 3
+        assert _version(path) == 3
         assert {table: _rows(path, table) for table in before} == before
         # The content is read through the store as before.
         [session] = {str(row[1]) for row in before["jobs"]}
@@ -205,6 +214,43 @@ def test_file_of_version_1_is_brought_to_the_new_version_with_every_row(tmp_path
     again.close()
     assert {table: _rows(path, table) for table in before} == before
     assert len(_rows(path, "servers")) == 1
+
+
+def test_file_of_version_2_is_brought_to_the_new_version_with_every_row(tmp_path: Path) -> None:
+    path = tmp_path / "lynkeus.sqlite3"
+    shutil.copyfile(VERSION_2, path)
+    assert _version(path) == 2
+    tables = ("sessions", "jobs", "layers", "servers", "pairings", "server_jobs", "server_layers")
+    before = {table: _rows(path, table) for table in tables}
+    assert [len(rows) for rows in before.values()] == [2, 3, 2, 1, 1, 2, 1]
+    store = Store(path)
+    try:
+        assert VERSION == 3
+        assert _version(path) == 3
+        assert {table: _rows(path, table) for table in before} == before
+        # The content is read through the store as before.
+        [session] = {str(row[1]) for row in before["jobs"]}
+        assert len(store.layers_of(session)) == 2
+        [server] = store.servers_of("a_user")
+        assert sorted(job.status for job in store.server_jobs_of(server.id)) == ["accepted", "successful"]
+        assert [layer.id for layer in store.server_layers_of("a_user")] == ["sl1"]
+        assert store.count_pairings() == 1
+        # The table of the series exists and is empty, and it takes a row.
+        assert store.series_of(session) == []
+        store.add_job(_job("j9", session, 2000.0))
+        store.start_job("j9", "Started.", 2001.0)
+        assert store.succeed_job_with_series("j9", "Ready.", SeriesRecord("e1", session, "{}", 2002.0))
+        assert [series.id for series in store.series_of(session)] == ["e1"]
+    finally:
+        store.close()
+    # A second opening changes nothing.
+    again = Store(path)
+    again.close()
+    assert {table: _rows(path, table) for table in tables if table != "jobs"} == {
+        table: rows for table, rows in before.items() if table != "jobs"
+    }
+    assert len(_rows(path, "jobs")) == 4
+    assert len(_rows(path, "series")) == 1
 
 
 def _server(name: str, user: str = "a_user", paired: float = 10.0) -> ServerRecord:

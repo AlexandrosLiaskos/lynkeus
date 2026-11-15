@@ -122,7 +122,7 @@ class Harmony:
         _note("cancel", job=job)
 
 
-def with_stand_ins(run: Callable[[Any, Work], LayerDescription], inputs: Any, work: Work) -> LayerDescription:
+def with_stand_ins[Result](run: Callable[[Any, Work], Result], inputs: Any, work: Work) -> Result:
     """Call the function of a process with the stand-ins in the place of NASA's services and of a tool."""
     plan: dict[str, Any] = json.loads(Path(os.environ[PLAN_SETTING]).read_text(encoding="utf-8"))
     changes = pytest.MonkeyPatch()

@@ -1,0 +1,166 @@
+{
+  "jobs": {
+    "backscatter_area": {
+      "status": "successful",
+      "results_http_status": 200,
+      "result_equal_without_id": true,
+      "entries_equal": true,
+      "state_has_series": true,
+      "state_has_layer": false,
+      "state_server": null,
+      "seconds": null
+    },
+    "coherence_area": {
+      "status": "successful",
+      "results_http_status": 200,
+      "result_equal_without_id": true,
+      "entries_equal": true,
+      "state_has_series": true,
+      "state_has_layer": false,
+      "state_server": null,
+      "seconds": null
+    },
+    "backscatter_validated_area": {
+      "status": "successful",
+      "results_http_status": 200,
+      "result_equal_without_id": true,
+      "entries_equal": true,
+      "state_has_series": true,
+      "state_has_layer": false,
+      "state_server": null,
+      "seconds": null
+    },
+    "coherence_area_document": {
+      "status": "successful",
+      "results_http_status": 200,
+      "result_equal_without_id": true,
+      "entries_equal": true,
+      "state_has_series": true,
+      "state_has_layer": false,
+      "state_server": null,
+      "seconds": null
+    },
+    "backscatter_p1": {
+      "status": "successful",
+      "results_http_status": 200,
+      "result_equal_without_id": true,
+      "entries_equal": true,
+      "state_has_series": true,
+      "state_has_layer": false,
+      "state_server": null,
+      "seconds": null
+    },
+    "coherence_p1": {
+      "status": "successful",
+      "results_http_status": 200,
+      "result_equal_without_id": true,
+      "entries_equal": true,
+      "state_has_series": true,
+      "state_has_layer": false,
+      "state_server": null,
+      "seconds": null
+    },
+    "backscatter_p2": {
+      "status": "successful",
+      "results_http_status": 200,
+      "result_equal_without_id": true,
+      "entries_equal": true,
+      "state_has_series": true,
+      "state_has_layer": false,
+      "state_server": null,
+      "seconds": null
+    },
+    "coherence_p2": {
+      "status": "successful",
+      "results_http_status": 200,
+      "result_equal_without_id": true,
+      "entries_equal": true,
+      "state_has_series": true,
+      "state_has_layer": false,
+      "state_server": null,
+      "seconds": null
+    },
+    "backscatter_p3": {
+      "status": "successful",
+      "results_http_status": 200,
+      "result_equal_without_id": true,
+      "entries_equal": true,
+      "state_has_series": true,
+      "state_has_layer": false,
+      "state_server": null,
+      "seconds": null
+    },
+    "coherence_p3": {
+      "status": "successful",
+      "results_http_status": 200,
+      "result_equal_without_id": true,
+      "entries_equal": true,
+      "state_has_series": true,
+      "state_has_layer": false,
+      "state_server": null,
+      "seconds": null
+    },
+    "backscatter_p4": {
+      "status": "successful",
+      "results_http_status": 200,
+      "result_equal_without_id": true,
+      "entries_equal": true,
+      "state_has_series": true,
+      "state_has_layer": false,
+      "state_server": null,
+      "seconds": null
+    },
+    "coherence_p4": {
+      "status": "successful",
+      "results_http_status": 200,
+      "result_equal_without_id": true,
+      "entries_equal": true,
+      "state_has_series": true,
+      "state_has_layer": false,
+      "state_server": null,
+      "seconds": null
+    },
+    "backscatter_p5": {
+      "status": "successful",
+      "results_http_status": 200,
+      "result_equal_without_id": true,
+      "entries_equal": true,
+      "state_has_series": true,
+      "state_has_layer": false,
+      "state_server": null,
+      "seconds": null
+    },
+    "coherence_p5": {
+      "status": "successful",
+      "results_http_status": 200,
+      "result_equal_without_id": true,
+      "entries_equal": true,
+      "state_has_series": true,
+      "state_has_layer": false,
+      "state_server": null,
+      "seconds": null
+    }
+  },
+  "refusals": {
+    "point outside the area": true,
+    "coherence series of backscatter layers": true,
+    "backscatter series of layers on two grids": true,
+    "backscatter series of coherence layers": true,
+    "one layer": true,
+    "one layer given twice": true,
+    "a point outside the Earth": true,
+    "output named layer": true
+  },
+  "different": [],
+  "processes": [
+    "get-layer",
+    "backscatter-state",
+    "backscatter-change",
+    "coherence-state",
+    "coherence-change",
+    "soil-moisture-state",
+    "soil-moisture-change",
+    "backscatter-series",
+    "coherence-series"
+  ]
+}

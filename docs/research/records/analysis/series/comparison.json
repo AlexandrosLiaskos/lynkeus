@@ -1,0 +1,798 @@
+{
+ "inputs": {
+  "source_side.json": "21e62944a424f4f8e7d4292dd2e229b546cc62e8b33a79eea21f062561c9a562",
+  "lynkeus_side.json": "5dbfe7b5f7dba1b62167a946fe61f7786fa48b8da0222359dab8a888e0a2a22f"
+ },
+ "backscatter-series": {
+  "dates": [
+   [
+    "2026-09-27"
+   ],
+   [
+    "2026-10-09"
+   ],
+   [
+    "2026-10-21"
+   ],
+   [
+    "2026-11-02"
+   ]
+  ],
+  "product_files": [
+   "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+   "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+   "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+   "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+  ],
+  "unit": "dB",
+  "tool_values": [
+   -4.315111978395169,
+   -4.832534317123461,
+   -4.833044960998819,
+   -4.73623294188971
+  ],
+  "tool_cells": [
+   14316415,
+   14316411,
+   14316413,
+   14316416
+  ],
+  "source_values": [
+   "-4.315112113952637",
+   "-4.8325347900390625",
+   "-4.83304500579834",
+   "-4.736233711242676"
+  ],
+  "source_cells": [
+   14316415,
+   14316411,
+   14316413,
+   14316416
+  ],
+  "order_of_dates_equal": true,
+  "cells_equal": true,
+  "area_difference_from_source_as_written": {
+   "largest": 7.6935296622338e-07,
+   "each": [
+    1.3555746747329067e-07,
+    4.7291560179019143e-07,
+    4.4799520537708304e-08,
+    7.6935296622338e-07
+   ],
+   "without_value_on_one_side_only": 0
+  },
+  "reverse_order_of_layers_gives_the_same_series": true,
+  "source_values_in_64_bit_numbers": [
+   "-4.315111978395169",
+   "-4.832534317123461",
+   "-4.833044960998819",
+   "-4.73623294188971"
+  ],
+  "area_difference_from_source_in_64_bit_numbers": {
+   "largest": 0.0,
+   "each": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "without_value_on_one_side_only": 0
+  },
+  "points": {
+   "p1": {
+    "point": {
+     "longitude": -71.0,
+     "latitude": 42.8
+    },
+    "tool_cell": [
+     1706,
+     1693
+    ],
+    "source_pixel": [
+     1706,
+     1693
+    ],
+    "cell_equal": true,
+    "tool_values": [
+     -7.610060343936754,
+     -5.936009545230867,
+     -7.364715987858739,
+     -10.232091597445104
+    ],
+    "tool_cells": [
+     1,
+     1,
+     1,
+     1
+    ],
+    "source_values": [
+     "-7.610060691833496",
+     "-5.936009883880615",
+     "-7.364716053009033",
+     "-10.232091903686523"
+    ],
+    "difference": {
+     "largest": 3.478967425252222e-07,
+     "each": [
+      3.478967425252222e-07,
+      3.3864974824382443e-07,
+      6.515029404852157e-08,
+      3.0624141977853014e-07
+     ],
+     "without_value_on_one_side_only": 0
+    }
+   },
+   "p2": {
+    "point": {
+     "longitude": -70.9,
+     "latitude": 42.7
+    },
+    "tool_cell": [
+     2835,
+     2486
+    ],
+    "source_pixel": [
+     2835,
+     2486
+    ],
+    "cell_equal": true,
+    "tool_values": [
+     -8.84405890619715,
+     -12.453390801435738,
+     -10.474212409586123,
+     -14.201334454160271
+    ],
+    "tool_cells": [
+     1,
+     1,
+     1,
+     1
+    ],
+    "source_values": [
+     "-8.844058990478516",
+     "-12.453392028808594",
+     "-10.474213600158691",
+     "-14.201335906982422"
+    ],
+    "difference": {
+     "largest": 1.4528221505827332e-06,
+     "each": [
+      8.428136588634061e-08,
+      1.2273728557943286e-06,
+      1.1905725685323887e-06,
+      1.4528221505827332e-06
+     ],
+     "without_value_on_one_side_only": 0
+    }
+   },
+   "p3": {
+    "point": {
+     "longitude": -71.1,
+     "latitude": 42.65
+    },
+    "tool_cell": [
+     3352,
+     834
+    ],
+    "source_pixel": [
+     3352,
+     834
+    ],
+    "cell_equal": true,
+    "tool_values": [
+     -7.1289854327232804,
+     -6.029024124436332,
+     -8.954701291266648,
+     -3.750911866671517
+    ],
+    "tool_cells": [
+     1,
+     1,
+     1,
+     1
+    ],
+    "source_values": [
+     "-7.128985404968262",
+     "-6.029024124145508",
+     "-8.95470142364502",
+     "-3.7509119510650635"
+    ],
+    "difference": {
+     "largest": 1.3237837137580755e-07,
+     "each": [
+      2.775501872775976e-08,
+      2.908242535681893e-10,
+      1.3237837137580755e-07,
+      8.439354637346241e-08
+     ],
+     "without_value_on_one_side_only": 0
+    }
+   },
+   "p4": {
+    "point": {
+     "longitude": -70.8,
+     "latitude": 42.9
+    },
+    "tool_cell": [
+     632,
+     3352
+    ],
+    "source_pixel": [
+     632,
+     3352
+    ],
+    "cell_equal": true,
+    "tool_values": [
+     -16.068267077710118,
+     -19.467349903766245,
+     -16.988306566405114,
+     -18.58491247229638
+    ],
+    "tool_cells": [
+     1,
+     1,
+     1,
+     1
+    ],
+    "source_values": [
+     "-16.068267822265625",
+     "-19.46735191345215",
+     "-16.98830795288086",
+     "-18.58491325378418"
+    ],
+    "difference": {
+     "largest": 2.00968590391426e-06,
+     "each": [
+      7.445555070262344e-07,
+      2.00968590391426e-06,
+      1.3864757448800447e-06,
+      7.814877989176239e-07
+     ],
+     "without_value_on_one_side_only": 0
+    }
+   },
+   "p5": {
+    "point": {
+     "longitude": -70.8726,
+     "latitude": 42.8126
+    },
+    "tool_cell": [
+     1590,
+     2738
+    ],
+    "source_pixel": [
+     1590,
+     2738
+    ],
+    "cell_equal": true,
+    "tool_values": [
+     8.019781976145936,
+     4.899708321337691,
+     5.478684092300843,
+     6.056763832331706
+    ],
+    "tool_cells": [
+     1,
+     1,
+     1,
+     1
+    ],
+    "source_values": [
+     "8.019782066345215",
+     "4.8997087478637695",
+     "5.478684425354004",
+     "6.056764125823975"
+    ],
+    "difference": {
+     "largest": 4.265260784563907e-07,
+     "each": [
+      9.019927915687731e-08,
+      4.265260784563907e-07,
+      3.3305316105014526e-07,
+      2.9349226871033807e-07
+     ],
+     "without_value_on_one_side_only": 0
+    }
+   }
+  },
+  "largest_difference_at_points": 2.00968590391426e-06,
+  "all_cells_of_points_equal": true
+ },
+ "coherence-series": {
+  "dates": [
+   [
+    "2026-09-15",
+    "2026-09-27"
+   ],
+   [
+    "2026-09-27",
+    "2026-10-09"
+   ],
+   [
+    "2026-10-09",
+    "2026-10-21"
+   ]
+  ],
+  "product_files": [
+   "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+   "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+   "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+  ],
+  "unit": "1",
+  "tool_values": [
+   0.31936795717771277,
+   0.3067074436510622,
+   0.5062995480591644
+  ],
+  "tool_cells": [
+   3579092,
+   3579092,
+   3579092
+  ],
+  "source_values": [
+   "0.3193679451942444",
+   "0.3067074418067932",
+   "0.5062995553016663"
+  ],
+  "source_cells": [
+   3579092,
+   3579092,
+   3579092
+  ],
+  "order_of_dates_equal": true,
+  "cells_equal": true,
+  "area_difference_from_source_as_written": {
+   "largest": 1.1983468384269003e-08,
+   "each": [
+    1.1983468384269003e-08,
+    1.8442689597719664e-09,
+    7.242501820492464e-09
+   ],
+   "without_value_on_one_side_only": 0
+  },
+  "reverse_order_of_layers_gives_the_same_series": true,
+  "source_values_in_64_bit_numbers": [
+   "0.31936795717771277",
+   "0.3067074436510622",
+   "0.5062995480591644"
+  ],
+  "area_difference_from_source_in_64_bit_numbers": {
+   "largest": 0.0,
+   "each": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "without_value_on_one_side_only": 0
+  },
+  "points": {
+   "p1": {
+    "point": {
+     "longitude": -71.0,
+     "latitude": 42.8
+    },
+    "tool_cell": [
+     852,
+     846
+    ],
+    "source_pixel": [
+     852,
+     846
+    ],
+    "cell_equal": true,
+    "tool_values": [
+     0.36974722146987915,
+     0.3215233087539673,
+     0.6482067108154297
+    ],
+    "tool_cells": [
+     1,
+     1,
+     1
+    ],
+    "source_values": [
+     "0.36974722146987915",
+     "0.3215233087539673",
+     "0.6482067108154297"
+    ],
+    "difference": {
+     "largest": 0.0,
+     "each": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "without_value_on_one_side_only": 0
+    }
+   },
+   "p2": {
+    "point": {
+     "longitude": -70.9,
+     "latitude": 42.7
+    },
+    "tool_cell": [
+     1417,
+     1243
+    ],
+    "source_pixel": [
+     1417,
+     1243
+    ],
+    "cell_equal": true,
+    "tool_values": [
+     0.332411527633667,
+     0.22321242094039917,
+     0.5040841698646545
+    ],
+    "tool_cells": [
+     1,
+     1,
+     1
+    ],
+    "source_values": [
+     "0.332411527633667",
+     "0.22321242094039917",
+     "0.5040841698646545"
+    ],
+    "difference": {
+     "largest": 0.0,
+     "each": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "without_value_on_one_side_only": 0
+    }
+   },
+   "p3": {
+    "point": {
+     "longitude": -71.1,
+     "latitude": 42.65
+    },
+    "tool_cell": [
+     1675,
+     417
+    ],
+    "source_pixel": [
+     1675,
+     417
+    ],
+    "cell_equal": true,
+    "tool_values": [
+     0.14651069045066833,
+     0.34934714436531067,
+     0.5242114663124084
+    ],
+    "tool_cells": [
+     1,
+     1,
+     1
+    ],
+    "source_values": [
+     "0.14651069045066833",
+     "0.34934714436531067",
+     "0.5242114663124084"
+    ],
+    "difference": {
+     "largest": 0.0,
+     "each": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "without_value_on_one_side_only": 0
+    }
+   },
+   "p4": {
+    "point": {
+     "longitude": -70.8,
+     "latitude": 42.9
+    },
+    "tool_cell": [
+     315,
+     1676
+    ],
+    "source_pixel": [
+     315,
+     1676
+    ],
+    "cell_equal": true,
+    "tool_values": [
+     0.28476378321647644,
+     0.281078577041626,
+     0.3181857764720917
+    ],
+    "tool_cells": [
+     1,
+     1,
+     1
+    ],
+    "source_values": [
+     "0.28476378321647644",
+     "0.281078577041626",
+     "0.3181857764720917"
+    ],
+    "difference": {
+     "largest": 0.0,
+     "each": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "without_value_on_one_side_only": 0
+    }
+   },
+   "p5": {
+    "point": {
+     "longitude": -70.8726,
+     "latitude": 42.8126
+    },
+    "tool_cell": [
+     794,
+     1369
+    ],
+    "source_pixel": [
+     794,
+     1369
+    ],
+    "cell_equal": true,
+    "tool_values": [
+     0.7239977121353149,
+     0.7051378488540649,
+     0.8103115558624268
+    ],
+    "tool_cells": [
+     1,
+     1,
+     1
+    ],
+    "source_values": [
+     "0.7239977121353149",
+     "0.7051378488540649",
+     "0.8103115558624268"
+    ],
+    "difference": {
+     "largest": 0.0,
+     "each": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "without_value_on_one_side_only": 0
+    }
+   }
+  },
+  "largest_difference_at_points": 0.0,
+  "all_cells_of_points_equal": true
+ },
+ "jobs": {
+  "backscatter_area": {
+   "status": "successful",
+   "equal_to_run_series": {
+    "entries": true,
+    "inputs": true,
+    "layer": true,
+    "quantity": true,
+    "unit": true,
+    "reduction": true,
+    "range": true,
+    "point": true,
+    "cell": true,
+    "area": true,
+    "method": true,
+    "program": true,
+    "kind": true
+   },
+   "all_equal": true
+  },
+  "coherence_area": {
+   "status": "successful",
+   "equal_to_run_series": {
+    "entries": true,
+    "inputs": true,
+    "layer": true,
+    "quantity": true,
+    "unit": true,
+    "reduction": true,
+    "range": true,
+    "point": true,
+    "cell": true,
+    "area": true,
+    "method": true,
+    "program": true,
+    "kind": true
+   },
+   "all_equal": true
+  },
+  "backscatter_p1": {
+   "status": "successful",
+   "equal_to_run_series": {
+    "entries": true,
+    "inputs": true,
+    "layer": true,
+    "quantity": true,
+    "unit": true,
+    "reduction": true,
+    "range": true,
+    "point": true,
+    "cell": true,
+    "area": true,
+    "method": true,
+    "program": true,
+    "kind": true
+   },
+   "all_equal": true
+  },
+  "coherence_p1": {
+   "status": "successful",
+   "equal_to_run_series": {
+    "entries": true,
+    "inputs": true,
+    "layer": true,
+    "quantity": true,
+    "unit": true,
+    "reduction": true,
+    "range": true,
+    "point": true,
+    "cell": true,
+    "area": true,
+    "method": true,
+    "program": true,
+    "kind": true
+   },
+   "all_equal": true
+  },
+  "backscatter_p2": {
+   "status": "successful",
+   "equal_to_run_series": {
+    "entries": true,
+    "inputs": true,
+    "layer": true,
+    "quantity": true,
+    "unit": true,
+    "reduction": true,
+    "range": true,
+    "point": true,
+    "cell": true,
+    "area": true,
+    "method": true,
+    "program": true,
+    "kind": true
+   },
+   "all_equal": true
+  },
+  "coherence_p2": {
+   "status": "successful",
+   "equal_to_run_series": {
+    "entries": true,
+    "inputs": true,
+    "layer": true,
+    "quantity": true,
+    "unit": true,
+    "reduction": true,
+    "range": true,
+    "point": true,
+    "cell": true,
+    "area": true,
+    "method": true,
+    "program": true,
+    "kind": true
+   },
+   "all_equal": true
+  },
+  "backscatter_p3": {
+   "status": "successful",
+   "equal_to_run_series": {
+    "entries": true,
+    "inputs": true,
+    "layer": true,
+    "quantity": true,
+    "unit": true,
+    "reduction": true,
+    "range": true,
+    "point": true,
+    "cell": true,
+    "area": true,
+    "method": true,
+    "program": true,
+    "kind": true
+   },
+   "all_equal": true
+  },
+  "coherence_p3": {
+   "status": "successful",
+   "equal_to_run_series": {
+    "entries": true,
+    "inputs": true,
+    "layer": true,
+    "quantity": true,
+    "unit": true,
+    "reduction": true,
+    "range": true,
+    "point": true,
+    "cell": true,
+    "area": true,
+    "method": true,
+    "program": true,
+    "kind": true
+   },
+   "all_equal": true
+  },
+  "backscatter_p4": {
+   "status": "successful",
+   "equal_to_run_series": {
+    "entries": true,
+    "inputs": true,
+    "layer": true,
+    "quantity": true,
+    "unit": true,
+    "reduction": true,
+    "range": true,
+    "point": true,
+    "cell": true,
+    "area": true,
+    "method": true,
+    "program": true,
+    "kind": true
+   },
+   "all_equal": true
+  },
+  "coherence_p4": {
+   "status": "successful",
+   "equal_to_run_series": {
+    "entries": true,
+    "inputs": true,
+    "layer": true,
+    "quantity": true,
+    "unit": true,
+    "reduction": true,
+    "range": true,
+    "point": true,
+    "cell": true,
+    "area": true,
+    "method": true,
+    "program": true,
+    "kind": true
+   },
+   "all_equal": true
+  },
+  "backscatter_p5": {
+   "status": "successful",
+   "equal_to_run_series": {
+    "entries": true,
+    "inputs": true,
+    "layer": true,
+    "quantity": true,
+    "unit": true,
+    "reduction": true,
+    "range": true,
+    "point": true,
+    "cell": true,
+    "area": true,
+    "method": true,
+    "program": true,
+    "kind": true
+   },
+   "all_equal": true
+  },
+  "coherence_p5": {
+   "status": "successful",
+   "equal_to_run_series": {
+    "entries": true,
+    "inputs": true,
+    "layer": true,
+    "quantity": true,
+    "unit": true,
+    "reduction": true,
+    "range": true,
+    "point": true,
+    "cell": true,
+    "area": true,
+    "method": true,
+    "program": true,
+    "kind": true
+   },
+   "all_equal": true
+  }
+ }
+}

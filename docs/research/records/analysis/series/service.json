@@ -1,0 +1,21 @@
+{
+ "what": "The private copy of the web service in which the layers were received and the series tools ran as jobs, on 15 Nov 2026",
+ "base_commit": "05930fbc78c10e8bd85ded71fe53ba78d155e17a",
+ "sha256_of_the_hashes_of_api_src_pyproject_uv_lock_and_dockerfile": {
+  "receive": "9ed4bb02a8053260c442dad2c4233e1a9c6e2a5d58e73faf7addb829a7a65307",
+  "series": "9ed4bb02a8053260c442dad2c4233e1a9c6e2a5d58e73faf7addb829a7a65307"
+ },
+ "container": {
+  "image": "built from api/ with its Dockerfile",
+  "processors": 1,
+  "memory_limit": "2g",
+  "read_only_file_system": true,
+  "user": 10001,
+  "init_process": true
+ },
+ "memory_peak_bytes": {
+  "receive": 698413056,
+  "series": 671752192
+ },
+ "memory_peak_source": "the file memory.peak of the control group of each container, read before the container was stopped; a new container served each phase"
+}

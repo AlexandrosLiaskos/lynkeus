@@ -1,0 +1,4550 @@
+{
+ "started": "2026-11-15T13:01:58Z",
+ "phase": "series",
+ "area": {
+  "west": -71.2,
+  "south": 42.6,
+  "east": -70.75,
+  "north": 42.95
+ },
+ "layers": {},
+ "series": {
+  "backscatter_area": {
+   "process": "backscatter-series",
+   "inputs": {
+    "inputs": [
+     "e7084528cd2fbdabe0da018099e8ba69",
+     "ab08c2a0ebb107e2238acde5fb8a329e",
+     "e7045ec025f8a7a2397fca7a99902276",
+     "ffbfd0c3360f0be55fe4f6453412b415"
+    ],
+    "title": "Backscatter HH, mean of the area"
+   },
+   "submitted": "2026-11-15T13:01:58Z",
+   "http_status": 201,
+   "job": "a764b0fb24e7090eb4dcb91641b2d5d9",
+   "job_title": "Backscatter HH, mean of the area",
+   "given": [
+    "hh_1102",
+    "hh_0927",
+    "hh_1021",
+    "hh_1009"
+   ],
+   "status_info": {
+    "processID": "backscatter-series",
+    "type": "process",
+    "jobID": "a764b0fb24e7090eb4dcb91641b2d5d9",
+    "title": "Backscatter HH, mean of the area",
+    "status": "successful",
+    "message": "The series is ready.",
+    "created": "2026-11-15T13:01:58Z",
+    "started": "2026-11-15T13:01:58Z",
+    "finished": "2026-11-15T13:02:11Z",
+    "updated": "2026-11-15T13:02:11Z",
+    "progress": 100,
+    "inputs": {
+     "inputs": [
+      "e7084528cd2fbdabe0da018099e8ba69",
+      "ab08c2a0ebb107e2238acde5fb8a329e",
+      "e7045ec025f8a7a2397fca7a99902276",
+      "ffbfd0c3360f0be55fe4f6453412b415"
+     ],
+     "title": "Backscatter HH, mean of the area",
+     "point": null
+    },
+    "series": "00e8a880b5c5ef8fdbca05f9d128a63d",
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/a764b0fb24e7090eb4dcb91641b2d5d9",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/a764b0fb24e7090eb4dcb91641b2d5d9/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   },
+   "status": "successful",
+   "results_http_status": 200,
+   "result": {
+    "id": "00e8a880b5c5ef8fdbca05f9d128a63d",
+    "title": "Backscatter HH, mean of the area",
+    "kind": "series",
+    "quantity": "Radar backscatter gamma0",
+    "unit": "dB",
+    "reduction": "mean-power",
+    "range": null,
+    "point": null,
+    "cell": null,
+    "area": {
+     "west": -71.21240946923143,
+     "south": 42.59232397512833,
+     "east": -70.74021462753375,
+     "north": 42.957757337981135
+    },
+    "entries": [
+     {
+      "dates": [
+       "2026-09-27"
+      ],
+      "value": -4.315111978395169,
+      "cells": 14316415
+     },
+     {
+      "dates": [
+       "2026-10-09"
+      ],
+      "value": -4.832534317123461,
+      "cells": 14316411
+     },
+     {
+      "dates": [
+       "2026-10-21"
+      ],
+      "value": -4.833044960998819,
+      "cells": 14316413
+     },
+     {
+      "dates": [
+       "2026-11-02"
+      ],
+      "value": -4.73623294188971,
+      "cells": 14316416
+     }
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "HHHH",
+    "program": "Lynkeus 0.1.0",
+    "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+   }
+  },
+  "coherence_area": {
+   "process": "coherence-series",
+   "inputs": {
+    "inputs": [
+     "d34069fb70f91b284adc41acab5e765e",
+     "8f9eb9a99bf63efa50af31a061da3265",
+     "2df74db4382a6aeed2164231bcc9d0e8"
+    ],
+    "title": "Coherence HH, mean of the area"
+   },
+   "submitted": "2026-11-15T13:01:58Z",
+   "http_status": 201,
+   "job": "5fd254bd345bcc295275db321d37b8c0",
+   "job_title": "Coherence HH, mean of the area",
+   "given": [
+    "coh_1009_1021",
+    "coh_0915_0927",
+    "coh_0927_1009"
+   ],
+   "status_info": {
+    "processID": "coherence-series",
+    "type": "process",
+    "jobID": "5fd254bd345bcc295275db321d37b8c0",
+    "title": "Coherence HH, mean of the area",
+    "status": "successful",
+    "message": "The series is ready.",
+    "created": "2026-11-15T13:01:58Z",
+    "started": "2026-11-15T13:01:58Z",
+    "finished": "2026-11-15T13:02:09Z",
+    "updated": "2026-11-15T13:02:09Z",
+    "progress": 100,
+    "inputs": {
+     "inputs": [
+      "d34069fb70f91b284adc41acab5e765e",
+      "8f9eb9a99bf63efa50af31a061da3265",
+      "2df74db4382a6aeed2164231bcc9d0e8"
+     ],
+     "title": "Coherence HH, mean of the area",
+     "point": null
+    },
+    "series": "deeb2fdfdb0d5ae6a7849a194f90b53a",
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/5fd254bd345bcc295275db321d37b8c0",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/5fd254bd345bcc295275db321d37b8c0/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   },
+   "status": "successful",
+   "results_http_status": 200,
+   "result": {
+    "id": "deeb2fdfdb0d5ae6a7849a194f90b53a",
+    "title": "Coherence HH, mean of the area",
+    "kind": "series",
+    "quantity": "Interferometric coherence (magnitude)",
+    "unit": "1",
+    "reduction": "mean",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "point": null,
+    "cell": null,
+    "area": {
+     "west": -71.21240624479763,
+     "south": 42.59241396597496,
+     "east": -70.74021713322617,
+     "north": 42.957667328501266
+    },
+    "entries": [
+     {
+      "dates": [
+       "2026-09-15",
+       "2026-09-27"
+      ],
+      "value": 0.31936795717771277,
+      "cells": 3579092
+     },
+     {
+      "dates": [
+       "2026-09-27",
+       "2026-10-09"
+      ],
+      "value": 0.3067074436510622,
+      "cells": 3579092
+     },
+     {
+      "dates": [
+       "2026-10-09",
+       "2026-10-21"
+      ],
+      "value": 0.5062995480591644,
+      "cells": 3579092
+     }
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "program": "Lynkeus 0.1.0",
+    "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+   }
+  },
+  "backscatter_validated_area": {
+   "process": "backscatter-series",
+   "inputs": {
+    "inputs": [
+     "e7045ec025f8a7a2397fca7a99902276",
+     "e7084528cd2fbdabe0da018099e8ba69"
+    ],
+    "title": "Backscatter HH, validated dates"
+   },
+   "submitted": "2026-11-15T13:01:58Z",
+   "http_status": 201,
+   "job": "fd5eb0ea14f940016c33efb72b11fb53",
+   "job_title": "Backscatter HH, validated dates",
+   "given": [
+    "hh_1021",
+    "hh_1102"
+   ],
+   "status_info": {
+    "processID": "backscatter-series",
+    "type": "process",
+    "jobID": "fd5eb0ea14f940016c33efb72b11fb53",
+    "title": "Backscatter HH, validated dates",
+    "status": "successful",
+    "message": "The series is ready.",
+    "created": "2026-11-15T13:01:58Z",
+    "started": "2026-11-15T13:02:09Z",
+    "finished": "2026-11-15T13:02:18Z",
+    "updated": "2026-11-15T13:02:18Z",
+    "progress": 100,
+    "inputs": {
+     "inputs": [
+      "e7045ec025f8a7a2397fca7a99902276",
+      "e7084528cd2fbdabe0da018099e8ba69"
+     ],
+     "title": "Backscatter HH, validated dates",
+     "point": null
+    },
+    "series": "c3a31883d0c5c49d29ca10e948a0d33c",
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/fd5eb0ea14f940016c33efb72b11fb53",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/fd5eb0ea14f940016c33efb72b11fb53/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   },
+   "status": "successful",
+   "results_http_status": 200,
+   "result": {
+    "id": "c3a31883d0c5c49d29ca10e948a0d33c",
+    "title": "Backscatter HH, validated dates",
+    "kind": "series",
+    "quantity": "Radar backscatter gamma0",
+    "unit": "dB",
+    "reduction": "mean-power",
+    "range": null,
+    "point": null,
+    "cell": null,
+    "area": {
+     "west": -71.21240946923143,
+     "south": 42.59232397512833,
+     "east": -70.74021462753375,
+     "north": 42.957757337981135
+    },
+    "entries": [
+     {
+      "dates": [
+       "2026-10-21"
+      ],
+      "value": -4.833044960998819,
+      "cells": 14316413
+     },
+     {
+      "dates": [
+       "2026-11-02"
+      ],
+      "value": -4.73623294188971,
+      "cells": 14316416
+     }
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "HHHH",
+    "program": "Lynkeus 0.1.0",
+    "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+   }
+  },
+  "coherence_area_document": {
+   "process": "coherence-series",
+   "inputs": {
+    "inputs": [
+     "d34069fb70f91b284adc41acab5e765e",
+     "8f9eb9a99bf63efa50af31a061da3265",
+     "2df74db4382a6aeed2164231bcc9d0e8"
+    ],
+    "title": "Coherence HH, as a document"
+   },
+   "response": "document",
+   "outputs": {
+    "series": {
+     "transmissionMode": "value"
+    }
+   },
+   "submitted": "2026-11-15T13:01:58Z",
+   "http_status": 201,
+   "job": "be3b225d274d6b16b9fe8929c494fdd4",
+   "job_title": "Coherence HH, as a document",
+   "given": [
+    "coh_1009_1021",
+    "coh_0915_0927",
+    "coh_0927_1009"
+   ],
+   "status_info": {
+    "processID": "coherence-series",
+    "type": "process",
+    "jobID": "be3b225d274d6b16b9fe8929c494fdd4",
+    "title": "Coherence HH, as a document",
+    "status": "successful",
+    "message": "The series is ready.",
+    "created": "2026-11-15T13:01:58Z",
+    "started": "2026-11-15T13:02:11Z",
+    "finished": "2026-11-15T13:02:18Z",
+    "updated": "2026-11-15T13:02:18Z",
+    "progress": 100,
+    "inputs": {
+     "inputs": [
+      "d34069fb70f91b284adc41acab5e765e",
+      "8f9eb9a99bf63efa50af31a061da3265",
+      "2df74db4382a6aeed2164231bcc9d0e8"
+     ],
+     "title": "Coherence HH, as a document",
+     "point": null
+    },
+    "series": "53f676ec56557eee0d34b5ac32426286",
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/be3b225d274d6b16b9fe8929c494fdd4",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/be3b225d274d6b16b9fe8929c494fdd4/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   },
+   "status": "successful",
+   "results_http_status": 200,
+   "result": {
+    "series": {
+     "value": {
+      "id": "53f676ec56557eee0d34b5ac32426286",
+      "title": "Coherence HH, as a document",
+      "kind": "series",
+      "quantity": "Interferometric coherence (magnitude)",
+      "unit": "1",
+      "reduction": "mean",
+      "range": [
+       0.0,
+       1.0
+      ],
+      "point": null,
+      "cell": null,
+      "area": {
+       "west": -71.21240624479763,
+       "south": 42.59241396597496,
+       "east": -70.74021713322617,
+       "north": 42.957667328501266
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-15",
+         "2026-09-27"
+        ],
+        "value": 0.31936795717771277,
+        "cells": 3579092
+       },
+       {
+        "dates": [
+         "2026-09-27",
+         "2026-10-09"
+        ],
+        "value": 0.3067074436510622,
+        "cells": 3579092
+       },
+       {
+        "dates": [
+         "2026-10-09",
+         "2026-10-21"
+        ],
+        "value": 0.5062995480591644,
+        "cells": 3579092
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+     }
+    }
+   }
+  },
+  "backscatter_p1": {
+   "process": "backscatter-series",
+   "inputs": {
+    "inputs": [
+     "e7084528cd2fbdabe0da018099e8ba69",
+     "ab08c2a0ebb107e2238acde5fb8a329e",
+     "e7045ec025f8a7a2397fca7a99902276",
+     "ffbfd0c3360f0be55fe4f6453412b415"
+    ],
+    "title": "Backscatter HH at p1",
+    "point": {
+     "longitude": -71.0,
+     "latitude": 42.8
+    }
+   },
+   "submitted": "2026-11-15T13:02:18Z",
+   "http_status": 201,
+   "job": "127f2580469d7efc8789c7c6ea32d713",
+   "job_title": "Backscatter HH at p1",
+   "given": [
+    "hh_1102",
+    "hh_0927",
+    "hh_1021",
+    "hh_1009"
+   ],
+   "status_info": {
+    "processID": "backscatter-series",
+    "type": "process",
+    "jobID": "127f2580469d7efc8789c7c6ea32d713",
+    "title": "Backscatter HH at p1",
+    "status": "successful",
+    "message": "The series is ready.",
+    "created": "2026-11-15T13:02:18Z",
+    "started": "2026-11-15T13:02:18Z",
+    "finished": "2026-11-15T13:02:28Z",
+    "updated": "2026-11-15T13:02:28Z",
+    "progress": 100,
+    "inputs": {
+     "inputs": [
+      "e7084528cd2fbdabe0da018099e8ba69",
+      "ab08c2a0ebb107e2238acde5fb8a329e",
+      "e7045ec025f8a7a2397fca7a99902276",
+      "ffbfd0c3360f0be55fe4f6453412b415"
+     ],
+     "title": "Backscatter HH at p1",
+     "point": {
+      "longitude": -71.0,
+      "latitude": 42.8
+     }
+    },
+    "series": "b7fc2e44702e69e9fc912497469f0871",
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/127f2580469d7efc8789c7c6ea32d713",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/127f2580469d7efc8789c7c6ea32d713/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   },
+   "status": "successful",
+   "results_http_status": 200,
+   "result": {
+    "id": "b7fc2e44702e69e9fc912497469f0871",
+    "title": "Backscatter HH at p1",
+    "kind": "series",
+    "quantity": "Radar backscatter gamma0",
+    "unit": "dB",
+    "reduction": "mean-power",
+    "range": null,
+    "point": {
+     "longitude": -71.0,
+     "latitude": 42.8
+    },
+    "cell": {
+     "row": 1706,
+     "column": 1693,
+     "longitude": -70.99997498471882,
+     "latitude": 42.79999721314369
+    },
+    "area": {
+     "west": -71.21240946923143,
+     "south": 42.59232397512833,
+     "east": -70.74021462753375,
+     "north": 42.957757337981135
+    },
+    "entries": [
+     {
+      "dates": [
+       "2026-09-27"
+      ],
+      "value": -7.610060343936754,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-10-09"
+      ],
+      "value": -5.936009545230867,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-10-21"
+      ],
+      "value": -7.364715987858739,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-11-02"
+      ],
+      "value": -10.232091597445104,
+      "cells": 1
+     }
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "HHHH",
+    "program": "Lynkeus 0.1.0",
+    "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+   }
+  },
+  "coherence_p1": {
+   "process": "coherence-series",
+   "inputs": {
+    "inputs": [
+     "d34069fb70f91b284adc41acab5e765e",
+     "8f9eb9a99bf63efa50af31a061da3265",
+     "2df74db4382a6aeed2164231bcc9d0e8"
+    ],
+    "title": "Coherence HH at p1",
+    "point": {
+     "longitude": -71.0,
+     "latitude": 42.8
+    }
+   },
+   "submitted": "2026-11-15T13:02:18Z",
+   "http_status": 201,
+   "job": "da3dc6cf186fe81a9282b59feb806a4e",
+   "job_title": "Coherence HH at p1",
+   "given": [
+    "coh_1009_1021",
+    "coh_0915_0927",
+    "coh_0927_1009"
+   ],
+   "status_info": {
+    "processID": "coherence-series",
+    "type": "process",
+    "jobID": "da3dc6cf186fe81a9282b59feb806a4e",
+    "title": "Coherence HH at p1",
+    "status": "successful",
+    "message": "The series is ready.",
+    "created": "2026-11-15T13:02:18Z",
+    "started": "2026-11-15T13:02:18Z",
+    "finished": "2026-11-15T13:02:26Z",
+    "updated": "2026-11-15T13:02:26Z",
+    "progress": 100,
+    "inputs": {
+     "inputs": [
+      "d34069fb70f91b284adc41acab5e765e",
+      "8f9eb9a99bf63efa50af31a061da3265",
+      "2df74db4382a6aeed2164231bcc9d0e8"
+     ],
+     "title": "Coherence HH at p1",
+     "point": {
+      "longitude": -71.0,
+      "latitude": 42.8
+     }
+    },
+    "series": "512101804fc7dba341a7a9d2f67fecb6",
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/da3dc6cf186fe81a9282b59feb806a4e",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/da3dc6cf186fe81a9282b59feb806a4e/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   },
+   "status": "successful",
+   "results_http_status": 200,
+   "result": {
+    "id": "512101804fc7dba341a7a9d2f67fecb6",
+    "title": "Coherence HH at p1",
+    "kind": "series",
+    "quantity": "Interferometric coherence (magnitude)",
+    "unit": "1",
+    "reduction": "mean",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "point": {
+     "longitude": -71.0,
+     "latitude": 42.8
+    },
+    "cell": {
+     "row": 852,
+     "column": 846,
+     "longitude": -71.00003754277799,
+     "latitude": 42.80004114499954
+    },
+    "area": {
+     "west": -71.21240624479763,
+     "south": 42.59241396597496,
+     "east": -70.74021713322617,
+     "north": 42.957667328501266
+    },
+    "entries": [
+     {
+      "dates": [
+       "2026-09-15",
+       "2026-09-27"
+      ],
+      "value": 0.36974722146987915,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-09-27",
+       "2026-10-09"
+      ],
+      "value": 0.3215233087539673,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-10-09",
+       "2026-10-21"
+      ],
+      "value": 0.6482067108154297,
+      "cells": 1
+     }
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "program": "Lynkeus 0.1.0",
+    "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+   }
+  },
+  "backscatter_p2": {
+   "process": "backscatter-series",
+   "inputs": {
+    "inputs": [
+     "e7084528cd2fbdabe0da018099e8ba69",
+     "ab08c2a0ebb107e2238acde5fb8a329e",
+     "e7045ec025f8a7a2397fca7a99902276",
+     "ffbfd0c3360f0be55fe4f6453412b415"
+    ],
+    "title": "Backscatter HH at p2",
+    "point": {
+     "longitude": -70.9,
+     "latitude": 42.7
+    }
+   },
+   "submitted": "2026-11-15T13:02:18Z",
+   "http_status": 201,
+   "job": "3ae0ddf6aaf07d8570648b1b958d7c83",
+   "job_title": "Backscatter HH at p2",
+   "given": [
+    "hh_1102",
+    "hh_0927",
+    "hh_1021",
+    "hh_1009"
+   ],
+   "status_info": {
+    "processID": "backscatter-series",
+    "type": "process",
+    "jobID": "3ae0ddf6aaf07d8570648b1b958d7c83",
+    "title": "Backscatter HH at p2",
+    "status": "successful",
+    "message": "The series is ready.",
+    "created": "2026-11-15T13:02:18Z",
+    "started": "2026-11-15T13:02:26Z",
+    "finished": "2026-11-15T13:02:35Z",
+    "updated": "2026-11-15T13:02:35Z",
+    "progress": 100,
+    "inputs": {
+     "inputs": [
+      "e7084528cd2fbdabe0da018099e8ba69",
+      "ab08c2a0ebb107e2238acde5fb8a329e",
+      "e7045ec025f8a7a2397fca7a99902276",
+      "ffbfd0c3360f0be55fe4f6453412b415"
+     ],
+     "title": "Backscatter HH at p2",
+     "point": {
+      "longitude": -70.9,
+      "latitude": 42.7
+     }
+    },
+    "series": "8c9c6eae2cad1de29a3a31f52e8baecf",
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/3ae0ddf6aaf07d8570648b1b958d7c83",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/3ae0ddf6aaf07d8570648b1b958d7c83/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   },
+   "status": "successful",
+   "results_http_status": 200,
+   "result": {
+    "id": "8c9c6eae2cad1de29a3a31f52e8baecf",
+    "title": "Backscatter HH at p2",
+    "kind": "series",
+    "quantity": "Radar backscatter gamma0",
+    "unit": "dB",
+    "reduction": "mean-power",
+    "range": null,
+    "point": {
+     "longitude": -70.9,
+     "latitude": 42.7
+    },
+    "cell": {
+     "row": 2835,
+     "column": 2486,
+     "longitude": -70.89994601481905,
+     "latitude": 42.70003373938693
+    },
+    "area": {
+     "west": -71.21240946923143,
+     "south": 42.59232397512833,
+     "east": -70.74021462753375,
+     "north": 42.957757337981135
+    },
+    "entries": [
+     {
+      "dates": [
+       "2026-09-27"
+      ],
+      "value": -8.84405890619715,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-10-09"
+      ],
+      "value": -12.453390801435738,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-10-21"
+      ],
+      "value": -10.474212409586123,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-11-02"
+      ],
+      "value": -14.201334454160271,
+      "cells": 1
+     }
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "HHHH",
+    "program": "Lynkeus 0.1.0",
+    "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+   }
+  },
+  "coherence_p2": {
+   "process": "coherence-series",
+   "inputs": {
+    "inputs": [
+     "d34069fb70f91b284adc41acab5e765e",
+     "8f9eb9a99bf63efa50af31a061da3265",
+     "2df74db4382a6aeed2164231bcc9d0e8"
+    ],
+    "title": "Coherence HH at p2",
+    "point": {
+     "longitude": -70.9,
+     "latitude": 42.7
+    }
+   },
+   "submitted": "2026-11-15T13:02:18Z",
+   "http_status": 201,
+   "job": "dd932963c51388042e578f58c0500d84",
+   "job_title": "Coherence HH at p2",
+   "given": [
+    "coh_1009_1021",
+    "coh_0915_0927",
+    "coh_0927_1009"
+   ],
+   "status_info": {
+    "processID": "coherence-series",
+    "type": "process",
+    "jobID": "dd932963c51388042e578f58c0500d84",
+    "title": "Coherence HH at p2",
+    "status": "successful",
+    "message": "The series is ready.",
+    "created": "2026-11-15T13:02:18Z",
+    "started": "2026-11-15T13:02:28Z",
+    "finished": "2026-11-15T13:02:35Z",
+    "updated": "2026-11-15T13:02:35Z",
+    "progress": 100,
+    "inputs": {
+     "inputs": [
+      "d34069fb70f91b284adc41acab5e765e",
+      "8f9eb9a99bf63efa50af31a061da3265",
+      "2df74db4382a6aeed2164231bcc9d0e8"
+     ],
+     "title": "Coherence HH at p2",
+     "point": {
+      "longitude": -70.9,
+      "latitude": 42.7
+     }
+    },
+    "series": "c40a5aee3a8d60a4a2a2ad1580324e64",
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/dd932963c51388042e578f58c0500d84",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/dd932963c51388042e578f58c0500d84/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   },
+   "status": "successful",
+   "results_http_status": 200,
+   "result": {
+    "id": "c40a5aee3a8d60a4a2a2ad1580324e64",
+    "title": "Coherence HH at p2",
+    "kind": "series",
+    "quantity": "Interferometric coherence (magnitude)",
+    "unit": "1",
+    "reduction": "mean",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "point": {
+     "longitude": -70.9,
+     "latitude": 42.7
+    },
+    "cell": {
+     "row": 1417,
+     "column": 1243,
+     "longitude": -70.89988362862626,
+     "latitude": 42.69998974875195
+    },
+    "area": {
+     "west": -71.21240624479763,
+     "south": 42.59241396597496,
+     "east": -70.74021713322617,
+     "north": 42.957667328501266
+    },
+    "entries": [
+     {
+      "dates": [
+       "2026-09-15",
+       "2026-09-27"
+      ],
+      "value": 0.332411527633667,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-09-27",
+       "2026-10-09"
+      ],
+      "value": 0.22321242094039917,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-10-09",
+       "2026-10-21"
+      ],
+      "value": 0.5040841698646545,
+      "cells": 1
+     }
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "program": "Lynkeus 0.1.0",
+    "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+   }
+  },
+  "backscatter_p3": {
+   "process": "backscatter-series",
+   "inputs": {
+    "inputs": [
+     "e7084528cd2fbdabe0da018099e8ba69",
+     "ab08c2a0ebb107e2238acde5fb8a329e",
+     "e7045ec025f8a7a2397fca7a99902276",
+     "ffbfd0c3360f0be55fe4f6453412b415"
+    ],
+    "title": "Backscatter HH at p3",
+    "point": {
+     "longitude": -71.1,
+     "latitude": 42.65
+    }
+   },
+   "submitted": "2026-11-15T13:02:37Z",
+   "http_status": 201,
+   "job": "74ef4f677a7fa5d6d531f4683ba1923c",
+   "job_title": "Backscatter HH at p3",
+   "given": [
+    "hh_1102",
+    "hh_0927",
+    "hh_1021",
+    "hh_1009"
+   ],
+   "status_info": {
+    "processID": "backscatter-series",
+    "type": "process",
+    "jobID": "74ef4f677a7fa5d6d531f4683ba1923c",
+    "title": "Backscatter HH at p3",
+    "status": "successful",
+    "message": "The series is ready.",
+    "created": "2026-11-15T13:02:37Z",
+    "started": "2026-11-15T13:02:37Z",
+    "finished": "2026-11-15T13:02:46Z",
+    "updated": "2026-11-15T13:02:46Z",
+    "progress": 100,
+    "inputs": {
+     "inputs": [
+      "e7084528cd2fbdabe0da018099e8ba69",
+      "ab08c2a0ebb107e2238acde5fb8a329e",
+      "e7045ec025f8a7a2397fca7a99902276",
+      "ffbfd0c3360f0be55fe4f6453412b415"
+     ],
+     "title": "Backscatter HH at p3",
+     "point": {
+      "longitude": -71.1,
+      "latitude": 42.65
+     }
+    },
+    "series": "8fb94ef8a505a046cbb4355b14f286d9",
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/74ef4f677a7fa5d6d531f4683ba1923c",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/74ef4f677a7fa5d6d531f4683ba1923c/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   },
+   "status": "successful",
+   "results_http_status": 200,
+   "result": {
+    "id": "8fb94ef8a505a046cbb4355b14f286d9",
+    "title": "Backscatter HH at p3",
+    "kind": "series",
+    "quantity": "Radar backscatter gamma0",
+    "unit": "dB",
+    "reduction": "mean-power",
+    "range": null,
+    "point": {
+     "longitude": -71.1,
+     "latitude": 42.65
+    },
+    "cell": {
+     "row": 3352,
+     "column": 834,
+     "longitude": -71.09994962487058,
+     "latitude": 42.64998387611088
+    },
+    "area": {
+     "west": -71.21240946923143,
+     "south": 42.59232397512833,
+     "east": -70.74021462753375,
+     "north": 42.957757337981135
+    },
+    "entries": [
+     {
+      "dates": [
+       "2026-09-27"
+      ],
+      "value": -7.1289854327232804,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-10-09"
+      ],
+      "value": -6.029024124436332,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-10-21"
+      ],
+      "value": -8.954701291266648,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-11-02"
+      ],
+      "value": -3.750911866671517,
+      "cells": 1
+     }
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "HHHH",
+    "program": "Lynkeus 0.1.0",
+    "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+   }
+  },
+  "coherence_p3": {
+   "process": "coherence-series",
+   "inputs": {
+    "inputs": [
+     "d34069fb70f91b284adc41acab5e765e",
+     "8f9eb9a99bf63efa50af31a061da3265",
+     "2df74db4382a6aeed2164231bcc9d0e8"
+    ],
+    "title": "Coherence HH at p3",
+    "point": {
+     "longitude": -71.1,
+     "latitude": 42.65
+    }
+   },
+   "submitted": "2026-11-15T13:02:37Z",
+   "http_status": 201,
+   "job": "9b33b94deab650a5f32b08bfe9f35dec",
+   "job_title": "Coherence HH at p3",
+   "given": [
+    "coh_1009_1021",
+    "coh_0915_0927",
+    "coh_0927_1009"
+   ],
+   "status_info": {
+    "processID": "coherence-series",
+    "type": "process",
+    "jobID": "9b33b94deab650a5f32b08bfe9f35dec",
+    "title": "Coherence HH at p3",
+    "status": "successful",
+    "message": "The series is ready.",
+    "created": "2026-11-15T13:02:37Z",
+    "started": "2026-11-15T13:02:37Z",
+    "finished": "2026-11-15T13:02:43Z",
+    "updated": "2026-11-15T13:02:43Z",
+    "progress": 100,
+    "inputs": {
+     "inputs": [
+      "d34069fb70f91b284adc41acab5e765e",
+      "8f9eb9a99bf63efa50af31a061da3265",
+      "2df74db4382a6aeed2164231bcc9d0e8"
+     ],
+     "title": "Coherence HH at p3",
+     "point": {
+      "longitude": -71.1,
+      "latitude": 42.65
+     }
+    },
+    "series": "52e5d10e198669db2dc1e7fe63ea69d8",
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/9b33b94deab650a5f32b08bfe9f35dec",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/9b33b94deab650a5f32b08bfe9f35dec/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   },
+   "status": "successful",
+   "results_http_status": 200,
+   "result": {
+    "id": "52e5d10e198669db2dc1e7fe63ea69d8",
+    "title": "Coherence HH at p3",
+    "kind": "series",
+    "quantity": "Interferometric coherence (magnitude)",
+    "unit": "1",
+    "reduction": "mean",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "point": {
+     "longitude": -71.1,
+     "latitude": 42.65
+    },
+    "cell": {
+     "row": 1675,
+     "column": 417,
+     "longitude": -71.09989018191416,
+     "latitude": 42.650029991892474
+    },
+    "area": {
+     "west": -71.21240624479763,
+     "south": 42.59241396597496,
+     "east": -70.74021713322617,
+     "north": 42.957667328501266
+    },
+    "entries": [
+     {
+      "dates": [
+       "2026-09-15",
+       "2026-09-27"
+      ],
+      "value": 0.14651069045066833,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-09-27",
+       "2026-10-09"
+      ],
+      "value": 0.34934714436531067,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-10-09",
+       "2026-10-21"
+      ],
+      "value": 0.5242114663124084,
+      "cells": 1
+     }
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "program": "Lynkeus 0.1.0",
+    "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+   }
+  },
+  "backscatter_p4": {
+   "process": "backscatter-series",
+   "inputs": {
+    "inputs": [
+     "e7084528cd2fbdabe0da018099e8ba69",
+     "ab08c2a0ebb107e2238acde5fb8a329e",
+     "e7045ec025f8a7a2397fca7a99902276",
+     "ffbfd0c3360f0be55fe4f6453412b415"
+    ],
+    "title": "Backscatter HH at p4",
+    "point": {
+     "longitude": -70.8,
+     "latitude": 42.9
+    }
+   },
+   "submitted": "2026-11-15T13:02:37Z",
+   "http_status": 201,
+   "job": "9676192bd6cd24f8af9a8882a40a23ef",
+   "job_title": "Backscatter HH at p4",
+   "given": [
+    "hh_1102",
+    "hh_0927",
+    "hh_1021",
+    "hh_1009"
+   ],
+   "status_info": {
+    "processID": "backscatter-series",
+    "type": "process",
+    "jobID": "9676192bd6cd24f8af9a8882a40a23ef",
+    "title": "Backscatter HH at p4",
+    "status": "successful",
+    "message": "The series is ready.",
+    "created": "2026-11-15T13:02:37Z",
+    "started": "2026-11-15T13:02:43Z",
+    "finished": "2026-11-15T13:02:53Z",
+    "updated": "2026-11-15T13:02:53Z",
+    "progress": 100,
+    "inputs": {
+     "inputs": [
+      "e7084528cd2fbdabe0da018099e8ba69",
+      "ab08c2a0ebb107e2238acde5fb8a329e",
+      "e7045ec025f8a7a2397fca7a99902276",
+      "ffbfd0c3360f0be55fe4f6453412b415"
+     ],
+     "title": "Backscatter HH at p4",
+     "point": {
+      "longitude": -70.8,
+      "latitude": 42.9
+     }
+    },
+    "series": "1edb45da6c853728f542cbb04c46768f",
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/9676192bd6cd24f8af9a8882a40a23ef",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/9676192bd6cd24f8af9a8882a40a23ef/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   },
+   "status": "successful",
+   "results_http_status": 200,
+   "result": {
+    "id": "1edb45da6c853728f542cbb04c46768f",
+    "title": "Backscatter HH at p4",
+    "kind": "series",
+    "quantity": "Radar backscatter gamma0",
+    "unit": "dB",
+    "reduction": "mean-power",
+    "range": null,
+    "point": {
+     "longitude": -70.8,
+     "latitude": 42.9
+    },
+    "cell": {
+     "row": 632,
+     "column": 3352,
+     "longitude": -70.8000063882048,
+     "latitude": 42.900029797240485
+    },
+    "area": {
+     "west": -71.21240946923143,
+     "south": 42.59232397512833,
+     "east": -70.74021462753375,
+     "north": 42.957757337981135
+    },
+    "entries": [
+     {
+      "dates": [
+       "2026-09-27"
+      ],
+      "value": -16.068267077710118,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-10-09"
+      ],
+      "value": -19.467349903766245,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-10-21"
+      ],
+      "value": -16.988306566405114,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-11-02"
+      ],
+      "value": -18.58491247229638,
+      "cells": 1
+     }
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "HHHH",
+    "program": "Lynkeus 0.1.0",
+    "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+   }
+  },
+  "coherence_p4": {
+   "process": "coherence-series",
+   "inputs": {
+    "inputs": [
+     "d34069fb70f91b284adc41acab5e765e",
+     "8f9eb9a99bf63efa50af31a061da3265",
+     "2df74db4382a6aeed2164231bcc9d0e8"
+    ],
+    "title": "Coherence HH at p4",
+    "point": {
+     "longitude": -70.8,
+     "latitude": 42.9
+    }
+   },
+   "submitted": "2026-11-15T13:02:37Z",
+   "http_status": 201,
+   "job": "a401dc5beb92dde7cbe29145087d81f3",
+   "job_title": "Coherence HH at p4",
+   "given": [
+    "coh_1009_1021",
+    "coh_0915_0927",
+    "coh_0927_1009"
+   ],
+   "status_info": {
+    "processID": "coherence-series",
+    "type": "process",
+    "jobID": "a401dc5beb92dde7cbe29145087d81f3",
+    "title": "Coherence HH at p4",
+    "status": "successful",
+    "message": "The series is ready.",
+    "created": "2026-11-15T13:02:37Z",
+    "started": "2026-11-15T13:02:46Z",
+    "finished": "2026-11-15T13:02:53Z",
+    "updated": "2026-11-15T13:02:53Z",
+    "progress": 100,
+    "inputs": {
+     "inputs": [
+      "d34069fb70f91b284adc41acab5e765e",
+      "8f9eb9a99bf63efa50af31a061da3265",
+      "2df74db4382a6aeed2164231bcc9d0e8"
+     ],
+     "title": "Coherence HH at p4",
+     "point": {
+      "longitude": -70.8,
+      "latitude": 42.9
+     }
+    },
+    "series": "990ceaa1a0bb606f866e1ea2636fc81b",
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/a401dc5beb92dde7cbe29145087d81f3",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/a401dc5beb92dde7cbe29145087d81f3/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   },
+   "status": "successful",
+   "results_http_status": 200,
+   "result": {
+    "id": "990ceaa1a0bb606f866e1ea2636fc81b",
+    "title": "Coherence HH at p4",
+    "kind": "series",
+    "quantity": "Interferometric coherence (magnitude)",
+    "unit": "1",
+    "reduction": "mean",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "point": {
+     "longitude": -70.8,
+     "latitude": 42.9
+    },
+    "cell": {
+     "row": 315,
+     "column": 1676,
+     "longitude": -70.79994648375636,
+     "latitude": 42.900075763961176
+    },
+    "area": {
+     "west": -71.21240624479763,
+     "south": 42.59241396597496,
+     "east": -70.74021713322617,
+     "north": 42.957667328501266
+    },
+    "entries": [
+     {
+      "dates": [
+       "2026-09-15",
+       "2026-09-27"
+      ],
+      "value": 0.28476378321647644,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-09-27",
+       "2026-10-09"
+      ],
+      "value": 0.281078577041626,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-10-09",
+       "2026-10-21"
+      ],
+      "value": 0.3181857764720917,
+      "cells": 1
+     }
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "program": "Lynkeus 0.1.0",
+    "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+   }
+  },
+  "backscatter_p5": {
+   "process": "backscatter-series",
+   "inputs": {
+    "inputs": [
+     "e7084528cd2fbdabe0da018099e8ba69",
+     "ab08c2a0ebb107e2238acde5fb8a329e",
+     "e7045ec025f8a7a2397fca7a99902276",
+     "ffbfd0c3360f0be55fe4f6453412b415"
+    ],
+    "title": "Backscatter HH at p5",
+    "point": {
+     "longitude": -70.8726,
+     "latitude": 42.8126
+    }
+   },
+   "submitted": "2026-11-15T13:02:55Z",
+   "http_status": 201,
+   "job": "fd288f8980c21157a838908371015a78",
+   "job_title": "Backscatter HH at p5",
+   "given": [
+    "hh_1102",
+    "hh_0927",
+    "hh_1021",
+    "hh_1009"
+   ],
+   "status_info": {
+    "processID": "backscatter-series",
+    "type": "process",
+    "jobID": "fd288f8980c21157a838908371015a78",
+    "title": "Backscatter HH at p5",
+    "status": "successful",
+    "message": "The series is ready.",
+    "created": "2026-11-15T13:02:55Z",
+    "started": "2026-11-15T13:02:55Z",
+    "finished": "2026-11-15T13:03:06Z",
+    "updated": "2026-11-15T13:03:06Z",
+    "progress": 100,
+    "inputs": {
+     "inputs": [
+      "e7084528cd2fbdabe0da018099e8ba69",
+      "ab08c2a0ebb107e2238acde5fb8a329e",
+      "e7045ec025f8a7a2397fca7a99902276",
+      "ffbfd0c3360f0be55fe4f6453412b415"
+     ],
+     "title": "Backscatter HH at p5",
+     "point": {
+      "longitude": -70.8726,
+      "latitude": 42.8126
+     }
+    },
+    "series": "0fd2a6b681b8a3aa66c8f4c375ac62a9",
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/fd288f8980c21157a838908371015a78",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/fd288f8980c21157a838908371015a78/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   },
+   "status": "successful",
+   "results_http_status": 200,
+   "result": {
+    "id": "0fd2a6b681b8a3aa66c8f4c375ac62a9",
+    "title": "Backscatter HH at p5",
+    "kind": "series",
+    "quantity": "Radar backscatter gamma0",
+    "unit": "dB",
+    "reduction": "mean-power",
+    "range": null,
+    "point": {
+     "longitude": -70.8726,
+     "latitude": 42.8126
+    },
+    "cell": {
+     "row": 1590,
+     "column": 2738,
+     "longitude": -70.87256685541492,
+     "latitude": 42.81259814475194
+    },
+    "area": {
+     "west": -71.21240946923143,
+     "south": 42.59232397512833,
+     "east": -70.74021462753375,
+     "north": 42.957757337981135
+    },
+    "entries": [
+     {
+      "dates": [
+       "2026-09-27"
+      ],
+      "value": 8.019781976145936,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-10-09"
+      ],
+      "value": 4.899708321337691,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-10-21"
+      ],
+      "value": 5.478684092300843,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-11-02"
+      ],
+      "value": 6.056763832331706,
+      "cells": 1
+     }
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "HHHH",
+    "program": "Lynkeus 0.1.0",
+    "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+   }
+  },
+  "coherence_p5": {
+   "process": "coherence-series",
+   "inputs": {
+    "inputs": [
+     "d34069fb70f91b284adc41acab5e765e",
+     "8f9eb9a99bf63efa50af31a061da3265",
+     "2df74db4382a6aeed2164231bcc9d0e8"
+    ],
+    "title": "Coherence HH at p5",
+    "point": {
+     "longitude": -70.8726,
+     "latitude": 42.8126
+    }
+   },
+   "submitted": "2026-11-15T13:02:55Z",
+   "http_status": 201,
+   "job": "b4605c37d4af023cc6fe31c824aaa938",
+   "job_title": "Coherence HH at p5",
+   "given": [
+    "coh_1009_1021",
+    "coh_0915_0927",
+    "coh_0927_1009"
+   ],
+   "status_info": {
+    "processID": "coherence-series",
+    "type": "process",
+    "jobID": "b4605c37d4af023cc6fe31c824aaa938",
+    "title": "Coherence HH at p5",
+    "status": "successful",
+    "message": "The series is ready.",
+    "created": "2026-11-15T13:02:55Z",
+    "started": "2026-11-15T13:02:55Z",
+    "finished": "2026-11-15T13:03:04Z",
+    "updated": "2026-11-15T13:03:04Z",
+    "progress": 100,
+    "inputs": {
+     "inputs": [
+      "d34069fb70f91b284adc41acab5e765e",
+      "8f9eb9a99bf63efa50af31a061da3265",
+      "2df74db4382a6aeed2164231bcc9d0e8"
+     ],
+     "title": "Coherence HH at p5",
+     "point": {
+      "longitude": -70.8726,
+      "latitude": 42.8126
+     }
+    },
+    "series": "a3dbdc0a06632cc2f5e9c72da763338e",
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/b4605c37d4af023cc6fe31c824aaa938",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/b4605c37d4af023cc6fe31c824aaa938/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   },
+   "status": "successful",
+   "results_http_status": 200,
+   "result": {
+    "id": "a3dbdc0a06632cc2f5e9c72da763338e",
+    "title": "Coherence HH at p5",
+    "kind": "series",
+    "quantity": "Interferometric coherence (magnitude)",
+    "unit": "1",
+    "reduction": "mean",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "point": {
+     "longitude": -70.8726,
+     "latitude": 42.8126
+    },
+    "cell": {
+     "row": 794,
+     "column": 1369,
+     "longitude": -70.8725070883643,
+     "latitude": 42.81264414749732
+    },
+    "area": {
+     "west": -71.21240624479763,
+     "south": 42.59241396597496,
+     "east": -70.74021713322617,
+     "north": 42.957667328501266
+    },
+    "entries": [
+     {
+      "dates": [
+       "2026-09-15",
+       "2026-09-27"
+      ],
+      "value": 0.7239977121353149,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-09-27",
+       "2026-10-09"
+      ],
+      "value": 0.7051378488540649,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-10-09",
+       "2026-10-21"
+      ],
+      "value": 0.8103115558624268,
+      "cells": 1
+     }
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "program": "Lynkeus 0.1.0",
+    "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+   }
+  }
+ },
+ "refusals": {
+  "point outside the area": {
+   "process": "backscatter-series",
+   "inputs": {
+    "inputs": [
+     "e7084528cd2fbdabe0da018099e8ba69",
+     "ab08c2a0ebb107e2238acde5fb8a329e",
+     "e7045ec025f8a7a2397fca7a99902276",
+     "ffbfd0c3360f0be55fe4f6453412b415"
+    ],
+    "title": "Trial: point outside the area",
+    "point": {
+     "longitude": -70.0,
+     "latitude": 42.8
+    }
+   },
+   "submitted": "2026-11-15T13:03:07Z",
+   "http_status": 201,
+   "job": "67b1533fe98d17e52e63b1279c1023d5",
+   "job_title": "Trial: point outside the area",
+   "given": [
+    "hh_1102",
+    "hh_0927",
+    "hh_1021",
+    "hh_1009"
+   ],
+   "status_info": {
+    "processID": "backscatter-series",
+    "type": "process",
+    "jobID": "67b1533fe98d17e52e63b1279c1023d5",
+    "title": "Trial: point outside the area",
+    "status": "failed",
+    "message": "The point lies outside the area of the layers.",
+    "created": "2026-11-15T13:03:07Z",
+    "started": "2026-11-15T13:03:07Z",
+    "finished": "2026-11-15T13:03:14Z",
+    "updated": "2026-11-15T13:03:14Z",
+    "progress": 0,
+    "inputs": {
+     "inputs": [
+      "e7084528cd2fbdabe0da018099e8ba69",
+      "ab08c2a0ebb107e2238acde5fb8a329e",
+      "e7045ec025f8a7a2397fca7a99902276",
+      "ffbfd0c3360f0be55fe4f6453412b415"
+     ],
+     "title": "Trial: point outside the area",
+     "point": {
+      "longitude": -70.0,
+      "latitude": 42.8
+     }
+    },
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/67b1533fe98d17e52e63b1279c1023d5",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     }
+    ]
+   },
+   "status": "failed",
+   "results_http_status": 500,
+   "result": {
+    "type": "about:blank",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "The point lies outside the area of the layers."
+   }
+  },
+  "coherence series of backscatter layers": {
+   "process": "coherence-series",
+   "inputs": {
+    "inputs": [
+     "e7045ec025f8a7a2397fca7a99902276",
+     "e7084528cd2fbdabe0da018099e8ba69"
+    ],
+    "title": "Trial: coherence series of backscatter layers"
+   },
+   "submitted": "2026-11-15T13:03:07Z",
+   "http_status": 201,
+   "job": "f75d76dd12ca0ccf67a04aefdf218edd",
+   "job_title": "Trial: coherence series of backscatter layers",
+   "given": [
+    "hh_1021",
+    "hh_1102"
+   ],
+   "status_info": {
+    "processID": "coherence-series",
+    "type": "process",
+    "jobID": "f75d76dd12ca0ccf67a04aefdf218edd",
+    "title": "Trial: coherence series of backscatter layers",
+    "status": "failed",
+    "message": "The layer \"Backscatter HH, 21 Oct 2026\" is not a layer received from one NISAR GUNW product.",
+    "created": "2026-11-15T13:03:07Z",
+    "started": "2026-11-15T13:03:07Z",
+    "finished": "2026-11-15T13:03:14Z",
+    "updated": "2026-11-15T13:03:14Z",
+    "progress": 0,
+    "inputs": {
+     "inputs": [
+      "e7045ec025f8a7a2397fca7a99902276",
+      "e7084528cd2fbdabe0da018099e8ba69"
+     ],
+     "title": "Trial: coherence series of backscatter layers",
+     "point": null
+    },
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/f75d76dd12ca0ccf67a04aefdf218edd",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     }
+    ]
+   },
+   "status": "failed",
+   "results_http_status": 500,
+   "result": {
+    "type": "about:blank",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "The layer \"Backscatter HH, 21 Oct 2026\" is not a layer received from one NISAR GUNW product."
+   }
+  },
+  "backscatter series of layers on two grids": {
+   "process": "backscatter-series",
+   "inputs": {
+    "inputs": [
+     "e7045ec025f8a7a2397fca7a99902276",
+     "d34069fb70f91b284adc41acab5e765e"
+    ],
+    "title": "Trial: backscatter series of layers on two grids"
+   },
+   "submitted": "2026-11-15T13:03:07Z",
+   "http_status": 201,
+   "job": "9d85d69d43c5f6d7ed4826ecc882086c",
+   "job_title": "Trial: backscatter series of layers on two grids",
+   "given": [
+    "hh_1021",
+    "coh_1009_1021"
+   ],
+   "status_info": {
+    "processID": "backscatter-series",
+    "type": "process",
+    "jobID": "9d85d69d43c5f6d7ed4826ecc882086c",
+    "title": "Trial: backscatter series of layers on two grids",
+    "status": "failed",
+    "message": "The layers of the analysis do not have the same grid.",
+    "created": "2026-11-15T13:03:07Z",
+    "started": "2026-11-15T13:03:14Z",
+    "finished": "2026-11-15T13:03:20Z",
+    "updated": "2026-11-15T13:03:20Z",
+    "progress": 0,
+    "inputs": {
+     "inputs": [
+      "e7045ec025f8a7a2397fca7a99902276",
+      "d34069fb70f91b284adc41acab5e765e"
+     ],
+     "title": "Trial: backscatter series of layers on two grids",
+     "point": null
+    },
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/9d85d69d43c5f6d7ed4826ecc882086c",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     }
+    ]
+   },
+   "status": "failed",
+   "results_http_status": 500,
+   "result": {
+    "type": "about:blank",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "The layers of the analysis do not have the same grid."
+   }
+  },
+  "backscatter series of coherence layers": {
+   "process": "backscatter-series",
+   "inputs": {
+    "inputs": [
+     "d34069fb70f91b284adc41acab5e765e",
+     "8f9eb9a99bf63efa50af31a061da3265",
+     "2df74db4382a6aeed2164231bcc9d0e8"
+    ],
+    "title": "Trial: backscatter series of coherence layers"
+   },
+   "submitted": "2026-11-15T13:03:07Z",
+   "http_status": 201,
+   "job": "0c60bf3e473e5625bb06a547ce956b3a",
+   "job_title": "Trial: backscatter series of coherence layers",
+   "given": [
+    "coh_1009_1021",
+    "coh_0915_0927",
+    "coh_0927_1009"
+   ],
+   "status_info": {
+    "processID": "backscatter-series",
+    "type": "process",
+    "jobID": "0c60bf3e473e5625bb06a547ce956b3a",
+    "title": "Trial: backscatter series of coherence layers",
+    "status": "failed",
+    "message": "The layer \"Coherence HH, 20 m, 9 Oct 2026 to 21 Oct 2026\" is not a layer received from one NISAR GCOV product.",
+    "created": "2026-11-15T13:03:07Z",
+    "started": "2026-11-15T13:03:14Z",
+    "finished": "2026-11-15T13:03:20Z",
+    "updated": "2026-11-15T13:03:20Z",
+    "progress": 0,
+    "inputs": {
+     "inputs": [
+      "d34069fb70f91b284adc41acab5e765e",
+      "8f9eb9a99bf63efa50af31a061da3265",
+      "2df74db4382a6aeed2164231bcc9d0e8"
+     ],
+     "title": "Trial: backscatter series of coherence layers",
+     "point": null
+    },
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/0c60bf3e473e5625bb06a547ce956b3a",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     }
+    ]
+   },
+   "status": "failed",
+   "results_http_status": 500,
+   "result": {
+    "type": "about:blank",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "The layer \"Coherence HH, 20 m, 9 Oct 2026 to 21 Oct 2026\" is not a layer received from one NISAR GCOV product."
+   }
+  },
+  "one layer": {
+   "process": "backscatter-series",
+   "inputs": {
+    "inputs": [
+     "e7045ec025f8a7a2397fca7a99902276"
+    ],
+    "title": "Trial"
+   },
+   "submitted": "2026-11-15T13:03:22Z",
+   "http_status": 400,
+   "answer": {
+    "type": "about:blank",
+    "title": "Bad Request",
+    "status": 400,
+    "detail": "The input inputs is not valid: Tuple should have at least 2 items after validation, not 1."
+   }
+  },
+  "one layer given twice": {
+   "process": "backscatter-series",
+   "inputs": {
+    "inputs": [
+     "e7045ec025f8a7a2397fca7a99902276",
+     "e7045ec025f8a7a2397fca7a99902276"
+    ],
+    "title": "Trial"
+   },
+   "submitted": "2026-11-15T13:03:22Z",
+   "http_status": 400,
+   "answer": {
+    "type": "about:blank",
+    "title": "Bad Request",
+    "status": 400,
+    "detail": "The input inputs is not valid: a layer is given more than once."
+   }
+  },
+  "a point outside the Earth": {
+   "process": "backscatter-series",
+   "inputs": {
+    "inputs": [
+     "e7084528cd2fbdabe0da018099e8ba69",
+     "ab08c2a0ebb107e2238acde5fb8a329e",
+     "e7045ec025f8a7a2397fca7a99902276",
+     "ffbfd0c3360f0be55fe4f6453412b415"
+    ],
+    "title": "Trial",
+    "point": {
+     "longitude": 200,
+     "latitude": 42.8
+    }
+   },
+   "submitted": "2026-11-15T13:03:22Z",
+   "http_status": 400,
+   "answer": {
+    "type": "about:blank",
+    "title": "Bad Request",
+    "status": 400,
+    "detail": "The input point.longitude is not valid: Input should be less than or equal to 180."
+   }
+  },
+  "output named layer": {
+   "process": "backscatter-series",
+   "inputs": {
+    "inputs": [
+     "e7084528cd2fbdabe0da018099e8ba69",
+     "ab08c2a0ebb107e2238acde5fb8a329e",
+     "e7045ec025f8a7a2397fca7a99902276",
+     "ffbfd0c3360f0be55fe4f6453412b415"
+    ],
+    "title": "Trial"
+   },
+   "outputs": {
+    "layer": {}
+   },
+   "submitted": "2026-11-15T13:03:22Z",
+   "http_status": 400,
+   "answer": {
+    "type": "about:blank",
+    "title": "Bad Request",
+    "status": 400,
+    "detail": "The field outputs, when given, must name the one output of the process, which is series."
+   }
+  }
+ },
+ "notes": [],
+ "layer_ids": {
+  "hh_0927": "ab08c2a0ebb107e2238acde5fb8a329e",
+  "hh_1009": "ffbfd0c3360f0be55fe4f6453412b415",
+  "hh_1021": "e7045ec025f8a7a2397fca7a99902276",
+  "hh_1102": "e7084528cd2fbdabe0da018099e8ba69",
+  "coh_0915_0927": "8f9eb9a99bf63efa50af31a061da3265",
+  "coh_0927_1009": "2df74db4382a6aeed2164231bcc9d0e8",
+  "coh_1009_1021": "d34069fb70f91b284adc41acab5e765e"
+ },
+ "processes": [
+  "get-layer",
+  "backscatter-state",
+  "backscatter-change",
+  "coherence-state",
+  "coherence-change",
+  "soil-moisture-state",
+  "soil-moisture-change",
+  "backscatter-series",
+  "coherence-series"
+ ],
+ "descriptions": {
+  "backscatter-series": {
+   "id": "backscatter-series",
+   "title": "Backscatter series",
+   "description": "Give the radar backscatter of many dates, at a point or as the mean of the area, in decibels.",
+   "version": "0.1.0",
+   "jobControlOptions": [
+    "async-execute",
+    "dismiss"
+   ],
+   "outputTransmission": [
+    "value"
+   ],
+   "inputs": {
+    "inputs": {
+     "title": "Input layers",
+     "description": "The id of each input layer, in any order. A layer is given once.",
+     "minOccurs": 2,
+     "maxOccurs": 50,
+     "schema": {
+      "minLength": 1,
+      "type": "string"
+     }
+    },
+    "title": {
+     "title": "Title",
+     "description": "Name of the series.",
+     "minOccurs": 1,
+     "maxOccurs": 1,
+     "schema": {
+      "maxLength": 200,
+      "minLength": 1,
+      "type": "string"
+     }
+    },
+    "point": {
+     "title": "Point",
+     "description": "The point of the series, in degrees of longitude and latitude (WGS 84). Without it the series is that of the whole area of the layers.",
+     "minOccurs": 0,
+     "maxOccurs": 1,
+     "schema": {
+      "nullable": true,
+      "additionalProperties": false,
+      "properties": {
+       "longitude": {
+        "maximum": 180,
+        "minimum": -180,
+        "title": "Longitude",
+        "type": "number"
+       },
+       "latitude": {
+        "maximum": 90,
+        "minimum": -90,
+        "title": "Latitude",
+        "type": "number"
+       }
+      },
+      "required": [
+       "longitude",
+       "latitude"
+      ],
+      "type": "object",
+      "default": null
+     }
+    }
+   },
+   "outputs": {
+    "series": {
+     "title": "Series",
+     "description": "The description of the series that the job produced, with the value of every date.",
+     "schema": {
+      "additionalProperties": false,
+      "properties": {
+       "id": {
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+        "title": "Id",
+        "type": "string"
+       },
+       "title": {
+        "minLength": 1,
+        "type": "string"
+       },
+       "kind": {
+        "enum": [
+         "series"
+        ],
+        "title": "Kind",
+        "type": "string"
+       },
+       "quantity": {
+        "minLength": 1,
+        "type": "string"
+       },
+       "unit": {
+        "minLength": 1,
+        "type": "string"
+       },
+       "reduction": {
+        "enum": [
+         "mean",
+         "mean-power"
+        ],
+        "type": "string"
+       },
+       "range": {
+        "nullable": true,
+        "maxItems": 2,
+        "minItems": 2,
+        "items": {
+         "type": "number"
+        },
+        "type": "array",
+        "default": null,
+        "title": "Range"
+       },
+       "point": {
+        "nullable": true,
+        "additionalProperties": false,
+        "properties": {
+         "longitude": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Longitude",
+          "type": "number"
+         },
+         "latitude": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Latitude",
+          "type": "number"
+         }
+        },
+        "required": [
+         "longitude",
+         "latitude"
+        ],
+        "type": "object",
+        "default": null
+       },
+       "cell": {
+        "nullable": true,
+        "additionalProperties": false,
+        "properties": {
+         "row": {
+          "minimum": 0,
+          "title": "Row",
+          "type": "integer"
+         },
+         "column": {
+          "minimum": 0,
+          "title": "Column",
+          "type": "integer"
+         },
+         "longitude": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Longitude",
+          "type": "number"
+         },
+         "latitude": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Latitude",
+          "type": "number"
+         }
+        },
+        "required": [
+         "row",
+         "column",
+         "longitude",
+         "latitude"
+        ],
+        "type": "object",
+        "default": null
+       },
+       "area": {
+        "additionalProperties": false,
+        "properties": {
+         "west": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "West",
+          "type": "number"
+         },
+         "south": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "South",
+          "type": "number"
+         },
+         "east": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "East",
+          "type": "number"
+         },
+         "north": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "North",
+          "type": "number"
+         }
+        },
+        "required": [
+         "west",
+         "south",
+         "east",
+         "north"
+        ],
+        "type": "object"
+       },
+       "entries": {
+        "items": {
+         "additionalProperties": false,
+         "properties": {
+          "dates": {
+           "items": {
+            "format": "date",
+            "type": "string"
+           },
+           "minItems": 1,
+           "title": "Dates",
+           "type": "array"
+          },
+          "value": {
+           "nullable": true,
+           "type": "number",
+           "title": "Value"
+          },
+          "cells": {
+           "minimum": 0,
+           "title": "Cells",
+           "type": "integer"
+          }
+         },
+         "required": [
+          "dates",
+          "value",
+          "cells"
+         ],
+         "type": "object"
+        },
+        "minItems": 1,
+        "title": "Entries",
+        "type": "array"
+       },
+       "inputs": {
+        "items": {
+         "minLength": 1,
+         "type": "string"
+        },
+        "minItems": 1,
+        "title": "Inputs",
+        "type": "array"
+       },
+       "layer": {
+        "minLength": 1,
+        "type": "string"
+       },
+       "program": {
+        "minLength": 1,
+        "type": "string"
+       },
+       "method": {
+        "minLength": 1,
+        "type": "string"
+       }
+      },
+      "required": [
+       "id",
+       "title",
+       "kind",
+       "quantity",
+       "unit",
+       "reduction",
+       "area",
+       "entries",
+       "inputs",
+       "layer",
+       "program",
+       "method"
+      ],
+      "type": "object"
+     }
+    }
+   },
+   "links": [
+    {
+     "href": "/api/processes/backscatter-series",
+     "rel": "self",
+     "type": "application/json",
+     "title": "Description of the process"
+    },
+    {
+     "href": "/api/processes/backscatter-series/execution",
+     "rel": "http://www.opengis.net/def/rel/ogc/1.0/execute",
+     "type": "application/json",
+     "title": "Execution of the process"
+    }
+   ]
+  },
+  "coherence-series": {
+   "id": "coherence-series",
+   "title": "Coherence series",
+   "description": "Give the interferometric coherence of many pairs of dates, at a point or as the mean of the area.",
+   "version": "0.1.0",
+   "jobControlOptions": [
+    "async-execute",
+    "dismiss"
+   ],
+   "outputTransmission": [
+    "value"
+   ],
+   "inputs": {
+    "inputs": {
+     "title": "Input layers",
+     "description": "The id of each input layer, in any order. A layer is given once.",
+     "minOccurs": 2,
+     "maxOccurs": 50,
+     "schema": {
+      "minLength": 1,
+      "type": "string"
+     }
+    },
+    "title": {
+     "title": "Title",
+     "description": "Name of the series.",
+     "minOccurs": 1,
+     "maxOccurs": 1,
+     "schema": {
+      "maxLength": 200,
+      "minLength": 1,
+      "type": "string"
+     }
+    },
+    "point": {
+     "title": "Point",
+     "description": "The point of the series, in degrees of longitude and latitude (WGS 84). Without it the series is that of the whole area of the layers.",
+     "minOccurs": 0,
+     "maxOccurs": 1,
+     "schema": {
+      "nullable": true,
+      "additionalProperties": false,
+      "properties": {
+       "longitude": {
+        "maximum": 180,
+        "minimum": -180,
+        "title": "Longitude",
+        "type": "number"
+       },
+       "latitude": {
+        "maximum": 90,
+        "minimum": -90,
+        "title": "Latitude",
+        "type": "number"
+       }
+      },
+      "required": [
+       "longitude",
+       "latitude"
+      ],
+      "type": "object",
+      "default": null
+     }
+    }
+   },
+   "outputs": {
+    "series": {
+     "title": "Series",
+     "description": "The description of the series that the job produced, with the value of every date.",
+     "schema": {
+      "additionalProperties": false,
+      "properties": {
+       "id": {
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+        "title": "Id",
+        "type": "string"
+       },
+       "title": {
+        "minLength": 1,
+        "type": "string"
+       },
+       "kind": {
+        "enum": [
+         "series"
+        ],
+        "title": "Kind",
+        "type": "string"
+       },
+       "quantity": {
+        "minLength": 1,
+        "type": "string"
+       },
+       "unit": {
+        "minLength": 1,
+        "type": "string"
+       },
+       "reduction": {
+        "enum": [
+         "mean",
+         "mean-power"
+        ],
+        "type": "string"
+       },
+       "range": {
+        "nullable": true,
+        "maxItems": 2,
+        "minItems": 2,
+        "items": {
+         "type": "number"
+        },
+        "type": "array",
+        "default": null,
+        "title": "Range"
+       },
+       "point": {
+        "nullable": true,
+        "additionalProperties": false,
+        "properties": {
+         "longitude": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Longitude",
+          "type": "number"
+         },
+         "latitude": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Latitude",
+          "type": "number"
+         }
+        },
+        "required": [
+         "longitude",
+         "latitude"
+        ],
+        "type": "object",
+        "default": null
+       },
+       "cell": {
+        "nullable": true,
+        "additionalProperties": false,
+        "properties": {
+         "row": {
+          "minimum": 0,
+          "title": "Row",
+          "type": "integer"
+         },
+         "column": {
+          "minimum": 0,
+          "title": "Column",
+          "type": "integer"
+         },
+         "longitude": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Longitude",
+          "type": "number"
+         },
+         "latitude": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Latitude",
+          "type": "number"
+         }
+        },
+        "required": [
+         "row",
+         "column",
+         "longitude",
+         "latitude"
+        ],
+        "type": "object",
+        "default": null
+       },
+       "area": {
+        "additionalProperties": false,
+        "properties": {
+         "west": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "West",
+          "type": "number"
+         },
+         "south": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "South",
+          "type": "number"
+         },
+         "east": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "East",
+          "type": "number"
+         },
+         "north": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "North",
+          "type": "number"
+         }
+        },
+        "required": [
+         "west",
+         "south",
+         "east",
+         "north"
+        ],
+        "type": "object"
+       },
+       "entries": {
+        "items": {
+         "additionalProperties": false,
+         "properties": {
+          "dates": {
+           "items": {
+            "format": "date",
+            "type": "string"
+           },
+           "minItems": 1,
+           "title": "Dates",
+           "type": "array"
+          },
+          "value": {
+           "nullable": true,
+           "type": "number",
+           "title": "Value"
+          },
+          "cells": {
+           "minimum": 0,
+           "title": "Cells",
+           "type": "integer"
+          }
+         },
+         "required": [
+          "dates",
+          "value",
+          "cells"
+         ],
+         "type": "object"
+        },
+        "minItems": 1,
+        "title": "Entries",
+        "type": "array"
+       },
+       "inputs": {
+        "items": {
+         "minLength": 1,
+         "type": "string"
+        },
+        "minItems": 1,
+        "title": "Inputs",
+        "type": "array"
+       },
+       "layer": {
+        "minLength": 1,
+        "type": "string"
+       },
+       "program": {
+        "minLength": 1,
+        "type": "string"
+       },
+       "method": {
+        "minLength": 1,
+        "type": "string"
+       }
+      },
+      "required": [
+       "id",
+       "title",
+       "kind",
+       "quantity",
+       "unit",
+       "reduction",
+       "area",
+       "entries",
+       "inputs",
+       "layer",
+       "program",
+       "method"
+      ],
+      "type": "object"
+     }
+    }
+   },
+   "links": [
+    {
+     "href": "/api/processes/coherence-series",
+     "rel": "self",
+     "type": "application/json",
+     "title": "Description of the process"
+    },
+    {
+     "href": "/api/processes/coherence-series/execution",
+     "rel": "http://www.opengis.net/def/rel/ogc/1.0/execute",
+     "type": "application/json",
+     "title": "Execution of the process"
+    }
+   ]
+  }
+ },
+ "series_of_the_session": {
+  "http_status": 200,
+  "answer": {
+   "series": [
+    {
+     "series": {
+      "id": "0fd2a6b681b8a3aa66c8f4c375ac62a9",
+      "title": "Backscatter HH at p5",
+      "kind": "series",
+      "quantity": "Radar backscatter gamma0",
+      "unit": "dB",
+      "reduction": "mean-power",
+      "range": null,
+      "point": {
+       "longitude": -70.8726,
+       "latitude": 42.8126
+      },
+      "cell": {
+       "row": 1590,
+       "column": 2738,
+       "longitude": -70.87256685541492,
+       "latitude": 42.81259814475194
+      },
+      "area": {
+       "west": -71.21240946923143,
+       "south": 42.59232397512833,
+       "east": -70.74021462753375,
+       "north": 42.957757337981135
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-27"
+        ],
+        "value": 8.019781976145936,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-09"
+        ],
+        "value": 4.899708321337691,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-21"
+        ],
+        "value": 5.478684092300843,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-11-02"
+        ],
+        "value": 6.056763832331706,
+        "cells": 1
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "HHHH",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+     },
+     "created": "2026-11-15T13:03:06Z"
+    },
+    {
+     "series": {
+      "id": "a3dbdc0a06632cc2f5e9c72da763338e",
+      "title": "Coherence HH at p5",
+      "kind": "series",
+      "quantity": "Interferometric coherence (magnitude)",
+      "unit": "1",
+      "reduction": "mean",
+      "range": [
+       0.0,
+       1.0
+      ],
+      "point": {
+       "longitude": -70.8726,
+       "latitude": 42.8126
+      },
+      "cell": {
+       "row": 794,
+       "column": 1369,
+       "longitude": -70.8725070883643,
+       "latitude": 42.81264414749732
+      },
+      "area": {
+       "west": -71.21240624479763,
+       "south": 42.59241396597496,
+       "east": -70.74021713322617,
+       "north": 42.957667328501266
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-15",
+         "2026-09-27"
+        ],
+        "value": 0.7239977121353149,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-09-27",
+         "2026-10-09"
+        ],
+        "value": 0.7051378488540649,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-09",
+         "2026-10-21"
+        ],
+        "value": 0.8103115558624268,
+        "cells": 1
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+     },
+     "created": "2026-11-15T13:03:04Z"
+    },
+    {
+     "series": {
+      "id": "990ceaa1a0bb606f866e1ea2636fc81b",
+      "title": "Coherence HH at p4",
+      "kind": "series",
+      "quantity": "Interferometric coherence (magnitude)",
+      "unit": "1",
+      "reduction": "mean",
+      "range": [
+       0.0,
+       1.0
+      ],
+      "point": {
+       "longitude": -70.8,
+       "latitude": 42.9
+      },
+      "cell": {
+       "row": 315,
+       "column": 1676,
+       "longitude": -70.79994648375636,
+       "latitude": 42.900075763961176
+      },
+      "area": {
+       "west": -71.21240624479763,
+       "south": 42.59241396597496,
+       "east": -70.74021713322617,
+       "north": 42.957667328501266
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-15",
+         "2026-09-27"
+        ],
+        "value": 0.28476378321647644,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-09-27",
+         "2026-10-09"
+        ],
+        "value": 0.281078577041626,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-09",
+         "2026-10-21"
+        ],
+        "value": 0.3181857764720917,
+        "cells": 1
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+     },
+     "created": "2026-11-15T13:02:53Z"
+    },
+    {
+     "series": {
+      "id": "1edb45da6c853728f542cbb04c46768f",
+      "title": "Backscatter HH at p4",
+      "kind": "series",
+      "quantity": "Radar backscatter gamma0",
+      "unit": "dB",
+      "reduction": "mean-power",
+      "range": null,
+      "point": {
+       "longitude": -70.8,
+       "latitude": 42.9
+      },
+      "cell": {
+       "row": 632,
+       "column": 3352,
+       "longitude": -70.8000063882048,
+       "latitude": 42.900029797240485
+      },
+      "area": {
+       "west": -71.21240946923143,
+       "south": 42.59232397512833,
+       "east": -70.74021462753375,
+       "north": 42.957757337981135
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-27"
+        ],
+        "value": -16.068267077710118,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-09"
+        ],
+        "value": -19.467349903766245,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-21"
+        ],
+        "value": -16.988306566405114,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-11-02"
+        ],
+        "value": -18.58491247229638,
+        "cells": 1
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "HHHH",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+     },
+     "created": "2026-11-15T13:02:53Z"
+    },
+    {
+     "series": {
+      "id": "8fb94ef8a505a046cbb4355b14f286d9",
+      "title": "Backscatter HH at p3",
+      "kind": "series",
+      "quantity": "Radar backscatter gamma0",
+      "unit": "dB",
+      "reduction": "mean-power",
+      "range": null,
+      "point": {
+       "longitude": -71.1,
+       "latitude": 42.65
+      },
+      "cell": {
+       "row": 3352,
+       "column": 834,
+       "longitude": -71.09994962487058,
+       "latitude": 42.64998387611088
+      },
+      "area": {
+       "west": -71.21240946923143,
+       "south": 42.59232397512833,
+       "east": -70.74021462753375,
+       "north": 42.957757337981135
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-27"
+        ],
+        "value": -7.1289854327232804,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-09"
+        ],
+        "value": -6.029024124436332,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-21"
+        ],
+        "value": -8.954701291266648,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-11-02"
+        ],
+        "value": -3.750911866671517,
+        "cells": 1
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "HHHH",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+     },
+     "created": "2026-11-15T13:02:46Z"
+    },
+    {
+     "series": {
+      "id": "52e5d10e198669db2dc1e7fe63ea69d8",
+      "title": "Coherence HH at p3",
+      "kind": "series",
+      "quantity": "Interferometric coherence (magnitude)",
+      "unit": "1",
+      "reduction": "mean",
+      "range": [
+       0.0,
+       1.0
+      ],
+      "point": {
+       "longitude": -71.1,
+       "latitude": 42.65
+      },
+      "cell": {
+       "row": 1675,
+       "column": 417,
+       "longitude": -71.09989018191416,
+       "latitude": 42.650029991892474
+      },
+      "area": {
+       "west": -71.21240624479763,
+       "south": 42.59241396597496,
+       "east": -70.74021713322617,
+       "north": 42.957667328501266
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-15",
+         "2026-09-27"
+        ],
+        "value": 0.14651069045066833,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-09-27",
+         "2026-10-09"
+        ],
+        "value": 0.34934714436531067,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-09",
+         "2026-10-21"
+        ],
+        "value": 0.5242114663124084,
+        "cells": 1
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+     },
+     "created": "2026-11-15T13:02:43Z"
+    },
+    {
+     "series": {
+      "id": "c40a5aee3a8d60a4a2a2ad1580324e64",
+      "title": "Coherence HH at p2",
+      "kind": "series",
+      "quantity": "Interferometric coherence (magnitude)",
+      "unit": "1",
+      "reduction": "mean",
+      "range": [
+       0.0,
+       1.0
+      ],
+      "point": {
+       "longitude": -70.9,
+       "latitude": 42.7
+      },
+      "cell": {
+       "row": 1417,
+       "column": 1243,
+       "longitude": -70.89988362862626,
+       "latitude": 42.69998974875195
+      },
+      "area": {
+       "west": -71.21240624479763,
+       "south": 42.59241396597496,
+       "east": -70.74021713322617,
+       "north": 42.957667328501266
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-15",
+         "2026-09-27"
+        ],
+        "value": 0.332411527633667,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-09-27",
+         "2026-10-09"
+        ],
+        "value": 0.22321242094039917,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-09",
+         "2026-10-21"
+        ],
+        "value": 0.5040841698646545,
+        "cells": 1
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+     },
+     "created": "2026-11-15T13:02:35Z"
+    },
+    {
+     "series": {
+      "id": "8c9c6eae2cad1de29a3a31f52e8baecf",
+      "title": "Backscatter HH at p2",
+      "kind": "series",
+      "quantity": "Radar backscatter gamma0",
+      "unit": "dB",
+      "reduction": "mean-power",
+      "range": null,
+      "point": {
+       "longitude": -70.9,
+       "latitude": 42.7
+      },
+      "cell": {
+       "row": 2835,
+       "column": 2486,
+       "longitude": -70.89994601481905,
+       "latitude": 42.70003373938693
+      },
+      "area": {
+       "west": -71.21240946923143,
+       "south": 42.59232397512833,
+       "east": -70.74021462753375,
+       "north": 42.957757337981135
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-27"
+        ],
+        "value": -8.84405890619715,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-09"
+        ],
+        "value": -12.453390801435738,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-21"
+        ],
+        "value": -10.474212409586123,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-11-02"
+        ],
+        "value": -14.201334454160271,
+        "cells": 1
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "HHHH",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+     },
+     "created": "2026-11-15T13:02:35Z"
+    },
+    {
+     "series": {
+      "id": "b7fc2e44702e69e9fc912497469f0871",
+      "title": "Backscatter HH at p1",
+      "kind": "series",
+      "quantity": "Radar backscatter gamma0",
+      "unit": "dB",
+      "reduction": "mean-power",
+      "range": null,
+      "point": {
+       "longitude": -71.0,
+       "latitude": 42.8
+      },
+      "cell": {
+       "row": 1706,
+       "column": 1693,
+       "longitude": -70.99997498471882,
+       "latitude": 42.79999721314369
+      },
+      "area": {
+       "west": -71.21240946923143,
+       "south": 42.59232397512833,
+       "east": -70.74021462753375,
+       "north": 42.957757337981135
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-27"
+        ],
+        "value": -7.610060343936754,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-09"
+        ],
+        "value": -5.936009545230867,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-21"
+        ],
+        "value": -7.364715987858739,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-11-02"
+        ],
+        "value": -10.232091597445104,
+        "cells": 1
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "HHHH",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+     },
+     "created": "2026-11-15T13:02:28Z"
+    },
+    {
+     "series": {
+      "id": "512101804fc7dba341a7a9d2f67fecb6",
+      "title": "Coherence HH at p1",
+      "kind": "series",
+      "quantity": "Interferometric coherence (magnitude)",
+      "unit": "1",
+      "reduction": "mean",
+      "range": [
+       0.0,
+       1.0
+      ],
+      "point": {
+       "longitude": -71.0,
+       "latitude": 42.8
+      },
+      "cell": {
+       "row": 852,
+       "column": 846,
+       "longitude": -71.00003754277799,
+       "latitude": 42.80004114499954
+      },
+      "area": {
+       "west": -71.21240624479763,
+       "south": 42.59241396597496,
+       "east": -70.74021713322617,
+       "north": 42.957667328501266
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-15",
+         "2026-09-27"
+        ],
+        "value": 0.36974722146987915,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-09-27",
+         "2026-10-09"
+        ],
+        "value": 0.3215233087539673,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-09",
+         "2026-10-21"
+        ],
+        "value": 0.6482067108154297,
+        "cells": 1
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+     },
+     "created": "2026-11-15T13:02:26Z"
+    },
+    {
+     "series": {
+      "id": "53f676ec56557eee0d34b5ac32426286",
+      "title": "Coherence HH, as a document",
+      "kind": "series",
+      "quantity": "Interferometric coherence (magnitude)",
+      "unit": "1",
+      "reduction": "mean",
+      "range": [
+       0.0,
+       1.0
+      ],
+      "point": null,
+      "cell": null,
+      "area": {
+       "west": -71.21240624479763,
+       "south": 42.59241396597496,
+       "east": -70.74021713322617,
+       "north": 42.957667328501266
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-15",
+         "2026-09-27"
+        ],
+        "value": 0.31936795717771277,
+        "cells": 3579092
+       },
+       {
+        "dates": [
+         "2026-09-27",
+         "2026-10-09"
+        ],
+        "value": 0.3067074436510622,
+        "cells": 3579092
+       },
+       {
+        "dates": [
+         "2026-10-09",
+         "2026-10-21"
+        ],
+        "value": 0.5062995480591644,
+        "cells": 3579092
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+     },
+     "created": "2026-11-15T13:02:18Z"
+    },
+    {
+     "series": {
+      "id": "c3a31883d0c5c49d29ca10e948a0d33c",
+      "title": "Backscatter HH, validated dates",
+      "kind": "series",
+      "quantity": "Radar backscatter gamma0",
+      "unit": "dB",
+      "reduction": "mean-power",
+      "range": null,
+      "point": null,
+      "cell": null,
+      "area": {
+       "west": -71.21240946923143,
+       "south": 42.59232397512833,
+       "east": -70.74021462753375,
+       "north": 42.957757337981135
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-10-21"
+        ],
+        "value": -4.833044960998819,
+        "cells": 14316413
+       },
+       {
+        "dates": [
+         "2026-11-02"
+        ],
+        "value": -4.73623294188971,
+        "cells": 14316416
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "HHHH",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+     },
+     "created": "2026-11-15T13:02:18Z"
+    },
+    {
+     "series": {
+      "id": "00e8a880b5c5ef8fdbca05f9d128a63d",
+      "title": "Backscatter HH, mean of the area",
+      "kind": "series",
+      "quantity": "Radar backscatter gamma0",
+      "unit": "dB",
+      "reduction": "mean-power",
+      "range": null,
+      "point": null,
+      "cell": null,
+      "area": {
+       "west": -71.21240946923143,
+       "south": 42.59232397512833,
+       "east": -70.74021462753375,
+       "north": 42.957757337981135
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-27"
+        ],
+        "value": -4.315111978395169,
+        "cells": 14316415
+       },
+       {
+        "dates": [
+         "2026-10-09"
+        ],
+        "value": -4.832534317123461,
+        "cells": 14316411
+       },
+       {
+        "dates": [
+         "2026-10-21"
+        ],
+        "value": -4.833044960998819,
+        "cells": 14316413
+       },
+       {
+        "dates": [
+         "2026-11-02"
+        ],
+        "value": -4.73623294188971,
+        "cells": 14316416
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "HHHH",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+     },
+     "created": "2026-11-15T13:02:11Z"
+    },
+    {
+     "series": {
+      "id": "deeb2fdfdb0d5ae6a7849a194f90b53a",
+      "title": "Coherence HH, mean of the area",
+      "kind": "series",
+      "quantity": "Interferometric coherence (magnitude)",
+      "unit": "1",
+      "reduction": "mean",
+      "range": [
+       0.0,
+       1.0
+      ],
+      "point": null,
+      "cell": null,
+      "area": {
+       "west": -71.21240624479763,
+       "south": 42.59241396597496,
+       "east": -70.74021713322617,
+       "north": 42.957667328501266
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-15",
+         "2026-09-27"
+        ],
+        "value": 0.31936795717771277,
+        "cells": 3579092
+       },
+       {
+        "dates": [
+         "2026-09-27",
+         "2026-10-09"
+        ],
+        "value": 0.3067074436510622,
+        "cells": 3579092
+       },
+       {
+        "dates": [
+         "2026-10-09",
+         "2026-10-21"
+        ],
+        "value": 0.5062995480591644,
+        "cells": 3579092
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+     },
+     "created": "2026-11-15T13:02:09Z"
+    },
+    {
+     "series": {
+      "id": "32aed67391e5a499dd8cf553d16ce5b2",
+      "title": "Backscatter HH at p5",
+      "kind": "series",
+      "quantity": "Radar backscatter gamma0",
+      "unit": "dB",
+      "reduction": "mean-power",
+      "range": null,
+      "point": {
+       "longitude": -70.8726,
+       "latitude": 42.8126
+      },
+      "cell": {
+       "row": 1590,
+       "column": 2738,
+       "longitude": -70.87256685541492,
+       "latitude": 42.81259814475194
+      },
+      "area": {
+       "west": -71.21240946923143,
+       "south": 42.59232397512833,
+       "east": -70.74021462753375,
+       "north": 42.957757337981135
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-27"
+        ],
+        "value": 8.019781976145936,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-09"
+        ],
+        "value": 4.899708321337691,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-21"
+        ],
+        "value": 5.478684092300843,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-11-02"
+        ],
+        "value": 6.056763832331706,
+        "cells": 1
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "HHHH",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+     },
+     "created": "2026-11-15T10:51:43Z"
+    },
+    {
+     "series": {
+      "id": "5b902c6b7c613c798bac5198c0229096",
+      "title": "Coherence HH at p5",
+      "kind": "series",
+      "quantity": "Interferometric coherence (magnitude)",
+      "unit": "1",
+      "reduction": "mean",
+      "range": [
+       0.0,
+       1.0
+      ],
+      "point": {
+       "longitude": -70.8726,
+       "latitude": 42.8126
+      },
+      "cell": {
+       "row": 794,
+       "column": 1369,
+       "longitude": -70.8725070883643,
+       "latitude": 42.81264414749732
+      },
+      "area": {
+       "west": -71.21240624479763,
+       "south": 42.59241396597496,
+       "east": -70.74021713322617,
+       "north": 42.957667328501266
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-15",
+         "2026-09-27"
+        ],
+        "value": 0.7239977121353149,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-09-27",
+         "2026-10-09"
+        ],
+        "value": 0.7051378488540649,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-09",
+         "2026-10-21"
+        ],
+        "value": 0.8103115558624268,
+        "cells": 1
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+     },
+     "created": "2026-11-15T10:51:42Z"
+    },
+    {
+     "series": {
+      "id": "69ee20fa87ede65dec24288ccf870845",
+      "title": "Coherence HH at p4",
+      "kind": "series",
+      "quantity": "Interferometric coherence (magnitude)",
+      "unit": "1",
+      "reduction": "mean",
+      "range": [
+       0.0,
+       1.0
+      ],
+      "point": {
+       "longitude": -70.8,
+       "latitude": 42.9
+      },
+      "cell": {
+       "row": 315,
+       "column": 1676,
+       "longitude": -70.79994648375636,
+       "latitude": 42.900075763961176
+      },
+      "area": {
+       "west": -71.21240624479763,
+       "south": 42.59241396597496,
+       "east": -70.74021713322617,
+       "north": 42.957667328501266
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-15",
+         "2026-09-27"
+        ],
+        "value": 0.28476378321647644,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-09-27",
+         "2026-10-09"
+        ],
+        "value": 0.281078577041626,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-09",
+         "2026-10-21"
+        ],
+        "value": 0.3181857764720917,
+        "cells": 1
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+     },
+     "created": "2026-11-15T10:51:33Z"
+    },
+    {
+     "series": {
+      "id": "b1af1ab49fb80c952b67a005e0df5ff0",
+      "title": "Backscatter HH at p4",
+      "kind": "series",
+      "quantity": "Radar backscatter gamma0",
+      "unit": "dB",
+      "reduction": "mean-power",
+      "range": null,
+      "point": {
+       "longitude": -70.8,
+       "latitude": 42.9
+      },
+      "cell": {
+       "row": 632,
+       "column": 3352,
+       "longitude": -70.8000063882048,
+       "latitude": 42.900029797240485
+      },
+      "area": {
+       "west": -71.21240946923143,
+       "south": 42.59232397512833,
+       "east": -70.74021462753375,
+       "north": 42.957757337981135
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-27"
+        ],
+        "value": -16.068267077710118,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-09"
+        ],
+        "value": -19.467349903766245,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-21"
+        ],
+        "value": -16.988306566405114,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-11-02"
+        ],
+        "value": -18.58491247229638,
+        "cells": 1
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "HHHH",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+     },
+     "created": "2026-11-15T10:51:33Z"
+    },
+    {
+     "series": {
+      "id": "2ce78865b64a424e0b955f5818b44856",
+      "title": "Backscatter HH at p3",
+      "kind": "series",
+      "quantity": "Radar backscatter gamma0",
+      "unit": "dB",
+      "reduction": "mean-power",
+      "range": null,
+      "point": {
+       "longitude": -71.1,
+       "latitude": 42.65
+      },
+      "cell": {
+       "row": 3352,
+       "column": 834,
+       "longitude": -71.09994962487058,
+       "latitude": 42.64998387611088
+      },
+      "area": {
+       "west": -71.21240946923143,
+       "south": 42.59232397512833,
+       "east": -70.74021462753375,
+       "north": 42.957757337981135
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-27"
+        ],
+        "value": -7.1289854327232804,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-09"
+        ],
+        "value": -6.029024124436332,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-21"
+        ],
+        "value": -8.954701291266648,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-11-02"
+        ],
+        "value": -3.750911866671517,
+        "cells": 1
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "HHHH",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+     },
+     "created": "2026-11-15T10:51:26Z"
+    },
+    {
+     "series": {
+      "id": "f3eee3093973ed67d4d4d190ab53089d",
+      "title": "Coherence HH at p3",
+      "kind": "series",
+      "quantity": "Interferometric coherence (magnitude)",
+      "unit": "1",
+      "reduction": "mean",
+      "range": [
+       0.0,
+       1.0
+      ],
+      "point": {
+       "longitude": -71.1,
+       "latitude": 42.65
+      },
+      "cell": {
+       "row": 1675,
+       "column": 417,
+       "longitude": -71.09989018191416,
+       "latitude": 42.650029991892474
+      },
+      "area": {
+       "west": -71.21240624479763,
+       "south": 42.59241396597496,
+       "east": -70.74021713322617,
+       "north": 42.957667328501266
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-15",
+         "2026-09-27"
+        ],
+        "value": 0.14651069045066833,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-09-27",
+         "2026-10-09"
+        ],
+        "value": 0.34934714436531067,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-09",
+         "2026-10-21"
+        ],
+        "value": 0.5242114663124084,
+        "cells": 1
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+     },
+     "created": "2026-11-15T10:51:24Z"
+    },
+    {
+     "series": {
+      "id": "3d4cc29262175b2b6f91c0b1909a8bc9",
+      "title": "Backscatter HH at p2",
+      "kind": "series",
+      "quantity": "Radar backscatter gamma0",
+      "unit": "dB",
+      "reduction": "mean-power",
+      "range": null,
+      "point": {
+       "longitude": -70.9,
+       "latitude": 42.7
+      },
+      "cell": {
+       "row": 2835,
+       "column": 2486,
+       "longitude": -70.89994601481905,
+       "latitude": 42.70003373938693
+      },
+      "area": {
+       "west": -71.21240946923143,
+       "south": 42.59232397512833,
+       "east": -70.74021462753375,
+       "north": 42.957757337981135
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-27"
+        ],
+        "value": -8.84405890619715,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-09"
+        ],
+        "value": -12.453390801435738,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-21"
+        ],
+        "value": -10.474212409586123,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-11-02"
+        ],
+        "value": -14.201334454160271,
+        "cells": 1
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "HHHH",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+     },
+     "created": "2026-11-15T10:51:16Z"
+    },
+    {
+     "series": {
+      "id": "c9bc024edabef620cac7d191535e7d9d",
+      "title": "Coherence HH at p2",
+      "kind": "series",
+      "quantity": "Interferometric coherence (magnitude)",
+      "unit": "1",
+      "reduction": "mean",
+      "range": [
+       0.0,
+       1.0
+      ],
+      "point": {
+       "longitude": -70.9,
+       "latitude": 42.7
+      },
+      "cell": {
+       "row": 1417,
+       "column": 1243,
+       "longitude": -70.89988362862626,
+       "latitude": 42.69998974875195
+      },
+      "area": {
+       "west": -71.21240624479763,
+       "south": 42.59241396597496,
+       "east": -70.74021713322617,
+       "north": 42.957667328501266
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-15",
+         "2026-09-27"
+        ],
+        "value": 0.332411527633667,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-09-27",
+         "2026-10-09"
+        ],
+        "value": 0.22321242094039917,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-09",
+         "2026-10-21"
+        ],
+        "value": 0.5040841698646545,
+        "cells": 1
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+     },
+     "created": "2026-11-15T10:51:16Z"
+    },
+    {
+     "series": {
+      "id": "0f0eac3c465911aba2ceadca2fae8227",
+      "title": "Backscatter HH at p1",
+      "kind": "series",
+      "quantity": "Radar backscatter gamma0",
+      "unit": "dB",
+      "reduction": "mean-power",
+      "range": null,
+      "point": {
+       "longitude": -71.0,
+       "latitude": 42.8
+      },
+      "cell": {
+       "row": 1706,
+       "column": 1693,
+       "longitude": -70.99997498471882,
+       "latitude": 42.79999721314369
+      },
+      "area": {
+       "west": -71.21240946923143,
+       "south": 42.59232397512833,
+       "east": -70.74021462753375,
+       "north": 42.957757337981135
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-27"
+        ],
+        "value": -7.610060343936754,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-09"
+        ],
+        "value": -5.936009545230867,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-21"
+        ],
+        "value": -7.364715987858739,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-11-02"
+        ],
+        "value": -10.232091597445104,
+        "cells": 1
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "HHHH",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+     },
+     "created": "2026-11-15T10:51:09Z"
+    },
+    {
+     "series": {
+      "id": "e9a8e39c3fca70697e803f1e2ba778a6",
+      "title": "Coherence HH at p1",
+      "kind": "series",
+      "quantity": "Interferometric coherence (magnitude)",
+      "unit": "1",
+      "reduction": "mean",
+      "range": [
+       0.0,
+       1.0
+      ],
+      "point": {
+       "longitude": -71.0,
+       "latitude": 42.8
+      },
+      "cell": {
+       "row": 852,
+       "column": 846,
+       "longitude": -71.00003754277799,
+       "latitude": 42.80004114499954
+      },
+      "area": {
+       "west": -71.21240624479763,
+       "south": 42.59241396597496,
+       "east": -70.74021713322617,
+       "north": 42.957667328501266
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-15",
+         "2026-09-27"
+        ],
+        "value": 0.36974722146987915,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-09-27",
+         "2026-10-09"
+        ],
+        "value": 0.3215233087539673,
+        "cells": 1
+       },
+       {
+        "dates": [
+         "2026-10-09",
+         "2026-10-21"
+        ],
+        "value": 0.6482067108154297,
+        "cells": 1
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+     },
+     "created": "2026-11-15T10:51:07Z"
+    },
+    {
+     "series": {
+      "id": "c76d8968159d361ddc6204ba0e04582b",
+      "title": "Backscatter HH, validated dates",
+      "kind": "series",
+      "quantity": "Radar backscatter gamma0",
+      "unit": "dB",
+      "reduction": "mean-power",
+      "range": null,
+      "point": null,
+      "cell": null,
+      "area": {
+       "west": -71.21240946923143,
+       "south": 42.59232397512833,
+       "east": -70.74021462753375,
+       "north": 42.957757337981135
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-10-21"
+        ],
+        "value": -4.833044960998819,
+        "cells": 14316413
+       },
+       {
+        "dates": [
+         "2026-11-02"
+        ],
+        "value": -4.73623294188971,
+        "cells": 14316416
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "HHHH",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+     },
+     "created": "2026-11-15T10:50:57Z"
+    },
+    {
+     "series": {
+      "id": "5b0a52ffe356b487a469c1b2c7989d7e",
+      "title": "Backscatter HH, mean of the pilot area",
+      "kind": "series",
+      "quantity": "Radar backscatter gamma0",
+      "unit": "dB",
+      "reduction": "mean-power",
+      "range": null,
+      "point": null,
+      "cell": null,
+      "area": {
+       "west": -71.21240946923143,
+       "south": 42.59232397512833,
+       "east": -70.74021462753375,
+       "north": 42.957757337981135
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-27"
+        ],
+        "value": -4.315111978395169,
+        "cells": 14316415
+       },
+       {
+        "dates": [
+         "2026-10-09"
+        ],
+        "value": -4.832534317123461,
+        "cells": 14316411
+       },
+       {
+        "dates": [
+         "2026-10-21"
+        ],
+        "value": -4.833044960998819,
+        "cells": 14316413
+       },
+       {
+        "dates": [
+         "2026-11-02"
+        ],
+        "value": -4.73623294188971,
+        "cells": 14316416
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+       "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "HHHH",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+     },
+     "created": "2026-11-15T10:50:52Z"
+    },
+    {
+     "series": {
+      "id": "e3267cb588fedccc41be8a0dea128331",
+      "title": "Coherence HH, mean of the area",
+      "kind": "series",
+      "quantity": "Interferometric coherence (magnitude)",
+      "unit": "1",
+      "reduction": "mean",
+      "range": [
+       0.0,
+       1.0
+      ],
+      "point": null,
+      "cell": null,
+      "area": {
+       "west": -71.21240624479763,
+       "south": 42.59241396597496,
+       "east": -70.74021713322617,
+       "north": 42.957667328501266
+      },
+      "entries": [
+       {
+        "dates": [
+         "2026-09-15",
+         "2026-09-27"
+        ],
+        "value": 0.31936795717771277,
+        "cells": 3579092
+       },
+       {
+        "dates": [
+         "2026-09-27",
+         "2026-10-09"
+        ],
+        "value": 0.3067074436510622,
+        "cells": 3579092
+       },
+       {
+        "dates": [
+         "2026-10-09",
+         "2026-10-21"
+        ],
+        "value": 0.5062995480591644,
+        "cells": 3579092
+       }
+      ],
+      "inputs": [
+       "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+       "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+      ],
+      "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+      "program": "Lynkeus 0.1.0",
+      "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+     },
+     "created": "2026-11-15T10:50:49Z"
+    }
+   ]
+  }
+ },
+ "renaming": {
+  "http_status": 200,
+  "answer": {
+   "series": {
+    "id": "00e8a880b5c5ef8fdbca05f9d128a63d",
+    "title": "Backscatter HH, mean of the pilot area",
+    "kind": "series",
+    "quantity": "Radar backscatter gamma0",
+    "unit": "dB",
+    "reduction": "mean-power",
+    "range": null,
+    "point": null,
+    "cell": null,
+    "area": {
+     "west": -71.21240946923143,
+     "south": 42.59232397512833,
+     "east": -70.74021462753375,
+     "north": 42.957757337981135
+    },
+    "entries": [
+     {
+      "dates": [
+       "2026-09-27"
+      ],
+      "value": -4.315111978395169,
+      "cells": 14316415
+     },
+     {
+      "dates": [
+       "2026-10-09"
+      ],
+      "value": -4.832534317123461,
+      "cells": 14316411
+     },
+     {
+      "dates": [
+       "2026-10-21"
+      ],
+      "value": -4.833044960998819,
+      "cells": 14316413
+     },
+     {
+      "dates": [
+       "2026-11-02"
+      ],
+      "value": -4.73623294188971,
+      "cells": 14316416
+     }
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "HHHH",
+    "program": "Lynkeus 0.1.0",
+    "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+   },
+   "created": "2026-11-15T13:02:11Z"
+  }
+ },
+ "removal": {
+  "http_status": 204,
+  "answer": null
+ },
+ "job_of_the_removed_series": {
+  "http_status": 404
+ },
+ "series_of_the_session_at_the_end": {
+  "http_status": 200,
+  "ids": [
+   "0fd2a6b681b8a3aa66c8f4c375ac62a9",
+   "a3dbdc0a06632cc2f5e9c72da763338e",
+   "990ceaa1a0bb606f866e1ea2636fc81b",
+   "1edb45da6c853728f542cbb04c46768f",
+   "8fb94ef8a505a046cbb4355b14f286d9",
+   "52e5d10e198669db2dc1e7fe63ea69d8",
+   "c40a5aee3a8d60a4a2a2ad1580324e64",
+   "8c9c6eae2cad1de29a3a31f52e8baecf",
+   "b7fc2e44702e69e9fc912497469f0871",
+   "512101804fc7dba341a7a9d2f67fecb6",
+   "c3a31883d0c5c49d29ca10e948a0d33c",
+   "00e8a880b5c5ef8fdbca05f9d128a63d",
+   "deeb2fdfdb0d5ae6a7849a194f90b53a",
+   "32aed67391e5a499dd8cf553d16ce5b2",
+   "5b902c6b7c613c798bac5198c0229096",
+   "69ee20fa87ede65dec24288ccf870845",
+   "b1af1ab49fb80c952b67a005e0df5ff0",
+   "2ce78865b64a424e0b955f5818b44856",
+   "f3eee3093973ed67d4d4d190ab53089d",
+   "3d4cc29262175b2b6f91c0b1909a8bc9",
+   "c9bc024edabef620cac7d191535e7d9d",
+   "0f0eac3c465911aba2ceadca2fae8227",
+   "e9a8e39c3fca70697e803f1e2ba778a6",
+   "c76d8968159d361ddc6204ba0e04582b",
+   "5b0a52ffe356b487a469c1b2c7989d7e",
+   "e3267cb588fedccc41be8a0dea128331"
+  ]
+ },
+ "layers_of_the_session_at_the_end": {
+  "http_status": 200,
+  "ids": [
+   "d34069fb70f91b284adc41acab5e765e",
+   "2df74db4382a6aeed2164231bcc9d0e8",
+   "8f9eb9a99bf63efa50af31a061da3265",
+   "e7084528cd2fbdabe0da018099e8ba69",
+   "e7045ec025f8a7a2397fca7a99902276",
+   "ffbfd0c3360f0be55fe4f6453412b415",
+   "ab08c2a0ebb107e2238acde5fb8a329e"
+  ]
+ },
+ "jobs_at_the_end": {
+  "http_status": 200,
+  "number": 41,
+  "with_series": 26,
+  "with_layer": 7
+ },
+ "ended": "2026-11-15T13:03:22Z"
+}

@@ -13,7 +13,7 @@ import subprocess
 import sys
 import threading
 import time
-from collections.abc import Callable, Iterator
+from collections.abc import Callable, Iterator, Sequence
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
@@ -85,10 +85,12 @@ class Site:
 
 
 @contextmanager
-def running(folder: Path, keys: KeyServer) -> Iterator[Site]:
-    """Run the web service on a folder until the block ends."""
+def running(
+    folder: Path, keys: KeyServer, processes: Sequence[Process[Any]] = (STAND_IN, SIGNED_IN, USES)
+) -> Iterator[Site]:
+    """Run the web service with its processes on a folder until the block ends."""
     app = FastAPI()
-    install(app, [STAND_IN, SIGNED_IN, USES], folder=folder / "project", keys_address=keys.address, secure_cookie=False)
+    install(app, processes, folder=folder / "project", keys_address=keys.address, secure_cookie=False)
     install_servers(app)
     listener = socket.socket()
     listener.bind(("127.0.0.1", 0))

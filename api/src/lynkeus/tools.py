@@ -3,16 +3,29 @@
 ``run_tool`` reads the input layers of a tool, calls the function of the tool
 from ``lynkeus.analysis.TOOLS`` and writes the result as a layer of the kind
 ``result``. The function of a tool computes; it reads and writes no file.
+
+``run_series`` does the same for a tool of the kind Series, from
+``lynkeus.analysis.SERIES_TOOLS``. It turns the point of the request into a
+cell of the grid of the layers, gives the function the arrays one after
+another, and returns the series description. A series has no file.
 """
 
-from collections.abc import Callable, Mapping
+import math
+from collections.abc import Callable, Iterator, Mapping
 from pathlib import Path
 
 import numpy as np
+from numpy.typing import NDArray
+from rasterio.crs import CRS
+from rasterio.transform import Affine
+from rasterio.warp import transform, transform_bounds
 
-from lynkeus.analysis import TOOLS
-from lynkeus.layers import LayerDescription, Reduction, ToolRun
-from lynkeus.writing import PROGRAM, LayerError, read_layer, write_layer
+from lynkeus.analysis import SERIES_TOOLS, TOOLS
+from lynkeus.layers import Area, Cell, LayerDescription, Point, Reduction, SeriesDescription, SeriesRun, ToolRun
+from lynkeus.writing import PROGRAM, Grid, LayerError, grid_of, read_layer, write_layer
+
+EDGE_POINTS = 21
+"""The number of points on each side of a grid from which the rectangle around the grid is made."""
 
 _REDUCED: dict[Reduction, str] = {
     "mean": "by averaging the values",
@@ -130,4 +143,152 @@ def _run_tool(
         ],
     )
     report(100, "The result is ready.")
+    return description
+
+
+def cell_of(grid: Grid, point: Point) -> Cell:
+    """Return the cell of a grid that holds a point.
+
+    The point is transformed from longitude and latitude (WGS 84) to the
+    coordinate reference system of the grid. The cell is the one whose
+    rectangle holds the transformed point; a point on the line between two
+    cells belongs to the cell with the larger number.
+
+    Parameters
+    ----------
+    grid : Grid
+        The grid of a layer.
+    point : Point
+        The point, in degrees of longitude and latitude.
+
+    Returns
+    -------
+    Cell
+        The row and the column of the cell, counted from 0, and the
+        longitude and latitude of its centre.
+
+    Raises
+    ------
+    LayerError
+        If the point lies outside the grid.
+    """
+    cells_to_ground = Affine(*grid.transform)
+    crs, degrees = CRS.from_string(grid.crs), CRS.from_epsg(4326)
+    (x,), (y,) = transform(degrees, crs, [point.longitude], [point.latitude])
+    column, row = ~cells_to_ground @ (x, y)
+    if not (math.isfinite(column) and math.isfinite(row) and 0 <= column < grid.width and 0 <= row < grid.height):
+        raise LayerError("The point lies outside the area of the layers.")
+    whole_column, whole_row = math.floor(column), math.floor(row)
+    centre_x, centre_y = cells_to_ground @ (whole_column + 0.5, whole_row + 0.5)
+    (longitude,), (latitude,) = transform(crs, degrees, [centre_x], [centre_y])
+    return Cell(row=whole_row, column=whole_column, longitude=longitude, latitude=latitude)
+
+
+def area_of(grid: Grid) -> Area:
+    """Return the rectangle in longitude and latitude (WGS 84) around a grid.
+
+    The rectangle is made from the corners of the grid and from points on
+    its four sides, which are not straight lines in longitude and latitude.
+    """
+    cells_to_ground = Affine(*grid.transform)
+    corners = [
+        cells_to_ground @ corner for corner in ((0, 0), (grid.width, 0), (0, grid.height), (grid.width, grid.height))
+    ]
+    xs, ys = [x for x, _ in corners], [y for _, y in corners]
+    west, south, east, north = transform_bounds(
+        CRS.from_string(grid.crs), CRS.from_epsg(4326), min(xs), min(ys), max(xs), max(ys), densify_pts=EDGE_POINTS
+    )
+    return Area(west=west, south=south, east=east, north=north)
+
+
+def run_series(
+    run: SeriesRun,
+    *,
+    layers: Mapping[str, tuple[LayerDescription, Path]],
+    series_id: str,
+    report: Callable[[int, str], None],
+) -> SeriesDescription:
+    """Run an analysis tool of the kind Series on layers and return the series.
+
+    Parameters
+    ----------
+    run : SeriesRun
+        The tool, the ``id`` of each input layer, the name of the series and
+        the point, or no point for the whole area of the layers.
+    layers : Mapping
+        The layers that the tool may use: for each ``id``, the description of
+        the layer and the path of its GeoTIFF.
+    series_id : str
+        The ``id`` that the series receives.
+    report : callable
+        Called with the progress, from 0 to 100, and a sentence about it.
+
+    Returns
+    -------
+    SeriesDescription
+        The description of the series. Its entries, product files, layer
+        name, quantity, unit, reduction, range and method are those that the
+        function of the tool returns. Its point is that of the run, its cell
+        is the cell of the grid of the layers that holds the point, and its
+        area is the rectangle around that grid. One layer is read at a time.
+
+    Raises
+    ------
+    LayerError
+        If the tool or a layer does not exist, the layers do not share one
+        grid, the point lies outside the grid, or the tool refuses the
+        layers. The message is one sentence for the visitor.
+    """
+    try:
+        return _run_series(run, layers, series_id, report)
+    except LayerError:
+        raise
+    except Exception as error:
+        raise LayerError("Lynkeus could not compute the series because of an internal error.") from error
+
+
+def _run_series(
+    run: SeriesRun,
+    layers: Mapping[str, tuple[LayerDescription, Path]],
+    series_id: str,
+    report: Callable[[int, str], None],
+) -> SeriesDescription:
+    """Check the grids, find the cell of the point, call the function of the tool and describe the series."""
+    if run.tool not in SERIES_TOOLS:
+        raise LayerError("Lynkeus has no analysis tool of this name.")
+    if any(name not in layers for name in run.inputs):
+        raise LayerError("A layer of the analysis no longer exists.")
+    report(0, "Reading the grids of the layers.")
+    descriptions = [layers[name][0] for name in run.inputs]
+    paths = [layers[name][1] for name in run.inputs]
+    grids = [grid_of(path) for path in paths]
+    if any(grid != grids[0] for grid in grids):
+        raise LayerError("The layers of the analysis do not have the same grid.")
+    cell = cell_of(grids[0], run.point) if run.point is not None else None
+
+    def arrays() -> Iterator[NDArray[np.float32]]:
+        for number, path in enumerate(paths):
+            report(5 + 90 * number // len(paths), f"Reading layer {number + 1} of {len(paths)}.")
+            values, _ = read_layer(path)
+            yield values
+
+    result = SERIES_TOOLS[run.tool](arrays(), descriptions, (cell.row, cell.column) if cell is not None else None)
+    description = SeriesDescription(
+        id=series_id,
+        title=run.title,
+        kind="series",
+        quantity=result.quantity,
+        unit=result.unit,
+        reduction=result.reduction,
+        range=result.range,
+        point=run.point,
+        cell=cell,
+        area=area_of(grids[0]),
+        entries=result.entries,
+        inputs=result.inputs,
+        layer=result.layer,
+        program=PROGRAM,
+        method=result.method,
+    )
+    report(100, "The series is ready.")
     return description
