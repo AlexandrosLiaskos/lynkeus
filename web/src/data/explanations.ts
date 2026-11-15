@@ -17,6 +17,8 @@ export const EXPLANATIONS = {
     "The northern side of the rectangle in decimal degrees of latitude on WGS 84, from -90 to 90, for example 42.95.",
   period:
     "The days of the acquisitions that are searched. The first and the last day are whole days of Coordinated Universal Time, and both belong to the period.",
+  pairs:
+    "A product of this type is made from two acquisitions. The first choice finds a pair when the time from its first date to its second date overlaps the period. The second choice finds a pair only when both of its dates lie inside the period.",
   track: "The number of the track of the orbit, from 1 to 173, or a range of tracks, for example 140-142.",
   frame: "The number of the frame along the track, from 1 to 176, or a range of frames, for example 60-70.",
   cycle: "The number of the 12-day repeat of the orbit, as a whole number, for example 33.",
