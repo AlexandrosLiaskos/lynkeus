@@ -26,7 +26,7 @@ import pytest
 import uvicorn
 from fastapi import FastAPI
 
-from lynkeus import computer, harmony, jobs, server_routes, servers
+from lynkeus import computer, harmony, jobs, routes, server_routes, servers, sessions
 from lynkeus.layers import Area
 from lynkeus.linking import (
     MAX_USER_SERVERS,
@@ -252,6 +252,45 @@ def test_every_address_of_the_servers_needs_a_signed_in_session(site: Site) -> N
     owner.delete("/api/session/earthdata")
     problem(owner.get("/api/servers"), 401)
     assert [server_["name"] for server_ in listed(site.visit("a_user"))] == ["Field laptop"]
+
+
+def test_servers_of_the_account_work_while_the_web_service_does_not_hold_the_token(site: Site) -> None:
+    owner, machine = site.visit("a_user"), site.machine()
+    server = machine.pair(owner)
+    with machine.serving():
+        done = state(owner, started(owner, server=server)["jobID"])
+        layer = owner.get(f"/api/jobs/{done['jobID']}/results").json()
+        on_project = state(owner, started(owner, server="project")["jobID"])
+        # The web service forgets the token after its time. The visitor stays signed in to the account.
+        with pytest.MonkeyPatch.context() as patch:
+            patch.setattr(sessions, "EARTHDATA_TIME", -1.0)
+            site.service.sessions.remove_unused()
+        assert owner.get("/api/session").json() == {"earthdata": {"user": "a_user", "token": False}}
+        # The servers are listed and changed, a second one is connected, and a file of a layer is read.
+        assert [found["id"] for found in listed(owner)] == [server]
+        assert owner.patch(f"/api/servers/{server}", json={"name": "Mine"}).json()["name"] == "Mine"
+        second = site.machine("Second laptop").pair(owner)
+        assert [found["id"] for found in listed(owner)] == [server, second]
+        assert owner.get(layer["url"]).status_code == 200
+        # A layer of a server states no moment of removal, and an extension leaves it so.
+        entries = {entry["layer"]["id"]: entry for entry in owner.get("/api/layers").json()["layers"]}
+        kept = entries[layer["id"]]
+        assert (kept["kept_until"], kept["server"]["id"]) == (None, server)
+        assert kept["source"] == {"process": "stand-in", "inputs": done["inputs"]}
+        assert entries[on_project["layer"]]["kept_until"] is not None
+        assert owner.post(f"/api/layers/{layer['id']}/extension").json() == kept
+        assert owner.post("/api/storage/extension").status_code == 204
+        # A job that sends no request to NASA runs on the server, and one that needs the token asks for it.
+        assert state(owner, started(owner, server=server)["jobID"])["status"] == "successful"
+        refused = start(owner, "signed-in", server=server)
+        problem(refused, 401, routes.ENTER_AGAIN)
+        assert refused.headers["www-authenticate"] == 'Bearer realm="Earthdata Login"'
+        # The removal of everything of the account on the project server leaves the servers and their layers.
+        assert owner.delete("/api/storage").status_code == 204
+        left = owner.get("/api/layers").json()["layers"]
+        assert sorted(entry["server"]["id"] for entry in left) == [server, server]
+        assert [found["id"] for found in listed(owner)] == [server, second]
+        assert len(owner.get("/api/jobs").json()["jobs"]) == 2
 
 
 def test_wrong_user_codes_of_one_user_are_limited(site: Site) -> None:
@@ -747,8 +786,8 @@ def test_another_user_reaches_no_server_no_job_and_no_layer_of_the_owner(site: S
         job = started(owner)["jobID"]
         state(owner, job, "running")
         for address in (f"/api/jobs/{job}", f"/api/jobs/{job}/results"):
-            problem(other.get(address), 404, "Your session has no job of this name.")
-        problem(other.delete(f"/api/jobs/{job}"), 404, "Your session has no job of this name.")
+            problem(other.get(address), 404, "You have no job of this name.")
+        problem(other.delete(f"/api/jobs/{job}"), 404, "You have no job of this name.")
         machine.finish(job)
         layer = owner.get(f"/api/jobs/{state(owner, job)['jobID']}/results").json()
         assert other.get("/api/jobs").json()["jobs"] == []
@@ -759,8 +798,8 @@ def test_another_user_reaches_no_server_no_job_and_no_layer_of_the_owner(site: S
         problem(other.get(layer["url"]), 404, "You have no server of this name.")
         problem(other.get(layer["record"], headers={"Range": "bytes=0-9"}), 404)
         problem(other.get(f"/api/jobs/{job}/results"), 404)
-        problem(other.patch(f"/api/layers/{layer['id']}", json={"title": "Taken"}), 404, "Your session has no layer")
-        problem(other.delete(f"/api/layers/{layer['id']}"), 404, "Your session has no layer")
+        problem(other.patch(f"/api/layers/{layer['id']}", json={"title": "Taken"}), 404, "You have no layer")
+        problem(other.delete(f"/api/layers/{layer['id']}"), 404, "You have no layer")
         problem(start(other, server=server), 404, "You have no server of this name.")
         # The job of the other user runs on the project server, not on the connected server of the owner.
         assert started(other)["server"] is None
@@ -853,18 +892,18 @@ def test_limits_of_the_project_server_are_not_applied_to_an_own_server(
     visitor, machine = site.visit("a_user"), site.machine()
     server = machine.pair(visitor)
     with machine.serving():
-        monkeypatch.setattr(jobs, "MAX_SESSION_UNFINISHED_JOBS", 0)
+        monkeypatch.setattr(jobs, "MAX_ACCOUNT_UNFINISHED_JOBS", 0)
         problem(start(visitor, server="project"), 429, "You have 0 jobs that wait or run")
         done = [state(visitor, started(visitor, server=server)["jobID"]) for _ in range(3)]
         assert [info["status"] for info in done] == ["successful"] * 3
-        monkeypatch.setattr(jobs, "MAX_SESSION_UNFINISHED_JOBS", 4)
-        # Three layers of the own server do not count towards the layers and the space of the session.
-        monkeypatch.setattr(jobs, "MAX_SESSION_LAYERS", 1)
-        monkeypatch.setattr(jobs, "MAX_SESSION_SIZE", 3000)
+        monkeypatch.setattr(jobs, "MAX_ACCOUNT_UNFINISHED_JOBS", 4)
+        # Three layers of the own server do not count towards the layers and the space of the account.
+        monkeypatch.setattr(jobs, "MAX_ACCOUNT_LAYERS", 1)
+        monkeypatch.setattr(jobs, "MAX_ACCOUNT_SIZE", 3000)
         assert len(visitor.get("/api/layers").json()["layers"]) == 3
         ours = started(visitor, server="project")
         assert state(visitor, ours["jobID"])["status"] == "successful"
-        problem(start(visitor, server="project"), 507, "A session holds at most 1 layers.")
+        problem(start(visitor, server="project"), 507, "You may keep at most 1 layers.")
         assert state(visitor, started(visitor, server=server)["jobID"])["status"] == "successful"
         # The record of the project server holds a limited number of unfinished jobs of one server.
         monkeypatch.setattr(servers, "MAX_SERVER_UNFINISHED_JOBS", 1)
@@ -995,7 +1034,7 @@ def test_layer_of_an_own_server_is_renamed_and_removed_by_tasks(site: Site, monk
         assert visitor.delete(address).status_code == 204
         assert not folder.exists()
         assert visitor.get("/api/layers").json() == {"layers": []}
-        problem(visitor.delete(address), 404, "Your session has no layer of this name.")
+        problem(visitor.delete(address), 404, "You have no layer of this name.")
         problem(visitor.get(layer["url"]), 404, "Your server keeps no such file.")
         # The record of the job that produced the layer is removed with it.
         problem(visitor.get(f"/api/jobs/{done['jobID']}"), 404)

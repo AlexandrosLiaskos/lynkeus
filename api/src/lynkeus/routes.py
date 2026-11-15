@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
-"""The addresses of the sessions, the processes, the jobs, the layers and the series.
+"""The addresses of the sessions, the processes, the jobs, the layers, the series and the storage.
 
 The processes and the jobs follow OGC API - Processes, Part 1: Core
 (OGC 18-062r2), with the requirement classes Core, JSON, OGC Process
@@ -16,12 +16,24 @@ layers name that server in the member ``server``, which is ``null`` for the
 project server. The addresses of the own servers themselves are in
 ``lynkeus.server_routes``.
 
-An error is answered with the problem details of RFC 7807, as the standard
+A visitor is known by his session, which a sign-in to Earthdata makes
+(``lynkeus.sessions``). The jobs, the layers and the series belong to the
+account of the session, so every browser that is signed in to the account
+reaches them. No address other than the sign-in makes a session or sets a
+cookie. A request whose cookie names no session is answered as a request of a
+visitor who is not signed in, and the answer removes the cookie. The server
+holds the Earthdata token for a shorter time than the session lasts. Without
+the token everything works that sends no request to NASA, and the start of a
+job that needs the token is answered with 401 and the sentence ``ENTER_AGAIN``
+(``docs/Storage.md``).
+
+An error is answered with the problem details of RFC 9457, as the standard
 recommends. Their field ``detail`` holds one plain sentence for the visitor.
 """
 
 import asyncio
 import json
+import logging
 import os
 import re
 import signal
@@ -47,12 +59,14 @@ from lynkeus.references import Reader, UnreadableReferenceError, read_reference
 from lynkeus.servers import SITE, ServerRefusedError, Servers, layer_cells, name_of
 from lynkeus.sessions import COOKIE, COOKIE_PATH, SESSION_IDLE_TIME, Sessions, TooManySessionsError
 from lynkeus.store import (
+    Holder,
     JobRecord,
     LayerRecord,
     SeriesRecord,
     ServerJobRecord,
     ServerLayerRecord,
     ServerRecord,
+    SessionRecord,
     Store,
 )
 
@@ -84,10 +98,27 @@ MAX_LIMIT = 1000
 """The largest number of processes or jobs in one answer."""
 
 REMOVAL_PAUSE = 300.0
-"""The time between two removals of unused sessions, in seconds."""
+"""The time between two removal runs, in seconds.
+
+A removal run ends the sessions that were not used for the keeping time, and removes the layers and the
+series that have passed the moment until which they are kept, and the records of the failed and of the
+dismissed jobs that ended more than the keeping time ago.
+"""
 
 PROBLEM = "application/problem+json"
-"""The media type of an error answer (RFC 7807)."""
+"""The media type of an error answer (RFC 9457)."""
+
+SIGN_IN_NEEDED = "Sign in to Earthdata to start this job."
+"""The sentence of the answer 401 to a visitor who is not signed in and starts a job."""
+
+ENTER_AGAIN = "Enter your Earthdata token again to start this job, because the server no longer holds it."
+"""The sentence of the answer 401 to a signed-in visitor whose token is not held, for a job that needs it."""
+
+NO_LAYER = "You have no layer of this name."
+NO_SERIES = "You have no series of this name."
+
+STORAGE_NEEDS_SIGN_IN = "Sign in to Earthdata to keep or remove what the project server keeps for your account."
+"""The sentence of the answer 401 of the addresses under ``/api/storage`` to a visitor who is not signed in."""
 
 CONFORMANCE = (
     "http://www.opengis.net/spec/ogcapi-processes-1/1.0/conf/core",
@@ -105,6 +136,8 @@ _SERVER = re.compile(r"^(project|[0-9a-f]{16})$")
 
 type Link = dict[str, str]
 
+logger = logging.getLogger(__name__)
+
 
 class RefusedError(Exception):
     """A request that the server does not carry out.
@@ -116,7 +149,7 @@ class RefusedError(Exception):
     detail : str
         One plain sentence for the visitor.
     kind : str
-        Address that names the kind of the error (field ``type`` of RFC 7807).
+        Address that names the kind of the error (field ``type`` of RFC 9457).
     headers : mapping of str to str, optional
         Headers of the answer.
     """
@@ -164,6 +197,7 @@ class Service:
             raise ValueError("two processes have the same name")
         self.secure_cookie = secure_cookie
         self.read = read
+        self.folder = folder
         files = folder / "files"
         files.mkdir(parents=True, exist_ok=True)
         self.store = Store(folder / "lynkeus.sqlite3")
@@ -171,10 +205,10 @@ class Service:
         self.servers = Servers(self.store, site)
         self.sessions = Sessions(self.store, TokenChecker(keys_address), self.jobs.end_session)
         self._stop = threading.Event()
-        self._remover = threading.Thread(target=self._remove_unused, name="lynkeus-sessions", daemon=True)
+        self._remover = threading.Thread(target=self._remove_unused, name="lynkeus-removal", daemon=True)
 
     def start(self) -> None:
-        """Bring the record in order after a stop of the server, and start the removal of unused sessions."""
+        """Bring the record in order after a stop of the server, and start the removal runs."""
         self.jobs.start()
         self.servers.start()
         self._remover.start()
@@ -186,9 +220,18 @@ class Service:
         self.jobs.stop()
         self.store.close()
 
+    def remove_passed(self) -> None:
+        """Carry out one removal run (``REMOVAL_PAUSE``)."""
+        self.sessions.remove_unused()
+        self.jobs.remove_passed()
+
     def _remove_unused(self) -> None:
         while True:
-            self.sessions.remove_unused()
+            try:
+                self.remove_passed()
+            except Exception:
+                # The next run tries again: one fault must not end the removal for as long as the service runs.
+                logger.exception("A removal run failed.")
             if self._stop.wait(REMOVAL_PAUSE):
                 return
 
@@ -236,7 +279,11 @@ def _service(request: Request) -> Service:
 def _answer(
     request: Request, content: object, status: int = HTTPStatus.OK, headers: Mapping[str, str] | None = None
 ) -> Response:
-    """Return a JSON answer, with the cookie of the session when the session received a key during the request."""
+    """Return a JSON answer, which sets or removes the cookie of the session when the request changed it.
+
+    The cookie is set when the session received a key during the request. It is removed when the
+    request carried a key that names no session, or that named the session which the request ended.
+    """
     kind = PROBLEM if status >= HTTPStatus.BAD_REQUEST else JSON
     if content is None:
         response = Response(status_code=status, headers=dict(headers or {}))
@@ -248,6 +295,14 @@ def _answer(
             COOKIE,
             key,
             max_age=int(SESSION_IDLE_TIME),
+            path=COOKIE_PATH,
+            secure=_service(request).secure_cookie,
+            httponly=True,
+            samesite="strict",
+        )
+    elif getattr(request.state, "ended_key", False):
+        response.delete_cookie(
+            COOKIE,
             path=COOKIE_PATH,
             secure=_service(request).secure_cookie,
             httponly=True,
@@ -265,22 +320,46 @@ def _refused(request: Request, refusal: Exception) -> Response:
     return _answer(request, problem, status, refusal.headers)
 
 
-def _session(request: Request) -> str | None:
-    """Return the session of a request, or None when the request names none."""
-    return _service(request).sessions.find(request.cookies.get(COOKIE))
+def session_of(request: Request) -> SessionRecord | None:
+    """Return the session of a request, or None when the request names none.
+
+    The session is looked up once for a request. A key that names no session is noted, so that the
+    answer removes the cookie.
+    """
+    state = request.state
+    if not hasattr(state, "session"):
+        key = request.cookies.get(COOKIE)
+        state.session = _service(request).sessions.find(key)
+        state.ended_key = key is not None and state.session is None
+    found: SessionRecord | None = state.session
+    return found
 
 
-def _user(request: Request) -> str | None:
-    """Return the name of the Earthdata user of a request, or None when the visitor is not signed in."""
-    session = _session(request)
-    user = _service(request).sessions.user(session) if session else None
-    return user.name if user else None
+def account_of(request: Request) -> str | None:
+    """Return the account of a request: the name of the Earthdata user, or None when the visitor is not signed in.
+
+    The account is known for as long as the session lasts, also while the server does not hold the token.
+    """
+    session = session_of(request)
+    return session.account if session else None
+
+
+def _holder(request: Request) -> Holder | None:
+    """Return who holds the jobs, the layers and the series of a request, or None for a request without a session.
+
+    It is the account of the session. A session without an account, which a record file of an earlier
+    version holds, holds its content itself until its next sign-in.
+    """
+    session = session_of(request)
+    if session is None:
+        return None
+    return Holder(account=session.account) if session.account else Holder(session=session.id)
 
 
 def _own_servers(request: Request) -> dict[str, ServerRecord]:
-    """Return the own servers of the signed-in visitor of a request, by name."""
-    user = _user(request)
-    return {server.id: server for server in _service(request).store.servers_of(user)} if user else {}
+    """Return the own servers of the account of a request, by name."""
+    account = account_of(request)
+    return {server.id: server for server in _service(request).store.servers_of(account)} if account else {}
 
 
 def _with_cells(described: dict[str, Any], cells: int) -> dict[str, Any]:
@@ -302,18 +381,6 @@ def refusal_of(refusal: ServerRefusedError) -> RefusedError:
     """Return the answer to a request that an own server, or the rules of the own servers, do not allow."""
     headers = {"Retry-After": str(refusal.wait)} if refusal.wait else {}
     return RefusedError(refusal.status, str(refusal), headers=headers)
-
-
-def _session_or_new(request: Request) -> str:
-    """Return the session of a request, after creating one when the request names none."""
-    session = _session(request)
-    if session is None:
-        try:
-            session, request.state.session_key = _service(request).sessions.create()
-        except TooManySessionsError as error:
-            detail = "The server holds the largest number of sessions at present. Try again in a few minutes."
-            raise RefusedError(HTTPStatus.SERVICE_UNAVAILABLE, detail, headers={"Retry-After": "300"}) from error
-    return session
 
 
 async def _body(request: Request) -> dict[str, Any]:
@@ -414,7 +481,7 @@ def _status_info(
     """
     address = f"/api/jobs/{job.id}"
     if job.status == "dismissed":
-        links = [_link("/api/jobs", "up", "Jobs of the session")]
+        links = [_link("/api/jobs", "up", "Jobs of the account")]
     else:
         links = [_link(address, "self", "State of the job")]
         if job.status == "successful":
@@ -443,19 +510,38 @@ def _server_name(server: ServerRecord | None) -> dict[str, str] | None:
     return None if server is None else name_of(server).model_dump()
 
 
+def _kept_until(moment: float | None) -> str | None:
+    """Return the moment until which a layer or a series is kept, or None when it is kept without an end."""
+    return None if moment is None else _time(moment)
+
+
 def _layer_entry(layer: LayerRecord | ServerLayerRecord, server: ServerRecord | None = None) -> dict[str, Any]:
-    """Return a layer of a visitor: its description, the size of its files, its time of creation and its server."""
+    """Return a layer of a visitor.
+
+    The entry holds the description of the layer, the size of its files, its time of creation, its
+    server, the moment until which the project server keeps it and the request that made it. The
+    member ``kept_until`` is ``null`` for a layer of an own server, which that server keeps without
+    an end. The member ``source`` is ``{"process": ..., "inputs": {...}}``: the name of the process and
+    the inputs of the job that made the layer, with which the same request can be sent again. It is
+    ``null`` when the record does not hold them.
+    """
     return {
         "layer": json.loads(layer.description),
         "size": layer.size,
         "created": _time(layer.created),
         "server": _server_name(server),
+        "kept_until": _kept_until(layer.kept_until) if isinstance(layer, LayerRecord) else None,
+        "source": json.loads(layer.source) if layer.source is not None else None,
     }
 
 
 def _series_entry(series: SeriesRecord) -> dict[str, Any]:
-    """Return a series of a session: its description and its time of creation."""
-    return {"series": json.loads(series.description), "created": _time(series.created)}
+    """Return a series of a visitor: its description, its time of creation and the moment until which it is kept."""
+    return {
+        "series": json.loads(series.description),
+        "created": _time(series.created),
+        "kept_until": _kept_until(series.kept_until),
+    }
 
 
 def _instant(text: str) -> float:
@@ -572,22 +658,33 @@ def install(
 
     router = APIRouter(prefix="/api", lifespan=lifespan)
 
-    def session_state(request: Request, session: str) -> dict[str, Any]:
-        user = _service(request).sessions.user(session)
-        return {"earthdata": {"user": user.name} if user else None}
+    def session_state(request: Request, session: SessionRecord | None) -> dict[str, Any]:
+        """Return the sign-in state of a session (``docs/Storage.md``, Sign-in states)."""
+        if session is None or session.account is None:
+            return {"earthdata": None}
+        held = _service(request).sessions.token(session.id) is not None
+        return {"earthdata": {"user": session.account, "token": held}}
 
     @router.get("/session")
     def session(request: Request) -> Response:
-        """Report whether the visitor is signed in to Earthdata, and create the session when there is none."""
-        name = _session_or_new(request)
-        if getattr(request.state, "session_key", None) is None:
+        """Report whether the visitor is signed in to Earthdata, and whether the server holds his token.
+
+        The address makes no session. A visitor who is not signed in receives no cookie.
+        """
+        found = session_of(request)
+        if found is not None:
             # The cookie is sent again, so that its time starts again with every opening of the page.
             request.state.session_key = request.cookies[COOKIE]
-        return _answer(request, session_state(request, name))
+        return _answer(request, session_state(request, found))
 
     @router.post("/session/earthdata")
     async def sign_in(request: Request) -> Response:
-        """Sign the visitor in to Earthdata with a user token."""
+        """Sign the visitor in to Earthdata with a user token.
+
+        The sign-in makes the session when the request names none, and records the account. A session
+        without an account gives what it holds to the account. A sign-in as another account ends the
+        session of the first (``lynkeus.sessions.Sessions.sign_in``).
+        """
         body = await _body(request)
         token = body.get("token")
         if set(body) != {"token"} or not isinstance(token, str):
@@ -595,9 +692,8 @@ def install(
                 HTTPStatus.BAD_REQUEST, 'The request body must be {"token": "..."} with an Earthdata Login user token.'
             )
         sessions = _service(request).sessions
-        name = _session_or_new(request)
         try:
-            await asyncio.to_thread(sessions.sign_in, name, token.strip())
+            _, key, user = await asyncio.to_thread(sessions.sign_in, session_of(request), token.strip())
         except TokenRefusedError:
             detail = (
                 "Earthdata Login does not accept this token. Check that the whole token was copied and has not expired."
@@ -606,17 +702,22 @@ def install(
         except KeysUnavailableError as error:
             detail = "Earthdata Login did not answer, so the token could not be checked. Try again in a few minutes."
             raise RefusedError(HTTPStatus.BAD_GATEWAY, detail) from error
-        request.state.session_key = sessions.renew_key(name)
-        return _answer(request, session_state(request, name))
+        except TooManySessionsError as error:
+            detail = "The server holds the largest number of sessions at present. Try again in a few minutes."
+            raise RefusedError(HTTPStatus.SERVICE_UNAVAILABLE, detail, headers={"Retry-After": "300"}) from error
+        request.state.session_key = key
+        return _answer(request, {"earthdata": {"user": user.name, "token": True}})
 
     @router.delete("/session/earthdata")
     def sign_out(request: Request) -> Response:
-        """Sign the visitor out of Earthdata. The server forgets the token."""
-        sessions = _service(request).sessions
-        name = _session(request)
-        if name is not None:
-            sessions.sign_out(name)
-            request.state.session_key = sessions.renew_key(name)
+        """Sign the visitor out of Earthdata.
+
+        The server forgets the token and ends the session, and the answer removes the cookie. What the
+        account keeps on the project server stays until its date.
+        """
+        found = session_of(request)
+        if found is not None and _service(request).sessions.sign_out(found):
+            request.state.ended_key = True
         return _answer(request, None, HTTPStatus.NO_CONTENT)
 
     @router.get("")
@@ -628,7 +729,7 @@ def install(
             _link("/api/openapi.json", "service-desc", "Definition of the addresses, in the form of OpenAPI"),
             _link("/api/conformance", f"{_RELATION}conformance", "Conformance classes that the server implements"),
             _link("/api/processes", f"{_RELATION}processes", "Processes that the server offers"),
-            _link("/api/jobs", f"{_RELATION}job-list", "Jobs of the session"),
+            _link("/api/jobs", f"{_RELATION}job-list", "Jobs of the account"),
         ]
         description = "Receives layers of NISAR products from NASA and runs analysis tools on them, as jobs."
         return _answer(
@@ -685,7 +786,7 @@ def install(
         described = process_of(request, name).describe()
         wanted = wanted_server(request)
         if wanted is not None and wanted != "project":
-            server = _service(request).servers.owned(_user(request), wanted)
+            server = _service(request).servers.owned(account_of(request), wanted)
             if server is None:
                 raise RefusedError(HTTPStatus.NOT_FOUND, "You have no server of this name.")
             described = _with_cells(described, layer_cells(server))
@@ -701,6 +802,11 @@ def install(
         server when there is none. The limits of the project server are applied to its own jobs only:
         the inputs of a job of an own server are checked against their format here, and the limit on
         the cells of a layer is applied by the server that runs the job.
+
+        A job belongs to the account of the visitor, so a visitor who is not signed in is answered
+        with 401. A process that needs Earthdata is answered with 401 and the sentence
+        ``ENTER_AGAIN`` while the server does not hold the token of the signed-in visitor; a process
+        that sends no request to NASA starts without the token.
         """
         service = _service(request)
         process = process_of(request, name)
@@ -727,12 +833,15 @@ def install(
             inputs = await asyncio.to_thread(process.read_inputs, body.get("inputs", {}), service.read)
         except (InputError, UnreadableReferenceError) as error:
             raise RefusedError(HTTPStatus.BAD_REQUEST, str(error)) from None
+        session, holder = session_of(request), _holder(request)
+        if session is None or holder is None:
+            raise RefusedError(HTTPStatus.UNAUTHORIZED, SIGN_IN_NEEDED, headers=_SIGN_IN)
         token = None
         if process.needs_earthdata:
-            known = _session(request)
-            token = service.sessions.token(known) if known else None
+            token = service.sessions.token(session.id)
             if token is None:
-                raise RefusedError(HTTPStatus.UNAUTHORIZED, "Sign in to Earthdata to start this job.", headers=_SIGN_IN)
+                detail = SIGN_IN_NEEDED if session.account is None else ENTER_AGAIN
+                raise RefusedError(HTTPStatus.UNAUTHORIZED, detail, headers=_SIGN_IN)
         if output == SERIES_OUTPUT:
             # A report of an own server carries the description of a layer and no other result
             # (lynkeus.linking.JobState), so a series is computed on the project server, from its layers.
@@ -740,18 +849,17 @@ def install(
                 detail = "A series is computed on the project server only, so the parameter server must be absent"
                 raise RefusedError(HTTPStatus.UNPROCESSABLE_CONTENT, f"{detail} or the word project.")
             wanted = "project"
-        known = _session(request)
-        kept = [layer.id for layer in service.store.layers_of(known)] if known else []
+        kept = [layer.id for layer in service.store.layers_of(holder)]
         job: JobRecord | ServerJobRecord
         try:
-            own = service.servers.place(_user(request), wanted, process.layers(inputs), kept, time.time())
+            own = service.servers.place(session.account, wanted, process.layers(inputs), kept, time.time())
             if own is not None:
                 job = service.servers.submit(own, process, inputs, form, token)
         except ServerRefusedError as error:
             raise refusal_of(error) from None
         if own is None:
             try:
-                job = service.jobs.submit(_session_or_new(request), process, inputs, form, token)
+                job = service.jobs.submit(holder, process, inputs, form, token)
             except LimitError as error:
                 headers = {"Retry-After": str(error.wait)} if error.wait else {}
                 raise RefusedError(error.status, str(error), headers=headers) from None
@@ -769,39 +877,37 @@ def install(
     def job_of(request: Request, name: str) -> tuple[JobRecord | ServerJobRecord, ServerRecord | None]:
         """Return a job of the visitor of the request, and its own server when it runs on one.
 
-        A job of the project server belongs to the session that started it, and a job of an own server
-        to the Earthdata user who owns that server. Any other job counts as a job that does not exist.
+        A job of the project server belongs to the account that started it, and a job of an own server
+        to the account that owns that server. Any other job counts as a job that does not exist.
         """
         service = _service(request)
-        session = _session(request)
+        holder = _holder(request)
         found: tuple[JobRecord | ServerJobRecord, ServerRecord | None] | None = None
         job = service.store.job(name)
-        if session is not None and job is not None and job.session == session:
+        if holder is not None and job is not None and job.holder == holder:
             found = job, None
         else:
             sent = service.store.server_job(name)
-            server = service.servers.owned(_user(request), sent.server) if sent is not None else None
+            server = service.servers.owned(account_of(request), sent.server) if sent is not None else None
             if sent is not None and server is not None:
                 found = sent, server
         if found is None:
-            raise RefusedError(
-                HTTPStatus.NOT_FOUND, "Your session has no job of this name.", f"{_EXCEPTION}no-such-job"
-            )
+            raise RefusedError(HTTPStatus.NOT_FOUND, "You have no job of this name.", f"{_EXCEPTION}no-such-job")
         if found[0].status == "dismissed":
             raise RefusedError(HTTPStatus.GONE, "The job was dismissed.")
         return found
 
     @router.get("/jobs")
     def job_list(request: Request) -> Response:
-        """Return the jobs of the session and of the own servers of the visitor, the newest first."""
+        """Return the jobs of the account and of its own servers, the newest first."""
         store = _service(request).store
-        session = _session(request)
+        holder = _holder(request)
         own = _own_servers(request)
-        jobs: list[JobRecord | ServerJobRecord] = [*(store.jobs_of(session) if session else [])]
+        jobs: list[JobRecord | ServerJobRecord] = [*(store.jobs_of(holder) if holder else [])]
         for server in own:
             jobs += store.server_jobs_of(server)
         jobs.sort(key=lambda job: job.created, reverse=True)
-        page, links = _page(request, _selected_jobs(request, jobs), "Jobs of the session")
+        page, links = _page(request, _selected_jobs(request, jobs), "Jobs of the account")
         infos = [
             _status_info(job, own[job.server] if isinstance(job, ServerJobRecord) else None, output_of(request, job))
             for job in page
@@ -852,14 +958,15 @@ def install(
     def layer_list(request: Request) -> Response:
         """Return the layers of the visitor, the newest first.
 
-        They are the layers of the session, which the project server keeps, and the layers that the
-        own servers of the signed-in visitor keep. Each entry holds the description of the layer, the
-        size of its files, its time of creation and its server.
+        They are the layers of the account, which the project server keeps, and the layers that the
+        own servers of the account keep. Each entry holds the description of the layer, the size of
+        its files, its time of creation, its server, the moment until which it is kept and the request
+        that made it (``_layer_entry``).
         """
         store = _service(request).store
-        session, user, own = _session(request), _user(request), _own_servers(request)
-        entries = [(layer.created, _layer_entry(layer)) for layer in (store.layers_of(session) if session else [])]
-        for kept in store.server_layers_of(user) if user else []:
+        holder, account, own = _holder(request), account_of(request), _own_servers(request)
+        entries = [(layer.created, _layer_entry(layer)) for layer in (store.layers_of(holder) if holder else [])]
+        for kept in store.server_layers_of(account) if account else []:
             entries.append((kept.created, _layer_entry(kept, own[kept.server])))
         entries.sort(key=lambda entry: entry[0], reverse=True)
         return _answer(request, {"layers": [entry for _, entry in entries]})
@@ -873,13 +980,13 @@ def install(
             detail = f'The request body must be {{"title": "..."}} with a title of 1 to {MAX_TITLE_LENGTH} characters.'
             raise RefusedError(HTTPStatus.BAD_REQUEST, detail)
         service = _service(request)
-        session = _session(request)
-        layer = service.jobs.rename_layer(session, name, title.strip()) if session else None
+        holder = _holder(request)
+        layer = service.jobs.rename_layer(holder, name, title.strip()) if holder else None
         if layer is not None:
             return _answer(request, _layer_entry(layer))
-        kept = service.servers.layer_of(_user(request), name)
+        kept = service.servers.layer_of(account_of(request), name)
         if kept is None:
-            raise RefusedError(HTTPStatus.NOT_FOUND, "Your session has no layer of this name.")
+            raise RefusedError(HTTPStatus.NOT_FOUND, NO_LAYER)
         try:
             return _answer(request, _layer_entry(await service.servers.rename_layer(*kept, title.strip()), kept[0]))
         except ServerRefusedError as error:
@@ -889,45 +996,92 @@ def install(
     async def layer_removal(request: Request, name: str) -> Response:
         """Remove a layer of the visitor with its files. An own server deletes the files of a layer that it keeps."""
         service = _service(request)
-        session = _session(request)
-        if session is not None and await asyncio.to_thread(service.jobs.remove_layer, session, name):
+        holder = _holder(request)
+        if holder is not None and await asyncio.to_thread(service.jobs.remove_layer, holder, name):
             return _answer(request, None, HTTPStatus.NO_CONTENT)
-        kept = service.servers.layer_of(_user(request), name)
+        kept = service.servers.layer_of(account_of(request), name)
         if kept is None:
-            raise RefusedError(HTTPStatus.NOT_FOUND, "Your session has no layer of this name.")
+            raise RefusedError(HTTPStatus.NOT_FOUND, NO_LAYER)
         try:
             await service.servers.remove_layer(*kept)
         except ServerRefusedError as error:
             raise refusal_of(error) from None
         return _answer(request, None, HTTPStatus.NO_CONTENT)
 
+    @router.post("/layers/{name}/extension")
+    def layer_extension(request: Request, name: str) -> Response:
+        """Keep a layer of the visitor for the keeping time from now, and return its entry.
+
+        A layer of an own server is kept by that server without an end, so its entry is returned as it is.
+        """
+        service = _service(request)
+        holder = _holder(request)
+        layer = service.jobs.keep_layer(holder, name) if holder else None
+        if layer is not None:
+            return _answer(request, _layer_entry(layer))
+        kept = service.servers.layer_of(account_of(request), name)
+        if kept is None:
+            raise RefusedError(HTTPStatus.NOT_FOUND, NO_LAYER)
+        return _answer(request, _layer_entry(kept[1], kept[0]))
+
     @router.get("/series")
     def series_list(request: Request) -> Response:
-        """Return the series of the session, the newest first, each with its description and time of creation."""
-        session = _session(request)
-        series = _service(request).store.series_of(session) if session else []
+        """Return the series of the account, the newest first (``_series_entry``)."""
+        holder = _holder(request)
+        series = _service(request).store.series_of(holder) if holder else []
         return _answer(request, {"series": [_series_entry(entry) for entry in series]})
 
     @router.patch("/series/{name}")
     async def series_renaming(request: Request, name: str) -> Response:
-        """Give a series of the session a new title."""
+        """Give a series of the account a new title."""
         body = await _body(request)
         title = body.get("title")
         if set(body) != {"title"} or not isinstance(title, str) or not 0 < len(title.strip()) <= MAX_TITLE_LENGTH:
             detail = f'The request body must be {{"title": "..."}} with a title of 1 to {MAX_TITLE_LENGTH} characters.'
             raise RefusedError(HTTPStatus.BAD_REQUEST, detail)
-        session = _session(request)
-        series = _service(request).jobs.rename_series(session, name, title.strip()) if session else None
+        holder = _holder(request)
+        series = _service(request).jobs.rename_series(holder, name, title.strip()) if holder else None
         if series is None:
-            raise RefusedError(HTTPStatus.NOT_FOUND, "Your session has no series of this name.")
+            raise RefusedError(HTTPStatus.NOT_FOUND, NO_SERIES)
         return _answer(request, _series_entry(series))
 
     @router.delete("/series/{name}")
     def series_removal(request: Request, name: str) -> Response:
-        """Remove a series of the session."""
-        session = _session(request)
-        if session is None or not _service(request).jobs.remove_series(session, name):
-            raise RefusedError(HTTPStatus.NOT_FOUND, "Your session has no series of this name.")
+        """Remove a series of the account."""
+        holder = _holder(request)
+        if holder is None or not _service(request).jobs.remove_series(holder, name):
+            raise RefusedError(HTTPStatus.NOT_FOUND, NO_SERIES)
+        return _answer(request, None, HTTPStatus.NO_CONTENT)
+
+    @router.post("/series/{name}/extension")
+    def series_extension(request: Request, name: str) -> Response:
+        """Keep a series of the account for the keeping time from now, and return its entry."""
+        holder = _holder(request)
+        series = _service(request).jobs.keep_series(holder, name) if holder else None
+        if series is None:
+            raise RefusedError(HTTPStatus.NOT_FOUND, NO_SERIES)
+        return _answer(request, _series_entry(series))
+
+    def storage_holder(request: Request) -> Holder:
+        """Return who holds the content of a request, and refuse a visitor who is not signed in."""
+        holder = _holder(request)
+        if holder is None:
+            raise RefusedError(HTTPStatus.UNAUTHORIZED, STORAGE_NEEDS_SIGN_IN, headers=_SIGN_IN)
+        return holder
+
+    @router.post("/storage/extension")
+    def storage_extension(request: Request) -> Response:
+        """Keep every layer and series of the account for the keeping time from now."""
+        _service(request).jobs.keep_all(storage_holder(request))
+        return _answer(request, None, HTTPStatus.NO_CONTENT)
+
+    @router.delete("/storage")
+    async def storage_removal(request: Request) -> Response:
+        """End the jobs of the account and remove its layers, its series and its job records from the project server.
+
+        The servers of the account, their jobs and their layers are not touched, and the visitor stays signed in.
+        """
+        await asyncio.to_thread(_service(request).jobs.remove_content, storage_holder(request))
         return _answer(request, None, HTTPStatus.NO_CONTENT)
 
     app.include_router(router)

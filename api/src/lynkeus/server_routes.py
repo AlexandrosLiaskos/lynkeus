@@ -7,9 +7,11 @@ of every message. The addresses under ``/api/link`` are for the program
 Lynkeus Server: it asks for a pairing there, and once paired it asks for its
 tasks, reports its state and answers the tasks, with its key in the header
 ``Authorization``. The addresses under ``/api/servers`` are for the interface.
-Each of them needs a session that is signed in to Earthdata, and a visitor
-reaches only the servers that he owns: a server of another user is answered
-as a server that does not exist.
+Each of them needs a visitor who is signed in to Earthdata, and a visitor
+reaches only the servers of his account: a server of another user is answered
+as a server that does not exist. They send no request to NASA, so they work
+also while the web service does not hold the token of the visitor
+(``docs/Storage.md``).
 
 A question for tasks waits on the event loop of the web service and holds no
 thread. The bytes of a file of a layer pass through the project server in
@@ -50,9 +52,8 @@ from lynkeus.linking import (
     Tasks,
 )
 from lynkeus.linking import Servers as ServerList
-from lynkeus.routes import RefusedError, Service, refusal_of
+from lynkeus.routes import RefusedError, Service, account_of, refusal_of
 from lynkeus.servers import Part, ServerRefusedError, layer_files, state_of, written_tasks
-from lynkeus.sessions import COOKIE
 from lynkeus.store import ServerRecord
 
 MAX_LINK_BODY = 1_048_576
@@ -87,13 +88,11 @@ def _service(request: Request) -> Service:
 
 def _owner(request: Request) -> str:
     """Return the name of the Earthdata user of a request, and refuse a visitor who is not signed in."""
-    service = _service(request)
-    session = service.sessions.find(request.cookies.get(COOKIE))
-    user = service.sessions.user(session) if session else None
-    if user is None:
+    account = account_of(request)
+    if account is None:
         detail = "Sign in to Earthdata to connect and use servers of your own."
         raise RefusedError(HTTPStatus.UNAUTHORIZED, detail, headers=_SIGN_IN)
-    return user.name
+    return account
 
 
 def _owned(request: Request, server: str) -> ServerRecord:

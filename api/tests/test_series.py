@@ -36,11 +36,11 @@ from lynkeus.layers import (
 )
 from lynkeus.processes import SERIES_OUTPUT, InputError, Process, Work
 from lynkeus.routes import install
-from lynkeus.store import JobRecord, SeriesRecord, Store
+from lynkeus.store import Holder, JobRecord, SeriesRecord, Store
 from lynkeus.tools import area_of, cell_of, run_series
 from lynkeus.writing import PROGRAM, LayerError, grid_of
 from tests.records import LAYERS
-from tests.standin import STAND_IN, key_server
+from tests.standin import STAND_IN, key_server, token
 from tests.test_server_routes import problem, running, started, state
 from tests.test_server_routes import start as start_on
 
@@ -354,7 +354,8 @@ def test_store_keeps_the_series_of_a_successful_job(store: Store) -> None:
     assert (done.status, done.progress, done.layer, done.finished) == ("successful", 100, "e1", 5.0)
     assert store.series("e1") == series
     assert store.layer("e1") is None
-    assert (store.series_of("s1"), store.series_of("s2"), store.layers_of("s1")) == ([series], [], [])
+    first, second = Holder(session="s1"), Holder(session="s2")
+    assert (store.series_of(first), store.series_of(second), store.layers_of(first)) == ([series], [], [])
     store.change_series("e1", '{"title": "New"}')
     changed = store.series("e1")
     assert changed is not None
@@ -368,14 +369,14 @@ def test_series_are_listed_the_newest_first_and_removed_with_their_session(store
         store.add_job(_job(f"j{number}"))
         store.start_job(f"j{number}", "Started.", 2.0)
         store.succeed_job_with_series(f"j{number}", "Ready.", SeriesRecord(f"e{number}", "s1", "{}", float(number)))
-    assert [series.id for series in store.series_of("s1")] == ["e3", "e2", "e1"]
+    assert [series.id for series in store.series_of(Holder(session="s1"))] == ["e3", "e2", "e1"]
     store.dismiss_job("j1", "Dismissed.", 9.0)
     store.dismiss_job("j2", "Dismissed.", 9.0)
     store.dismiss_job("j3", "Dismissed.", 9.0)
     # A session that holds only a series is not a session without content.
     assert store.sessions_without_content() == ["s2"]
     store.remove_session("s1")
-    assert store.series_of("s1") == []
+    assert store.series_of(Holder(session="s1")) == []
     assert store.series("e1") is None
 
 
@@ -440,6 +441,8 @@ def client(tmp_path: Path) -> Iterator[TestClient]:
     with key_server() as keys:
         install(app, [STAND_IN, STAND_IN_SERIES], folder=tmp_path, keys_address=keys.address)
         with TestClient(app, base_url="https://testserver") as visitor:
+            # A job belongs to an account, so the visitor of these tests is signed in.
+            assert visitor.post("/api/session/earthdata", json={"token": token()}).status_code == 200
             yield visitor
 
 
@@ -563,12 +566,12 @@ def test_process_of_a_series_that_returns_something_else_fails(client: TestClien
     assert client.get("/api/layers").json() == {"layers": []}
 
 
-def test_session_holds_a_limited_number_of_series(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(jobs, "MAX_SESSION_SERIES", 1)
+def test_account_holds_a_limited_number_of_series(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(jobs, "MAX_ACCOUNT_SERIES", 1)
     wait(client, start(client)["jobID"])
     refused = client.post("/api/processes/stand-in-series/execution", json={"inputs": {"name": "b"}})
     assert refused.status_code == 507
-    assert refused.json()["detail"] == "A session holds at most 1 series. Remove a series and try again."
+    assert refused.json()["detail"] == "You may keep at most 1 series. Remove a series and try again."
     # The limit of the series does not stop a job that makes a layer.
     assert client.post("/api/processes/stand-in/execution", json={"inputs": {"name": "c"}}).status_code == 201
 

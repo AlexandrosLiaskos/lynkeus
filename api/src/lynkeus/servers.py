@@ -563,7 +563,7 @@ class Servers:
         )
 
     def place(
-        self, user: str | None, wanted: str | None, layers: Sequence[str], session_layers: Sequence[str], now: float
+        self, user: str | None, wanted: str | None, layers: Sequence[str], project_layers: Sequence[str], now: float
     ) -> ServerRecord | None:
         """Choose the server on which a new job runs.
 
@@ -575,8 +575,8 @@ class Servers:
             Name of an own server, the word ``project``, or None for the automatic choice.
         layers : sequence of str
             Names of the layers that the job reads.
-        session_layers : sequence of str
-            Names of the layers of the session of the visitor, which the project server keeps.
+        project_layers : sequence of str
+            Names of the layers of the account of the visitor that the project server keeps.
         now : float
             Present time, in seconds since 1 January 1970 (UTC).
 
@@ -596,7 +596,7 @@ class Servers:
         own = self._store.servers_of(user) if user is not None else []
         kept: dict[str, set[str]] = {}
         if own and user is not None:
-            named = set(layers) - set(session_layers)
+            named = set(layers) - set(project_layers)
             for layer in self._store.server_layers_of(user):
                 if layer.id in named:
                     kept.setdefault(layer.id, set()).add(layer.server)
