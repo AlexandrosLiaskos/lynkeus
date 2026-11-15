@@ -119,7 +119,7 @@ export const VIEWED_ONLY_NOTE =
 /** The sentence that refuses a picture in which nothing would be left. */
 export const ONLY_VIEWED_ONLY =
   "OpenStreetMap is the only layer of the map, and it cannot enter a picture of this size or resolution. " +
-  "Choose the map as the screen shows it, at 96 dots per inch, or another background map.";
+  "Choose the map as the screen shows it, at 96 dots per inch, or another basemap.";
 
 /**
  * Draw the map as a picture with the chosen size and elements. A background map whose service does not permit
@@ -149,7 +149,7 @@ export async function makePicture(map: OlMap, choice: PictureChoice): Promise<Fi
         "The picture cannot be made, because a layer comes from a site that does not let the page read its images.",
       );
     }
-    notes.push("The background map is not in the picture, because its service does not let the page read its images.");
+    notes.push("The basemap is not in the picture, because its service does not let the page read its images.");
   }
   decorate(picture, choice.resolution / SCREEN_RESOLUTION, {
     sources: choice.sources,
