@@ -205,3 +205,8 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - Lynkeus Server writes a layer on a computer where PostGIS, QGIS or another program names its own map data in the
   variables PROJ_DATA, PROJ_LIB or GDAL_DATA. It used that data, PROJ refused the database of another version, and
   every job of Get layer ended with an internal error. The program now uses the map data that came with it.
+
+### Security
+
+- The web service refuses an input value that a request gives as a link. A few requests with links to a
+  host that answers very slowly could stop the sign-in, the search and the start of jobs for every visitor.

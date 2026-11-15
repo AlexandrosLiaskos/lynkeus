@@ -12,7 +12,7 @@ from typing import Any
 import pytest
 
 from lynkeus import references
-from lynkeus.references import UnreadableReferenceError, read_reference
+from lynkeus.references import REFUSED, UnreadableReferenceError, read_reference, refuse_reference
 from tests.standin import DATA
 
 CERTIFICATE = DATA / "reference.test.pem"
@@ -174,3 +174,14 @@ def test_public_host_gives_its_first_address_and_an_unknown_host_is_refused(monk
     monkeypatch.setattr(socket, "getaddrinfo", unknown)
     with pytest.raises(UnreadableReferenceError, match="was not found"):
         references._public_address("example.org", 443)
+
+
+def test_reader_of_the_web_service_refuses_a_link_without_any_connection(monkeypatch: pytest.MonkeyPatch) -> None:
+    def connect(*_: object, **__: object) -> None:
+        raise AssertionError("A connection was opened.")
+
+    monkeypatch.setattr(socket, "getaddrinfo", connect)
+    monkeypatch.setattr(socket, "create_connection", connect)
+    with pytest.raises(UnreadableReferenceError) as refusal:
+        refuse_reference("https://example.org/name.json")
+    assert str(refusal.value) == REFUSED

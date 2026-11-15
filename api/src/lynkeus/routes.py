@@ -43,7 +43,7 @@ from fastapi.responses import JSONResponse
 from lynkeus.earthdata import KEYS_ADDRESS, KeysUnavailableError, TokenChecker, TokenRefusedError
 from lynkeus.jobs import Jobs, LimitError
 from lynkeus.processes import CELLS_PARAMETER, JSON, OUTPUT, SERIES_OUTPUT, InputError, OutputName, Process
-from lynkeus.references import Reader, UnreadableReferenceError, read_reference
+from lynkeus.references import Reader, UnreadableReferenceError, refuse_reference
 from lynkeus.servers import SITE, ServerRefusedError, Servers, layer_cells, name_of
 from lynkeus.sessions import COOKIE, COOKIE_PATH, SESSION_IDLE_TIME, Sessions, TooManySessionsError
 from lynkeus.store import (
@@ -519,7 +519,7 @@ def install(
     folder: Path | None = None,
     keys_address: str | None = None,
     secure_cookie: bool | None = None,
-    read: Reader = read_reference,
+    read: Reader = refuse_reference,
     site: str | None = None,
 ) -> None:
     """Add the addresses of the sessions, the processes, the jobs, the layers and the series to the web service.
@@ -542,7 +542,8 @@ def install(
         Whether the browser may send the cookie over HTTPS only. Without it,
         true unless the environment variable ``LYNKEUS_COOKIE_SECURE`` is ``false``.
     read : callable
-        Returns the JSON value at the address of a link that a request gives as an input value.
+        Returns the JSON value at the address of a link that a request gives as an input value. Without
+        it, the service refuses every link (``lynkeus.references.refuse_reference``).
     site : str, optional
         Address of the site, at which a visitor confirms the pairing of an own server. Without it, the
         address in the environment variable ``LYNKEUS_SITE``, or ``https://lynkeus.nkua.cloud``.
