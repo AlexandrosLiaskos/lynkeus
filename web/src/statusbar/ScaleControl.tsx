@@ -108,7 +108,7 @@ export function ScaleControl({ scale, onChoose }: ScaleControlProps) {
   };
 
   return (
-    <span className="statusbar-item statusbar-scale">
+    <span className="statusbar-item statusbar-scale" title="Scale of the map">
       <label className="statusbar-label" htmlFor={id}>
         Scale
       </label>

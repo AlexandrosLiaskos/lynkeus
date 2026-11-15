@@ -3,12 +3,23 @@ import { flushSync } from "react-dom";
 import { Icon } from "../shared/icon/Icon";
 import { Tooltip } from "../shared/tooltip/Tooltip";
 import { tabAfterKey, tabStop, toolAfterKey } from "./keys";
-import type { RibbonTab, ToolActions } from "./types";
+import type { RibbonTab, ToolAction, ToolActions } from "./types";
 
 interface RibbonProps {
   tabs: readonly RibbonTab[];
   /** What each finished button does. A button without an entry is shown in grey. */
   actions: ToolActions;
+}
+
+/** What the description of a button says, after its sentence, while the function of the button is not finished. */
+export const NOT_YET_AVAILABLE = "Not yet available.";
+
+/**
+ * Return the sentence that says why a button is inactive, or undefined for a button that can run: a button
+ * without an action is not finished, and a finished button may state what it still needs.
+ */
+export function reasonOf(action: ToolAction | undefined): string | undefined {
+  return action ? action.missing : NOT_YET_AVAILABLE;
 }
 
 const tabId = (id: string) => `ribbon-tab-${id}`;
@@ -29,6 +40,10 @@ function focusOn(id: string) {
  * Tabs pattern of the ARIA Authoring Practices Guide and the buttons its Toolbar pattern: the Tab key stops once
  * on the row of tabs and once on the buttons, and the arrow keys move inside each of them.
  *
+ * The description of a button reads its name and then one sentence on what it does. The description of an
+ * inactive button ends, in the same place, with the sentence that says why: `NOT_YET_AVAILABLE` for a button
+ * that is not finished, or what a finished button still needs.
+ *
  * A double click on a tab, Control+F1 or the button at the end of the row of tabs collapses the ribbon to its row
  * of tabs, and expands it again. On a collapsed ribbon a click on a tab shows the groups of the tab over the map
  * for a while, as in an office program: until a button has run or the user turns to another part of the page.
@@ -45,7 +60,7 @@ export function Ribbon({ tabs, actions }: RibbonProps) {
   const groups = tabs.find(({ id }) => id === selected)?.groups ?? [];
   const buttons = groups.flatMap((group) => group.tools);
   const stop = tabStop(
-    buttons.map(({ id }) => ({ id, finished: actions[id] !== undefined })),
+    buttons.map(({ id }) => ({ id, finished: reasonOf(actions[id]) === undefined })),
     lastTool,
   );
 
@@ -224,25 +239,21 @@ export function Ribbon({ tabs, actions }: RibbonProps) {
                 <div className="ribbon-tools">
                   {tools.map(({ id, label, icon, description }) => {
                     const action = actions[id];
+                    const reason = reasonOf(action);
                     return (
-                      <Tooltip
-                        key={id}
-                        title={label}
-                        text={description}
-                        note={action ? undefined : "Not yet available."}
-                      >
+                      <Tooltip key={id} title={label} text={description} note={reason}>
                         {(describedBy) => (
-                          // A button that is not finished stays in the reach of the keyboard, so that its description
-                          // can be read. It is marked as inactive and does nothing.
+                          // An inactive button stays in the reach of the keyboard, so that its description can be
+                          // read. It is marked as inactive and does nothing.
                           <button
                             type="button"
                             id={toolId(id)}
                             className={label.split(" ").length > 2 ? "ribbon-tool ribbon-tool--wide" : "ribbon-tool"}
                             tabIndex={id === stop ? 0 : -1}
-                            aria-disabled={action ? undefined : true}
+                            aria-disabled={reason === undefined ? undefined : true}
                             aria-pressed={action?.pressed}
                             aria-describedby={describedBy}
-                            onClick={action ? () => runTool(action.run) : undefined}
+                            onClick={action && reason === undefined ? () => runTool(action.run) : undefined}
                             onFocus={() => setLastTool(id)}
                           >
                             <Icon name={icon} size={4} />
@@ -262,9 +273,8 @@ export function Ribbon({ tabs, actions }: RibbonProps) {
         ) : null}
       </div>
       <Tooltip
-        title="Collapse the ribbon"
-        text="Hides the groups of buttons and leaves the row of tabs."
-        note="Ctrl+F1 and a double click on a tab do the same."
+        title="Collapse the ribbon (Ctrl+F1)"
+        text="Hides the groups of buttons and leaves the row of tabs, as a double click on a tab does."
       >
         {(describedBy) => (
           // The button stands after the groups in the order of the Tab key and at the end of the row of tabs on
@@ -273,6 +283,7 @@ export function Ribbon({ tabs, actions }: RibbonProps) {
             type="button"
             className="ribbon-collapse"
             aria-label="Collapse the ribbon"
+            aria-keyshortcuts="Control+F1"
             aria-pressed={collapsed}
             aria-describedby={describedBy}
             onClick={toggleCollapsed}
