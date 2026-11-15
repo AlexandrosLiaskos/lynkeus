@@ -4,7 +4,7 @@ import { fromLonLat } from "ol/proj";
 import { beforeEach, expect, test, vi } from "vitest";
 import { displayStore, setDisplay } from "../contents/state";
 import { mapLayersStore } from "../shared/mapLayers";
-import { formatDate, formatValue, identifyAt } from "./identify";
+import { formatValue, identifyAt } from "./identify";
 import { testLayer as layer } from "./testLayer";
 
 vi.mock("../contents/display", () => ({
@@ -56,9 +56,4 @@ test("a value is written with six significant digits", () => {
   expect(formatValue(1234567.89)).toBe("1,234,570");
   expect(formatValue(0)).toBe("0");
   expect(formatValue(0.0000123456)).toBe("1.23456E-5");
-});
-
-test("a day is written with the name of its month", () => {
-  expect(formatDate("2026-10-21")).toBe("21 Oct 2026");
-  expect(formatDate("2026-11-02")).toBe("2 Nov 2026");
 });

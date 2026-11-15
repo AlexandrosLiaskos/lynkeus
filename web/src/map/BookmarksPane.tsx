@@ -1,142 +1,217 @@
-import { useId, useState, type KeyboardEvent } from "react";
-import { Icon } from "../shared/icon/Icon";
-import { Info } from "../shared/info/Info";
+import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
+import { EmptyState } from "../shared/empty/EmptyState";
+import { FieldTitle, infoId } from "../shared/field/FieldTitle";
 import { useMap } from "../shared/map";
+import { MenuButton } from "../shared/menu/MenuButton";
+import { Section } from "../shared/section/Section";
 import { useStore } from "../shared/store";
+import { IconButton } from "../shared/toolbar/IconButton";
 import { ToolPane, type ToolPaneRun } from "../shared/toolpane/ToolPane";
 import {
   BOOKMARK_FAULTS,
   bookmarksStore,
+  NAME_LENGTH,
   removeBookmark,
   renameBookmark,
   saveBookmark,
   showBookmark,
   type Bookmark,
+  type BookmarkFault,
 } from "./bookmarks";
+import { describedBy, FieldError } from "./FieldError";
+
+/** The saved view that is being renamed: the text of its field and the error of that text. */
+interface Renaming {
+  id: number;
+  name: string;
+  fault: string | null;
+}
 
 /**
- * The pane of the button Bookmarks: a name under which the view is saved, and the list of the saved views. A
- * click on a name returns the map to that view; each bookmark can be renamed and removed.
+ * The pane of the button Bookmarks: a name under which the present view is saved, and the list of the saved
+ * views. Each saved view has one button that returns the map to it, and a menu that renames and removes it. A
+ * name that cannot be given is refused under its field.
  */
 export function BookmarksPane() {
   const map = useMap();
   const id = useId();
   const bookmarks = useStore(bookmarksStore);
   const [name, setName] = useState("");
-  const [renaming, setRenaming] = useState<{ id: number; name: string } | null>(null);
+  const [nameFault, setNameFault] = useState<string | null>(null);
+  const [renaming, setRenaming] = useState<Renaming | null>(null);
   const [run, setRun] = useState<ToolPaneRun | null>(null);
+  const list = useRef<HTMLUListElement>(null);
+  const renameField = useRef<HTMLInputElement>(null);
+  // The saved view whose first button takes the keyboard focus after the next drawing.
+  const focusNext = useRef<number | null>(null);
+  const renamingId = renaming?.id;
+  const nameId = `${id}-name`;
+
+  // The field of a new name takes the focus when it appears, because the menu that opened it is gone.
+  useEffect(() => {
+    if (renamingId !== undefined) {
+      renameField.current?.focus();
+      renameField.current?.select();
+    }
+  }, [renamingId]);
+
+  useEffect(() => {
+    if (focusNext.current !== null) {
+      list.current?.querySelector<HTMLElement>(`[data-view="${String(focusNext.current)}"] button`)?.focus();
+      focusNext.current = null;
+    }
+  });
 
   // A change that the browser did not store has still been made in the page, so it is reported as a warning.
-  const report = (fault: string | null, done: string) => {
-    if (fault === null) {
-      setRun({ state: "success", text: done });
-    } else {
-      setRun({ state: fault === BOOKMARK_FAULTS.notStored ? "warning" : "error", text: fault });
+  // Returns the error of the name, or null when the change was made.
+  const report = (fault: BookmarkFault, done: string): string | null => {
+    if (fault === null || fault === BOOKMARK_FAULTS.notStored) {
+      setRun(fault === null ? { state: "success", text: done } : { state: "warning", text: fault });
+      return null;
     }
-    return fault === null || fault === BOOKMARK_FAULTS.notStored;
+    setRun(null);
+    return fault;
   };
 
   const save = () => {
-    if (report(saveBookmark(map, name), `The view was saved as "${name.trim()}".`)) {
+    const fault = report(saveBookmark(map, name), `The view was saved as "${name.trim()}".`);
+    setNameFault(fault);
+    if (fault === null) {
       setName("");
     }
   };
 
+  const endRenaming = (bookmark: number) => {
+    focusNext.current = bookmark;
+    setRenaming(null);
+  };
+
   const rename = () => {
-    if (
-      renaming &&
-      report(renameBookmark(renaming.id, renaming.name), `The bookmark is now "${renaming.name.trim()}".`)
-    ) {
-      setRenaming(null);
+    if (!renaming) {
+      return;
+    }
+    const fault = report(
+      renameBookmark(renaming.id, renaming.name),
+      `The saved view is now named "${renaming.name.trim()}".`,
+    );
+    if (fault === null) {
+      endRenaming(renaming.id);
+    } else {
+      setRenaming({ ...renaming, fault });
     }
   };
 
+  // The focus passes to the saved view that takes the place of the removed one, or else to the field of the name.
   const remove = ({ id: removed, name: removedName }: Bookmark) => {
-    report(removeBookmark(removed), `The bookmark "${removedName}" was removed.`);
+    const index = bookmarks.findIndex((bookmark) => bookmark.id === removed);
+    const next = bookmarks[index + 1] ?? bookmarks[index - 1];
+    report(removeBookmark(removed), `The saved view "${removedName}" was removed.`);
+    if (next) {
+      focusNext.current = next.id;
+    } else {
+      document.getElementById(nameId)?.focus();
+    }
   };
 
   // In the field of a new name, the Enter key gives the name and does not save the view again.
-  const onRenameKey = (event: KeyboardEvent) => {
+  const onRenameKey = (event: KeyboardEvent, bookmark: number) => {
     if (event.key === "Enter") {
       event.preventDefault();
       rename();
     } else if (event.key === "Escape") {
       event.stopPropagation();
-      setRenaming(null);
+      endRenaming(bookmark);
     }
   };
 
   return (
-    <ToolPane id="bookmarks" title="Bookmarks" runLabel="Save view" onRun={save} run={run}>
-      <div className="info-title">
-        <label className="usa-label" htmlFor={`${id}-name`}>
-          Name of the view
-        </label>
-        <Info id={`${id}-hint`} about="Name of the view">
-          The name under which the present view of the map is saved. Lynkeus keeps the bookmarks in the local storage of
-          this browser and does not send them to the server.
-        </Info>
-      </div>
+    <ToolPane
+      id="bookmarks"
+      title="Bookmarks"
+      runLabel="Save view"
+      onRun={save}
+      ready={name.trim() !== ""}
+      missing={BOOKMARK_FAULTS.noName}
+      run={run}
+    >
+      <FieldTitle field={nameId} title="Name">
+        {`The name under which the present view of the map is saved, of at most ${String(NAME_LENGTH)} characters. Lynkeus keeps the saved views in the local storage of this browser and does not send them to the server.`}
+      </FieldTitle>
       <input
-        className="usa-input"
-        id={`${id}-name`}
-        aria-describedby={`${id}-hint`}
+        className={nameFault ? "usa-input usa-input--error" : "usa-input"}
+        id={nameId}
+        aria-invalid={nameFault ? true : undefined}
+        aria-describedby={describedBy(infoId(nameId), nameFault && `${nameId}-error`)}
         value={name}
-        onChange={(event) => setName(event.target.value)}
+        onChange={(event) => {
+          setName(event.target.value);
+          setNameFault(null);
+        }}
       />
-      <h3 className="map-pane-heading" id={`${id}-list`}>
-        Saved views
-      </h3>
-      {bookmarks.length === 0 ? <p className="usa-hint">No view is saved.</p> : null}
-      <ul className="bookmark-list" aria-labelledby={`${id}-list`}>
-        {bookmarks.map((bookmark) => (
-          <li key={bookmark.id} className="bookmark">
-            {renaming?.id === bookmark.id ? (
-              <>
-                <input
-                  className="usa-input"
-                  aria-label={`New name of ${bookmark.name}`}
-                  value={renaming.name}
-                  onChange={(event) => setRenaming({ id: bookmark.id, name: event.target.value })}
-                  onKeyDown={onRenameKey}
-                />
-                <button type="button" className="usa-button usa-button--unstyled" onClick={rename}>
-                  Rename
-                </button>
-                <button type="button" className="usa-button usa-button--unstyled" onClick={() => setRenaming(null)}>
-                  Cancel
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  type="button"
-                  className="usa-button usa-button--unstyled bookmark-name"
-                  onClick={() => showBookmark(map, bookmark)}
-                >
-                  {bookmark.name}
-                </button>
-                <button
-                  type="button"
-                  className="bookmark-action"
-                  aria-label={`Rename ${bookmark.name}`}
-                  onClick={() => setRenaming({ id: bookmark.id, name: bookmark.name })}
-                >
-                  <Icon name="edit" />
-                </button>
-                <button
-                  type="button"
-                  className="bookmark-action"
-                  aria-label={`Remove ${bookmark.name}`}
-                  onClick={() => remove(bookmark)}
-                >
-                  <Icon name="delete" />
-                </button>
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
+      <FieldError id={`${nameId}-error`}>{nameFault}</FieldError>
+      <Section title="Saved views" count={bookmarks.length}>
+        {bookmarks.length === 0 ? (
+          <EmptyState title="No saved views" text="Enter a name and press Save view to keep the present view." />
+        ) : (
+          <ul ref={list} className="item-list saved-views" aria-label="Saved views">
+            {bookmarks.map((bookmark) => (
+              <li key={bookmark.id} className="item" data-view={bookmark.id}>
+                {renaming?.id === bookmark.id ? (
+                  <div className="item-main">
+                    <input
+                      ref={renameField}
+                      className={renaming.fault ? "usa-input usa-input--error" : "usa-input"}
+                      aria-label={`New name of ${bookmark.name}`}
+                      aria-invalid={renaming.fault ? true : undefined}
+                      aria-describedby={describedBy(renaming.fault && `${id}-rename-error`)}
+                      value={renaming.name}
+                      onChange={(event) => setRenaming({ id: bookmark.id, name: event.target.value, fault: null })}
+                      onKeyDown={(event) => onRenameKey(event, bookmark.id)}
+                    />
+                    <FieldError id={`${id}-rename-error`}>{renaming.fault}</FieldError>
+                    <div className="map-links">
+                      <button type="button" className="usa-button usa-button--unstyled" onClick={rename}>
+                        Rename
+                      </button>
+                      <button
+                        type="button"
+                        className="usa-button usa-button--unstyled"
+                        onClick={() => endRenaming(bookmark.id)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="item-main">
+                      <p className="item-title">{bookmark.name}</p>
+                    </div>
+                    <div className="item-actions">
+                      <IconButton
+                        icon="near_me"
+                        label={`Go to ${bookmark.name}`}
+                        onClick={() => showBookmark(map, bookmark)}
+                      />
+                      <MenuButton
+                        icon="more_vert"
+                        label="More"
+                        items={[
+                          {
+                            label: "Rename",
+                            onSelect: () => setRenaming({ id: bookmark.id, name: bookmark.name, fault: null }),
+                          },
+                          { label: "Remove", onSelect: () => remove(bookmark) },
+                        ]}
+                      />
+                    </div>
+                  </>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </Section>
     </ToolPane>
   );
 }
