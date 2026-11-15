@@ -344,13 +344,14 @@ export function GetLayerForm({ found, selected, products, session, onSignIn, onS
   const [chosen, setChosen] = useState<Record<string, readonly string[] | undefined>>({});
   const [started, setStarted] = useState<Started | null>(null);
 
-  // The area is the one of the search. Before the search pane was first opened, it starts as there: with the
-  // area of the Map tab or, without one, with the view of the map.
+  // The area is the one of the search. When this pane opens before the search pane was first opened, the area
+  // starts as there: with the area of the Map tab or, without one, with the view of the map.
+  const open = useStore(dockStore).tools.includes(GET_LAYER_PANE);
   useEffect(() => {
-    if (searchDraftStore.get() === null) {
+    if (open && searchDraftStore.get() === null) {
       searchDraftStore.set(firstDraft(rectangleText(areaStore.get() ?? viewArea(map))));
     }
-  }, [map]);
+  }, [map, open]);
 
   const change = (changes: Partial<SearchDraft>) => {
     const current = searchDraftStore.get();
