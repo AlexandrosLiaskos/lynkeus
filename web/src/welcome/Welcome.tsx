@@ -41,7 +41,7 @@ interface WelcomeProps {
 
 /**
  * The welcome screen, which covers the page when it opens, as the lock screen of a computer covers the desktop.
- * It shows an illustration of the NISAR satellite and, at its right, the name of the platform, the team, the
+ * It shows an illustration of the NISAR satellite and, in its lower right part, the name of the platform, the team, the
  * developer of the site, the total of recorded page visits, and the event for which Lynkeus was started with the
  * logos of its organisers and of the universities of the team. Every member, the signature, the event and every
  * logo is a link.
@@ -181,41 +181,43 @@ export function Welcome({ load = visits }: WelcomeProps) {
           <h2 className="welcome-title">{WELCOME.name}</h2>
           <p className="welcome-subtitle">{WELCOME.subtitle}</p>
         </header>
-        <section className="welcome-team">
-          <h3 className="welcome-label">Research team</h3>
-          <ul>
-            {WELCOME.team.map(({ name, photo, address, label }) => (
-              <li key={name}>
-                <a
-                  href={address}
-                  aria-label={label}
-                  title={address.replace(/^mailto:/, "")}
-                  {...(address.startsWith("mailto:") ? {} : { target: "_blank", rel: "noreferrer" })}
-                >
-                  <img className="welcome-avatar" src={`/assets/welcome/${photo}`} alt="" draggable={false} />
-                  <span className="welcome-name">{name}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
-        <section className="welcome-developer">
-          <h3 className="welcome-label">Website developed by</h3>
-          <a
-            href={WELCOME.developer.address}
-            aria-label={`Site of ${WELCOME.developer.name}`}
-            title={WELCOME.developer.address}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <img src="/assets/welcome/signature.png" alt="" draggable={false} />
-            <span className="welcome-name">{WELCOME.developer.name}</span>
-          </a>
-        </section>
-        <section className="welcome-visits">
-          <h3 className="welcome-label">Recorded page visits</h3>
-          <p role="status">{totalWords(total)}</p>
-        </section>
+        <div className="welcome-credits">
+          <section className="welcome-team">
+            <h3 className="welcome-label">Research team</h3>
+            <ul>
+              {WELCOME.team.map(({ name, photo, address, label }) => (
+                <li key={name}>
+                  <a
+                    href={address}
+                    aria-label={label}
+                    title={address.replace(/^mailto:/, "")}
+                    {...(address.startsWith("mailto:") ? {} : { target: "_blank", rel: "noreferrer" })}
+                  >
+                    <img className="welcome-avatar" src={`/assets/welcome/${photo}`} alt="" draggable={false} />
+                    <span className="welcome-name">{name}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+          <section className="welcome-developer">
+            <h3 className="welcome-label">Website developed by</h3>
+            <a
+              href={WELCOME.developer.address}
+              aria-label={`Site of ${WELCOME.developer.name}`}
+              title={WELCOME.developer.address}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img src="/assets/welcome/signature.png" alt="" draggable={false} />
+              <span className="welcome-name">{WELCOME.developer.name}</span>
+            </a>
+          </section>
+          <section className="welcome-visits">
+            <h3 className="welcome-label">Recorded page visits</h3>
+            <p role="status">{totalWords(total)}</p>
+          </section>
+        </div>
         <footer className="welcome-event">
           <p>
             <a href={WELCOME.event.address} target="_blank" rel="noreferrer">
