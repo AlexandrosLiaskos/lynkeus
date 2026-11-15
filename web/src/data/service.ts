@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 /**
  * The requests of the Data tab to the web service of Lynkeus about the jobs and the layers of the session. The
  * cookie that names the session travels with each request, to this site only.

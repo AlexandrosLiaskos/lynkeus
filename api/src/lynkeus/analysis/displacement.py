@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """The tools of the group Surface displacement. They read layers of GUNW products.
 
 The layer ``unwrappedPhase`` is the unwrapped interferometric phase of one pair of dates, in radians. The layer

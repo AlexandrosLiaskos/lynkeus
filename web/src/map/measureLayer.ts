@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import type { Coordinate } from "ol/coordinate";
 import type { FeatureLike } from "ol/Feature";
 import LineString from "ol/geom/LineString";

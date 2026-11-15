@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 # Install the systemd units that publish the team log whenever its file changes.
 # Usage: install-team-log-units.sh TEAM_LOG_FILE
 set -eu

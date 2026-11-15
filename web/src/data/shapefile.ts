@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import type { Ring } from "./products";
 
 /** What a shapefile holds: the outer rings of its polygons, and the number of its shapes of other kinds. */
