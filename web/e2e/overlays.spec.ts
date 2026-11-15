@@ -22,7 +22,10 @@ test("the bubble of an i button shows under the pointer and on keyboard focus", 
   await pressTool(page, "Options", "Storage");
   const pane = paneOf(page, "Browser storage");
   const button = pane.getByRole("button", { name: "Information about Browser storage", exact: true });
-  const bubble = pane.locator(`[id="${(await button.getAttribute("aria-describedby")) ?? ""}"]`);
+  // The button names the element that holds its explanation. The bubble is the tooltip that shows this text; it
+  // need not be that element, and it need not stand inside the pane.
+  const explanation = pane.locator(`[id="${(await button.getAttribute("aria-describedby")) ?? ""}"]`);
+  const bubble = page.getByRole("tooltip").filter({ hasText: (await explanation.textContent()) ?? "" });
   await expect(bubble).toBeHidden();
 
   await button.hover();
