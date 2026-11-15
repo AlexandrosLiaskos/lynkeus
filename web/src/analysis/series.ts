@@ -363,7 +363,7 @@ export function checkSeries({
         title: name,
         ...(north !== null && east !== null ? { point: { longitude: east, latitude: north } } : {}),
         ...(baseNorth !== null && baseEast !== null ? { reference: { longitude: baseEast, latitude: baseNorth } } : {}),
-        ...(!atPoint && place === "area" && area ? { area } : {}),
+        ...(!atPoint && area ? { area } : {}),
       }
     : null;
   return { layers, faults, inputs };
