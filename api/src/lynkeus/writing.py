@@ -249,6 +249,7 @@ def write_layer(
     lineage: str,
     layer: str | None = None,
     method: str | None = None,
+    ends: tuple[str, str] | None = None,
     level: str | None = None,
     links: Sequence[Mapping[str, str]] = (),
     averaged: bool = True,
@@ -299,6 +300,10 @@ def write_layer(
         result has none. The record carries it as the name of the band.
     method : str, optional
         Reference of the method. A result has one, and a layer has none.
+    ends : tuple of str, optional
+        Words that name the lowest and the highest end of the legend, for
+        example ``("decrease", "increase")``. Only a result may have them.
+        They stand in the description only, not in the two files.
     level : str, optional
         Processing level of the values, for example ``L2``.
     links : sequence of Mapping, optional
@@ -352,6 +357,7 @@ def write_layer(
         dates=tuple(dates),
         inputs=tuple(inputs),
         layer=layer,
+        ends=ends,
         program=PROGRAM,
         method=method,
         record=f"{address}/{name}.json",

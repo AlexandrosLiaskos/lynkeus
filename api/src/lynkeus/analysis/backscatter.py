@@ -59,8 +59,11 @@ def _result(
     colours: str,
     method: str,
     reduction: Reduction,
+    ends: tuple[str, str] | None = None,
 ) -> AnalysisResult:
     """Return a result in decibels, with its legend from ``lowest`` to ``highest``.
+
+    ``ends`` gives the words of the lowest and of the highest end of the legend, if it has words.
 
     Raises
     ------
@@ -69,7 +72,7 @@ def _result(
     """
     if not lowest < highest:
         raise LayerError("The values of the result are too alike to give the legend a range.")
-    return AnalysisResult(values, quantity, "dB", (lowest, highest), colours, method, reduction)
+    return AnalysisResult(values, quantity, "dB", (lowest, highest), colours, method, reduction, ends)
 
 
 def backscatter_state(arrays: Sequence[NDArray[np.float32]], layers: Sequence[LayerDescription]) -> AnalysisResult:
@@ -122,7 +125,8 @@ def backscatter_change(arrays: Sequence[NDArray[np.float32]], layers: Sequence[L
         Change of gamma0 in decibels (dB): ``10 * log10(later / earlier)``. A positive value is an increase. A
         cell holds ``nan`` where either input is ``nan``, zero, negative or infinite, or where the ratio is
         beyond the range of 32-bit numbers. The legend runs from -r to +r, where r is the 99th percentile of
-        the absolute values of the result, in dB, on the diverging scale ``RdBu``. The reduced copies of
+        the absolute values of the result, in dB, on the diverging scale ``RdBu``. The words of its two ends
+        are "decrease" for the lowest value and "increase" for the highest. The reduced copies of
         the result are means of its decibel values: the ratio of the mean powers of two dates cannot be
         derived from the result alone.
 
@@ -151,5 +155,12 @@ def backscatter_change(arrays: Sequence[NDArray[np.float32]], layers: Sequence[L
     # A list of percentiles makes numpy interpolate in 64-bit numbers, as the source program does.
     (reach,) = np.quantile(np.abs(_valid(change)), [0.99])
     return _result(
-        change, "Change of radar backscatter gamma0", -float(reach), float(reach), "RdBu", _CHANGE_METHOD, "mean"
+        change,
+        "Change of radar backscatter gamma0",
+        -float(reach),
+        float(reach),
+        "RdBu",
+        _CHANGE_METHOD,
+        "mean",
+        ("decrease", "increase"),
     )
