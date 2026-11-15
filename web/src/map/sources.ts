@@ -13,12 +13,12 @@ export const SOURCES: readonly Source[] = [
     name: "NASA Global Imagery Browse Services (GIBS)",
     licence: "Open data of NASA, used with the acknowledgement that NASA asks for",
     url: "https://nasa-gibs.github.io/gibs-api-docs/",
-    use: "The background map Blue Marble, and the daily images in true colour of MODIS (Terra, Aqua) and VIIRS (NOAA-20, NOAA-21) as supplementary data.",
+    use: "The basemap Blue Marble, and the daily images in true colour of MODIS (Terra, Aqua) and VIIRS (NOAA-20, NOAA-21) as supplementary data.",
   },
   {
     name: "OpenStreetMap",
     licence: "ODbL-1.0",
     url: "https://www.openstreetmap.org/copyright",
-    use: "The background map OpenStreetMap.",
+    use: "The basemap OpenStreetMap.",
   },
 ];
