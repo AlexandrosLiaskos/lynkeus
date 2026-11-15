@@ -21,7 +21,7 @@ function buttonsOf(group: string): HTMLElement[] {
 
 beforeEach(resetDock);
 
-test("exactly the buttons of the nine finished tools have an action", () => {
+test("exactly the buttons of the ten finished tools have an action", () => {
   const actions = renderHook(useAnalysisActions).result.current;
   expect(Object.keys(actions)).toEqual([
     "backscatter-state",
@@ -33,6 +33,7 @@ test("exactly the buttons of the nine finished tools have an action", () => {
     "soil-moisture-change",
     "backscatter-series",
     "coherence-series",
+    "soil-moisture-series",
   ]);
   expect(Object.keys(actions)).toEqual([...SHEET_TOOLS]);
   const declared = ANALYSIS_TAB.groups.flatMap(({ tools }) => tools.map(({ id }) => id));
@@ -67,7 +68,7 @@ test("the tab holds twelve buttons, and none for a tool that no published method
   ]);
 });
 
-test("the nine finished buttons are active, and every other button of the tab is inactive", () => {
+test("the ten finished buttons are active, and every other button of the tab is inactive", () => {
   render(<AnalysisTab />);
   const inactive = Object.fromEntries(
     ANALYSIS_TAB.groups.map(({ label }) => [
@@ -79,7 +80,7 @@ test("the nine finished buttons are active, and every other button of the tab is
     Backscatter: [false, false, false, true],
     Coherence: [false, false, false],
     "Surface displacement": [false, true],
-    "Soil moisture": [false, false, true],
+    "Soil moisture": [false, false, false],
   });
 });
 
@@ -121,7 +122,8 @@ test("the button of a finished tool opens the tool pane of that tool, and an ina
   await userEvent.click(series);
   expect(dockStore.get().tools).toEqual([...maps, "backscatter-series"]);
   await userEvent.click(coherenceSeries);
-  const all = [...maps, "backscatter-series", "coherence-series"];
+  await userEvent.click(moistureSeries);
+  const all = [...maps, "backscatter-series", "coherence-series", "soil-moisture-series"];
   expect(dockStore.get().tools).toEqual(all);
   await userEvent.click(displacementSeries);
   await userEvent.click(moistureSeries);
