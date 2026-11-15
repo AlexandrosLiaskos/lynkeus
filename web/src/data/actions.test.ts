@@ -71,7 +71,7 @@ test("the button Servers opens the pane of the servers on their list", () => {
 test("the button Servers stands in a group of its own, after the group of the Earthdata account", () => {
   expect(DATA_TAB.groups.map(({ label, tools }) => [label, tools.map((tool) => tool.label)])).toEqual([
     ["Earthdata", ["Sign in", "Sign out"]],
-    ["Own servers", ["Servers"]],
+    ["Servers", ["Servers"]],
     ["NISAR", ["Search products", "Get layer"]],
   ]);
 });

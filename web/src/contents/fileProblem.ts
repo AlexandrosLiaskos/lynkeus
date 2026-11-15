@@ -18,7 +18,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 /** Return the words that name the own server of an address: its name where the list of the servers holds it. */
 function serverWords(id: string): string {
   const server = findServer(id);
-  return server ? `Your server "${server.name}"` : "Your own server";
+  return server ? `Your server "${server.name}"` : "Your server";
 }
 
 /**

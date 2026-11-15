@@ -35,7 +35,7 @@ test("an own server that is not connected is named in one sentence, and the laye
   });
   serversStore.set(null);
   expect(problemOfAnswer(OWN_FILE, 503, null)?.text).toBe(
-    "Your own server, which keeps this layer, is not connected. Start Lynkeus Server on that computer and try again.",
+    "Your server, which keeps this layer, is not connected. Start Lynkeus Server on that computer and try again.",
   );
 });
 
