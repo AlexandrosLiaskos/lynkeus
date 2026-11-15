@@ -4,7 +4,17 @@ import { act, fireEvent } from "@testing-library/react";
 import { vi } from "vitest";
 import { HOVER_DELAY, LEAVE_DELAY } from "./Tooltip";
 
-// Steps of the pointer for the tests of a description. The test that calls them runs under `vi.useFakeTimers`.
+// Steps of the pointer and of the keyboard for the tests of a description. The test that calls a step which lets
+// time pass runs under `vi.useFakeTimers`.
+
+/** Bring the keyboard focus to an element, as the Tab key does. */
+export function focusWithKeyboard(element: HTMLElement): void {
+  // React Aria Components shows a description for a focus that follows a key, and not for one that follows a press.
+  fireEvent.keyDown(document.body, { key: "Tab" });
+  act(() => {
+    element.focus();
+  });
+}
 
 /** Bring the pointer onto an element. */
 export function enterWithPointer(element: Element): void {

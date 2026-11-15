@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { act, fireEvent, render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
-import { endDescriptions, enterWithPointer, restPointerOn, takePointerOff } from "./pointer";
+import { endDescriptions, enterWithPointer, focusWithKeyboard, restPointerOn, takePointerOff } from "./pointer";
 import { HOVER_DELAY, LEAVE_DELAY, Tooltip } from "./Tooltip";
 
 /** A button with its description, in a row that shows a name under the button, as a group of the ribbon does. */
@@ -24,13 +23,6 @@ function Described({ row = false }: { row?: boolean }) {
 const button = () => screen.getByRole("button", { name: "Zoom in" });
 const tooltip = () => screen.queryByRole("tooltip");
 const shown = () => screen.getByRole("tooltip");
-/** The keyboard of a user, on the clock of the test. */
-const keyboard = () =>
-  userEvent.setup({
-    advanceTimers: (time) => {
-      vi.advanceTimersByTime(time);
-    },
-  });
 
 beforeEach(() => {
   vi.useFakeTimers();
@@ -116,30 +108,28 @@ test("a second sentence follows the first one, in the description and in what de
   expect(shown().textContent).toBe("Clear allRemoves everything. Nothing is stored.");
 });
 
-test("the description shows when the keyboard brings the focus, and the Escape key hides it", async () => {
-  const user = keyboard();
+test("the description shows when the keyboard brings the focus, and the Escape key hides it", () => {
   render(<Described />);
-  await user.tab();
+  focusWithKeyboard(button());
   expect(document.activeElement).toBe(button());
   expect(tooltip()).not.toBeNull();
-  await user.keyboard("{Escape}");
+  fireEvent.keyDown(button(), { key: "Escape" });
   expect(tooltip()).toBeNull();
   expect(document.activeElement).toBe(button());
 });
 
-test("the Escape key reaches nothing else while a description shows, and reaches the page while none shows", async () => {
+test("the Escape key reaches nothing else while a description shows, and reaches the page while none shows", () => {
   const onKeyDown = vi.fn();
-  const user = keyboard();
   render(
     <div onKeyDown={onKeyDown}>
       <Described />
     </div>,
   );
-  await user.tab();
+  focusWithKeyboard(button());
   expect(tooltip()).not.toBeNull();
-  await user.keyboard("{Escape}");
+  fireEvent.keyDown(button(), { key: "Escape" });
   expect(onKeyDown).not.toHaveBeenCalled();
-  await user.keyboard("{Escape}");
+  fireEvent.keyDown(button(), { key: "Escape" });
   expect(onKeyDown).toHaveBeenCalledTimes(1);
 });
 

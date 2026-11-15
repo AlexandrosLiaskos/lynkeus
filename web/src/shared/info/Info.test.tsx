@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { act, fireEvent, render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
-import { endDescriptions, enterWithPointer, takePointerOff } from "../tooltip/pointer";
+import { endDescriptions, enterWithPointer, focusWithKeyboard, takePointerOff } from "../tooltip/pointer";
 import { LEAVE_DELAY } from "../tooltip/Tooltip";
 import { Info } from "./Info";
 
@@ -30,13 +29,6 @@ function Field({ onKeyDown = vi.fn() }: { onKeyDown?: () => void }) {
 const button = () => screen.getByRole("button", { name: "Information about Distance" });
 const bubble = () => screen.queryByRole("tooltip");
 const shown = () => screen.getByRole("tooltip");
-/** The keyboard of a user, on the clock of the test. */
-const keyboard = () =>
-  userEvent.setup({
-    advanceTimers: (time) => {
-      vi.advanceTimersByTime(time);
-    },
-  });
 
 beforeEach(() => {
   vi.useFakeTimers();
@@ -97,13 +89,12 @@ test("the pointer can move from the button onto the bubble without hiding it", (
   expect(bubble()).toBeNull();
 });
 
-test("the bubble shows when the keyboard brings the focus to the button and hides when the focus leaves", async () => {
-  const user = keyboard();
+test("the bubble shows when the keyboard brings the focus to the button and hides when the focus leaves", () => {
   render(<Field />);
-  await user.tab();
+  focusWithKeyboard(button());
   expect(document.activeElement).toBe(button());
   expect(bubble()).not.toBeNull();
-  await user.tab();
+  act(() => screen.getByRole("textbox").focus());
   expect(bubble()).toBeNull();
 });
 
@@ -137,38 +128,35 @@ test("the bubble that a press has shown hides when the focus leaves the button",
   expect(bubble()).toBeNull();
 });
 
-test("the Escape key hides the bubble and reaches nothing else", async () => {
+test("the Escape key hides the bubble and reaches nothing else", () => {
   const onKeyDown = vi.fn();
-  const user = keyboard();
   render(<Field onKeyDown={onKeyDown} />);
-  await user.tab();
+  focusWithKeyboard(button());
   expect(bubble()).not.toBeNull();
-  await user.keyboard("{Escape}");
+  fireEvent.keyDown(button(), { key: "Escape" });
   expect(onKeyDown).not.toHaveBeenCalled();
   // The focus has not moved, and the bubble stays hidden until the focus comes again.
   expect(document.activeElement).toBe(button());
   expect(bubble()).toBeNull();
 });
 
-test("the Escape key hides a bubble that the pointer has shown while the keyboard focus is elsewhere", async () => {
-  const user = keyboard();
+test("the Escape key hides a bubble that the pointer has shown while the keyboard focus is elsewhere", () => {
   render(<Field />);
   act(() => screen.getByRole("textbox").focus());
   enterWithPointer(button());
   expect(bubble()).not.toBeNull();
-  await user.keyboard("{Escape}");
+  fireEvent.keyDown(screen.getByRole("textbox"), { key: "Escape" });
   expect(bubble()).toBeNull();
 });
 
-test("the Escape key is left to the page while no bubble is shown, and another key always is", async () => {
+test("the Escape key is left to the page while no bubble is shown, and another key always is", () => {
   const onKeyDown = vi.fn();
-  const user = keyboard();
   render(<Field onKeyDown={onKeyDown} />);
   act(() => screen.getByRole("textbox").focus());
-  await user.keyboard("{Escape}");
+  fireEvent.keyDown(screen.getByRole("textbox"), { key: "Escape" });
   expect(onKeyDown).toHaveBeenCalledTimes(1);
   enterWithPointer(button());
-  await user.keyboard("a");
+  fireEvent.keyDown(screen.getByRole("textbox"), { key: "a" });
   expect(onKeyDown).toHaveBeenCalledTimes(2);
   expect(bubble()).not.toBeNull();
 });
