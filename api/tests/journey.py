@@ -208,8 +208,9 @@ def _jobs_and_layers(site: Project, web: Any, data: Path, server: str, measured:
     measured["cancel"] = round(time.monotonic() - asked, 1)
     assert [event["job"] for event in cancelled] == [web.seen("submit")[1]["job"]]
     site.until(lambda: len(list(files.iterdir())) == 1 or None, "the removal of the folder of the dismissed job", 30)
-    # The token is in no file of the data folder.
-    kept = [path for path in data.rglob("*") if path.is_file()]
+    # The token is in no file of the data folder. Windows lets no other program read the file that the program holds locked.
+    kept = [path for path in data.rglob("*") if path.is_file() and path.name != computer.LOCK]
+    assert len(kept) >= 5
     assert all(TOKEN.encode() not in path.read_bytes() for path in kept)
     # The owner removes the server: the pairing is forgotten, the files stay and a new pairing is asked for.
     assert site.give(ForgetTask(id=task_name())) == Done(ok=True)
