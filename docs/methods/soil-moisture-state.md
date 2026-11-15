@@ -7,6 +7,19 @@
 | Result | Volumetric soil moisture of one date, in cubic metres of water in a cubic metre of soil (m3 m-3) |
 | State | The comparison (D-17) was made on 15 Nov 2026 on layers of the pilot area that NASA Harmony delivered on that day, against the layer of the original HDF5 product files: every cell is equal. The products are provisional (collection `NISAR_L3_SME2_PROVISIONAL_V1`); a search of the NASA catalogue for the short name `NISAR_L3_SME2_V1` gave no product for the pilot area on that day. The products mark 97.9 % of the cells of the pilot area that hold a value on 9 Oct 2026 as not recommended (section Input layer). |
 
+## In brief
+
+| | |
+|---|---|
+| What it shows | The soil moisture of one date, as the mission retrieved it from the radar backscatter: the volume of water in a volume of soil. |
+| Input | The layer `soilMoisture` of an SME2 product, on a grid of 200 m. |
+| Formula | The layer of the product, unchanged. The mission computes it as the mean of the retrievals of up to three algorithms. |
+| Result | Cubic metres of water in a cubic metre of soil (m3 m-3). The legend runs from 0.02 to 0.60 m3 m-3 for every date, from light yellow to dark blue. |
+| How to read | A higher value is a wetter soil. The mission states for the product the soil layer from 0 to 5 cm and an accuracy goal of 0.06 m3 m-3 where the vegetation is not dense. |
+| Limits | The products themselves mark most cells as not recommended: 97.9 % to 98.6 % of the cells with a value in the test area (lowest bit of the layer `retrievalQualityFlag`). The tool maps every cell and does not read that flag. Only provisional products existed for the test area on 15 Nov 2026. |
+| Checked | The result equals the layer `soilMoisture` of the product file in every cell of the test area (lower Merrimack River, 27 Sep and 9 Oct 2026). |
+| References | [NISAR L3 SME2 Product Specification, JPL D-107677 Rev C](https://nisar-docs.asf.alaska.edu/product-specification/). [NISAR L3 Soil Moisture ATBD, JPL D-107679 Release 3.3](https://nisar-docs.asf.alaska.edu/atbd/). |
+
 ## Reference
 
 1. NASA SDS Product Specification, Level-3 Soil Moisture (L3_SME2), JPL D-107677, Rev C, version

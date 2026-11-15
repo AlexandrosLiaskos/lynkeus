@@ -7,6 +7,19 @@
 | Result | Change of the volumetric soil moisture between two dates, later minus earlier, in cubic metres of water in a cubic metre of soil (m3 m-3) |
 | State | The comparison with the source program (D-17) was made on 15 Nov 2026 on layers of the pilot area that NASA Harmony delivered on that day, and on the whole frames of the product files: the results are bit-identical. The products are provisional (collection `NISAR_L3_SME2_PROVISIONAL_V1`). The products mark 479 of the 29,238 cells of the pilot pair as recommended on both dates (section Input layers). |
 
+## In brief
+
+| | |
+|---|---|
+| What it shows | The change of the soil moisture between two dates, in cubic metres of water in a cubic metre of soil. |
+| Input | The layer `soilMoisture` of two SME2 products of one track, direction and frame. |
+| Formula | `soil_moisture_later - soil_moisture_earlier` |
+| Result | Cubic metres of water in a cubic metre of soil (m3 m-3). The legend runs from −r to +r, where r is the 99th percentile of the absolute change. Red is a decrease and blue an increase. |
+| How to read | A positive value means that the product gives a higher soil moisture on the later date, and a negative value a lower one. The map does not state the cause of a change. The errors of the soil moisture of both dates enter the result, and no document that was read states the accuracy of the difference. |
+| Limits | The products themselves mark most cells as not recommended: 97.9 % to 98.6 % of the cells with a value in the test area (lowest bit of the layer `retrievalQualityFlag`). The tool maps every cell and does not read that flag, and only provisional products existed for the test area on 15 Nov 2026. The product of a date names earlier products of the same track among its inputs, so two dates are not independent measurements. |
+| Checked | The result equals that of the program `gdal raster calc` of GDAL 3.12.2 in every cell, for three pairs of dates (15 Sep, 27 Sep and 9 Oct 2026), in the test area (lower Merrimack River) and in the whole frames. Both programs read the same GeoTIFF files, not the product files themselves. The range of the legend was compared with no other program. |
+| References | [Singh (1989)](https://doi.org/10.1080/01431168908903939), of which section 4.1 was read. [NISAR L3 SME2 Product Specification, JPL D-107677 Rev C](https://nisar-docs.asf.alaska.edu/product-specification/). |
+
 ## Reference
 
 1. Singh, A. (1989). Digital change detection techniques using remotely-sensed data. International
