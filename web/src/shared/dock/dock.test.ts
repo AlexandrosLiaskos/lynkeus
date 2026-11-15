@@ -1,15 +1,24 @@
 import { beforeEach, expect, test } from "vitest";
 import {
   closeToolPane,
+  concealPanes,
   dockStore,
   enterDock,
   frontOf,
+  hiddenOf,
+  isHidden,
+  isShown,
   leaveDock,
   openToolPane,
   panesOf,
+  pinAllPanes,
   resetDock,
+  revealedOf,
+  setAutoHide,
   showPane,
   sideOf,
+  stackOf,
+  togglePane,
 } from "./dock";
 
 beforeEach(resetDock);
@@ -85,4 +94,69 @@ test("a tool pane is opened once, asks for the keyboard focus each time, and is 
   closeToolPane("search-products");
   closeToolPane("search-products");
   expect(dockStore.get().tools).toEqual([]);
+});
+
+test("a pane that hides automatically leaves the stack, and the other panes of its side stay in it", () => {
+  enterDock({ id: "contents", title: "Contents" });
+  enterDock({ id: "catalog", title: "Catalog" });
+  enterDock({ id: "get-layer", title: "Get layer" });
+  setAutoHide("get-layer", true);
+  const state = dockStore.get();
+  expect(stackOf(state, "right").map(({ id }) => id)).toEqual(["catalog"]);
+  expect(hiddenOf(state, "right").map(({ id }) => id)).toEqual(["get-layer"]);
+  expect(frontOf(state, "right")).toBe("catalog");
+  expect(revealedOf(state, "right")).toBeNull();
+  expect(isShown(state, "get-layer")).toBe(false);
+  expect(isShown(state, "catalog")).toBe(true);
+  expect(isShown(state, "contents")).toBe(true);
+});
+
+test("the tab of a pane that hides automatically shows the pane, and hides the pane that shows", () => {
+  enterDock({ id: "catalog", title: "Catalog" });
+  enterDock({ id: "get-layer", title: "Get layer" });
+  setAutoHide("catalog", true);
+  setAutoHide("get-layer", true);
+  togglePane("get-layer");
+  expect(revealedOf(dockStore.get(), "right")).toBe("get-layer");
+  togglePane("catalog");
+  expect(revealedOf(dockStore.get(), "right")).toBe("catalog");
+  togglePane("catalog");
+  expect(revealedOf(dockStore.get(), "right")).toBeNull();
+  showPane("get-layer");
+  expect(isShown(dockStore.get(), "get-layer")).toBe(true);
+  concealPanes("right");
+  expect(isShown(dockStore.get(), "get-layer")).toBe(false);
+});
+
+test("a new tool pane opens in the stack and hides the pane that shows over it", () => {
+  enterDock({ id: "catalog", title: "Catalog" });
+  setAutoHide("catalog", true);
+  showPane("catalog");
+  openToolPane("search-products");
+  enterDock({ id: "search-products", title: "Search products" });
+  const state = dockStore.get();
+  expect(isHidden(state, "search-products")).toBe(false);
+  expect(frontOf(state, "right")).toBe("search-products");
+  expect(revealedOf(state, "right")).toBeNull();
+  expect(hiddenOf(state, "right").map(({ id }) => id)).toEqual(["catalog"]);
+});
+
+test("a pane keeps hiding automatically while it is closed, and the pin returns it to the front of the stack", () => {
+  enterDock({ id: "catalog", title: "Catalog" });
+  openToolPane("get-layer");
+  enterDock({ id: "get-layer", title: "Get layer" });
+  setAutoHide("get-layer", true);
+  closeToolPane("get-layer");
+  leaveDock("get-layer");
+  expect(frontOf(dockStore.get(), "right")).toBe("catalog");
+  openToolPane("get-layer");
+  enterDock({ id: "get-layer", title: "Get layer" });
+  expect(revealedOf(dockStore.get(), "right")).toBe("get-layer");
+  expect(frontOf(dockStore.get(), "right")).toBe("catalog");
+  setAutoHide("get-layer", false);
+  expect(frontOf(dockStore.get(), "right")).toBe("get-layer");
+  expect(revealedOf(dockStore.get(), "right")).toBeNull();
+  setAutoHide("catalog", true);
+  pinAllPanes();
+  expect(dockStore.get().hidden).toEqual([]);
 });

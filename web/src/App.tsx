@@ -28,6 +28,19 @@ import { useViewActions } from "./view/actions";
 import { ViewDialogs } from "./view/ViewDialogs";
 
 /**
+ * The icon of each pane on its tab at the edge of the window, where a side that hides its panes shows them. A
+ * tool pane carries the name of the ribbon button that opens it, so it takes the icon of that button. The
+ * Contents pane and the Catalog pane take the icons of their buttons of the View tab.
+ */
+const PANE_ICONS: Readonly<Record<string, string>> = {
+  ...Object.fromEntries(
+    TABS.flatMap((tab) => tab.groups.flatMap((group) => group.tools.map(({ id, icon }) => [id, icon] as const))),
+  ),
+  contents: "list",
+  catalog: "folder",
+};
+
+/**
  * The elements of the page, in their places: the header, the ribbon, the map between the panes of its two sides,
  * and the status bar. The credits that must stand on the map itself are drawn over its lower right corner. Each
  * element comes from the folder of its owner, and the ribbon receives the actions of every tab. The dialogs and
@@ -50,7 +63,7 @@ function Page() {
       <Header account={<EarthdataAccount />} />
       <Ribbon tabs={TABS} actions={actions} />
       <div className="workspace">
-        <Dock side="left">
+        <Dock side="left" icons={PANE_ICONS}>
           <ContentsPane />
         </Dock>
         <div className="workspace-map">
@@ -58,7 +71,7 @@ function Page() {
           <Credits place="map" />
           <Messages />
         </div>
-        <Dock side="right">
+        <Dock side="right" icons={PANE_ICONS}>
           <CatalogPane />
           <ContentsTools />
           <MapDialogs />

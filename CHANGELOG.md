@@ -32,6 +32,9 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The tool pane: the form of a tool opens in a pane on the right of the map, with its run button, the
   progress of a run and its outcome.
 - The stack of panes on each side of the map, with a tab for each pane.
+- The pin in the title bar of a pane, which makes the pane hide automatically, as Auto-Hide does in ArcGIS
+  Pro: the pane becomes a tab at the edge of the window, and the tab shows it over the map until the user
+  works in the map. The other panes of the side stay in the stack.
 - One size for the form elements inside the panes and the dialogs.
 - The explanation of a title: a small circled "i" beside the title of a field, a group, a section or a
   tool, which shows the explanation in a bubble.
@@ -107,6 +110,16 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The explanations of the fields of the Map tab stand behind the "i" beside each title and no longer under
   it, and are written in complete sentences.
 - The description of a ribbon button appears with a short fade.
+- The Catalog pane is open from the start and, while it lists nothing, leads to the search. Its sections
+  Products, Jobs and Layers carry their commands in toolbars and menus, a selected product offers Get layer,
+  Details and Zoom to, and the details of a product are a view of their own, in groups with readable names.
+- The tool panes of the Share tab keep their explanations behind the "i", state the conditions of a result
+  as notices and say what a tool needs before it runs. A Share button of the ribbon that lacks something is
+  inactive and says what it needs.
+- The row of tabs under the stacked panes is darker than a pane, and the tab of the pane in front carries
+  the tint of a chosen element.
+- The messages of the Share tab say basemap, and the More button of a job and of a layer in the Catalog pane
+  is named after its item.
 
 ### Removed
 

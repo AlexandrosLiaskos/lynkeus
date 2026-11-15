@@ -318,6 +318,8 @@ test("the keyboard alone opens the pane, reaches its elements in order, signs in
   await userEvent.tab();
   expect(document.activeElement).toBe(screen.getByRole("button", { name: "Information about Sign in to Earthdata" }));
   await userEvent.tab();
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: "Auto-hide the Sign in to Earthdata pane" }));
+  await userEvent.tab();
   expect(document.activeElement).toBe(screen.getByRole("button", { name: "Close the Sign in to Earthdata pane" }));
   await userEvent.tab();
   expect(document.activeElement).toBe(screen.getByRole("link", { name: "Generate Token of Earthdata Login" }));

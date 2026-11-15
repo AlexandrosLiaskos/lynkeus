@@ -219,7 +219,7 @@ function LayerItem({ entry, marked, onMap, onDetails, onRemove }: LayerItemProps
             >
               {onMap ? "Zoom to" : "Add to the map"}
             </button>
-            <MenuButton icon="more_vert" label="More" items={more} />
+            <MenuButton icon="more_vert" label="More" name={`More commands of ${layer.title}`} items={more} />
           </div>
         </>
       )}

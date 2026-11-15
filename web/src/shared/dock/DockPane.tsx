@@ -1,16 +1,22 @@
 import { useEffect, useId, useLayoutEffect, useRef, type KeyboardEvent, type ReactNode } from "react";
+import { flushSync } from "react-dom";
 import { Icon } from "../icon/Icon";
 import { Info } from "../info/Info";
 import { useStore } from "../store";
+import { IconButton } from "../toolbar/IconButton";
 import {
+  concealPanes,
   dockStore,
   enterDock,
-  frontOf,
+  isHidden,
+  isShown,
   leaveDock,
   paneElementId,
-  panesOf,
   passFocus,
+  revealedOf,
+  setAutoHide,
   sideOf,
+  stackOf,
   tabElementId,
 } from "./dock";
 
@@ -28,9 +34,13 @@ interface DockPaneProps {
 }
 
 /**
- * One pane of the stack beside the map: its title bar with the close button, and its content. A pane with an
- * explanation shows the button of the explanation beside its title. The pane enters the stack of its side while
- * it is drawn. Only the pane in front is visible; the others keep their state.
+ * One pane of the stack beside the map: its title bar with the pin and the close button, and its content. A
+ * pane with an explanation shows the button of the explanation beside its title. The pane enters the stack of its
+ * side while it is drawn. Only the pane in front is visible; the others keep their state.
+ *
+ * The pin makes the pane hide automatically, as Auto-Hide does in ArcGIS Pro: the pane leaves the stack and
+ * becomes a tab at the edge of the window (see `Dock`). The pin of a pane that shows from its tab returns the pane
+ * to the stack.
  *
  * The pane is not modal. The Escape key returns the keyboard focus to the map, as ArcGIS Pro documents for its
  * Contents pane, and Shift with Escape closes the pane, as ArcGIS Pro 3.0 documents for the active pane. The
@@ -44,8 +54,9 @@ export function DockPane({ id, title, info, onClose, children }: DockPaneProps) 
   const heading = useRef<HTMLHeadingElement>(null);
   const answered = useRef<object | null>(null);
   const side = sideOf(id);
-  const shown = frontOf(dock, side) === id;
-  const stacked = panesOf(dock, side).length > 1;
+  const autoHide = isHidden(dock, id);
+  const shown = isShown(dock, id);
+  const stacked = !autoHide && stackOf(dock, side).length > 1;
   const request = dock.focus;
 
   // The pane is in the stack from before the page is painted, so no other pane shows in its place for a moment.
@@ -62,6 +73,23 @@ export function DockPane({ id, title, info, onClose, children }: DockPaneProps) 
     }
   }, [shown, request, id]);
 
+  const close = () => {
+    if (revealedOf(dock, side) === id) {
+      concealPanes(side);
+    }
+    onClose();
+  };
+
+  // The pin button leaves the page with the pane that hides, so the keyboard focus moves to the tab of the pane.
+  const togglePin = () => {
+    if (autoHide) {
+      setAutoHide(id, false);
+    } else {
+      flushSync(() => setAutoHide(id, true));
+      document.getElementById(tabElementId(id))?.focus();
+    }
+  };
+
   const onKeyDown = (event: KeyboardEvent) => {
     // The Escape key inside a dialog that the pane has opened closes that dialog and nothing else.
     const inDialog = event.target instanceof Element && event.target.closest("dialog") !== null;
@@ -69,7 +97,7 @@ export function DockPane({ id, title, info, onClose, children }: DockPaneProps) 
       return;
     }
     if (event.shiftKey) {
-      onClose();
+      close();
     } else {
       passFocus();
     }
@@ -77,14 +105,18 @@ export function DockPane({ id, title, info, onClose, children }: DockPaneProps) 
 
   return (
     <div
-      className="dock-pane"
+      className={autoHide ? "dock-pane dock-pane--over" : "dock-pane"}
       id={paneElementId(id)}
       role={stacked ? "tabpanel" : undefined}
       aria-labelledby={stacked ? tabElementId(id) : undefined}
       hidden={!shown}
       onKeyDown={onKeyDown}
     >
-      <aside className="pane" aria-labelledby={headingId} aria-describedby={info ? infoId : undefined}>
+      <aside
+        className={autoHide ? "pane pane--auto" : "pane"}
+        aria-labelledby={headingId}
+        aria-describedby={info ? infoId : undefined}
+      >
         <header className="pane-header">
           <h2 className="pane-title" id={headingId} ref={heading} tabIndex={-1}>
             {title}
@@ -94,9 +126,16 @@ export function DockPane({ id, title, info, onClose, children }: DockPaneProps) 
               {info}
             </Info>
           ) : null}
-          <button type="button" className="pane-close" aria-label={`Close the ${title} pane`} onClick={onClose}>
-            <Icon name="close" />
-          </button>
+          <span className="pane-buttons">
+            <IconButton
+              icon="push_pin"
+              label={autoHide ? `Pin the ${title} pane` : `Auto-hide the ${title} pane`}
+              onClick={togglePin}
+            />
+            <button type="button" className="pane-close" aria-label={`Close the ${title} pane`} onClick={close}>
+              <Icon name="close" />
+            </button>
+          </span>
         </header>
         {children}
       </aside>

@@ -61,7 +61,11 @@ test("the pane has the body of a pane and no form, no run button and no foot", (
     within(pane)
       .getAllByRole("button")
       .map((button) => button.getAttribute("aria-label")),
-  ).toEqual(["Information about Getting started", "Close the Getting started pane"]);
+  ).toEqual([
+    "Information about Getting started",
+    "Auto-hide the Getting started pane",
+    "Close the Getting started pane",
+  ]);
 });
 
 test("the explanation of the pane stands behind the button beside its title and describes the pane", () => {
