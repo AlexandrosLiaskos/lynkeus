@@ -37,7 +37,7 @@ const COHERENCE_SPACING: Record<string, string> = { unwrappedInterferogram: "80 
 /**
  * The names of the layers `unwrappedPhase` and `connectedComponents` of a GUNW product, as a layer request gives
  * them: the group of the unwrapped interferogram, the channel and the name of the layer
- * (`docs/methods/displacement-state.md`, section Input layer). Surface displacement, One pair reads them. The
+ * (`docs/methods/displacement-state.md`, section Input layers). Surface displacement, One pair reads them. The
  * server accepts the same names, in `api/src/lynkeus/analysis/displacement.py`.
  */
 const PHASE_LAYER = /^unwrappedInterferogram\/(HH|VV)\/unwrappedPhase$/;

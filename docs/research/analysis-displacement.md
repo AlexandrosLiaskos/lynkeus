@@ -625,9 +625,9 @@ text was not read.
 6. **The web service and the browser.** The tool ran through `run_tool`, not as a job of the web
    service. The form of the tool, its texts and the page Methods are covered by the tests of the
    interface; nothing was seen in a browser.
-7. **The heading "Input layer" of the method sheet.** The sheet follows the headings of
-   `docs/methods/coherence-state.md`, as asked, although the tool has two inputs; the two
-   backscatter sheets use "Input layers".
+7. **The heading "Input layers" of the method sheet.** The sheet first followed the headings of
+   `docs/methods/coherence-state.md`, as asked, with the heading "Input layer". Because the tool has
+   two inputs, the sheet now uses "Input layers", as the two backscatter sheets do.
 8. **A reference for the result.** A reference point or a reference area would make the level of the
    result meaningful and would allow the tool Change. It needs an input that is not a layer, which
    the form of a tool does not have today.

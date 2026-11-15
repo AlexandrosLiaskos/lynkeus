@@ -53,7 +53,7 @@
    interferogram are compared as differences between points, and a set of interferograms is
    referenced to one common location.
 
-## Input layer
+## Input layers
 
 The tool has two inputs, in this order. Both are layers of the same GUNW product file and of the
 same polarisation channel, at the spacing of 80 m.
