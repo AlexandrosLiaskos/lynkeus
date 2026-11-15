@@ -236,6 +236,58 @@ export function describeArea(area: SearchArea | null): string {
   return `the rectangle from ${degrees(area.west, "E", "W")} to ${degrees(area.east, "E", "W")} and from ${degrees(area.south, "N", "S")} to ${degrees(area.north, "N", "S")}`;
 }
 
+/** Name the kind of an area in a word or two: "Rectangle", "Polygon" or the number of its polygons. */
+export function areaKind(area: SearchArea): string {
+  if (area.kind === "rectangle") {
+    return "Rectangle";
+  }
+  return area.rings.length === 1 ? "Polygon" : `${String(area.rings.length)} polygons`;
+}
+
+/**
+ * Return what the Properties window states about an area, as names and values: its kind, its four sides in
+ * degrees and, for polygons, the number of their points. The sides of polygons are those of the rectangle
+ * around them.
+ */
+export function areaProperties(area: SearchArea): { name: string; value: string }[] {
+  const { west, south, east, north } = area.kind === "rectangle" ? area : rectangleAround(area.rings);
+  const sides = [
+    { name: "Kind", value: areaKind(area) },
+    { name: "West", value: degrees(west, "E", "W") },
+    { name: "South", value: degrees(south, "N", "S") },
+    { name: "East", value: degrees(east, "E", "W") },
+    { name: "North", value: degrees(north, "N", "S") },
+  ];
+  // The last point of a ring repeats its first one.
+  return area.kind === "rectangle"
+    ? sides
+    : [...sides, { name: "Points", value: String(pointCount(area.rings) - area.rings.length) }];
+}
+
+/** Tell whether two areas are the same: both none, the same rectangle, or the same polygons. */
+export function sameArea(one: SearchArea | null, other: SearchArea | null): boolean {
+  if (one === other) {
+    return true;
+  }
+  if (one === null || other === null) {
+    return false;
+  }
+  if (one.kind === "rectangle") {
+    return (
+      other.kind === "rectangle" &&
+      one.west === other.west &&
+      one.south === other.south &&
+      one.east === other.east &&
+      one.north === other.north
+    );
+  }
+  return (
+    other.kind === "polygons" &&
+    one.rings.length === other.rings.length &&
+    one.rings.every((ring, index) => ringText(ring) === ringText(other.rings[index] ?? []))
+  );
+}
+
 /** Write a ring as the catalogue reads a polygon: longitude and latitude of every point, with commas between. */
 export function ringText(ring: Ring): string {
   return ring.map(([longitude, latitude]) => `${String(longitude)},${String(latitude)}`).join(",");

@@ -10,6 +10,7 @@ import { firstDraft, searchOfDraft, type ProductSearch } from "../data/search";
 import {
   clearProducts,
   GET_LAYER_PANE,
+  hiddenProductsStore,
   hoveredProductStore,
   outlinesStore,
   productsStore,
@@ -22,6 +23,7 @@ import { dockStore, resetDock } from "../shared/dock/dock";
 import { MapContext } from "../shared/map";
 import { messagesStore } from "../shared/messages/messages";
 import { resetPanes, setPaneOpen } from "../shared/panes";
+import { setShapeDisplay, shapeDisplayOf, shapeDisplayStore, shapeLayersStore } from "../shared/shapeLayers";
 import { CatalogPane } from "./CatalogPane";
 import { countSentence, searchWords } from "./ProductList";
 
@@ -65,6 +67,8 @@ beforeEach(() => {
   resetLayers();
   searchDraftStore.set(null);
   outlinesStore.set(true);
+  shapeLayersStore.set([]);
+  shapeDisplayStore.set({});
   messagesStore.set([]);
   resetDock();
   resetPanes();
@@ -278,7 +282,7 @@ test("a list that holds every product found has no button to load more", () => {
   expect(countSentence(200, 13172)).toBe("200 of 13,172 products are listed.");
 });
 
-test("the toolbar of the list hides the outlines and saves the list as a file", async () => {
+test("the toolbar of the list hides and shows the outlines and saves the list as a file", async () => {
   const saved: [string, string, string][] = [];
   vi.spyOn(files, "saveFile").mockImplementation((name, type, text) => {
     saved.push([name, type, text]);
@@ -292,9 +296,14 @@ test("the toolbar of the list hides the outlines and saves the list as a file", 
   ).toEqual(["Sort: latest first", "Group by", "Zoom to all", "Outlines on the map", "Save as", "Clear the list"]);
   const outlines = toolbar.getByRole("button", { name: "Outlines on the map" });
   expect(outlines.getAttribute("aria-pressed")).toBe("true");
+  // A press hides the layer of the outlines, which stays on the map and in the Contents pane.
   await userEvent.click(outlines);
-  expect(outlinesStore.get()).toBe(false);
+  expect(shapeDisplayOf("products").visible).toBe(false);
+  expect(outlinesStore.get()).toBe(true);
   expect(outlines.getAttribute("aria-pressed")).toBe("false");
+  await userEvent.click(outlines);
+  expect(shapeDisplayOf("products").visible).toBe(true);
+  expect(outlines.getAttribute("aria-pressed")).toBe("true");
   await choose("Save as", "CSV");
   await choose("Save as", "GeoJSON");
   vi.useRealTimers();
@@ -304,6 +313,47 @@ test("the toolbar of the list hides the outlines and saves the list as a file", 
   ]);
   expect(saved[0]?.[2].split("\r\n")).toHaveLength(4);
   expect((JSON.parse(saved[1]?.[2] ?? "{}") as { features: unknown[] }).features).toHaveLength(2);
+});
+
+test("the button of the outlines follows the Contents pane, and puts back the outlines that were removed there", async () => {
+  show();
+  act(() => productsStore.set({ search: search(), found: 2, products: someProducts(2) }));
+  const outlines = screen.getByRole("button", { name: "Outlines on the map" });
+  // The layer is hidden in the Contents pane: the button is not pressed, and a press shows the layer.
+  act(() => setShapeDisplay("products", { visible: false, opacity: 0.5 }));
+  expect(outlines.getAttribute("aria-pressed")).toBe("false");
+  await userEvent.click(outlines);
+  expect(shapeDisplayOf("products")).toEqual({ visible: true, opacity: 0.5 });
+  expect(outlines.getAttribute("aria-pressed")).toBe("true");
+  // The layer is removed in the Contents pane: the button is not pressed, and a press puts the outlines back.
+  act(() => outlinesStore.set(false));
+  expect(outlines.getAttribute("aria-pressed")).toBe("false");
+  await userEvent.click(outlines);
+  expect(outlinesStore.get()).toBe(true);
+  expect(shapeDisplayOf("products").visible).toBe(true);
+  expect(outlines.getAttribute("aria-pressed")).toBe("true");
+  // Outlines that were removed while their layer was hidden come back shown.
+  act(() => {
+    setShapeDisplay("products", { visible: false });
+    outlinesStore.set(false);
+  });
+  await userEvent.click(outlines);
+  expect([outlinesStore.get(), shapeDisplayOf("products").visible]).toEqual([true, true]);
+  expect(outlines.getAttribute("aria-pressed")).toBe("true");
+  // The button is worked with the keyboard as with the pointer.
+  outlines.focus();
+  await userEvent.keyboard("{Enter}");
+  expect(shapeDisplayOf("products").visible).toBe(false);
+  expect(outlines.getAttribute("aria-pressed")).toBe("false");
+});
+
+test("selecting a product whose outline is hidden shows the outline again", async () => {
+  show();
+  act(() => productsStore.set({ search: search(), found: 2, products: someProducts(2) }));
+  act(() => hiddenProductsStore.set(["G0-ASF", "G1-ASF"]));
+  await userEvent.click(product(/^21 Oct 2026/));
+  expect(selectedProductStore.get()).toBe("G0-ASF");
+  expect(hiddenProductsStore.get()).toEqual(["G1-ASF"]);
 });
 
 test("a search that found nothing says so, and the commands that need products are inactive", async () => {
@@ -323,8 +373,11 @@ test("a search that found nothing says so, and the commands that need products a
 test("the command Clear the list removes the products, and the pane leads to the search again", async () => {
   show();
   act(() => productsStore.set({ search: search(), found: 2, products: someProducts(2) }));
+  act(() => hiddenProductsStore.set(["G1-ASF"]));
   await userEvent.click(screen.getByRole("button", { name: "Clear the list" }));
   expect(productsStore.get()).toBeNull();
+  // The next list starts with no hidden product.
+  expect(hiddenProductsStore.get()).toEqual([]);
   expect(screen.getByRole("complementary", { name: "Catalog" })).toBeDefined();
   expect(screen.getByRole("button", { name: "Search products" })).toBeDefined();
   // The button that held the focus has left the page with the list.

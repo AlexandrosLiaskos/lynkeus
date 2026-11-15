@@ -1,34 +1,41 @@
 import { mapLayersStore, removeFromMap } from "../shared/mapLayers";
-import { displayStore, resetDisplay, selectedLayerStore } from "./state";
+import { layerOrderStore, setLayerOrder, shapeLayersStore, type ShapeLayer } from "../shared/shapeLayers";
+import { displayStore, propertiesStore, resetDisplay, selectedLayerStore } from "./state";
 
 /** A change of the place of a layer in the drawing order. */
 export type Move = "up" | "down" | "top" | "bottom";
 
 /**
- * Return the layers in the order of the Contents pane: the layer that is drawn on top stands first. The store
- * keeps them in drawing order, the bottom layer first.
+ * Return the layers in the order of the Contents pane: the layer that is drawn on top stands first. The stores
+ * keep them in drawing order, the bottom layer first.
  */
 export function listedLayers<Layer>(layers: readonly Layer[]): Layer[] {
   return [...layers].reverse();
 }
 
-/** Return the place of a layer in the list of the Contents pane, from 0 for the top layer, or -1. */
+/**
+ * Return the place of a layer in the list of the Contents pane, from 0 for the top layer, or -1. The list holds
+ * the layers of `mapLayersStore` and the shape layers, in the one drawing order of the map.
+ */
 export function placeOf(id: string): number {
-  return listedLayers(mapLayersStore.get()).findIndex((layer) => layer.id === id);
+  return listedLayers(layerOrderStore.get()).indexOf(id);
 }
 
-/** Put a layer at a place of the list of the Contents pane, from 0 for the top layer. The other layers keep their order. */
+/**
+ * Put a layer at a place of the list of the Contents pane, from 0 for the top layer. The other layers keep their
+ * order. The layer and its neighbours may be of either kind, so a shape layer can stand under a layer of
+ * `mapLayersStore`.
+ */
 export function placeLayer(id: string, place: number): void {
-  const listed = listedLayers(mapLayersStore.get());
-  const layer = listed.find((other) => other.id === id);
-  if (!layer) {
+  const listed = listedLayers(layerOrderStore.get());
+  if (!listed.includes(id)) {
     return;
   }
-  const others = listed.filter((other) => other.id !== id);
+  const others = listed.filter((other) => other !== id);
   const target = Math.min(Math.max(Math.round(place), 0), others.length);
-  const next = [...others.slice(0, target), layer, ...others.slice(target)];
+  const next = [...others.slice(0, target), id, ...others.slice(target)];
   if (next.some((other, index) => other !== listed[index])) {
-    mapLayersStore.set(listedLayers(next));
+    setLayerOrder(listedLayers(next));
   }
 }
 
@@ -50,7 +57,7 @@ export function placeAfter(place: number, move: Move, count: number): number {
 export function moveLayer(id: string, move: Move): void {
   const place = placeOf(id);
   if (place >= 0) {
-    placeLayer(id, placeAfter(place, move, mapLayersStore.get().length));
+    placeLayer(id, placeAfter(place, move, layerOrderStore.get().length));
   }
 }
 
@@ -72,7 +79,24 @@ export function removeLayer(id: string): void {
   }
 }
 
-/** Forget the display of every layer that is no longer on the map. */
+/**
+ * Remove a shape layer: the part of the interface that owns it takes it off the map. The result tells whether the
+ * layer has left the list of the Contents pane. A layer that has left loses its selection.
+ */
+export function removeShapeLayer(layer: ShapeLayer): boolean {
+  layer.remove();
+  const gone = !shapeLayersStore.get().some(({ id }) => id === layer.id);
+  if (gone && selectedLayerStore.get() === layer.id) {
+    selectedLayerStore.set(null);
+  }
+  return gone;
+}
+
+/**
+ * Forget the display of every layer of `mapLayersStore` that is no longer on the map, and the selection of a
+ * layer that is neither in that store nor among the shape layers. The Properties window of such a layer closes
+ * for good, so that it does not open again when a shape layer of the same id returns to the map.
+ */
 export function forgetAbsentLayers(): void {
   const ids = new Set(mapLayersStore.get().map((layer) => layer.id));
   for (const id of Object.keys(displayStore.get())) {
@@ -81,7 +105,12 @@ export function forgetAbsentLayers(): void {
     }
   }
   const selected = selectedLayerStore.get();
-  if (selected !== null && !ids.has(selected)) {
+  const absent = (id: string) => !ids.has(id) && !shapeLayersStore.get().some((shape) => shape.id === id);
+  if (selected !== null && absent(selected)) {
     selectedLayerStore.set(null);
+  }
+  const shown = propertiesStore.get();
+  if (shown !== null && absent(shown.id)) {
+    propertiesStore.set(null);
   }
 }
