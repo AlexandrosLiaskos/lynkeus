@@ -7,6 +7,19 @@
 | Result | Radar backscatter gamma0, in decibels (dB) |
 | State | The comparison with the source program (D-17) was made on 14 Nov 2026 on the sample files of the pilot area. It was repeated independently on 15 Nov 2026, with other scripts, and gave the same numbers. |
 
+## In brief
+
+| | |
+|---|---|
+| What it shows | The radar backscatter (gamma0) of one date, in decibels. |
+| Input | One backscatter layer of a GCOV product: `HHHH`, `HVHV`, `VHVH`, `VVVV`, `RHRH` or `RVRV`. |
+| Formula | `10 * log10(gamma0)` |
+| Result | Decibels (dB). The legend runs from the 5th to the 95th percentile of the result, in grey. |
+| How to read | A higher value means that the surface returned more of the radar signal. A step of 10 dB is a factor of ten in power. The return depends on the roughness, the moisture and the material of the surface. |
+| Limits | The tool applies no mask of the product. The range of the legend is computed for each result, so two dates have different ranges. |
+| Checked | The result equals that of the notebook of the ASF NISAR Cookbook in every cell of the test area (lower Merrimack River, 21 Oct and 2 Nov 2026). |
+| References | [NISAR L2 GCOV Product Specification, JPL D-102274 Rev F](https://nisar-docs.asf.alaska.edu/product-specification/). [ASF NISAR Cookbook](https://github.com/ASFOpenSARlab/NISAR_Cookbook). |
+
 ## Reference
 
 1. NASA SDS Product Specification, Level-2 Geocoded Polarimetric Covariance (L2 GCOV), JPL D-102274,

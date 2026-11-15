@@ -218,10 +218,10 @@ export function defaultTitle(tool: FinishedTool, inputs: readonly LayerDescripti
 }
 
 /** Why the tool cannot run while the session holds no layer that it reads. The foot of the form states it. */
-export const NO_INPUT = "The session holds no layer that the tool reads.";
+export const NO_INPUT = "No layer of this session can be used by the tool.";
 
 /** The fault of the second field of Backscatter, Change when no layer of the session can stand beside the first. */
-export const NO_PARTNER = "No other layer of the session matches the first layer.";
+export const NO_PARTNER = "No other date of this layer is in the session.";
 
 /** What the form of a tool holds at one moment. */
 export interface Choices {
@@ -270,7 +270,7 @@ export function check({ tool, layers, first, second, title }: Choices): Checked 
   const faults: Faults = { first: null, second: null, title: null };
   let chosen: readonly LayerDescription[] = [];
   if (!one) {
-    faults.first = two ? "Choose the first layer." : "Choose the input layer.";
+    faults.first = "Choose a layer.";
   } else if (!two) {
     chosen = [one];
   } else {
@@ -280,18 +280,18 @@ export function check({ tool, layers, first, second, title }: Choices): Checked 
     if (beside.length === 0) {
       faults.second = NO_PARTNER;
     } else if (!other) {
-      faults.second = "Choose the second layer.";
+      faults.second = "Choose the layer of the other date.";
     } else if (!ordered) {
-      faults.second = "The two layers have the same date. Choose a layer of another date.";
+      faults.second = "Choose a layer of another date.";
     } else {
       chosen = ordered;
     }
   }
   const name = title.trim();
   if (name === "") {
-    faults.title = "Give the name of the result.";
+    faults.title = "Give a name.";
   } else if (name.length > MOST_TITLE) {
-    faults.title = `The name of the result has ${String(name.length)} characters, and at most ${String(MOST_TITLE)} are accepted.`;
+    faults.title = `The name is longer than ${String(MOST_TITLE)} characters.`;
   }
   const sound = faults.first === null && faults.second === null && faults.title === null;
   return { layers: chosen, faults, inputs: sound ? { inputs: chosen.map((layer) => layer.id), title: name } : null };

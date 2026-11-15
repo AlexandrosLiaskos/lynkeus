@@ -7,6 +7,19 @@
 | Result | Change of the radar backscatter gamma0 between two dates, in decibels (dB) |
 | State | The comparison with the source program (D-17) was made on 14 Nov 2026 on the sample files of the pilot area. It was repeated independently on 15 Nov 2026, with other scripts, and gave the same numbers. |
 
+## In brief
+
+| | |
+|---|---|
+| What it shows | The change of the radar backscatter (gamma0) between two dates, in decibels. |
+| Input | The same backscatter layer of two GCOV products of one track, direction and frame. |
+| Formula | `10 * log10(gamma0_later / gamma0_earlier)` |
+| Result | Decibels (dB). The legend runs from −r to +r, where r is the 99th percentile of the absolute change. Red is a decrease and blue an increase. |
+| How to read | A positive value means that the surface returned more signal on the later date, and a negative value less. 3 dB is about a factor of two in power. The cause of a change is for the user to establish. |
+| Limits | The tool applies no mask of the product and sets no threshold. On the test pair, twelve days apart, 90 % of the cells lie between −4.30 and +4.27 dB. |
+| Checked | The result equals that of the notebook of the ASF NISAR Cookbook in every cell of the test area (lower Merrimack River, 21 Oct to 2 Nov 2026). |
+| References | [Rignot and van Zyl (1993)](https://doi.org/10.1109/36.239913), of which the abstract was read. [ASF NISAR Cookbook](https://github.com/ASFOpenSARlab/NISAR_Cookbook). [NISAR L2 GCOV Product Specification, JPL D-102274 Rev F](https://nisar-docs.asf.alaska.edu/product-specification/). |
+
 ## Reference
 
 1. Rignot, E. J. M. and van Zyl, J. J. (1993). Change detection techniques for ERS-1 SAR data. IEEE
