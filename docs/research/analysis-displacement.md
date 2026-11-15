@@ -549,7 +549,8 @@ where the page states it.
 The two articles that are usually cited for the relation of phase and displacement, Massonnet and
 Feigl (1998), <https://doi.org/10.1029/97RG03139>, and Rosen et al. (2000),
 <https://doi.org/10.1109/5.838084>, could not be read in full on 15 Nov 2026, so no statement of
-this note rests on them. The ATBD of the mission cites Simons and Rosen (2007) for the formula; that
+this note rests on them. The ATBD of the mission cites, for the formula, Simons, M., and Rosen, P.
+A., "Interferometric synthetic aperture radar geodesy", 2007 (its list of references, page 71); that
 text was not read.
 
 ## 7. Not confirmed, and questions for the owner of the project
