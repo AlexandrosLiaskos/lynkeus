@@ -374,3 +374,77 @@ test("the explanation of the secondary command stands behind the button beside i
   const foot = [...(link.closest(".tool-pane-actions")?.children ?? [])];
   expect(foot.map((element) => element.className)).toEqual(["tool-pane-secondary", "tool-pane-missing", "usa-button"]);
 });
+
+test("the X of an outcome returns the foot to what it shows before a run and gives the focus to the run button", async () => {
+  const onRun = vi.fn();
+  const zoom = vi.fn();
+  render(
+    <Buffer
+      onRun={onRun}
+      run={{
+        state: "success",
+        text: "The buffer was added to the map.",
+        action: { label: "Zoom to the layer", onClick: zoom },
+        details: <p>It took 3 seconds.</p>,
+      }}
+    />,
+  );
+  act(() => openToolPane("buffer"));
+  const close = screen.getByRole("button", { name: "Close this message" });
+  expect(close.closest(".tool-pane-status")).not.toBeNull();
+  close.focus();
+  await userEvent.keyboard("{Enter}");
+  expect(screen.queryByRole("status")).toBeNull();
+  expect(screen.queryByRole("button", { name: "Zoom to the layer" })).toBeNull();
+  expect(screen.queryByRole("button", { name: "View details" })).toBeNull();
+  expect(screen.queryByRole("dialog", { hidden: true })).toBeNull();
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: "Compute" }));
+  expect(onRun).not.toHaveBeenCalled();
+  expect(zoom).not.toHaveBeenCalled();
+});
+
+test("a closed outcome returns with the next run and when the outcome changes", async () => {
+  const onRun = vi.fn();
+  const closeOutcome = () => userEvent.click(screen.getByRole("button", { name: "Close this message" }));
+  const crosses = "The buffer crosses the edge of the layer.";
+  const { rerender } = render(<Buffer onRun={onRun} run={{ state: "success", text: "Finished." }} />);
+  act(() => openToolPane("buffer"));
+  await closeOutcome();
+  expect(screen.queryByRole("status")).toBeNull();
+  // The same outcome, drawn again, stays closed.
+  rerender(<Buffer onRun={onRun} run={{ state: "success", text: "Finished." }} />);
+  expect(screen.queryByRole("status")).toBeNull();
+  // Another outcome shows.
+  rerender(<Buffer onRun={onRun} run={{ state: "warning", text: crosses }} />);
+  expect(screen.getByRole("status").textContent).toBe(crosses);
+  await closeOutcome();
+  // The next run shows its outcome, also when that outcome states the same.
+  await userEvent.click(screen.getByRole("button", { name: "Compute" }));
+  expect(onRun).toHaveBeenCalledTimes(1);
+  expect(screen.getByRole("status").textContent).toBe(crosses);
+  await closeOutcome();
+  // So does a run that shows its progress first.
+  rerender(<Buffer onRun={onRun} run={{ state: "running" }} />);
+  rerender(<Buffer onRun={onRun} run={{ state: "warning", text: crosses }} />);
+  expect(screen.getByRole("status").textContent).toBe(crosses);
+});
+
+test("a run in progress has no X, and neither has the sentence on what the tool lacks", () => {
+  const onCancel = vi.fn();
+  const { rerender } = render(
+    <ToolPane id="buffer" title="Buffer" onRun={vi.fn()} onCancel={onCancel} run={{ state: "running", progress: 0.4 }}>
+      Parameters
+    </ToolPane>,
+  );
+  act(() => openToolPane("buffer"));
+  expect(screen.getByRole("button", { name: "Cancel" })).toBeDefined();
+  expect(screen.queryByRole("button", { name: "Close this message" })).toBeNull();
+  rerender(
+    <ToolPane id="buffer" title="Buffer" onRun={vi.fn()} ready={false} missing="Enter the distance.">
+      Parameters
+    </ToolPane>,
+  );
+  expect(screen.getByRole("status").textContent).toBe("Enter the distance.");
+  expect(screen.queryByRole("button", { name: "Close this message" })).toBeNull();
+  expect(onCancel).not.toHaveBeenCalled();
+});

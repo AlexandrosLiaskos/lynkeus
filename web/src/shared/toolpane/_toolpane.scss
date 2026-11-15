@@ -54,6 +54,7 @@
 // The progress of a run or its outcome, under the run button. The colours of an outcome are those of the alert
 // of the design system.
 .tool-pane-status {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -79,6 +80,17 @@
 .tool-pane-status--error {
   border-left-color: uswds.color("error");
   background: uswds.color("error-lighter");
+}
+
+// An outcome keeps its text and its links clear of the X at its right end. The X stands level with a line of
+// text, and its icon ends in line with the run button above it.
+.tool-pane-status--closable {
+  padding-right: tokens.$space-2 + tokens.$target + tokens.$space-1;
+}
+
+.tool-pane-status > .notice-close {
+  top: (tokens.$row - tokens.$target) * 0.5;
+  right: tokens.$space-2;
 }
 
 .tool-pane-status .usa-icon {

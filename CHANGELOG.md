@@ -175,6 +175,9 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   whatever the language of the browser.
 - The bubble of a field in the form of a tool is one sentence.
 - The citation of the provisional GUNW collection gives the DOI 10.5067/NIL2GUNW-P1, which doi.org resolves.
+- A notice in a pane and the outcome at the foot of a tool pane, such as those of Get layer and Search products,
+  have an X that closes them. A closed notice returns when its text changes or its pane opens again, and a closed
+  outcome with the next run.
 
 ### Removed
 

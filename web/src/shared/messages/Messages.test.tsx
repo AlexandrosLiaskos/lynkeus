@@ -88,3 +88,30 @@ test("a message stays while the keyboard focus rests on it, also after the point
   });
   expect(screen.queryByRole("status")).toBeNull();
 });
+
+test("the close button is reached with the Tab key and closes the message with the Enter key", async () => {
+  render(
+    <>
+      <button type="button">Map</button>
+      <Messages />
+    </>,
+  );
+  act(() => report("error", "The job Get layer failed."));
+  screen.getByRole("button", { name: "Map" }).focus();
+  await userEvent.tab();
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: "Close this message" }));
+  await userEvent.keyboard("{Enter}");
+  expect(screen.queryByRole("alert")).toBeNull();
+});
+
+test("a warning stays until it is closed", () => {
+  vi.useFakeTimers();
+  render(<Messages />);
+  act(() => report("warning", "The layer is drawn without its last band."));
+  act(() => {
+    vi.advanceTimersByTime(MESSAGE_TIME * 2);
+  });
+  expect(screen.getByRole("status").textContent).toBe("The layer is drawn without its last band.");
+  fireEvent.click(screen.getByRole("button", { name: "Close this message" }));
+  expect(screen.queryByRole("status")).toBeNull();
+});
