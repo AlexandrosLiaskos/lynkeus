@@ -211,8 +211,7 @@ the mean power of the same four cells, and up to 15.2 dB and 15.7 dB
 
 For the reader: when the map is zoomed out, a cell shows the backscatter of the mean power of the
 cells that it covers, in decibels. The values at full zoom, and the values of the file at full
-resolution, are those of the formula. Not tried: a result with these reduced copies drawn in a
-browser.
+resolution, are those of the formula.
 
 ## Legend
 
@@ -284,3 +283,5 @@ The exact numbers of the comparison are in `docs/research/analysis.md`, part 4.
    private copy of the web service, and each refusal that was tried ended its job as failed, with
    the sentence of the tool as the message of the job (`docs/research/analysis.md`, parts 3.4 and
    4.7). Nothing was seen in a browser.
+6. A result with the reduced copies of the section Reduced copies of the result was not made
+   through the web service and was not drawn in a browser.

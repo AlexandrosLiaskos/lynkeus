@@ -114,7 +114,7 @@ export const METHODS: Record<FinishedTool, Method> = {
           },
           {
             kind: "text",
-            text: "For the reader: when the map is zoomed out, a cell shows the backscatter of the mean power of the cells that it covers, in decibels. The values at full zoom, and the values of the file at full resolution, are those of the formula. Not tried: a result with these reduced copies drawn in a browser.",
+            text: "For the reader: when the map is zoomed out, a cell shows the backscatter of the mean power of the cells that it covers, in decibels. The values at full zoom, and the values of the file at full resolution, are those of the formula.",
           },
         ],
       },
@@ -310,6 +310,10 @@ export const METHODS: Record<FinishedTool, Method> = {
               [
                 "`colours`",
                 "`RdBu`, a diverging scale centred on zero. The lowest value is red and the highest blue: a decrease is red and an increase blue",
+              ],
+              [
+                "`ends`",
+                "`decrease`, `increase`: the words of the lowest and of the highest end of the legend. The Contents pane writes each word in brackets beside the value of its end, while the range of the display is the range of the result",
               ],
             ],
           },
