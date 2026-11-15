@@ -55,9 +55,10 @@ $slide: 0.7s;
   animation-play-state: paused;
 }
 
-// Until the visitor touches the screen, it lifts a little every few seconds and shows the edge of the page under it.
+// Until the visitor touches the screen, it lifts a little now and then and shows the edge of the page under it. The
+// first lift comes 8 seconds after the screen has appeared, and the next ones every 8 seconds.
 .welcome-ready.welcome-hinting {
-  animation: welcome-peek 6s cubic-bezier(0.3, 0, 0.2, 1) 2.6s infinite;
+  animation: welcome-peek 8s cubic-bezier(0.3, 0, 0.2, 1) 8s infinite;
 }
 
 // The image fills the window. Its left third stays in view in a narrow window, because the satellite is there.
