@@ -88,3 +88,39 @@ test("a scroll downward slides the screen up", () => {
   fireEvent.wheel(dialog, { deltaY: 100 });
   expect(dialog.classList.contains("welcome-leaving")).toBe(true);
 });
+
+test("a click anywhere on the screen opens the page, and a click on the note of the image does not", () => {
+  render(<Welcome count={silent} />);
+  const dialog = screen.getByRole<HTMLDialogElement>("dialog", { name: NAME });
+  const note = screen.getByRole("note");
+  fireEvent.pointerDown(note, { button: 0, clientY: 300 });
+  fireEvent.pointerUp(note, { button: 0, clientY: 300 });
+  expect(dialog.classList.contains("welcome-leaving")).toBe(false);
+  expect(dialog.classList.contains("welcome-hinting")).toBe(true);
+  fireEvent.pointerDown(dialog, { button: 0, clientY: 300 });
+  expect(dialog.classList.contains("welcome-hinting")).toBe(false);
+  fireEvent.pointerUp(dialog, { button: 0, clientY: 302 });
+  expect(dialog.classList.contains("welcome-leaving")).toBe(true);
+});
+
+test("a short drag lets the screen return, and a drag upward opens the page", () => {
+  render(<Welcome count={silent} />);
+  const dialog = screen.getByRole<HTMLDialogElement>("dialog", { name: NAME });
+  fireEvent.pointerDown(dialog, { button: 0, clientY: 300 });
+  fireEvent.pointerUp(dialog, { button: 0, clientY: 260 });
+  expect(dialog.classList.contains("welcome-leaving")).toBe(false);
+  fireEvent.pointerDown(dialog, { button: 0, clientY: 300 });
+  fireEvent.pointerUp(dialog, { button: 0, clientY: 150 });
+  expect(dialog.classList.contains("welcome-leaving")).toBe(true);
+});
+
+test("a key that writes a character opens the page, and the Tab key or a command of the browser does not", () => {
+  render(<Welcome count={silent} />);
+  const dialog = screen.getByRole<HTMLDialogElement>("dialog", { name: NAME });
+  fireEvent.keyDown(dialog, { key: "Tab" });
+  fireEvent.keyDown(dialog, { key: "F5" });
+  fireEvent.keyDown(dialog, { key: "r", ctrlKey: true });
+  expect(dialog.classList.contains("welcome-leaving")).toBe(false);
+  fireEvent.keyDown(dialog, { key: "a" });
+  expect(dialog.classList.contains("welcome-leaving")).toBe(true);
+});

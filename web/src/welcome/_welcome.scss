@@ -27,6 +27,9 @@ $slide: 0.7s;
   transition: transform $slide cubic-bezier(0.7, 0, 0.2, 1);
   user-select: none;
 
+  // A click anywhere opens the page, and the pointer says so.
+  cursor: pointer;
+
   // A swipe upward on a touch screen moves the screen and not the page of the browser.
   touch-action: none;
 }
@@ -42,6 +45,11 @@ $slide: 0.7s;
 
 .welcome-leaving {
   transform: translateY(-100%);
+}
+
+// Until the visitor touches the screen, it lifts a little every few seconds and shows the edge of the page under it.
+.welcome-hinting {
+  animation: welcome-peek 6s cubic-bezier(0.3, 0, 0.2, 1) 2.6s infinite;
 }
 
 // The image fills the window. Its left third stays in view in a narrow window, because the satellite is there.
@@ -74,7 +82,7 @@ $slide: 0.7s;
   position: absolute;
   z-index: 2;
   right: clamp(1.5rem, 4vw, 4rem);
-  bottom: clamp(7.5rem, 16vh, 10rem);
+  bottom: clamp(8rem, 17vh, 10.5rem);
   display: flex;
   flex-direction: column;
   width: min(54rem, calc(100vw - 3rem));
@@ -312,7 +320,7 @@ $slide: 0.7s;
   background: none;
   color: #fff;
   font-family: $serif;
-  font-size: 1.05rem;
+  font-size: 1.4rem;
   font-style: italic;
   cursor: pointer;
   animation: welcome-rise 0.9s $ease 1.3s both;
@@ -337,7 +345,7 @@ $slide: 0.7s;
   stroke: currentcolor;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 1.5;
+  stroke-width: 1.8;
 }
 
 .welcome-enter polyline {
@@ -372,10 +380,22 @@ $slide: 0.7s;
   }
 }
 
+@keyframes welcome-peek {
+  0%,
+  16%,
+  100% {
+    transform: none;
+  }
+
+  8% {
+    transform: translateY(-2rem);
+  }
+}
+
 @keyframes welcome-hint {
   0%,
   100% {
-    opacity: 0.2;
+    opacity: 0.5;
     transform: translateY(0.2rem);
   }
 
