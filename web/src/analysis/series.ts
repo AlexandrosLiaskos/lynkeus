@@ -181,7 +181,10 @@ export function seriesTitle(tool: SeriesTool, layers: readonly LayerDescription[
   // The title of the tool that the series reads as, from the first layer: One pair reads two layers of one product,
   // and its title names the channel and the dates of the first.
   const reads = READS_AS[tool];
-  const one = defaultTitle(reads, Array.from({ length: READS[reads].count }, () => first));
+  const one = defaultTitle(
+    reads,
+    Array.from({ length: READS[reads].count }, () => first),
+  );
   const head = one.slice(0, one.length - daysWords(first.dates).length - 2);
   const from = formatDay(first.dates[0] ?? "");
   const to = formatDay(last.dates.at(-1) ?? "");
