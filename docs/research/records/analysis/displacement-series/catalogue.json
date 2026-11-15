@@ -1,0 +1,439 @@
+{
+ "read_at": "2026-11-15T18:44:24Z",
+ "queries": [
+  {
+   "collection": "NISAR_L2_GUNW_V1",
+   "address": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?short_name=NISAR_L2_GUNW_V1&readable_granule_name%5B%5D=%2AGUNW_%2A_141_D_067_%2A&options%5Breadable_granule_name%5D%5Bpattern%5D=true&page_size=200&sort_key=start_date",
+   "cmr_hits_header": "1",
+   "hits": 1,
+   "items": [
+    {
+     "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+     "concept_id": "G4409879710-ASF",
+     "revision_date": "2026-11-13T01:10:09.792Z",
+     "collection": "C3622247503-ASF",
+     "temporal": {
+      "RangeDateTime": {
+       "BeginningDateTime": "2026-10-09T23:43:30.000000Z",
+       "EndingDateTime": "2026-10-21T23:44:05.999342Z"
+      }
+     },
+     "attributes": {
+      "FRAME_NUMBER": [
+       "67"
+      ],
+      "FREQUENCY_A_POLARIZATION": [
+       "HH"
+      ],
+      "FREQUENCY_A_POLARIZATION_CONCAT": [
+       "HH"
+      ],
+      "FREQUENCY_A_RANGE_BANDWIDTH": [
+       "40"
+      ],
+      "FULL_FRAME": [
+       "TRUE"
+      ],
+      "PROCESSING_CENTER": [
+       "JPL"
+      ],
+      "PROCESSING_LEVEL": [
+       "L2"
+      ],
+      "RANGE_BANDWIDTH_CONCAT": [
+       "40"
+      ],
+      "TRACK_NUMBER": [
+       "141"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "collection": "NISAR_L2_GUNW_PROVISIONAL_V1",
+   "address": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?short_name=NISAR_L2_GUNW_PROVISIONAL_V1&readable_granule_name%5B%5D=%2AGUNW_%2A_141_D_067_%2A&options%5Breadable_granule_name%5D%5Bpattern%5D=true&page_size=200&sort_key=start_date",
+   "cmr_hits_header": "8",
+   "hits": 8,
+   "items": [
+    {
+     "granule": "NISAR_L2_PR_GUNW_023_141_D_067_024_4000_SH_20260623T234333_20260623T234408_20260705T234333_20260705T234408_P05023_N_F_J_001",
+     "concept_id": "G4247628567-ASF",
+     "revision_date": "2026-08-12T07:42:24.920Z",
+     "collection": "C2854335566-ASF",
+     "temporal": {
+      "RangeDateTime": {
+       "BeginningDateTime": "2026-06-23T23:43:33.000000Z",
+       "EndingDateTime": "2026-07-05T23:44:08.999342Z"
+      }
+     },
+     "attributes": {
+      "FRAME_NUMBER": [
+       "67"
+      ],
+      "FREQUENCY_A_POLARIZATION": [
+       "HH"
+      ],
+      "FREQUENCY_A_POLARIZATION_CONCAT": [
+       "HH"
+      ],
+      "FREQUENCY_A_RANGE_BANDWIDTH": [
+       "40"
+      ],
+      "FULL_FRAME": [
+       "TRUE"
+      ],
+      "PROCESSING_CENTER": [
+       "JPL"
+      ],
+      "PROCESSING_LEVEL": [
+       "L2"
+      ],
+      "RANGE_BANDWIDTH_CONCAT": [
+       "40"
+      ],
+      "TRACK_NUMBER": [
+       "141"
+      ]
+     }
+    },
+    {
+     "granule": "NISAR_L2_PR_GUNW_024_141_D_067_025_4000_SH_20260705T234333_20260705T234408_20260717T234332_20260717T234407_P05023_N_F_J_001",
+     "concept_id": "G4255469284-ASF",
+     "revision_date": "2026-08-13T06:12:26.489Z",
+     "collection": "C2854335566-ASF",
+     "temporal": {
+      "RangeDateTime": {
+       "BeginningDateTime": "2026-07-05T23:43:33.000000Z",
+       "EndingDateTime": "2026-07-17T23:44:07.999342Z"
+      }
+     },
+     "attributes": {
+      "FRAME_NUMBER": [
+       "67"
+      ],
+      "FREQUENCY_A_POLARIZATION": [
+       "HH"
+      ],
+      "FREQUENCY_A_POLARIZATION_CONCAT": [
+       "HH"
+      ],
+      "FREQUENCY_A_RANGE_BANDWIDTH": [
+       "40"
+      ],
+      "FULL_FRAME": [
+       "TRUE"
+      ],
+      "PROCESSING_CENTER": [
+       "JPL"
+      ],
+      "PROCESSING_LEVEL": [
+       "L2"
+      ],
+      "RANGE_BANDWIDTH_CONCAT": [
+       "40"
+      ],
+      "TRACK_NUMBER": [
+       "141"
+      ]
+     }
+    },
+    {
+     "granule": "NISAR_L2_PR_GUNW_025_141_D_067_027_4000_SH_20260717T234332_20260717T234407_20260810T234331_20260810T234406_P05023_N_F_J_001",
+     "concept_id": "G4279902284-ASF",
+     "revision_date": "2026-08-15T04:26:25.778Z",
+     "collection": "C2854335566-ASF",
+     "temporal": {
+      "RangeDateTime": {
+       "BeginningDateTime": "2026-07-17T23:43:32.000000Z",
+       "EndingDateTime": "2026-08-10T23:44:06.999342Z"
+      }
+     },
+     "attributes": {
+      "FRAME_NUMBER": [
+       "67"
+      ],
+      "FREQUENCY_A_POLARIZATION": [
+       "HH"
+      ],
+      "FREQUENCY_A_POLARIZATION_CONCAT": [
+       "HH"
+      ],
+      "FREQUENCY_A_RANGE_BANDWIDTH": [
+       "40"
+      ],
+      "FULL_FRAME": [
+       "TRUE"
+      ],
+      "PROCESSING_CENTER": [
+       "JPL"
+      ],
+      "PROCESSING_LEVEL": [
+       "L2"
+      ],
+      "RANGE_BANDWIDTH_CONCAT": [
+       "40"
+      ],
+      "TRACK_NUMBER": [
+       "141"
+      ]
+     }
+    },
+    {
+     "granule": "NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001",
+     "concept_id": "G4289042265-ASF",
+     "revision_date": "2026-08-27T01:53:26.184Z",
+     "collection": "C2854335566-ASF",
+     "temporal": {
+      "RangeDateTime": {
+       "BeginningDateTime": "2026-08-10T23:43:31.000000Z",
+       "EndingDateTime": "2026-08-22T23:44:05.999342Z"
+      }
+     },
+     "attributes": {
+      "FRAME_NUMBER": [
+       "67"
+      ],
+      "FREQUENCY_A_POLARIZATION": [
+       "HH"
+      ],
+      "FREQUENCY_A_POLARIZATION_CONCAT": [
+       "HH"
+      ],
+      "FREQUENCY_A_RANGE_BANDWIDTH": [
+       "40"
+      ],
+      "FULL_FRAME": [
+       "TRUE"
+      ],
+      "PROCESSING_CENTER": [
+       "JPL"
+      ],
+      "PROCESSING_LEVEL": [
+       "L2"
+      ],
+      "RANGE_BANDWIDTH_CONCAT": [
+       "40"
+      ],
+      "TRACK_NUMBER": [
+       "141"
+      ]
+     }
+    },
+    {
+     "granule": "NISAR_L2_PR_GUNW_028_141_D_067_029_4000_SH_20260822T234330_20260822T234405_20260903T234330_20260903T234405_P05023_N_F_J_001",
+     "concept_id": "G4299649727-ASF",
+     "revision_date": "2026-09-06T00:34:26.746Z",
+     "collection": "C2854335566-ASF",
+     "temporal": {
+      "RangeDateTime": {
+       "BeginningDateTime": "2026-08-22T23:43:30.000000Z",
+       "EndingDateTime": "2026-09-03T23:44:05.999342Z"
+      }
+     },
+     "attributes": {
+      "FRAME_NUMBER": [
+       "67"
+      ],
+      "FREQUENCY_A_POLARIZATION": [
+       "HH"
+      ],
+      "FREQUENCY_A_POLARIZATION_CONCAT": [
+       "HH"
+      ],
+      "FREQUENCY_A_RANGE_BANDWIDTH": [
+       "40"
+      ],
+      "FULL_FRAME": [
+       "TRUE"
+      ],
+      "PROCESSING_CENTER": [
+       "JPL"
+      ],
+      "PROCESSING_LEVEL": [
+       "L2"
+      ],
+      "RANGE_BANDWIDTH_CONCAT": [
+       "40"
+      ],
+      "TRACK_NUMBER": [
+       "141"
+      ]
+     }
+    },
+    {
+     "granule": "NISAR_L2_PR_GUNW_029_141_D_067_030_4000_SH_20260903T234330_20260903T234405_20260915T234330_20260915T234405_P05023_N_F_J_001",
+     "concept_id": "G4314912627-ASF",
+     "revision_date": "2026-09-18T01:16:33.887Z",
+     "collection": "C2854335566-ASF",
+     "temporal": {
+      "RangeDateTime": {
+       "BeginningDateTime": "2026-09-03T23:43:30.000000Z",
+       "EndingDateTime": "2026-09-15T23:44:05.999342Z"
+      }
+     },
+     "attributes": {
+      "FRAME_NUMBER": [
+       "67"
+      ],
+      "FREQUENCY_A_POLARIZATION": [
+       "HH"
+      ],
+      "FREQUENCY_A_POLARIZATION_CONCAT": [
+       "HH"
+      ],
+      "FREQUENCY_A_RANGE_BANDWIDTH": [
+       "40"
+      ],
+      "FULL_FRAME": [
+       "TRUE"
+      ],
+      "PROCESSING_CENTER": [
+       "JPL"
+      ],
+      "PROCESSING_LEVEL": [
+       "L2"
+      ],
+      "RANGE_BANDWIDTH_CONCAT": [
+       "40"
+      ],
+      "TRACK_NUMBER": [
+       "141"
+      ]
+     }
+    },
+    {
+     "granule": "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001",
+     "concept_id": "G4328856513-ASF",
+     "revision_date": "2026-09-30T04:55:22.553Z",
+     "collection": "C2854335566-ASF",
+     "temporal": {
+      "RangeDateTime": {
+       "BeginningDateTime": "2026-09-15T23:43:30.000000Z",
+       "EndingDateTime": "2026-09-27T23:44:05.999342Z"
+      }
+     },
+     "attributes": {
+      "FRAME_NUMBER": [
+       "67"
+      ],
+      "FREQUENCY_A_POLARIZATION": [
+       "HH"
+      ],
+      "FREQUENCY_A_POLARIZATION_CONCAT": [
+       "HH"
+      ],
+      "FREQUENCY_A_RANGE_BANDWIDTH": [
+       "40"
+      ],
+      "FULL_FRAME": [
+       "TRUE"
+      ],
+      "PROCESSING_CENTER": [
+       "JPL"
+      ],
+      "PROCESSING_LEVEL": [
+       "L2"
+      ],
+      "RANGE_BANDWIDTH_CONCAT": [
+       "40"
+      ],
+      "TRACK_NUMBER": [
+       "141"
+      ]
+     }
+    },
+    {
+     "granule": "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001",
+     "concept_id": "G4359740150-ASF",
+     "revision_date": "2026-10-12T09:23:05.231Z",
+     "collection": "C2854335566-ASF",
+     "temporal": {
+      "RangeDateTime": {
+       "BeginningDateTime": "2026-09-27T23:43:30.000000Z",
+       "EndingDateTime": "2026-10-09T23:44:05.999342Z"
+      }
+     },
+     "attributes": {
+      "FRAME_NUMBER": [
+       "67"
+      ],
+      "FREQUENCY_A_POLARIZATION": [
+       "HH"
+      ],
+      "FREQUENCY_A_POLARIZATION_CONCAT": [
+       "HH"
+      ],
+      "FREQUENCY_A_RANGE_BANDWIDTH": [
+       "40"
+      ],
+      "FULL_FRAME": [
+       "TRUE"
+      ],
+      "PROCESSING_CENTER": [
+       "JPL"
+      ],
+      "PROCESSING_LEVEL": [
+       "L2"
+      ],
+      "RANGE_BANDWIDTH_CONCAT": [
+       "40"
+      ],
+      "TRACK_NUMBER": [
+       "141"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "collection": "NISAR_L2_GUNW_BETA_V1",
+   "address": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?short_name=NISAR_L2_GUNW_BETA_V1&readable_granule_name%5B%5D=%2AGUNW_%2A_141_D_067_%2A&options%5Breadable_granule_name%5D%5Bpattern%5D=true&page_size=200&sort_key=start_date",
+   "cmr_hits_header": "1",
+   "hits": 1,
+   "items": [
+    {
+     "granule": "NISAR_L2_PR_GUNW_007_141_D_067_008_4000_SH_20251213T234332_20251213T234407_20251225T234333_20251225T234408_X05010_N_F_J_001",
+     "concept_id": "G4058461744-ASF",
+     "revision_date": "2026-02-28T10:02:37.445Z",
+     "collection": "C2850261892-ASF",
+     "temporal": {
+      "RangeDateTime": {
+       "BeginningDateTime": "2025-12-13T23:43:32.000000Z",
+       "EndingDateTime": "2025-12-25T23:44:08.999342Z"
+      }
+     },
+     "attributes": {
+      "FRAME_NUMBER": [
+       "67"
+      ],
+      "FREQUENCY_A_POLARIZATION": [
+       "HH"
+      ],
+      "FREQUENCY_A_POLARIZATION_CONCAT": [
+       "HH"
+      ],
+      "FREQUENCY_A_RANGE_BANDWIDTH": [
+       "40"
+      ],
+      "FULL_FRAME": [
+       "TRUE"
+      ],
+      "PROCESSING_CENTER": [
+       "JPL"
+      ],
+      "PROCESSING_LEVEL": [
+       "L2"
+      ],
+      "RANGE_BANDWIDTH_CONCAT": [
+       "40"
+      ],
+      "TRACK_NUMBER": [
+       "141"
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

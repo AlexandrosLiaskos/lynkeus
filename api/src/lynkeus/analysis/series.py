@@ -4,10 +4,12 @@
 
 A tool of this kind receives the arrays of its input layers one after another, with their layer descriptions,
 and the place of the request: the cell of a point, the cells inside an area drawn on the map, or no place for
-the whole area of the layers. It returns one value for each layer with the number of cells from which the
-value was made. It reads no file, writes no file and contacts no
+the whole area of the layers, and the cell of the reference point of the request, or no cell. The three tools of
+this file return one value for each date with the number of cells from which the value was made, and they take
+no reference point. It reads no file, writes no file and contacts no
 service. The method sheets are ``docs/methods/backscatter-series.md``, ``docs/methods/coherence-series.md`` and
-``docs/methods/soil-moisture-series.md``.
+``docs/methods/soil-moisture-series.md``. The tool Surface displacement, Series, which takes a reference point,
+is in ``lynkeus.analysis.displacement``.
 """
 
 import math
@@ -87,10 +89,10 @@ def _descriptions(
     Raises
     ------
     LayerError
-        If the layers are fewer than two; if a layer is not one that the tool reads (see ``check_inputs``); if
-        the layers are not the same layer of their products, are not of the same instrument, track, direction
-        and frame, or are not of the same major release of the processing software; or if two layers have the
-        same date or dates.
+        If the layers are fewer than two; if a layer is not one that the tool reads, with the unit ``unit``
+        (see ``check_inputs``); if the layers are not the same layer of their products, are not of the same
+        instrument, track, direction and frame, or are not of the same major release of the processing
+        software; or if two layers have the same date or dates.
     """
     if len(layers) < LEAST_LAYERS:
         raise LayerError(f"A series needs at least {LEAST_LAYERS} layers, and it has {len(layers)}.")
@@ -134,6 +136,18 @@ def _descriptions(
         if layer.dates in seen:
             raise LayerError(f'The layers "{seen[layer.dates].title}" and "{layer.title}" have the same dates.')
         seen[layer.dates] = layer
+
+
+def _no_reference(reference: tuple[int, int] | None) -> None:
+    """Refuse the cell of a reference point, which the tools of this file do not take.
+
+    Raises
+    ------
+    LayerError
+        If a cell is given.
+    """
+    if reference is not None:
+        raise LayerError("The tool takes no reference point.")
 
 
 def _series(
@@ -228,6 +242,7 @@ def backscatter_series(
     arrays: Iterable[NDArray[np.float32]],
     layers: Sequence[LayerDescription],
     place: Place = None,
+    reference: tuple[int, int] | None = None,
 ) -> SeriesResult:
     """Give the radar backscatter of many dates, at a point or as the mean of an area, in decibels.
 
@@ -243,6 +258,8 @@ def backscatter_series(
         Row and column of the cell of the point, counted from 0, or an array of the shape of the grid that is
         True for the cells inside an area drawn on the map. Without it the series is that of the whole area of
         the layers.
+    reference : None
+        The tool takes no reference point, so the cell of one is refused.
 
     Returns
     -------
@@ -258,16 +275,17 @@ def backscatter_series(
     Raises
     ------
     LayerError
-        If the layers are fewer than two; if a layer is not one diagonal covariance term of a GCOV product
-        with the unit ``1`` and one date (see ``check_inputs``); if the layers are not the same term, are not
-        of the same instrument, track, direction and frame, or are not of the same major release of the
-        processing software; if two layers have the same date; if the grids differ in size; or if no layer
-        holds a value above zero, at the point, in the area or in any cell.
+        If the cell of a reference point is given; if the layers are fewer than two; if a layer is not one
+        diagonal covariance term of a GCOV product with the unit ``1`` and one date (see ``check_inputs``); if
+        the layers are not the same term, are not of the same instrument, track, direction and frame, or are
+        not of the same major release of the processing software; if two layers have the same date; if the
+        grids differ in size; or if no layer holds a value above zero, at the point, in the area or in any cell.
     ValueError
         If the arrays and the descriptions differ in number, an array is not two-dimensional 32-bit floating
         point, the cell lies outside the grid, or the cells of an area are not on the grid. These are faults of
         the caller.
     """
+    _no_reference(reference)
     _descriptions(
         layers,
         product="GCOV",
@@ -283,6 +301,7 @@ def coherence_series(
     arrays: Iterable[NDArray[np.float32]],
     layers: Sequence[LayerDescription],
     place: Place = None,
+    reference: tuple[int, int] | None = None,
 ) -> SeriesResult:
     """Give the interferometric coherence of many pairs of dates, at a point or as the mean of an area.
 
@@ -298,6 +317,8 @@ def coherence_series(
         Row and column of the cell of the point, counted from 0, or an array of the shape of the grid that is
         True for the cells inside an area drawn on the map. Without it the series is that of the whole area of
         the layers.
+    reference : None
+        The tool takes no reference point, so the cell of one is refused.
 
     Returns
     -------
@@ -312,17 +333,18 @@ def coherence_series(
     Raises
     ------
     LayerError
-        If the layers are fewer than two; if a layer is not a layer ``coherenceMagnitude`` of a GUNW product
-        with the unit ``1`` and two dates (see ``check_inputs``); if the layers are not the same layer of
-        their products, are not of the same instrument, track, direction and frame, or are not of the same
-        major release of the processing software; if two layers have the same two dates; if the grids differ
-        in size; if a layer holds a value outside 0 to 1; or if no layer holds a value, at the point, in the
-        area or in any cell.
+        If the cell of a reference point is given; if the layers are fewer than two; if a layer is not a layer
+        ``coherenceMagnitude`` of a GUNW product with the unit ``1`` and two dates (see ``check_inputs``); if
+        the layers are not the same layer of their products, are not of the same instrument, track, direction
+        and frame, or are not of the same major release of the processing software; if two layers have the
+        same two dates; if the grids differ in size; if a layer holds a value outside 0 to 1; or if no layer
+        holds a value, at the point, in the area or in any cell.
     ValueError
         If the arrays and the descriptions differ in number, an array is not two-dimensional 32-bit floating
         point, the cell lies outside the grid, or the cells of an area are not on the grid. These are faults of
         the caller.
     """
+    _no_reference(reference)
     _descriptions(layers, product="GUNW", names=_COHERENCE, reads="the layer coherenceMagnitude", dates=2)
     entries, inputs = _series(arrays, layers, place, _mean_coherence)
     return _result(
@@ -382,6 +404,7 @@ def soil_moisture_series(
     arrays: Iterable[NDArray[np.float32]],
     layers: Sequence[LayerDescription],
     place: Place = None,
+    reference: tuple[int, int] | None = None,
 ) -> SeriesResult:
     """Give the soil moisture of many dates, at a point or as the mean of the area, in the cells NISAR recommends.
 
@@ -399,6 +422,8 @@ def soil_moisture_series(
         Row and column of the cell of the point, counted from 0, or an array of the shape of the grid that is
         True for the cells inside an area drawn on the map. Without it the series is that of the whole area of
         the layers.
+    reference : None
+        The tool takes no reference point, so the cell of one is refused.
 
     Returns
     -------
@@ -426,6 +451,7 @@ def soil_moisture_series(
         point, the cell lies outside the grid, or the cells of an area are not on the grid. These are faults of
         the caller.
     """
+    _no_reference(reference)
     if len(layers) % 2:
         raise LayerError(f"The number of input layers must be even, two for each date, and it is {len(layers)}.")
     moistures, flags = layers[0::2], layers[1::2]

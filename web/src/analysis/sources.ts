@@ -8,7 +8,9 @@ import type { Source } from "../shared/sources";
  * references, the source programs and the data of part 6 of `docs/research/analysis-coherence-change.md` and of
  * `docs/research/analysis-soil-moisture.md`, and for Surface displacement, One pair those of part 6 of
  * `docs/research/analysis-displacement.md`. The Series tools add the notebooks and the uses of part 6 of
- * `docs/research/analysis-series.md`, and the retrieval quality flag and Soil moisture, Series those of part 6 of
+ * `docs/research/analysis-series.md`, Surface displacement, Series the articles and the uses of part 6 of
+ * `docs/research/analysis-displacement-series.md`, and the retrieval quality flag and Soil moisture, Series those
+ * of part 6 of
  * `docs/research/analysis-soil-moisture.md`. NumPy, Rasterio and harmony-py stand in the list of the Data part,
  * which the page Sources shows beside this one, because a name stands in the lists once.
  */
@@ -25,7 +27,7 @@ export const SOURCES: readonly Source[] = [
     version: "Rev E, version 1.2.1, 8 November 2024",
     licence: "Copyright 2024 California Institute of Technology. Government sponsorship acknowledged",
     url: "https://nisar-docs.asf.alaska.edu/product-specification/",
-    use: "The layers coherenceMagnitude of a GUNW product, for the coherence tools One pair, Change and Series. The layers unwrappedPhase and connectedComponents and the field centerFrequency, for Surface displacement, One pair.",
+    use: "The layers coherenceMagnitude of a GUNW product, for the coherence tools One pair, Change and Series. The layers unwrappedPhase and connectedComponents and the field centerFrequency, for Surface displacement, One pair and Series.",
   },
   {
     name: "NASA SDS Product Specification, Level-3 Soil Moisture (L3 SME2), JPL D-107677",
@@ -89,7 +91,7 @@ export const SOURCES: readonly Source[] = [
     version: "1.6.4",
     licence: "GPL-3.0-or-later",
     url: "https://github.com/insarlab/MintPy",
-    use: "Source program of Surface displacement, One pair (function scale_data2disp_unit). It was run for the comparison only, and Lynkeus holds none of its code.",
+    use: "Source program of Surface displacement, One pair (function scale_data2disp_unit) and of Surface displacement, Series (generate_mask, reference_point and ifgram_inversion). It was run for the comparison only, and Lynkeus holds none of its code.",
   },
   {
     name: "nisarqa",
@@ -181,6 +183,18 @@ export const SOURCES: readonly Source[] = [
     use: "The table of classes in the record of a result of Backscatter, Thematic map.",
   },
   {
+    name: "Berardino, Fornaro, Lanari and Sansosti (2002), A new algorithm for surface deformation monitoring based on small baseline differential SAR interferograms",
+    licence: "No licence is named in the Crossref record of the article (publisher IEEE)",
+    url: "https://doi.org/10.1109/TGRS.2002.803792",
+    use: "The method of Surface displacement, Series: the small-baseline inversion with the minimum-norm velocity, as MintPy computes it. The article was not read in full.",
+  },
+  {
+    name: "Yunjun, Fattahi and Amelung (2019), Small baseline InSAR time series analysis: Unwrapping error correction and noise reduction",
+    licence: "Elsevier licence for text and data mining, named in the Crossref record of the article",
+    url: "https://doi.org/10.1016/j.cageo.2019.104331",
+    use: "The article of MintPy, and the guideline for the reference point of Surface displacement, Series, as the template of MintPy cites it. The article was not read in full.",
+  },
+  {
     name: "NISAR Validated Geocoded Polarimetric Covariance Product (Version 1)",
     version: "Collection NISAR_L2_GCOV_V1",
     licence: "NASA ESDIS Data Use and Citation Guidance; free and open data",
@@ -192,14 +206,14 @@ export const SOURCES: readonly Source[] = [
     version: "Collection NISAR_L2_GUNW_V1",
     licence: "NASA ESDIS Data Use and Citation Guidance; free and open data",
     url: "https://doi.org/10.5067/NIL2GUNW-V1",
-    use: "The GUNW product of the pilot area on which Coherence, One pair was measured and compared, and one of the five products of the comparison of Coherence, Change. It is also one of the two products on which Surface displacement, One pair was measured and compared.",
+    use: "The GUNW product of the pilot area on which Coherence, One pair was measured and compared, and one of the five products of the comparison of Coherence, Change. It is also one of the two products on which Surface displacement, One pair was measured and compared, and the last pair of the comparison of Surface displacement, Series.",
   },
   {
     name: "NISAR Provisional Geocoded Unwrapped Interferogram Product (Version 1)",
     version: "Collection NISAR_L2_GUNW_PROVISIONAL_V1",
     licence: "NASA ESDIS Data Use and Citation Guidance; free and open data",
     url: "https://doi.org/10.5067/NIL2GUNW-P1",
-    use: "Four of the five GUNW products of the pilot area on which Coherence, Change was measured and compared, and the second product on which Surface displacement, One pair was.",
+    use: "Four of the five GUNW products of the pilot area on which Coherence, Change was measured and compared, and the second product on which Surface displacement, One pair was. Eight of the nine pairs on which Surface displacement, Series was compared.",
   },
   {
     name: "NISAR Provisional Soil Moisture (Version 1)",

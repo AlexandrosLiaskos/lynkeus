@@ -65,6 +65,7 @@ test("the page shows one section for each finished tool and one for the statisti
     "Soil moisture, Change",
     "Backscatter, Series",
     "Coherence, Series",
+    "Surface displacement, Series",
     "Soil moisture, Series",
     "Statistics in an area",
   ]);
@@ -92,6 +93,7 @@ test("the section of the tool that a form asked for is open, and the others are 
     "false",
     "false",
     "false",
+    "false",
   ]);
 });
 
@@ -102,6 +104,7 @@ test.each([
   "soil-moisture-change",
   "backscatter-series",
   "coherence-series",
+  "displacement-series",
   "soil-moisture-series",
 ] as const)("the link Method of %s opens its section alone", (asked) => {
   render(<MethodsDialog />);

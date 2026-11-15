@@ -27,6 +27,7 @@ import type { SeriesDescription } from "../shared/series";
 import {
   checkSeries,
   firstChoice,
+  isRelative,
   missingOfSeries,
   mostDatesOf,
   NO_LAYERS,
@@ -51,10 +52,23 @@ export const ABOUT_SERIES = {
   title: "The name of the series in the Catalog pane.",
 } as const;
 
+/**
+ * The explanations of the titles of the form of Surface displacement, Series that differ from those of the other
+ * Series tools. Each one is one sentence.
+ */
+export const ABOUT_RELATIVE = {
+  layers:
+    "The Unwrapped phase layers of two or more pairs of dates, each with the Connected components layer of its product in the session.",
+  referenceLatitude: "The latitude of the reference point, on ground that you take as not moving, in degrees.",
+  referenceLongitude: "The longitude of the reference point, on ground that you take as not moving, in degrees.",
+} as const;
+
 /** The layers to get for each tool, by the name that the Get layer form gives to them. */
 export const RECEIVE_SERIES: Record<SeriesTool, string> = {
   "backscatter-series": "Get the same Backscatter layer of two or more GCOV products of one track and frame.",
   "coherence-series": "Get the same Coherence layer of two or more GUNW products of one track and frame.",
+  "displacement-series":
+    "Get the Unwrapped phase and Connected components layers of two or more GUNW pairs of one track and frame.",
   "soil-moisture-series":
     "Get the Soil Moisture layer and the Retrieval Quality Flag layer of two or more SME2 products of one track and frame, for the same area.",
 };
@@ -144,8 +158,10 @@ function openGetLayer(): void {
  * opens the page Methods at the tool. While a choice is missing, the foot of the pane states the first fault,
  * and a field that was left states its own. Soil moisture, Series takes the Retrieval Quality Flag layer of the
  * product of each chosen layer without a field of its own, and the pane states what to get when it is missing. The
- * run button starts the tool as a job, and the foot shows the progress and the outcome, with the link that shows
- * the series.
+ * form of Surface displacement, Series has no choice of the place, because its series is that of a point, and it
+ * has the latitude and the longitude of the reference point after those of the point; it sends beside each chosen
+ * layer the Connected components layer of its product. The run button starts the tool as a job, and the foot shows
+ * the progress and the outcome, with the link that shows the series.
  */
 export function SeriesForm({ tool }: { tool: SeriesTool }) {
   const id = useId();
@@ -159,13 +175,23 @@ export function SeriesForm({ tool }: { tool: SeriesTool }) {
   const [place, setPlace] = useState<Place>("area");
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
+  const [baseLatitude, setBaseLatitude] = useState("");
+  const [baseLongitude, setBaseLongitude] = useState("");
   // The name that the visitor gave to the series, or null while the form proposes one.
   const [own, setOwn] = useState<string | null>(null);
-  const [left, setLeft] = useState({ layers: false, latitude: false, longitude: false, title: false });
+  const [left, setLeft] = useState({
+    layers: false,
+    latitude: false,
+    longitude: false,
+    referenceLatitude: false,
+    referenceLongitude: false,
+    title: false,
+  });
   const [started, setStarted] = useState<Started | null>(null);
   const area = useStore(analysisAreaStore);
 
   const method = METHODS[tool];
+  const relative = isRelative(tool);
   const kept = entries.filter((entry) => entry.server === null).map((entry) => entry.layer);
   const elsewhere = accepted(
     READS_AS[tool],
@@ -195,6 +221,7 @@ export function SeriesForm({ tool }: { tool: SeriesTool }) {
     title,
     flagOf,
     most,
+    ...(relative ? { relative: { session: kept, latitude: baseLatitude, longitude: baseLongitude } } : {}),
   });
   const missing = group ? missingOfSeries(faults) : NO_LAYERS;
   const flagless = flagOf !== undefined && members.some((layer) => chosen.includes(layer.id) && flagOf(layer) === null);
@@ -240,11 +267,29 @@ export function SeriesForm({ tool }: { tool: SeriesTool }) {
     layers: left.layers ? faults.layers : null,
     latitude: left.latitude ? faults.latitude : null,
     longitude: left.longitude ? faults.longitude : null,
+    referenceLatitude: left.referenceLatitude ? (faults.referenceLatitude ?? null) : null,
+    referenceLongitude: left.referenceLongitude ? (faults.referenceLongitude ?? null) : null,
     title: left.title ? faults.title : null,
   };
   const angles = [
-    { axis: "latitude", title: "Latitude", value: latitude, set: setLatitude },
-    { axis: "longitude", title: "Longitude", value: longitude, set: setLongitude },
+    { axis: "latitude", title: "Latitude", value: latitude, set: setLatitude, about: ABOUT_SERIES.latitude },
+    { axis: "longitude", title: "Longitude", value: longitude, set: setLongitude, about: ABOUT_SERIES.longitude },
+  ] as const;
+  const bases = [
+    {
+      axis: "referenceLatitude",
+      title: "Reference latitude",
+      value: baseLatitude,
+      set: setBaseLatitude,
+      about: ABOUT_RELATIVE.referenceLatitude,
+    },
+    {
+      axis: "referenceLongitude",
+      title: "Reference longitude",
+      value: baseLongitude,
+      set: setBaseLongitude,
+      about: ABOUT_RELATIVE.referenceLongitude,
+    },
   ] as const;
 
   return (
@@ -305,7 +350,7 @@ export function SeriesForm({ tool }: { tool: SeriesTool }) {
             <legend className="usa-legend">
               <span id={`${id}-layers-title`}>Layers of the series</span>
               <Info id={infoId(`${id}-layers`)} about="Layers of the series">
-                {ABOUT_SERIES.layers}
+                {relative ? ABOUT_RELATIVE.layers : ABOUT_SERIES.layers}
               </Info>
             </legend>
             {members.map((layer) => (
@@ -330,48 +375,50 @@ export function SeriesForm({ tool }: { tool: SeriesTool }) {
             </Notice>
           ) : null}
 
-          <fieldset
-            className="usa-fieldset"
-            aria-labelledby={`${id}-place-title`}
-            aria-describedby={infoId(`${id}-place`)}
-          >
-            <legend className="usa-legend">
-              <span id={`${id}-place-title`}>Place</span>
-              <Info id={infoId(`${id}-place`)} about="Place">
-                {ABOUT_SERIES.place}
-              </Info>
-            </legend>
-            {(Object.keys(PLACES) as Place[]).map((value) => (
-              <div key={value} className="usa-radio">
-                <input
-                  className="usa-radio__input"
-                  type="radio"
-                  id={`${id}-place-${value}`}
-                  name={`${id}-place`}
-                  checked={place === value}
-                  onChange={() => setPlace(value)}
-                />
-                <label className="usa-radio__label" htmlFor={`${id}-place-${value}`}>
-                  {PLACES[value]}
-                </label>
-              </div>
-            ))}
-          </fieldset>
+          {relative ? null : (
+            <fieldset
+              className="usa-fieldset"
+              aria-labelledby={`${id}-place-title`}
+              aria-describedby={infoId(`${id}-place`)}
+            >
+              <legend className="usa-legend">
+                <span id={`${id}-place-title`}>Place</span>
+                <Info id={infoId(`${id}-place`)} about="Place">
+                  {ABOUT_SERIES.place}
+                </Info>
+              </legend>
+              {(Object.keys(PLACES) as Place[]).map((value) => (
+                <div key={value} className="usa-radio">
+                  <input
+                    className="usa-radio__input"
+                    type="radio"
+                    id={`${id}-place-${value}`}
+                    name={`${id}-place`}
+                    checked={place === value}
+                    onChange={() => setPlace(value)}
+                  />
+                  <label className="usa-radio__label" htmlFor={`${id}-place-${value}`}>
+                    {PLACES[value]}
+                  </label>
+                </div>
+              ))}
+            </fieldset>
+          )}
 
-          {place === "area" ? (
+          {!relative && place === "area" ? (
             <ToolPaneGroup title="Area drawn on the map" open={area !== null}>
               <AreaField use="series" />
             </ToolPaneGroup>
           ) : null}
 
-          {place === "point"
-            ? angles.map(({ axis, title: name, value, set }) => {
+          {relative || place === "point"
+            ? [...angles, ...(relative ? bases : [])].map(({ axis, title: name, value, set, about }) => {
                 const field = `${id}-${axis}`;
                 const fault = shown[axis];
                 return (
                   <div key={axis}>
                     <FieldTitle field={field} title={name}>
-                      {ABOUT_SERIES[axis]}
+                      {about}
                     </FieldTitle>
                     <input
                       className={fault ? "usa-input usa-input--error" : "usa-input"}

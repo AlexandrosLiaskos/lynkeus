@@ -11,7 +11,8 @@ type Kind = "state" | "change" | "series" | "map";
  * The buttons of a measurement, one for each kind that its group names. A group names its kinds in the order that
  * every group of the Analysis tab follows: `state`, `change`, `series`, `map`. A measurement is made on one date or
  * from one pair of dates. `state` replaces the description of the first button where the name of the quantity alone
- * does not say what the map shows.
+ * does not say what the map shows, and `series` replaces the description of the button Series where the chart does not
+ * show the quantity at a point or for the area.
  */
 function tools<const M extends Measurement, const K extends Kind>(
   measurement: M,
@@ -19,6 +20,7 @@ function tools<const M extends Measurement, const K extends Kind>(
   quantity: string,
   from: "date" | "pair",
   state?: string,
+  series?: string,
 ): (Tool & { id: `${M}-${K}` })[] {
   const [one, two, many] =
     from === "date"
@@ -38,7 +40,7 @@ function tools<const M extends Measurement, const K extends Kind>(
     series: {
       label: "Series",
       icon: "insights",
-      description: `Plots the ${quantity} of ${many}, at a point or for the area.`,
+      description: series ?? `Plots the ${quantity} of ${many}, at a point or for the area.`,
     },
     map: {
       label: "Thematic map",
@@ -52,6 +54,10 @@ function tools<const M extends Measurement, const K extends Kind>(
 /** What the button One pair of the group Surface displacement does, in the words of its method sheet. */
 export const DISPLACEMENT_STATE =
   "Maps the movement of the ground toward or away from the radar between the two dates of one pair.";
+
+/** What the button Series of the group Surface displacement does, in the words of its method sheet. */
+export const DISPLACEMENT_SERIES =
+  "Plots the movement of the ground at a point over many dates, relative to a reference point.";
 
 /**
  * The Analysis tab: one group for each quantity that NISAR measures. A group holds a button only for a tool that a
@@ -75,7 +81,14 @@ export const ANALYSIS_TAB = {
     },
     {
       label: "Surface displacement",
-      tools: tools("displacement", ["state", "series"], "surface displacement", "pair", DISPLACEMENT_STATE),
+      tools: tools(
+        "displacement",
+        ["state", "series"],
+        "surface displacement",
+        "pair",
+        DISPLACEMENT_STATE,
+        DISPLACEMENT_SERIES,
+      ),
     },
     {
       label: "Soil moisture",

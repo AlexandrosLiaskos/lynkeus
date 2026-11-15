@@ -8,8 +8,10 @@ import {
   accepted,
   acquisitionOf,
   acquisitionWords,
+  componentsOf,
   defaultTitle,
   FINISHED_TOOLS,
+  hasFrequency,
   MOST_TITLE,
   READS,
   type FinishedTool,
@@ -20,7 +22,12 @@ import {
  * process of the same name for each of them, whose result is a series and not a layer. Each one has a method
  * sheet in `docs/methods/`.
  */
-export const SERIES_TOOLS = ["backscatter-series", "coherence-series", "soil-moisture-series"] as const;
+export const SERIES_TOOLS = [
+  "backscatter-series",
+  "coherence-series",
+  "displacement-series",
+  "soil-moisture-series",
+] as const;
 export type SeriesTool = (typeof SERIES_TOOLS)[number];
 
 /** Every finished tool that has a method sheet, in the order of the page Methods: the maps, then the series. */
@@ -34,8 +41,52 @@ export type SheetTool = (typeof SHEET_TOOLS)[number];
 export const READS_AS: Record<SeriesTool, FinishedTool> = {
   "backscatter-series": "backscatter-state",
   "coherence-series": "coherence-state",
+  "displacement-series": "displacement-state",
   "soil-moisture-series": "soil-moisture-state",
 };
+
+/**
+ * Tell whether the values of a Series tool are relative to a reference point that the visitor gives. Surface
+ * displacement, Series is such a tool: it gives the series of a point only, because the mean of an area of values
+ * relative to one point has no meaning of its own (`docs/methods/displacement-series.md`). Its form takes the
+ * layers `unwrappedPhase` of the pairs and finds the layer `connectedComponents` of each product, as the form of
+ * Surface displacement, One pair does.
+ */
+export function isRelative(tool: SeriesTool): boolean {
+  return tool === "displacement-series";
+}
+
+/**
+ * The two start times in the name of the product file of a pair: of the reference and of the secondary
+ * acquisition (SDS Product File Naming Conventions, JPL D-102255 Rev C, section 3.8). The server reads them with
+ * the same pattern, in `api/src/lynkeus/analysis/displacement.py`.
+ */
+const PAIR_TIMES = /_(\d{4})(\d{2})(\d{2})T\d{6}_\d{8}T\d{6}_(\d{4})(\d{2})(\d{2})T\d{6}_\d{8}T\d{6}_/;
+
+/** Return the two dates of the product file of a pair as year-month-day, or no date for a name of another form. */
+export function pairDatesOf(file: string): string[] {
+  const found = PAIR_TIMES.exec(file);
+  return found
+    ? [`${found[1] ?? ""}-${found[2] ?? ""}-${found[3] ?? ""}`, `${found[4] ?? ""}-${found[5] ?? ""}-${found[6] ?? ""}`]
+    : [];
+}
+
+/** Tell whether pairs of dates link all their dates into one network, through pairs that share a date. */
+export function linksAllDates(pairs: readonly (readonly string[])[]): boolean {
+  const days = [...new Set(pairs.flat())];
+  const reached = new Set(days.slice(0, 1));
+  let grown = true;
+  while (grown) {
+    grown = false;
+    for (const pair of pairs) {
+      if (pair.some((day) => reached.has(day)) && !pair.every((day) => reached.has(day))) {
+        pair.forEach((day) => reached.add(day));
+        grown = true;
+      }
+    }
+  }
+  return reached.size === days.length;
+}
 
 /** The smallest and the largest number of layers of one series, as the server takes them (`SeriesInputs`). */
 export const FEWEST_LAYERS = 2;
@@ -141,7 +192,13 @@ export function seriesTitle(tool: SeriesTool, layers: readonly LayerDescription[
   if (!first || !last) {
     return "";
   }
-  const one = defaultTitle(READS_AS[tool], [first]);
+  // The title of the tool that the series reads as, from the first layer: One pair reads two layers of one product,
+  // and its title names the channel and the dates of the first.
+  const reads = READS_AS[tool];
+  const one = defaultTitle(
+    reads,
+    Array.from({ length: READS[reads].count }, () => first),
+  );
   const head = one.slice(0, one.length - daysWords(first.dates).length - 2);
   const from = formatDay(first.dates[0] ?? "");
   const to = formatDay(last.dates.at(-1) ?? "");
@@ -164,8 +221,31 @@ export const ANGLE_FAULTS = {
   longitude: "Enter the longitude in degrees, from 180 W to 180 E, for example 70.9 W or 70° 54′ 00″ W.",
 } as const;
 
+/** The faults of the two fields of the reference point of Surface displacement, Series. */
+export const REFERENCE_FAULTS = {
+  latitude: "Enter the latitude of the reference point in degrees, from 90 S to 90 N, for example 42.8 N.",
+  longitude: "Enter the longitude of the reference point in degrees, from 180 W to 180 E, for example 70.9 W.",
+} as const;
+
 /** Why the tool cannot run while the session holds no two layers that it reads together. */
 export const NO_LAYERS = "No two layers of this session can be used together by the tool.";
+
+/** The fault of the layers of Surface displacement, Series when a chosen layer has no frequency of the radar. */
+export function noFrequencySentence(layer: LayerDescription): string {
+  return `The layer "${layer.title}" does not record the frequency of the radar, so get it again with Get layer.`;
+}
+
+/** The fault of the layers of Surface displacement, Series when the session lacks the partner of a chosen layer. */
+export function noComponentsSentence(layer: LayerDescription): string {
+  return `The Connected components layer of the product of "${layer.title}" is not in the session.`;
+}
+
+/** The fault of the layers of Surface displacement, Series when the chosen layers have two radar frequencies. */
+export const FREQUENCIES =
+  "The chosen layers were acquired at different radar frequencies, so choose layers of one frequency.";
+
+/** The fault of the layers of Surface displacement, Series when the chosen pairs do not link all their dates. */
+export const UNLINKED = "The chosen pairs do not link all their dates into one network, so add a pair that joins them.";
 
 /** What the form of a Series tool holds at one moment. */
 export interface SeriesChoices {
@@ -181,6 +261,16 @@ export interface SeriesChoices {
   area: Shape | null;
   /** The name of the series, as the field holds it. */
   title: string;
+  /**
+   * For a tool whose values are relative to a reference point (`isRelative`): the layers of the session, among
+   * which the form finds the layer `connectedComponents` of each chosen layer, and the latitude and the longitude
+   * of the reference point, as the fields hold them. The place of such a series is always a point.
+   */
+  relative?: {
+    session: readonly LayerDescription[];
+    latitude: string;
+    longitude: string;
+  };
   /**
    * For a tool that takes the retrieval quality flag of each product after its layer: the flag of a layer in the
    * session, or null when the session holds none (`qualityOf`).
@@ -203,6 +293,9 @@ export interface SeriesFaults {
   layers: string | null;
   latitude: string | null;
   longitude: string | null;
+  /** The faults of the fields of the reference point, for a tool whose values are relative to one. */
+  referenceLatitude?: string | null;
+  referenceLongitude?: string | null;
   title: string | null;
 }
 
@@ -215,11 +308,35 @@ export interface SeriesChecked {
 }
 
 /**
+ * Return the fault of the layers of Surface displacement, Series, or null: each chosen layer `unwrappedPhase`
+ * must record the frequency of the radar, the session must hold the layer `connectedComponents` of its product,
+ * the layers must share one frequency, and the pairs must link all their dates into one network. The server
+ * makes the same checks, in `api/src/lynkeus/analysis/displacement.py`.
+ */
+function relativeFault(layers: readonly LayerDescription[], session: readonly LayerDescription[]): string | null {
+  const silent = layers.find((layer) => !hasFrequency(layer));
+  if (silent) {
+    return noFrequencySentence(silent);
+  }
+  const alone = layers.find((layer) => componentsOf(layer, session).length === 0);
+  if (alone) {
+    return noComponentsSentence(alone);
+  }
+  if (new Set(layers.map((layer) => layer.frequency)).size > 1) {
+    return FREQUENCIES;
+  }
+  return linksAllDates(layers.map((layer) => layer.dates)) ? null : UNLINKED;
+}
+
+/**
  * Check the choices of the form of a Series tool. A series takes 2 to 50 layers of the group, each of other
  * dates, or 2 to 25 when the tool takes the retrieval quality flag of each product, which must then be in the
  * session; the form sends each flag after its layer. At a point, the latitude and the longitude must be angles in
  * degrees. The name of the series must have 1 to 200 characters. Whether the point lies inside the area of the
- * layers is checked by the server. A series for the area sends the area drawn on the map, when there is one.
+ * layers is checked by the server. A series for the area sends the area drawn on the map, when there is one. A
+ * series relative to a reference point is a series at a point, and it needs the reference point as well; its
+ * layers must pass the checks of `relativeFault`, and the form sends beside each chosen layer the layer
+ * `connectedComponents` of its product.
  */
 export function checkSeries({
   group,
@@ -229,6 +346,7 @@ export function checkSeries({
   longitude,
   area,
   title,
+  relative,
   flagOf,
   most = MOST_LAYERS,
 }: SeriesChoices): SeriesChecked {
@@ -241,14 +359,23 @@ export function checkSeries({
     faults.layers = `Choose at most ${String(most)} layers.`;
   } else if (new Set(layers.map(datesKey)).size < layers.length) {
     faults.layers = "Two of the chosen layers have the same dates. Choose one of them.";
+  } else if (relative) {
+    faults.layers = relativeFault(layers, relative.session);
   } else if (flagless.length > 0) {
     faults.layers = flaglessSentence(flagless);
   }
-  const north = place === "point" ? parseAngle(latitude, "latitude") : null;
-  const east = place === "point" ? parseAngle(longitude, "longitude") : null;
-  if (place === "point") {
+  const atPoint = relative !== undefined || place === "point";
+  const north = atPoint ? parseAngle(latitude, "latitude") : null;
+  const east = atPoint ? parseAngle(longitude, "longitude") : null;
+  if (atPoint) {
     faults.latitude = north === null ? ANGLE_FAULTS.latitude : null;
     faults.longitude = east === null ? ANGLE_FAULTS.longitude : null;
+  }
+  const baseNorth = relative ? parseAngle(relative.latitude, "latitude") : null;
+  const baseEast = relative ? parseAngle(relative.longitude, "longitude") : null;
+  if (relative) {
+    faults.referenceLatitude = baseNorth === null ? REFERENCE_FAULTS.latitude : null;
+    faults.referenceLongitude = baseEast === null ? REFERENCE_FAULTS.longitude : null;
   }
   const name = title.trim();
   if (name === "") {
@@ -256,22 +383,39 @@ export function checkSeries({
   } else if (name.length > MOST_TITLE) {
     faults.title = `The name is longer than ${String(MOST_TITLE)} characters.`;
   }
-  const sound = Object.values(faults).every((fault) => fault === null);
+  const sound = Object.values(faults).every((fault) => fault === null || fault === undefined);
+  const session = relative?.session ?? [];
+  const sent = relative
+    ? layers.flatMap((layer) => [
+        layer.id,
+        ...componentsOf(layer, session)
+          .slice(0, 1)
+          .map(({ id }) => id),
+      ])
+    : layers.flatMap((layer) => {
+        const flag = flagOf?.(layer) ?? null;
+        return flag ? [layer.id, flag.id] : [layer.id];
+      });
   const inputs: SeriesInputs | null = sound
     ? {
-        inputs: layers.flatMap((layer) => {
-          const flag = flagOf?.(layer) ?? null;
-          return flag ? [layer.id, flag.id] : [layer.id];
-        }),
+        inputs: sent,
         title: name,
         ...(north !== null && east !== null ? { point: { longitude: east, latitude: north } } : {}),
-        ...(place === "area" && area ? { area } : {}),
+        ...(baseNorth !== null && baseEast !== null ? { reference: { longitude: baseEast, latitude: baseNorth } } : {}),
+        ...(!atPoint && area ? { area } : {}),
       }
     : null;
   return { layers, faults, inputs };
 }
 
 /** Return the first fault of the form in the order of its fields, or null when the tool can run. */
-export function missingOfSeries({ layers, latitude, longitude, title }: SeriesFaults): string | null {
-  return layers ?? latitude ?? longitude ?? title;
+export function missingOfSeries({
+  layers,
+  latitude,
+  longitude,
+  referenceLatitude,
+  referenceLongitude,
+  title,
+}: SeriesFaults): string | null {
+  return layers ?? latitude ?? longitude ?? referenceLatitude ?? referenceLongitude ?? title;
 }

@@ -14,8 +14,9 @@ from numpy.typing import NDArray
 
 from lynkeus.analysis import SERIES_TOOLS, TOOLS
 from lynkeus.analysis.backscatter import backscatter_state
+from lynkeus.analysis.displacement import displacement_series
 from lynkeus.analysis.series import LEAST_LAYERS, backscatter_series, coherence_series, soil_moisture_series
-from lynkeus.layers import Area, LayerDescription, SeriesDescription
+from lynkeus.layers import Area, Cell, LayerDescription, Point, Reference, SeriesDescription
 from lynkeus.writing import LayerError
 
 from .layers import COHERENCE, GCOV_2_NOV, GCOV_21_OCT, GUNW_9_21_OCT, grid, layer
@@ -64,6 +65,29 @@ THIRD = layer(GCOV_2_NOV, "2026-11-02")
 PAIR_1 = layer(GUNW_15_27_SEP, "2026-09-15", "2026-09-27", layer=COHERENCE)
 PAIR_2 = layer(GUNW_27_SEP_9_OCT, "2026-09-27", "2026-10-09", layer=COHERENCE)
 PAIR_3 = layer(GUNW_9_21_OCT, "2026-10-09", "2026-10-21", layer=COHERENCE)
+# The layers unwrappedPhase and connectedComponents of two pairs, which Surface displacement, Series reads.
+PHASE_2 = (
+    layer(
+        GUNW_27_SEP_9_OCT,
+        "2026-09-27",
+        "2026-10-09",
+        layer="unwrappedInterferogram/HH/unwrappedPhase",
+        unit="rad",
+        frequency=1239000000.0,
+    ),
+    layer(GUNW_27_SEP_9_OCT, "2026-09-27", "2026-10-09", layer="unwrappedInterferogram/HH/connectedComponents"),
+)
+PHASE_3 = (
+    layer(
+        GUNW_9_21_OCT,
+        "2026-10-09",
+        "2026-10-21",
+        layer="unwrappedInterferogram/HH/unwrappedPhase",
+        unit="rad",
+        frequency=1239000000.0,
+    ),
+    layer(GUNW_9_21_OCT, "2026-10-09", "2026-10-21", layer="unwrappedInterferogram/HH/connectedComponents"),
+)
 
 
 def decibels(power: float) -> float:
@@ -87,20 +111,27 @@ def test_every_series_tool_carries_the_name_of_its_button() -> None:
 def test_the_series_tools_are_listed() -> None:
     assert SERIES_TOOLS["backscatter-series"] is backscatter_series
     assert SERIES_TOOLS["coherence-series"] is coherence_series
+    assert SERIES_TOOLS["displacement-series"] is displacement_series
     assert SERIES_TOOLS["soil-moisture-series"] is soil_moisture_series
 
 
 def test_result_of_every_series_tool_fits_a_series_description() -> None:
     power, coherence = grid([1, 10], [100, 1000]), grid([0.2, 0.4], [0.6, 0.8])
+    phase, labels = grid([1, 2], [3, 4]), grid([1, 1], [1, 1])
     wet, marks = grid([0.2, 0.4], [0.3, NAN]), grid([14, 15], [14, NAN])
     runs: dict[str, tuple[list[NDArray[np.float32]], list[LayerDescription]]] = {
         "backscatter-series": ([power, grid([2, 20], [200, 2000])], [SECOND, THIRD]),
         "coherence-series": ([coherence, grid([0.1, 0.2], [0.3, 0.4])], [PAIR_2, PAIR_3]),
+        "displacement-series": ([phase, labels, phase, labels], [*PHASE_2, *PHASE_3]),
         "soil-moisture-series": ([wet, marks, wet, marks], [MOISTURE_1, FLAG_1, MOISTURE_2, FLAG_2]),
     }
     assert set(runs) == set(SERIES_TOOLS)
     for name, (arrays, layers) in runs.items():
-        result = SERIES_TOOLS[name](arrays, layers, None)
+        # Only Surface displacement, Series takes a point and a reference point, and it needs both.
+        cells = ((0, 0), (1, 1)) if name == "displacement-series" else (None, None)
+        result = SERIES_TOOLS[name](arrays, layers, *cells)
+        place = Point(longitude=-71.0, latitude=42.8)
+        cell = Cell(row=0, column=0, longitude=-71.0, latitude=42.8)
         description = SeriesDescription(
             id="series-1",
             title="A series",
@@ -109,6 +140,9 @@ def test_result_of_every_series_tool_fits_a_series_description() -> None:
             unit=result.unit,
             reduction=result.reduction,
             range=result.range,
+            point=place if cells[0] else None,
+            cell=cell if cells[0] else None,
+            reference=Reference(point=place, cell=cell) if cells[1] else None,
             area=Area(west=-71.2, south=42.6, east=-70.75, north=42.95),
             entries=result.entries,
             inputs=result.inputs,
@@ -117,8 +151,12 @@ def test_result_of_every_series_tool_fits_a_series_description() -> None:
             method=result.method,
             note=result.note,
         )
-        dated = layers[0::2] if name == "soil-moisture-series" else layers
-        assert [entry.dates for entry in description.entries] == [layer.dates for layer in dated]
+        if name == "displacement-series":
+            days = sorted({day for layer in layers for day in layer.dates})
+            assert [entry.dates for entry in description.entries] == [(day,) for day in days]
+        else:
+            dated = layers[0::2] if name == "soil-moisture-series" else layers
+            assert [entry.dates for entry in description.entries] == [layer.dates for layer in dated]
 
 
 # Backscatter, Series

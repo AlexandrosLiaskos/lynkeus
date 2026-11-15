@@ -1,0 +1,1896 @@
+{
+ "made": "15 Nov 2026",
+ "what": "Jobs of the process displacement-series on a private copy of the web service, run with uvicorn from the clone at the commit below in the environment of the checks, on the layers of received.json",
+ "served_commit": "81f9e9aaa2e305d1150f685d1127ab466af0e7c6",
+ "served_status": "api/ as committed; uncommitted changes in web/ and docs/ only",
+ "started": "2026-11-15T19:54:18Z",
+ "ended": "2026-11-15T19:55:11Z",
+ "processes": [
+  "get-layer",
+  "backscatter-state",
+  "backscatter-change",
+  "coherence-state",
+  "coherence-change",
+  "displacement-state",
+  "soil-moisture-state",
+  "soil-moisture-change",
+  "backscatter-series",
+  "coherence-series",
+  "displacement-series"
+ ],
+ "description": {
+  "http_status": 200,
+  "answer": {
+   "id": "displacement-series",
+   "title": "Displacement series",
+   "description": "Give the movement of the ground at a point on many dates, relative to a reference point, from GUNW pairs.",
+   "version": "0.1.0",
+   "jobControlOptions": [
+    "async-execute",
+    "dismiss"
+   ],
+   "outputTransmission": [
+    "value"
+   ],
+   "inputs": {
+    "inputs": {
+     "title": "Input layers",
+     "description": "The id of each input layer, in any order. A layer is given once.",
+     "minOccurs": 2,
+     "maxOccurs": 50,
+     "schema": {
+      "minLength": 1,
+      "type": "string"
+     }
+    },
+    "title": {
+     "title": "Title",
+     "description": "Name of the series.",
+     "minOccurs": 1,
+     "maxOccurs": 1,
+     "schema": {
+      "maxLength": 200,
+      "minLength": 1,
+      "type": "string"
+     }
+    },
+    "point": {
+     "title": "Point",
+     "description": "The point of the series, in degrees of longitude and latitude (WGS 84). Without it the series is that of the whole area of the layers.",
+     "minOccurs": 0,
+     "maxOccurs": 1,
+     "schema": {
+      "nullable": true,
+      "additionalProperties": false,
+      "properties": {
+       "longitude": {
+        "maximum": 180,
+        "minimum": -180,
+        "title": "Longitude",
+        "type": "number"
+       },
+       "latitude": {
+        "maximum": 90,
+        "minimum": -90,
+        "title": "Latitude",
+        "type": "number"
+       }
+      },
+      "required": [
+       "longitude",
+       "latitude"
+      ],
+      "type": "object",
+      "default": null
+     }
+    },
+    "reference": {
+     "title": "Reference",
+     "description": "The reference point of a series that is relative to one, in degrees of longitude and latitude (WGS 84). Only the tool displacement-series takes one, and it needs one.",
+     "minOccurs": 0,
+     "maxOccurs": 1,
+     "schema": {
+      "nullable": true,
+      "additionalProperties": false,
+      "properties": {
+       "longitude": {
+        "maximum": 180,
+        "minimum": -180,
+        "title": "Longitude",
+        "type": "number"
+       },
+       "latitude": {
+        "maximum": 90,
+        "minimum": -90,
+        "title": "Latitude",
+        "type": "number"
+       }
+      },
+      "required": [
+       "longitude",
+       "latitude"
+      ],
+      "type": "object",
+      "default": null
+     }
+    }
+   },
+   "outputs": {
+    "series": {
+     "title": "Series",
+     "description": "The description of the series that the job produced, with the value of every date.",
+     "schema": {
+      "additionalProperties": false,
+      "properties": {
+       "id": {
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+        "title": "Id",
+        "type": "string"
+       },
+       "title": {
+        "minLength": 1,
+        "type": "string"
+       },
+       "kind": {
+        "enum": [
+         "series"
+        ],
+        "title": "Kind",
+        "type": "string"
+       },
+       "quantity": {
+        "minLength": 1,
+        "type": "string"
+       },
+       "unit": {
+        "minLength": 1,
+        "type": "string"
+       },
+       "reduction": {
+        "enum": [
+         "mean",
+         "mean-power"
+        ],
+        "type": "string"
+       },
+       "range": {
+        "nullable": true,
+        "maxItems": 2,
+        "minItems": 2,
+        "items": {
+         "type": "number"
+        },
+        "type": "array",
+        "default": null,
+        "title": "Range"
+       },
+       "point": {
+        "nullable": true,
+        "additionalProperties": false,
+        "properties": {
+         "longitude": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Longitude",
+          "type": "number"
+         },
+         "latitude": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Latitude",
+          "type": "number"
+         }
+        },
+        "required": [
+         "longitude",
+         "latitude"
+        ],
+        "type": "object",
+        "default": null
+       },
+       "cell": {
+        "nullable": true,
+        "additionalProperties": false,
+        "properties": {
+         "row": {
+          "minimum": 0,
+          "title": "Row",
+          "type": "integer"
+         },
+         "column": {
+          "minimum": 0,
+          "title": "Column",
+          "type": "integer"
+         },
+         "longitude": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Longitude",
+          "type": "number"
+         },
+         "latitude": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Latitude",
+          "type": "number"
+         }
+        },
+        "required": [
+         "row",
+         "column",
+         "longitude",
+         "latitude"
+        ],
+        "type": "object",
+        "default": null
+       },
+       "reference": {
+        "nullable": true,
+        "additionalProperties": false,
+        "properties": {
+         "point": {
+          "additionalProperties": false,
+          "properties": {
+           "longitude": {
+            "maximum": 180,
+            "minimum": -180,
+            "title": "Longitude",
+            "type": "number"
+           },
+           "latitude": {
+            "maximum": 90,
+            "minimum": -90,
+            "title": "Latitude",
+            "type": "number"
+           }
+          },
+          "required": [
+           "longitude",
+           "latitude"
+          ],
+          "type": "object"
+         },
+         "cell": {
+          "additionalProperties": false,
+          "properties": {
+           "row": {
+            "minimum": 0,
+            "title": "Row",
+            "type": "integer"
+           },
+           "column": {
+            "minimum": 0,
+            "title": "Column",
+            "type": "integer"
+           },
+           "longitude": {
+            "maximum": 180,
+            "minimum": -180,
+            "title": "Longitude",
+            "type": "number"
+           },
+           "latitude": {
+            "maximum": 90,
+            "minimum": -90,
+            "title": "Latitude",
+            "type": "number"
+           }
+          },
+          "required": [
+           "row",
+           "column",
+           "longitude",
+           "latitude"
+          ],
+          "type": "object"
+         }
+        },
+        "required": [
+         "point",
+         "cell"
+        ],
+        "type": "object",
+        "default": null
+       },
+       "area": {
+        "additionalProperties": false,
+        "properties": {
+         "west": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "West",
+          "type": "number"
+         },
+         "south": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "South",
+          "type": "number"
+         },
+         "east": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "East",
+          "type": "number"
+         },
+         "north": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "North",
+          "type": "number"
+         }
+        },
+        "required": [
+         "west",
+         "south",
+         "east",
+         "north"
+        ],
+        "type": "object"
+       },
+       "entries": {
+        "items": {
+         "additionalProperties": false,
+         "properties": {
+          "dates": {
+           "items": {
+            "format": "date",
+            "type": "string"
+           },
+           "minItems": 1,
+           "title": "Dates",
+           "type": "array"
+          },
+          "value": {
+           "nullable": true,
+           "type": "number",
+           "title": "Value"
+          },
+          "cells": {
+           "minimum": 0,
+           "title": "Cells",
+           "type": "integer"
+          }
+         },
+         "required": [
+          "dates",
+          "value",
+          "cells"
+         ],
+         "type": "object"
+        },
+        "minItems": 1,
+        "title": "Entries",
+        "type": "array"
+       },
+       "inputs": {
+        "items": {
+         "minLength": 1,
+         "type": "string"
+        },
+        "minItems": 1,
+        "title": "Inputs",
+        "type": "array"
+       },
+       "layer": {
+        "minLength": 1,
+        "type": "string"
+       },
+       "program": {
+        "minLength": 1,
+        "type": "string"
+       },
+       "method": {
+        "minLength": 1,
+        "type": "string"
+       }
+      },
+      "required": [
+       "id",
+       "title",
+       "kind",
+       "quantity",
+       "unit",
+       "reduction",
+       "area",
+       "entries",
+       "inputs",
+       "layer",
+       "program",
+       "method"
+      ],
+      "type": "object"
+     }
+    }
+   },
+   "links": [
+    {
+     "href": "/api/processes/displacement-series",
+     "rel": "self",
+     "type": "application/json",
+     "title": "Description of the process"
+    },
+    {
+     "href": "/api/processes/displacement-series/execution",
+     "rel": "http://www.opengis.net/def/rel/ogc/1.0/execute",
+     "type": "application/json",
+     "title": "Execution of the process"
+    }
+   ]
+  }
+ },
+ "plan": {
+  "series": {
+   "p1": {
+    "layers": [
+     "phase_0623_0705",
+     "comp_0623_0705",
+     "phase_0705_0717",
+     "comp_0705_0717",
+     "phase_0717_0810",
+     "comp_0717_0810",
+     "phase_0810_0822",
+     "comp_0810_0822",
+     "phase_0822_0903",
+     "comp_0822_0903",
+     "phase_0903_0915",
+     "comp_0903_0915",
+     "phase_0915_0927",
+     "comp_0915_0927",
+     "phase_0927_1009",
+     "comp_0927_1009",
+     "phase_1009_1021",
+     "comp_1009_1021"
+    ],
+    "title": "Displacement HH at p1",
+    "point": {
+     "longitude": -71.00110557451146,
+     "latitude": 42.79903193144559
+    },
+    "reference": {
+     "longitude": -71.0772,
+     "latitude": 42.7761
+    }
+   },
+   "p2": {
+    "layers": [
+     "phase_0623_0705",
+     "comp_0623_0705",
+     "phase_0705_0717",
+     "comp_0705_0717",
+     "phase_0717_0810",
+     "comp_0717_0810",
+     "phase_0810_0822",
+     "comp_0810_0822",
+     "phase_0822_0903",
+     "comp_0822_0903",
+     "phase_0903_0915",
+     "comp_0903_0915",
+     "phase_0915_0927",
+     "comp_0915_0927",
+     "phase_0927_1009",
+     "comp_0927_1009",
+     "phase_1009_1021",
+     "comp_1009_1021"
+    ],
+    "title": "Displacement HH at p2",
+    "point": {
+     "longitude": -70.89927074814058,
+     "latitude": 42.69990986472692
+    },
+    "reference": {
+     "longitude": -71.0772,
+     "latitude": 42.7761
+    }
+   },
+   "p3": {
+    "layers": [
+     "phase_0623_0705",
+     "comp_0623_0705",
+     "phase_0705_0717",
+     "comp_0705_0717",
+     "phase_0717_0810",
+     "comp_0717_0810",
+     "phase_0810_0822",
+     "comp_0810_0822",
+     "phase_0822_0903",
+     "comp_0822_0903",
+     "phase_0903_0915",
+     "comp_0903_0915",
+     "phase_0915_0927",
+     "comp_0915_0927",
+     "phase_0927_1009",
+     "comp_0927_1009",
+     "phase_1009_1021",
+     "comp_1009_1021"
+    ],
+    "title": "Displacement HH at p3",
+    "point": {
+     "longitude": -71.09980158114226,
+     "latitude": 42.651022181699446
+    },
+    "reference": {
+     "longitude": -71.0772,
+     "latitude": 42.7761
+    }
+   },
+   "p4": {
+    "layers": [
+     "phase_0623_0705",
+     "comp_0623_0705",
+     "phase_0705_0717",
+     "comp_0705_0717",
+     "phase_0717_0810",
+     "comp_0717_0810",
+     "phase_0810_0822",
+     "comp_0810_0822",
+     "phase_0822_0903",
+     "comp_0822_0903",
+     "phase_0903_0915",
+     "comp_0903_0915",
+     "phase_0915_0927",
+     "comp_0915_0927",
+     "phase_0927_1009",
+     "comp_0927_1009",
+     "phase_1009_1021",
+     "comp_1009_1021"
+    ],
+    "title": "Displacement HH at p4",
+    "point": {
+     "longitude": -70.81134013831462,
+     "latitude": 42.90016615382802
+    },
+    "reference": {
+     "longitude": -71.0772,
+     "latitude": 42.7761
+    }
+   },
+   "p5": {
+    "layers": [
+     "phase_0623_0705",
+     "comp_0623_0705",
+     "phase_0705_0717",
+     "comp_0705_0717",
+     "phase_0717_0810",
+     "comp_0717_0810",
+     "phase_0810_0822",
+     "comp_0810_0822",
+     "phase_0822_0903",
+     "comp_0822_0903",
+     "phase_0903_0915",
+     "comp_0903_0915",
+     "phase_0915_0927",
+     "comp_0915_0927",
+     "phase_0927_1009",
+     "comp_0927_1009",
+     "phase_1009_1021",
+     "comp_1009_1021"
+    ],
+    "title": "Displacement HH at p5",
+    "point": {
+     "longitude": -70.8726,
+     "latitude": 42.8126
+    },
+    "reference": {
+     "longitude": -71.0772,
+     "latitude": 42.7761
+    }
+   }
+  },
+  "refusals": {
+   "a pair left out at the point": {
+    "layers": [
+     "phase_0623_0705",
+     "comp_0623_0705",
+     "phase_0705_0717",
+     "comp_0705_0717",
+     "phase_0717_0810",
+     "comp_0717_0810",
+     "phase_0810_0822",
+     "comp_0810_0822",
+     "phase_0822_0903",
+     "comp_0822_0903",
+     "phase_0903_0915",
+     "comp_0903_0915",
+     "phase_0915_0927",
+     "comp_0915_0927",
+     "phase_0927_1009",
+     "comp_0927_1009",
+     "phase_1009_1021",
+     "comp_1009_1021"
+    ],
+    "title": "Trial q1",
+    "point": {
+     "longitude": -71.00112878525466,
+     "latitude": 42.79975192382038
+    },
+    "reference": {
+     "longitude": -71.0772,
+     "latitude": 42.7761
+    }
+   },
+   "a reference without a reliable phase in a pair": {
+    "layers": [
+     "phase_0623_0705",
+     "comp_0623_0705",
+     "phase_0705_0717",
+     "comp_0705_0717",
+     "phase_0717_0810",
+     "comp_0717_0810",
+     "phase_0810_0822",
+     "comp_0810_0822",
+     "phase_0822_0903",
+     "comp_0822_0903",
+     "phase_0903_0915",
+     "comp_0903_0915",
+     "phase_0915_0927",
+     "comp_0915_0927",
+     "phase_0927_1009",
+     "comp_0927_1009",
+     "phase_1009_1021",
+     "comp_1009_1021"
+    ],
+    "title": "Trial r0",
+    "point": {
+     "longitude": -71.00110557451146,
+     "latitude": 42.79903193144559
+    },
+    "reference": {
+     "longitude": -71.07659413497967,
+     "latitude": 42.77463464631111
+    }
+   },
+   "pairs that do not link all the dates": {
+    "layers": [
+     "phase_0623_0705",
+     "comp_0623_0705",
+     "phase_0705_0717",
+     "comp_0705_0717",
+     "phase_0810_0822",
+     "comp_0810_0822",
+     "phase_0822_0903",
+     "comp_0822_0903",
+     "phase_0903_0915",
+     "comp_0903_0915",
+     "phase_0915_0927",
+     "comp_0915_0927",
+     "phase_0927_1009",
+     "comp_0927_1009",
+     "phase_1009_1021",
+     "comp_1009_1021"
+    ],
+    "title": "Trial gap",
+    "point": {
+     "longitude": -71.00110557451146,
+     "latitude": 42.79903193144559
+    },
+    "reference": {
+     "longitude": -71.0772,
+     "latitude": 42.7761
+    }
+   },
+   "no reference point": {
+    "layers": [
+     "phase_0623_0705",
+     "comp_0623_0705",
+     "phase_0705_0717",
+     "comp_0705_0717",
+     "phase_0717_0810",
+     "comp_0717_0810",
+     "phase_0810_0822",
+     "comp_0810_0822",
+     "phase_0822_0903",
+     "comp_0822_0903",
+     "phase_0903_0915",
+     "comp_0903_0915",
+     "phase_0915_0927",
+     "comp_0915_0927",
+     "phase_0927_1009",
+     "comp_0927_1009",
+     "phase_1009_1021",
+     "comp_1009_1021"
+    ],
+    "title": "Trial no reference",
+    "point": {
+     "longitude": -71.00110557451146,
+     "latitude": 42.79903193144559
+    }
+   },
+   "a reference point outside the area": {
+    "layers": [
+     "phase_0623_0705",
+     "comp_0623_0705",
+     "phase_0705_0717",
+     "comp_0705_0717",
+     "phase_0717_0810",
+     "comp_0717_0810",
+     "phase_0810_0822",
+     "comp_0810_0822",
+     "phase_0822_0903",
+     "comp_0822_0903",
+     "phase_0903_0915",
+     "comp_0903_0915",
+     "phase_0915_0927",
+     "comp_0915_0927",
+     "phase_0927_1009",
+     "comp_0927_1009",
+     "phase_1009_1021",
+     "comp_1009_1021"
+    ],
+    "title": "Trial outside",
+    "point": {
+     "longitude": -71.00110557451146,
+     "latitude": 42.79903193144559
+    },
+    "reference": {
+     "longitude": -70.0,
+     "latitude": 42.8
+    }
+   },
+   "the point in the cell of the reference": {
+    "layers": [
+     "phase_0623_0705",
+     "comp_0623_0705",
+     "phase_0705_0717",
+     "comp_0705_0717",
+     "phase_0717_0810",
+     "comp_0717_0810",
+     "phase_0810_0822",
+     "comp_0810_0822",
+     "phase_0822_0903",
+     "comp_0822_0903",
+     "phase_0903_0915",
+     "comp_0903_0915",
+     "phase_0915_0927",
+     "comp_0915_0927",
+     "phase_0927_1009",
+     "comp_0927_1009",
+     "phase_1009_1021",
+     "comp_1009_1021"
+    ],
+    "title": "Trial same cell",
+    "point": {
+     "longitude": -71.0772,
+     "latitude": 42.7761
+    },
+    "reference": {
+     "longitude": -71.0772,
+     "latitude": 42.7761
+    }
+   }
+  },
+  "requests": {
+   "a reference point outside the Earth": {
+    "layers": [
+     "phase_0623_0705",
+     "comp_0623_0705",
+     "phase_0705_0717",
+     "comp_0705_0717",
+     "phase_0717_0810",
+     "comp_0717_0810",
+     "phase_0810_0822",
+     "comp_0810_0822",
+     "phase_0822_0903",
+     "comp_0822_0903",
+     "phase_0903_0915",
+     "comp_0903_0915",
+     "phase_0915_0927",
+     "comp_0915_0927",
+     "phase_0927_1009",
+     "comp_0927_1009",
+     "phase_1009_1021",
+     "comp_1009_1021"
+    ],
+    "title": "Trial",
+    "point": {
+     "longitude": -71.00110557451146,
+     "latitude": 42.79903193144559
+    },
+    "reference": {
+     "longitude": 200,
+     "latitude": 42.8
+    }
+   }
+  }
+ },
+ "series": {
+  "p1": {
+   "inputs": {
+    "inputs": [
+     "91c019fa36814c7d3338c54f5c203d72",
+     "a4d300455e7a08515aacf4bc0622d755",
+     "54c0e94bbac3cbbd4326ce7f474ad635",
+     "233cc92e295d717387620e5a316bbbb5",
+     "cf9c7da80b925ae84ada52d847ccfab5",
+     "d7f6ea6b68065a5583ceeae82cdfd2ca",
+     "3e99f437cd5f87adabab8743ec9c4219",
+     "6e27a5792c6a75485081122f1c4dd053",
+     "22667544c81a2ca85b4f37dbfbb15011",
+     "0e1745af02e6590fc2b6954360a1e104",
+     "491a583799db19bfeef527652478d9dc",
+     "823009032281cc3fa802f1491047c4cf",
+     "8679fa26a336888639f5c63a3803b063",
+     "6ab7ee4407ee64545b7b8611ed96e4e7",
+     "f0418f8d8f189f118e25fb85b829ca78",
+     "af8280ff734aed8b2f46e18aa33ed2b5",
+     "0ce081c4817e5ca669019d8a84a5f9cd",
+     "0d5e7ca66cad19fa9122ddf884636b52"
+    ],
+    "title": "Displacement HH at p1",
+    "point": {
+     "longitude": -71.00110557451146,
+     "latitude": 42.79903193144559
+    },
+    "reference": {
+     "longitude": -71.0772,
+     "latitude": 42.7761
+    }
+   },
+   "submitted": "2026-11-15T19:54:19Z",
+   "ended": "2026-11-15T19:54:27Z",
+   "status": "successful",
+   "job": "f5889dbc35fb03ec3e016aab2a3c231d",
+   "results_http_status": 200,
+   "message": "The series is ready.",
+   "result": {
+    "id": "964d148ada8f86c5a0ce93054b6480ac",
+    "title": "Displacement HH at p1",
+    "kind": "series",
+    "quantity": "Displacement along the line of sight, relative to the reference point",
+    "unit": "m",
+    "reduction": "mean",
+    "range": null,
+    "point": {
+     "longitude": -71.00110557451146,
+     "latitude": 42.79903193144559
+    },
+    "cell": {
+     "row": 214,
+     "column": 210,
+     "longitude": -71.00110557451146,
+     "latitude": 42.79903193144559
+    },
+    "reference": {
+     "point": {
+      "longitude": -71.0772,
+      "latitude": 42.7761
+     },
+     "cell": {
+      "row": 244,
+      "column": 131,
+      "longitude": -71.07761957345936,
+      "latitude": 42.77605683580816
+     }
+    },
+    "area": {
+     "west": -71.21240624479763,
+     "south": 42.5925939476634,
+     "east": -70.74070951939615,
+     "north": 42.957659830200946
+    },
+    "entries": [
+     {
+      "dates": [
+       "2026-06-23"
+      ],
+      "value": 0.0,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-07-05"
+      ],
+      "value": 0.02904413051287513,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-07-17"
+      ],
+      "value": 0.015901375477671707,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-08-10"
+      ],
+      "value": 0.02764018999790685,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-08-22"
+      ],
+      "value": 0.02743544444074878,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-09-03"
+      ],
+      "value": 0.02047940235531323,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-09-15"
+      ],
+      "value": 0.017593343870990503,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-09-27"
+      ],
+      "value": -0.03516807127514995,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-10-09"
+      ],
+      "value": -0.014307244243863064,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-10-21"
+      ],
+      "value": -0.027356797586514638,
+      "cells": 1
+     }
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_023_141_D_067_024_4000_SH_20260623T234333_20260623T234408_20260705T234333_20260705T234408_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_024_141_D_067_025_4000_SH_20260705T234333_20260705T234408_20260717T234332_20260717T234407_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_025_141_D_067_027_4000_SH_20260717T234332_20260717T234407_20260810T234331_20260810T234406_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_028_141_D_067_029_4000_SH_20260822T234330_20260822T234405_20260903T234330_20260903T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_029_141_D_067_030_4000_SH_20260903T234330_20260903T234405_20260915T234330_20260915T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "program": "Lynkeus 0.1.0",
+    "method": "Small-baseline inversion of the unwrapped phase of the pairs at the cell of the point, each pair referenced to the cell of the reference point, with equal weights and the minimum-norm velocity, the first date being zero, times -wavelength/(4*pi); relative to the reference point, not corrected for the ionosphere, the troposphere or the solid Earth tides (Berardino et al., 2002, https://doi.org/10.1109/TGRS.2002.803792; Yunjun et al., 2019, https://doi.org/10.1016/j.cageo.2019.104331; MintPy 1.6.4, reference_point and ifgram_inversion with --weight-func no and --mask-dset connectComponent)"
+   }
+  },
+  "p2": {
+   "inputs": {
+    "inputs": [
+     "91c019fa36814c7d3338c54f5c203d72",
+     "a4d300455e7a08515aacf4bc0622d755",
+     "54c0e94bbac3cbbd4326ce7f474ad635",
+     "233cc92e295d717387620e5a316bbbb5",
+     "cf9c7da80b925ae84ada52d847ccfab5",
+     "d7f6ea6b68065a5583ceeae82cdfd2ca",
+     "3e99f437cd5f87adabab8743ec9c4219",
+     "6e27a5792c6a75485081122f1c4dd053",
+     "22667544c81a2ca85b4f37dbfbb15011",
+     "0e1745af02e6590fc2b6954360a1e104",
+     "491a583799db19bfeef527652478d9dc",
+     "823009032281cc3fa802f1491047c4cf",
+     "8679fa26a336888639f5c63a3803b063",
+     "6ab7ee4407ee64545b7b8611ed96e4e7",
+     "f0418f8d8f189f118e25fb85b829ca78",
+     "af8280ff734aed8b2f46e18aa33ed2b5",
+     "0ce081c4817e5ca669019d8a84a5f9cd",
+     "0d5e7ca66cad19fa9122ddf884636b52"
+    ],
+    "title": "Displacement HH at p2",
+    "point": {
+     "longitude": -70.89927074814058,
+     "latitude": 42.69990986472692
+    },
+    "reference": {
+     "longitude": -71.0772,
+     "latitude": 42.7761
+    }
+   },
+   "submitted": "2026-11-15T19:54:21Z",
+   "ended": "2026-11-15T19:54:30Z",
+   "status": "successful",
+   "job": "b0422a76edc280825772c3b64a8945ca",
+   "results_http_status": 200,
+   "message": "The series is ready.",
+   "result": {
+    "id": "2ee65fb9cb4c8ec1d912d986035c9c58",
+    "title": "Displacement HH at p2",
+    "kind": "series",
+    "quantity": "Displacement along the line of sight, relative to the reference point",
+    "unit": "m",
+    "reduction": "mean",
+    "range": null,
+    "point": {
+     "longitude": -70.89927074814058,
+     "latitude": 42.69990986472692
+    },
+    "cell": {
+     "row": 354,
+     "column": 311,
+     "longitude": -70.89927074814058,
+     "latitude": 42.69990986472692
+    },
+    "reference": {
+     "point": {
+      "longitude": -71.0772,
+      "latitude": 42.7761
+     },
+     "cell": {
+      "row": 244,
+      "column": 131,
+      "longitude": -71.07761957345936,
+      "latitude": 42.77605683580816
+     }
+    },
+    "area": {
+     "west": -71.21240624479763,
+     "south": 42.5925939476634,
+     "east": -70.74070951939615,
+     "north": 42.957659830200946
+    },
+    "entries": [
+     {
+      "dates": [
+       "2026-06-23"
+      ],
+      "value": 0.0,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-07-05"
+      ],
+      "value": 0.038631511082981546,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-07-17"
+      ],
+      "value": -0.010146960277376061,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-08-10"
+      ],
+      "value": 0.013209981356706174,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-08-22"
+      ],
+      "value": 0.05224917481522538,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-09-03"
+      ],
+      "value": 0.046381240598396,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-09-15"
+      ],
+      "value": 0.05660319237911187,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-09-27"
+      ],
+      "value": 0.020486670593056967,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-10-09"
+      ],
+      "value": -0.017480188668030867,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-10-21"
+      ],
+      "value": 0.006410966718700452,
+      "cells": 1
+     }
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_023_141_D_067_024_4000_SH_20260623T234333_20260623T234408_20260705T234333_20260705T234408_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_024_141_D_067_025_4000_SH_20260705T234333_20260705T234408_20260717T234332_20260717T234407_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_025_141_D_067_027_4000_SH_20260717T234332_20260717T234407_20260810T234331_20260810T234406_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_028_141_D_067_029_4000_SH_20260822T234330_20260822T234405_20260903T234330_20260903T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_029_141_D_067_030_4000_SH_20260903T234330_20260903T234405_20260915T234330_20260915T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "program": "Lynkeus 0.1.0",
+    "method": "Small-baseline inversion of the unwrapped phase of the pairs at the cell of the point, each pair referenced to the cell of the reference point, with equal weights and the minimum-norm velocity, the first date being zero, times -wavelength/(4*pi); relative to the reference point, not corrected for the ionosphere, the troposphere or the solid Earth tides (Berardino et al., 2002, https://doi.org/10.1109/TGRS.2002.803792; Yunjun et al., 2019, https://doi.org/10.1016/j.cageo.2019.104331; MintPy 1.6.4, reference_point and ifgram_inversion with --weight-func no and --mask-dset connectComponent)"
+   }
+  },
+  "p3": {
+   "inputs": {
+    "inputs": [
+     "91c019fa36814c7d3338c54f5c203d72",
+     "a4d300455e7a08515aacf4bc0622d755",
+     "54c0e94bbac3cbbd4326ce7f474ad635",
+     "233cc92e295d717387620e5a316bbbb5",
+     "cf9c7da80b925ae84ada52d847ccfab5",
+     "d7f6ea6b68065a5583ceeae82cdfd2ca",
+     "3e99f437cd5f87adabab8743ec9c4219",
+     "6e27a5792c6a75485081122f1c4dd053",
+     "22667544c81a2ca85b4f37dbfbb15011",
+     "0e1745af02e6590fc2b6954360a1e104",
+     "491a583799db19bfeef527652478d9dc",
+     "823009032281cc3fa802f1491047c4cf",
+     "8679fa26a336888639f5c63a3803b063",
+     "6ab7ee4407ee64545b7b8611ed96e4e7",
+     "f0418f8d8f189f118e25fb85b829ca78",
+     "af8280ff734aed8b2f46e18aa33ed2b5",
+     "0ce081c4817e5ca669019d8a84a5f9cd",
+     "0d5e7ca66cad19fa9122ddf884636b52"
+    ],
+    "title": "Displacement HH at p3",
+    "point": {
+     "longitude": -71.09980158114226,
+     "latitude": 42.651022181699446
+    },
+    "reference": {
+     "longitude": -71.0772,
+     "latitude": 42.7761
+    }
+   },
+   "submitted": "2026-11-15T19:54:21Z",
+   "ended": "2026-11-15T19:54:38Z",
+   "status": "successful",
+   "job": "aaf59c64125b273565bd7fc637d5fb56",
+   "results_http_status": 200,
+   "message": "The series is ready.",
+   "result": {
+    "id": "f632daeb0fd5ba07533a66beaeb49e24",
+    "title": "Displacement HH at p3",
+    "kind": "series",
+    "quantity": "Displacement along the line of sight, relative to the reference point",
+    "unit": "m",
+    "reduction": "mean",
+    "range": null,
+    "point": {
+     "longitude": -71.09980158114226,
+     "latitude": 42.651022181699446
+    },
+    "cell": {
+     "row": 417,
+     "column": 104,
+     "longitude": -71.09980158114226,
+     "latitude": 42.651022181699446
+    },
+    "reference": {
+     "point": {
+      "longitude": -71.0772,
+      "latitude": 42.7761
+     },
+     "cell": {
+      "row": 244,
+      "column": 131,
+      "longitude": -71.07761957345936,
+      "latitude": 42.77605683580816
+     }
+    },
+    "area": {
+     "west": -71.21240624479763,
+     "south": 42.5925939476634,
+     "east": -70.74070951939615,
+     "north": 42.957659830200946
+    },
+    "entries": [
+     {
+      "dates": [
+       "2026-06-23"
+      ],
+      "value": 0.0,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-07-05"
+      ],
+      "value": -0.016148640168246776,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-07-17"
+      ],
+      "value": -0.010226498876553657,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-08-10"
+      ],
+      "value": -0.006182375878800942,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-08-22"
+      ],
+      "value": 0.029464615224119625,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-09-03"
+      ],
+      "value": 0.0005881465327361344,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-09-15"
+      ],
+      "value": 0.0017367002477795236,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-09-27"
+      ],
+      "value": 0.0368490690250782,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-10-09"
+      ],
+      "value": 0.006843515809411576,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-10-21"
+      ],
+      "value": 0.040470019452310275,
+      "cells": 1
+     }
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_023_141_D_067_024_4000_SH_20260623T234333_20260623T234408_20260705T234333_20260705T234408_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_024_141_D_067_025_4000_SH_20260705T234333_20260705T234408_20260717T234332_20260717T234407_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_025_141_D_067_027_4000_SH_20260717T234332_20260717T234407_20260810T234331_20260810T234406_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_028_141_D_067_029_4000_SH_20260822T234330_20260822T234405_20260903T234330_20260903T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_029_141_D_067_030_4000_SH_20260903T234330_20260903T234405_20260915T234330_20260915T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "program": "Lynkeus 0.1.0",
+    "method": "Small-baseline inversion of the unwrapped phase of the pairs at the cell of the point, each pair referenced to the cell of the reference point, with equal weights and the minimum-norm velocity, the first date being zero, times -wavelength/(4*pi); relative to the reference point, not corrected for the ionosphere, the troposphere or the solid Earth tides (Berardino et al., 2002, https://doi.org/10.1109/TGRS.2002.803792; Yunjun et al., 2019, https://doi.org/10.1016/j.cageo.2019.104331; MintPy 1.6.4, reference_point and ifgram_inversion with --weight-func no and --mask-dset connectComponent)"
+   }
+  },
+  "p4": {
+   "inputs": {
+    "inputs": [
+     "91c019fa36814c7d3338c54f5c203d72",
+     "a4d300455e7a08515aacf4bc0622d755",
+     "54c0e94bbac3cbbd4326ce7f474ad635",
+     "233cc92e295d717387620e5a316bbbb5",
+     "cf9c7da80b925ae84ada52d847ccfab5",
+     "d7f6ea6b68065a5583ceeae82cdfd2ca",
+     "3e99f437cd5f87adabab8743ec9c4219",
+     "6e27a5792c6a75485081122f1c4dd053",
+     "22667544c81a2ca85b4f37dbfbb15011",
+     "0e1745af02e6590fc2b6954360a1e104",
+     "491a583799db19bfeef527652478d9dc",
+     "823009032281cc3fa802f1491047c4cf",
+     "8679fa26a336888639f5c63a3803b063",
+     "6ab7ee4407ee64545b7b8611ed96e4e7",
+     "f0418f8d8f189f118e25fb85b829ca78",
+     "af8280ff734aed8b2f46e18aa33ed2b5",
+     "0ce081c4817e5ca669019d8a84a5f9cd",
+     "0d5e7ca66cad19fa9122ddf884636b52"
+    ],
+    "title": "Displacement HH at p4",
+    "point": {
+     "longitude": -70.81134013831462,
+     "latitude": 42.90016615382802
+    },
+    "reference": {
+     "longitude": -71.0772,
+     "latitude": 42.7761
+    }
+   },
+   "submitted": "2026-11-15T19:54:21Z",
+   "ended": "2026-11-15T19:54:38Z",
+   "status": "successful",
+   "job": "57641ba40adaabdadcd2ae0d3ec9536b",
+   "results_http_status": 200,
+   "message": "The series is ready.",
+   "result": {
+    "id": "26f17370f96ed30fcb428c5b4ba0d2c1",
+    "title": "Displacement HH at p4",
+    "kind": "series",
+    "quantity": "Displacement along the line of sight, relative to the reference point",
+    "unit": "m",
+    "reduction": "mean",
+    "range": null,
+    "point": {
+     "longitude": -70.81134013831462,
+     "latitude": 42.90016615382802
+    },
+    "cell": {
+     "row": 78,
+     "column": 407,
+     "longitude": -70.81134013831462,
+     "latitude": 42.90016615382802
+    },
+    "reference": {
+     "point": {
+      "longitude": -71.0772,
+      "latitude": 42.7761
+     },
+     "cell": {
+      "row": 244,
+      "column": 131,
+      "longitude": -71.07761957345936,
+      "latitude": 42.77605683580816
+     }
+    },
+    "area": {
+     "west": -71.21240624479763,
+     "south": 42.5925939476634,
+     "east": -70.74070951939615,
+     "north": 42.957659830200946
+    },
+    "entries": [
+     {
+      "dates": [
+       "2026-06-23"
+      ],
+      "value": 0.0,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-07-05"
+      ],
+      "value": 0.08628256893660771,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-07-17"
+      ],
+      "value": 0.019881160856653545,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-08-10"
+      ],
+      "value": 0.04345308991645932,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-08-22"
+      ],
+      "value": 0.01508338025116473,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-09-03"
+      ],
+      "value": 0.0761878830462128,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-09-15"
+      ],
+      "value": 0.07774408241113337,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-09-27"
+      ],
+      "value": -0.01637349302451589,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-10-09"
+      ],
+      "value": -0.021056336084835044,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-10-21"
+      ],
+      "value": -0.06491082369818293,
+      "cells": 1
+     }
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_023_141_D_067_024_4000_SH_20260623T234333_20260623T234408_20260705T234333_20260705T234408_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_024_141_D_067_025_4000_SH_20260705T234333_20260705T234408_20260717T234332_20260717T234407_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_025_141_D_067_027_4000_SH_20260717T234332_20260717T234407_20260810T234331_20260810T234406_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_028_141_D_067_029_4000_SH_20260822T234330_20260822T234405_20260903T234330_20260903T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_029_141_D_067_030_4000_SH_20260903T234330_20260903T234405_20260915T234330_20260915T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "program": "Lynkeus 0.1.0",
+    "method": "Small-baseline inversion of the unwrapped phase of the pairs at the cell of the point, each pair referenced to the cell of the reference point, with equal weights and the minimum-norm velocity, the first date being zero, times -wavelength/(4*pi); relative to the reference point, not corrected for the ionosphere, the troposphere or the solid Earth tides (Berardino et al., 2002, https://doi.org/10.1109/TGRS.2002.803792; Yunjun et al., 2019, https://doi.org/10.1016/j.cageo.2019.104331; MintPy 1.6.4, reference_point and ifgram_inversion with --weight-func no and --mask-dset connectComponent)"
+   }
+  },
+  "p5": {
+   "inputs": {
+    "inputs": [
+     "91c019fa36814c7d3338c54f5c203d72",
+     "a4d300455e7a08515aacf4bc0622d755",
+     "54c0e94bbac3cbbd4326ce7f474ad635",
+     "233cc92e295d717387620e5a316bbbb5",
+     "cf9c7da80b925ae84ada52d847ccfab5",
+     "d7f6ea6b68065a5583ceeae82cdfd2ca",
+     "3e99f437cd5f87adabab8743ec9c4219",
+     "6e27a5792c6a75485081122f1c4dd053",
+     "22667544c81a2ca85b4f37dbfbb15011",
+     "0e1745af02e6590fc2b6954360a1e104",
+     "491a583799db19bfeef527652478d9dc",
+     "823009032281cc3fa802f1491047c4cf",
+     "8679fa26a336888639f5c63a3803b063",
+     "6ab7ee4407ee64545b7b8611ed96e4e7",
+     "f0418f8d8f189f118e25fb85b829ca78",
+     "af8280ff734aed8b2f46e18aa33ed2b5",
+     "0ce081c4817e5ca669019d8a84a5f9cd",
+     "0d5e7ca66cad19fa9122ddf884636b52"
+    ],
+    "title": "Displacement HH at p5",
+    "point": {
+     "longitude": -70.8726,
+     "latitude": 42.8126
+    },
+    "reference": {
+     "longitude": -71.0772,
+     "latitude": 42.7761
+    }
+   },
+   "submitted": "2026-11-15T19:54:38Z",
+   "ended": "2026-11-15T19:54:42Z",
+   "status": "successful",
+   "job": "d117369a16275b829c93db5935671d70",
+   "results_http_status": 200,
+   "message": "The series is ready.",
+   "result": {
+    "id": "201b5cef21b0ee646dbf8445079474c0",
+    "title": "Displacement HH at p5",
+    "kind": "series",
+    "quantity": "Displacement along the line of sight, relative to the reference point",
+    "unit": "m",
+    "reduction": "mean",
+    "range": null,
+    "point": {
+     "longitude": -70.8726,
+     "latitude": 42.8126
+    },
+    "cell": {
+     "row": 198,
+     "column": 342,
+     "longitude": -70.87238755399747,
+     "latitude": 42.81273615289848
+    },
+    "reference": {
+     "point": {
+      "longitude": -71.0772,
+      "latitude": 42.7761
+     },
+     "cell": {
+      "row": 244,
+      "column": 131,
+      "longitude": -71.07761957345936,
+      "latitude": 42.77605683580816
+     }
+    },
+    "area": {
+     "west": -71.21240624479763,
+     "south": 42.5925939476634,
+     "east": -70.74070951939615,
+     "north": 42.957659830200946
+    },
+    "entries": [
+     {
+      "dates": [
+       "2026-06-23"
+      ],
+      "value": 0.0,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-07-05"
+      ],
+      "value": 0.05738998227098248,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-07-17"
+      ],
+      "value": 0.009576881621917619,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-08-10"
+      ],
+      "value": 0.045624198491511586,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-08-22"
+      ],
+      "value": 0.04217738507878396,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-09-03"
+      ],
+      "value": 0.06664725194653955,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-09-15"
+      ],
+      "value": 0.06784881915248117,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-09-27"
+      ],
+      "value": 0.0026931730201448776,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-10-09"
+      ],
+      "value": -0.016184734606434117,
+      "cells": 1
+     },
+     {
+      "dates": [
+       "2026-10-21"
+      ],
+      "value": -0.033151987451354635,
+      "cells": 1
+     }
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_023_141_D_067_024_4000_SH_20260623T234333_20260623T234408_20260705T234333_20260705T234408_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_024_141_D_067_025_4000_SH_20260705T234333_20260705T234408_20260717T234332_20260717T234407_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_025_141_D_067_027_4000_SH_20260717T234332_20260717T234407_20260810T234331_20260810T234406_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_028_141_D_067_029_4000_SH_20260822T234330_20260822T234405_20260903T234330_20260903T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_029_141_D_067_030_4000_SH_20260903T234330_20260903T234405_20260915T234330_20260915T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "program": "Lynkeus 0.1.0",
+    "method": "Small-baseline inversion of the unwrapped phase of the pairs at the cell of the point, each pair referenced to the cell of the reference point, with equal weights and the minimum-norm velocity, the first date being zero, times -wavelength/(4*pi); relative to the reference point, not corrected for the ionosphere, the troposphere or the solid Earth tides (Berardino et al., 2002, https://doi.org/10.1109/TGRS.2002.803792; Yunjun et al., 2019, https://doi.org/10.1016/j.cageo.2019.104331; MintPy 1.6.4, reference_point and ifgram_inversion with --weight-func no and --mask-dset connectComponent)"
+   }
+  }
+ },
+ "refusals": {
+  "a pair left out at the point": {
+   "inputs": {
+    "inputs": [
+     "91c019fa36814c7d3338c54f5c203d72",
+     "a4d300455e7a08515aacf4bc0622d755",
+     "54c0e94bbac3cbbd4326ce7f474ad635",
+     "233cc92e295d717387620e5a316bbbb5",
+     "cf9c7da80b925ae84ada52d847ccfab5",
+     "d7f6ea6b68065a5583ceeae82cdfd2ca",
+     "3e99f437cd5f87adabab8743ec9c4219",
+     "6e27a5792c6a75485081122f1c4dd053",
+     "22667544c81a2ca85b4f37dbfbb15011",
+     "0e1745af02e6590fc2b6954360a1e104",
+     "491a583799db19bfeef527652478d9dc",
+     "823009032281cc3fa802f1491047c4cf",
+     "8679fa26a336888639f5c63a3803b063",
+     "6ab7ee4407ee64545b7b8611ed96e4e7",
+     "f0418f8d8f189f118e25fb85b829ca78",
+     "af8280ff734aed8b2f46e18aa33ed2b5",
+     "0ce081c4817e5ca669019d8a84a5f9cd",
+     "0d5e7ca66cad19fa9122ddf884636b52"
+    ],
+    "title": "Trial q1",
+    "point": {
+     "longitude": -71.00112878525466,
+     "latitude": 42.79975192382038
+    },
+    "reference": {
+     "longitude": -71.0772,
+     "latitude": 42.7761
+    }
+   },
+   "submitted": "2026-11-15T19:54:43Z",
+   "ended": "2026-11-15T19:54:51Z",
+   "status": "failed",
+   "job": "8004a4c966beeeea7f7e1fa7988e518b",
+   "http_status": 201,
+   "answer": null,
+   "message": "At the point, the phase of 1 of the 9 pairs is not reliable relative to the reference point, and the other pairs do not link all the dates into one network."
+  },
+  "a reference without a reliable phase in a pair": {
+   "inputs": {
+    "inputs": [
+     "91c019fa36814c7d3338c54f5c203d72",
+     "a4d300455e7a08515aacf4bc0622d755",
+     "54c0e94bbac3cbbd4326ce7f474ad635",
+     "233cc92e295d717387620e5a316bbbb5",
+     "cf9c7da80b925ae84ada52d847ccfab5",
+     "d7f6ea6b68065a5583ceeae82cdfd2ca",
+     "3e99f437cd5f87adabab8743ec9c4219",
+     "6e27a5792c6a75485081122f1c4dd053",
+     "22667544c81a2ca85b4f37dbfbb15011",
+     "0e1745af02e6590fc2b6954360a1e104",
+     "491a583799db19bfeef527652478d9dc",
+     "823009032281cc3fa802f1491047c4cf",
+     "8679fa26a336888639f5c63a3803b063",
+     "6ab7ee4407ee64545b7b8611ed96e4e7",
+     "f0418f8d8f189f118e25fb85b829ca78",
+     "af8280ff734aed8b2f46e18aa33ed2b5",
+     "0ce081c4817e5ca669019d8a84a5f9cd",
+     "0d5e7ca66cad19fa9122ddf884636b52"
+    ],
+    "title": "Trial r0",
+    "point": {
+     "longitude": -71.00110557451146,
+     "latitude": 42.79903193144559
+    },
+    "reference": {
+     "longitude": -71.07659413497967,
+     "latitude": 42.77463464631111
+    }
+   },
+   "submitted": "2026-11-15T19:54:45Z",
+   "ended": "2026-11-15T19:54:53Z",
+   "status": "failed",
+   "job": "e5fa31fda30892399a8d00129e24ff1f",
+   "http_status": 201,
+   "answer": null,
+   "message": "The reference point has no reliable phase in the layer \"Unwrapped phase HH, 9 Oct 2026 to 21 Oct 2026\", so choose a reference point with one in every pair."
+  },
+  "pairs that do not link all the dates": {
+   "inputs": {
+    "inputs": [
+     "91c019fa36814c7d3338c54f5c203d72",
+     "a4d300455e7a08515aacf4bc0622d755",
+     "54c0e94bbac3cbbd4326ce7f474ad635",
+     "233cc92e295d717387620e5a316bbbb5",
+     "3e99f437cd5f87adabab8743ec9c4219",
+     "6e27a5792c6a75485081122f1c4dd053",
+     "22667544c81a2ca85b4f37dbfbb15011",
+     "0e1745af02e6590fc2b6954360a1e104",
+     "491a583799db19bfeef527652478d9dc",
+     "823009032281cc3fa802f1491047c4cf",
+     "8679fa26a336888639f5c63a3803b063",
+     "6ab7ee4407ee64545b7b8611ed96e4e7",
+     "f0418f8d8f189f118e25fb85b829ca78",
+     "af8280ff734aed8b2f46e18aa33ed2b5",
+     "0ce081c4817e5ca669019d8a84a5f9cd",
+     "0d5e7ca66cad19fa9122ddf884636b52"
+    ],
+    "title": "Trial gap",
+    "point": {
+     "longitude": -71.00110557451146,
+     "latitude": 42.79903193144559
+    },
+    "reference": {
+     "longitude": -71.0772,
+     "latitude": 42.7761
+    }
+   },
+   "submitted": "2026-11-15T19:54:45Z",
+   "ended": "2026-11-15T19:54:59Z",
+   "status": "failed",
+   "job": "18254bd740732ec7549e6bcec1dbed3e",
+   "http_status": 201,
+   "answer": null,
+   "message": "The pairs do not link all their dates into one network, so the movement between the separate groups of dates is unknown."
+  },
+  "no reference point": {
+   "inputs": {
+    "inputs": [
+     "91c019fa36814c7d3338c54f5c203d72",
+     "a4d300455e7a08515aacf4bc0622d755",
+     "54c0e94bbac3cbbd4326ce7f474ad635",
+     "233cc92e295d717387620e5a316bbbb5",
+     "cf9c7da80b925ae84ada52d847ccfab5",
+     "d7f6ea6b68065a5583ceeae82cdfd2ca",
+     "3e99f437cd5f87adabab8743ec9c4219",
+     "6e27a5792c6a75485081122f1c4dd053",
+     "22667544c81a2ca85b4f37dbfbb15011",
+     "0e1745af02e6590fc2b6954360a1e104",
+     "491a583799db19bfeef527652478d9dc",
+     "823009032281cc3fa802f1491047c4cf",
+     "8679fa26a336888639f5c63a3803b063",
+     "6ab7ee4407ee64545b7b8611ed96e4e7",
+     "f0418f8d8f189f118e25fb85b829ca78",
+     "af8280ff734aed8b2f46e18aa33ed2b5",
+     "0ce081c4817e5ca669019d8a84a5f9cd",
+     "0d5e7ca66cad19fa9122ddf884636b52"
+    ],
+    "title": "Trial no reference",
+    "point": {
+     "longitude": -71.00110557451146,
+     "latitude": 42.79903193144559
+    }
+   },
+   "submitted": "2026-11-15T19:54:45Z",
+   "ended": "2026-11-15T19:54:59Z",
+   "status": "failed",
+   "job": "bfac872fc7a449cd5ee372dcb3877a97",
+   "http_status": 201,
+   "answer": null,
+   "message": "The tool gives the series relative to a reference point, and no reference point was given."
+  },
+  "a reference point outside the area": {
+   "inputs": {
+    "inputs": [
+     "91c019fa36814c7d3338c54f5c203d72",
+     "a4d300455e7a08515aacf4bc0622d755",
+     "54c0e94bbac3cbbd4326ce7f474ad635",
+     "233cc92e295d717387620e5a316bbbb5",
+     "cf9c7da80b925ae84ada52d847ccfab5",
+     "d7f6ea6b68065a5583ceeae82cdfd2ca",
+     "3e99f437cd5f87adabab8743ec9c4219",
+     "6e27a5792c6a75485081122f1c4dd053",
+     "22667544c81a2ca85b4f37dbfbb15011",
+     "0e1745af02e6590fc2b6954360a1e104",
+     "491a583799db19bfeef527652478d9dc",
+     "823009032281cc3fa802f1491047c4cf",
+     "8679fa26a336888639f5c63a3803b063",
+     "6ab7ee4407ee64545b7b8611ed96e4e7",
+     "f0418f8d8f189f118e25fb85b829ca78",
+     "af8280ff734aed8b2f46e18aa33ed2b5",
+     "0ce081c4817e5ca669019d8a84a5f9cd",
+     "0d5e7ca66cad19fa9122ddf884636b52"
+    ],
+    "title": "Trial outside",
+    "point": {
+     "longitude": -71.00110557451146,
+     "latitude": 42.79903193144559
+    },
+    "reference": {
+     "longitude": -70.0,
+     "latitude": 42.8
+    }
+   },
+   "submitted": "2026-11-15T19:55:00Z",
+   "ended": "2026-11-15T19:55:09Z",
+   "status": "failed",
+   "job": "b440206e5fc7d6aa72fc9f7d838deb15",
+   "http_status": 201,
+   "answer": null,
+   "message": "The reference point lies outside the area of the layers."
+  },
+  "the point in the cell of the reference": {
+   "inputs": {
+    "inputs": [
+     "91c019fa36814c7d3338c54f5c203d72",
+     "a4d300455e7a08515aacf4bc0622d755",
+     "54c0e94bbac3cbbd4326ce7f474ad635",
+     "233cc92e295d717387620e5a316bbbb5",
+     "cf9c7da80b925ae84ada52d847ccfab5",
+     "d7f6ea6b68065a5583ceeae82cdfd2ca",
+     "3e99f437cd5f87adabab8743ec9c4219",
+     "6e27a5792c6a75485081122f1c4dd053",
+     "22667544c81a2ca85b4f37dbfbb15011",
+     "0e1745af02e6590fc2b6954360a1e104",
+     "491a583799db19bfeef527652478d9dc",
+     "823009032281cc3fa802f1491047c4cf",
+     "8679fa26a336888639f5c63a3803b063",
+     "6ab7ee4407ee64545b7b8611ed96e4e7",
+     "f0418f8d8f189f118e25fb85b829ca78",
+     "af8280ff734aed8b2f46e18aa33ed2b5",
+     "0ce081c4817e5ca669019d8a84a5f9cd",
+     "0d5e7ca66cad19fa9122ddf884636b52"
+    ],
+    "title": "Trial same cell",
+    "point": {
+     "longitude": -71.0772,
+     "latitude": 42.7761
+    },
+    "reference": {
+     "longitude": -71.0772,
+     "latitude": 42.7761
+    }
+   },
+   "submitted": "2026-11-15T19:55:03Z",
+   "ended": "2026-11-15T19:55:11Z",
+   "status": "failed",
+   "job": "7e705039510625c07cf49dd39bbefe67",
+   "http_status": 201,
+   "answer": null,
+   "message": "The point and the reference point lie in the same cell of the layers."
+  },
+  "a reference point outside the Earth": {
+   "inputs": {
+    "title": "Trial",
+    "point": {
+     "longitude": -71.00110557451146,
+     "latitude": 42.79903193144559
+    },
+    "reference": {
+     "longitude": 200,
+     "latitude": 42.8
+    },
+    "inputs": [
+     "91c019fa36814c7d3338c54f5c203d72",
+     "a4d300455e7a08515aacf4bc0622d755",
+     "54c0e94bbac3cbbd4326ce7f474ad635",
+     "233cc92e295d717387620e5a316bbbb5",
+     "cf9c7da80b925ae84ada52d847ccfab5",
+     "d7f6ea6b68065a5583ceeae82cdfd2ca",
+     "3e99f437cd5f87adabab8743ec9c4219",
+     "6e27a5792c6a75485081122f1c4dd053",
+     "22667544c81a2ca85b4f37dbfbb15011",
+     "0e1745af02e6590fc2b6954360a1e104",
+     "491a583799db19bfeef527652478d9dc",
+     "823009032281cc3fa802f1491047c4cf",
+     "8679fa26a336888639f5c63a3803b063",
+     "6ab7ee4407ee64545b7b8611ed96e4e7",
+     "f0418f8d8f189f118e25fb85b829ca78",
+     "af8280ff734aed8b2f46e18aa33ed2b5",
+     "0ce081c4817e5ca669019d8a84a5f9cd",
+     "0d5e7ca66cad19fa9122ddf884636b52"
+    ]
+   },
+   "submitted": "2026-11-15T19:55:11Z",
+   "ended": null,
+   "status": null,
+   "job": null,
+   "http_status": 400,
+   "answer": {
+    "type": "about:blank",
+    "title": "Bad Request",
+    "status": 400,
+    "detail": "The input reference.longitude is not valid: Input should be less than or equal to 180."
+   },
+   "message": null
+  }
+ },
+ "series_of_the_session": [
+  "201b5cef21b0ee646dbf8445079474c0",
+  "26f17370f96ed30fcb428c5b4ba0d2c1",
+  "f632daeb0fd5ba07533a66beaeb49e24",
+  "2ee65fb9cb4c8ec1d912d986035c9c58",
+  "964d148ada8f86c5a0ce93054b6480ac"
+ ]
+}

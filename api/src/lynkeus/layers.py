@@ -9,7 +9,8 @@ to each is a job, whose result is a layer description. An analysis result is
 what the function of a tool returns to the server.
 
 A series is the value of one quantity on many dates, at a point or for an
-area. It is not a layer: it has no grid and no file. A series run is what the
+area, and for some quantities relative to a reference point. It is not a
+layer: it has no grid and no file. A series run is what the
 interface sends to the server to start a tool of the kind Series; the answer
 is a job, whose result is a series description. A series result is what the
 function of such a tool returns to the server.
@@ -452,6 +453,21 @@ class Cell(Format):
     latitude: float = Field(ge=-90, le=90)
 
 
+class Reference(Format):
+    """The reference point of a series that is relative to one, with the cell of the grid of the layers that holds it.
+
+    Attributes
+    ----------
+    point : Point
+        The reference point of the request, in degrees of longitude and latitude (WGS 84).
+    cell : Cell
+        The cell of the grid of the layers that holds the reference point.
+    """
+
+    point: Point
+    cell: Cell
+
+
 class SeriesEntry(Format):
     """One date of a series: the value of one input layer.
 
@@ -512,6 +528,12 @@ class SeriesDescription(Format):
     cell : Cell or None
         The cell of the grid of the layers that holds the point. It is given
         when, and only when, ``point`` is.
+    reference : Reference or None
+        The reference point of a series whose values are relative to one,
+        with its cell, for example the series of the tool
+        ``displacement-series``. Such a series is a series at a point. None
+        for a series that is not relative to a reference point, and for a
+        description stored before this field existed.
     shape : Shape or None
         The area drawn on the map, for a series of the cells inside it. None
         for a series at a point and for a series of the whole area of the
@@ -523,10 +545,14 @@ class SeriesDescription(Format):
         The dates of the series with their values, the earliest first.
     inputs : tuple of str
         Names of the product files used, in the order of ``entries``: the
-        file of the first entry comes first.
+        file of the first entry comes first. A series relative to a
+        reference point gives the product files of the pairs of dates from
+        which its values were computed, the earliest pair first, at least
+        one for each date after the first.
     layer : str
         Name of the layer inside each product, for example ``HHHH``. All
-        input layers of a series have the same name.
+        input layers of a series have the same name; a series relative to a
+        reference point gives the name of its layers of phase.
     program : str
         Program and version that produced the series.
     method : str
@@ -547,6 +573,7 @@ class SeriesDescription(Format):
     range: tuple[float, float] | None = None
     point: Point | None = None
     cell: Cell | None = None
+    reference: Reference | None = None
     shape: Shape | None = None
     area: Area
     entries: tuple[SeriesEntry, ...] = Field(min_length=1)
@@ -562,10 +589,14 @@ class SeriesDescription(Format):
             raise ValueError("the lowest value of the range must be smaller than the highest")
         if (self.point is None) != (self.cell is None):
             raise ValueError("a series at a point has its point and its cell, and a series of an area has neither")
+        if self.reference is not None and self.point is None:
+            raise ValueError("a series relative to a reference point is a series at a point")
         if self.point is not None and self.shape is not None:
             raise ValueError("a series is made at a point or for an area drawn on the map, not for both")
-        if len(self.inputs) != len(self.entries):
+        if self.reference is None and len(self.inputs) != len(self.entries):
             raise ValueError("a series has one product file for each of its entries")
+        if self.reference is not None and len(self.inputs) < len(self.entries) - 1:
+            raise ValueError("a series relative to a reference point has a pair for each date after the first")
         days = [entry.dates for entry in self.entries]
         if days != sorted(set(days)):
             raise ValueError("the entries of a series have different dates, the earliest first")
@@ -590,6 +621,9 @@ class SeriesRun(Format):
     area : Shape or None
         The area drawn on the map, for a series of the cells inside it. None,
         with no point, asks for the series of the whole area of the layers.
+    reference : Point or None
+        The reference point of a series that is relative to one. Only the
+        tool ``displacement-series`` takes one, and it needs one.
     """
 
     tool: Text
@@ -597,6 +631,7 @@ class SeriesRun(Format):
     title: Text
     point: Point | None = None
     area: Shape | None = None
+    reference: Point | None = None
 
     @model_validator(mode="after")
     def _has_one_place(self) -> Self:

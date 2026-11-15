@@ -11,8 +11,9 @@ holds the statistics of the result inside it (``lynkeus.areas``).
 ``run_series`` does the same for a tool of the kind Series, from
 ``lynkeus.analysis.SERIES_TOOLS``. It turns the point of the request into a
 cell of the grid of the layers, or an area drawn on the map into the cells
-inside it, gives the function the arrays one after another, and returns the
-series description. A series has no file.
+inside it, and the reference point of the request, when it has one, into a
+cell, gives the function the arrays one after another, and returns the series
+description. A series has no file.
 """
 
 import math
@@ -33,6 +34,7 @@ from lynkeus.layers import (
     Cell,
     LayerDescription,
     Point,
+    Reference,
     ResultReduction,
     SeriesDescription,
     SeriesRun,
@@ -244,9 +246,9 @@ def run_series(
     Parameters
     ----------
     run : SeriesRun
-        The tool, the ``id`` of each input layer, the name of the series and
-        the point or the area drawn on the map, or neither for the whole area
-        of the layers.
+        The tool, the ``id`` of each input layer, the name of the series, the
+        point or the area drawn on the map, or neither for the whole area of
+        the layers, and the reference point, or none.
     layers : Mapping
         The layers that the tool may use: for each ``id``, the description of
         the layer and the path of its GeoTIFF.
@@ -260,19 +262,21 @@ def run_series(
     SeriesDescription
         The description of the series. Its entries, product files, layer
         name, quantity, unit, reduction, range, method and note are those
-        that the function of the tool returns. Its point is that of the run, its cell
-        is the cell of the grid of the layers that holds the point, its shape
-        is the area drawn on the map, and its area is the rectangle around
-        that grid. An area drawn on the map gives the function the cells of
-        the grid whose centre lies inside it (``lynkeus.areas.cells_inside``).
-        One layer is read at a time.
+        that the function of the tool returns. Its point is that of the run,
+        its cell is the cell of the grid of the layers that holds the point,
+        its reference is the reference point of the run with the cell that
+        holds it, its shape is the area drawn on the map, and its area is the
+        rectangle around that grid. An area drawn on the map gives the
+        function the cells of the grid whose centre lies inside it
+        (``lynkeus.areas.cells_inside``). One layer is read at a time.
 
     Raises
     ------
     LayerError
         If the tool or a layer does not exist, the layers do not share one
-        grid, the point lies outside the grid, the area cannot be placed on
-        the grid, or the tool refuses the layers. The message is one sentence
+        grid, the point or the reference point lies outside the grid, the area
+        cannot be placed on the grid, or the tool refuses the layers or the
+        points. The message is one sentence
         for the visitor.
     """
     try:
@@ -301,6 +305,12 @@ def _run_series(
     if any(grid != grids[0] for grid in grids):
         raise LayerError("The layers of the analysis do not have the same grid.")
     cell = cell_of(grids[0], run.point) if run.point is not None else None
+    reference: Cell | None = None
+    if run.reference is not None:
+        try:
+            reference = cell_of(grids[0], run.reference)
+        except LayerError:
+            raise LayerError("The reference point lies outside the area of the layers.") from None
     place: Place = None
     if cell is not None:
         place = (cell.row, cell.column)
@@ -313,7 +323,12 @@ def _run_series(
             values, _ = read_layer(path)
             yield values
 
-    result = SERIES_TOOLS[run.tool](arrays(), descriptions, place)
+    result = SERIES_TOOLS[run.tool](
+        arrays(),
+        descriptions,
+        place,
+        (reference.row, reference.column) if reference is not None else None,
+    )
     description = SeriesDescription(
         id=series_id,
         title=run.title,
@@ -324,6 +339,7 @@ def _run_series(
         range=result.range,
         point=run.point,
         cell=cell,
+        reference=Reference(point=run.reference, cell=reference) if run.reference and reference else None,
         shape=run.area,
         area=area_of(grids[0]),
         entries=result.entries,

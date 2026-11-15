@@ -128,6 +128,10 @@ class SeriesInputs(Format):
         An area drawn on the map, for a series of the cells inside it. It
         cannot be given with a point. Without a point and an area the series
         is that of the whole area of the layers.
+    reference : Point or None
+        The reference point of a series that is relative to one, in degrees
+        of longitude and latitude (WGS 84). Only the tool
+        ``displacement-series`` takes one, and it needs one.
     """
 
     inputs: tuple[Text, ...] = Field(
@@ -157,6 +161,13 @@ class SeriesInputs(Format):
             "and without both the series is that of the whole area of the layers."
         ),
     )
+    reference: Point | None = Field(
+        default=None,
+        description=(
+            "The reference point of a series that is relative to one, in degrees of longitude and latitude "
+            "(WGS 84). Only the tool displacement-series takes one, and it needs one."
+        ),
+    )
 
     @field_validator("inputs")
     @classmethod
@@ -173,7 +184,10 @@ class SeriesInputs(Format):
 
     @model_serializer(mode="wrap")
     def _serialized(self, handler: SerializerFunctionWrapHandler) -> dict[str, Any]:
-        return _without_no_area(handler, self, self.area)
+        values = _without_no_area(handler, self, self.area)
+        if self.reference is None:
+            values.pop("reference", None)
+        return values
 
 
 def receive_layer(inputs: LayerRequest, work: Work) -> LayerDescription:
@@ -226,7 +240,14 @@ def run_series_analysis(tool: str, inputs: SeriesInputs, work: Work) -> SeriesDe
     This is the function of the process of such a tool. The series receives the ``id`` that the work gives.
     """
     return run_series(
-        SeriesRun(tool=tool, inputs=inputs.inputs, title=inputs.title, point=inputs.point, area=inputs.area),
+        SeriesRun(
+            tool=tool,
+            inputs=inputs.inputs,
+            title=inputs.title,
+            point=inputs.point,
+            area=inputs.area,
+            reference=inputs.reference,
+        ),
         layers=work.layers,
         series_id=work.layer_id,
         report=work.report,

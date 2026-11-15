@@ -350,6 +350,79 @@ def test_series_that_cannot_be_run_is_refused_with_a_sentence() -> None:
         run(tool="coherence-series")
 
 
+PHASE_FILE = "gunw-unwrappedphase-20261009-20261021.tif"
+COMPONENTS_FILE = "gunw-connectedcomponents-20261009-20261021.tif"
+PHASE, COMPONENTS = "unwrappedInterferogram/HH/unwrappedPhase", "unwrappedInterferogram/HH/connectedComponents"
+
+
+def phase_layers() -> dict[str, tuple[LayerDescription, Path]]:
+    """Describe the phase and the connected components of the test data as the layers of two pairs."""
+    held = {}
+    for name, days in (("first", ("1009", "1021")), ("second", ("1021", "1102"))):
+        granule = GUNW.format("32", "33", days[0], days[0], days[1], days[1])
+        dates = (date(2026, int(days[0][:2]), int(days[0][2:])), date(2026, int(days[1][:2]), int(days[1][2:])))
+        phase, path = layer(f"{name}-phase", PHASE_FILE, granule, *dates, inside=PHASE)
+        labels, labels_path = layer(f"{name}-labels", COMPONENTS_FILE, granule, *dates, inside=COMPONENTS)
+        held[phase.id] = (phase.model_copy(update={"unit": "rad", "frequency": 1239000000.0}), path)
+        held[labels.id] = (labels, labels_path)
+    return held
+
+
+def test_series_relative_to_a_reference_point_reads_the_cells_of_the_two_points() -> None:
+    phase, labels = values_of(PHASE_FILE), values_of(COMPONENTS_FILE)
+    rows, columns = np.nonzero((labels == 1) & np.isfinite(phase))
+    point_cell, reference_cell = (int(rows[0]), int(columns[0])), (int(rows[-1]), int(columns[-1]))
+    point = centre_of(PHASE_FILE, point_cell[0] + 0.5, point_cell[1] + 0.5)
+    reference = centre_of(PHASE_FILE, reference_cell[0] + 0.3, reference_cell[1] + 0.6)
+    series = run_series(
+        SeriesRun(
+            tool="displacement-series",
+            inputs=("second-labels", "first-phase", "second-phase", "first-labels"),
+            title="Displacement at the bridge",
+            point=point,
+            reference=reference,
+        ),
+        layers=phase_layers(),
+        series_id="s3r1es",
+        report=lambda progress, message: None,
+    )
+    assert series.cell is not None and series.reference is not None
+    assert (series.cell.row, series.cell.column) == point_cell
+    assert (series.reference.cell.row, series.reference.cell.column) == reference_cell
+    assert series.reference.point == reference
+    difference = float(np.float32(phase[point_cell]) - np.float32(phase[reference_cell]))
+    factor = -(299792458.0 / 1239000000.0) / (4 * math.pi)
+    assert [entry.dates for entry in series.entries] == [
+        (date(2026, 10, 9),),
+        (date(2026, 10, 21),),
+        (date(2026, 11, 2),),
+    ]
+    assert [entry.value for entry in series.entries] == [
+        0.0,
+        pytest.approx(factor * difference, rel=1e-12),
+        pytest.approx(2 * factor * difference, rel=1e-12),
+    ]
+    assert (series.unit, series.layer, len(series.inputs)) == ("m", PHASE, 2)
+    assert SeriesDescription.model_validate_json(series.model_dump_json()) == series
+
+
+def test_reference_point_outside_the_grid_is_refused_with_its_own_sentence() -> None:
+    phase = values_of(PHASE_FILE)
+    rows, columns = np.nonzero(np.isfinite(phase))
+    point = centre_of(PHASE_FILE, int(rows[0]) + 0.5, int(columns[0]) + 0.5)
+    request = SeriesRun(
+        tool="displacement-series",
+        inputs=("first-phase", "first-labels", "second-phase", "second-labels"),
+        title="Trial",
+        point=point,
+        reference=Point(longitude=10.0, latitude=-45.0),
+    )
+    with pytest.raises(LayerError, match=r"^The reference point lies outside the area of the layers\.$"):
+        run_series(request, layers=phase_layers(), series_id="s3r1es", report=lambda progress, message: None)
+    with pytest.raises(LayerError, match=r"^The tool takes no reference point\.$"):
+        run(reference=centre_of(OCTOBER, 1.5, 1.5))
+
+
 def test_fault_of_a_series_tool_becomes_a_general_sentence(monkeypatch: pytest.MonkeyPatch) -> None:
     def broken(*_: object) -> Any:
         raise KeyError("a detail that the visitor must not see")
@@ -665,7 +738,8 @@ def test_every_series_tool_is_offered_as_a_process_whose_output_is_a_series() ->
         assert process.title == name.replace("-", " ").capitalize()
         assert process.description.endswith(".")
         described = process.describe()
-        assert list(described["inputs"]) == ["inputs", "title", "point", "area"]
+        assert list(described["inputs"]) == ["inputs", "title", "point", "area", "reference"]
+        assert described["inputs"]["reference"]["minOccurs"] == 0
         assert (described["inputs"]["inputs"]["minOccurs"], described["inputs"]["inputs"]["maxOccurs"]) == (2, 50)
         assert described["inputs"]["point"]["minOccurs"] == 0
         assert set(described["inputs"]["point"]["schema"]["properties"]) == {"longitude", "latitude"}

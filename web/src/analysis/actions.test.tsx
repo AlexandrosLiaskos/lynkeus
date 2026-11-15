@@ -6,7 +6,7 @@ import { beforeEach, expect, test } from "vitest";
 import { Ribbon } from "../ribbon/Ribbon";
 import { dockStore, resetDock } from "../shared/dock/dock";
 import { useAnalysisActions } from "./actions";
-import { ANALYSIS_TAB, DISPLACEMENT_STATE } from "./tab";
+import { ANALYSIS_TAB, DISPLACEMENT_SERIES, DISPLACEMENT_STATE } from "./tab";
 import { SHEET_TOOLS } from "./series";
 
 /** The Analysis tab as the page holds it: its buttons with their actions. */
@@ -21,7 +21,7 @@ function buttonsOf(group: string): HTMLElement[] {
 
 beforeEach(resetDock);
 
-test("exactly the buttons of the ten finished tools have an action", () => {
+test("exactly the buttons of the eleven finished tools have an action", () => {
   const actions = renderHook(useAnalysisActions).result.current;
   expect(Object.keys(actions)).toEqual([
     "backscatter-state",
@@ -34,6 +34,7 @@ test("exactly the buttons of the ten finished tools have an action", () => {
     "soil-moisture-change",
     "backscatter-series",
     "coherence-series",
+    "displacement-series",
     "soil-moisture-series",
   ]);
   expect(Object.keys(actions)).toEqual([...SHEET_TOOLS]);
@@ -80,7 +81,7 @@ test("the eleven finished buttons are active, and every other button of the tab 
   expect(inactive).toEqual({
     Backscatter: [false, false, false, false],
     Coherence: [false, false, false],
-    "Surface displacement": [false, true],
+    "Surface displacement": [false, false],
     "Soil moisture": [false, false, false],
   });
 });
@@ -126,23 +127,26 @@ test("the button of a finished tool opens the tool pane of that tool, and an ina
   await userEvent.click(moistureSeries);
   const all = [...maps, "backscatter-series", "coherence-series", "soil-moisture-series"];
   expect(dockStore.get().tools).toEqual(all);
-  await userEvent.click(displacementSeries);
-  await userEvent.click(moistureSeries);
-  expect(dockStore.get().tools).toEqual(all);
   await userEvent.click(displacement);
   expect(dockStore.get().tools).toEqual([...all, "displacement-state"]);
+  await userEvent.click(displacementSeries);
+  expect(dockStore.get().tools).toEqual([...all, "displacement-state", "displacement-series"]);
 });
 
-test("the button One pair of Surface displacement says in one sentence what its map shows", () => {
+test("the buttons One pair and Series of Surface displacement say in one sentence what they show", () => {
   const group = ANALYSIS_TAB.groups.find(({ label }) => label === "Surface displacement");
   expect(group?.tools.map(({ id, description }) => [id, description])).toEqual([
     ["displacement-state", DISPLACEMENT_STATE],
-    ["displacement-series", "Plots the surface displacement of many pairs of dates, at a point or for the area."],
+    ["displacement-series", DISPLACEMENT_SERIES],
   ]);
   expect(DISPLACEMENT_STATE).toBe(
     "Maps the movement of the ground toward or away from the radar between the two dates of one pair.",
   );
   expect(DISPLACEMENT_STATE).toMatch(/^[A-Z][^.]*\.$/);
+  expect(DISPLACEMENT_SERIES).toBe(
+    "Plots the movement of the ground at a point over many dates, relative to a reference point.",
+  );
+  expect(DISPLACEMENT_SERIES).toMatch(/^[A-Z][^.]*\.$/);
 });
 
 test("the buttons of the three new tools say in one sentence what the tool maps", () => {

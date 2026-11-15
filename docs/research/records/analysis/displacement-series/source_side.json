@@ -1,0 +1,272 @@
+{
+ "made": "15 Nov 2026",
+ "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+ "python": "3.13.18",
+ "versions": {
+  "mintpy": "1.6.4",
+  "numpy": "2.5.4",
+  "scipy": "1.18.1",
+  "h5py": "3.16.0",
+  "rasterio": "1.5.2"
+ },
+ "licence": [
+  "License-Expression: GPL-3.0-or-later",
+  "License-File: LICENSE"
+ ],
+ "files_sha256": {
+  "ifgram_inversion.py": "1f4337ca4a67b85324a070d4f8ff7238100656c8ac2392ce9b4e2f2a2b31ada6",
+  "reference_point.py": "18b7cd787d27247b5bdca13da454591f31c5f28c22c1ead737c33b49491c666f",
+  "generate_mask.py": "383e8f909755bebb51e09a3949b3fc8444da680babc07547fbb79ed305686b37",
+  "objects/stack.py": "e5e9c1d7d7d91aa547060f5b6e2c2512a708ca61a3fd7c5719c2c4d808ab8cc6",
+  "cli/ifgram_inversion.py": "9aac1d09fec1f619aba40d6c0f904c6cf7e92e62190ae3c0a66ba2a3f8678dae",
+  "cli/reference_point.py": "53a80ff77874ae5f02003f708a30077abacf89101656fa559efbbc7c95f9ac1b",
+  "defaults/smallbaselineApp.cfg": "431c83948793366945ed79cdc24968df878405e92faee6fa7798bc2b385eaef0"
+ },
+ "inputs": {
+  "0623_0705": {
+   "phase": {
+    "dtype": "float32",
+    "nodata": "nan"
+   },
+   "components": {
+    "dtype": "float32",
+    "nodata": "nan"
+   },
+   "same_values_as_lynkeus": [
+    true,
+    true
+   ]
+  },
+  "0705_0717": {
+   "phase": {
+    "dtype": "float32",
+    "nodata": "nan"
+   },
+   "components": {
+    "dtype": "float32",
+    "nodata": "nan"
+   },
+   "same_values_as_lynkeus": [
+    true,
+    true
+   ]
+  },
+  "0717_0810": {
+   "phase": {
+    "dtype": "float32",
+    "nodata": "nan"
+   },
+   "components": {
+    "dtype": "float32",
+    "nodata": "nan"
+   },
+   "same_values_as_lynkeus": [
+    true,
+    true
+   ]
+  },
+  "0810_0822": {
+   "phase": {
+    "dtype": "float32",
+    "nodata": "nan"
+   },
+   "components": {
+    "dtype": "float32",
+    "nodata": "nan"
+   },
+   "same_values_as_lynkeus": [
+    true,
+    true
+   ]
+  },
+  "0822_0903": {
+   "phase": {
+    "dtype": "float32",
+    "nodata": "nan"
+   },
+   "components": {
+    "dtype": "float32",
+    "nodata": "nan"
+   },
+   "same_values_as_lynkeus": [
+    true,
+    true
+   ]
+  },
+  "0903_0915": {
+   "phase": {
+    "dtype": "float32",
+    "nodata": "nan"
+   },
+   "components": {
+    "dtype": "float32",
+    "nodata": "nan"
+   },
+   "same_values_as_lynkeus": [
+    true,
+    true
+   ]
+  },
+  "0915_0927": {
+   "phase": {
+    "dtype": "float32",
+    "nodata": "nan"
+   },
+   "components": {
+    "dtype": "float32",
+    "nodata": "nan"
+   },
+   "same_values_as_lynkeus": [
+    true,
+    true
+   ]
+  },
+  "0927_1009": {
+   "phase": {
+    "dtype": "float32",
+    "nodata": "nan"
+   },
+   "components": {
+    "dtype": "float32",
+    "nodata": "nan"
+   },
+   "same_values_as_lynkeus": [
+    true,
+    true
+   ]
+  },
+  "1009_1021": {
+   "phase": {
+    "dtype": "float32",
+    "nodata": "nan"
+   },
+   "components": {
+    "dtype": "float32",
+    "nodata": "nan"
+   },
+   "same_values_as_lynkeus": [
+    true,
+    true
+   ]
+  }
+ },
+ "pilot": {
+  "wavelength": 0.2419632429378531,
+  "date12": [
+   "20260623_20260705",
+   "20260705_20260717",
+   "20260717_20260810",
+   "20260810_20260822",
+   "20260822_20260903",
+   "20260903_20260915",
+   "20260915_20260927",
+   "20260927_20261009",
+   "20261009_20261021"
+  ],
+  "dates": [
+   "20260623",
+   "20260705",
+   "20260717",
+   "20260810",
+   "20260822",
+   "20260903",
+   "20260915",
+   "20260927",
+   "20261009",
+   "20261021"
+  ],
+  "reference_cell": [
+   244,
+   131
+  ],
+  "attributes_of_the_result": {
+   "REF_DATE": "20260623",
+   "REF_LAT": "4738040.0",
+   "REF_LON": "330040.0",
+   "REF_X": "131",
+   "REF_Y": "244",
+   "UNIT": "m",
+   "WAVELENGTH": "0.2419632429378531",
+   "mintpy.networkInversion.maskDataset": "connectComponent",
+   "mintpy.networkInversion.maskThreshold": "0.4",
+   "mintpy.networkInversion.minNormVelocity": "True",
+   "mintpy.networkInversion.minRedundancy": "1.0",
+   "mintpy.networkInversion.numIfgram": "9",
+   "mintpy.networkInversion.obsDatasetName": "unwrapPhase",
+   "mintpy.networkInversion.weightFunc": "no"
+  },
+  "reference_in_the_stack": {
+   "REF_Y": "244",
+   "REF_X": "131"
+  },
+  "printed": {
+   "generate_mask": {
+    "last_lines": [
+     "[==========>             22%                       ] 2/9    0s /     0s",
+     "[===============>        33%                       ] 3/9    0s /     0s",
+     "[=====================>  44%                       ] 4/9    0s /     0s",
+     "[======================= 56%                       ] 5/9    0s /     0s",
+     "[======================= 67% =====>                ] 6/9    0s /     0s",
+     "[======================= 78% ==========>           ] 7/9    0s /     0s",
+     "[======================= 89% ===============>      ] 8/9    0s /     0s",
+     "[==================================================] 9/9 ",
+     "create HDF5 file: maskConnComp.h5 with w mode",
+     "create dataset /mask of bool       in size of (496, 471)           with compression=None",
+     "finished writing to maskConnComp.h5",
+     "time used: 00 mins 0.1 secs."
+    ],
+    "error": null
+   },
+   "reference_point_refused": {
+    "last_lines": [
+     "--------------------------------------------------",
+     "input reference point in y/x: (246, 132)",
+     "mask: maskConnComp.h5"
+    ],
+    "error": "ValueError: input reference point is in masked OUT area defined by maskConnComp.h5!"
+   },
+   "reference_point": {
+    "last_lines": [
+     "--------------------------------------------------",
+     "input reference point in y/x: (244, 131)",
+     "mask: maskConnComp.h5",
+     "--------------------------------------------------",
+     "calculate the temporal average of unwrapPhase in file inputs/ifgramStack.h5 ...",
+     "",
+     "[==================================================] lines 496/496 ",
+     "Add/update ref_x/y attribute to file: inputs/ifgramStack.h5",
+     "{'REF_Y': '244', 'REF_X': '131', 'REF_LAT': '4738040.0', 'REF_LON': '330040.0'}",
+     "touch maskConnComp.h5"
+    ],
+    "error": null
+   },
+   "ifgram_inversion": {
+    "last_lines": [
+     "close HDF5 file numInvIfgram.h5.",
+     "--------------------------------------------------",
+     "update values on the reference pixel: (244, 131)",
+     "set temporalCoherence on the reference pixel to 1.",
+     "set  # of observations on the reference pixel as 9",
+     "roll back to the original settings of ['OMP_NUM_THREADS', 'OPENBLAS_NUM_THREADS', 'MKL_NUM_THREADS', 'NUMEXPR_NUM_THREADS', 'VECLIB_MAXIMUM_THREADS']",
+     "remove env variable OMP_NUM_THREADS",
+     "remove env variable OPENBLAS_NUM_THREADS",
+     "remove env variable MKL_NUM_THREADS",
+     "remove env variable NUMEXPR_NUM_THREADS",
+     "remove env variable VECLIB_MAXIMUM_THREADS",
+     "time used: 00 mins 9.8 secs."
+    ],
+    "error": null
+   }
+  },
+  "reference_from_latitude_and_longitude": {
+   "cell": {
+    "REF_Y": "244",
+    "REF_X": "131"
+   },
+   "error": "ModuleNotFoundError: No module named 'utm'",
+   "last_lines": [
+    "--------------------------------------------------"
+   ]
+  }
+ }
+}
