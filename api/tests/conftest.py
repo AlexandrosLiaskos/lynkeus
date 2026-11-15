@@ -7,7 +7,17 @@ from pathlib import Path
 
 import pytest
 
+from lynkeus import jobs
 from lynkeus.products import ProductDetail, detail_from_record
+
+FREE_SPACE = 100_000_000_000
+"""The free space that the disk of every test has, in bytes, unless the test sets another."""
+
+
+@pytest.fixture(autouse=True)
+def free_space(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Give the jobs a disk with free space, so that no test depends on the disk of the machine that runs it."""
+    monkeypatch.setattr(jobs, "free_space", lambda folder: FREE_SPACE)
 
 
 @pytest.fixture

@@ -180,7 +180,7 @@ def test_process_of_a_tool_takes_its_name_and_the_first_paragraph_of_its_documen
                 "A layer is given once."
             ),
             "minOccurs": 1,
-            "maxOccurs": jobs.MAX_SESSION_LAYERS,
+            "maxOccurs": jobs.MAX_ACCOUNT_LAYERS,
             "schema": {"type": "string", "minLength": 1},
         },
         "title": {

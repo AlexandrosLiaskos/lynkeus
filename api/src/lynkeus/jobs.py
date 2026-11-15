@@ -8,6 +8,13 @@ server. A fixed number of jobs run at once and the others wait in the order
 in which they were started. The record of a job is kept in the store. The
 Earthdata token of a job is kept in memory only, until the job starts.
 
+A job, and the layer or the series that it makes, belong to a holder
+(``lynkeus.store.Holder``): on the project server an account, and on an own
+server the session of its pairing. The project server keeps a layer and a
+series for ``KEEP_TIME`` and then removes them (``docs/Storage.md``). It reads
+the free space of the disk of its data folder before a job starts and while
+the job writes, and it keeps ``FREE_SPACE_RESERVE`` free.
+
 The limits of the jobs are those of ``Limits``. Their default values are the
 constants of this module, which suit the project server. An own server
 (``lynkeus.link``) gives the limits that its owner set.
@@ -36,7 +43,7 @@ from pydantic import BaseModel, ValidationError
 
 from lynkeus.layers import LayerDescription, SeriesDescription
 from lynkeus.processes import SERIES_OUTPUT, Process, Work
-from lynkeus.store import JobRecord, LayerRecord, SeriesRecord, Store
+from lynkeus.store import Holder, JobRecord, LayerRecord, SeriesRecord, Store
 
 MAX_RUNNING_JOBS = 2
 """The largest number of jobs that run at once. It equals the number of processors of the machine.
@@ -45,31 +52,55 @@ The memory limit of the web service in ``compose.yaml`` allows for this number o
 """
 
 MAX_WAITING_JOBS = 20
-"""The largest number of jobs of all sessions that wait. With more, a new job would wait for hours."""
+"""The largest number of jobs of all accounts that wait. With more, a new job would wait for hours."""
 
-MAX_SESSION_UNFINISHED_JOBS = 4
-"""The largest number of jobs of one session that wait or run, so that one visitor cannot fill the queue."""
+MAX_ACCOUNT_UNFINISHED_JOBS = 4
+"""The largest number of jobs of one account that wait or run, so that one visitor cannot fill the queue."""
 
-MAX_SESSION_FINISHED_JOBS = 100
-"""The largest number of finished jobs of one session whose record is kept. The oldest records are removed."""
+MAX_ACCOUNT_FINISHED_JOBS = 100
+"""The largest number of finished jobs of one account whose record is kept. The oldest records are removed."""
 
-MAX_SESSION_DISMISSED_JOBS = 100
-"""The largest number of dismissed jobs of one session whose name is still answered with 410 Gone."""
+MAX_ACCOUNT_DISMISSED_JOBS = 100
+"""The largest number of dismissed jobs of one account whose name is still answered with 410 Gone."""
 
-MAX_SESSION_LAYERS = 50
-"""The largest number of layers of one session."""
+MAX_ACCOUNT_LAYERS = 50
+"""The largest number of layers of one account."""
 
-MAX_SESSION_SERIES = 50
-"""The largest number of series of one session. It is the number of ``MAX_SESSION_LAYERS``."""
+MAX_ACCOUNT_SERIES = 50
+"""The largest number of series of one account. It is the number of ``MAX_ACCOUNT_LAYERS``."""
 
 MAX_LAYER_SIZE = 500_000_000
 """The largest size of the files of one layer, in bytes."""
 
-MAX_SESSION_SIZE = 2_000_000_000
-"""The largest total size of the layers of one session, in bytes."""
+MAX_ACCOUNT_SIZE = 2_000_000_000
+"""The largest total size of the layers of one account, in bytes."""
 
 MAX_TOTAL_SIZE = 20_000_000_000
-"""The largest total size of the layers of all sessions, in bytes. It is half of the free space of the machine."""
+"""The largest total size of the layers of all accounts, in bytes.
+
+It is the most that Lynkeus takes of a disk that it shares with other sites. It says nothing about the space
+that the disk has: the service reads the free space before each job and while the job writes
+(``FREE_SPACE_RESERVE``).
+"""
+
+FREE_SPACE_RESERVE = 5_000_000_000
+"""The free space that the service leaves on the disk of its data folder, in bytes.
+
+A job that makes a layer is not accepted and not started when its largest folder would leave less than this
+free, and a running job is ended when less than this is free. The reserve is ten times ``MAX_LAYER_SIZE``. It
+covers what the service does not measure: the files that ``MAX_RUNNING_JOBS`` jobs write between two
+measurements, a new build of the two images of the site beside the running ones (about 1 gigabyte), the
+record file with its daily copies, the logs, and the other sites that write on the same disk.
+"""
+
+KEEP_TIME = 14 * 24 * 3600.0
+"""The keeping time, in seconds: the one duration of ``docs/Storage.md``.
+
+The project server keeps a layer and a series until this time after they were made or last extended, removes
+the record of a failed or dismissed job this time after its end, and ends a session that was not used for this
+time (``lynkeus.sessions.SESSION_IDLE_TIME``). ASF HyP3, a service that NASA funds, keeps its products for the
+same 14 days (``docs/research/storage.md``).
+"""
 
 JOB_TIME = 2400.0
 """The longest time that a job may run, in seconds, unless the limits of the server give another (``Limits.job_time``).
@@ -96,6 +127,9 @@ REPORT_PAUSE = 0.25
 SIZE_PAUSE = 2.0
 """The time between two measurements of the size of the files of a running job, in seconds."""
 
+NO_SPACE = "The server has too little free space on its disk for a new layer at present."
+NOT_STARTED = "The job was not started because the server has too little free space on its disk."
+SPACE_PASSED = "The job was ended because the server has too little free space on its disk."
 WAITING = "The job waits for its turn."
 STARTED = "The job has started."
 READY = "The layer is ready."
@@ -115,7 +149,7 @@ class Limits:
 
     A limit that is not given is the constant of this module, as it is when the limits are made: these
     are the limits of the project server. The first four come from its hardware; an own server
-    replaces them by the limits of its owner. The next three protect a server that many visitors
+    replaces them by the limits of its owner. The next five protect a server that many visitors
     share, and None lifts one of them. The last three are those of an own server, whose layers may
     be larger than those of the project server; without them the project server works as before.
 
@@ -125,16 +159,21 @@ class Limits:
         Largest number of jobs that run at once.
     layer_size : int
         Largest size of the files of one layer, in bytes.
-    session_size : int
-        Largest total size of the layers of one session, in bytes.
+    holder_size : int
+        Largest total size of the layers of one holder, in bytes.
     total_size : int
-        Largest total size of the layers of all sessions, in bytes.
+        Largest total size of the layers of all holders, in bytes.
     waiting_jobs : int or None
-        Largest number of jobs of all sessions that wait.
-    session_unfinished_jobs : int or None
-        Largest number of jobs of one session that wait or run.
-    session_layers : int or None
-        Largest number of layers of one session.
+        Largest number of jobs of all holders that wait.
+    holder_unfinished_jobs : int or None
+        Largest number of jobs of one holder that wait or run.
+    holder_layers : int or None
+        Largest number of layers of one holder.
+    free_space_reserve : int or None
+        Free space that the jobs leave on the disk of the folder of the files, in bytes. None: the free
+        space is not read.
+    keep_time : float or None
+        Time for which a layer and a series are kept, in seconds. None: they are kept without an end.
     layer_cells : int or None
         Largest number of cells of a layer that a job receives. None leaves the limit to the process
         (``lynkeus.harmony.MOST_CELLS``).
@@ -147,11 +186,13 @@ class Limits:
 
     running_jobs: int = field(default_factory=lambda: MAX_RUNNING_JOBS)
     layer_size: int = field(default_factory=lambda: MAX_LAYER_SIZE)
-    session_size: int = field(default_factory=lambda: MAX_SESSION_SIZE)
+    holder_size: int = field(default_factory=lambda: MAX_ACCOUNT_SIZE)
     total_size: int = field(default_factory=lambda: MAX_TOTAL_SIZE)
     waiting_jobs: int | None = field(default_factory=lambda: MAX_WAITING_JOBS)
-    session_unfinished_jobs: int | None = field(default_factory=lambda: MAX_SESSION_UNFINISHED_JOBS)
-    session_layers: int | None = field(default_factory=lambda: MAX_SESSION_LAYERS)
+    holder_unfinished_jobs: int | None = field(default_factory=lambda: MAX_ACCOUNT_UNFINISHED_JOBS)
+    holder_layers: int | None = field(default_factory=lambda: MAX_ACCOUNT_LAYERS)
+    free_space_reserve: int | None = field(default_factory=lambda: FREE_SPACE_RESERVE)
+    keep_time: float | None = field(default_factory=lambda: KEEP_TIME)
     layer_cells: int | None = None
     work_size: int | None = None
     job_time: float = field(default_factory=lambda: JOB_TIME)
@@ -164,10 +205,17 @@ class Limits:
             raise ValueError("a layer must be able to hold a cell")
         if self.job_time <= 0:
             raise ValueError("a job must have time to run")
-        counts = (self.waiting_jobs, self.session_unfinished_jobs, self.session_layers)
-        sizes = (self.layer_size, self.session_size, self.total_size, self.work_size)
+        if self.keep_time is not None and self.keep_time <= 0:
+            raise ValueError("a layer must be kept for some time")
+        counts = (self.waiting_jobs, self.holder_unfinished_jobs, self.holder_layers)
+        sizes = (self.layer_size, self.holder_size, self.total_size, self.work_size, self.free_space_reserve)
         if any(limit is not None and limit < 0 for limit in (*sizes, *counts)):
             raise ValueError("a limit cannot be negative")
+
+    @property
+    def folder_size(self) -> int:
+        """The largest size of the folder of a job while it runs, in bytes."""
+        return self.layer_size if self.work_size is None else self.work_size
 
 
 class LimitError(Exception):
@@ -195,6 +243,7 @@ class _Running:
     process: BaseProcess
     connection: Connection
     ending: Semaphore
+    writes: bool = True
     watcher: threading.Thread | None = None
     dismissed: bool = False
     ended: threading.Event = field(default_factory=threading.Event)
@@ -271,6 +320,11 @@ def _raise_when_asked(ending: Semaphore) -> None:
     signal.raise_signal(signal.SIGTERM)
 
 
+def free_space(folder: Path) -> int:
+    """Return the free space of the disk that holds a folder, in bytes."""
+    return shutil.disk_usage(folder).free
+
+
 def _size(folder: Path) -> int:
     """Return the total size of the files of a folder, in bytes."""
     total = 0
@@ -318,7 +372,7 @@ class Jobs:
     Parameters
     ----------
     store : Store
-        Record of the sessions, jobs and layers.
+        Record of the sessions, jobs, layers and series.
     files : pathlib.Path
         Folder that holds one folder for the files of each layer.
     processes : mapping of str to Process
@@ -350,13 +404,23 @@ class Jobs:
         self._spawn = multiprocessing.get_context("spawn")
 
     def start(self) -> None:
-        """Record as failed the jobs that a stop of the server interrupted, and remove files that belong to no layer."""
+        """Bring the record and the files in order after a stop of the server.
+
+        The jobs that the stop interrupted are recorded as failed, and files that belong to no layer
+        are removed. On a server that keeps its layers for a time, a layer or a series without a moment
+        of removal receives one: such a one comes from a record file of an earlier version, and it is
+        kept for the keeping time from this moment.
+        """
+        now = time.time()
         for job in self._store.unfinished_jobs():
-            self._store.fail_job(job.id, RESTARTED, time.time())
+            self._store.fail_job(job.id, RESTARTED, now)
         kept = self._store.layer_names()
         for folder in self._files.iterdir():
             if folder.name not in kept:
                 shutil.rmtree(folder, ignore_errors=True)
+        keep_time = self.limits.keep_time
+        if keep_time is not None:
+            self._store.keep_unset(now + keep_time, now)
 
     def stop(self) -> None:
         """End every running job and wait until all have ended."""
@@ -385,7 +449,7 @@ class Jobs:
 
     def submit[Inputs: BaseModel](
         self,
-        session: str,
+        holder: Holder,
         process: Process[Inputs],
         inputs: Inputs,
         response: str,
@@ -393,12 +457,12 @@ class Jobs:
         job: str | None = None,
         title: str | None = None,
     ) -> JobRecord:
-        """Record a new job of a session and start it when a place is free.
+        """Record a new job of an account or of a session and start it when a place is free.
 
         Parameters
         ----------
-        session : str
-            Name of the session.
+        holder : Holder
+            The account, or the session without an account, that starts the job.
         process : Process
             Process to run.
         inputs : pydantic.BaseModel
@@ -415,13 +479,13 @@ class Jobs:
         Raises
         ------
         LimitError
-            When a limit on jobs or on storage does not allow the job.
+            When a limit on jobs or on storage, or the free space of the disk, does not allow the job.
         """
         with self._lock:
             limits = self.limits
-            unfinished = self._store.count_unfinished_jobs(session)
-            layers = len(self._store.layers_of(session))
-            if limits.session_unfinished_jobs is not None and unfinished >= limits.session_unfinished_jobs:
+            unfinished = self._store.count_unfinished_jobs(holder)
+            layers = len(self._store.layers_of(holder))
+            if limits.holder_unfinished_jobs is not None and unfinished >= limits.holder_unfinished_jobs:
                 sentence = (
                     f"You have {unfinished} jobs that wait or run, which is the most allowed. Wait for one to finish."
                 )
@@ -431,25 +495,28 @@ class Jobs:
                     HTTPStatus.SERVICE_UNAVAILABLE, "Too many jobs wait at present. Try again in a few minutes.", 120
                 )
             if process.output == SERIES_OUTPUT:
-                if len(self._store.series_of(session)) + unfinished >= MAX_SESSION_SERIES:
-                    sentence = f"A session holds at most {MAX_SESSION_SERIES} series. Remove a series and try again."
+                if len(self._store.series_of(holder)) + unfinished >= MAX_ACCOUNT_SERIES:
+                    sentence = f"You may keep at most {MAX_ACCOUNT_SERIES} series. Remove a series and try again."
                     raise LimitError(HTTPStatus.INSUFFICIENT_STORAGE, sentence)
-            elif limits.session_layers is not None and layers + unfinished >= limits.session_layers:
-                sentence = f"A session holds at most {limits.session_layers} layers. Remove a layer and try again."
-                raise LimitError(HTTPStatus.INSUFFICIENT_STORAGE, sentence)
-            if self._store.size_of_layers(session) >= limits.session_size:
-                size = f"{limits.session_size / 1e9:g} gigabytes"
-                sentence = f"Your layers use the {size} that a session may hold. Remove a layer and try again."
-                raise LimitError(HTTPStatus.INSUFFICIENT_STORAGE, sentence)
-            if self._store.size_of_layers() >= limits.total_size:
-                raise LimitError(
-                    HTTPStatus.INSUFFICIENT_STORAGE,
-                    "The server has no space for more layers at present. Try again later.",
-                )
+            else:
+                if limits.holder_layers is not None and layers + unfinished >= limits.holder_layers:
+                    sentence = f"You may keep at most {limits.holder_layers} layers. Remove a layer and try again."
+                    raise LimitError(HTTPStatus.INSUFFICIENT_STORAGE, sentence)
+                if self._store.size_of_layers(holder) >= limits.holder_size:
+                    size = f"{limits.holder_size / 1e9:g} gigabytes"
+                    sentence = f"Your layers use the {size} that you may keep. Remove a layer and try again."
+                    raise LimitError(HTTPStatus.INSUFFICIENT_STORAGE, sentence)
+                if self._store.size_of_layers() >= limits.total_size:
+                    raise LimitError(
+                        HTTPStatus.INSUFFICIENT_STORAGE,
+                        "The server has no space for more layers at present. Try again later.",
+                    )
+                if not self._has_space(limits.folder_size):
+                    raise LimitError(HTTPStatus.INSUFFICIENT_STORAGE, NO_SPACE)
             now = time.time()
             record = JobRecord(
                 id=job or secrets.token_hex(16),
-                session=session,
+                session=holder.session,
                 process=process.id,
                 title=title or process.job_title(inputs),
                 inputs=inputs.model_dump_json(),
@@ -462,12 +529,28 @@ class Jobs:
                 finished=None,
                 updated=now,
                 layer=None,
+                owner=holder.account,
             )
             self._store.add_job(record)
-            self._store.keep_latest_jobs(session, MAX_SESSION_FINISHED_JOBS, MAX_SESSION_DISMISSED_JOBS)
+            self._store.keep_latest_jobs(holder, MAX_ACCOUNT_FINISHED_JOBS, MAX_ACCOUNT_DISMISSED_JOBS)
             self._tokens[record.id] = token
             self._start_waiting()
             return record
+
+    def _has_space(self, needed: int) -> bool:
+        """Tell whether the disk of the files has ``needed`` bytes free beyond the reserve.
+
+        Without a reserve the free space is not read. A disk whose free space cannot be read counts as
+        a disk without space, so that a fault of the disk does not start a job.
+        """
+        reserve = self.limits.free_space_reserve
+        if reserve is None:
+            return True
+        try:
+            return free_space(self._files) >= reserve + needed
+        except OSError:
+            logger.exception("The free space of the folder of the files could not be read.")
+            return False
 
     def dismiss(self, job: JobRecord) -> JobRecord:
         """End a job that waits or runs, and remove the record of a finished job.
@@ -484,8 +567,8 @@ class Jobs:
                 running.ended.set()
             return self._store.job(job.id) or job
 
-    def rename_layer(self, session: str, layer: str, title: str) -> LayerRecord | None:
-        """Give a layer of a session a new title, in its description and in its STAC record.
+    def rename_layer(self, holder: Holder, layer: str, title: str) -> LayerRecord | None:
+        """Give a layer of an account or of a session a new title, in its description and in its STAC record.
 
         The record is changed only when it holds a title, in the field
         ``title`` of its ``properties``.
@@ -493,11 +576,11 @@ class Jobs:
         Returns
         -------
         LayerRecord or None
-            The layer with its new title, or None when the session has no layer of this name.
+            The layer with its new title, or None when the holder has no layer of this name.
         """
         with self._lock:
             record = self._store.layer(layer)
-            if record is None or record.session != session:
+            if record is None or record.holder != holder:
                 return None
             description = LayerDescription.model_validate({**json.loads(record.description), "title": title})
             folder = self._files / layer
@@ -515,58 +598,138 @@ class Jobs:
             self._store.change_layer(layer, description.model_dump_json(), _size(folder))
             return self._store.layer(layer)
 
-    def remove_layer(self, session: str, layer: str) -> bool:
-        """Remove a layer of a session with its files and the record of the job that produced it.
+    def remove_layer(self, holder: Holder, layer: str) -> bool:
+        """Remove a layer of an account or of a session with its files and the record of the job that produced it.
 
         Returns
         -------
         bool
-            False when the session has no layer of this name.
+            False when the holder has no layer of this name.
         """
         record = self._store.layer(layer)
-        if record is None or record.session != session:
+        if record is None or record.holder != holder:
             return False
         self._store.remove_layer(layer)
         shutil.rmtree(self._files / layer, ignore_errors=True)
         return True
 
-    def rename_series(self, session: str, series: str, title: str) -> SeriesRecord | None:
-        """Give a series of a session a new title.
+    def rename_series(self, holder: Holder, series: str, title: str) -> SeriesRecord | None:
+        """Give a series of an account or of a session a new title.
 
         Returns
         -------
         SeriesRecord or None
-            The series with its new title, or None when the session has no series of this name.
+            The series with its new title, or None when the holder has no series of this name.
         """
         with self._lock:
             record = self._store.series(series)
-            if record is None or record.session != session:
+            if record is None or record.holder != holder:
                 return None
             description = SeriesDescription.model_validate({**json.loads(record.description), "title": title})
             self._store.change_series(series, description.model_dump_json())
             return self._store.series(series)
 
-    def remove_series(self, session: str, series: str) -> bool:
-        """Remove a series of a session and the record of the job that produced it.
+    def remove_series(self, holder: Holder, series: str) -> bool:
+        """Remove a series of an account or of a session and the record of the job that produced it.
 
         Returns
         -------
         bool
-            False when the session has no series of this name.
+            False when the holder has no series of this name.
         """
         record = self._store.series(series)
-        if record is None or record.session != session:
+        if record is None or record.holder != holder:
             return False
         self._store.remove_series(series)
         return True
 
-    def end_session(self, session: str) -> None:
-        """End the jobs of a session and remove the session with its layers, their files and its series."""
+    # The keeping time
+
+    def keep_layer(self, holder: Holder, layer: str) -> LayerRecord | None:
+        """Keep a layer of an account or of a session for the keeping time from now.
+
+        Returns
+        -------
+        LayerRecord or None
+            The layer with its new moment of removal, or None when the holder has no layer of this name.
+            On a server that keeps its layers without an end the layer is returned as it is.
+        """
+        record = self._store.layer(layer)
+        if record is None or record.holder != holder:
+            return None
+        keep_time = self.limits.keep_time
+        if keep_time is not None:
+            self._store.keep_layer(layer, time.time() + keep_time)
+        return self._store.layer(layer)
+
+    def keep_series(self, holder: Holder, series: str) -> SeriesRecord | None:
+        """Keep a series of an account or of a session for the keeping time from now.
+
+        Returns
+        -------
+        SeriesRecord or None
+            The series with its new moment of removal, or None when the holder has no series of this name.
+        """
+        record = self._store.series(series)
+        if record is None or record.holder != holder:
+            return None
+        keep_time = self.limits.keep_time
+        if keep_time is not None:
+            self._store.keep_series(series, time.time() + keep_time)
+        return self._store.series(series)
+
+    def keep_all(self, holder: Holder) -> None:
+        """Keep every layer and series of an account or of a session for the keeping time from now."""
+        keep_time = self.limits.keep_time
+        if keep_time is not None:
+            self._store.keep_all(holder, time.time() + keep_time)
+
+    def remove_passed(self, now: float | None = None) -> None:
+        """Remove what has passed its keeping time.
+
+        These are the layers and the series whose moment of removal has passed, each with its files
+        and the record of the job that produced it, and the records of the failed and of the dismissed
+        jobs that ended more than the keeping time ago. Who is signed in makes no difference.
+
+        Parameters
+        ----------
+        now : float, optional
+            Present time, in seconds since 1 January 1970 (UTC).
+        """
+        keep_time = self.limits.keep_time
+        if keep_time is None:
+            return
+        now = time.time() if now is None else now
+        for layer in self._store.layers_kept_until(now):
+            self._store.remove_layer(layer.id)
+            shutil.rmtree(self._files / layer.id, ignore_errors=True)
+        for series in self._store.series_kept_until(now):
+            self._store.remove_series(series.id)
+        self._store.remove_jobs_ended_before(now - keep_time)
+
+    def remove_content(self, holder: Holder) -> None:
+        """End the jobs of a holder, and remove its layers with their files, its series and its job records."""
         with self._lock:
-            for job in self._store.jobs_of(session):
+            for job in self._store.jobs_of(holder):
                 if job.status in ("accepted", "running"):
                     self.dismiss(job)
-            layers = self._store.layers_of(session)
+            layers = self._store.remove_content(holder)
+        for layer in layers:
+            shutil.rmtree(self._files / layer, ignore_errors=True)
+
+    def end_session(self, session: str) -> None:
+        """End a session.
+
+        What the account of the session holds stays. A session without an account holds its jobs,
+        layers and series itself: its jobs are ended, and they are removed with it, the files of the
+        layers too.
+        """
+        holder = Holder(session=session)
+        with self._lock:
+            for job in self._store.jobs_of(holder):
+                if job.status in ("accepted", "running"):
+                    self.dismiss(job)
+            layers = self._store.layers_of(holder)
             self._store.remove_session(session)
         for layer in layers:
             shutil.rmtree(self._files / layer.id, ignore_errors=True)
@@ -587,11 +750,14 @@ class Jobs:
             self._store.fail_job(job.id, FAULT, time.time())
             logger.error("Job %s names the process %s, which the server does not offer.", job.id, job.process)
             return
+        if process.output != SERIES_OUTPUT and not self._has_space(self.limits.folder_size):
+            self._store.fail_job(job.id, NOT_STARTED, time.time())
+            return
         layer = secrets.token_hex(16)
         folder = self._files / layer
         layers = {
             record.id: (description, self._files / record.id / description.url.rsplit("/", 1)[-1])
-            for record in self._store.layers_of(job.session)
+            for record in self._store.layers_of(job.holder)
             for description in [LayerDescription.model_validate_json(record.description)]
         }
         receiving, sending = self._spawn.Pipe(duplex=False)
@@ -624,7 +790,15 @@ class Jobs:
             return
         sending.close()
         self._store.start_job(job.id, STARTED, time.time())
-        running = _Running(job=job, layer=layer, folder=folder, process=worker, connection=receiving, ending=ending)
+        running = _Running(
+            job=job,
+            layer=layer,
+            folder=folder,
+            process=worker,
+            connection=receiving,
+            ending=ending,
+            writes=process.output != SERIES_OUTPUT,
+        )
         running.watcher = threading.Thread(
             target=self._watch, args=(running,), name=f"lynkeus-watch-{job.id}", daemon=True
         )
@@ -662,8 +836,11 @@ class Jobs:
             if latest - measured >= SIZE_PAUSE:
                 measured = latest
                 limits = self.limits
-                if _size(running.folder) > (limits.layer_size if limits.work_size is None else limits.work_size):
+                if _size(running.folder) > limits.folder_size:
                     failure = _too_large(limits.layer_size)
+                    break
+                if running.writes and not self._has_space(0):
+                    failure = SPACE_PASSED
                     break
         _end(running.process, running.ending)
         code = running.process.exitcode
@@ -718,10 +895,15 @@ class Jobs:
         if process is None or process.output != SERIES_OUTPUT or description.id != running.layer:
             logger.error("Job %s of the process %s named its series wrongly: %s", job.id, job.process, text)
             return FAULT
-        if len(self._store.series_of(job.session)) >= MAX_SESSION_SERIES:
-            return f"A session holds at most {MAX_SESSION_SERIES} series. Remove a series and start again."
+        if len(self._store.series_of(job.holder)) >= MAX_ACCOUNT_SERIES:
+            return f"You may keep at most {MAX_ACCOUNT_SERIES} series. Remove a series and start again."
         series = SeriesRecord(
-            id=running.layer, session=job.session, description=description.model_dump_json(), created=now
+            id=running.layer,
+            session=job.session,
+            description=description.model_dump_json(),
+            created=now,
+            owner=job.owner,
+            kept_until=self._kept_until(now),
         )
         self._store.succeed_job_with_series(job.id, SERIES_READY, series)
         return None
@@ -761,13 +943,24 @@ class Jobs:
         limits = self.limits
         if size > limits.layer_size:
             return _too_large(limits.layer_size)
-        if self._store.size_of_layers(job.session) + size > limits.session_size:
+        if self._store.size_of_layers(job.holder) + size > limits.holder_size:
             return "The layer does not fit in the space that is left for your layers. Remove a layer and start again."
         layer = LayerRecord(
-            id=running.layer, session=job.session, description=description.model_dump_json(), size=size, created=now
+            id=running.layer,
+            session=job.session,
+            description=description.model_dump_json(),
+            size=size,
+            created=now,
+            owner=job.owner,
+            kept_until=self._kept_until(now),
         )
         self._store.succeed_job(job.id, READY, layer)
         return None
+
+    def _kept_until(self, now: float) -> float | None:
+        """Return the moment until which a layer or a series made now is kept, or None when it has no end."""
+        keep_time = self.limits.keep_time
+        return None if keep_time is None else now + keep_time
 
 
 def _too_large(limit: int) -> str:

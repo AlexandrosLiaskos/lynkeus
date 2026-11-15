@@ -22,7 +22,7 @@ from pydantic import Field, StringConstraints, field_validator
 
 from lynkeus.analysis import SERIES_TOOLS, TOOLS, AnalysisFunction, SeriesFunction
 from lynkeus.harmony import MOST_CELLS, get_layer, layers_of
-from lynkeus.jobs import MAX_SESSION_LAYERS
+from lynkeus.jobs import MAX_ACCOUNT_LAYERS
 from lynkeus.layers import (
     Format,
     LayerDescription,
@@ -55,7 +55,7 @@ class ToolInputs(Format):
 
     inputs: tuple[Text, ...] = Field(
         min_length=1,
-        max_length=MAX_SESSION_LAYERS,
+        max_length=MAX_ACCOUNT_LAYERS,
         title="Input layers",
         description=(
             "The id of each input layer, in the order that the method sheet of the tool gives. A layer is given once."
@@ -90,7 +90,7 @@ class SeriesInputs(Format):
 
     inputs: tuple[Text, ...] = Field(
         min_length=2,
-        max_length=MAX_SESSION_LAYERS,
+        max_length=MAX_ACCOUNT_LAYERS,
         title="Input layers",
         description="The id of each input layer, in any order. A layer is given once.",
     )
@@ -136,7 +136,7 @@ def layer_job_title(inputs: LayerRequest) -> str:
 
 
 def run_analysis(tool: str, inputs: ToolInputs, work: Work) -> LayerDescription:
-    """Run an analysis tool on layers of the session for a job. This is the function of the process of a tool."""
+    """Run an analysis tool on layers of the account for a job. This is the function of the process of a tool."""
     return run_tool(
         ToolRun(tool=tool, inputs=inputs.inputs, title=inputs.title),
         layers=work.layers,
@@ -158,7 +158,7 @@ def input_layers(inputs: ToolInputs) -> tuple[str, ...]:
 
 
 def run_series_analysis(tool: str, inputs: SeriesInputs, work: Work) -> SeriesDescription:
-    """Run an analysis tool of the kind Series on layers of the session for a job.
+    """Run an analysis tool of the kind Series on layers of the account for a job.
 
     This is the function of the process of such a tool. The series receives the ``id`` that the work gives.
     """

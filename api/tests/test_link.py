@@ -8,9 +8,12 @@ process of ``tests/standin.py`` in operating-system processes of their own. No t
 project server or NASA.
 """
 
+import hashlib
 import json
 import re
 import secrets
+import shutil
+import sqlite3
 import ssl
 import sys
 import threading
@@ -41,9 +44,11 @@ from lynkeus.linking import (
     StartTask,
     Tasks,
 )
+from lynkeus.store import EARLIER_VERSIONS, VERSION, Holder, Store
 from tests.nasaweb import CERTIFICATES
 from tests.project import Project, project, task_name
 from tests.standin import SIGNED_IN, STAND_IN
+from tests.test_store import FILES
 
 SERVER = "0123456789abcdef"
 LIMITS = ServerLimits(running_jobs=2, storage=50_000_000, layer_size=5_000_000)
@@ -500,6 +505,59 @@ def test_layer_whose_folder_was_deleted_by_hand_is_no_longer_kept(tmp_path: Path
         assert (report.state.layers, report.state.disk_used) == (0, 0)
 
 
+@pytest.mark.parametrize("version", EARLIER_VERSIONS)
+def test_record_file_of_an_earlier_version_of_the_program_is_brought_forward_and_its_layers_stay(
+    tmp_path: Path, site: Project, version: int
+) -> None:
+    folder = tmp_path / "data"
+    pair(folder, site)
+    # The record file of the version, as a paired program left it: the session of the pairing, which has
+    # the name of the server and the digest of its key, holds the jobs and the layers.
+    path = folder / computer.RECORD
+    shutil.copyfile(FILES[version][0], path)
+    database = sqlite3.connect(path)
+    [[session]] = database.execute("SELECT DISTINCT session FROM layers").fetchall()
+    assert site.key is not None
+    digest = hashlib.sha256(site.key.encode()).hexdigest()
+    database.execute("UPDATE sessions SET id = ?, key_digest = ? WHERE id = ?", (SERVER, digest, session))
+    for table in ("jobs", "layers", *(("series",) if version == 3 else ())):
+        database.execute(f"UPDATE {table} SET session = ? WHERE session = ?", (SERVER, session))  # noqa: S608 - the names are fixed
+    kept = dict(database.execute("SELECT id, description FROM layers").fetchall())
+    database.commit()
+    database.close()
+    for name, description in kept.items():
+        (folder / computer.FILES / name).mkdir(parents=True)
+        for address in (json.loads(description)["url"], json.loads(description)["record"]):
+            (folder / computer.FILES / name / address.rsplit("/", 1)[-1]).write_bytes(b"content of " + name.encode())
+    with running(folder, site) as own:
+        report = site.report(lambda report: True, "the first report")
+        assert (report.state.layers, own.view().layers) == (2, 2)
+        # The layers of the earlier version are read and removed as before, and a new job runs.
+        first, second = kept
+        file = json.loads(kept[first])["url"].rsplit("/", 1)[-1]
+        assert read(site, first, file, 0, 100) == (b"content of " + first.encode(), 11 + len(first))
+        assert site.give(RemoveTask(id=task_name(), layer=second)) == Done(ok=True)
+        assert not (folder / computer.FILES / second).exists()
+        state = site.job(start(site))
+        assert (state.status, state.layer is not None) == ("successful", True)
+        assert site.faults == []
+    store = Store(path)
+    try:
+        database = sqlite3.connect(path)
+        assert database.execute("PRAGMA user_version").fetchone() == (VERSION,)
+        database.close()
+        layers = store.layers_of(Holder(session=SERVER))
+        assert sorted(layer.id for layer in layers) == sorted([first, state.layer.id if state.layer else ""])
+        # An own server keeps its layers without an end: no layer has a moment of removal or an account.
+        assert all((layer.kept_until, layer.owner) == (None, None) for layer in layers)
+        assert all(layer.source is not None for layer in layers)
+    finally:
+        store.close()
+    # After weeks without the program, a start removes nothing.
+    with running(folder, site) as own:
+        assert own.view().layers == 2
+
+
 # The connection
 
 
@@ -604,16 +662,18 @@ def test_limits_of_the_jobs_are_those_of_the_owner() -> None:
     assert limits == jobs.Limits(
         running_jobs=7,
         layer_size=400,
-        session_size=7_000,
+        holder_size=7_000,
         total_size=10_000,
         waiting_jobs=None,
-        session_unfinished_jobs=None,
-        session_layers=None,
+        holder_unfinished_jobs=None,
+        holder_layers=None,
+        free_space_reserve=None,
+        keep_time=None,
         layer_cells=25_000_000,
         work_size=400 + 3 * computer.layer_size(25_000_000),
         job_time=jobs.JOB_TIME,
     )
-    assert job_limits(ServerLimits(running_jobs=1, storage=10, layer_size=10), others=30).session_size == 0
+    assert job_limits(ServerLimits(running_jobs=1, storage=10, layer_size=10), others=30).holder_size == 0
 
 
 def test_cells_of_a_layer_of_the_owner_set_the_time_and_the_folder_of_a_job() -> None:

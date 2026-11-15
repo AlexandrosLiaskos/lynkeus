@@ -64,7 +64,7 @@ from lynkeus.linking import (
     Tasks,
 )
 from lynkeus.processes import Process
-from lynkeus.store import JobRecord, Store
+from lynkeus.store import Holder, JobRecord, Store
 
 PROJECT_SERVER = "https://lynkeus.nkua.cloud"
 """The address of the project server."""
@@ -417,7 +417,8 @@ def job_limits(limits: ServerLimits, others: int) -> Limits:
         The running jobs, the cells of a layer and the size of a layer of the owner. The storage of
         the owner is the largest total size, and less ``others`` it is the size left for the layers of
         the pairing. The numbers of waiting jobs, of unfinished jobs and of layers have no limit: the
-        project server decides how many jobs it passes on. Two limits follow from the cells of a
+        project server decides how many jobs it passes on. The layers are kept without an end, and the
+        free space of the disk is not read, because the owner sets the storage. Two limits follow from the cells of a
         layer. The longest time of a job is ``lynkeus.computer.job_time``. The folder of a running job
         may hold the layer and ``WORK_LAYERS`` layers of the largest number of cells without
         compression, which are the temporary files of the writing.
@@ -425,11 +426,13 @@ def job_limits(limits: ServerLimits, others: int) -> Limits:
     return Limits(
         running_jobs=limits.running_jobs,
         layer_size=limits.layer_size,
-        session_size=max(limits.storage - others, 0),
+        holder_size=max(limits.storage - others, 0),
         total_size=limits.storage,
         waiting_jobs=None,
-        session_unfinished_jobs=None,
-        session_layers=None,
+        holder_unfinished_jobs=None,
+        holder_layers=None,
+        free_space_reserve=None,
+        keep_time=None,
         layer_cells=limits.layer_cells,
         work_size=limits.layer_size + WORK_LAYERS * computer.layer_size(limits.layer_cells),
         job_time=computer.job_time(limits.layer_cells),
@@ -716,7 +719,7 @@ class Link:
 
     def _others(self, server: str) -> int:
         """Return the space that the layers of earlier pairings use, in bytes."""
-        return self._store.size_of_layers() - self._store.size_of_layers(server)
+        return self._store.size_of_layers() - self._store.size_of_layers(Holder(session=server))
 
     def _follow_tasks(self, server: str, key: str, readers: ThreadPoolExecutor, worker: ThreadPoolExecutor) -> None:
         """Keep one question for tasks open, and hand the tasks of every answer to the threads that carry them out."""
@@ -808,10 +811,10 @@ class Link:
                 with self._lock:
                     self._dismissed.add(record.id)
             elif isinstance(task, RenameTask):
-                if jobs.rename_layer(server, task.layer, task.title) is None:
+                if jobs.rename_layer(Holder(session=server), task.layer, task.title) is None:
                     return Done(ok=False, detail="The server holds no layer of this name.")
             elif isinstance(task, RemoveTask):
-                if not jobs.remove_layer(server, task.layer):
+                if not jobs.remove_layer(Holder(session=server), task.layer):
                     return Done(ok=False, detail="The server holds no layer of this name.")
             elif isinstance(task, LimitsTask):
                 with self._lock:
@@ -851,7 +854,7 @@ class Link:
             )
             return Done(ok=False, detail=sentence)
         try:
-            jobs.submit(server, process, inputs, "document", task.token, job=task.job, title=task.title)
+            jobs.submit(Holder(session=server), process, inputs, "document", task.token, job=task.job, title=task.title)
         except LimitError as error:
             return Done(ok=False, detail=str(error)[:500])
         return Done(ok=True)
@@ -953,7 +956,7 @@ class Link:
         """Return the jobs whose state the project server has not yet acknowledged, the oldest change first."""
         with self._lock:
             dismissed = [job for name in self._dismissed if (job := self._store.job(name)) is not None]
-            jobs = [*self._store.jobs_of(server), *dismissed]
+            jobs = [*self._store.jobs_of(Holder(session=server)), *dismissed]
             changed = [job for job in jobs if self._acknowledged.get(job.id) != job.updated]
         return sorted(changed, key=lambda job: job.updated)
 
