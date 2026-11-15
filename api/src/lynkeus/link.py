@@ -17,6 +17,7 @@ import ipaddress
 import logging
 import socket
 import ssl
+import sys
 import threading
 import time
 import urllib.parse
@@ -376,10 +377,12 @@ class ProjectServer:
             if sock is not None:
                 with contextlib.suppress(OSError):
                     sock.shutdown(socket.SHUT_RDWR)
-                # On Linux and macOS the shutdown ends the wait of the other thread. On Windows only the
-                # closing of the socket does, and the answer that the thread reads would keep it open.
-                with contextlib.suppress(OSError):
-                    socket.close(sock.detach())
+                # On Linux and macOS the shutdown ends the wait of the other thread, and closing the socket
+                # under that thread would leave it waiting on macOS. On Windows only the closing of the socket
+                # ends the wait, and the answer that the thread reads would keep the socket open.
+                if sys.platform == "win32":
+                    with contextlib.suppress(OSError):
+                        socket.close(sock.detach())
             with contextlib.suppress(OSError):
                 connection.close()
 
