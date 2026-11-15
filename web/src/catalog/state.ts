@@ -1,8 +1,13 @@
 import { passFocus } from "../shared/dock/dock";
 import { createStore } from "../shared/store";
 
-/** The ids of the elements of the three sections of the Catalog pane. */
-export const SECTIONS = { products: "catalog-products", jobs: "catalog-jobs", layers: "catalog-layers" } as const;
+/** The ids of the elements of the four sections of the Catalog pane. */
+export const SECTIONS = {
+  products: "catalog-products",
+  jobs: "catalog-jobs",
+  layers: "catalog-layers",
+  series: "catalog-series",
+} as const;
 
 /** The id of the layer that is marked in the list of layers, or null. */
 export const markedLayerStore = createStore<string | null>(null);

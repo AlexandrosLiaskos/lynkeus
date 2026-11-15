@@ -7,9 +7,15 @@ export type AnalysisToolId = `${Measurement}-${"state" | "change" | "series" | "
 
 /**
  * The four tools of a measurement, in the order that every group of the Analysis tab follows. A measurement is
- * made on one date or from one pair of dates.
+ * made on one date or from one pair of dates. `state` replaces the description of the first button where the
+ * name of the quantity alone does not say what the map shows.
  */
-function tools(measurement: Measurement, quantity: string, from: "date" | "pair"): (Tool & { id: AnalysisToolId })[] {
+function tools(
+  measurement: Measurement,
+  quantity: string,
+  from: "date" | "pair",
+  state?: string,
+): (Tool & { id: AnalysisToolId })[] {
   const [one, two, many] =
     from === "date"
       ? ["one date", "two dates", "many dates"]
@@ -19,7 +25,7 @@ function tools(measurement: Measurement, quantity: string, from: "date" | "pair"
       id: `${measurement}-state`,
       label: from === "date" ? "One date" : "One pair",
       icon: "image",
-      description: `Maps the ${quantity} of ${one}.`,
+      description: state ?? `Maps the ${quantity} of ${one}.`,
     },
     {
       id: `${measurement}-change`,
@@ -42,6 +48,10 @@ function tools(measurement: Measurement, quantity: string, from: "date" | "pair"
   ];
 }
 
+/** What the button One pair of the group Surface displacement does, in the words of its method sheet. */
+export const DISPLACEMENT_STATE =
+  "Maps the movement of the ground toward or away from the radar between the two dates of one pair.";
+
 /** The Analysis tab: one group for each quantity that NISAR measures. */
 export const ANALYSIS_TAB: RibbonTab = {
   id: "analysis",
@@ -49,7 +59,10 @@ export const ANALYSIS_TAB: RibbonTab = {
   groups: [
     { label: "Backscatter", tools: tools("backscatter", "radar backscatter", "date") },
     { label: "Coherence", tools: tools("coherence", "interferometric coherence", "pair") },
-    { label: "Surface displacement", tools: tools("displacement", "surface displacement", "pair") },
+    {
+      label: "Surface displacement",
+      tools: tools("displacement", "surface displacement", "pair", DISPLACEMENT_STATE),
+    },
     { label: "Soil moisture", tools: tools("soil-moisture", "soil moisture", "date") },
   ],
 };

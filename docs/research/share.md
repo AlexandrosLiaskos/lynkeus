@@ -157,7 +157,9 @@ and Safari were not tried.
 | NISAR_L3_SME2_PROVISIONAL_V1 | 10.5067/NIL3SME2-P1 | NISAR Provisional Soil Moisture (Version 1) |
 
 The DOI of the provisional GUNW collection has "NIL1" where the others have "NIL2". It is written here as CMR
-gives it.
+gives it. doi.org does not resolve it (HTTP 404 on 15 November 2026), and it resolves `10.5067/NIL2GUNW-P1`,
+which the products of that collection carry in their field `productDoi` (part 4.1 of
+`analysis-coherence-change.md`). Lynkeus therefore uses `10.5067/NIL2GUNW-P1` for this collection.
 
 ## Legend on a picture and on a layout
 

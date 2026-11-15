@@ -1,3 +1,4 @@
+import { utcDay } from "../shared/days";
 import { isLayerDescription, type LayerDescription } from "../shared/layer";
 import { isServerName, type ServerName } from "../shared/servers";
 import { createStore } from "../shared/store";
@@ -34,6 +35,8 @@ export interface Job {
   inputs?: Record<string, unknown> | null;
   /** The id of the layer that a successful job produced. */
   layer?: string | null;
+  /** The id of the series that a successful job of a Series tool produced, in the place of `layer`. */
+  series?: string | null;
   /** The own server of the visitor on which the job runs, or null or absent for the project server. */
   server?: ServerName | null;
 }
@@ -103,7 +106,7 @@ export function isJob(value: unknown): value is Job {
   if (!isRecord(value)) {
     return false;
   }
-  const { progress, inputs, layer, server } = value;
+  const { progress, inputs, layer, series, server } = value;
   return (
     [value.jobID, value.processID, value.title].every(isText) &&
     value.type === "process" &&
@@ -117,6 +120,7 @@ export function isJob(value: unknown): value is Job {
     progress <= 100 &&
     (isAbsent(inputs) || isRecord(inputs)) &&
     (isAbsent(layer) || isText(layer)) &&
+    (isAbsent(series) || isText(series)) &&
     (isAbsent(server) || isServerName(server))
   );
 }
@@ -171,13 +175,6 @@ export function formatRunTime(seconds: number): string {
   return `${String(Math.floor(seconds / 3600))} h ${String(Math.floor((seconds % 3600) / 60))} min`;
 }
 
-const DAY_FORMAT = new Intl.DateTimeFormat("en-GB", {
-  day: "numeric",
-  month: "short",
-  year: "numeric",
-  timeZone: "UTC",
-});
-
 const TIME_FORMAT = new Intl.DateTimeFormat("en-GB", {
   hour: "2-digit",
   minute: "2-digit",
@@ -189,7 +186,7 @@ const TIME_FORMAT = new Intl.DateTimeFormat("en-GB", {
 /** Write a date-time in Coordinated Universal Time, in the form "14 Nov 2026, 16:20:05 UTC". */
 export function formatMoment(moment: string): string {
   const date = new Date(moment);
-  return `${DAY_FORMAT.format(date)}, ${TIME_FORMAT.format(date)} UTC`;
+  return `${utcDay(date)}, ${TIME_FORMAT.format(date)} UTC`;
 }
 
 /** Return the jobs in the order asked. Jobs that are equal in that order keep the order of the list. */

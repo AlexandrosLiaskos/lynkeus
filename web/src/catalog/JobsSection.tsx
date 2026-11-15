@@ -21,6 +21,7 @@ import {
   type JobStatus,
 } from "../data/jobs";
 import { layersStore } from "../data/layers";
+import { seriesStore, showSeries } from "../data/series";
 import { wordsOf } from "../data/service";
 import { Dialog } from "../shared/dialog/Dialog";
 import { Icon } from "../shared/icon/Icon";
@@ -118,7 +119,8 @@ interface JobItemProps {
 /**
  * One job of the list: its name, its state in words, a bar of its progress while it waits or runs, and one
  * line about it. The item shows the one command that fits the state of the job: Cancel while the job waits or
- * runs, Show layer when its layer is in the list of layers, and otherwise Run again. Its other commands stand
+ * runs, Show layer when its layer is in the list of layers, Show series when its series is in the list of
+ * series, and otherwise Run again. Its other commands stand
  * in the menu "More". A visitor who has an own server also reads on which server the job runs, and a job of a
  * server that is not connected says so. Run again starts the job on the server on which it ran.
  */
@@ -128,8 +130,9 @@ function JobItem({ job, onDetails, onGone }: JobItemProps) {
   const away = awayWords(job, servers);
   const [busy, setBusy] = useState(false);
   const made = useStore(layersStore).some((entry) => entry.layer.id === job.layer);
+  const listed = useStore(seriesStore).some((item) => item.series.id === job.series);
   const unfinished = isUnfinished(job);
-  const { inputs, layer } = job;
+  const { inputs, layer, series } = job;
 
   const act = (action: () => Promise<unknown>, done: string | null, failure: string, gone = false) => {
     if (busy) {
@@ -165,9 +168,11 @@ function JobItem({ job, onDetails, onGone }: JobItemProps) {
     ? { label: "Cancel", run: cancel }
     : made && layer
       ? { label: "Show layer", run: () => showLayer(layer) }
-      : runAgain
-        ? { label: "Run again", run: runAgain }
-        : null;
+      : listed && series
+        ? { label: "Show series", run: () => showSeries(series) }
+        : runAgain
+          ? { label: "Run again", run: runAgain }
+          : null;
   const more: MenuButtonItem[] = [
     { label: "Details", onSelect: onDetails },
     ...(!unfinished && runAgain && main?.run !== runAgain ? [{ label: "Run again", onSelect: runAgain }] : []),

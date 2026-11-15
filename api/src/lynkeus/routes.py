@@ -1,11 +1,12 @@
-"""The addresses of the sessions, the processes, the jobs and the layers.
+"""The addresses of the sessions, the processes, the jobs, the layers and the series.
 
 The processes and the jobs follow OGC API - Processes, Part 1: Core
 (OGC 18-062r2), with the requirement classes Core, JSON, OGC Process
 Description, Job list and Dismiss. Every process is executed
 asynchronously: a request creates a job, and the result of the job is the
-description of one layer. The files of a layer are served by the web server
-of the site, not by these addresses.
+description of one layer or, for a process whose output is ``series``, the
+description of one series. The files of a layer are served by the web server
+of the site, not by these addresses. A series has no files.
 
 A job runs on the project server or on an own server of the visitor
 (``docs/Own_Servers.md``). The state of a job and every entry of the list of
@@ -39,11 +40,19 @@ from fastapi.responses import JSONResponse
 
 from lynkeus.earthdata import KEYS_ADDRESS, KeysUnavailableError, TokenChecker, TokenRefusedError
 from lynkeus.jobs import Jobs, LimitError
-from lynkeus.processes import CELLS_PARAMETER, JSON, OUTPUT, InputError, Process
+from lynkeus.processes import CELLS_PARAMETER, JSON, OUTPUT, SERIES_OUTPUT, InputError, OutputName, Process
 from lynkeus.references import Reader, UnreadableReferenceError, read_reference
 from lynkeus.servers import SITE, ServerRefusedError, Servers, layer_cells, name_of
 from lynkeus.sessions import COOKIE, COOKIE_PATH, SESSION_IDLE_TIME, Sessions, TooManySessionsError
-from lynkeus.store import JobRecord, LayerRecord, ServerJobRecord, ServerLayerRecord, ServerRecord, Store
+from lynkeus.store import (
+    JobRecord,
+    LayerRecord,
+    SeriesRecord,
+    ServerJobRecord,
+    ServerLayerRecord,
+    ServerRecord,
+    Store,
+)
 
 FOLDER_SETTING = "LYNKEUS_DATA_FOLDER"
 """The environment variable that names the folder of the record file and of the files of the layers.
@@ -64,7 +73,7 @@ MAX_BODY_SIZE = 65536
 """The largest size of a request body, in bytes. An Earthdata token has about 1000 characters."""
 
 MAX_TITLE_LENGTH = 200
-"""The largest length of the title of a layer, in characters."""
+"""The largest length of the title of a layer or of a series, in characters."""
 
 DEFAULT_LIMIT = 100
 """The number of processes or jobs in one answer when the request names none."""
@@ -379,14 +388,27 @@ def _time(seconds: float) -> str:
     return datetime.fromtimestamp(int(seconds), UTC).isoformat().replace("+00:00", "Z")
 
 
-def _status_info(job: JobRecord | ServerJobRecord, server: ServerRecord | None = None) -> dict[str, Any]:
+def _status_info(
+    job: JobRecord | ServerJobRecord, server: ServerRecord | None = None, output: OutputName = OUTPUT
+) -> dict[str, Any]:
     """Return the state of a job (statusInfo.yaml).
 
     Four fields are added to those of the standard: ``title`` names the job
     for the visitor, ``inputs`` holds the inputs with which the job was
     started, ``layer`` holds the name of the layer of a successful job, and
     ``server`` names the own server on which the job runs, or is ``null``
-    for the project server.
+    for the project server. A successful job of a process whose output is
+    ``series`` has the field ``series``, with the name of its series, in the
+    place of ``layer``.
+
+    Parameters
+    ----------
+    job : JobRecord or ServerJobRecord
+        The job.
+    server : ServerRecord or None
+        The own server on which the job runs, or None for the project server.
+    output : {"layer", "series"}
+        Name of the one output of the process of the job.
     """
     address = f"/api/jobs/{job.id}"
     if job.status == "dismissed":
@@ -408,7 +430,7 @@ def _status_info(job: JobRecord | ServerJobRecord, server: ServerRecord | None =
         "updated": _time(job.updated),
         "progress": job.progress,
         "inputs": json.loads(job.inputs),
-        **({"layer": job.layer} if job.status == "successful" and job.layer else {}),
+        **({output: job.layer} if job.status == "successful" and job.layer else {}),
         "server": _server_name(server),
         "links": links,
     }
@@ -427,6 +449,11 @@ def _layer_entry(layer: LayerRecord | ServerLayerRecord, server: ServerRecord | 
         "created": _time(layer.created),
         "server": _server_name(server),
     }
+
+
+def _series_entry(series: SeriesRecord) -> dict[str, Any]:
+    """Return a series of a session: its description and its time of creation."""
+    return {"series": json.loads(series.description), "created": _time(series.created)}
 
 
 def _instant(text: str) -> float:
@@ -493,7 +520,7 @@ def install(
     read: Reader = read_reference,
     site: str | None = None,
 ) -> None:
-    """Add the addresses of the sessions, the processes, the jobs and the layers to the web service.
+    """Add the addresses of the sessions, the processes, the jobs, the layers and the series to the web service.
 
     Parameters
     ----------
@@ -682,17 +709,18 @@ def install(
             detail = "The request body holds the fields inputs, outputs, response and subscriber only."
             detail += ' The field response is "raw" or "document".'
             raise RefusedError(HTTPStatus.BAD_REQUEST, detail)
-        outputs = body.get("outputs", {OUTPUT: {}})
-        if not isinstance(outputs, dict) or set(outputs) != {OUTPUT} or not isinstance(outputs[OUTPUT], dict):
+        output = process.output
+        outputs = body.get("outputs", {output: {}})
+        if not isinstance(outputs, dict) or set(outputs) != {output} or not isinstance(outputs[output], dict):
             raise RefusedError(
                 HTTPStatus.BAD_REQUEST,
-                f"The field outputs, when given, must name the one output of the process, which is {OUTPUT}.",
+                f"The field outputs, when given, must name the one output of the process, which is {output}.",
             )
-        chosen = outputs[OUTPUT]
+        chosen = outputs[output]
         if chosen.get("transmissionMode", "value") != "value" or chosen.get("format", {"mediaType": JSON}) != {
             "mediaType": JSON
         }:
-            raise RefusedError(HTTPStatus.BAD_REQUEST, f"The output {OUTPUT} is given by value only, as {JSON}.")
+            raise RefusedError(HTTPStatus.BAD_REQUEST, f"The output {output} is given by value only, as {JSON}.")
         try:
             inputs = await asyncio.to_thread(process.read_inputs, body.get("inputs", {}), service.read)
         except (InputError, UnreadableReferenceError) as error:
@@ -703,6 +731,13 @@ def install(
             token = service.sessions.token(known) if known else None
             if token is None:
                 raise RefusedError(HTTPStatus.UNAUTHORIZED, "Sign in to Earthdata to start this job.", headers=_SIGN_IN)
+        if output == SERIES_OUTPUT:
+            # A report of an own server carries the description of a layer and no other result
+            # (lynkeus.linking.JobState), so a series is computed on the project server, from its layers.
+            if wanted not in (None, "project"):
+                detail = "A series is computed on the project server only, so the parameter server must be absent"
+                raise RefusedError(HTTPStatus.UNPROCESSABLE_CONTENT, f"{detail} or the word project.")
+            wanted = "project"
         known = _session(request)
         kept = [layer.id for layer in service.store.layers_of(known)] if known else []
         job: JobRecord | ServerJobRecord
@@ -722,7 +757,12 @@ def install(
         preferences = {part.split(";")[0].strip().lower() for part in request.headers.get("prefer", "").split(",")}
         if "respond-async" in preferences:
             headers["Preference-Applied"] = "respond-async"
-        return _answer(request, _status_info(job, own), HTTPStatus.CREATED, headers)
+        return _answer(request, _status_info(job, own, output), HTTPStatus.CREATED, headers)
+
+    def output_of(request: Request, job: JobRecord | ServerJobRecord) -> OutputName:
+        """Return the name of the one output of the process of a job."""
+        process = _service(request).processes.get(job.process)
+        return process.output if process is not None else OUTPUT
 
     def job_of(request: Request, name: str) -> tuple[JobRecord | ServerJobRecord, ServerRecord | None]:
         """Return a job of the visitor of the request, and its own server when it runs on one.
@@ -760,33 +800,39 @@ def install(
             jobs += store.server_jobs_of(server)
         jobs.sort(key=lambda job: job.created, reverse=True)
         page, links = _page(request, _selected_jobs(request, jobs), "Jobs of the session")
-        infos = [_status_info(job, own[job.server] if isinstance(job, ServerJobRecord) else None) for job in page]
+        infos = [
+            _status_info(job, own[job.server] if isinstance(job, ServerJobRecord) else None, output_of(request, job))
+            for job in page
+        ]
         return _answer(request, {"jobs": infos, "links": links}, headers=_link_header(links))
 
     @router.get("/jobs/{name}")
     def job_status(request: Request, name: str) -> Response:
         """Return the state of a job."""
-        info = _status_info(*job_of(request, name))
+        job, server = job_of(request, name)
+        info = _status_info(job, server, output_of(request, job))
         return _answer(request, info, headers=_link_header(info["links"]))
 
     @router.get("/jobs/{name}/results")
     def job_results(request: Request, name: str) -> Response:
-        """Return the description of the layer that a successful job produced."""
+        """Return the description of the layer, or of the series, that a successful job produced."""
         job, _ = job_of(request, name)
         if job.status in ("accepted", "running"):
             raise RefusedError(HTTPStatus.NOT_FOUND, "The job has not finished yet.", f"{_EXCEPTION}result-not-ready")
         if job.status == "failed":
             raise RefusedError(HTTPStatus.INTERNAL_SERVER_ERROR, job.message)
-        store = _service(request).store
-        layer: LayerRecord | ServerLayerRecord | None
+        output, store = output_of(request, job), _service(request).store
+        result: LayerRecord | ServerLayerRecord | SeriesRecord | None
         if isinstance(job, ServerJobRecord):
-            layer = store.server_layer(job.server, job.layer or "")
+            result = store.server_layer(job.server, job.layer or "")
+        elif output == SERIES_OUTPUT:
+            result = store.series(job.layer or "")
         else:
-            layer = store.layer(job.layer or "")
-        if layer is None:
-            raise RefusedError(HTTPStatus.GONE, "The layer of this job was removed.")
-        description = json.loads(layer.description)
-        return _answer(request, description if job.response == "raw" else {OUTPUT: {"value": description}})
+            result = store.layer(job.layer or "")
+        if result is None:
+            raise RefusedError(HTTPStatus.GONE, f"The {output} of this job was removed.")
+        description = json.loads(result.description)
+        return _answer(request, description if job.response == "raw" else {output: {"value": description}})
 
     @router.delete("/jobs/{name}")
     async def job_dismissal(request: Request, name: str) -> Response:
@@ -797,7 +843,8 @@ def install(
         job, server = job_of(request, name)
         if isinstance(job, ServerJobRecord):
             return _answer(request, _status_info(_service(request).servers.dismiss(job), server))
-        return _answer(request, _status_info(await asyncio.to_thread(_service(request).jobs.dismiss, job)))
+        dismissed = await asyncio.to_thread(_service(request).jobs.dismiss, job)
+        return _answer(request, _status_info(dismissed, None, output_of(request, dismissed)))
 
     @router.get("/layers")
     def layer_list(request: Request) -> Response:
@@ -850,6 +897,35 @@ def install(
             await service.servers.remove_layer(*kept)
         except ServerRefusedError as error:
             raise refusal_of(error) from None
+        return _answer(request, None, HTTPStatus.NO_CONTENT)
+
+    @router.get("/series")
+    def series_list(request: Request) -> Response:
+        """Return the series of the session, the newest first, each with its description and time of creation."""
+        session = _session(request)
+        series = _service(request).store.series_of(session) if session else []
+        return _answer(request, {"series": [_series_entry(entry) for entry in series]})
+
+    @router.patch("/series/{name}")
+    async def series_renaming(request: Request, name: str) -> Response:
+        """Give a series of the session a new title."""
+        body = await _body(request)
+        title = body.get("title")
+        if set(body) != {"title"} or not isinstance(title, str) or not 0 < len(title.strip()) <= MAX_TITLE_LENGTH:
+            detail = f'The request body must be {{"title": "..."}} with a title of 1 to {MAX_TITLE_LENGTH} characters.'
+            raise RefusedError(HTTPStatus.BAD_REQUEST, detail)
+        session = _session(request)
+        series = _service(request).jobs.rename_series(session, name, title.strip()) if session else None
+        if series is None:
+            raise RefusedError(HTTPStatus.NOT_FOUND, "Your session has no series of this name.")
+        return _answer(request, _series_entry(series))
+
+    @router.delete("/series/{name}")
+    def series_removal(request: Request, name: str) -> Response:
+        """Remove a series of the session."""
+        session = _session(request)
+        if session is None or not _service(request).jobs.remove_series(session, name):
+            raise RefusedError(HTTPStatus.NOT_FOUND, "Your session has no series of this name.")
         return _answer(request, None, HTTPStatus.NO_CONTENT)
 
     app.include_router(router)

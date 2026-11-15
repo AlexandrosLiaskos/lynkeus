@@ -4,8 +4,8 @@ import { beforeEach, expect, test } from "vitest";
 import { Ribbon } from "../ribbon/Ribbon";
 import { dockStore, resetDock } from "../shared/dock/dock";
 import { useAnalysisActions } from "./actions";
-import { ANALYSIS_TAB } from "./tab";
-import { FINISHED_TOOLS } from "./tools";
+import { ANALYSIS_TAB, DISPLACEMENT_STATE } from "./tab";
+import { SHEET_TOOLS } from "./series";
 
 /** The Analysis tab as the page holds it: its buttons with their actions. */
 function AnalysisTab() {
@@ -19,18 +19,28 @@ function buttonsOf(group: string): HTMLElement[] {
 
 beforeEach(resetDock);
 
-test("exactly the buttons of the three finished tools have an action", () => {
+test("exactly the buttons of the nine finished tools have an action", () => {
   const actions = renderHook(useAnalysisActions).result.current;
-  expect(Object.keys(actions)).toEqual(["backscatter-state", "backscatter-change", "coherence-state"]);
-  expect(Object.keys(actions)).toEqual([...FINISHED_TOOLS]);
+  expect(Object.keys(actions)).toEqual([
+    "backscatter-state",
+    "backscatter-change",
+    "coherence-state",
+    "coherence-change",
+    "displacement-state",
+    "soil-moisture-state",
+    "soil-moisture-change",
+    "backscatter-series",
+    "coherence-series",
+  ]);
+  expect(Object.keys(actions)).toEqual([...SHEET_TOOLS]);
   const declared = ANALYSIS_TAB.groups.flatMap(({ tools }) => tools.map(({ id }) => id));
   expect(declared).toHaveLength(16);
-  for (const tool of FINISHED_TOOLS) {
+  for (const tool of SHEET_TOOLS) {
     expect(declared).toContain(tool);
   }
 });
 
-test("the three finished buttons are active, and every other button of the tab is inactive", () => {
+test("the nine finished buttons are active, and every other button of the tab is inactive", () => {
   render(<AnalysisTab />);
   const inactive = Object.fromEntries(
     ANALYSIS_TAB.groups.map(({ label }) => [
@@ -39,27 +49,96 @@ test("the three finished buttons are active, and every other button of the tab i
     ]),
   );
   expect(inactive).toEqual({
-    Backscatter: [false, false, true, true],
-    Coherence: [false, true, true, true],
-    "Surface displacement": [true, true, true, true],
-    "Soil moisture": [true, true, true, true],
+    Backscatter: [false, false, false, true],
+    Coherence: [false, false, false, true],
+    "Surface displacement": [false, true, true, true],
+    "Soil moisture": [false, false, true, true],
   });
 });
 
 test("the button of a finished tool opens the tool pane of that tool, and an inactive button opens none", async () => {
   render(<AnalysisTab />);
   const [oneDate, change, series] = buttonsOf("Backscatter");
-  const [onePair, coherenceChange] = buttonsOf("Coherence");
-  if (!oneDate || !change || !series || !onePair || !coherenceChange) {
-    throw new Error("The tab does not hold the buttons of its two first groups.");
+  const [onePair, coherenceChange, coherenceSeries] = buttonsOf("Coherence");
+  const [displacement, displacementChange] = buttonsOf("Surface displacement");
+  const [moisture, moistureChange, , moistureMap] = buttonsOf("Soil moisture");
+  if (
+    !oneDate ||
+    !change ||
+    !series ||
+    !onePair ||
+    !coherenceChange ||
+    !coherenceSeries ||
+    !displacement ||
+    !displacementChange ||
+    !moisture ||
+    !moistureChange ||
+    !moistureMap
+  ) {
+    throw new Error("The tab does not hold the buttons of its four groups.");
   }
+  const opened = ["backscatter-state", "backscatter-change", "coherence-state"];
   await userEvent.click(oneDate);
   expect(dockStore.get().tools).toEqual(["backscatter-state"]);
   await userEvent.click(change);
   expect(dockStore.get().tools).toEqual(["backscatter-state", "backscatter-change"]);
   await userEvent.click(onePair);
-  expect(dockStore.get().tools).toEqual(["backscatter-state", "backscatter-change", "coherence-state"]);
-  await userEvent.click(series);
+  expect(dockStore.get().tools).toEqual(opened);
   await userEvent.click(coherenceChange);
-  expect(dockStore.get().tools).toEqual(["backscatter-state", "backscatter-change", "coherence-state"]);
+  expect(dockStore.get().tools).toEqual([...opened, "coherence-change"]);
+  await userEvent.click(moisture);
+  expect(dockStore.get().tools).toEqual([...opened, "coherence-change", "soil-moisture-state"]);
+  await userEvent.click(moistureChange);
+  const maps = [...opened, "coherence-change", "soil-moisture-state", "soil-moisture-change"];
+  expect(dockStore.get().tools).toEqual(maps);
+  await userEvent.click(series);
+  expect(dockStore.get().tools).toEqual([...maps, "backscatter-series"]);
+  await userEvent.click(coherenceSeries);
+  const all = [...maps, "backscatter-series", "coherence-series"];
+  expect(dockStore.get().tools).toEqual(all);
+  await userEvent.click(displacementChange);
+  await userEvent.click(moistureMap);
+  expect(dockStore.get().tools).toEqual(all);
+  await userEvent.click(displacement);
+  expect(dockStore.get().tools).toEqual([...all, "displacement-state"]);
+});
+
+test("the button One pair of Surface displacement says in one sentence what its map shows", () => {
+  const group = ANALYSIS_TAB.groups.find(({ label }) => label === "Surface displacement");
+  expect(group?.tools.map(({ id, description }) => [id, description])).toEqual([
+    ["displacement-state", DISPLACEMENT_STATE],
+    ["displacement-change", "Maps the change in surface displacement between two pairs of dates."],
+    ["displacement-series", "Plots the surface displacement of many pairs of dates, at a point or for the area."],
+    [
+      "displacement-map",
+      "Maps classes that a published algorithm of the NISAR science team derives from the surface displacement.",
+    ],
+  ]);
+  expect(DISPLACEMENT_STATE).toBe(
+    "Maps the movement of the ground toward or away from the radar between the two dates of one pair.",
+  );
+  expect(DISPLACEMENT_STATE).toMatch(/^[A-Z][^.]*\.$/);
+});
+
+test("the buttons of the three new tools say in one sentence what the tool maps", () => {
+  const described = Object.fromEntries(
+    ANALYSIS_TAB.groups.flatMap(({ tools }) => tools.map(({ id, description }) => [id, description])),
+  );
+  expect(described["coherence-change"]).toBe(
+    "Maps the change in interferometric coherence between two pairs of dates.",
+  );
+  expect(described["soil-moisture-state"]).toBe("Maps the soil moisture of one date.");
+  expect(described["soil-moisture-change"]).toBe("Maps the change in soil moisture between two dates.");
+});
+
+test("the buttons of the two Series tools say in one sentence what the tool plots", () => {
+  const described = Object.fromEntries(
+    ANALYSIS_TAB.groups.flatMap(({ tools }) => tools.map(({ id, description }) => [id, description])),
+  );
+  expect(described["backscatter-series"]).toBe(
+    "Plots the radar backscatter of many dates, at a point or for the area.",
+  );
+  expect(described["coherence-series"]).toBe(
+    "Plots the interferometric coherence of many pairs of dates, at a point or for the area.",
+  );
 });

@@ -3,8 +3,11 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { jobsFaultStore, jobsStore, loadJobs, resetJobs } from "../data/jobs";
 import { loadLayers, resetLayers } from "../data/layers";
+import { loadSeries, resetSeries, SERIES_PANE, shownSeriesStore } from "../data/series";
+import { series, seriesItem } from "../data/testSeries";
 import { job, layer, standIn, type StandIn } from "../data/testSession";
 import { LABORATORY, OFFICE, OFFICE_NAME, SERVERS } from "../servers/testServers";
+import { dockStore, resetDock } from "../shared/dock/dock";
 import { messagesStore } from "../shared/messages/messages";
 import { serversStore } from "../shared/servers";
 import { jobGroups } from "./details";
@@ -45,8 +48,10 @@ const FAILED = job({
 });
 
 beforeEach(() => {
+  resetDock();
   resetJobs();
   resetLayers();
+  resetSeries();
   serversStore.set(null);
   markedLayerStore.set(null);
   layersOpenStore.set(true);
@@ -429,4 +434,38 @@ test("the details of a job name its server", () => {
     );
   expect(rows(jobGroups(RUNNING))).toContain("Job / Server: Project server");
   expect(rows(jobGroups({ ...RUNNING, server: OFFICE_NAME }))).toContain("Job / Server: Office computer");
+});
+
+test("a successful job of a Series tool leads to its series, and its details name the series", async () => {
+  const made = job({
+    jobID: "plot",
+    processID: "backscatter-series",
+    title: "Series of backscatter",
+    status: "successful",
+    message: "The series is ready.",
+    progress: 100,
+    finished: "2026-11-15T13:02:11Z",
+    inputs: { inputs: ["first", "second"], title: "Series of backscatter", point: null },
+    series: series().id,
+  });
+  await show([made]);
+  // Before the list of series holds the series, the item offers to run the job again.
+  expect(commandsOf("Series of backscatter").queryByRole("button", { name: "Show series" })).toBeNull();
+  expect(commandsOf("Series of backscatter").getByRole("button", { name: "Run again" })).toBeDefined();
+  server.series = [seriesItem()];
+  await act(() => loadSeries());
+  await userEvent.click(commandsOf("Series of backscatter").getByRole("button", { name: "Show series" }));
+  expect(shownSeriesStore.get()).toBe(series().id);
+  expect(dockStore.get().tools).toContain(SERIES_PANE);
+  expect(await moreOf("Series of backscatter")).toEqual(["Details", "Run again", "Remove"]);
+  const groups = jobGroups(made);
+  expect(groups.map(({ title, rows }) => [title, rows.map(({ name }) => name)])).toContainEqual([
+    "Identifiers",
+    ["Identifier of the series", "Identifier of the job"],
+  ]);
+  expect(groups.find(({ title }) => title === "Inputs")?.rows.map(({ name, value }) => [name, value])).toEqual([
+    ["Input layers", "first, second"],
+    ["Name of the result", "Series of backscatter"],
+    ["Point", "None"],
+  ]);
 });

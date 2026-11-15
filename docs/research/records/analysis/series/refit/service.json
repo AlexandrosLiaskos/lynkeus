@@ -1,0 +1,24 @@
+{
+  "what": "The series jobs of 15 Nov 2026 run again on a private copy of the web service built from the branch series",
+  "served_commit": "a8ef2290d4db17cfaf3bac193858b74e0b746b8c",
+  "working_tree_changes": [],
+  "served_api_sha256": "b8ad778d8b994c665cdbeeab5109e94cd0be26d7720f427055732d2fe66c6981",
+  "record_file_version_before": 1,
+  "record_file_version_after": 3,
+  "memory_peak_bytes": 645763072,
+  "started": "2026-11-15T13:01:58Z",
+  "ended": "2026-11-15T13:03:22Z",
+  "processes": [
+    "get-layer",
+    "backscatter-state",
+    "backscatter-change",
+    "coherence-state",
+    "coherence-change",
+    "soil-moisture-state",
+    "soil-moisture-change",
+    "backscatter-series",
+    "coherence-series"
+  ],
+  "series_of_the_session_at_the_end": 26,
+  "container": "image built from api/ of the commit, read-only file system, user 10001, init process, 2 gigabytes of memory, one processor, port bound to the machine itself"
+}

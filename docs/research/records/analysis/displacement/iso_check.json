@@ -1,0 +1,329 @@
+{
+ "made": "2026-11-15T10:33:58Z",
+ "products": {
+  "pilot_gunw_v1": {
+   "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+   "hdf5_centerFrequency": "1239000000.0",
+   "http_status": 200,
+   "sha256": "10b0cf58f4ebe69710e891ba3da9576c6cd1b64b104a9e8cf18e7f16208420a2",
+   "iso": [
+    {
+     "name": "list of frequencies",
+     "description": "list of data frequencies in the product",
+     "unit": null,
+     "value": "['A']"
+    },
+    {
+     "name": "range bandwidth",
+     "description": "processed range bandwidth - frequency A",
+     "unit": "Hz",
+     "value": "40000000.0 "
+    },
+    {
+     "name": "center frequency",
+     "description": "center frequency of the processed image - frequency A",
+     "unit": "Hz",
+     "value": "1239000000.0"
+    }
+   ],
+   "equal": true
+  },
+  "pilot_gunw_provisional_20260927_20261009": {
+   "granule": "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001",
+   "hdf5_centerFrequency": "1239000000.0",
+   "http_status": 200,
+   "sha256": "666321e61a09df74ba4762a9ea28b6c7871d3dabfd6d9795eca29265ff2b17dc",
+   "iso": [
+    {
+     "name": "list of frequencies",
+     "description": "list of data frequencies in the product",
+     "unit": null,
+     "value": "['A']"
+    },
+    {
+     "name": "range bandwidth",
+     "description": "processed range bandwidth - frequency A",
+     "unit": "Hz",
+     "value": "40000000.0 "
+    },
+    {
+     "name": "center frequency",
+     "description": "center frequency of the processed image - frequency A",
+     "unit": "Hz",
+     "value": "1239000000.0"
+    }
+   ],
+   "equal": true
+  },
+  "gunw_2000_0": {
+   "granule": "NISAR_L2_PR_GUNW_032_141_D_085_033_2000_SH_20261009T235335_20261009T235349_20261021T235335_20261021T235349_P05036_N_P_J_001",
+   "hdf5_centerFrequency": "1229000000.0",
+   "http_status": 200,
+   "sha256": "ee01060f7f17c4abd69bebe7c9262c378dea2afa7e196fe1e3c9dd4960ecbace",
+   "iso": [
+    {
+     "name": "list of frequencies",
+     "description": "list of data frequencies in the product",
+     "unit": null,
+     "value": "['A']"
+    },
+    {
+     "name": "range bandwidth",
+     "description": "processed range bandwidth - frequency A",
+     "unit": "Hz",
+     "value": "20000000.0 "
+    },
+    {
+     "name": "center frequency",
+     "description": "center frequency of the processed image - frequency A",
+     "unit": "Hz",
+     "value": "1229000000.0"
+    }
+   ],
+   "equal": true
+  },
+  "gunw_2000_1": {
+   "granule": "NISAR_L2_PR_GUNW_032_141_D_078_033_2000_SH_20261009T234941_20261009T235013_20261021T234941_20261021T235013_P05036_N_F_J_001",
+   "hdf5_centerFrequency": "1229000000.0",
+   "http_status": 200,
+   "sha256": "5f2a690655603d296072d97c021eb627613ab13cfb29d342bd71f1ba8578b1ca",
+   "iso": [
+    {
+     "name": "list of frequencies",
+     "description": "list of data frequencies in the product",
+     "unit": null,
+     "value": "['A']"
+    },
+    {
+     "name": "range bandwidth",
+     "description": "processed range bandwidth - frequency A",
+     "unit": "Hz",
+     "value": "20000000.0 "
+    },
+    {
+     "name": "center frequency",
+     "description": "center frequency of the processed image - frequency A",
+     "unit": "Hz",
+     "value": "1229000000.0"
+    }
+   ],
+   "equal": true
+  },
+  "gunw_2000_2": {
+   "granule": "NISAR_L2_PR_GUNW_032_139_A_041_033_2000_SH_20261009T200900_20261009T200925_20261021T200900_20261021T200925_P05023_N_F_J_001",
+   "hdf5_centerFrequency": "1229000000.0",
+   "http_status": 200,
+   "sha256": "f88c1780b3f3128fb66b16a2da227168684ac95ba8309d6ca44b0856842448e5",
+   "iso": [
+    {
+     "name": "list of frequencies",
+     "description": "list of data frequencies in the product",
+     "unit": null,
+     "value": "['A']"
+    },
+    {
+     "name": "range bandwidth",
+     "description": "processed range bandwidth - frequency A",
+     "unit": "Hz",
+     "value": "20000000.0 "
+    },
+    {
+     "name": "center frequency",
+     "description": "center frequency of the processed image - frequency A",
+     "unit": "Hz",
+     "value": "1229000000.0"
+    }
+   ],
+   "equal": true
+  },
+  "gunw_4000_0": {
+   "granule": "NISAR_L2_PR_GUNW_032_141_D_085_033_4000_SH_20261009T235335_20261009T235345_20261021T235335_20261021T235345_P05036_N_P_J_001",
+   "hdf5_centerFrequency": "1239000000.0",
+   "http_status": 200,
+   "sha256": "1fe8b3bc4e1c0cd3e7ada0fbd726c694dac249bca42db757dc1c94f199413937",
+   "iso": [
+    {
+     "name": "list of frequencies",
+     "description": "list of data frequencies in the product",
+     "unit": null,
+     "value": "['A']"
+    },
+    {
+     "name": "range bandwidth",
+     "description": "processed range bandwidth - frequency A",
+     "unit": "Hz",
+     "value": "40000000.0 "
+    },
+    {
+     "name": "center frequency",
+     "description": "center frequency of the processed image - frequency A",
+     "unit": "Hz",
+     "value": "1239000000.0"
+    }
+   ],
+   "equal": true
+  },
+  "gunw_4000_1": {
+   "granule": "NISAR_L2_PR_GUNW_032_141_D_084_033_4000_SH_20261009T235308_20261009T235336_20261021T235308_20261021T235336_P05036_N_F_J_001",
+   "hdf5_centerFrequency": "1239000000.0",
+   "http_status": 200,
+   "sha256": "743ca1aca133845385ade26b5b30e856f73f24ed6a14699757dc03a02f020ea2",
+   "iso": [
+    {
+     "name": "list of frequencies",
+     "description": "list of data frequencies in the product",
+     "unit": null,
+     "value": "['A']"
+    },
+    {
+     "name": "range bandwidth",
+     "description": "processed range bandwidth - frequency A",
+     "unit": "Hz",
+     "value": "40000000.0 "
+    },
+    {
+     "name": "center frequency",
+     "description": "center frequency of the processed image - frequency A",
+     "unit": "Hz",
+     "value": "1239000000.0"
+    }
+   ],
+   "equal": true
+  },
+  "gunw_4000_2": {
+   "granule": "NISAR_L2_PR_GUNW_032_139_D_091_033_4000_SH_20261009T203740_20261009T203744_20261021T203740_20261021T203744_P05023_N_P_J_001",
+   "hdf5_centerFrequency": "1239000000.0",
+   "http_status": 200,
+   "sha256": "b18fd0514ccbd89065e542a2c279dc05db662594311b96cdd210d0cf709acdaf",
+   "iso": [
+    {
+     "name": "list of frequencies",
+     "description": "list of data frequencies in the product",
+     "unit": null,
+     "value": "['A']"
+    },
+    {
+     "name": "range bandwidth",
+     "description": "processed range bandwidth - frequency A",
+     "unit": "Hz",
+     "value": "40000000.0 "
+    },
+    {
+     "name": "center frequency",
+     "description": "center frequency of the processed image - frequency A",
+     "unit": "Hz",
+     "value": "1239000000.0"
+    }
+   ],
+   "equal": true
+  },
+  "gunw_7700_0": {
+   "granule": "NISAR_L2_PR_GUNW_032_141_D_055_033_7700_SH_20261009T233633_20261009T233713_20261021T233633_20261021T233713_P05036_N_P_J_001",
+   "hdf5_centerFrequency": "1257500000.0",
+   "http_status": 200,
+   "sha256": "f8723aed3af15b4bf039b5b5f29b20f28f21b557090f34cbc99274b4765013b2",
+   "iso": [
+    {
+     "name": "list of frequencies",
+     "description": "list of data frequencies in the product",
+     "unit": null,
+     "value": "['A']"
+    },
+    {
+     "name": "range bandwidth",
+     "description": "processed range bandwidth - frequency A",
+     "unit": "Hz",
+     "value": "77000000.0 "
+    },
+    {
+     "name": "center frequency",
+     "description": "center frequency of the processed image - frequency A",
+     "unit": "Hz",
+     "value": "1257500000.0"
+    }
+   ],
+   "equal": true
+  },
+  "gunw_7700_1": {
+   "granule": "NISAR_L2_PR_GUNW_032_141_D_054_033_7700_SH_20261009T233558_20261009T233634_20261021T233558_20261021T233634_P05036_N_P_J_001",
+   "hdf5_centerFrequency": "1257500000.0",
+   "http_status": 200,
+   "sha256": "bd439b20970bdd1ff77417dc4a4a215995c92bccba57cca86c4a1e8e67b31445",
+   "iso": [
+    {
+     "name": "list of frequencies",
+     "description": "list of data frequencies in the product",
+     "unit": null,
+     "value": "['A']"
+    },
+    {
+     "name": "range bandwidth",
+     "description": "processed range bandwidth - frequency A",
+     "unit": "Hz",
+     "value": "77000000.0 "
+    },
+    {
+     "name": "center frequency",
+     "description": "center frequency of the processed image - frequency A",
+     "unit": "Hz",
+     "value": "1257500000.0"
+    }
+   ],
+   "equal": true
+  },
+  "gunw_7700_2": {
+   "granule": "NISAR_L2_PR_GUNW_032_131_A_038_033_7700_SH_20261009T064807_20261009T064813_20261021T064807_20261021T064813_P05023_N_P_J_001",
+   "hdf5_centerFrequency": "1257500000.0",
+   "http_status": 200,
+   "sha256": "6a11254755044958e1c72fe538f3b12f8fbb52b97599c82fac22011e1b735575",
+   "iso": [
+    {
+     "name": "list of frequencies",
+     "description": "list of data frequencies in the product",
+     "unit": null,
+     "value": "['A']"
+    },
+    {
+     "name": "range bandwidth",
+     "description": "processed range bandwidth - frequency A",
+     "unit": "Hz",
+     "value": "77000000.0 "
+    },
+    {
+     "name": "center frequency",
+     "description": "center frequency of the processed image - frequency A",
+     "unit": "Hz",
+     "value": "1257500000.0"
+    }
+   ],
+   "equal": true
+  },
+  "goff_v1_example": {
+   "granule": "NISAR_L2_PR_GOFF_032_141_D_055_033_7700_SH_20261009T233633_20261009T233713_20261021T233633_20261021T233713_P05036_N_P_J_001",
+   "hdf5_centerFrequency": "1257500000.0",
+   "http_status": 200,
+   "sha256": "378e48d294492432a2172e867913aaf3716b72bdfd5c92ba0c2e018954f07ac0",
+   "iso": [
+    {
+     "name": "list of frequencies",
+     "description": "list of data frequencies in the product",
+     "unit": null,
+     "value": "['A']"
+    },
+    {
+     "name": "range bandwidth",
+     "description": "range bandwidth - frequency A",
+     "unit": "Hz",
+     "value": "77000000.0"
+    },
+    {
+     "name": "center frequency",
+     "description": "center frequency of the processed image - frequency A",
+     "unit": "Hz",
+     "value": "1257500000.0"
+    }
+   ],
+   "equal": true
+  }
+ }
+}

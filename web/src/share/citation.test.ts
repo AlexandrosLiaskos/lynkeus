@@ -56,10 +56,12 @@ test("the seven collections have a DOI of the form that the extension asks for",
   for (const doi of Object.keys(COLLECTION_TITLES)) {
     expect(doi).toMatch(DOI);
   }
-  // The DOI of the provisional interferograms starts with NIL1 in the catalogue of NASA; it is kept as read.
-  expect(COLLECTION_TITLES["10.5067/NIL1GUNW-P1"]).toBe(
+  // The catalogue of NASA gives the provisional interferograms the DOI 10.5067/NIL1GUNW-P1, which doi.org does not
+  // resolve. The list holds the DOI that the products carry and that doi.org resolves.
+  expect(COLLECTION_TITLES["10.5067/NIL2GUNW-P1"]).toBe(
     "NISAR Provisional Geocoded Unwrapped Interferogram Product (Version 1)",
   );
+  expect(COLLECTION_TITLES["10.5067/NIL1GUNW-P1"]).toBeUndefined();
 });
 
 test("the test records name the extension and carry a DOI of a collection that Lynkeus reads", () => {

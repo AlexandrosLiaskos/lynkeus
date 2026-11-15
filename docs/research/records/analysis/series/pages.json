@@ -1,0 +1,65 @@
+{
+ "what": "The pages of documentation that the server read on 15 Nov 2026 for docs/research/analysis-series.md: address, size in bytes, SHA-256 of the page as received and time of the reading (UTC)",
+ "pages": {
+  "ogc_processes": {
+   "url": "https://docs.ogc.org/is/18-062r2/18-062r2.html",
+   "bytes": 889209,
+   "sha256": "1a1dcb80556dc054440fab25ef73c1535549c19e9e327877cf1c17f65007d32d",
+   "read": "2026-11-15T09:50:04.619039+00:00"
+  },
+  "esri_temporal_profile": {
+   "url": "https://doc.esri.com/en/arcgis-pro/latest/help/data/imagery/temporal-profile-chart.html",
+   "bytes": 20065,
+   "sha256": "aa733eb298015af0f2c7f4c44c154ea2fd7a2bc8ccf572ba5353d29c14d74d69",
+   "read": "2026-11-15T09:50:03.762516+00:00"
+  },
+  "esri_multidim_tab": {
+   "url": "https://doc.esri.com/en/arcgis-pro/latest/help/data/imagery/multidimensional-tab.html",
+   "bytes": 11918,
+   "sha256": "bd47ab8af2663f73b8015545165020fb6dfa7b9623f6d4cb28a2b7d410ed8ec4",
+   "read": "2026-11-15T09:50:03.987690+00:00"
+  },
+  "qgis_rasteranalysis": {
+   "url": "https://docs.qgis.org/3.44/en/docs/user_manual/processing_algs/qgis/rasteranalysis.html",
+   "bytes": 328400,
+   "sha256": "b8ace5f2b670755691fdbd686b8291b4ef5e604ecdede2d517e6fc67b68f6f39",
+   "read": "2026-11-15T09:50:24.292528+00:00"
+  },
+  "qgis_raster_properties": {
+   "url": "https://docs.qgis.org/3.44/en/docs/user_manual/working_with_raster/raster_properties.html",
+   "bytes": 132362,
+   "sha256": "507ba51aa3d685c52eb25c11fccdec307ff0e9d34060ab87d8bde97d450511ef",
+   "read": "2026-11-15T09:50:24.406743+00:00"
+  },
+  "qgis_map_view": {
+   "url": "https://docs.qgis.org/3.44/en/docs/user_manual/map_views/map_view.html",
+   "bytes": 138827,
+   "sha256": "898e5f68de68024fad59d2f3ef59b388bfaf8941f6c123c039ae7d52c8824563",
+   "read": "2026-11-15T09:50:24.546409+00:00"
+  },
+  "qgis_plugin_readme": {
+   "url": "https://raw.githubusercontent.com/DHI-GRAS/qgis-temporal-profile/master/README.md",
+   "bytes": 3412,
+   "sha256": "4d878e4e300a564e1483ec23b1e1799498c0dd65748159882811dfd98269a248",
+   "read": "2026-11-15T09:50:05.501295+00:00"
+  },
+  "hyp3_intro_sar": {
+   "url": "https://hyp3-docs.asf.alaska.edu/guides/introduction_to_sar/",
+   "bytes": 75066,
+   "sha256": "2d041ce648cda9adb980ec578b29d4b442f0c00801d70c07727a6bc014e53512",
+   "read": "2026-11-15T09:50:04.996664+00:00"
+  }
+ },
+ "not_answered": [
+  {
+   "url": "https://www.earthdata.nasa.gov/data/platforms/space-based-platforms/nisar/nisar-composite-release-id-crid",
+   "status": 403,
+   "consequence": "the changes between the releases P05023 and P05036 were not read"
+  },
+  {
+   "url": "https://ui.adsabs.harvard.edu/abs/1999ITGRS..37..135T/abstract",
+   "status": 405,
+   "consequence": "the abstract of Touzi et al. (1999) was read through a web search and not from the page"
+  }
+ ]
+}

@@ -375,6 +375,7 @@ test("a time and a moment are written for reading", () => {
   expect(formatRunTime(3780)).toBe("1 h 3 min");
   expect(formatMoment("2026-11-14T16:20:05Z")).toBe("14 Nov 2026, 16:20:05 UTC");
   expect(formatMoment("2026-11-14T18:20:05+02:00")).toBe("14 Nov 2026, 16:20:05 UTC");
+  expect(formatMoment("2026-09-27T16:20:05Z")).toBe("27 Sep 2026, 16:20:05 UTC");
 });
 
 test("the jobs are sorted by start, status and name", () => {

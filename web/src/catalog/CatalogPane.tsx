@@ -1,5 +1,6 @@
 import { jobsFaultStore, jobsStore } from "../data/jobs";
 import { layersFaultStore, layersStore } from "../data/layers";
+import { seriesFaultStore, seriesStore } from "../data/series";
 import { productsStore, SEARCH_PANE } from "../data/state";
 import { openToolPane } from "../shared/dock/dock";
 import { EmptyState } from "../shared/empty/EmptyState";
@@ -8,11 +9,13 @@ import { useStore } from "../shared/store";
 import { JobsSection } from "./JobsSection";
 import { LayersSection } from "./LayersSection";
 import { ProductsSection } from "./ProductsSection";
+import { SeriesSection } from "./SeriesSection";
 
 /**
  * The Catalog pane, on the right of the map. Before the first search, the first job and the first layer it
- * states what is missing and leads to the search. Afterwards it holds three sections, in the order of the work:
- * the products that the last search found, the jobs of the session and the layers of the session. The pane has
+ * states what is missing and leads to the search. Afterwards it holds four sections, in the order of the work:
+ * the products that the last search found, the jobs of the session, the layers of the session and the series
+ * that the Series tools of the Analysis tab computed. The pane has
  * one body that scrolls, and the header of a section stays in view while the pane scrolls over the section.
  */
 export function CatalogPane() {
@@ -21,7 +24,16 @@ export function CatalogPane() {
   const layers = useStore(layersStore).length;
   const jobsFault = useStore(jobsFaultStore);
   const layersFault = useStore(layersFaultStore);
-  const empty = results === null && jobs === 0 && layers === 0 && jobsFault === null && layersFault === null;
+  const series = useStore(seriesStore).length;
+  const seriesFault = useStore(seriesFaultStore);
+  const empty =
+    results === null &&
+    jobs === 0 &&
+    layers === 0 &&
+    series === 0 &&
+    jobsFault === null &&
+    layersFault === null &&
+    seriesFault === null;
 
   return (
     <Pane id="catalog" title="Catalog">
@@ -36,6 +48,7 @@ export function CatalogPane() {
           <ProductsSection results={results} />
           <JobsSection />
           <LayersSection />
+          <SeriesSection />
         </div>
       )}
     </Pane>

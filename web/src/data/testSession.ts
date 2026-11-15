@@ -2,6 +2,7 @@ import { vi } from "vitest";
 import type { LayerDescription } from "../shared/layer";
 import type { ServerName, Servers } from "../shared/servers";
 import type { Job } from "./jobs";
+import type { SeriesItem } from "./series";
 
 /** A job as the server describes it, for the tests. */
 export function job(change: Partial<Job> = {}): Job {
@@ -69,7 +70,7 @@ export interface SentLayer {
 }
 
 /**
- * A stand-in for the web service, which answers the requests about jobs and layers from lists that a test fills
+ * A stand-in for the web service, which answers the requests about jobs, layers and series from lists that a test fills
  * and changes. It takes the place of `fetch`.
  */
 export class StandIn {
@@ -77,6 +78,8 @@ export class StandIn {
   jobs: Job[] = [];
   /** The layers of the session, the newest first. */
   layers: SentLayer[] = [];
+  /** The series of the session, the newest first. */
+  series: SeriesItem[] = [];
   /** The largest number of jobs in one page of the list, or null for one page. */
   page: number | null = null;
   /** The description of the process `get-layer`, or null when the server offers none. */
@@ -181,6 +184,10 @@ export class StandIn {
         return { status: 200, content: { ...found, status: "dismissed", message: "The job was dismissed." } };
       }
       const made = this.layers.find((entry) => entry.layer.id === found.layer);
+      const drawn = this.series.find((item) => item.series.id === found.series);
+      if (results && drawn) {
+        return { status: 200, content: drawn.series };
+      }
       return results && made ? { status: 200, content: made.layer } : { status: 200, content: found };
     }
     if (method === "GET" && path === "/api/limits" && this.limits !== null) {
@@ -206,6 +213,23 @@ export class StandIn {
       }
       const renamed = { ...found, layer: { ...found.layer, title: (content as { title: string }).title } };
       this.layers = this.layers.map((entry) => (entry === found ? renamed : entry));
+      return { status: 200, content: renamed };
+    }
+    if (method === "GET" && path === "/api/series") {
+      return { status: 200, content: { series: this.series } };
+    }
+    if (path.startsWith("/api/series/")) {
+      const found = this.series.find((item) => item.series.id === name);
+      if (!found) {
+        return { status: 404, content: { detail: "Your session has no series of this name." } };
+      }
+      if (method === "DELETE") {
+        this.series = this.series.filter((item) => item !== found);
+        this.jobs = this.jobs.filter((listed) => listed.series !== name);
+        return { status: 204 };
+      }
+      const renamed = { ...found, series: { ...found.series, title: (content as { title: string }).title } };
+      this.series = this.series.map((item) => (item === found ? renamed : item));
       return { status: 200, content: renamed };
     }
     if (method === "GET" && path in this.files) {

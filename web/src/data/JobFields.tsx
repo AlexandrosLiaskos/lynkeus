@@ -1,4 +1,5 @@
 import { isArea } from "../shared/area";
+import { isPoint } from "../shared/series";
 import { PROJECT_SERVER_WORDS } from "../shared/servers";
 import { formatMoment, formatRunTime, isUnfinished, runTime, STATUS_WORDS, type Job } from "./jobs";
 
@@ -10,6 +11,7 @@ const INPUT_NAMES: Record<string, string> = {
   area: "Area",
   inputs: "Input layers",
   title: "Name of the result",
+  point: "Point",
 };
 
 function isPlain(value: unknown): value is string | number | boolean {
@@ -27,6 +29,13 @@ function inputWords(value: unknown): string {
   }
   if (Array.isArray(value) && value.every(isPlain)) {
     return value.join(", ");
+  }
+  if (isPoint(value)) {
+    return `Longitude ${String(value.longitude)}, latitude ${String(value.latitude)} (degrees)`;
+  }
+  // A Series tool that was started without a point has the input `point` without a value.
+  if (value === null) {
+    return "None";
   }
   return JSON.stringify(value);
 }
@@ -49,6 +58,7 @@ export function jobRows(job: Job): [string, string][] {
       inputWords(value),
     ]),
     ["Identifier of the layer", job.layer ?? null],
+    ["Identifier of the series", job.series ?? null],
     ["Identifier of the job", job.jobID],
   ];
   return rows.filter((row): row is [string, string] => row[1] !== null);

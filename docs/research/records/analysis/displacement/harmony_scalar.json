@@ -1,0 +1,13 @@
+{
+ "asked": "2026-11-15T09:59:58Z",
+ "trials": [
+  {
+   "variable": "/science/LSAR/GUNW/grids/frequencyA/centerFrequency",
+   "format": "image/tiff",
+   "valid": true,
+   "messages": [],
+   "error": "Exception: ('Bad Request', 'Error: Coverages were not found for the provided variables: /science/LSAR/GUNW/grids/frequencyA/centerFrequency')",
+   "seconds": 0.6
+  }
+ ]
+}

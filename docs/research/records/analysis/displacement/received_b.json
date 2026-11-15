@@ -1,0 +1,242 @@
+{
+ "started": "2026-11-15T10:09:03Z",
+ "area": {
+  "west": -71.2,
+  "south": 42.6,
+  "east": -70.75,
+  "north": 42.95
+ },
+ "layers": {
+  "range-offset-20261009-20261021": {
+   "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+   "layer": "pixelOffsets/HH/slantRangeOffset",
+   "seconds": 88.9,
+   "files": {
+    "gunw-pixeloffsets-hh-slantrangeoffset-20261009-20261021.json": {
+     "bytes": 4954,
+     "sha256": "8a2df9367887f9ccb504e8919ddeb6d6c7e7b2de567b0a19d26202d188475cd3"
+    },
+    "gunw-pixeloffsets-hh-slantrangeoffset-20261009-20261021.tif": {
+     "bytes": 520269,
+     "sha256": "98287d637dbd9e4d22b2dbc75af56b12288cb7104477f1e77f04453c52f50b3c"
+    }
+   },
+   "description": {
+    "id": "range-offset-20261009-20261021",
+    "title": "Slant range offset HH, 9 Oct 2026 to 21 Oct 2026",
+    "kind": "layer",
+    "url": "/files/range-offset-20261009-20261021/gunw-pixeloffsets-hh-slantrangeoffset-20261009-20261021.tif",
+    "quantity": "Slant range offset, HH",
+    "unit": "m",
+    "range": [
+     -1.0665110349655151,
+     1.0665110349655151
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-10-09",
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "pixelOffsets/HH/slantRangeOffset",
+    "ends": null,
+    "frequency": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/range-offset-20261009-20261021/gunw-pixeloffsets-hh-slantrangeoffset-20261009-20261021.json"
+   },
+   "last_step": [
+    88.9,
+    100,
+    "The layer is ready."
+   ]
+  },
+  "offset-peak-20261009-20261021": {
+   "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+   "layer": "pixelOffsets/HH/correlationSurfacePeak",
+   "seconds": 90.0,
+   "files": {
+    "gunw-pixeloffsets-hh-correlationsurfacepeak-20261009-20261021.json": {
+     "bytes": 5083,
+     "sha256": "e4802ac69a140d48e46afe7468f7665e385703d73165647f0f6661bdfa1c8515"
+    },
+    "gunw-pixeloffsets-hh-correlationsurfacepeak-20261009-20261021.tif": {
+     "bytes": 671741,
+     "sha256": "9d288755dc42f8c524602fffac82d88bd905c25713d215e1c54be2e902f31155"
+    }
+   },
+   "description": {
+    "id": "offset-peak-20261009-20261021",
+    "title": "Correlation peak of the offsets HH, 9 Oct 2026 to 21 Oct 2026",
+    "kind": "layer",
+    "url": "/files/offset-peak-20261009-20261021/gunw-pixeloffsets-hh-correlationsurfacepeak-20261009-20261021.tif",
+    "quantity": "Normalized peak of the cross-correlation surface of the offsets, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "viridis",
+    "dates": [
+     "2026-10-09",
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "pixelOffsets/HH/correlationSurfacePeak",
+    "ends": null,
+    "frequency": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/offset-peak-20261009-20261021/gunw-pixeloffsets-hh-correlationsurfacepeak-20261009-20261021.json"
+   },
+   "last_step": [
+    90.0,
+    100,
+    "The layer is ready."
+   ]
+  },
+  "phase-20260927-20261009": {
+   "granule": "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001",
+   "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+   "seconds": 132.3,
+   "files": {
+    "gunw-unwrappedinterferogram-hh-unwrappedphase-20260927-20261009.json": {
+     "bytes": 4986,
+     "sha256": "35af12b08997ebf48b378e9641390714257c2f9cef893cc3ceff5af43593ba5d"
+    },
+    "gunw-unwrappedinterferogram-hh-unwrappedphase-20260927-20261009.tif": {
+     "bytes": 696313,
+     "sha256": "9e9390b2b46269b3d35b04624e95fa537bf318bc19f400277f77d7967c25f5d4"
+    }
+   },
+   "description": {
+    "id": "phase-20260927-20261009",
+    "title": "Unwrapped phase HH, 27 Sep 2026 to 9 Oct 2026",
+    "kind": "layer",
+    "url": "/files/phase-20260927-20261009/gunw-unwrappedinterferogram-hh-unwrappedphase-20260927-20261009.tif",
+    "quantity": "Unwrapped interferometric phase, HH",
+    "unit": "rad",
+    "range": [
+     -6.882211208343506,
+     6.882211208343506
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-09-27",
+     "2026-10-09"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "ends": null,
+    "frequency": 1239000000.0,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/phase-20260927-20261009/gunw-unwrappedinterferogram-hh-unwrappedphase-20260927-20261009.json"
+   },
+   "last_step": [
+    132.3,
+    100,
+    "The layer is ready."
+   ]
+  },
+  "components-20260927-20261009": {
+   "granule": "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001",
+   "layer": "unwrappedInterferogram/HH/connectedComponents",
+   "seconds": 159.2,
+   "files": {
+    "gunw-unwrappedinterferogram-hh-connectedcomponents-20260927-20261009.json": {
+     "bytes": 5031,
+     "sha256": "664eca0584faeacbadb9793f8df34f0f68abc817b97e1ffc7d376841d4062a7e"
+    },
+    "gunw-unwrappedinterferogram-hh-connectedcomponents-20260927-20261009.tif": {
+     "bytes": 48402,
+     "sha256": "057974486c2c116c5a2aace2e40f16b8ba02fc3919c977d04bd78ec4a2b350fd"
+    }
+   },
+   "description": {
+    "id": "components-20260927-20261009",
+    "title": "Connected components HH, 27 Sep 2026 to 9 Oct 2026",
+    "kind": "layer",
+    "url": "/files/components-20260927-20261009/gunw-unwrappedinterferogram-hh-connectedcomponents-20260927-20261009.tif",
+    "quantity": "Connected component of the phase unwrapping, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "tab10",
+    "dates": [
+     "2026-09-27",
+     "2026-10-09"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "ends": null,
+    "frequency": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/components-20260927-20261009/gunw-unwrappedinterferogram-hh-connectedcomponents-20260927-20261009.json"
+   },
+   "last_step": [
+    159.2,
+    100,
+    "The layer is ready."
+   ]
+  },
+  "azimuth-offset-20261009-20261021": {
+   "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+   "layer": "pixelOffsets/HH/alongTrackOffset",
+   "seconds": 214.4,
+   "files": {
+    "gunw-pixeloffsets-hh-alongtrackoffset-20261009-20261021.json": {
+     "bytes": 4952,
+     "sha256": "e2e2f9f2fa5fa456a85efbcdda579012b04e5a358202d4b13bf455588201309b"
+    },
+    "gunw-pixeloffsets-hh-alongtrackoffset-20261009-20261021.tif": {
+     "bytes": 483596,
+     "sha256": "5374e2b6ec82e671c7df2fb04343e46a577302fee25f368f9bf96e742969f36c"
+    }
+   },
+   "description": {
+    "id": "azimuth-offset-20261009-20261021",
+    "title": "Along-track offset HH, 9 Oct 2026 to 21 Oct 2026",
+    "kind": "layer",
+    "url": "/files/azimuth-offset-20261009-20261021/gunw-pixeloffsets-hh-alongtrackoffset-20261009-20261021.tif",
+    "quantity": "Along-track offset, HH",
+    "unit": "m",
+    "range": [
+     -1.6934837102890015,
+     1.6934837102890015
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-10-09",
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "pixelOffsets/HH/alongTrackOffset",
+    "ends": null,
+    "frequency": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/azimuth-offset-20261009-20261021/gunw-pixeloffsets-hh-alongtrackoffset-20261009-20261021.json"
+   },
+   "last_step": [
+    214.4,
+    100,
+    "The layer is ready."
+   ]
+  }
+ },
+ "ended": "2026-11-15T10:12:56Z"
+}

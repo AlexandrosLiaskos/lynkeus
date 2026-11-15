@@ -5,13 +5,16 @@ import { siteAddress, type LayerRecord } from "./record";
 /**
  * The titles of the NISAR collections that Lynkeus reads, by their DOI. They were read from NASA's Common
  * Metadata Repository (fields `DOI.DOI` and `EntryTitle` of `collections.umm_json`, provider ASF) on
- * 14 November 2026, and are written as read.
+ * 14 November 2026, and are written as read, except one DOI. For the provisional interferograms the repository
+ * gives 10.5067/NIL1GUNW-P1, which doi.org does not resolve (HTTP 404 on 15 November 2026); the list holds
+ * 10.5067/NIL2GUNW-P1, which the products of that collection carry in their field `productDoi` and which
+ * doi.org resolves.
  */
 export const COLLECTION_TITLES: Readonly<Partial<Record<string, string>>> = {
   "10.5067/NIL2GCOV-V1": "NISAR Validated Geocoded Polarimetric Covariance Product (Version 1)",
   "10.5067/NIL2GCOV-P1": "NISAR Provisional Geocoded Polarimetric Covariance Product (Version 1)",
   "10.5067/NIL2GUNW-V1": "NISAR Validated Geocoded Unwrapped Interferogram Product (Version 1)",
-  "10.5067/NIL1GUNW-P1": "NISAR Provisional Geocoded Unwrapped Interferogram Product (Version 1)",
+  "10.5067/NIL2GUNW-P1": "NISAR Provisional Geocoded Unwrapped Interferogram Product (Version 1)",
   "10.5067/NIL2GOFF-V1": "NISAR Validated Geocoded Pixel Offsets (Version 1)",
   "10.5067/NIL2GOFF-P1": "NISAR Provisional Geocoded Pixel Offsets (Version 1)",
   "10.5067/NIL3SME2-P1": "NISAR Provisional Soil Moisture (Version 1)",
