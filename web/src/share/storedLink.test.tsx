@@ -48,7 +48,7 @@ async function openPage() {
   );
   const after = state();
   part.leave();
-  return { before, after };
+  return { before, after, state };
 }
 
 test("a page that opens without a link shows the stored view, basemap and area", async () => {
@@ -89,4 +89,20 @@ test("a link that gives only an area leaves the stored view in its place", async
     baseMap: "openstreetmap",
     area: { west: -71.2, south: 42.6, east: -70.75, north: 42.95 },
   });
+});
+
+test("what another window stores afterwards does not replace the state of the link", async () => {
+  window.location.hash = "#map=10.5/42.775/-70.975&basemap=blue-marble&area=-71.2,42.6,-70.75,42.95";
+  const { after, state } = await openPage();
+  // Another window of the browser, which shows another place, stores its view and its area.
+  for (const [key, value] of [
+    ["lynkeus.view", VIEW],
+    ["lynkeus.area", AREA],
+  ] as const) {
+    const text = JSON.stringify({ v: 1, value });
+    window.localStorage.setItem(key, text);
+    window.dispatchEvent(new StorageEvent("storage", { key, newValue: text }));
+  }
+  expect(state()).toEqual(after);
+  expect(state().area).toEqual({ west: -71.2, south: 42.6, east: -70.75, north: 42.95 });
 });

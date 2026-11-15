@@ -40,8 +40,9 @@ export interface StoredPart<T> {
    */
   check: (stored: unknown) => T | undefined;
   /**
-   * Bring a stored value into the page. It is called once, when the part is declared. A part without it is not
-   * restored at that moment: its owner asks for the stored value with `stored()` when the time has come.
+   * Bring a stored value into the page. It is called once, when the part is declared, and for a part that the
+   * windows share (`shared`) each time another window has stored the part. A part without it is not restored at
+   * that moment: its owner asks for the stored value with `stored()` when the time has come.
    */
   restore?: (value: T) => void;
   /** Call the listener after every change of the value. The function returned ends the subscription. */
@@ -51,6 +52,14 @@ export interface StoredPart<T> {
    * this module has it, so that those copies are still read.
    */
   plain?: boolean;
+  /**
+   * Whether the windows of the browser share the part as one state, as they share the layers of the map. When
+   * another window stores such a part, its value is checked and brought into this page with `restore`, so that
+   * this window holds the newer state before it stores anything itself. A part without it belongs to its
+   * window, as the view of the map does: the value that another window stores stays in the storage, and this
+   * page stays as it is.
+   */
+  shared?: boolean;
 }
 
 /** What the owner of a part receives when it declares the part. */
@@ -90,6 +99,8 @@ interface Entry {
   bytes: number | null;
   failed: boolean;
   save: () => void;
+  /** Take in what another window has stored under the name of the part, or the removal of its stored copy. */
+  receive: () => void;
   stop: () => void;
 }
 
@@ -244,6 +255,10 @@ function forget(entry: Entry): void {
  * moment, when the part is kept and the value is valid; a value that cannot be read, has another version or
  * fails the check of the part is removed. Afterwards every change is stored while the part is kept. A part
  * that is declared again under the same name takes the place of the earlier one.
+ *
+ * Two windows of one browser hold one storage. A part that they share (`shared`) follows the other window: what
+ * that window stores is brought into this page, so that this window never stores an older state over a newer
+ * one. Every other part is stored by the window that changed it last.
  */
 export function keepInBrowser<T>(part: StoredPart<T>): KeptPart<T> {
   const { key, title, description } = part;
@@ -257,8 +272,11 @@ export function keepInBrowser<T>(part: StoredPart<T>): KeptPart<T> {
     bytes: null,
     failed: false,
     save: () => undefined,
+    receive: () => undefined,
     stop: () => undefined,
   };
+  // While a value of another window is brought into the page, the changes that it causes are not stored again.
+  let receiving = false;
 
   const stored = (): T | undefined => {
     if (!isKept(key)) {
@@ -279,7 +297,7 @@ export function keepInBrowser<T>(part: StoredPart<T>): KeptPart<T> {
   };
 
   entry.save = () => {
-    if (!isKept(key)) {
+    if (receiving || !isKept(key)) {
       return;
     }
     const value = part.read();
@@ -287,8 +305,33 @@ export function keepInBrowser<T>(part: StoredPart<T>): KeptPart<T> {
       return;
     }
     const text = wrap(value, plain);
+    // A text that the storage already holds is not written again: the browser tells the other windows about a
+    // change only, and a window that has taken in the state of another one has nothing new to tell.
+    if (!entry.failed && readText(key) === text) {
+      return;
+    }
     entry.failed = !writeText(key, text);
     entry.bytes = entry.failed ? sizeOf(key) : byteLength(text);
+    publish();
+  };
+
+  entry.receive = () => {
+    const text = readText(key);
+    entry.bytes = text === null ? null : byteLength(text);
+    entry.failed = false;
+    if (part.shared === true && part.restore && text !== null && isKept(key)) {
+      const raw = unwrap(text, plain);
+      const value = raw === undefined ? undefined : part.check(raw);
+      // A value that fails the check is left to the window that stored it, and this page stays as it is.
+      if (value !== undefined) {
+        receiving = true;
+        try {
+          part.restore(value);
+        } finally {
+          receiving = false;
+        }
+      }
+    }
     publish();
   };
 
@@ -312,6 +355,32 @@ export function keepInBrowser<T>(part: StoredPart<T>): KeptPart<T> {
 
   return { stored, failed: () => entry.failed, leave: () => entry.stop() };
 }
+
+/**
+ * Follow a change that another window of the browser made to the storage (the `storage` event, which a window
+ * does not receive for its own changes). The options of that window become the options of this one. The stored
+ * copy of a part that the windows share is brought into the page; of every other part only the size is read
+ * again. Nothing is written here, so the two windows cannot answer each other without end.
+ */
+function onStorage(event: StorageEvent): void {
+  const { key } = event;
+  if (key !== null && !key.startsWith(STORAGE_PREFIX)) {
+    return;
+  }
+  if (key === null || key === OPTIONS_KEY) {
+    // The other window changed the options, or emptied the storage.
+    options = readOptions();
+    for (const entry of entries.values()) {
+      entry.bytes = sizeOf(entry.key);
+      entry.failed = false;
+    }
+    publish();
+    return;
+  }
+  entries.get(key)?.receive();
+}
+
+window.addEventListener("storage", onStorage);
 
 /** Keep the options in the storage, and store or remove the parts as the options say. */
 function apply(next: StorageOptions): void {

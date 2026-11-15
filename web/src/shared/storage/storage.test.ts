@@ -385,3 +385,152 @@ test("a size is written in a readable unit", () => {
   expect(formatBytes(5_000_000_000)).toBe("5.0 GB");
   expect(formatBytes(2_500_000_000_000)).toBe("2500.0 GB");
 });
+
+/**
+ * Do what another window of the same browser does when it stores a text under a name or removes it: the storage
+ * of the browser changes, and this window receives the `storage` event, which the window that made the change
+ * does not receive.
+ */
+function otherWindowStores(key: string | null, value: unknown): void {
+  let text: string | null = null;
+  if (key === null) {
+    window.localStorage.clear();
+  } else if (value === undefined) {
+    window.localStorage.removeItem(key);
+  } else {
+    text = JSON.stringify({ v: 1, value });
+    window.localStorage.setItem(key, text);
+  }
+  window.dispatchEvent(new StorageEvent("storage", { key, newValue: text }));
+}
+
+/** Declare a part that holds a list of whole numbers, and that the windows of the browser share or not. */
+function list(store: Store<readonly number[]>, shared: boolean, key = KEY): KeptPart<readonly number[]> {
+  const part = keepInBrowser<readonly number[]>({
+    key,
+    title: "Numbers",
+    description: "A list of whole numbers.",
+    shared,
+    read: () => store.get(),
+    check: (stored) =>
+      Array.isArray(stored) && stored.every((item) => Number.isInteger(item)) ? (stored as number[]) : undefined,
+    restore: (value) => store.set(value),
+    subscribe: store.subscribe,
+  });
+  parts.push(part);
+  return part;
+}
+
+test("a part that the windows share takes what another window stores, and writes nothing in answer", () => {
+  const store = createStore<readonly number[]>([1]);
+  list(store, true);
+  store.set([1, 2]);
+  const written = vi.spyOn(Storage.prototype, "setItem");
+  otherWindowStores(KEY, [1, 2, 3]);
+  expect(store.get()).toEqual([1, 2, 3]);
+  // The change that the value caused in this page was not stored again: the other window receives no event,
+  // and the two windows cannot answer each other without end.
+  expect(written).not.toHaveBeenCalled();
+  expect(row(KEY)?.bytes).toBe(JSON.stringify({ v: 1, value: [1, 2, 3] }).length);
+  written.mockRestore();
+});
+
+test("a window that changes a shared part after another window stores the newer state with its own change", () => {
+  const store = createStore<readonly number[]>([1]);
+  list(store, true);
+  // The other window adds 2. This window, which still held [1], then adds 3.
+  otherWindowStores(KEY, [1, 2]);
+  store.set([...store.get(), 3]);
+  expect(stored(KEY)).toEqual({ v: 1, value: [1, 2, 3] });
+});
+
+test("a part of its window stays as it is when another window stores it, and only its size is read again", () => {
+  const store = createStore<readonly number[]>([1]);
+  list(store, false);
+  store.set([1, 2]);
+  otherWindowStores(KEY, [7, 8, 9]);
+  expect(store.get()).toEqual([1, 2]);
+  expect(stored(KEY)).toEqual({ v: 1, value: [7, 8, 9] });
+  expect(row(KEY)?.bytes).toBe(JSON.stringify({ v: 1, value: [7, 8, 9] }).length);
+  // The window that changes the part last stores it.
+  store.set([1, 2, 3]);
+  expect(stored(KEY)).toEqual({ v: 1, value: [1, 2, 3] });
+});
+
+test("a value of another window that fails the check is not taken and not removed", () => {
+  const store = createStore<readonly number[]>([1]);
+  list(store, true);
+  otherWindowStores(KEY, ["one", "two"]);
+  expect(store.get()).toEqual([1]);
+  expect(stored(KEY)).toEqual({ v: 1, value: ["one", "two"] });
+});
+
+test("a shared part whose switch is off takes nothing from another window", () => {
+  const store = createStore<readonly number[]>([1]);
+  list(store, true);
+  setPartKept(KEY, false);
+  otherWindowStores(KEY, [1, 2]);
+  expect(store.get()).toEqual([1]);
+});
+
+test("the removal of a stored copy in another window leaves the page as it is", () => {
+  const store = createStore<readonly number[]>([1]);
+  list(store, true);
+  store.set([1, 2]);
+  otherWindowStores(KEY, undefined);
+  expect(store.get()).toEqual([1, 2]);
+  expect(row(KEY)?.bytes).toBeNull();
+  // The next change of the part is stored, as after Clear in this window.
+  store.set([1, 2, 3]);
+  expect(stored(KEY)).toEqual({ v: 1, value: [1, 2, 3] });
+});
+
+test("the options that another window sets hold in this window at once", () => {
+  const store = createStore<readonly number[]>([1]);
+  list(store, true);
+  store.set([1, 2]);
+  // The other window switches the keeping off: it removes the stored copies and stores its options.
+  window.localStorage.removeItem(KEY);
+  otherWindowStores(OPTIONS_KEY, { keep: false, parts: {} });
+  expect(storageStore.get().keep).toBe(false);
+  expect(row(KEY)?.bytes).toBeNull();
+  store.set([1, 2, 3]);
+  expect(stored(KEY)).toBeNull();
+  // It switches the keeping on again.
+  otherWindowStores(OPTIONS_KEY, { keep: true, parts: {} });
+  expect(storageStore.get().keep).toBe(true);
+  store.set([1, 2, 3, 4]);
+  expect(stored(KEY)).toEqual({ v: 1, value: [1, 2, 3, 4] });
+});
+
+test("a storage that another window emptied is read again, and the page stays as it is", () => {
+  const store = createStore<readonly number[]>([1]);
+  list(store, true);
+  setPartKept(KEY, false);
+  setPartKept(KEY, true);
+  store.set([1, 2]);
+  otherWindowStores(null, undefined);
+  expect(store.get()).toEqual([1, 2]);
+  expect(row(KEY)).toMatchObject({ kept: true, bytes: null });
+});
+
+test("a name of the storage that is not of Lynkeus is not followed", () => {
+  const store = createStore<readonly number[]>([1]);
+  list(store, true);
+  const before = storageStore.get();
+  otherWindowStores("another.key", [1, 2]);
+  expect(store.get()).toEqual([1]);
+  expect(storageStore.get()).toBe(before);
+});
+
+test("a text that the storage already holds is not written again", () => {
+  const store = createStore<readonly number[]>([1]);
+  list(store, true);
+  store.set([1, 2]);
+  const written = vi.spyOn(Storage.prototype, "setItem");
+  store.set([1, 2].slice());
+  expect(written).not.toHaveBeenCalled();
+  store.set([1, 2, 3]);
+  expect(written).toHaveBeenCalledTimes(1);
+  written.mockRestore();
+});
