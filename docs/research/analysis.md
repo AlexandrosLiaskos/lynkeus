@@ -615,6 +615,12 @@ Coherence, One pair declare it. `mean-power` is declared by Backscatter, One dat
 returns the decibel values to linear power, lets the COG driver of GDAL reduce the power with
 `AVERAGE`, converts each reduced copy to decibels, and gives these copies to the COG driver as the
 overviews of the file (through a virtual file, VRT, and the option `OVERVIEWS=FORCE_USE_EXISTING`).
+The GDAL documentation, read on 15 Nov 2026, gives both means: with `FORCE_USE_EXISTING` the
+overviews of the source are used
+([COG driver, creation option `OVERVIEWS`](https://gdal.org/en/stable/drivers/raster/cog.html)),
+and the element `Overview` of a band of a virtual file describes one overview level by a
+`SourceFilename` and a `SourceBand`
+([VRT driver](https://gdal.org/en/stable/drivers/raster/vrt.html)).
 The record of a result ends with "Reduced copies made by averaging the values." or with "Reduced
 copies made as the decibels of the mean of the linear power."
 
