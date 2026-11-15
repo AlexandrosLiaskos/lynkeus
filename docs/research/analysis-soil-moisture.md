@@ -28,7 +28,7 @@ the NISAR science team that derives classes from soil moisture was found
 | Grid and cell size | EASE-Grid 2.0 Global, EPSG:6933, 200 m; the product files state 200.17900467012078 m | Specification Rev C, sections 3.3 and 3.7; part 2.2 |
 | Which algorithm the layer `soilMoisture` holds | None alone. It is the mean of the retrievals of the three algorithms (PMI, TSR, DSG) that are recommended in the cell, or of all that hold a value where none is recommended | Attribute `description` of the layer in the product files; measured in part 4.3 |
 | Uncertainty layer | `/science/LSAR/SME2/grids/soilMoistureUncertainty`, Float32, unit `meter^3/meter^3`, no-data value `-9999`; the mean of the uncertainties by the same rule. The tools do not read it | Specification Rev C, pages 37 and 38; attribute `description` in the product files |
-| Quality flags and masks | `retrievalQualityFlag` and `surfaceQualityFlag`, Int16, no-data value `-9999`. The tools read bit 0 of `retrievalQualityFlag` and leave out every cell where it is 1. The products mark 97.9 % to 98.7 % of the cells of the pilot box that hold a value as not recommended, on each of nine dates | Parts 2.3, 4.4, 8.1 and 8.4 |
+| Quality flags and masks | `retrievalQualityFlag` and `surfaceQualityFlag`, Int16, no-data value `-9999`. The tools read bit 0 of `retrievalQualityFlag` and leave out every cell where it is 1. The provisional products mark 97.9 % to 98.7 % of the cells of the pilot box that hold a value as not recommended, on each of their nine dates; the two beta products mark none | Parts 2.3, 4.4, 8.1 and 8.4 |
 | File names | The pattern `_PRODUCT_FILE` of `api/src/lynkeus/analysis/inputs.py` reads the names of SME2 products without a change | Specification Rev C, section 2.3; part 2.4 |
 | Which two dates may be compared | No document read states a rule. The tool accepts two products of the same instrument, track, direction and frame, by a choice of this note | Part 3.2 |
 
@@ -546,7 +546,8 @@ it was read.
 1. **The specification of version 1.0.2.** The products state it; the file read is Rev C, version
    1.0.0. The meaning of the bits 8, 9, 11 and 12 of `surfaceQualityFlag`, and the bits of the
    retrieval quality flags of the single algorithms in the products, were not read. Bit 8 is set in
-   97.7 % of the cells of the pilot box that the products do not recommend (part 8.1).
+   97.7 % of the cells of the pilot box that the products do not recommend, on the three dates whose
+   product files were read (15 Sep, 27 Sep and 9 Oct 2026) (part 8.1).
 2. **The quality flags in the tools.** Decided on 15 Nov 2026: the tools leave out every cell whose
    bit 0 of `retrievalQualityFlag` is 1, and the Data part offers that layer (part 8). Not confirmed
    is whether some of these cells could be shown with a mark instead, for example if bit 8 of
@@ -632,12 +633,13 @@ quality flag". The three product files held locally show (record `quality_produc
 
 Every cell that the products recommend has the surface flag 0, as Table 5.5.2 of the ATBD requires;
 36, 9 and 0 cells of the box are not recommended although their surface flag is 0, for a reason that
-the flags do not state. Bit 8, which neither the ATBD nor Rev C names, is set in 97.7 % of the cells
-of the box that are not recommended, on each of the three dates. No cell is marked for bit 7 alone.
-No document read therefore states the cause of most marks. The tree cover of 87.1 % of the cells of
-the box that hold a soil moisture (part 4.4), and the statement of the specification that retrievals
-over dense vegetation are performed and flagged (part 2.1), suggest but do not show that bit 8 marks
-dense vegetation.
+the flags do not state. Bit 8 is set in 97.7 % of the cells of the box that are not recommended, on
+each of the three dates; the two documents that were read, the ATBD (JPL D-107679, Release 3.3) and
+the specification Rev C (JPL D-107677), do not explain it. No cell is marked for bit 7 alone.
+Neither of these two documents therefore states the cause of most marks. The tree cover of 87.1 % of
+the cells of the box that hold a soil moisture (part 4.4), and the statement of the specification
+that retrievals over dense vegetation are performed and flagged (part 2.1), suggest but do not show
+that bit 8 marks dense vegetation.
 
 The tools read bit 0 only and leave out every cell where it is 1, whatever the surface condition.
 There is a reason to treat some of these cells otherwise later: where the vegetation is dense the
@@ -681,9 +683,9 @@ in its lineage.
 ### 8.4 The cells left out on each date
 
 In the box of the pilot area, on the layers received (record `quality_lynkeus_side.json`). The
-products mark 97.9 % to 98.7 % of the cells of the pilot box that hold a value as not recommended,
-on each of the nine provisional dates. The two beta products hold a soil moisture in few cells, all
-with the flag value 4 (bit 0 is 0), and mark none of them as not recommended.
+provisional products mark 97.9 % to 98.7 % of the cells of the pilot box that hold a value as not
+recommended, on each of their nine dates. The two beta products hold a soil moisture in few cells,
+all with the flag value 4 (bit 0 is 0), and mark none of them as not recommended.
 
 | Date | Release | Cells with a soil moisture | Not recommended (bit 0 is 1) | Share | Kept |
 |---|---|---|---|---|---|

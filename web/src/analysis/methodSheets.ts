@@ -256,11 +256,11 @@ export const METHODS: Record<Sheet, Method> = {
       },
       {
         name: "Limits",
-        text: "The products themselves mark most cells as not recommended: 97.9 % to 98.7 % of the cells with a value in the test area (lowest bit of the layer `retrievalQualityFlag`), so the tool leaves most of that area empty. The flag does not say why a retrieval is not recommended. Only provisional and beta products existed for the test area on 15 Nov 2026.",
+        text: "The provisional products themselves mark most cells as not recommended: 97.9 % to 98.7 % of the cells with a value in the test area (lowest bit of the layer `retrievalQualityFlag`), so the tool leaves most of that area empty; the two beta products mark none. The flag does not say why a retrieval is not recommended. Only provisional and beta products existed for the test area on 15 Nov 2026.",
       },
       {
         name: "Checked",
-        text: "The result equals that of the program `gdal raster calc` of GDAL 3.12.2 with the rule of the flag in every cell, on nine dates of the test area (lower Merrimack River, 23 Jun to 9 Oct 2026), two beta dates and three whole frames. The received layers equal the product files.",
+        text: "The result equals that of the program `gdal raster calc` of GDAL 3.12.2 with the rule of the flag in every cell, on nine dates of the test area (lower Merrimack River, 23 Jun to 9 Oct 2026), two beta dates and three whole frames. The received layers equal the product files on the three dates whose product files were read (15 Sep, 27 Sep and 9 Oct 2026).",
       },
       {
         name: "References",
@@ -293,7 +293,7 @@ export const METHODS: Record<Sheet, Method> = {
       },
       {
         name: "Limits",
-        text: "The products themselves mark most cells as not recommended: 97.9 % to 98.7 % of the cells with a value in the test area (lowest bit of the layer `retrievalQualityFlag`), so the tool leaves most of that area empty. The product of a date names earlier products of the same track among its inputs, so two dates are not independent measurements.",
+        text: "The provisional products themselves mark most cells as not recommended: 97.9 % to 98.7 % of the cells with a value in the test area (lowest bit of the layer `retrievalQualityFlag`), so the tool leaves most of that area empty; the two beta products mark none. The product of a date names earlier products of the same track among its inputs, so two dates are not independent measurements.",
       },
       {
         name: "Checked",
@@ -441,7 +441,7 @@ export const METHODS: Record<Sheet, Method> = {
       },
       {
         name: "Limits",
-        text: "In the test area NISAR marks 97.9 % to 98.7 % of the cells with a soil moisture as not recommended on each date, so a series of the area rests on few cells and a series at a point mostly has no value. The ASF NISAR Cookbook holds no notebook of SME2 products, so the statements of its backscatter notebook were applied to the soil moisture. Only provisional and beta products existed for the test area on 15 Nov 2026.",
+        text: "In the provisional products of the test area NISAR marks 97.9 % to 98.7 % of the cells with a soil moisture as not recommended on each date, and in the two beta products none, so a series of the area rests on few cells and a series at a point mostly has no value. The ASF NISAR Cookbook holds no notebook of SME2 products, so the statements of its backscatter notebook were applied to the soil moisture. Only provisional and beta products existed for the test area on 15 Nov 2026.",
       },
       {
         name: "Checked",

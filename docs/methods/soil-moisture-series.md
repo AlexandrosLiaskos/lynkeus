@@ -16,7 +16,7 @@
 | Formula | On each date, the mean of the soil moisture of the cells whose flag has the lowest bit 0. At a point it is the one cell that holds the point, when NISAR recommends its retrieval. |
 | Result | A series in cubic metres of water in a cubic metre of soil (m3 m-3): one value for each date, with the number of cells behind it. It is shown as a chart and a table, has no file, and states which cells were left out. |
 | How to read | A higher value is a wetter soil. A date without a value has no recommended cell at the point, or in the area. The mean of the area is that of the recommended cells of each date, which may lie in other places on other dates. |
-| Limits | In the test area NISAR marks 97.9 % to 98.7 % of the cells with a soil moisture as not recommended on each date, so a series of the area rests on few cells and a series at a point mostly has no value. The ASF NISAR Cookbook holds no notebook of SME2 products, so the statements of its backscatter notebook were applied to the soil moisture. Only provisional and beta products existed for the test area on 15 Nov 2026. |
+| Limits | In the provisional products of the test area NISAR marks 97.9 % to 98.7 % of the cells with a soil moisture as not recommended on each date, and in the two beta products none, so a series of the area rests on few cells and a series at a point mostly has no value. The ASF NISAR Cookbook holds no notebook of SME2 products, so the statements of its backscatter notebook were applied to the soil moisture. Only provisional and beta products existed for the test area on 15 Nov 2026. |
 | Checked | For the mean of the area, the values differ by less than 0.00000003 m3 m-3 from the mean that the code of a notebook of the ASF NISAR Cookbook gives on the same layers with the rule of the flag; at three points with a value on every date the values are equal, and at five points neither gives a value (lower Merrimack River, nine dates from 23 Jun to 9 Oct 2026, and two beta dates). |
 | References | [NISAR L3 SME2 Product Specification, JPL D-107677 Rev C](https://nisar-docs.asf.alaska.edu/product-specification/). [NISAR L3 Soil Moisture ATBD, JPL D-107679 Release 3.3](https://nisar-docs.asf.alaska.edu/atbd/). [ASF NISAR Cookbook](https://github.com/ASFOpenSARlab/NISAR_Cookbook). |
 
@@ -192,6 +192,6 @@ The exact numbers of the comparison are in `docs/research/analysis-soil-moisture
    of the flag was added.
 3. How the chart of a series looks on a screen. This was run in the tests of the interface only; it
    was not seen in a browser.
-4. A series for an area drawn on the map. It uses the code of the other Series tools, whose means over a
-   drawn polygon were compared with `gdal raster zonal-stats`; for the soil moisture this case was not
-   compared.
+4. A series for an area drawn on the map. It uses the code of the other Series tools, whose means
+   over a drawn polygon were compared with `gdal raster zonal-stats`; for the soil moisture this
+   case was not compared.
