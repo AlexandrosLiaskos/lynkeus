@@ -123,5 +123,7 @@ test("a series of an area drawn on the map carries the area, and a series at a p
   expect(isSeriesDescription(series({ shape }))).toBe(true);
   expect(isSeriesDescription(pairSeries({ shape }))).toBe(false);
   expect(isSeriesDescription(series({ shape: { ...shape, points: shape.points.slice(0, 3) } }))).toBe(false);
-  expect(SERVER).toContain('raise ValueError("a series is made at a point or for an area drawn on the map, not for both")');
+  expect(SERVER).toContain(
+    'raise ValueError("a series is made at a point or for an area drawn on the map, not for both")',
+  );
 });

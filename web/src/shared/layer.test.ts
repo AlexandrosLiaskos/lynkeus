@@ -171,7 +171,17 @@ test("an area drawn on the map has 4 to 251 points of two numbers, the last equa
   expect(isShape({ ...SHAPE, kind: "circle" })).toBe(false);
   expect(isShape({ ...SHAPE, points: SHAPE.points.slice(0, 3) })).toBe(false);
   expect(isShape({ ...SHAPE, points: [...SHAPE.points.slice(0, 3), [1, 1]] })).toBe(false);
-  expect(isShape({ ...SHAPE, points: [[0, 0], [10, 0], [10, "10"], [0, 0]] })).toBe(false);
+  expect(
+    isShape({
+      ...SHAPE,
+      points: [
+        [0, 0],
+        [10, 0],
+        [10, "10"],
+        [0, 0],
+      ],
+    }),
+  ).toBe(false);
   const many = Array.from({ length: 251 }, (_, index) => [index, index % 2] as const);
   expect(isShape({ ...SHAPE, points: [...many, many[0]] })).toBe(false);
 });

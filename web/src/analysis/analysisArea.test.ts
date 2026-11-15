@@ -79,12 +79,56 @@ test("a drawn polygon becomes an area of its corners, and a shape that is not an
 
 test("the sides of a polygon cross when the server says that they do", () => {
   // The cases of the test of the server, tests/test_areas.py.
-  expect(crossesItself([[0, 0], [2, 2], [2, 0], [0, 2]])).toBe(true);
-  expect(crossesItself([[0, 0], [2, 0], [2, 2], [0, 2], [0, 0], [1, 1], [1, 3]])).toBe(true);
-  expect(crossesItself([[0, 0], [4, 0], [2, 0], [2, 2]])).toBe(true);
-  expect(crossesItself([[0, 0], [1, 1], [2, 2]])).toBe(true);
-  expect(crossesItself([[0, 0], [1, 0], [1, 1]])).toBe(false);
-  expect(crossesItself([[0, 0], [2, 0], [2, 2], [1, 1], [0, 2]])).toBe(false);
+  expect(
+    crossesItself([
+      [0, 0],
+      [2, 2],
+      [2, 0],
+      [0, 2],
+    ]),
+  ).toBe(true);
+  expect(
+    crossesItself([
+      [0, 0],
+      [2, 0],
+      [2, 2],
+      [0, 2],
+      [0, 0],
+      [1, 1],
+      [1, 3],
+    ]),
+  ).toBe(true);
+  expect(
+    crossesItself([
+      [0, 0],
+      [4, 0],
+      [2, 0],
+      [2, 2],
+    ]),
+  ).toBe(true);
+  expect(
+    crossesItself([
+      [0, 0],
+      [1, 1],
+      [2, 2],
+    ]),
+  ).toBe(true);
+  expect(
+    crossesItself([
+      [0, 0],
+      [1, 0],
+      [1, 1],
+    ]),
+  ).toBe(false);
+  expect(
+    crossesItself([
+      [0, 0],
+      [2, 0],
+      [2, 2],
+      [1, 1],
+      [0, 2],
+    ]),
+  ).toBe(false);
 });
 
 const RECTANGLE: Shape = {
@@ -102,7 +146,16 @@ const RECTANGLE: Shape = {
 test("an area is named by its kind, and the Properties window states the rectangle around it in degrees", () => {
   expect(shapeName(RECTANGLE)).toBe("rectangle");
   expect(shapeWords(RECTANGLE)).toBe("The rectangle drawn on the map");
-  const triangle: Shape = { crs: "EPSG:3857", kind: "polygon", points: [[0, 0], [1000, 0], [1000, 1000], [0, 0]] };
+  const triangle: Shape = {
+    crs: "EPSG:3857",
+    kind: "polygon",
+    points: [
+      [0, 0],
+      [1000, 0],
+      [1000, 1000],
+      [0, 0],
+    ],
+  };
   expect(shapeWords(triangle)).toBe("The polygon of 3 corners drawn on the map");
   expect(shapeProperties(RECTANGLE)).toEqual([
     { name: "Kind", value: "Rectangle" },
@@ -111,7 +164,14 @@ test("an area is named by its kind, and the Properties window states the rectang
     { name: "East", value: "70.9° W" },
     { name: "North", value: "42.82° N" },
   ]);
-  expect(shapeProperties(triangle).map(({ name }) => name)).toEqual(["Kind", "West", "South", "East", "North", "Points"]);
+  expect(shapeProperties(triangle).map(({ name }) => name)).toEqual([
+    "Kind",
+    "West",
+    "South",
+    "East",
+    "North",
+    "Points",
+  ]);
 });
 
 test("the statistics of a result are stated in its unit, and without a cell with data none are stated", () => {

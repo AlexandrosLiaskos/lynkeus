@@ -77,7 +77,20 @@ test("an area that has just been drawn is shown, also when its layer was hidden"
   act(() => setShapeDisplay(ANALYSIS_AREA_LAYER_ID, { visible: false }));
   expect(layer.getVisible()).toBe(false);
   act(() => {
-    expect(takeDrawnArea(new Polygon([[[0, 0], [1000, 0], [1000, 1000], [0, 0]]]), "polygon", "EPSG:3857")).toBeNull();
+    expect(
+      takeDrawnArea(
+        new Polygon([
+          [
+            [0, 0],
+            [1000, 0],
+            [1000, 1000],
+            [0, 0],
+          ],
+        ]),
+        "polygon",
+        "EPSG:3857",
+      ),
+    ).toBeNull();
   });
   expect(layer.getVisible()).toBe(true);
   expect(analysisAreaStore.get()?.points).toHaveLength(4);
@@ -85,7 +98,15 @@ test("an area that has just been drawn is shown, also when its layer was hidden"
 
 test("a drawn shape that is not an area is refused, and the area stays", () => {
   analysisAreaStore.set(TRIANGLE);
-  const crossing = new Polygon([[[0, 0], [1000, 1000], [1000, 0], [0, 1000], [0, 0]]]);
+  const crossing = new Polygon([
+    [
+      [0, 0],
+      [1000, 1000],
+      [1000, 0],
+      [0, 1000],
+      [0, 0],
+    ],
+  ]);
   expect(takeDrawnArea(crossing, "polygon", "EPSG:3857")).toBe(SHAPE_FAULTS.crossing);
   expect(analysisAreaStore.get()).toBe(TRIANGLE);
 });

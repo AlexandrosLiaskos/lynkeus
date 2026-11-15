@@ -86,7 +86,9 @@ test("the place and the making of the values are stated in words", () => {
     ],
   } as const;
   expect(placeWords(series({ shape }))).toBe("The polygon of 3 corners drawn on the map");
-  expect(reductionWords(series({ shape }))).toBe("The mean of the power of the cells inside the area, given in decibels");
+  expect(reductionWords(series({ shape }))).toBe(
+    "The mean of the power of the cells inside the area, given in decibels",
+  );
   expect(reductionWords(series({ shape, reduction: "mean", unit: "1" }))).toBe(
     "The mean of the cells inside the area that hold a value",
   );

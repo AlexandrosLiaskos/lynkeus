@@ -272,7 +272,15 @@ test("a result of a run with an area drawn on the map shows its statistics in th
   } as const;
   show({
     ...RESULT,
-    statistics: { area, cells: 14316, mean: 0.4123, deviation: 0.1789, minimum: 0.0012, median: 0.4011, maximum: 0.9987 },
+    statistics: {
+      area,
+      cells: 14316,
+      mean: 0.4123,
+      deviation: 0.1789,
+      minimum: 0.0012,
+      median: 0.4011,
+      maximum: 0.9987,
+    },
   });
   await screen.findByText("EPSG:32619");
   expect(screen.getAllByRole("heading", { level: 4 }).map((heading) => heading.textContent)).toEqual([

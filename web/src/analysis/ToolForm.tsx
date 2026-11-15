@@ -167,7 +167,9 @@ export function runOf(
     return { state: "error", text: job.message, details };
   }
   const shown = typeof job.layer === "string" && onMap.has(job.layer);
-  const place = shown ? "It is on the map and under Layers in the Catalog pane." : "It is under Layers in the Catalog pane.";
+  const place = shown
+    ? "It is on the map and under Layers in the Catalog pane."
+    : "It is under Layers in the Catalog pane.";
   const statistics =
     typeof job.layer === "string" && withStatistics.has(job.layer)
       ? ` ${shown ? STATISTICS_PLACE.onMap : STATISTICS_PLACE.offMap}`

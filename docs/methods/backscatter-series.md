@@ -12,8 +12,8 @@
 | | |
 |---|---|
 | What it shows | The radar backscatter (gamma0) of many dates against time, at a point or as the mean of the area, in decibels. |
-| Input | The same backscatter layer of 2 to 50 GCOV products of one track, direction and frame, one for each date. A point is given by its latitude and longitude. |
-| Formula | `10 * log10(mean(gamma0))` over the cells of each date. At a point it is the one cell that holds the point. |
+| Input | The same backscatter layer of 2 to 50 GCOV products of one track, direction and frame, one for each date. A point is given by its latitude and longitude, and an area is drawn on the map or is the whole layer. |
+| Formula | `10 * log10(mean(gamma0))` over the cells of each date inside the area. At a point it is the one cell that holds the point. |
 | Result | A series in decibels (dB): one value for each date, with the number of cells behind it. It is shown as a chart and a table, and it has no file. |
 | How to read | Each value is one date. A higher value means that the surface returned more of the radar signal on that date. The cause of a change is for the user to establish. |
 | Limits | The values may come from products of two processing releases, provisional and validated, and it is not confirmed that they compare without a correction. Over an area the value is the mean of the power, given in decibels. One area and four dates were compared. |
@@ -100,8 +100,10 @@ For the layer of each date, with `P` the values of the cells that enter:
 value = 10 * log10(mean(P))        cells = number of cells that enter
 ```
 
-A cell enters when it holds a finite value above zero. For a series of the area these are all such
-cells of the layer of that date; at a point it is the one cell of the point. An entry without such
+A cell enters when it holds a finite value above zero. For a series of an area these are such cells
+of the layer of that date whose centre lies inside the area drawn on the map, found as
+`docs/methods/area-statistics.md` describes (section Method, steps 1 and 2), or all such cells of the
+layer when no area is drawn; at a point it is the one cell of the point. An entry without such
 a cell has no value (`null`) and 0 cells. The mean is taken in 64-bit numbers. The mean of the power
 is not the mean of the decibel values: the reference states that the mean backscatter cannot be
 taken in the logarithmic scale (reference 2, cell 34).

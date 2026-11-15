@@ -275,11 +275,11 @@ export const METHODS: Record<Sheet, Method> = {
       },
       {
         name: "Input",
-        text: "The same backscatter layer of 2 to 50 GCOV products of one track, direction and frame, one for each date. A point is given by its latitude and longitude.",
+        text: "The same backscatter layer of 2 to 50 GCOV products of one track, direction and frame, one for each date. A point is given by its latitude and longitude, and an area is drawn on the map or is the whole layer.",
       },
       {
         name: "Formula",
-        text: "`10 * log10(mean(gamma0))` over the cells of each date. At a point it is the one cell that holds the point.",
+        text: "`10 * log10(mean(gamma0))` over the cells of each date inside the area. At a point it is the one cell that holds the point.",
       },
       {
         name: "Result",
@@ -312,11 +312,11 @@ export const METHODS: Record<Sheet, Method> = {
       },
       {
         name: "Input",
-        text: "The same coherence layer (`coherenceMagnitude`) of 2 to 50 GUNW products of one track, direction and frame, one for each pair. A point is given by its latitude and longitude.",
+        text: "The same coherence layer (`coherenceMagnitude`) of 2 to 50 GUNW products of one track, direction and frame, one for each pair. A point is given by its latitude and longitude, and an area is drawn on the map or is the whole layer.",
       },
       {
         name: "Formula",
-        text: "The mean of the layer of the product over the cells of each pair. At a point it is the one cell that holds the point.",
+        text: "The mean of the layer of the product over the cells of each pair inside the area. At a point it is the one cell that holds the point.",
       },
       {
         name: "Result",

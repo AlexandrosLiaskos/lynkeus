@@ -28,6 +28,12 @@ MOST_OUTLINE_POINTS = 100_000
 
 _TOO_FAR = "A part of the area lies too far from the layers to be placed on their grid."
 
+FARTHEST_LONGITUDE = 80.0
+"""The largest difference of longitude between a point of an area and the centre of the grid, in degrees.
+
+A projection of one zone, such as UTM, gives finite numbers that return to the point also for a point on the other
+side of the Earth, where they have no meaning, so such a point is refused before it is transformed."""
+
 ROUND_TRIP = 0.01
 """The largest difference between a point of an area and the same point transformed to the coordinates of a
 grid and back, in the units of the map. A point far from the zone of a projection is transformed to numbers that
@@ -53,6 +59,27 @@ def _placed(source: CRS, target: CRS, xs: list[float], ys: list[float]) -> tuple
     return list(placed_x), list(placed_y)
 
 
+def _near(source: CRS, target: CRS, grid: Grid, xs: list[float], ys: list[float]) -> None:
+    """Check that every corner of an area lies within ``FARTHEST_LONGITUDE`` of the centre of a grid.
+
+    Raises
+    ------
+    LayerError
+        If a corner lies farther, or a longitude cannot be found.
+    """
+    degrees = CRS.from_epsg(4326)
+    a, b, c, d, e, f = grid.transform
+    centre = (a * grid.width / 2 + b * grid.height / 2 + c, d * grid.width / 2 + e * grid.height / 2 + f)
+    try:
+        (middle,), _ = transform(target, degrees, [centre[0]], [centre[1]])
+        longitudes, _ = transform(source, degrees, xs, ys)
+    except Exception as error:
+        raise LayerError(_TOO_FAR) from error
+    for longitude in longitudes:
+        if not math.isfinite(longitude) or abs((longitude - middle + 180) % 360 - 180) > FARTHEST_LONGITUDE:
+            raise LayerError(_TOO_FAR)
+
+
 def outline_on(shape: Shape, grid: Grid) -> list[tuple[float, float]]:
     """Return the outline of an area drawn on the map in the coordinates of the grid of a layer.
 
@@ -60,7 +87,9 @@ def outline_on(shape: Shape, grid: Grid) -> list[tuple[float, float]]:
     Each side is therefore divided into equal pieces, by points on the straight line of the map, before the
     points are transformed. A piece is at most as long as the side of a cell of the grid, or longer when the
     outline would otherwise have more than ``MOST_OUTLINE_POINTS`` pieces. When the map and the grid have the
-    same coordinate reference system, the outline is the corners of the area.
+    same coordinate reference system, the outline is the corners of the area. A corner farther than
+    ``FARTHEST_LONGITUDE`` from the centre of the grid, and a point that does not return to itself within
+    ``ROUND_TRIP`` when it is transformed back, are refused.
 
     Parameters
     ----------
@@ -90,6 +119,7 @@ def outline_on(shape: Shape, grid: Grid) -> list[tuple[float, float]]:
         return [(x, y) for x, y in shape.points]
     xs = [x for x, _ in shape.points]
     ys = [y for _, y in shape.points]
+    _near(source, target, grid, xs, ys)
     corners_x, corners_y = _placed(source, target, xs, ys)
     a, b, _, d, e, _ = grid.transform
     side = min(math.hypot(a, d), math.hypot(b, e))

@@ -1049,7 +1049,13 @@ test("a tool with an area drawn on the map sends the area with its layer and the
 });
 
 test("the foot states where the statistics in the area of a result are", () => {
-  const done = job({ jobID: "job-1", status: "successful", message: "The result is ready.", progress: 100, layer: "result-1" });
+  const done = job({
+    jobID: "job-1",
+    status: "successful",
+    message: "The result is ready.",
+    progress: 100,
+    layer: "result-1",
+  });
   const counted = new Set(["result-1"]);
   expect(runOf(STARTED, [done], new Set(["result-1"]), counted)).toMatchObject({
     state: "success",

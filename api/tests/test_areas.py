@@ -135,10 +135,17 @@ def test_an_area_that_cannot_be_placed_on_the_grid_is_refused() -> None:
     unknown = shape((0, 0), (1, 0), (1, 1), crs="EPSG:999999")
     with pytest.raises(LayerError, match="coordinates that Lynkeus does not know"):
         cells_inside(unknown, GRID)
-    # A polygon around the other side of the Earth has no place in the zone of the grid.
+    # A polygon on the other side of the Earth is given numbers by the projection of the zone of the grid, which
+    # even return to the polygon, so it is refused by its longitude.
     far = shape((1.0e7, 0), (1.9e7, 0), (1.9e7, 1.0e6), crs="EPSG:3857")
+    (x,), (y,) = transform(MERCATOR, UTM, [1.0e7], [0.0])
+    assert math.isfinite(x) and math.isfinite(y)
     with pytest.raises(LayerError, match="too far from the layers"):
         cells_inside(far, GRID)
+    # About 77 degrees of longitude from the centre of the grid, near -71.4 degrees, is near enough.
+    (west, east), (south, north) = transform(CRS.from_epsg(4326), MERCATOR, [-148.0, -147.0], [42.0, 43.0])
+    near = shape((west, south), (east, south), (east, north), (west, north), kind="rectangle", crs="EPSG:3857")
+    assert not cells_inside(near, GRID).any()
 
 
 @pytest.mark.parametrize(

@@ -72,7 +72,7 @@ test("the explanations of the titles of the form are one sentence each", () => {
     group:
       "The layer of the product, with the track, the frame, the direction of the orbit and the release of its products.",
     layers: "The same layer of two or more dates, received with Get layer and kept on the project server.",
-    place: "The series gives the mean of the whole area of the layers, or the value of the cell that holds a point.",
+    place: "The series gives the mean of an area, or the value of the cell that holds a point.",
     latitude: "The latitude of the point in degrees, as 42.8 or 42.8 N or 42° 48′ 30″ N.",
     longitude: "The longitude of the point in degrees, as -70.9 or 70.9 W or 70° 54′ 00″ W.",
     title: "The name of the series in the Catalog pane.",
