@@ -135,7 +135,12 @@ The welcome window shows the NASA insignia, the logo of the NASA Space Apps Chal
 National and Kapodistrian University of Athens and the National Technical University of Athens
 (`web/public/assets/welcome/`). They name the event for which Lynkeus was started and the universities of the
 team. They belong to their owners, the licence of Lynkeus does not cover them, and their presence does not mean
-sponsorship or endorsement.
+sponsorship or endorsement. The emblem of the National Technical University of Athens stands beside its name,
+set as in the logo of the other university.
+
+The mark of the team (`web/public/assets/lynkeus-mark.svg`) is the silhouette of a Eurasian lynx (*Lynx lynx*) by
+Margot Michaud, from [PhyloPic](https://www.phylopic.org/images/27a2173a-5903-46fc-83c5-29ed7f421046), dedicated to
+the public domain (CC0 1.0).
 
 ## Third-party software
 

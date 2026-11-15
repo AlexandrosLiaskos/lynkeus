@@ -102,7 +102,7 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The welcome window of the application page, shown when the page opens: the name and a description of the
   platform, three facts of the NISAR satellite, the team, the developer of the site, the total of recorded page
   visits, and the event with the logos of NASA, the NASA Space Apps Challenge and the universities of the team.
-- The mark of the team as a vector drawing of the constellation Lynx, in the title bar and the welcome window.
+- The mark of the team as the black silhouette of a lynx, in the title bar and the welcome window.
 
 ### Changed
 
