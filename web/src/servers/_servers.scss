@@ -1,0 +1,100 @@
+@use "uswds-core" as uswds;
+@use "../shared/tokens/tokens";
+
+// The style of the dialog of the servers and of the field Server of a tool. The lists of names and values, the
+// notices, the rows of a list and the form elements bring their own style.
+
+// A secondary line of the dialog: how many servers are connected, or the version of a download.
+.servers-note {
+  margin: 0 0 tokens.$space-2;
+  color: tokens.$secondary;
+  font-size: tokens.$text-small;
+  line-height: tokens.$line-small;
+}
+
+// What an own server is for, under the notice of a visitor who is not signed in.
+.servers-about {
+  margin: tokens.$space-3 0 0;
+}
+
+.servers-list {
+  border-top: 1px solid tokens.$border;
+  border-bottom: 1px solid tokens.$border;
+}
+
+// The icon before the name of a server tells whether the server is connected. The state is also written in
+// words under the name.
+.server .item-title .usa-icon {
+  width: tokens.$icon;
+  height: tokens.$icon;
+  margin-right: 0.125rem;
+  color: tokens.$muted;
+  vertical-align: text-bottom;
+}
+
+.server--connected .item-title .usa-icon {
+  color: uswds.color("success-dark");
+}
+
+// What a server reports, and the form that changes it, stand 8 pixels under its two lines.
+.server .property-list,
+.server .notice,
+.server-form {
+  margin-top: tokens.$space-2;
+}
+
+.server-field + .server-field {
+  margin-top: tokens.$field-gap;
+}
+
+// The buttons of a view or of a form: the command, and beside it the link that leaves things as they are.
+.servers-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: tokens.$space-2 tokens.$space-3;
+  margin-top: tokens.$space-3;
+}
+
+.servers-buttons .servers-note {
+  margin: 0;
+}
+
+// The numbered steps that connect a server. The numbers stand inside the dialog.
+.servers-steps {
+  margin: 0 0 tokens.$group-gap;
+  padding: 0 0 0 (tokens.$space-4 + tokens.$space-1);
+}
+
+.servers-steps li + li {
+  margin-top: tokens.$space-2;
+}
+
+.servers-steps .notice,
+.servers-downloads {
+  margin-top: tokens.$space-1;
+}
+
+.servers-downloads {
+  margin-bottom: tokens.$space-1;
+  padding-left: tokens.$space-4;
+}
+
+// The letters of a code are easier to compare in letters of one width.
+.servers-code.usa-input {
+  max-width: 12rem;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  letter-spacing: 0.08em;
+}
+
+// The link that returns to the list stands under the steps.
+.servers-back {
+  display: block;
+  margin-top: tokens.$space-3;
+}
+
+// The field Server of a tool: the limits of the server chosen stand under the field.
+.server-choice .notice,
+.server-choice .property-list {
+  margin-top: tokens.$space-2;
+}

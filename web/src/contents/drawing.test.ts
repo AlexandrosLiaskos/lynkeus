@@ -6,7 +6,8 @@ import type { LayerDescription } from "../shared/layer";
 import { messagesStore } from "../shared/messages/messages";
 import { CogSource } from "./CogSource";
 import { extentOf, findLayer } from "./display";
-import { FIRST_Z_INDEX, LayerDrawing, layerProblemsStore } from "./drawing";
+import { drawAgain, drawAgainStore, FIRST_Z_INDEX, LayerDrawing, layerProblemsStore } from "./drawing";
+import type { LayerProblem } from "./fileProblem";
 import { firstDisplay } from "./state";
 import { openTestFile } from "./testdata/files";
 
@@ -54,6 +55,7 @@ function layerOf(map: OlMap, id: string): WebGLTileLayer {
 
 beforeEach(() => {
   layerProblemsStore.set({});
+  drawAgainStore.set({});
   messagesStore.set([]);
 });
 
@@ -147,14 +149,124 @@ test("the extent of a layer is the extent of its file, in the projection of the 
 
 test("a file that cannot be read is reported once, and the problem leaves with the layer", async () => {
   const map = new OlMap({ view: new View({ center: [0, 0], zoom: 2 }) });
-  const drawing = new LayerDrawing(map, () => Promise.reject(new Error("404")), false);
+  const explain = vi.fn((): Promise<LayerProblem | null> => Promise.resolve(null));
+  const drawing = new LayerDrawing(map, () => Promise.reject(new Error("404")), false, explain);
   drawing.update([COHERENCE], {});
   await vi.waitFor(() => expect(layerProblemsStore.get()).toHaveProperty("coherence"));
-  expect(layerProblemsStore.get().coherence).toBe("The file of the layer could not be read.");
+  expect(explain.mock.calls).toEqual([["/files/coherence/coherence.tif"]]);
+  expect(layerProblemsStore.get().coherence).toEqual({ text: "The file of the layer could not be read.", again: true });
   expect(messagesStore.get().map(({ kind, text }) => ({ kind, text }))).toEqual([
     { kind: "error", text: "Coherence HH, 20 m: The file of the layer could not be read." },
   ]);
   expect(await extentOf(map, "coherence")).toBeNull();
   drawing.update([], {});
   expect(layerProblemsStore.get()).toEqual({});
+});
+
+const OWN: LayerDescription = {
+  ...COHERENCE,
+  id: "own",
+  url: "/api/servers/3f9a1c0b7e24d658/files/fedcba9876543210fedcba9876543210/coherence.tif",
+  record: "/api/servers/3f9a1c0b7e24d658/files/fedcba9876543210fedcba9876543210/coherence.json",
+};
+const AWAY: LayerProblem = {
+  text: "Your own server, which keeps this layer, is not connected. Start Lynkeus Server on that computer and try again.",
+  again: true,
+};
+
+test("a layer of an own server is read from the address of its description, as a layer of the project server is", async () => {
+  const opened: string[] = [];
+  const map = new OlMap({ view: new View({ center: [0, 0], zoom: 2 }) });
+  const drawing = new LayerDrawing(
+    map,
+    (url) => {
+      opened.push(url);
+      return open(url);
+    },
+    false,
+  );
+  drawing.update([OWN, BACKSCATTER], {});
+  expect(opened).toEqual([OWN.url, BACKSCATTER.url]);
+  expect(await extentOf(map, "own")).toHaveLength(4);
+  expect(layerProblemsStore.get()).toEqual({});
+});
+
+test("a layer whose server is not connected states it in one sentence in place of an empty layer", async () => {
+  const map = new OlMap({ view: new View({ center: [0, 0], zoom: 2 }) });
+  const explain = vi.fn((): Promise<LayerProblem | null> => Promise.resolve(AWAY));
+  const drawing = new LayerDrawing(map, () => Promise.reject(new Error("Error fetching data.")), false, explain);
+  drawing.update([OWN], {});
+  await vi.waitFor(() => expect(layerProblemsStore.get()).toEqual({ own: AWAY }));
+  expect(explain.mock.calls).toEqual([[OWN.url]]);
+  expect(messagesStore.get().map(({ kind, text }) => [kind, text])).toEqual([
+    ["error", `Coherence HH, 20 m: ${AWAY.text}`],
+  ]);
+});
+
+test("a file that Lynkeus cannot draw says why itself, and the site is not asked", async () => {
+  const { CogError } = await import("./cog");
+  const map = new OlMap({ view: new View({ center: [0, 0], zoom: 2 }) });
+  const explain = vi.fn((): Promise<LayerProblem | null> => Promise.resolve(AWAY));
+  const refuse = () => Promise.reject(new CogError("The file of the layer holds more than one band."));
+  const drawing = new LayerDrawing(map, refuse, false, explain);
+  drawing.update([COHERENCE], {});
+  await vi.waitFor(() => expect(layerProblemsStore.get()).toHaveProperty("coherence"));
+  expect(layerProblemsStore.get().coherence).toEqual({
+    text: "The file of the layer holds more than one band.",
+    again: false,
+  });
+  expect(explain).not.toHaveBeenCalled();
+});
+
+test("a tile that does not arrive asks the site once, and a server that is not connected is stated", async () => {
+  const map = new OlMap({ view: new View({ center: [0, 0], zoom: 2 }) });
+  const explained: ((problem: LayerProblem | null) => void)[] = [];
+  const explain = vi.fn(() => new Promise<LayerProblem | null>((resolve) => explained.push(resolve)));
+  const drawing = new LayerDrawing(map, open, false, explain);
+  drawing.update([OWN], {});
+  const source = layerOf(map, "own").getSource();
+  await vi.waitFor(() => expect(source?.getState()).toBe("ready"));
+  const fail = () => source?.dispatchEvent("tileloaderror");
+  fail();
+  fail();
+  expect(explain).toHaveBeenCalledTimes(1);
+  // The file can still be read: nothing is stated, and the next failure asks again.
+  explained[0]?.(null);
+  await vi.waitFor(() => {
+    fail();
+    expect(explain).toHaveBeenCalledTimes(2);
+  });
+  expect(layerProblemsStore.get()).toEqual({});
+  explained[1]?.(AWAY);
+  await vi.waitFor(() => expect(layerProblemsStore.get()).toEqual({ own: AWAY }));
+  fail();
+  expect(explain).toHaveBeenCalledTimes(2);
+});
+
+test("the file of a layer is opened anew when the visitor asks to draw the layer again", async () => {
+  let connected = false;
+  const opened: string[] = [];
+  const map = new OlMap({ view: new View({ center: [0, 0], zoom: 2 }) });
+  const drawing = new LayerDrawing(
+    map,
+    (url) => {
+      opened.push(url);
+      return connected ? open(url) : Promise.reject(new Error("Error fetching data."));
+    },
+    false,
+    () => Promise.resolve(AWAY),
+  );
+  drawing.update([OWN], {});
+  await vi.waitFor(() => expect(layerProblemsStore.get()).toEqual({ own: AWAY }));
+  const first = layerOf(map, "own");
+  drawing.update([OWN], {}, drawAgainStore.get());
+  expect(layerOf(map, "own")).toBe(first);
+  connected = true;
+  drawAgain("own");
+  expect(drawAgainStore.get()).toEqual({ own: 1 });
+  drawing.update([OWN], {}, drawAgainStore.get());
+  expect(opened).toEqual([OWN.url, OWN.url]);
+  expect(layerOf(map, "own")).not.toBe(first);
+  expect(layerProblemsStore.get()).toEqual({});
+  expect(await extentOf(map, "own")).toHaveLength(4);
 });

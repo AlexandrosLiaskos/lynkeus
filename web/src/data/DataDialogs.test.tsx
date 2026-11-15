@@ -1,5 +1,7 @@
 import { act, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
+import { resetServers } from "../servers/requests";
+import { openServers, resetServersState } from "../servers/state";
 import { openToolPane, resetDock } from "../shared/dock/dock";
 import { MapContext } from "../shared/map";
 import { mapLayersStore } from "../shared/mapLayers";
@@ -15,6 +17,8 @@ import { job, layer, showPage, standIn } from "./testSession";
 
 beforeEach(() => {
   resetDock();
+  resetServers();
+  resetServersState();
   resetJobs();
   resetLayers();
   resetSession();
@@ -26,6 +30,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  resetServers();
   resetJobs();
   onSignInEnded(() => undefined);
   vi.useRealTimers();
@@ -76,4 +81,11 @@ test("the page holds the pane of Get layer", () => {
   show();
   act(() => openToolPane(GET_LAYER_PANE));
   expect(screen.getByRole("complementary", { name: "Get layer" })).toBeDefined();
+});
+
+test("the page holds the dialog of the servers", () => {
+  standIn();
+  show();
+  act(() => openServers());
+  expect(screen.getByRole("dialog", { name: "Servers" })).toBeDefined();
 });

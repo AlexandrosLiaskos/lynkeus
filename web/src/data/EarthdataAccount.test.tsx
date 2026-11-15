@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { dockStore, resetDock } from "../shared/dock/dock";
 import { messagesStore } from "../shared/messages/messages";
+import { resetServersState, serversDialogStore } from "../servers/state";
 import { EarthdataAccount } from "./EarthdataAccount";
 import { resetSession, sessionStore } from "./session";
 import { earthdata } from "./testSignIn";
@@ -27,6 +28,7 @@ function messages(): [string, string][] {
 
 beforeEach(() => {
   resetSession();
+  resetServersState();
   resetDock();
   messagesStore.set([]);
 });
@@ -67,7 +69,7 @@ test("while the visitor is signed in the title bar shows the user name, and a pr
   await userEvent.click(button);
   expect(button.getAttribute("aria-expanded")).toBe("true");
   const menu = document.getElementById(button.getAttribute("aria-controls") ?? "");
-  expect(menu?.textContent).toBe("Signed in to Earthdata as a_userSign out");
+  expect(menu?.textContent).toBe("Signed in to Earthdata as a_userServersSign out");
   expect(dockStore.get().tools).toEqual([]);
   // The opening of the menu asks the server whether the sign-in still stands.
   expect(server.sent("GET")).toHaveLength(1);
@@ -129,6 +131,8 @@ test("the keyboard alone opens the menu, signs out, and leaves the menu with the
   expect(document.activeElement).toBe(account("Earthdata: a_user"));
   await userEvent.keyboard("{Enter}");
   await userEvent.tab();
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: "Servers" }));
+  await userEvent.tab();
   expect(document.activeElement).toBe(screen.getByRole("button", { name: "Sign out" }));
   await userEvent.tab();
   expect(document.activeElement).toBe(screen.getByRole("main"));
@@ -136,8 +140,19 @@ test("the keyboard alone opens the menu, signs out, and leaves the menu with the
   await userEvent.tab({ shift: true });
   await userEvent.keyboard(" ");
   await userEvent.tab();
+  await userEvent.tab();
   await userEvent.keyboard("{Enter}");
   await vi.waitFor(() => expect(sessionStore.get()).toEqual({ state: "signed-out" }));
   expect(server.sent("DELETE")).toHaveLength(1);
   expect(document.activeElement).toBe(account("Earthdata: not signed in"));
+});
+
+test("the command Servers of the menu opens the list of the servers of the account and closes the menu", async () => {
+  earthdata("a_user");
+  sessionStore.set({ state: "signed-in", user: "a_user" });
+  render(<Bar />);
+  await userEvent.click(account("Earthdata: a_user"));
+  await userEvent.click(screen.getByRole("button", { name: "Servers" }));
+  expect(serversDialogStore.get()).toEqual({ open: true, view: "list", code: null });
+  expect(screen.queryByRole("button", { name: "Servers" })).toBeNull();
 });

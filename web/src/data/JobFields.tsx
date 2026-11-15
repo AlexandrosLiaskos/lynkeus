@@ -1,4 +1,5 @@
 import { isArea } from "../shared/area";
+import { PROJECT_SERVER_WORDS } from "../shared/servers";
 import { formatMoment, formatRunTime, isUnfinished, runTime, STATUS_WORDS, type Job } from "./jobs";
 
 /** The words that name the inputs of the process `get-layer` and of the analysis tools. */
@@ -36,6 +37,7 @@ export function jobRows(job: Job): [string, string][] {
   const rows: [string, string | null][] = [
     ["Name", job.title],
     ["Process", job.processID],
+    ["Server", job.server?.name ?? PROJECT_SERVER_WORDS],
     ["Status", isUnfinished(job) ? `${STATUS_WORDS[job.status]}, ${String(job.progress)} %` : STATUS_WORDS[job.status]],
     ["Message", job.message === "" ? null : job.message],
     ["Requested", formatMoment(job.created)],

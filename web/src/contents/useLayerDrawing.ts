@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useMap } from "../shared/map";
 import { mapLayersStore } from "../shared/mapLayers";
 import { useStore } from "../shared/store";
-import { LayerDrawing } from "./drawing";
+import { drawAgainStore, LayerDrawing } from "./drawing";
 import { forgetAbsentLayers } from "./order";
 import { displayStore } from "./state";
 
@@ -11,11 +11,12 @@ export function useLayerDrawing(): void {
   const map = useMap();
   const layers = useStore(mapLayersStore);
   const displays = useStore(displayStore);
+  const again = useStore(drawAgainStore);
   const [drawing] = useState(() => new LayerDrawing(map));
 
   useEffect(() => {
-    drawing.update(layers, displays);
-  }, [drawing, layers, displays]);
+    drawing.update(layers, displays, again);
+  }, [drawing, layers, displays, again]);
 
   // A layer that another part of the page took off the map loses its display and its selection.
   useEffect(forgetAbsentLayers, [layers]);

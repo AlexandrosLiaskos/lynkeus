@@ -7,11 +7,13 @@ import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { jobsStore, loadJobs, resetJobs } from "../data/jobs";
 import { layersFaultStore, layersStore, loadLayers, resetLayers } from "../data/layers";
 import { job, layer, standIn, type SentLayer, type StandIn } from "../data/testSession";
+import { LABORATORY, OFFICE, OFFICE_NAME, SERVERS } from "../servers/testServers";
 import { MapContext } from "../shared/map";
 import { addToMap, mapLayersStore } from "../shared/mapLayers";
 import { messagesStore } from "../shared/messages/messages";
+import { serversStore } from "../shared/servers";
 import { layerGroups } from "./details";
-import { LayersSection, layersSentence } from "./LayersSection";
+import { keptWords, LayersSection, layersSentence, removalWords } from "./LayersSection";
 import { layersOpenStore, markedLayerStore, showLayer } from "./state";
 
 let server: StandIn;
@@ -54,6 +56,7 @@ const CHANGE: SentLayer = {
 beforeEach(() => {
   resetJobs();
   resetLayers();
+  serversStore.set(null);
   markedLayerStore.set(null);
   layersOpenStore.set(true);
   mapLayersStore.set([]);
@@ -125,7 +128,7 @@ test("each layer shows its name, its quantity with the unit, its dates and its s
 });
 
 test("the line of the section states the size of the files and the layers on the map", () => {
-  const entry = { layer: layer(), size: 4_000_000, created: null };
+  const entry = { layer: layer(), size: 4_000_000, created: null, server: null };
   expect(layersSentence([entry], 1)).toBe("The files take 4 MB. 1 layer is on the map.");
   expect(layersSentence([entry, { ...entry, size: null }], 2)).toBe("2 layers are on the map.");
 });
@@ -199,6 +202,7 @@ test("the details show every field of the description in groups, with the links 
     "Method: docs/methods/backscatter-change.md",
     "Size: 30 MB",
     "Made: 14 Nov 2026, 16:30:00 UTC",
+    "Kept: On the project server",
     "GeoTIFF file: backscatter-hh.tif",
     "STAC record: backscatter-hh.json (opens in a new tab)",
   ]);
@@ -214,8 +218,8 @@ test("the details show every field of the description in groups, with the links 
 test("a layer without a stated size, time or method shows no such field", async () => {
   await show([{ layer: BACKSCATTER.layer }]);
   expect(item(/^Backscatter HH/).textContent).toMatch(/21 Oct 2026$/);
-  const rows = layerGroups({ layer: BACKSCATTER.layer, size: null, created: null }).flatMap(({ rows: part }) =>
-    part.map(({ name, value }) => [name, value]),
+  const rows = layerGroups({ layer: BACKSCATTER.layer, size: null, created: null, server: null }).flatMap(
+    ({ rows: part }) => part.map(({ name, value }) => [name, value]),
   );
   expect(rows.filter(([name]) => name === "Method" || name === "Size" || name === "Made")).toEqual([]);
   expect(rows).toContainEqual(["Kind", "Received from NASA"]);
@@ -370,4 +374,111 @@ test("a layer is put on the map with the keyboard alone", async () => {
   expect(document.activeElement?.textContent).toBe("Add to the map");
   await userEvent.keyboard(" ");
   expect(mapLayersStore.get().map(({ id }) => id)).toEqual(["coh"]);
+});
+
+const OWN_ADDRESS = `/api/servers/${OFFICE.id}/files/fedcba9876543210fedcba9876543210/backscatter-hh.tif`;
+const OWN: SentLayer = {
+  layer: layer({
+    id: "own",
+    title: "Backscatter HV, 21 Oct 2026",
+    url: OWN_ADDRESS,
+    record: OWN_ADDRESS.replace(".tif", ".json"),
+  }),
+  size: 81_000_000,
+  created: "2026-11-15T09:00:00Z",
+  server: OFFICE_NAME,
+};
+const AWAY: SentLayer = {
+  ...OWN,
+  layer: { ...OWN.layer, id: "away", title: "Backscatter VV, 21 Oct 2026" },
+  server: { id: LABORATORY.id, name: LABORATORY.name },
+};
+const entryOf = ({ layer: description, server: keeper }: SentLayer) => ({
+  layer: description,
+  size: null,
+  created: null,
+  server: keeper ?? null,
+});
+
+test("a layer says where it is kept once the visitor has an own server, and a server that is not connected is marked", () => {
+  expect(keptWords(entryOf(BACKSCATTER), [])).toBeNull();
+  expect(keptWords(entryOf(BACKSCATTER), SERVERS.servers)).toBe("On the project server");
+  expect(keptWords(entryOf(OWN), SERVERS.servers)).toBe("On Office computer");
+  expect(keptWords(entryOf(AWAY), SERVERS.servers)).toBe("On Laboratory server, which is not connected");
+  expect(keptWords(entryOf(OWN), [])).toBe("On Office computer");
+});
+
+test("the list shows the server of each layer in its last line", async () => {
+  serversStore.set(SERVERS);
+  await show([OWN, AWAY, BACKSCATTER]);
+  expect(
+    [...document.querySelectorAll(".layer .catalog-pick .item-line:last-child")].map((line) => line.textContent),
+  ).toEqual([
+    "21 Oct 2026 · 81 MB · On Office computer",
+    "21 Oct 2026 · 81 MB · On Laboratory server, which is not connected",
+    "21 Oct 2026 · 57 MB · On the project server",
+  ]);
+});
+
+test("the details of a layer say where its files are kept", async () => {
+  serversStore.set(SERVERS);
+  await show([AWAY, BACKSCATTER]);
+  await moreOf("Backscatter VV, 21 Oct 2026");
+  await choose("Details");
+  expect(rowsOf(screen.getByRole("dialog", { name: "Layer: Backscatter VV, 21 Oct 2026" }))).toContain(
+    "Kept: On Laboratory server, which is not connected",
+  );
+  const rows = layerGroups(entryOf(BACKSCATTER)).flatMap(({ rows: part }) =>
+    part.map(({ name, value }) => [name, value]),
+  );
+  expect(rows).toContainEqual(["Kept", "On the project server"]);
+});
+
+test("the files of a layer of an own server are downloaded from the address of that server", async () => {
+  const clicked: (string | null)[] = [];
+  vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(function (this: HTMLAnchorElement) {
+    clicked.push(this.getAttribute("href"));
+  });
+  await show([OWN]);
+  await moreOf("Backscatter HV, 21 Oct 2026");
+  await choose("Download GeoTIFF");
+  expect(clicked).toEqual([OWN_ADDRESS]);
+});
+
+test("the removal of a layer names the server from which its files are removed", async () => {
+  expect(removalWords(entryOf(BACKSCATTER), false)).toBe(
+    'The layer "Backscatter HH, 21 Oct 2026" and its files are removed from the server. This cannot be undone.',
+  );
+  expect(removalWords(entryOf(OWN), true)).toBe(
+    'The layer "Backscatter HV, 21 Oct 2026" and its files are removed from your server "Office computer", and the layer leaves the map. This cannot be undone.',
+  );
+  await show([OWN]);
+  await moreOf("Backscatter HV, 21 Oct 2026");
+  await choose("Remove");
+  expect(
+    within(screen.getByRole("dialog", { name: "Remove the layer" })).getByText(removalWords(entryOf(OWN), false)),
+  ).toBeDefined();
+});
+
+test("a removal that a server that is not connected refuses is reported in the words of the server", async () => {
+  const sentence = 'The server "Laboratory server" is not connected, so the layer cannot be removed now.';
+  await show([AWAY]);
+  server.refuse("DELETE", "/api/layers", 503, sentence);
+  await moreOf("Backscatter VV, 21 Oct 2026");
+  await choose("Remove");
+  await userEvent.click(
+    within(screen.getByRole("dialog", { name: "Remove the layer" })).getByRole("button", { name: "Remove" }),
+  );
+  await vi.waitFor(() => expect(messages()).toEqual([["error", sentence]]));
+  expect(names()).toEqual(["Backscatter VV"]);
+});
+
+test("the list is grouped by the server that keeps each layer", async () => {
+  await show([OWN, BACKSCATTER]);
+  await userEvent.click(screen.getByRole("button", { name: "Group by" }));
+  await choose("Server");
+  expect([...document.querySelectorAll(".catalog-group-title")].map((title) => title.textContent)).toEqual([
+    "Office computer (1)",
+    "Project server (1)",
+  ]);
 });

@@ -28,6 +28,7 @@ import { report } from "../shared/messages/messages";
 import { Notice } from "../shared/notice/Notice";
 import { PropertyList } from "../shared/properties/PropertyList";
 import { Section } from "../shared/section/Section";
+import { PROJECT_SERVER_WORDS, serversStore, type Server } from "../shared/servers";
 import { useStore } from "../shared/store";
 import { IconButton } from "../shared/toolbar/IconButton";
 import { Toolbar } from "../shared/toolbar/Toolbar";
@@ -56,6 +57,24 @@ export function layersSentence(entries: readonly LayerEntry[], onMap: number): s
   return `${size}${shown}`;
 }
 
+/**
+ * Return the words that say where a layer is kept, or null where the list does not say it: for a layer of the
+ * project server of a visitor who has no own server. A layer whose server is not connected is marked.
+ */
+export function keptWords(entry: LayerEntry, servers: readonly Server[]): string | null {
+  if (!entry.server) {
+    return servers.length > 0 ? `On the ${PROJECT_SERVER_WORDS.toLowerCase()}` : null;
+  }
+  const server = servers.find((listed) => listed.id === entry.server?.id);
+  return server && !server.connected ? `On ${entry.server.name}, which is not connected` : `On ${entry.server.name}`;
+}
+
+/** State from where the removal of a layer takes its files, and what else it does. */
+export function removalWords(entry: LayerEntry, onMap: boolean): string {
+  const from = entry.server ? `your server "${entry.server.name}"` : "the server";
+  return `The layer "${entry.layer.title}" and its files are removed from ${from}${onMap ? ", and the layer leaves the map" : ""}. This cannot be undone.`;
+}
+
 /** Ask the browser to save the file of an address. */
 function download(address: string): void {
   const link = document.createElement("a");
@@ -68,6 +87,8 @@ function download(address: string): void {
 
 interface LayerItemProps {
   entry: LayerEntry;
+  /** Where the layer is kept, in words, or null where the list does not say it. */
+  kept: string | null;
   marked: boolean;
   onMap: boolean;
   onDetails: () => void;
@@ -75,13 +96,14 @@ interface LayerItemProps {
 }
 
 /**
- * One layer of the list: its name, its quantity with the unit, and the dates of its data with its size. A click
+ * One layer of the list: its name, its quantity with the unit, and the dates of its data with its size and, for
+ * a visitor who has an own server, the server that keeps it. A click
  * marks the layer, as the command Show layer of a job does, and a second click ends the mark. The item shows the
  * one command that fits the state of the layer: Add to the map, or Zoom to for a layer that is on the map. Its
  * other commands stand in the menu "More"; they are the commands of an item of the Catalog pane of ArcGIS Pro
  * and of the Browser panel of QGIS. The layer is renamed in a field that takes the place of its text.
  */
-function LayerItem({ entry, marked, onMap, onDetails, onRemove }: LayerItemProps) {
+function LayerItem({ entry, kept, marked, onMap, onDetails, onRemove }: LayerItemProps) {
   const map = useMap();
   const id = useId();
   const item = useRef<HTMLLIElement>(null);
@@ -201,6 +223,7 @@ function LayerItem({ entry, marked, onMap, onDetails, onRemove }: LayerItemProps
                   layer.dates.map(formatDay).join(" and "),
                   size === null ? null : formatSize(size),
                   onMap ? "On the map" : null,
+                  kept,
                 ]
                   .filter(Boolean)
                   .join(" · ")}
@@ -240,6 +263,7 @@ export function LayersSection() {
   const mapLayers = useStore(mapLayersStore);
   const marked = useStore(markedLayerStore);
   const open = useStore(layersOpenStore);
+  const servers = useStore(serversStore)?.servers ?? [];
   const [sort, setSort] = useState<LayerSort>("newest");
   const [grouping, setGrouping] = useState<LayerGrouping>("none");
   const [details, setDetails] = useState<string | null>(null);
@@ -336,6 +360,7 @@ export function LayersSection() {
                     <LayerItem
                       key={entry.layer.id}
                       entry={entry}
+                      kept={keptWords(entry, servers)}
                       marked={entry.layer.id === marked}
                       onMap={isOnMap(entry)}
                       onDetails={() => setDetails(entry.layer.id)}
@@ -353,7 +378,7 @@ export function LayersSection() {
       </Section>
       {described ? (
         <Dialog title={`Layer: ${described.layer.title}`} open onClose={() => setDetails(null)} large>
-          <PropertyList groups={layerGroups(described)} />
+          <PropertyList groups={layerGroups(described, keptWords(described, servers))} />
         </Dialog>
       ) : null}
       <Dialog
@@ -380,12 +405,7 @@ export function LayersSection() {
           </ul>
         }
       >
-        {toRemove ? (
-          <p>
-            The layer &quot;{toRemove.layer.title}&quot; and its files are removed from the server
-            {isOnMap(toRemove) ? ", and the layer leaves the map" : ""}. This cannot be undone.
-          </p>
-        ) : null}
+        {toRemove ? <p>{removalWords(toRemove, isOnMap(toRemove))}</p> : null}
       </Dialog>
     </>
   );

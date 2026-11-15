@@ -29,6 +29,7 @@ import { report } from "../shared/messages/messages";
 import { Notice } from "../shared/notice/Notice";
 import { PropertyList } from "../shared/properties/PropertyList";
 import { Section } from "../shared/section/Section";
+import { PROJECT_SERVER, PROJECT_SERVER_WORDS, serversStore, type Server } from "../shared/servers";
 import { useStore } from "../shared/store";
 import { IconButton } from "../shared/toolbar/IconButton";
 import { Toolbar } from "../shared/toolbar/Toolbar";
@@ -85,6 +86,28 @@ export function noteWords(job: Job): string {
   return time === null ? moment : `${moment}, after ${formatRunTime(time)} of work`;
 }
 
+/**
+ * Return the words that say on which server a job runs, or null where the list does not say it: for a job of
+ * the project server of a visitor who has no own server.
+ */
+export function serverWords(job: Job, servers: readonly Server[]): string | null {
+  if (job.server) {
+    return `On ${job.server.name}`;
+  }
+  return servers.length > 0 ? `On the ${PROJECT_SERVER_WORDS.toLowerCase()}` : null;
+}
+
+/**
+ * Return the sentence for a job that waits or runs on an own server that is not connected, or null. The state
+ * that the list shows is then the last one that the server reported.
+ */
+export function awayWords(job: Job, servers: readonly Server[]): string | null {
+  const server = servers.find((listed) => listed.id === job.server?.id);
+  return server && !server.connected && isUnfinished(job)
+    ? `The server "${server.name}" is not connected, so this is the last state that it reported. The state follows when the server connects again.`
+    : null;
+}
+
 interface JobItemProps {
   job: Job;
   onDetails: () => void;
@@ -96,9 +119,13 @@ interface JobItemProps {
  * One job of the list: its name, its state in words, a bar of its progress while it waits or runs, and one
  * line about it. The item shows the one command that fits the state of the job: Cancel while the job waits or
  * runs, Show layer when its layer is in the list of layers, and otherwise Run again. Its other commands stand
- * in the menu "More".
+ * in the menu "More". A visitor who has an own server also reads on which server the job runs, and a job of a
+ * server that is not connected says so. Run again starts the job on the server on which it ran.
  */
 function JobItem({ job, onDetails, onGone }: JobItemProps) {
+  const servers = useStore(serversStore)?.servers ?? [];
+  const on = serverWords(job, servers);
+  const away = awayWords(job, servers);
   const [busy, setBusy] = useState(false);
   const made = useStore(layersStore).some((entry) => entry.layer.id === job.layer);
   const unfinished = isUnfinished(job);
@@ -128,7 +155,7 @@ function JobItem({ job, onDetails, onGone }: JobItemProps) {
   const runAgain = inputs
     ? () =>
         act(
-          () => startJob(job.processID, inputs),
+          () => startJob(job.processID, inputs, job.server?.id ?? (servers.length > 0 ? PROJECT_SERVER : undefined)),
           `The job "${job.title}" was started again.`,
           "The job could not be started.",
         )
@@ -153,11 +180,12 @@ function JobItem({ job, onDetails, onGone }: JobItemProps) {
         <p className="item-title">
           <Icon name={STATUS_ICONS[job.status]} /> {job.title}
         </p>
-        <p className="item-line">{stateWords(job)}</p>
+        <p className="item-line">{on === null ? stateWords(job) : `${stateWords(job)} · ${on}`}</p>
         {unfinished ? (
           <progress className="job-progress" max={100} value={job.progress} aria-label={`Progress of ${job.title}`} />
         ) : null}
         <p className="item-line job-note">{noteWords(job)}</p>
+        {away === null ? null : <Notice kind="warning">{away}</Notice>}
       </div>
       <div className="item-actions catalog-actions" role="group" aria-label={`Commands of the job ${job.title}`}>
         {main ? (

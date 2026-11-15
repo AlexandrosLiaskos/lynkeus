@@ -1,12 +1,16 @@
 import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
+import { SAMPLE } from "../header/notice/testLimits";
+import { resetServersState } from "../servers/state";
+import { LABORATORY, OFFICE, OFFICE_NAME, SERVERS } from "../servers/testServers";
 import { areaStore } from "../shared/area";
 import { dockStore, frontOf, openToolPane, panesOf, resetDock } from "../shared/dock/dock";
 import { MapContext } from "../shared/map";
 import { mapLayersStore } from "../shared/mapLayers";
 import { messagesStore } from "../shared/messages/messages";
 import { Pane } from "../shared/pane/Pane";
+import { serversStore } from "../shared/servers";
 import { panesStore, resetPanes, setPaneOpen } from "../shared/panes";
 import { useStore } from "../shared/store";
 import { addWhenReadyStore } from "./follow";
@@ -51,6 +55,8 @@ beforeEach(() => {
   addWhenReadyStore.set(true);
   mapLayersStore.set([]);
   messagesStore.set([]);
+  serversStore.set(null);
+  resetServersState();
   server = standIn();
 });
 
@@ -746,4 +752,109 @@ test("the pane follows the sign-in, and its button Sign in opens the pane of the
   expect(dockStore.get().front.right).toBe("sign-in");
   act(() => sessionStore.set({ state: "signed-in", user: "a_user" }));
   expect(screen.queryByRole("button", { name: "Sign in" })).toBeNull();
+});
+
+const serverChoice = () => screen.getByLabelText<HTMLSelectElement>("Server");
+const serverRows = () =>
+  [...document.querySelectorAll(".server-choice .property-row")].map(
+    (row) =>
+      `${row.querySelector(".property-name")?.textContent ?? ""}: ${row.querySelector(".property-value-text")?.textContent ?? ""}`,
+  );
+
+/** Give the visitor the own servers of the examples, as the project server lists them. */
+function withServers() {
+  server.servers = SERVERS;
+  server.limits = SAMPLE;
+  serversStore.set(SERVERS);
+}
+
+test("a visitor without an own server has no field Server, and the job names no server", async () => {
+  show();
+  expect(screen.queryByLabelText("Server")).toBeNull();
+  await userEvent.click(layerBox("Backscatter HH"));
+  await typeArea();
+  await userEvent.click(runButton());
+  await vi.waitFor(() => expect(server.sent("POST")).toHaveLength(1));
+  expect(server.sent("POST")[0]?.address).toBe("/api/processes/get-layer/execution");
+});
+
+test("a visitor with an own server chooses the server, Automatic at first, and the job names no server", async () => {
+  withServers();
+  show();
+  expect(serverChoice().value).toBe("automatic");
+  expect(serverRows()[0]).toBe("At present: Office computer");
+  await userEvent.click(layerBox("Backscatter HH"));
+  await typeArea();
+  expect(missing()).toBeNull();
+  await userEvent.click(runButton());
+  await vi.waitFor(() => expect(server.sent("POST")).toHaveLength(1));
+  expect(server.sent("POST")[0]?.address).toBe("/api/processes/get-layer/execution");
+});
+
+test("the job is started on the server that the visitor chose, and the limits shown are those of that server", async () => {
+  withServers();
+  show();
+  await userEvent.selectOptions(serverChoice(), OFFICE.id);
+  expect(serverRows()).toEqual([
+    "Jobs at the same time: 4 (1 running, 2 waiting)",
+    "Largest layer: 10 GB",
+    "Space for layers: 1.3 GB of 100 GB used",
+    "Free disk space: 412 GB",
+  ]);
+  await userEvent.click(layerBox("Backscatter HH"));
+  await typeArea();
+  await userEvent.click(runButton());
+  await vi.waitFor(() => expect(server.sent("POST")).toHaveLength(1));
+  expect(server.sent("POST")[0]?.address).toBe(`/api/processes/get-layer/execution?server=${OFFICE.id}`);
+  expect(jobsStore.get()[0]?.server).toEqual(OFFICE_NAME);
+});
+
+test("the choice of the project server shows the limits of the project server and is sent with the job", async () => {
+  withServers();
+  show();
+  await userEvent.selectOptions(serverChoice(), "project");
+  await vi.waitFor(() =>
+    expect(serverRows()).toEqual([
+      "Jobs at the same time: 2 for all visitors",
+      "Largest layer: 500 MB",
+      "Space for layers: 2 GB and 50 layers for one session",
+    ]),
+  );
+  await userEvent.click(layerBox("Backscatter HH"));
+  await typeArea();
+  await userEvent.click(runButton());
+  await vi.waitFor(() => expect(server.sent("POST")).toHaveLength(1));
+  expect(server.sent("POST")[0]?.address).toBe("/api/processes/get-layer/execution?server=project");
+  expect(jobsStore.get()[0]?.server).toBeNull();
+});
+
+test("a chosen server that is not connected is the last thing that the foot names, and nothing is sent", async () => {
+  withServers();
+  show();
+  await userEvent.selectOptions(serverChoice(), LABORATORY.id);
+  expect(missing()).toBe("Choose a layer.");
+  await userEvent.click(layerBox("Backscatter HH"));
+  await typeArea();
+  expect(missing()).toBe('Choose a server that is connected: "Laboratory server" is not.');
+  expect(isActive(runButton())).toBe(false);
+  await userEvent.click(runButton());
+  expect(server.sent("POST")).toEqual([]);
+  expect(
+    screen.getByText(
+      'The server "Laboratory server" is not connected. Start Lynkeus Server on that computer, or choose another server.',
+    ),
+  ).toBeDefined();
+});
+
+test("an execution that the server refuses is stated in the words of the server", async () => {
+  withServers();
+  const sentence = 'The server "Office computer" is not connected, so the job cannot run there now.';
+  server.refuse("POST", "/api/processes", 422, sentence);
+  show();
+  await userEvent.selectOptions(serverChoice(), OFFICE.id);
+  await userEvent.click(layerBox("Backscatter HH"));
+  await typeArea();
+  await userEvent.click(runButton());
+  expect((await screen.findByRole("alert")).textContent).toBe(sentence);
+  expect(jobsStore.get()).toEqual([]);
 });

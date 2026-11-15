@@ -1,5 +1,6 @@
 import { isLayerDescription, type LayerDescription } from "../shared/layer";
 import { addToMap, mapLayersStore, removeFromMap } from "../shared/mapLayers";
+import { isServerName, PROJECT_SERVER_WORDS, type ServerName } from "../shared/servers";
 import { createStore } from "../shared/store";
 import { isMoment } from "./jobs";
 import { call, Refusal, UNREADABLE, wordsOf } from "./service";
@@ -11,6 +12,8 @@ export interface LayerEntry {
   size: number | null;
   /** When the layer was made, as a date-time of RFC 3339, or null when the server does not state it. */
   created: string | null;
+  /** The own server of the visitor that keeps the files of the layer, or null for the project server. */
+  server: ServerName | null;
 }
 
 /** The orders of the list of layers, with the words that name them. */
@@ -28,6 +31,7 @@ export const LAYER_GROUPINGS = {
   kind: "Received or computed",
   quantity: "Quantity",
   date: "Date of the data",
+  server: "Server",
 } as const;
 export type LayerGrouping = keyof typeof LAYER_GROUPINGS;
 
@@ -51,26 +55,28 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 /**
  * Return a layer of the list of the server as an entry, or null when it does not have the form of one. The
- * server sends the description with the size and the time of the layer beside it; a description alone is an
- * entry without them.
+ * server sends the description with the size and the time of the layer beside it, and with the own server that
+ * keeps the layer; a description alone is an entry without them, of the project server.
  */
 export function layerEntry(value: unknown): LayerEntry | null {
   if (isLayerDescription(value)) {
-    return { layer: value, size: null, created: null };
+    return { layer: value, size: null, created: null, server: null };
   }
   if (!isRecord(value) || !isLayerDescription(value.layer)) {
     return null;
   }
-  const { size, created } = value;
+  const { size, created, server } = value;
   const sizeIsValid = size === undefined || size === null || (typeof size === "number" && size >= 0);
   const createdIsValid = created === undefined || created === null || isMoment(created);
-  if (!sizeIsValid || !createdIsValid) {
+  const serverIsValid = server === undefined || server === null || isServerName(server);
+  if (!sizeIsValid || !createdIsValid || !serverIsValid) {
     return null;
   }
   return {
     layer: value.layer,
     size: typeof size === "number" ? size : null,
     created: isMoment(created) ? created : null,
+    server: isServerName(server) ? server : null,
   };
 }
 
@@ -223,7 +229,13 @@ export function groupLayers(
   for (const entry of entries) {
     const { kind, quantity, dates } = entry.layer;
     const title =
-      grouping === "kind" ? KIND_WORDS[kind] : grouping === "quantity" ? quantity : dates.map(formatDay).join(" and ");
+      grouping === "kind"
+        ? KIND_WORDS[kind]
+        : grouping === "quantity"
+          ? quantity
+          : grouping === "server"
+            ? (entry.server?.name ?? PROJECT_SERVER_WORDS)
+            : dates.map(formatDay).join(" and ");
     const group = groups.get(title);
     if (group) {
       group.push(entry);
