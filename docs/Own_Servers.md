@@ -20,20 +20,26 @@ limit them. This document gives the rules of that connection. The formats of eve
 1. The own server opens every connection, to the project server, over HTTPS. Nothing connects to it, so
    it needs no public address, no open port and no certificate, and it listens on no port.
 2. An own server belongs to an Earthdata user and not to a session, so the owner finds it from any
-   browser in which he signs in. Every address under `/api/servers` needs a signed-in session.
+   browser in which he signs in. Every address under `/api/servers` needs a visitor who is signed in to
+   that account. These addresses send no request to NASA, so they work also while the project server
+   does not hold the Earthdata token of the visitor (`docs/Storage.md`, Sign-in states).
 3. The project server keeps the record of every job. A job carries the name of the server on which it
    runs, or none for the project server.
-4. A layer of an own server belongs to its owner and not to a session. It is listed in every session in
-   which the owner is signed in, and it does not count towards the limits of the project server.
+4. A layer of an own server belongs to its owner and not to a session. It is listed in every browser in
+   which the owner is signed in, and it does not count towards the limits of the project server. The
+   project server removes a layer of its own after the keeping time (`docs/Storage.md`). An own server
+   keeps its layers without an end, until the owner removes them.
 5. A job runs on one server. In this version a tool takes input layers of that server only; the project
    server refuses another combination with status 422 and one sentence.
 6. The project server validates the inputs of a job before it passes it on, and the own server validates
    them again. An own server runs only the processes that its own code offers.
 7. The limits that come from the hardware of the project server (running jobs, size of a layer, space of
-   a session, total space) do not apply to a job of an own server. That server applies the limits that
-   its owner set.
+   an account, total space, free space of its disk) do not apply to a job of an own server. That server
+   applies the limits that its owner set.
 8. The Earthdata token of the visitor travels with the task that starts a job. The own server keeps it
-   in memory for that job only, and no message or file ever holds it.
+   in memory for that job only, and no message or file ever holds it. While the project server does not
+   hold the token, a job that needs it is answered with 401 and one sentence, on an own server as on the
+   project server; a job that sends no request to NASA starts.
 
 ## Pairing
 
@@ -155,16 +161,20 @@ takes the same parameter. Without it, and with the word `project`, `most-cells` 
 project server.
 
 The state of a job (`statusInfo`) and every entry of `GET /api/layers` carry the member `server`: `null`
-for the project server and otherwise a `ServerName`.
+for the project server and otherwise a `ServerName`. The entry of a layer of an own server carries
+`kept_until` `null`, because that server keeps the layer without an end, and `source`, the request that
+made the layer, as the entry of a layer of the project server does (`docs/Storage.md`, Addresses).
 
 The jobs and the layers of an own server belong to its owner. `GET /api/jobs` and `GET /api/layers` list
-them, with those of the session, in every session in which the owner is signed in, and no other visitor
-reaches them. The addresses answer for an own server as follows.
+them, with those that the project server keeps for the account, in every browser in which the owner is
+signed in, and no other visitor reaches them. The addresses answer for an own server as follows.
 
 | Request | Answer |
 |---|---|
 | `POST /api/processes/{name}/execution` | 404 when the visitor has no server of the name in `server`; 422 when the input layers are not all kept on the server of the job; 503 when that server is not connected; 429 when it has 100 jobs that wait or run; 507 when the record holds 1000 layers of it |
 | `DELETE /api/jobs/{id}` | As before, at once. The server receives `dismiss`, unless it has not received the job yet |
+| `POST /api/layers/{id}/extension` | 200 with the entry as it is: the layer has no moment of removal |
+| `POST /api/storage/extension`, `DELETE /api/storage` | 204; they change what the project server keeps for the account, and they leave the own servers, their jobs and their layers as they are |
 | `PATCH /api/layers/{id}`, `DELETE /api/layers/{id}` | As before, after the server has answered the task `rename` or `remove`; 503 when the server is not connected; 504 when it does not answer within `READ_TIME` seconds; 409 with the sentence of the server when it answers with `ok` false |
 | `GET /api/processes/{name}` | 404 when the visitor has no server of the name in `server` |
 | `PATCH /api/servers/{id}` | The name changes at once. The limits are recorded, and the server receives `limits` at once when it is connected and has reported its state since it connected, and otherwise after its next report. Limits without the field `layer_cells` leave that limit as it is. 422 and 409 as the section Cells of a layer gives them; nothing is recorded then, the name included. `state.limits` shows the limits that the server applies |
@@ -196,7 +206,8 @@ The front web server of the machine is not changed.
 The data folder holds the settings file (`settings.json`: server, key, user, limits), the record
 (`lynkeus.sqlite3`), the folder `files` with the two files of every layer, the log of the program
 (`log.txt`) and the file `lock`, which a running program holds so that a second one on the same folder is
-refused. The program shows the code of the pairing, whether it is connected and to which Earthdata user,
+refused. A record of an earlier version of the program is brought to the present version when the program
+starts, in one change that keeps every row (`lynkeus.store`); the layers stay without a moment of removal. The program shows the code of the pairing, whether it is connected and to which Earthdata user,
 the jobs that run and wait, the space used, and the commands Open Lynkeus, Open the data folder and Quit.
 Started with `--no-window` it writes the same on the terminal, for a server without a screen. The options
 `--server` and `--data-folder` give another project server and another data folder; an address that does
