@@ -145,11 +145,14 @@ seconds counts as answered, so that the reports decide about its job.
 | `PATCH /api/servers/{id}` | `ServerChange` | 200 `Server` |
 | `DELETE /api/servers/{id}` | | 204; the records of its jobs and of its layers are removed, so both leave the lists of the visitor, and the server receives `forget` |
 | `POST /api/processes/{name}/execution?server={id}` | as before | as before |
+| `GET /api/processes/{name}?server={id}` | | as before; the parameter `most-cells` of the description is the limit `layer_cells` that the server last reported, and 25 million before its first report |
 | `GET /api/servers/{id}/files/{layer}/{file}` | `Range` allowed | 200 or 206 with the bytes; 503 when the server is not connected; 504 when it does not answer in time |
 
 The parameter `server` of an execution is the name of an own server, the word `project`, or absent. When
 it is absent, the job goes to the connected own server of the visitor with the fewest unfinished jobs
-that holds every input layer, and to the project server when there is none.
+that holds every input layer, and to the project server when there is none. The description of a process
+takes the same parameter. Without it, and with the word `project`, `most-cells` is the number of the
+project server.
 
 The state of a job (`statusInfo`) and every entry of `GET /api/layers` carry the member `server`: `null`
 for the project server and otherwise a `ServerName`.
@@ -163,7 +166,8 @@ reaches them. The addresses answer for an own server as follows.
 | `POST /api/processes/{name}/execution` | 404 when the visitor has no server of the name in `server`; 422 when the input layers are not all kept on the server of the job; 503 when that server is not connected; 429 when it has 100 jobs that wait or run; 507 when the record holds 1000 layers of it |
 | `DELETE /api/jobs/{id}` | As before, at once. The server receives `dismiss`, unless it has not received the job yet |
 | `PATCH /api/layers/{id}`, `DELETE /api/layers/{id}` | As before, after the server has answered the task `rename` or `remove`; 503 when the server is not connected; 504 when it does not answer within `READ_TIME` seconds; 409 with the sentence of the server when it answers with `ok` false |
-| `PATCH /api/servers/{id}` | The name changes at once. The limits are recorded, and the server receives `limits` at once when it is connected and otherwise after its next report. `state.limits` shows the limits that the server applies |
+| `GET /api/processes/{name}` | 404 when the visitor has no server of the name in `server` |
+| `PATCH /api/servers/{id}` | The name changes at once. The limits are recorded, and the server receives `limits` at once when it is connected and has reported its state, and otherwise after its next report. Limits without the field `layer_cells` leave that limit as it is. 422 and 409 as the section Cells of a layer gives them; nothing is recorded then, the name included. `state.limits` shows the limits that the server applies |
 | `GET /api/servers/{id}/files/{layer}/{file}` | 404 when the server keeps no such file; 416 when the range starts after the end of the file; 502 when the server could not read the file. A request for several ranges receives the whole file. When a part fails after the answer has begun, the answer ends before the length that it stated |
 
 ## Web servers
