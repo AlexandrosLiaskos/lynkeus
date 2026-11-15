@@ -72,6 +72,7 @@ def receive_layer(inputs: LayerRequest, work: Work) -> LayerDescription:
         folder=work.folder,
         address=work.address,
         report=work.report,
+        most_cells=work.layer_cells,
     )
 
 

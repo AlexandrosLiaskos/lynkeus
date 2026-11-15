@@ -208,13 +208,22 @@ A new own server derives its first limits from the computer, and its owner chang
 
 | Limit | First value |
 |---|---|
-| Running jobs | One for every processor but one, which stays for the other programs of the computer, and at most as many as fit in half of the memory at 600 megabytes each (a job that writes a layer of the largest size holds about 510). Always from 1 to 64; 2 at most when the memory cannot be read |
+| Cells of a layer | Those of a job that fits in a quarter of the memory, in whole millions (section Cells of a layer); 25 million when the memory cannot be read |
+| Running jobs | One for every processor but one, which stays for the other programs of the computer, and at most as many jobs of that many cells as fit in half of the memory (`lynkeus.computer.job_memory`). Always from 1 to 64; 2 at most when the memory cannot be read |
 | Storage | Half of the free space of the disk that holds the data folder |
-| Size of a layer | 500 megabytes, as on the project server, or the storage when that is smaller |
+| Size of a layer | The size of a file of that many cells without compression, or the storage when that is smaller |
+
+A computer of 16 GB with 20 processors and 200 GB free starts with 237 million cells, 2 running jobs, 100 GB
+of storage and 1,265 megabytes for a layer.
 
 The storage counts every layer in the data folder. The layers of an earlier pairing stay in the folder
 `files` after the owner removed the server, and they count until the user of the computer deletes their
 folders. The numbers of waiting jobs, of unfinished jobs and of layers have no limit on an own server.
+
+A settings file of a program that does not know the limit on the cells of a layer holds no `layer_cells`. The
+program that reads it gives the cells their first value, lowers the running jobs to their first value when
+they are more, and raises the size of a layer to the size of a file of those cells when it is smaller, never
+above the storage. The pairing and the storage stay as they were (`lynkeus.computer.limits_with_cells`).
 
 ### Cells of a layer
 
@@ -222,10 +231,11 @@ The limit `layer_cells` of a server is the largest number of cells of a layer th
 receives. The project server keeps its own number (`lynkeus.harmony.MOST_CELLS`, 25 million), which does not
 apply to a job of an own server.
 
-1. A job that receives a layer holds memory in proportion to the cells of the layer: 353 megabytes for 15.0
-   million cells and 508 megabytes for 25 million were measured on the project server
-   (`docs/research/data.md`). `lynkeus.computer` holds the rule that gives the memory of a job from its
-   cells, set from measurements that include layers of more than 25 million cells.
+1. A job that receives a layer holds memory in proportion to the cells of the layer.
+   `lynkeus.computer.job_memory` gives it as 200 megabytes (`JOB_BASE_MEMORY`) and 16 bytes for every cell
+   (`CELL_MEMORY`), 600 megabytes for 25 million cells. Jobs that received real layers of 15.0, 52.1 and
+   104.3 million cells held 390, 970 and 1,746 megabytes at most (`docs/research/data.md`,
+   `docs/research/servers.md`), less than the rule gives.
 2. First value of `layer_cells`: the cells of a job that fits in a quarter of the memory of the computer, in
    whole millions, and 25 million when the memory cannot be read. The first value of the running jobs is
    then as many jobs of that size as fit in half of the memory, at most one for every processor but one.
@@ -244,6 +254,19 @@ apply to a job of an own server.
    needs the newer program only when `state` is not `null` and `knows_cells` is false.
 5. The interface checks the area of a form against the limit of the server on which the job would run, and
    its sentence names that server.
+
+### Limits of a job that follow from the cells of a layer
+
+The program sets two more limits for every job from `layer_cells`; the owner does not set them.
+
+| Limit | Value | Reason |
+|---|---|---|
+| Longest time of a job | `lynkeus.jobs.JOB_TIME`, 40 minutes, for 25 million cells or fewer, and 24 seconds more for every further million cells (`lynkeus.computer.job_time`, `CELL_TIME`); 2 hours 5 minutes for 237 million cells | The wait for NASA Harmony did not grow with the cells of the layers measured, while the download, the reading and the writing grow with them. `JOB_TIME` leaves 10 minutes after the longest wait for Harmony (`lynkeus.harmony.MOST_WAIT`, 30 minutes) for the 25 million cells of the project server, and that time grows with the cells |
+| Size of the folder of a running job | The size of a layer and three layers of `layer_cells` cells without compression (`lynkeus.link.WORK_LAYERS`) | Besides the layer, the folder holds the file of Harmony and the temporary files of the writing: 9.1 and 8.6 bytes for every cell at most in the two jobs measured, more than the first value of the size of a layer (5.3 bytes a cell). The layer itself must still keep within the size of a layer |
+
+A job whose layer would have more cells than the limit of its server ends with a sentence that names that
+limit, for example "The area is too large: the layer would have about 91 million cells, and this server
+receives at most 90 million." A job of the project server names Lynkeus in the same sentence.
 
 ### Ending a job
 

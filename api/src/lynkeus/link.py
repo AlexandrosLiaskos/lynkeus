@@ -100,6 +100,17 @@ ANSWER_TRIES = 3
 LEAVE_TIME = 2.0
 """The longest time that a program that is quit waits for the answer to its leave, in seconds."""
 
+WORK_LAYERS = 3
+"""The temporary files that the folder of a running job may hold, in layers without compression.
+
+A job writes the values of a layer as a plain file before it copies them as a Cloud Optimized GeoTIFF.
+A layer in decibels needs a second plain file of its power, a copy of that file with its reduced
+copies, and those reduced copies in decibels (``lynkeus.writing``). Together they are 15 bytes for a
+cell at most, which is less than three layers of 16/3 bytes for a cell. The two jobs measured on real
+layers of linear power held 9.1 and 8.6 bytes for a cell at most, the file of the layer included
+(``docs/research/servers.md``).
+"""
+
 SLOW_DOWN = 5
 """The time that the answer ``slow_down`` adds between two questions about a pairing, in seconds (RFC 8628)."""
 
@@ -401,10 +412,13 @@ def job_limits(limits: ServerLimits, others: int) -> Limits:
     Returns
     -------
     lynkeus.jobs.Limits
-        The running jobs and the size of a layer of the owner. The storage of the owner is the
-        largest total size, and less ``others`` it is the size left for the layers of the pairing. The
-        numbers of waiting jobs, of unfinished jobs and of layers have no limit: the project server
-        decides how many jobs it passes on.
+        The running jobs, the cells of a layer and the size of a layer of the owner. The storage of
+        the owner is the largest total size, and less ``others`` it is the size left for the layers of
+        the pairing. The numbers of waiting jobs, of unfinished jobs and of layers have no limit: the
+        project server decides how many jobs it passes on. Two limits follow from the cells of a
+        layer. The longest time of a job is ``lynkeus.computer.job_time``. The folder of a running job
+        may hold the layer and ``WORK_LAYERS`` layers of the largest number of cells without
+        compression, which are the temporary files of the writing.
     """
     return Limits(
         running_jobs=limits.running_jobs,
@@ -414,6 +428,9 @@ def job_limits(limits: ServerLimits, others: int) -> Limits:
         waiting_jobs=None,
         session_unfinished_jobs=None,
         session_layers=None,
+        layer_cells=limits.layer_cells,
+        work_size=limits.layer_size + WORK_LAYERS * computer.layer_size(limits.layer_cells),
+        job_time=computer.job_time(limits.layer_cells),
     )
 
 

@@ -35,14 +35,24 @@ LOG = "log.txt"
 LOCK = "lock"
 """The name of the file in the data folder that a running program holds locked."""
 
-JOB_BASE_MEMORY = 120_000_000
+JOB_BASE_MEMORY = 200_000_000
 """The memory that a job holds whatever the cells of its layer, in bytes: the interpreter and its libraries."""
 
 CELL_MEMORY = 16
 """The memory that a job holds for every cell of the layer that it receives, in bytes.
 
-``job_memory`` gives the memory of a job from these two numbers. They are set from the jobs measured
-on real layers (``docs/research/servers.md``) and are rounded up.
+``job_memory`` gives the memory of a job from these two numbers. They come from two jobs that received
+real layers of 52 and 104 million cells in a container of 4 GB (``docs/research/servers.md``): the jobs
+held 970 MB and 1,746 MB at most, which is 197 MB and 14.9 bytes for every cell. Both numbers are
+rounded up, and the rule lies 6 to 7 % above the two jobs. For 25 million cells it gives 600 MB.
+"""
+
+CELL_TIME = 24e-6
+"""The time that a job has for every cell of its layer above 25 million, in seconds.
+
+It is the time that a job of the project server has after the longest wait for NASA Harmony, for every
+cell of its largest layer: 600 seconds for 25 million cells. ``job_time`` gives the longest time of a job
+from it.
 """
 
 MILLION = 1_000_000
@@ -132,15 +142,16 @@ def read_settings(folder: Path) -> Settings:
 
     A file that is missing gives the settings of a new server. A file that cannot be read as settings
     is kept under the name ``settings-unreadable.json`` and also gives the settings of a new server, so
-    that a damaged file does not stop the program. Limits that a program of version 0.1.0 kept receive
-    the cells of a layer by the rule of the first limits (``limits_with_cells``); the pairing stays.
+    that a damaged file does not stop the program. Limits that an older program kept, which knew no limit
+    on the cells of a layer, receive that limit by the rule of the first limits (``limits_with_cells``); the
+    pairing stays.
     """
     path = folder / SETTINGS
     try:
         kept = json.loads(path.read_text(encoding="utf-8"))
         old = kept.get("limits") if isinstance(kept, dict) else None
         if isinstance(old, dict) and "layer_cells" not in old:
-            # The file was written by a program of version 0.1.0.
+            # The file was written by an older program, which knew no limit on the cells of a layer.
             kept["limits"] = limits_with_cells(old, first_limits(processors(), memory(), free_space(folder)))
         return Settings.model_validate(kept)
     except FileNotFoundError:
@@ -244,6 +255,25 @@ def job_memory(cells: int) -> int:
     return JOB_BASE_MEMORY + CELL_MEMORY * max(cells, 0)
 
 
+def job_time(cells: int) -> float:
+    """Return the longest time that a job may run on a server that receives layers of a number of cells.
+
+    Parameters
+    ----------
+    cells : int
+        Largest number of cells of a layer of the server.
+
+    Returns
+    -------
+    float
+        The time in seconds: ``lynkeus.jobs.JOB_TIME`` for a layer of 25 million cells or fewer, and
+        ``CELL_TIME`` more for every further cell. The wait for NASA Harmony did not grow with the
+        cells of the layers measured, so the further time is for the transfer, the reading and the
+        writing of the layer, which grow with its cells.
+    """
+    return jobs.JOB_TIME + max(cells - FIRST_LAYER_CELLS, 0) * CELL_TIME
+
+
 def cells_in_memory(memory: int) -> int:
     """Return the most cells of a layer whose job fits in an amount of memory, in whole millions.
 
@@ -307,7 +337,7 @@ def first_limits(processors: int, memory: int | None, free: int) -> ServerLimits
 
 
 def limits_with_cells(kept: Mapping[str, object], first: ServerLimits) -> dict[str, object]:
-    """Add the cells of a layer to limits that a program of version 0.1.0 kept, which knew no such limit.
+    """Add the cells of a layer to limits that an older program kept, which knew no such limit.
 
     Parameters
     ----------
