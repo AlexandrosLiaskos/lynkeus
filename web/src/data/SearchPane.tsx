@@ -1,5 +1,4 @@
 import { useEffect, useId, useState } from "react";
-import { areaStore } from "../shared/area";
 import { dockStore, openToolPane } from "../shared/dock/dock";
 import { Info } from "../shared/info/Info";
 import { PRODUCT_TYPES, type ProductType } from "../shared/layer";
@@ -27,6 +26,7 @@ import { runSearch, stopSearch } from "./run";
 import { firstDraft, FRAMES, searchOfDraft, TRACKS, type SearchDraft } from "./search";
 import { viewArea } from "./searchArea";
 import { GET_LAYER_PANE, productsStore, SEARCH_PANE, searchDraftStore } from "./state";
+import { startDraft } from "./storedSearch";
 
 /** Add a value to a list, or take it out, and keep the order of the offered values. */
 function toggled<Value extends string>(offered: readonly Value[], chosen: readonly Value[], value: Value): Value[] {
@@ -154,11 +154,11 @@ function SearchFields() {
   );
 
   // The form is first filled when the pane is first opened, so that the area of the search is not on the map
-  // before the user has asked for the search.
+  // before the user has asked for the search. It takes the form that the browser keeps, when there is one.
   const open = useStore(dockStore).tools.includes(SEARCH_PANE);
   useEffect(() => {
     if (open && searchDraftStore.get() === null) {
-      searchDraftStore.set(firstDraft(rectangleText(areaStore.get() ?? viewArea(map))));
+      searchDraftStore.set(startDraft(map));
     }
   }, [map, open]);
 

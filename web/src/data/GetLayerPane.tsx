@@ -1,5 +1,4 @@
 import { memo, useEffect, useId, useState } from "react";
-import { areaStore } from "../shared/area";
 import { dockStore, openToolPane, showPane } from "../shared/dock/dock";
 import { EmptyState } from "../shared/empty/EmptyState";
 import { Info } from "../shared/info/Info";
@@ -12,7 +11,7 @@ import { PropertyList, type Property } from "../shared/properties/PropertyList";
 import { Section } from "../shared/section/Section";
 import { useStore } from "../shared/store";
 import { ToolPane, type ToolPaneRun } from "../shared/toolpane/ToolPane";
-import { AreaFields, rectangleText } from "./AreaFields";
+import { AreaFields } from "./AreaFields";
 import { FieldTitle, infoId } from "./FieldTitle";
 import { addWhenReadyStore } from "./follow";
 import {
@@ -32,12 +31,12 @@ import {
 import { JobFields } from "./JobFields";
 import { dismissJob, isUnfinished, jobsStore, startJob, STATUS_WORDS, type Job } from "./jobs";
 import { formatDay, formatSize, type Product } from "./products";
-import { firstDraft, type SearchDraft } from "./search";
-import { viewArea } from "./searchArea";
+import type { SearchDraft } from "./search";
 import { wordsOf } from "./service";
 import { useSession, type Session } from "./session";
 import { SIGN_IN_PANE } from "./SignInPane";
 import { GET_LAYER_PANE, productsStore, SEARCH_PANE, searchDraftStore, selectedProductStore } from "./state";
+import { startDraft } from "./storedSearch";
 
 /** The explanations of the tool and of its titles, one for each title. Each one shows from the button beside its title. */
 export const ABOUT = {
@@ -344,12 +343,13 @@ export function GetLayerForm({ found, selected, products, session, onSignIn, onS
   const [chosen, setChosen] = useState<Record<string, readonly string[] | undefined>>({});
   const [started, setStarted] = useState<Started | null>(null);
 
-  // The area is the one of the search. When this pane opens before the search pane was first opened, the area
-  // starts as there: with the area of the Map tab or, without one, with the view of the map.
+  // The area is the one of the search. When this pane opens before the search pane was first opened, the form
+  // starts as there: with the form that the browser keeps or, without one, with the area of the Map tab or the
+  // view of the map.
   const open = useStore(dockStore).tools.includes(GET_LAYER_PANE);
   useEffect(() => {
     if (open && searchDraftStore.get() === null) {
-      searchDraftStore.set(firstDraft(rectangleText(areaStore.get() ?? viewArea(map))));
+      searchDraftStore.set(startDraft(map));
     }
   }, [map, open]);
 

@@ -94,6 +94,9 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The dialog Methods of the Help tab, with the method sheet of each finished analysis tool.
 - The words at the two ends of the legend of a result of Backscatter, Change, decrease and increase, which
   the Contents pane writes beside the lowest and the highest value.
+- The work that is kept in the browser: the bookmarks, the view of the map, the panes, the area, the form of
+  the search and the layers of the map return when the page opens again. The pane Browser storage of the
+  View tab switches each part on and off, states the size of its stored copy and clears it.
 
 ### Changed
 
