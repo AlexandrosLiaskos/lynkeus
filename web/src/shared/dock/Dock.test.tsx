@@ -1,10 +1,10 @@
-import { act, render, screen } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import { beforeEach, expect, test, vi } from "vitest";
 import { PANE_WIDTH, panesStore, resetPanes } from "../panes";
 import { Dock } from "./Dock";
-import { dockStore, frontOf, resetDock, showPane } from "./dock";
+import { dockStore, frontOf, resetDock, setAutoHide, showPane } from "./dock";
 import { DockPane } from "./DockPane";
 
 beforeEach(() => {
@@ -194,4 +194,85 @@ test("a pane brought to the front by another part of the page is shown", () => {
   act(() => showPane("catalog"));
   expect(screen.getByRole("tab", { name: "Catalog" }).getAttribute("aria-selected")).toBe("true");
   expect(screen.getByRole("complementary", { name: "Catalog" })).toBeDefined();
+});
+
+const AUTO_HIDE = "Auto-hide the panes of this side";
+const PIN = "Pin the panes of this side";
+
+test("the pin hides the panes of a side into tabs at the edge, and the tab of a pane shows it", async () => {
+  render(
+    <Dock side="right" icons={{ catalog: "folder" }}>
+      <Notes id="catalog" title="Catalog" />
+      <Notes id="get-layer" title="Get layer" />
+    </Dock>,
+  );
+  await userEvent.type(screen.getByRole("textbox", { name: "Notes of Get layer" }), "GCOV");
+  await userEvent.click(screen.getByRole("button", { name: AUTO_HIDE }));
+  expect(screen.queryByRole("complementary")).toBeNull();
+  expect(screen.queryByRole("tablist")).toBeNull();
+  expect(screen.queryByRole("separator")).toBeNull();
+  const tabs = within(screen.getByRole("group", { name: "Hidden panes on the right of the map" })).getAllByRole(
+    "button",
+  );
+  expect(tabs.map((tab) => tab.textContent)).toEqual(["Catalog", "Get layer"]);
+  expect(tabs.map((tab) => tab.getAttribute("aria-expanded"))).toEqual(["false", "false"]);
+  expect(document.activeElement).toBe(tabs[1]);
+  await userEvent.click(screen.getByRole("button", { name: "Catalog" }));
+  expect(screen.getByRole("complementary", { name: "Catalog" })).toBeDefined();
+  expect(screen.getByRole("button", { name: "Catalog" }).getAttribute("aria-expanded")).toBe("true");
+  expect(screen.getByRole("separator")).toBeDefined();
+  await userEvent.click(screen.getByRole("button", { name: "Get layer" }));
+  expect(screen.queryByRole("complementary", { name: "Catalog" })).toBeNull();
+  expect(screen.getByRole<HTMLInputElement>("textbox", { name: "Notes of Get layer" }).value).toBe("GCOV");
+  await userEvent.click(screen.getByRole("button", { name: "Get layer" }));
+  expect(screen.queryByRole("complementary")).toBeNull();
+});
+
+test("a pane that shows over the map hides when the pointer is pressed outside its side", async () => {
+  render(
+    <>
+      <main tabIndex={0} aria-label="Map" />
+      <Dock side="right">
+        <Notes id="catalog" title="Catalog" />
+      </Dock>
+    </>,
+  );
+  act(() => setAutoHide("right", true));
+  await userEvent.click(screen.getByRole("button", { name: "Catalog" }));
+  await userEvent.click(screen.getByRole("textbox", { name: "Notes of Catalog" }));
+  expect(screen.getByRole("complementary", { name: "Catalog" })).toBeDefined();
+  await userEvent.click(screen.getByRole("main"));
+  expect(screen.queryByRole("complementary")).toBeNull();
+  expect(screen.getByRole("button", { name: "Catalog" }).getAttribute("aria-expanded")).toBe("false");
+});
+
+test("the pin of a pane that shows over the map keeps the panes of the side open again", async () => {
+  render(
+    <Dock side="right">
+      <Notes id="catalog" title="Catalog" />
+      <Notes id="get-layer" title="Get layer" />
+    </Dock>,
+  );
+  act(() => setAutoHide("right", true));
+  await userEvent.click(screen.getByRole("button", { name: "Catalog" }));
+  await userEvent.click(screen.getByRole("button", { name: PIN }));
+  expect(dockStore.get().autoHide.right).toBe(false);
+  expect(screen.queryByRole("group")).toBeNull();
+  expect(screen.getByRole("tab", { name: "Catalog" }).getAttribute("aria-selected")).toBe("true");
+  expect(screen.getByRole("tabpanel", { name: "Catalog" })).toBeDefined();
+});
+
+test("a pane that showed over the map and is closed leaves no other pane in its place", async () => {
+  const onClose = vi.fn();
+  render(
+    <Dock side="right">
+      <Notes id="catalog" title="Catalog" />
+      <Notes id="get-layer" title="Get layer" onClose={onClose} />
+    </Dock>,
+  );
+  act(() => setAutoHide("right", true));
+  await userEvent.click(screen.getByRole("button", { name: "Get layer" }));
+  await userEvent.click(screen.getByRole("button", { name: "Close the Get layer pane" }));
+  expect(onClose).toHaveBeenCalledTimes(1);
+  expect(dockStore.get().revealed.right).toBe(false);
 });
