@@ -21,7 +21,7 @@ function failure(error: unknown): string {
   return error instanceof Error ? error.message : "The search failed.";
 }
 
-/** How a search ended: with products, or with none, and the sentence that says so. */
+/** How a search ended: with products, or with none, and the sentence that says so and where the products are listed. */
 export interface SearchOutcome {
   state: "success" | "warning";
   text: string;
@@ -49,12 +49,15 @@ export async function runSearch(search: ProductSearch): Promise<SearchOutcome> {
     // The pane of the results comes to the front of its side.
     setPaneOpen("catalog", true);
     if (answer.found > listed) {
-      const text = `${formatCount(answer.found)} products were found, and the first ${formatCount(listed)} are listed. The Catalog pane loads more.`;
+      const text = `${formatCount(answer.found)} products were found. The Catalog pane lists the first ${formatCount(listed)} and loads more.`;
       return { state: "success", text };
     }
     return {
       state: "success",
-      text: listed === 1 ? "1 product was found." : `${formatCount(listed)} products were found.`,
+      text:
+        listed === 1
+          ? "1 product was found. The Catalog pane lists it."
+          : `${formatCount(listed)} products were found. The Catalog pane lists them.`,
     };
   } finally {
     if (request === controller) {

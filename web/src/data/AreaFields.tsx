@@ -1,5 +1,6 @@
 import { useId, useRef, useState, type ChangeEvent } from "react";
 import { useMap } from "../shared/map";
+import { Notice } from "../shared/notice/Notice";
 import { useStore } from "../shared/store";
 import { AREA_FILE_TYPES, readAreaFile } from "./areaFile";
 import { EXPLANATIONS } from "./explanations";
@@ -29,15 +30,18 @@ interface AreaFieldsProps {
   onChange: (change: Partial<SearchDraft>) => void;
   /** The explanation of the area, when the area serves another tool than the search. */
   explanation?: string;
+  /** What is wrong with the area for the tool that it serves, in one or two sentences, or null. */
+  fault?: string | null;
 }
 
 /**
  * The area of the search. As the extent of a tool in ArcGIS Pro and in QGIS, one list takes the area from the
  * view of the map, from a shape drawn on the map, from the outline of the selected product or from a file, and
  * four fields take typed coordinates. After the area is taken, the list names what the area is. The explanation
- * of each title shows from the button beside it.
+ * of each title shows from the button beside it. An error of the area, from a file that could not be read or
+ * from the tool that the area serves, stands under the fields and describes the list.
  */
-export function AreaFields({ draft, onChange, explanation = EXPLANATIONS.area }: AreaFieldsProps) {
+export function AreaFields({ draft, onChange, explanation = EXPLANATIONS.area, fault = null }: AreaFieldsProps) {
   const map = useMap();
   const id = useId();
   const fileInput = useRef<HTMLInputElement>(null);
@@ -97,6 +101,8 @@ export function AreaFields({ draft, onChange, explanation = EXPLANATIONS.area }:
   };
 
   const polygonName = polygons ? describeArea(polygons) : "";
+  const faults = [note?.kind === "fault" ? note.text : null, fault].filter((text) => text !== null);
+  const faultIds = faults.map((_, index) => `${id}-fault-${String(index)}`);
 
   return (
     <>
@@ -106,7 +112,7 @@ export function AreaFields({ draft, onChange, explanation = EXPLANATIONS.area }:
       <select
         className="usa-select"
         id={`${id}-area`}
-        aria-describedby={infoId(`${id}-area`)}
+        aria-describedby={[infoId(`${id}-area`), ...faultIds].join(" ")}
         value={shown}
         onChange={onChoose}
       >
@@ -136,11 +142,11 @@ export function AreaFields({ draft, onChange, explanation = EXPLANATIONS.area }:
       />
 
       {drawing ? (
-        <p className="search-note" role="status">
+        <Notice kind="info">
           {drawing === "rectangle"
             ? "Press on the map, move the pointer and release. The Escape key ends the drawing."
             : "Click on the map for each point, and twice for the last. The Escape key ends the drawing."}
-        </p>
+        </Notice>
       ) : null}
 
       {limited && area.kind === "rectangle" ? (
@@ -164,14 +170,12 @@ export function AreaFields({ draft, onChange, explanation = EXPLANATIONS.area }:
         </div>
       ) : null}
 
-      {note ? (
-        <p
-          className={note.kind === "fault" ? "usa-error-message search-note" : "search-note"}
-          role={note.kind === "fault" ? "alert" : "status"}
-        >
-          {note.text}
+      {faults.map((text, index) => (
+        <p key={faultIds[index]} className="usa-error-message" id={faultIds[index]} role="alert">
+          {text}
         </p>
-      ) : null}
+      ))}
+      {note?.kind === "note" ? <Notice kind="info">{note.text}</Notice> : null}
     </>
   );
 }

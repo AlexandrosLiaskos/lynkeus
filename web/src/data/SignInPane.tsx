@@ -1,7 +1,9 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { closeToolPane, dockStore } from "../shared/dock/dock";
 import { report } from "../shared/messages/messages";
+import { Notice } from "../shared/notice/Notice";
 import { ToolPane, type ToolPaneRun } from "../shared/toolpane/ToolPane";
+import { FieldTitle, infoId } from "./FieldTitle";
 import { loadSession, signIn, signOutWithMessage, useSession } from "./session";
 
 /** The name of the pane: the name of the ribbon button that opens it. */
@@ -18,11 +20,26 @@ export const LONGEST_HOURS = 8;
 
 const LIMITS = `after ${String(IDLE_MINUTES)} minutes without use and after ${String(LONGEST_HOURS)} hours`;
 
+/** The explanations of the pane, one for each title. Each one shows from the button beside its title. */
+export const ABOUT = {
+  tool: "The sign-in gives the server of Lynkeus a user token of your Earthdata account, with which it requests data from NASA in your name. A user token stands for the account for 60 days.",
+  token: `The server of Lynkeus checks the signature and the expiry date of the token and keeps the token in its memory only, to request data from NASA in your name. It forgets the token when you sign out, ${LIMITS}. Lynkeus keeps no copy of the token in the browser.`,
+  account:
+    "The server of Lynkeus requests data from NASA with the token of this account. A job that was already started goes on after the sign-in ends. To use another account, sign out first.",
+} as const;
+
+/** Why the last sign-in did not succeed: an empty field, or the answer of the server. */
+interface Fault {
+  from: "field" | "server";
+  text: string;
+}
+
 /**
  * The pane of the button Sign in, with the form of the sign-in to Earthdata. A visitor who is not signed in sees
- * the field for a user token of Earthdata Login and the button Sign in. A visitor who is signed in sees the user
- * name of the account and the button Sign out, as the Sign In menu of ArcGIS Pro shows the account after a
- * sign-in.
+ * three numbered steps, the field for a user token of Earthdata Login and the button Sign in. A visitor who is
+ * signed in sees the user name of the account and the button Sign out, as the Sign In menu of ArcGIS Pro shows
+ * the account after a sign-in. Each state of the sign-in is one notice: the check of the session, the account
+ * that is signed in, a token that the server refused, and a server that does not answer.
  *
  * The token stays in the field of the browser and in no state of the page: it is read when the form is sent, and
  * the field is emptied before the request leaves.
@@ -35,7 +52,7 @@ export function SignInPane() {
   const id = useId();
   const field = useRef<HTMLInputElement>(null);
   const [shown, setShown] = useState(false);
-  const [fault, setFault] = useState<string | null>(null);
+  const [fault, setFault] = useState<Fault | null>(null);
   const [work, setWork] = useState<string | null>(null);
 
   useEffect(() => {
@@ -60,7 +77,7 @@ export function SignInPane() {
     input.value = "";
     setShown(false);
     if (token === "") {
-      setFault("Paste your Earthdata Login user token into this field.");
+      setFault({ from: "field", text: "Paste your user token into this field." });
       input.focus();
       return;
     }
@@ -76,8 +93,8 @@ export function SignInPane() {
         const message = error instanceof Error ? error.message : "The sign-in failed.";
         setWork(null);
         if (dockStore.get().tools.includes(SIGN_IN_PANE)) {
-          // The refusal is shown at the field, and the field takes the keyboard focus for the next token.
-          setFault(message);
+          // The refusal is shown under the field, and the field takes the keyboard focus for the next token.
+          setFault({ from: "server", text: message });
           field.current?.focus();
         } else {
           report("error", message);
@@ -104,35 +121,51 @@ export function SignInPane() {
 
   if (session.state === "signed-in") {
     return (
-      <ToolPane id={SIGN_IN_PANE} title="Sign in to Earthdata" runLabel="Sign out" onRun={onSignOut} run={run}>
-        <p className="sign-in-text">
-          You are signed in to Earthdata as <strong>{session.user}</strong>.
-        </p>
-        <p className="usa-hint sign-in-text">
-          The server of Lynkeus requests data from NASA with the token of this account. The sign-in ends when you sign
-          out, {LIMITS}. A job that was already started goes on. To use another account, sign out first.
-        </p>
+      <ToolPane
+        id={SIGN_IN_PANE}
+        title="Sign in to Earthdata"
+        info={ABOUT.account}
+        runLabel="Sign out"
+        onRun={onSignOut}
+        run={run}
+      >
+        <Notice kind="success">
+          You are signed in to Earthdata as {session.user}. The sign-in ends when you sign out, {LIMITS}.
+        </Notice>
       </ToolPane>
     );
   }
 
   if (session.state === "unreachable") {
     return (
-      <ToolPane id={SIGN_IN_PANE} title="Sign in to Earthdata" runLabel="Try again" onRun={onRead} run={run}>
-        <p className="usa-error-message sign-in-text" role="alert">
+      <ToolPane
+        id={SIGN_IN_PANE}
+        title="Sign in to Earthdata"
+        info={ABOUT.tool}
+        runLabel="Try again"
+        onRun={onRead}
+        run={run}
+      >
+        <Notice kind="error">
           The server of Lynkeus did not answer, so it is not known whether you are signed in to Earthdata. Check the
           connection and try again.
-        </p>
+        </Notice>
       </ToolPane>
     );
   }
 
   if (session.state === "unknown") {
     return (
-      <ToolPane id={SIGN_IN_PANE} title="Sign in to Earthdata" runLabel="Sign in" onRun={onSignIn} ready={false}>
-        <p className="sign-in-text" role="status">
-          Checking whether you are signed in to Earthdata.
-        </p>
+      <ToolPane
+        id={SIGN_IN_PANE}
+        title="Sign in to Earthdata"
+        info={ABOUT.tool}
+        runLabel="Sign in"
+        onRun={onSignIn}
+        ready={false}
+        missing="Wait for the answer of the server."
+      >
+        <Notice kind="info">Checking whether you are signed in to Earthdata.</Notice>
       </ToolPane>
     );
   }
@@ -141,26 +174,26 @@ export function SignInPane() {
     <ToolPane
       id={SIGN_IN_PANE}
       title="Sign in to Earthdata"
+      info={ABOUT.tool}
       runLabel="Sign in"
       onRun={onSignIn}
       run={run}
       onClose={onClose}
     >
-      <p className="sign-in-text">
-        A user token stands for your Earthdata Login account for 60 days. Generate one on the page{" "}
-        <a href={TOKEN_PAGE} target="_blank" rel="noopener noreferrer">
-          Generate Token of Earthdata Login
-        </a>{" "}
-        (opens in a new tab) and paste it below.
-      </p>
-      <label className={fault ? "usa-label usa-label--error" : "usa-label"} htmlFor={`${id}-token`}>
-        User token
-      </label>
-      {fault ? (
-        <span className="usa-error-message" id={`${id}-fault`} role="alert">
-          {fault}
-        </span>
-      ) : null}
+      <ol className="sign-in-steps">
+        <li>
+          Open the page{" "}
+          <a href={TOKEN_PAGE} target="_blank" rel="noopener noreferrer">
+            Generate Token of Earthdata Login
+          </a>{" "}
+          (opens in a new tab).
+        </li>
+        <li>Press Generate Token and then Show Token on that page, and copy the token.</li>
+        <li>Paste the token into the field below and press Sign in.</li>
+      </ol>
+      <FieldTitle field={`${id}-token`} title="User token">
+        {ABOUT.token}
+      </FieldTitle>
       <input
         ref={field}
         className={fault ? "usa-input usa-input--error" : "usa-input"}
@@ -174,7 +207,7 @@ export function SignInPane() {
         required
         readOnly={work !== null}
         aria-invalid={fault ? true : undefined}
-        aria-describedby={fault ? `${id}-fault ${id}-use` : `${id}-use`}
+        aria-describedby={fault ? `${id}-fault ${infoId(`${id}-token`)}` : infoId(`${id}-token`)}
       />
       <button
         type="button"
@@ -184,11 +217,16 @@ export function SignInPane() {
       >
         {shown ? "Hide token" : "Show token"}
       </button>
-      <p className="usa-hint sign-in-text" id={`${id}-use`}>
-        The server of Lynkeus checks the signature and the expiry date of the token and keeps the token in its memory
-        only, to request data from NASA in your name. It forgets the token when you sign out, {LIMITS}. Lynkeus keeps no
-        copy of the token in the browser.
-      </p>
+      {fault?.from === "field" ? (
+        <p className="usa-error-message" id={`${id}-fault`} role="alert">
+          {fault.text}
+        </p>
+      ) : null}
+      {fault?.from === "server" ? (
+        <div id={`${id}-fault`}>
+          <Notice kind="error">{fault.text}</Notice>
+        </div>
+      ) : null}
     </ToolPane>
   );
 }

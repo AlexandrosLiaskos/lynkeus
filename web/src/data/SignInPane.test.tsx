@@ -7,7 +7,7 @@ import { Dock } from "../shared/dock/Dock";
 import { dockStore, openToolPane, resetDock } from "../shared/dock/dock";
 import { messagesStore } from "../shared/messages/messages";
 import { resetSession, sessionStore } from "./session";
-import { IDLE_MINUTES, LONGEST_HOURS, SIGN_IN_PANE, SignInPane, TOKEN_PAGE } from "./SignInPane";
+import { ABOUT, IDLE_MINUTES, LONGEST_HOURS, SIGN_IN_PANE, SignInPane, TOKEN_PAGE } from "./SignInPane";
 import { earthdata, REFUSAL, TOKEN, type Earthdata } from "./testSignIn";
 
 /** The page around the pane: a button that opens it, the map, and the right side of the map. */
@@ -37,6 +37,9 @@ const opener = () => screen.getByRole("button", { name: "Open the pane" });
 const pane = () => screen.queryByRole("complementary", { name: "Sign in to Earthdata" });
 const field = () => screen.getByLabelText<HTMLInputElement>("User token");
 const status = () => pane()?.querySelector('[role="status"]')?.textContent ?? null;
+
+/** Return the explanation behind the "i" beside the title of the pane. */
+const about = () => document.getElementById(pane()?.getAttribute("aria-describedby") ?? "")?.textContent;
 
 /** The button at the foot of the pane, which signs in, signs out or asks the server again. */
 function run(): HTMLButtonElement {
@@ -85,20 +88,34 @@ test("before the server has answered, the pane says that it is checking and its 
   render(<Page />);
   await userEvent.click(opener());
   expect(status()).toBe("Checking whether you are signed in to Earthdata.");
+  expect(pane()?.querySelector(".notice--info")).not.toBeNull();
   expect(run().textContent).toBe("Sign in");
   expect(run().getAttribute("aria-disabled")).toBe("true");
+  expect(document.getElementById(run().getAttribute("aria-describedby") ?? "")?.textContent).toBe(
+    "Wait for the answer of the server.",
+  );
   expect(screen.queryByLabelText("User token")).toBeNull();
   act(() => server.release());
   expect(await screen.findByLabelText("User token")).toBeTruthy();
 });
 
-test("the form says what a token is, where it is generated and what the server does with it", async () => {
+test("the form gives the three steps of a sign-in, and says what a token is and what the server does with it", async () => {
   await open(earthdata());
+  expect(screen.getAllByRole("listitem").map((step) => step.textContent)).toEqual([
+    "Open the page Generate Token of Earthdata Login (opens in a new tab).",
+    "Press Generate Token and then Show Token on that page, and copy the token.",
+    "Paste the token into the field below and press Sign in.",
+  ]);
   const link = screen.getByRole<HTMLAnchorElement>("link", { name: "Generate Token of Earthdata Login" });
   expect(link.href).toBe(TOKEN_PAGE);
   expect(link.target).toBe("_blank");
   expect(link.rel).toBe("noopener noreferrer");
-  expect(link.parentElement?.textContent).toMatch(/for 60 days.*\(opens in a new tab\)/);
+  expect(about()).toBe(ABOUT.tool);
+  expect(about()).toMatch(/for 60 days/);
+  // Every explanation stands behind an "i", and the pane has one filled button.
+  expect(screen.getByRole("button", { name: "Information about User token" })).toBeDefined();
+  expect(document.querySelector(".usa-hint")).toBeNull();
+  expect(pane()?.querySelectorAll(".usa-button:not(.usa-button--outline, .usa-button--unstyled)")).toHaveLength(1);
   const use = document.getElementById(field().getAttribute("aria-describedby") ?? "");
   expect(use?.textContent).toBe(
     "The server of Lynkeus checks the signature and the expiry date of the token and keeps the token in its memory only, to request data from NASA in your name. It forgets the token when you sign out, after 30 minutes without use and after 8 hours. Lynkeus keeps no copy of the token in the browser.",
@@ -209,8 +226,10 @@ test("a token that is refused is reported at the field in the words of the serve
 
   const alert = await screen.findByRole("alert");
   expect(alert.textContent).toBe(REFUSAL);
+  // The refusal is a notice under the field, and it describes the field.
+  expect(alert.closest(".notice--error")).not.toBeNull();
   expect(field().getAttribute("aria-invalid")).toBe("true");
-  expect(field().getAttribute("aria-describedby")?.split(" ")).toContain(alert.id);
+  expect(field().getAttribute("aria-describedby")?.split(" ")).toContain(alert.closest("[id]")?.id);
   expect(document.activeElement).toBe(field());
   expect(field().value).toBe("");
   expect(field().readOnly).toBe(false);
@@ -267,7 +286,9 @@ test("an empty field is named and nothing is sent", async () => {
   await open(server);
   await userEvent.type(field(), "   ");
   await userEvent.click(run());
-  expect(screen.getByRole("alert").textContent).toBe("Paste your Earthdata Login user token into this field.");
+  const alert = screen.getByRole("alert");
+  expect(alert.textContent).toBe("Paste your user token into this field.");
+  expect(field().getAttribute("aria-describedby")?.split(" ")).toContain(alert.id);
   expect(document.activeElement).toBe(field());
   expect(server.sent("POST")).toEqual([]);
 });
@@ -295,9 +316,13 @@ test("the keyboard alone opens the pane, reaches its elements in order, signs in
   await userEvent.keyboard("{Enter}");
   expect(document.activeElement).toBe(screen.getByRole("heading", { name: "Sign in to Earthdata" }));
   await userEvent.tab();
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: "Information about Sign in to Earthdata" }));
+  await userEvent.tab();
   expect(document.activeElement).toBe(screen.getByRole("button", { name: "Close the Sign in to Earthdata pane" }));
   await userEvent.tab();
   expect(document.activeElement).toBe(screen.getByRole("link", { name: "Generate Token of Earthdata Login" }));
+  await userEvent.tab();
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: "Information about User token" }));
   await userEvent.tab();
   expect(document.activeElement).toBe(field());
   await userEvent.keyboard(TOKEN);
@@ -318,8 +343,13 @@ test("a visitor who is signed in sees the user name and can sign out", async () 
   const server = earthdata("a_user");
   await open(server);
   expect(screen.queryByLabelText("User token")).toBeNull();
-  expect(screen.getByText("a_user").parentElement?.textContent).toBe("You are signed in to Earthdata as a_user.");
-  expect(pane()?.textContent).toMatch(/after 30 minutes without use and after 8 hours/);
+  expect(status()).toBe(
+    "You are signed in to Earthdata as a_user. The sign-in ends when you sign out, after 30 minutes without use and after 8 hours.",
+  );
+  expect(pane()?.querySelector(".notice--success")).not.toBeNull();
+  expect(about()).toBe(
+    "The server of Lynkeus requests data from NASA with the token of this account. A job that was already started goes on after the sign-in ends. To use another account, sign out first.",
+  );
   expect(run().textContent).toBe("Sign out");
   await userEvent.click(run());
   await vi.waitFor(() => expect(sessionStore.get()).toEqual({ state: "signed-out" }));
@@ -344,7 +374,10 @@ test("when the service cannot be reached the pane says so and offers to try agai
   server.down = true;
   await open(server);
   expect(sessionStore.get()).toEqual({ state: "unreachable" });
-  expect(screen.getByRole("alert").textContent).toMatch(/^The server of Lynkeus did not answer/);
+  expect(screen.getByRole("alert").textContent).toBe(
+    "The server of Lynkeus did not answer, so it is not known whether you are signed in to Earthdata. Check the connection and try again.",
+  );
+  expect(pane()?.querySelector(".notice--error")).not.toBeNull();
   expect(screen.queryByLabelText("User token")).toBeNull();
   server.down = false;
   expect(run().textContent).toBe("Try again");
