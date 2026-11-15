@@ -76,15 +76,25 @@ export function copyDisplay(layer: LayerDescription): void {
   copiedDisplayStore.set(displayOf(layer));
 }
 
+/** The name of the colour scale of a layer of classes, whose cells take the colours of their classes. */
+export const CLASS_COLOURS = "classes";
+
 /**
  * Give a layer the copied display: its range, its colour scale and the other choices of the Symbology pane. The
- * layer keeps its own visibility and opacity.
+ * layer keeps its own visibility and opacity. Between a layer of classes and another layer only the colour of the
+ * cells without data passes: a range and a colour scale have no meaning for classes, and the colours of classes
+ * no meaning for another layer.
  */
 export function pasteDisplay(layer: LayerDescription): void {
   const copied = copiedDisplayStore.get();
   if (copied) {
-    const { visible, opacity } = displayOf(layer);
-    displayStore.set({ ...displayStore.get(), [layer.id]: { ...copied, visible, opacity } });
+    const own = displayOf(layer);
+    const { visible, opacity } = own;
+    const pasted =
+      layer.classes || copied.colours === CLASS_COLOURS
+        ? { ...own, noDataColour: copied.noDataColour }
+        : { ...copied, visible, opacity };
+    displayStore.set({ ...displayStore.get(), [layer.id]: pasted });
   }
 }
 

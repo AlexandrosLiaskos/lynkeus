@@ -138,6 +138,7 @@ test("every article of the list is cited by its address in a method sheet or in 
     "https://doi.org/10.3390/rs6064870",
     "https://doi.org/10.1080/01431168908903939",
     "https://doi.org/10.1038/s41467-020-19160-7",
+    "https://doi.org/10.48577/jpl.UD4HV3",
     "https://doi.org/10.1109/TGRS.2002.803792",
     "https://doi.org/10.1016/j.cageo.2019.104331",
   ]);

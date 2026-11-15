@@ -1,0 +1,791 @@
+{
+ "started": "2026-11-15T20:26:23Z",
+ "phase": "map",
+ "area": {
+  "west": -71.2,
+  "south": 42.6,
+  "east": -70.75,
+  "north": 42.95
+ },
+ "layers": {},
+ "maps": {
+  "map_1021": {
+   "process": "backscatter-map",
+   "inputs": {
+    "inputs": [
+     "5b39a70ebe15413cfa6e7e12c5954326",
+     "4bcec93249f5b117ad917ec8de0f570b"
+    ],
+    "title": "Wetland inundation, 21 Oct 2026"
+   },
+   "submitted": "2026-11-15T20:26:24Z",
+   "http_status": 201,
+   "job": "b289987c12df79cda13d2a4573c52746",
+   "job_title": "Wetland inundation, 21 Oct 2026",
+   "given": [
+    "hh_1021",
+    "hv_1021"
+   ],
+   "status_info": {
+    "processID": "backscatter-map",
+    "type": "process",
+    "jobID": "b289987c12df79cda13d2a4573c52746",
+    "title": "Wetland inundation, 21 Oct 2026",
+    "status": "successful",
+    "message": "The layer is ready.",
+    "created": "2026-11-15T20:26:23Z",
+    "started": "2026-11-15T20:26:23Z",
+    "finished": "2026-11-15T20:26:37Z",
+    "updated": "2026-11-15T20:26:37Z",
+    "progress": 100,
+    "inputs": {
+     "inputs": [
+      "5b39a70ebe15413cfa6e7e12c5954326",
+      "4bcec93249f5b117ad917ec8de0f570b"
+     ],
+     "title": "Wetland inundation, 21 Oct 2026"
+    },
+    "layer": "a22f3160aad46984fa7fddcd3e0e1926",
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/b289987c12df79cda13d2a4573c52746",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     },
+     {
+      "href": "/api/jobs/b289987c12df79cda13d2a4573c52746/results",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/results",
+      "type": "application/json",
+      "title": "Results of the job"
+     }
+    ]
+   },
+   "status": "successful",
+   "ended": "2026-11-15T20:26:38Z",
+   "results_http_status": 200,
+   "result": {
+    "id": "a22f3160aad46984fa7fddcd3e0e1926",
+    "title": "Wetland inundation, 21 Oct 2026",
+    "kind": "result",
+    "url": "/files/a22f3160aad46984fa7fddcd3e0e1926/backscatter-map.tif",
+    "quantity": "Wetland inundation class",
+    "unit": "1",
+    "range": [
+     1.0,
+     3.0
+    ],
+    "colours": "classes",
+    "dates": [
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": null,
+    "classes": [
+     {
+      "value": 1,
+      "name": "Not inundated",
+      "colour": "#ececee"
+     },
+     {
+      "value": 2,
+      "name": "Open water",
+      "colour": "#151b73"
+     },
+     {
+      "value": 3,
+      "name": "Inundated vegetation",
+      "colour": "#42e9f5"
+     }
+    ],
+    "frequency": null,
+    "program": "Lynkeus 0.1.0",
+    "method": "Wetland inundation classification of the NISAR science team: Steps 4b to 6 of the notebook NISAR_L3_Inundation_ProductGeneration.ipynb of NISAR_Inundation, commit 85140c4, with the thresholds of the set Default of ancillary_data/wetland_calibration_parameters.yaml (https://github.com/NISAR-Science-Algorithms/NISAR_Inundation; NISAR Mission Science Users' Handbook, 2nd edition, section 6.4, https://doi.org/10.48577/jpl.UD4HV3)",
+    "record": "/files/a22f3160aad46984fa7fddcd3e0e1926/backscatter-map.json"
+   },
+   "record_http_status": 404,
+   "record": {
+    "detail": "Not Found"
+   }
+  }
+ },
+ "refusals": {
+  "HVHV first": {
+   "process": "backscatter-map",
+   "inputs": {
+    "inputs": [
+     "4bcec93249f5b117ad917ec8de0f570b",
+     "5b39a70ebe15413cfa6e7e12c5954326"
+    ],
+    "title": "Trial: HVHV first"
+   },
+   "submitted": "2026-11-15T20:26:38Z",
+   "http_status": 201,
+   "job": "0f56cf722f3c769bded63803261b7f64",
+   "job_title": "Trial: HVHV first",
+   "given": [
+    "hv_1021",
+    "hh_1021"
+   ],
+   "status_info": {
+    "processID": "backscatter-map",
+    "type": "process",
+    "jobID": "0f56cf722f3c769bded63803261b7f64",
+    "title": "Trial: HVHV first",
+    "status": "failed",
+    "message": "The layer \"Backscatter HV, 21 Oct 2026\" is the layer HVHV of its product, and the tool reads the layer HHHH.",
+    "created": "2026-11-15T20:26:38Z",
+    "started": "2026-11-15T20:26:38Z",
+    "finished": "2026-11-15T20:26:46Z",
+    "updated": "2026-11-15T20:26:46Z",
+    "progress": 40,
+    "inputs": {
+     "inputs": [
+      "4bcec93249f5b117ad917ec8de0f570b",
+      "5b39a70ebe15413cfa6e7e12c5954326"
+     ],
+     "title": "Trial: HVHV first"
+    },
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/0f56cf722f3c769bded63803261b7f64",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     }
+    ]
+   },
+   "status": "failed",
+   "ended": "2026-11-15T20:26:46Z",
+   "results_http_status": 500,
+   "result": {
+    "type": "about:blank",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "The layer \"Backscatter HV, 21 Oct 2026\" is the layer HVHV of its product, and the tool reads the layer HHHH."
+   }
+  },
+  "two products": {
+   "process": "backscatter-map",
+   "inputs": {
+    "inputs": [
+     "5b39a70ebe15413cfa6e7e12c5954326",
+     "0d93dc3cfee5addc71fca2d8b4c5a669"
+    ],
+    "title": "Trial: two products"
+   },
+   "submitted": "2026-11-15T20:26:38Z",
+   "http_status": 201,
+   "job": "e0a806c198168609a58ec20086284aa6",
+   "job_title": "Trial: two products",
+   "given": [
+    "hh_1021",
+    "hv_1102"
+   ],
+   "status_info": {
+    "processID": "backscatter-map",
+    "type": "process",
+    "jobID": "e0a806c198168609a58ec20086284aa6",
+    "title": "Trial: two products",
+    "status": "failed",
+    "message": "The two layers are not of the same product file.",
+    "created": "2026-11-15T20:26:38Z",
+    "started": "2026-11-15T20:26:38Z",
+    "finished": "2026-11-15T20:26:47Z",
+    "updated": "2026-11-15T20:26:47Z",
+    "progress": 40,
+    "inputs": {
+     "inputs": [
+      "5b39a70ebe15413cfa6e7e12c5954326",
+      "0d93dc3cfee5addc71fca2d8b4c5a669"
+     ],
+     "title": "Trial: two products"
+    },
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/e0a806c198168609a58ec20086284aa6",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     }
+    ]
+   },
+   "status": "failed",
+   "ended": "2026-11-15T20:26:48Z",
+   "results_http_status": 500,
+   "result": {
+    "type": "about:blank",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "The two layers are not of the same product file."
+   }
+  },
+  "HVHV twice": {
+   "process": "backscatter-map",
+   "inputs": {
+    "inputs": [
+     "4bcec93249f5b117ad917ec8de0f570b",
+     "0d93dc3cfee5addc71fca2d8b4c5a669"
+    ],
+    "title": "Trial: HVHV twice"
+   },
+   "submitted": "2026-11-15T20:26:38Z",
+   "http_status": 201,
+   "job": "579bf821338506a1ac4133584e6262d4",
+   "job_title": "Trial: HVHV twice",
+   "given": [
+    "hv_1021",
+    "hv_1102"
+   ],
+   "status_info": {
+    "processID": "backscatter-map",
+    "type": "process",
+    "jobID": "579bf821338506a1ac4133584e6262d4",
+    "title": "Trial: HVHV twice",
+    "status": "failed",
+    "message": "The layer \"Backscatter HV, 21 Oct 2026\" is the layer HVHV of its product, and the tool reads the layer HHHH.",
+    "created": "2026-11-15T20:26:38Z",
+    "started": "2026-11-15T20:26:46Z",
+    "finished": "2026-11-15T20:26:55Z",
+    "updated": "2026-11-15T20:26:55Z",
+    "progress": 40,
+    "inputs": {
+     "inputs": [
+      "4bcec93249f5b117ad917ec8de0f570b",
+      "0d93dc3cfee5addc71fca2d8b4c5a669"
+     ],
+     "title": "Trial: HVHV twice"
+    },
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/579bf821338506a1ac4133584e6262d4",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     }
+    ]
+   },
+   "status": "failed",
+   "ended": "2026-11-15T20:26:56Z",
+   "results_http_status": 500,
+   "result": {
+    "type": "about:blank",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "The layer \"Backscatter HV, 21 Oct 2026\" is the layer HVHV of its product, and the tool reads the layer HHHH."
+   }
+  },
+  "one layer": {
+   "process": "backscatter-map",
+   "inputs": {
+    "inputs": [
+     "5b39a70ebe15413cfa6e7e12c5954326"
+    ],
+    "title": "Trial: one layer"
+   },
+   "submitted": "2026-11-15T20:26:38Z",
+   "http_status": 201,
+   "job": "438261fdf26009b3240adb3b34163693",
+   "job_title": "Trial: one layer",
+   "given": [
+    "hh_1021"
+   ],
+   "status_info": {
+    "processID": "backscatter-map",
+    "type": "process",
+    "jobID": "438261fdf26009b3240adb3b34163693",
+    "title": "Trial: one layer",
+    "status": "failed",
+    "message": "The number of input layers must be 2, and it is 1.",
+    "created": "2026-11-15T20:26:38Z",
+    "started": "2026-11-15T20:26:47Z",
+    "finished": "2026-11-15T20:26:55Z",
+    "updated": "2026-11-15T20:26:55Z",
+    "progress": 40,
+    "inputs": {
+     "inputs": [
+      "5b39a70ebe15413cfa6e7e12c5954326"
+     ],
+     "title": "Trial: one layer"
+    },
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/438261fdf26009b3240adb3b34163693",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     }
+    ]
+   },
+   "status": "failed",
+   "ended": "2026-11-15T20:26:56Z",
+   "results_http_status": 500,
+   "result": {
+    "type": "about:blank",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "The number of input layers must be 2, and it is 1."
+   }
+  },
+  "one layer given twice": {
+   "process": "backscatter-map",
+   "inputs": {
+    "inputs": [
+     "5b39a70ebe15413cfa6e7e12c5954326",
+     "5b39a70ebe15413cfa6e7e12c5954326"
+    ],
+    "title": "Trial: one layer given twice"
+   },
+   "submitted": "2026-11-15T20:26:38Z",
+   "http_status": 400,
+   "answer": {
+    "type": "about:blank",
+    "title": "Bad Request",
+    "status": 400,
+    "detail": "The input inputs is not valid: a layer is given more than once."
+   },
+   "given": [
+    "hh_1021",
+    "hh_1021"
+   ]
+  },
+  "a result as input": {
+   "process": "backscatter-map",
+   "inputs": {
+    "inputs": [
+     "a22f3160aad46984fa7fddcd3e0e1926",
+     "4bcec93249f5b117ad917ec8de0f570b"
+    ],
+    "title": "Trial: a result as input"
+   },
+   "submitted": "2026-11-15T20:26:56Z",
+   "http_status": 201,
+   "job": "220b7ea7e45cd6312500aa2f9f838fea",
+   "job_title": "Trial: a result as input",
+   "given": [
+    "map_1021",
+    "hv_1021"
+   ],
+   "status_info": {
+    "processID": "backscatter-map",
+    "type": "process",
+    "jobID": "220b7ea7e45cd6312500aa2f9f838fea",
+    "title": "Trial: a result as input",
+    "status": "failed",
+    "message": "The layer \"Wetland inundation, 21 Oct 2026\" is not a layer received from one NISAR GCOV product.",
+    "created": "2026-11-15T20:26:56Z",
+    "started": "2026-11-15T20:26:56Z",
+    "finished": "2026-11-15T20:27:02Z",
+    "updated": "2026-11-15T20:27:02Z",
+    "progress": 40,
+    "inputs": {
+     "inputs": [
+      "a22f3160aad46984fa7fddcd3e0e1926",
+      "4bcec93249f5b117ad917ec8de0f570b"
+     ],
+     "title": "Trial: a result as input"
+    },
+    "server": null,
+    "links": [
+     {
+      "href": "/api/jobs/220b7ea7e45cd6312500aa2f9f838fea",
+      "rel": "self",
+      "type": "application/json",
+      "title": "State of the job"
+     }
+    ]
+   },
+   "status": "failed",
+   "ended": "2026-11-15T20:27:04Z",
+   "results_http_status": 500,
+   "result": {
+    "type": "about:blank",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "The layer \"Wetland inundation, 21 Oct 2026\" is not a layer received from one NISAR GCOV product."
+   }
+  }
+ },
+ "notes": [],
+ "layer_ids": {
+  "hh_1021": "5b39a70ebe15413cfa6e7e12c5954326",
+  "hv_1021": "4bcec93249f5b117ad917ec8de0f570b",
+  "hv_1102": "0d93dc3cfee5addc71fca2d8b4c5a669"
+ },
+ "processes": [
+  "get-layer",
+  "backscatter-state",
+  "backscatter-change",
+  "backscatter-map",
+  "coherence-state",
+  "coherence-change",
+  "displacement-state",
+  "soil-moisture-state",
+  "soil-moisture-change",
+  "backscatter-series",
+  "coherence-series"
+ ],
+ "description": {
+  "http_status": 200,
+  "answer": {
+   "id": "backscatter-map",
+   "title": "Backscatter map",
+   "description": "Classify each cell of one GCOV product as not inundated, open water or inundated vegetation.",
+   "version": "0.1.0",
+   "jobControlOptions": [
+    "async-execute",
+    "dismiss"
+   ],
+   "outputTransmission": [
+    "value"
+   ],
+   "inputs": {
+    "inputs": {
+     "title": "Input layers",
+     "description": "The id of each input layer, in the order that the method sheet of the tool gives. A layer is given once.",
+     "minOccurs": 1,
+     "maxOccurs": 50,
+     "schema": {
+      "minLength": 1,
+      "type": "string"
+     }
+    },
+    "title": {
+     "title": "Title",
+     "description": "Name of the result.",
+     "minOccurs": 1,
+     "maxOccurs": 1,
+     "schema": {
+      "maxLength": 200,
+      "minLength": 1,
+      "type": "string"
+     }
+    }
+   },
+   "outputs": {
+    "layer": {
+     "title": "Layer",
+     "description": "The description of the layer that the job produced, with the addresses of its two files.",
+     "schema": {
+      "additionalProperties": false,
+      "properties": {
+       "id": {
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+        "title": "Id",
+        "type": "string"
+       },
+       "title": {
+        "minLength": 1,
+        "type": "string"
+       },
+       "kind": {
+        "enum": [
+         "layer",
+         "result"
+        ],
+        "title": "Kind",
+        "type": "string"
+       },
+       "url": {
+        "minLength": 1,
+        "type": "string"
+       },
+       "quantity": {
+        "minLength": 1,
+        "type": "string"
+       },
+       "unit": {
+        "minLength": 1,
+        "type": "string"
+       },
+       "range": {
+        "maxItems": 2,
+        "minItems": 2,
+        "items": {
+         "type": "number"
+        },
+        "title": "Range",
+        "type": "array"
+       },
+       "colours": {
+        "minLength": 1,
+        "type": "string"
+       },
+       "dates": {
+        "items": {
+         "format": "date",
+         "type": "string"
+        },
+        "minItems": 1,
+        "title": "Dates",
+        "type": "array"
+       },
+       "inputs": {
+        "items": {
+         "minLength": 1,
+         "type": "string"
+        },
+        "minItems": 1,
+        "title": "Inputs",
+        "type": "array"
+       },
+       "layer": {
+        "nullable": true,
+        "minLength": 1,
+        "type": "string",
+        "default": null
+       },
+       "ends": {
+        "nullable": true,
+        "maxItems": 2,
+        "minItems": 2,
+        "items": {
+         "minLength": 1,
+         "type": "string"
+        },
+        "type": "array",
+        "default": null,
+        "title": "Ends"
+       },
+       "classes": {
+        "nullable": true,
+        "items": {
+         "additionalProperties": false,
+         "properties": {
+          "value": {
+           "minimum": 0,
+           "title": "Value",
+           "type": "integer"
+          },
+          "name": {
+           "minLength": 1,
+           "type": "string"
+          },
+          "colour": {
+           "pattern": "^#[0-9a-f]{6}$",
+           "title": "Colour",
+           "type": "string"
+          }
+         },
+         "required": [
+          "value",
+          "name",
+          "colour"
+         ],
+         "type": "object"
+        },
+        "type": "array",
+        "default": null,
+        "title": "Classes"
+       },
+       "frequency": {
+        "nullable": true,
+        "minimum": 0,
+        "exclusiveMinimum": true,
+        "type": "number",
+        "default": null,
+        "title": "Frequency"
+       },
+       "program": {
+        "minLength": 1,
+        "type": "string"
+       },
+       "method": {
+        "nullable": true,
+        "minLength": 1,
+        "type": "string",
+        "default": null
+       },
+       "record": {
+        "minLength": 1,
+        "type": "string"
+       }
+      },
+      "required": [
+       "id",
+       "title",
+       "kind",
+       "url",
+       "quantity",
+       "unit",
+       "range",
+       "colours",
+       "dates",
+       "inputs",
+       "program",
+       "record"
+      ],
+      "type": "object"
+     }
+    }
+   },
+   "links": [
+    {
+     "href": "/api/processes/backscatter-map",
+     "rel": "self",
+     "type": "application/json",
+     "title": "Description of the process"
+    },
+    {
+     "href": "/api/processes/backscatter-map/execution",
+     "rel": "http://www.opengis.net/def/rel/ogc/1.0/execute",
+     "type": "application/json",
+     "title": "Execution of the process"
+    }
+   ]
+  }
+ },
+ "layers_of_the_session_at_the_end": {
+  "layers": [
+   {
+    "layer": {
+     "id": "a22f3160aad46984fa7fddcd3e0e1926",
+     "title": "Wetland inundation, 21 Oct 2026",
+     "kind": "result",
+     "url": "/files/a22f3160aad46984fa7fddcd3e0e1926/backscatter-map.tif",
+     "quantity": "Wetland inundation class",
+     "unit": "1",
+     "range": [
+      1.0,
+      3.0
+     ],
+     "colours": "classes",
+     "dates": [
+      "2026-10-21"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": null,
+     "ends": null,
+     "classes": [
+      {
+       "value": 1,
+       "name": "Not inundated",
+       "colour": "#ececee"
+      },
+      {
+       "value": 2,
+       "name": "Open water",
+       "colour": "#151b73"
+      },
+      {
+       "value": 3,
+       "name": "Inundated vegetation",
+       "colour": "#42e9f5"
+      }
+     ],
+     "frequency": null,
+     "program": "Lynkeus 0.1.0",
+     "method": "Wetland inundation classification of the NISAR science team: Steps 4b to 6 of the notebook NISAR_L3_Inundation_ProductGeneration.ipynb of NISAR_Inundation, commit 85140c4, with the thresholds of the set Default of ancillary_data/wetland_calibration_parameters.yaml (https://github.com/NISAR-Science-Algorithms/NISAR_Inundation; NISAR Mission Science Users' Handbook, 2nd edition, section 6.4, https://doi.org/10.48577/jpl.UD4HV3)",
+     "record": "/files/a22f3160aad46984fa7fddcd3e0e1926/backscatter-map.json"
+    },
+    "size": 6726249,
+    "created": "2026-11-15T20:26:37Z",
+    "server": null
+   },
+   {
+    "layer": {
+     "id": "0d93dc3cfee5addc71fca2d8b4c5a669",
+     "title": "Backscatter HV, 2 Nov 2026",
+     "kind": "layer",
+     "url": "/files/0d93dc3cfee5addc71fca2d8b4c5a669/gcov-hvhv-20261102.tif",
+     "quantity": "Radar backscatter gamma nought, HV, linear power",
+     "unit": "1",
+     "range": [
+      0.0024936795234680176,
+      0.2729759216308594
+     ],
+     "colours": "grey",
+     "dates": [
+      "2026-11-02"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "HVHV",
+     "ends": null,
+     "classes": null,
+     "frequency": null,
+     "program": "Lynkeus 0.1.0",
+     "method": null,
+     "record": "/files/0d93dc3cfee5addc71fca2d8b4c5a669/gcov-hvhv-20261102.json"
+    },
+    "size": 51889310,
+    "created": "2026-11-15T20:26:23Z",
+    "server": null
+   },
+   {
+    "layer": {
+     "id": "4bcec93249f5b117ad917ec8de0f570b",
+     "title": "Backscatter HV, 21 Oct 2026",
+     "kind": "layer",
+     "url": "/files/4bcec93249f5b117ad917ec8de0f570b/gcov-hvhv-20261021.tif",
+     "quantity": "Radar backscatter gamma nought, HV, linear power",
+     "unit": "1",
+     "range": [
+      0.0025252771377563474,
+      0.25980377197265625
+     ],
+     "colours": "grey",
+     "dates": [
+      "2026-10-21"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "HVHV",
+     "ends": null,
+     "classes": null,
+     "frequency": null,
+     "program": "Lynkeus 0.1.0",
+     "method": null,
+     "record": "/files/4bcec93249f5b117ad917ec8de0f570b/gcov-hvhv-20261021.json"
+    },
+    "size": 51833674,
+    "created": "2026-11-15T20:22:59Z",
+    "server": null
+   },
+   {
+    "layer": {
+     "id": "5b39a70ebe15413cfa6e7e12c5954326",
+     "title": "Backscatter HH, 21 Oct 2026",
+     "kind": "layer",
+     "url": "/files/5b39a70ebe15413cfa6e7e12c5954326/gcov-hhhh-20261021.tif",
+     "quantity": "Radar backscatter gamma nought, HH, linear power",
+     "unit": "1",
+     "range": [
+      0.011646270751953125,
+      1.185333251953125
+     ],
+     "colours": "grey",
+     "dates": [
+      "2026-10-21"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "HHHH",
+     "ends": null,
+     "classes": null,
+     "frequency": null,
+     "program": "Lynkeus 0.1.0",
+     "method": null,
+     "record": "/files/5b39a70ebe15413cfa6e7e12c5954326/gcov-hhhh-20261021.json"
+    },
+    "size": 52051760,
+    "created": "2026-11-15T20:21:37Z",
+    "server": null
+   }
+  ]
+ },
+ "ended": "2026-11-15T20:27:04Z"
+}

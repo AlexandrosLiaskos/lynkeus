@@ -10,6 +10,7 @@ import type { LayerDescription } from "../shared/layer";
 export const FINISHED_TOOLS = [
   "backscatter-state",
   "backscatter-change",
+  "backscatter-map",
   "coherence-state",
   "coherence-change",
   "displacement-state",
@@ -24,6 +25,13 @@ export type FinishedTool = (typeof FINISHED_TOOLS)[number];
  * `api/src/lynkeus/analysis/backscatter.py`.
  */
 export const BACKSCATTER_TERMS = ["HHHH", "HVHV", "VHVH", "VVVV", "RHRH", "RVRV"] as const;
+
+/**
+ * The two layers of one GCOV product that Backscatter, Thematic map reads, the first and the second
+ * (`docs/methods/backscatter-map.md`, section Input layers). The server accepts the same names, in
+ * `api/src/lynkeus/analysis/inundation.py`.
+ */
+export const MAP_TERMS = ["HHHH", "HVHV"] as const;
 
 /**
  * The names of the four layers `coherenceMagnitude` of a GUNW product, as a layer request gives them: the group
@@ -119,10 +127,26 @@ function isComponents(name: string): boolean {
   return COMPONENTS_LAYER.test(name);
 }
 
+function isHh(name: string): boolean {
+  return name === MAP_TERMS[0];
+}
+
+function isHv(name: string): boolean {
+  return name === MAP_TERMS[1];
+}
+
 /** What each finished tool reads, as its method sheet states it. */
 export const READS: Record<FinishedTool, Reads> = {
   "backscatter-state": { product: "GCOV", count: 1, dates: 1, unit: "1", names: isTerm },
   "backscatter-change": { product: "GCOV", count: 2, dates: 1, unit: "1", names: isTerm },
+  "backscatter-map": {
+    product: "GCOV",
+    count: 2,
+    dates: 1,
+    unit: "1",
+    names: isHh,
+    beside: { unit: "1", names: isHv },
+  },
   "coherence-state": { product: "GUNW", count: 1, dates: 2, unit: "1", names: isCoherence },
   "coherence-change": { product: "GUNW", count: 2, dates: 2, unit: "1", names: isCoherence },
   "displacement-state": {
@@ -153,8 +177,8 @@ export const READS: Record<FinishedTool, Reads> = {
 
 /**
  * What a tool of two inputs compares: the layers of two dates ("dates") or the layers of two pairs of dates
- * ("pairs"). A tool of one input compares nothing, and neither does Surface displacement, One pair, whose two
- * inputs are two layers of one product; the answer is null for them.
+ * ("pairs"). A tool of one input compares nothing, and neither do Surface displacement, One pair and Backscatter,
+ * Thematic map, whose two inputs are two layers of one product; the answer is null for them.
  */
 export type Comparison = "dates" | "pairs";
 
@@ -324,16 +348,32 @@ export function componentsOf(phase: LayerDescription, layers: readonly LayerDesc
 }
 
 /**
+ * Return the layers that can stand beside a layer `HHHH` as the second input of Backscatter, Thematic map: the
+ * layers `HVHV` of the same product file. The server refuses two layers of different product files, in
+ * `api/src/lynkeus/analysis/inundation.py`.
+ */
+export function crossTermsOf(first: LayerDescription, layers: readonly LayerDescription[]): LayerDescription[] {
+  const kind = READS["backscatter-map"].beside;
+  return kind === undefined
+    ? []
+    : layers.filter((layer) => unfitAs("backscatter-map", kind, layer) === null && layer.inputs[0] === first.inputs[0]);
+}
+
+/**
  * Return the layers that can stand beside a first layer as the second input of a tool of two inputs: the same
- * layer of another date or pair for a tool that compares, and the layer `connectedComponents` of the product of
- * the first for Surface displacement, One pair.
+ * layer of another date or pair for a tool that compares, the layer `connectedComponents` of the product of the
+ * first for Surface displacement, One pair, and the layer `HVHV` of the product of the first for Backscatter,
+ * Thematic map.
  */
 export function besideOf(
   tool: FinishedTool,
   first: LayerDescription,
   layers: readonly LayerDescription[],
 ): LayerDescription[] {
-  return READS[tool].beside ? componentsOf(first, layers) : partners(tool, first, layers);
+  if (!READS[tool].beside) {
+    return partners(tool, first, layers);
+  }
+  return tool === "backscatter-map" ? crossTermsOf(first, layers) : componentsOf(first, layers);
 }
 
 /**
@@ -499,6 +539,10 @@ export function defaultTitle(tool: FinishedTool, inputs: readonly LayerDescripti
     return "";
   }
   const days = datesWords(tool, inputs);
+  if (tool === "backscatter-map") {
+    // The two layers are of one product, so the date of the first is the date of the map.
+    return `Wetland inundation, ${daysOf(first)}`;
+  }
   if (tool === "displacement-state") {
     // The two layers are of one product, so the dates of the first are the dates of the pair.
     return `Surface displacement ${channelOf(first) ?? ""}, ${daysOf(first)}`;
@@ -553,6 +597,18 @@ export const NO_COMPONENTS = "The Connected components layer of this product is 
 /** The fault of the second field of Surface displacement, One pair while a layer can be chosen and none is. */
 export const CHOOSE_COMPONENTS = "Choose the Connected components layer.";
 
+/** The fault of the second field of Backscatter, Thematic map when no layer can stand beside the first. */
+export const NO_CROSS_TERM = "The Backscatter HV layer of this product is not in the session.";
+
+/** The fault of the second field of Backscatter, Thematic map while a layer can be chosen and none is. */
+export const CHOOSE_CROSS_TERM = "Choose the Backscatter HV layer.";
+
+/** The faults of the second field of a tool whose two inputs are two layers of one product. */
+const OF_ONE_PRODUCT_FAULTS: Partial<Record<FinishedTool, { none: string; choose: string }>> = {
+  "displacement-state": { none: NO_COMPONENTS, choose: CHOOSE_COMPONENTS },
+  "backscatter-map": { none: NO_CROSS_TERM, choose: CHOOSE_CROSS_TERM },
+};
+
 /** The fault of a field of a soil moisture tool when the session holds no retrieval quality flag of its product. */
 export const NO_QUALITY = "The Retrieval Quality Flag layer of this product is not in the session.";
 
@@ -585,8 +641,9 @@ export interface Inputs {
 /** The outcome of the check of the choices: the layers in the order of the tool, and the faults of the fields. */
 export interface Checked {
   /**
-   * The input layers that are chosen and in order: the earlier date or pair first for a tool that compares, and
-   * the layer `unwrappedPhase` first for Surface displacement, One pair.
+   * The input layers that are chosen and in order: the earlier date or pair first for a tool that compares, the
+   * layer `unwrappedPhase` first for Surface displacement, One pair, and the layer `HHHH` first for Backscatter,
+   * Thematic map.
    */
   layers: readonly LayerDescription[];
   faults: Faults;
@@ -599,7 +656,8 @@ export interface Checked {
  * tool reads. For a tool that compares, the second layer must stand beside the first and the tool must be able
  * to compare the two (`compared`), and the layer of the earlier date or pair is put first. For Surface
  * displacement, One pair the first layer must record the centre frequency of its radar band, and the second must
- * be the layer `connectedComponents` of the same product file and channel. A soil moisture tool needs the
+ * be the layer `connectedComponents` of the same product file and channel. For Backscatter, Thematic map the
+ * second layer must be the layer `HVHV` of the product file of the first. A soil moisture tool needs the
  * retrieval quality flag of the product of each chosen layer (`qualityOf`), and the form sends each flag after its
  * layer. The name of the result must have 1 to 200 characters.
  */
@@ -612,15 +670,16 @@ export function check({ tool, layers, first, second, title }: Choices): Checked 
   if (!one) {
     faults.first = "Choose a layer.";
   } else if (READS[tool].beside) {
-    const beside = componentsOf(one, layers);
+    const beside = besideOf(tool, one, layers);
     const other = beside.find((layer) => layer.id === second);
-    if (!hasFrequency(one)) {
+    const words = OF_ONE_PRODUCT_FAULTS[tool] ?? { none: NO_COMPONENTS, choose: CHOOSE_COMPONENTS };
+    if (tool === "displacement-state" && !hasFrequency(one)) {
       faults.first = NO_FREQUENCY;
     }
     if (beside.length === 0) {
-      faults.second = NO_COMPONENTS;
+      faults.second = words.none;
     } else if (!other) {
-      faults.second = CHOOSE_COMPONENTS;
+      faults.second = words.choose;
     } else if (faults.first === null) {
       chosen = [one, other];
     }

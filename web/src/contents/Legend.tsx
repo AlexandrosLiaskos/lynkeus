@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
-import type { LayerDescription } from "../shared/layer";
+import type { LayerClass, LayerDescription } from "../shared/layer";
 import { useStore } from "../shared/store";
 import { colourScale, isColourScale, scaleKind } from "./colours";
-import { formatNumber, formatUnit, legendTicks, rampImage } from "./legendValues";
+import { formatNumber, formatUnit, legendTicks, rampImage, tableLegend } from "./legendValues";
 import { decibels } from "./cog";
 import { inDecibels, shownRange, shownUnit } from "./scaling";
 import { displayStore, firstDisplay, type LayerDisplay } from "./state";
@@ -47,6 +47,20 @@ function ClassLegend({ colours, range }: { colours: readonly string[]; range: re
       </ul>
       {count > MOST_CLASSES && <p className="legend-note">The colours repeat every ten values.</p>}
     </>
+  );
+}
+
+/** The legend of a layer of classes: the name of each class beside its colour, in the order of their values. */
+function TableLegend({ classes }: { classes: readonly LayerClass[] }) {
+  return (
+    <ul className="legend-classes">
+      {tableLegend(classes).map(({ colour, label }, index) => (
+        <li key={index}>
+          <span className="legend-swatch" style={{ background: colour }} aria-hidden="true" />
+          {label}
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -103,13 +117,15 @@ function RampLegend({ layer }: { layer: LayerDescription }) {
  * The legend of a layer: its quantity, its unit and its colour scale, with the lowest and the highest value of
  * the scale and round values between them, and the words of its two ends when the description has them. The
  * legend follows the display of the layer. For a layer that is
- * shown in decibels the legend says so, and the values beside the scale are decibels. Every note of the legend,
- * such as the one on decibels, on hidden values or on the cells without data, has one style.
+ * shown in decibels the legend says so, and the values beside the scale are decibels. A layer of classes lists
+ * its classes, each with its name and its colour, and has no scale. Every note of the legend, such as the one on
+ * decibels, on hidden values or on the cells without data, has one style.
  */
 export function Legend({ layer }: { layer: LayerDescription }) {
   const display = useStore(displayStore)[layer.id] ?? firstDisplay(layer);
   const { range, colours: name } = display;
   const unit = formatUnit(layer.unit);
+  const table = layer.classes ?? null;
   return (
     <div className="legend">
       <p className="legend-quantity">
@@ -117,7 +133,9 @@ export function Legend({ layer }: { layer: LayerDescription }) {
         {unit && ` (${unit})`}
       </p>
       {inDecibels(layer, display) && <p className="legend-note">Shown in decibels (dB).</p>}
-      {scaleKind(name) === "classes" ? (
+      {table ? (
+        <TableLegend classes={table} />
+      ) : scaleKind(name) === "classes" ? (
         <ClassLegend colours={colourScale(name)} range={range} />
       ) : (
         <RampLegend layer={layer} />
@@ -128,8 +146,8 @@ export function Legend({ layer }: { layer: LayerDescription }) {
           No data
         </p>
       )}
-      {display.mask && <p className="legend-note">{maskText(layer, display)}</p>}
-      {!isColourScale(name) && (
+      {display.mask && !table && <p className="legend-note">{maskText(layer, display)}</p>}
+      {!isColourScale(name) && !table && (
         <p className="legend-note">Lynkeus has no colour scale named {name}. The layer is drawn in greys.</p>
       )}
     </div>

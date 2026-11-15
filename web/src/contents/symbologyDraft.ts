@@ -115,9 +115,16 @@ function rangeOf(
 
 /**
  * Return the change that a draft makes to the display of a layer, or the first problem among its values. The
- * range and the mask of the display are in the unit of the layer, whatever unit the draft is typed in.
+ * range and the mask of the display are in the unit of the layer, whatever unit the draft is typed in. A layer of
+ * classes keeps the colours of its classes, so a draft changes only the colour of its cells without data.
  */
 export function changeOf(layer: LayerDescription, draft: Draft): Partial<LayerDisplay> | Problem {
+  if (layer.classes) {
+    if (draft.noData && !colourParts(draft.noDataColour)) {
+      return { field: "noDataColour", text: "Choose a colour." };
+    }
+    return { noDataColour: draft.noData ? draft.noDataColour.toLowerCase() : undefined };
+  }
   if (!isColourScale(draft.colours)) {
     return { field: "colours", text: "Choose a colour scale of the list." };
   }

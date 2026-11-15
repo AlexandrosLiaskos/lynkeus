@@ -131,7 +131,9 @@ function Histogram({ values, summary, lowest, highest, unit }: HistogramProps) {
 /**
  * The Symbology pane of one layer. It starts again each time it opens. Its fields stand in five groups: the
  * colours, the range of the colour scale, the statistics of the values with their histogram, the cells without
- * data and the mask. The Apply button is the one filled button, and the link under the groups returns the layer
+ * data and the mask. A layer of classes has two groups instead: its classes with their colours, which the pane
+ * shows and does not change, and the cells without data; a scale, a range, statistics and a mask by value have no
+ * meaning for classes. The Apply button is the one filled button, and the link under the groups returns the layer
  * to its first display.
  */
 function SymbologyOf({ layer }: { layer: LayerDescription }) {
@@ -153,6 +155,8 @@ function SymbologyOf({ layer }: { layer: LayerDescription }) {
   const unit = inDb ? "dB" : formatUnit(layer.unit);
   const inUnit = unit && ` (${unit})`;
   const classes = scaleKind(draft.colours) === "classes";
+  // The table of a layer of classes, whose cells take the colours of their classes.
+  const table = layer.classes ?? null;
 
   useEffect(() => {
     let current = true;
@@ -281,7 +285,11 @@ function SymbologyOf({ layer }: { layer: LayerDescription }) {
     <ToolPane
       id={SYMBOLOGY_PANE}
       title="Symbology"
-      info="The pane sets how the layer is drawn: its colour scale, the range of the scale, the colour of the cells without data and a mask. The Apply button changes the display of the layer on the map."
+      info={
+        table
+          ? "The pane shows the classes of the layer with their colours and sets the colour of the cells without data. The Apply button changes the display of the layer on the map."
+          : "The pane sets how the layer is drawn: its colour scale, the range of the scale, the colour of the cells without data and a mask. The Apply button changes the display of the layer on the map."
+      }
       runLabel="Apply"
       onRun={apply}
       run={run}
@@ -296,186 +304,210 @@ function SymbologyOf({ layer }: { layer: LayerDescription }) {
         <p className="item-line">{formatDates(layer.dates)}</p>
       </div>
 
-      <Section title="Colours" {...group("colours")}>
-        <FieldTitle field={`${id}-colours`} title="Colour scale">
-          The colours that the values of the layer receive, from the lowest value of the range to the highest. The list
-          groups the scales by their use.
-        </FieldTitle>
-        <select
-          {...field("colours")}
-          className="usa-select"
-          value={draft.colours}
-          onChange={(event) => change({ colours: event.target.value })}
+      {table ? (
+        <Section
+          title="Classes"
+          info="Each class has the colour that the method of the layer gives it."
+          {...group("colours")}
         >
-          {KINDS.map(({ kind, label }) => (
-            <optgroup key={kind} label={label}>
-              {COLOUR_SCALES.filter((scale) => scale.kind === kind).map(({ name }) => (
-                <option key={name} value={name}>
-                  {name}
+          <ul className="legend-classes">
+            {table.map(({ value, name, colour }) => (
+              <li key={value}>
+                <span className="legend-swatch" style={{ background: colour }} aria-hidden="true" />
+                {name}
+              </li>
+            ))}
+          </ul>
+        </Section>
+      ) : null}
+
+      {table ? null : (
+        <>
+          <Section title="Colours" {...group("colours")}>
+            <FieldTitle field={`${id}-colours`} title="Colour scale">
+              The colours that the values of the layer receive, from the lowest value of the range to the highest. The
+              list groups the scales by their use.
+            </FieldTitle>
+            <select
+              {...field("colours")}
+              className="usa-select"
+              value={draft.colours}
+              onChange={(event) => change({ colours: event.target.value })}
+            >
+              {KINDS.map(({ kind, label }) => (
+                <optgroup key={kind} label={label}>
+                  {COLOUR_SCALES.filter((scale) => scale.kind === kind).map(({ name }) => (
+                    <option key={name} value={name}>
+                      {name}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+            {message("colours")}
+            <div
+              className="symbology-ramp"
+              role="img"
+              aria-label={`Colours of the scale ${draft.colours}${draft.inverted && !classes ? ", inverted" : ""}`}
+              style={{
+                background: rampImage(
+                  draft.inverted && !classes ? [...colourScale(draft.colours)].reverse() : colourScale(draft.colours),
+                  scaleKind(draft.colours),
+                  "right",
+                ),
+              }}
+            />
+            <div className="usa-checkbox symbology-option">
+              <input
+                className="usa-checkbox__input"
+                id={`${id}-inverted`}
+                type="checkbox"
+                checked={draft.inverted}
+                disabled={classes}
+                onChange={(event) => change({ inverted: event.target.checked })}
+              />
+              <label className="usa-checkbox__label" htmlFor={`${id}-inverted`}>
+                Invert the colour scale
+              </label>
+            </div>
+          </Section>
+
+          <Section
+            title="Range"
+            info="The lowest and the highest value receive the first and the last colour of the scale. A value outside the range receives the colour of the nearer end."
+            {...group("range")}
+          >
+            {power ? (
+              <div className="usa-checkbox symbology-option">
+                <input
+                  className="usa-checkbox__input"
+                  id={`${id}-decibels`}
+                  type="checkbox"
+                  checked={draft.decibels}
+                  onChange={(event) => changeDecibels(event.target.checked)}
+                />
+                <label className="usa-checkbox__label" htmlFor={`${id}-decibels`}>
+                  Show in decibels
+                </label>
+              </div>
+            ) : null}
+            <FieldTitle field={`${id}-stretch`} title="Method">
+              The way in which the range is set. Its two values are typed, or they are taken from the values of the
+              layer: the lowest and the highest value, a percent clip, or the mean and a number of standard deviations.
+            </FieldTitle>
+            <select
+              className="usa-select"
+              id={`${id}-stretch`}
+              aria-describedby={infoId(`${id}-stretch`)}
+              value={draft.stretch}
+              onChange={(event) => {
+                const chosen = STRETCHES.find(({ kind }) => kind === event.target.value);
+                if (chosen) {
+                  change({ stretch: chosen.kind });
+                }
+              }}
+            >
+              {STRETCHES.map(({ kind, label }) => (
+                <option key={kind} value={kind} disabled={kind !== "typed" && !shown?.summary}>
+                  {label}
                 </option>
               ))}
-            </optgroup>
-          ))}
-        </select>
-        {message("colours")}
-        <div
-          className="symbology-ramp"
-          role="img"
-          aria-label={`Colours of the scale ${draft.colours}${draft.inverted && !classes ? ", inverted" : ""}`}
-          style={{
-            background: rampImage(
-              draft.inverted && !classes ? [...colourScale(draft.colours)].reverse() : colourScale(draft.colours),
-              scaleKind(draft.colours),
-              "right",
-            ),
-          }}
-        />
-        <div className="usa-checkbox symbology-option">
-          <input
-            className="usa-checkbox__input"
-            id={`${id}-inverted`}
-            type="checkbox"
-            checked={draft.inverted}
-            disabled={classes}
-            onChange={(event) => change({ inverted: event.target.checked })}
-          />
-          <label className="usa-checkbox__label" htmlFor={`${id}-inverted`}>
-            Invert the colour scale
-          </label>
-        </div>
-      </Section>
+            </select>
+            {draft.stretch === "percent" ? (
+              <>
+                <FieldTitle field={`${id}-percent`} title="Clip (%)">
+                  The percent of the cells that is left out at each end of the values, as a number from 0 to below 50,
+                  for example 2.
+                </FieldTitle>
+                <input {...text("percent")} onChange={(event) => change({ percent: event.target.value })} />
+                {message("percent")}
+              </>
+            ) : null}
+            {draft.stretch === "deviations" ? (
+              <>
+                <FieldTitle field={`${id}-deviations`} title="Standard deviations">
+                  The number of standard deviations on each side of the mean, as a number above 0, for example 2.
+                </FieldTitle>
+                <input {...text("deviations")} onChange={(event) => change({ deviations: event.target.value })} />
+                {message("deviations")}
+              </>
+            ) : null}
+            <div className="symbology-pair">
+              <div>
+                <label className="usa-label" htmlFor={`${id}-lowest`}>
+                  Lowest value{inUnit}
+                </label>
+                <input
+                  {...text("lowest")}
+                  onChange={(event) => change({ lowest: event.target.value, stretch: "typed" })}
+                />
+              </div>
+              <div>
+                <label className="usa-label" htmlFor={`${id}-highest`}>
+                  Highest value{inUnit}
+                </label>
+                <input
+                  {...text("highest")}
+                  onChange={(event) => change({ highest: event.target.value, stretch: "typed" })}
+                />
+              </div>
+            </div>
+            {message("lowest")}
+            {message("highest")}
+          </Section>
 
-      <Section
-        title="Range"
-        info="The lowest and the highest value receive the first and the last colour of the scale. A value outside the range receives the colour of the nearer end."
-        {...group("range")}
-      >
-        {power ? (
-          <div className="usa-checkbox symbology-option">
-            <input
-              className="usa-checkbox__input"
-              id={`${id}-decibels`}
-              type="checkbox"
-              checked={draft.decibels}
-              onChange={(event) => changeDecibels(event.target.checked)}
-            />
-            <label className="usa-checkbox__label" htmlFor={`${id}-decibels`}>
-              Show in decibels
-            </label>
-          </div>
-        ) : null}
-        <FieldTitle field={`${id}-stretch`} title="Method">
-          The way in which the range is set. Its two values are typed, or they are taken from the values of the layer:
-          the lowest and the highest value, a percent clip, or the mean and a number of standard deviations.
-        </FieldTitle>
-        <select
-          className="usa-select"
-          id={`${id}-stretch`}
-          aria-describedby={infoId(`${id}-stretch`)}
-          value={draft.stretch}
-          onChange={(event) => {
-            const chosen = STRETCHES.find(({ kind }) => kind === event.target.value);
-            if (chosen) {
-              change({ stretch: chosen.kind });
+          <Section
+            title="Statistics"
+            info={
+              typeof read !== "string" && shown?.summary
+                ? `${
+                    shown.ofFile
+                      ? "The file of the layer states these statistics for all its cells."
+                      : "The statistics are computed from the cells that the histogram counts."
+                  } The histogram and the percent clip use ${
+                    read.sample.full
+                      ? "all the cells of the file"
+                      : `the most reduced copy of the file, of ${String(read.sample.size[0])} by ${String(read.sample.size[1])} cells`
+                  }. The two lines of the histogram mark the range.`
+                : undefined
             }
-          }}
-        >
-          {STRETCHES.map(({ kind, label }) => (
-            <option key={kind} value={kind} disabled={kind !== "typed" && !shown?.summary}>
-              {label}
-            </option>
-          ))}
-        </select>
-        {draft.stretch === "percent" ? (
-          <>
-            <FieldTitle field={`${id}-percent`} title="Clip (%)">
-              The percent of the cells that is left out at each end of the values, as a number from 0 to below 50, for
-              example 2.
-            </FieldTitle>
-            <input {...text("percent")} onChange={(event) => change({ percent: event.target.value })} />
-            {message("percent")}
-          </>
-        ) : null}
-        {draft.stretch === "deviations" ? (
-          <>
-            <FieldTitle field={`${id}-deviations`} title="Standard deviations">
-              The number of standard deviations on each side of the mean, as a number above 0, for example 2.
-            </FieldTitle>
-            <input {...text("deviations")} onChange={(event) => change({ deviations: event.target.value })} />
-            {message("deviations")}
-          </>
-        ) : null}
-        <div className="symbology-pair">
-          <div>
-            <label className="usa-label" htmlFor={`${id}-lowest`}>
-              Lowest value{inUnit}
-            </label>
-            <input {...text("lowest")} onChange={(event) => change({ lowest: event.target.value, stretch: "typed" })} />
-          </div>
-          <div>
-            <label className="usa-label" htmlFor={`${id}-highest`}>
-              Highest value{inUnit}
-            </label>
-            <input
-              {...text("highest")}
-              onChange={(event) => change({ highest: event.target.value, stretch: "typed" })}
-            />
-          </div>
-        </div>
-        {message("lowest")}
-        {message("highest")}
-      </Section>
-
-      <Section
-        title="Statistics"
-        info={
-          typeof read !== "string" && shown?.summary
-            ? `${
-                shown.ofFile
-                  ? "The file of the layer states these statistics for all its cells."
-                  : "The statistics are computed from the cells that the histogram counts."
-              } The histogram and the percent clip use ${
-                read.sample.full
-                  ? "all the cells of the file"
-                  : `the most reduced copy of the file, of ${String(read.sample.size[0])} by ${String(read.sample.size[1])} cells`
-              }. The two lines of the histogram mark the range.`
-            : undefined
-        }
-        {...group("statistics")}
-      >
-        {read === "reading" ? <Notice kind="info">Reading the values of the layer.</Notice> : null}
-        {read === "failed" ? (
-          <Notice kind="warning">
-            The values of the layer could not be read. Type the lowest and the highest value of the range.
-          </Notice>
-        ) : null}
-        {typeof read !== "string" && !(shown?.summary && shown.sampled) ? (
-          <Notice kind="info">The layer holds no values for a histogram and for statistics.</Notice>
-        ) : null}
-        {typeof read !== "string" && shown?.summary && shown.sampled ? (
-          <>
-            <Histogram
-              values={shown.values}
-              summary={shown.sampled}
-              lowest={numberOf(draft.lowest)}
-              highest={numberOf(draft.highest)}
-              unit={unit}
-            />
-            <PropertyList
-              groups={[
-                {
-                  rows: [
-                    statistic("Lowest value", shown.summary.minimum),
-                    statistic("Highest value", shown.summary.maximum),
-                    statistic("Mean", shown.summary.mean),
-                    statistic("Standard deviation", shown.summary.deviation),
-                  ],
-                },
-              ]}
-            />
-          </>
-        ) : null}
-      </Section>
+            {...group("statistics")}
+          >
+            {read === "reading" ? <Notice kind="info">Reading the values of the layer.</Notice> : null}
+            {read === "failed" ? (
+              <Notice kind="warning">
+                The values of the layer could not be read. Type the lowest and the highest value of the range.
+              </Notice>
+            ) : null}
+            {typeof read !== "string" && !(shown?.summary && shown.sampled) ? (
+              <Notice kind="info">The layer holds no values for a histogram and for statistics.</Notice>
+            ) : null}
+            {typeof read !== "string" && shown?.summary && shown.sampled ? (
+              <>
+                <Histogram
+                  values={shown.values}
+                  summary={shown.sampled}
+                  lowest={numberOf(draft.lowest)}
+                  highest={numberOf(draft.highest)}
+                  unit={unit}
+                />
+                <PropertyList
+                  groups={[
+                    {
+                      rows: [
+                        statistic("Lowest value", shown.summary.minimum),
+                        statistic("Highest value", shown.summary.maximum),
+                        statistic("Mean", shown.summary.mean),
+                        statistic("Standard deviation", shown.summary.deviation),
+                      ],
+                    },
+                  ]}
+                />
+              </>
+            ) : null}
+          </Section>
+        </>
+      )}
 
       <Section
         title="Cells without data"
@@ -508,48 +540,50 @@ function SymbologyOf({ layer }: { layer: LayerDescription }) {
         {message("noDataColour")}
       </Section>
 
-      <Section
-        title="Mask"
-        info="The mask hides the cells whose value lies below the first limit or above the second one. The limits are typed in the unit of the range."
-        {...group("mask")}
-      >
-        <div className="usa-checkbox symbology-option">
-          <input
-            className="usa-checkbox__input"
-            id={`${id}-masked`}
-            type="checkbox"
-            checked={draft.masked}
-            onChange={(event) => change({ masked: event.target.checked })}
-          />
-          <label className="usa-checkbox__label" htmlFor={`${id}-masked`}>
-            Hide values outside limits
-          </label>
-        </div>
-        <div className="symbology-pair">
-          <div>
-            <label className="usa-label" htmlFor={`${id}-maskLowest`}>
-              From{inUnit}
-            </label>
+      {table ? null : (
+        <Section
+          title="Mask"
+          info="The mask hides the cells whose value lies below the first limit or above the second one. The limits are typed in the unit of the range."
+          {...group("mask")}
+        >
+          <div className="usa-checkbox symbology-option">
             <input
-              {...text("maskLowest")}
-              disabled={!draft.masked}
-              onChange={(event) => change({ maskLowest: event.target.value })}
+              className="usa-checkbox__input"
+              id={`${id}-masked`}
+              type="checkbox"
+              checked={draft.masked}
+              onChange={(event) => change({ masked: event.target.checked })}
             />
-          </div>
-          <div>
-            <label className="usa-label" htmlFor={`${id}-maskHighest`}>
-              To{inUnit}
+            <label className="usa-checkbox__label" htmlFor={`${id}-masked`}>
+              Hide values outside limits
             </label>
-            <input
-              {...text("maskHighest")}
-              disabled={!draft.masked}
-              onChange={(event) => change({ maskHighest: event.target.value })}
-            />
           </div>
-        </div>
-        {message("maskLowest")}
-        {message("maskHighest")}
-      </Section>
+          <div className="symbology-pair">
+            <div>
+              <label className="usa-label" htmlFor={`${id}-maskLowest`}>
+                From{inUnit}
+              </label>
+              <input
+                {...text("maskLowest")}
+                disabled={!draft.masked}
+                onChange={(event) => change({ maskLowest: event.target.value })}
+              />
+            </div>
+            <div>
+              <label className="usa-label" htmlFor={`${id}-maskHighest`}>
+                To{inUnit}
+              </label>
+              <input
+                {...text("maskHighest")}
+                disabled={!draft.masked}
+                onChange={(event) => change({ maskHighest: event.target.value })}
+              />
+            </div>
+          </div>
+          {message("maskLowest")}
+          {message("maskHighest")}
+        </Section>
+      )}
     </ToolPane>
   );
 }

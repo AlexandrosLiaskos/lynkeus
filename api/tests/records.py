@@ -6,7 +6,8 @@ The schemas in ``tests/data/stac`` are the published JSON schemas of a STAC
 Item 1.1.0 (https://schemas.stacspec.org/v1.1.0/item-spec/json-schema/), of
 the extensions projection 2.0.0, raster 2.0.0 and processing 1.2.0
 (https://stac-extensions.github.io/) and of GeoJSON (https://geojson.org/schema/),
-as they were on 14 November 2026. ``index.json`` gives the address of each.
+as they were on 14 November 2026, and of the extension classification 2.0.0,
+as it was on 15 November 2026. ``index.json`` gives the address of each.
 """
 
 import json

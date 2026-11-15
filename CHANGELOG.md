@@ -130,6 +130,9 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   with Playwright, scans each state with axe-core and measures the loading with Lighthouse.
 - The motion of a pane that shows from the strip at the edge or hides to it, of a pane that opens, of the
   messages and of the notices, drawn with the Motion library on position and opacity only.
+- The analysis tool Backscatter, Thematic map: the wetland inundation classes of the NISAR science team
+  (not inundated, open water, inundated vegetation) of one GCOV product, with its method sheet and research note.
+  A result of classes lists its classes with their colours in the legend, in Properties and in its record.
 
 ### Changed
 
@@ -226,6 +229,8 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 
 ### Fixed
 
+- The reduced copies of the layers Mask of valid samples (GCOV) and Connected components (GUNW) held 0 where
+  every cell that they cover holds no data; they now hold no data there.
 - Get layer warned that a part of the area lies outside the outline of the product when the area was taken from
   that outline. It compared the outline with the rectangle around an area of polygons; it now compares the
   polygons themselves, so a polygon inside the outline gives no warning and a polygon wholly outside it is refused.
@@ -242,3 +247,6 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   after which every new visitor was refused for up to seven days.
 - A report of a server of a visitor names at most 100 jobs. Longer reports could keep the web service busy
   and make the other requests wait.
+- The web service refuses a job of the project server that names a layer which the session does not hold,
+  before it records anything. A request without a session could start such jobs, which failed at once and
+  left a session and up to 64 kB of inputs each in the record of the server.

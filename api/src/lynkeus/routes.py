@@ -751,6 +751,11 @@ def install(
         except ServerRefusedError as error:
             raise refusal_of(error) from None
         if own is None:
+            # A job of the project server reads the layers of its session only. Without this refusal a
+            # request without a session could start jobs that fail at once, and each of them would leave
+            # a session and its inputs in the record.
+            if any(layer not in kept for layer in process.layers(inputs)):
+                raise RefusedError(HTTPStatus.BAD_REQUEST, "A layer of the analysis no longer exists.")
             try:
                 job = service.jobs.submit(_session_or_new(request), process, inputs, form, token)
             except LimitError as error:

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
+import type { LayerClass } from "../shared/layer";
 import type { ScaleKind } from "./colours";
 
 /** The largest number of steps into which the marks of a legend divide its range. */
@@ -96,4 +97,18 @@ export function rampImage(colours: readonly string[], kind: ScaleKind, towards: 
     return `${colour} ${String(index * share)}% ${String((index + 1) * share)}%`;
   });
   return `linear-gradient(to ${towards}, ${bands.join(", ")})`;
+}
+
+/** A class as a legend lists it: its colour and its words. */
+export interface LegendClass {
+  colour: string;
+  label: string;
+}
+
+/**
+ * Return the classes of a layer of classes as its legend lists them: each class of its table, in the order of
+ * their values, with its colour and its name.
+ */
+export function tableLegend(classes: readonly LayerClass[]): LegendClass[] {
+  return classes.map(({ colour, name }) => ({ colour, label: name }));
 }

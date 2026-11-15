@@ -34,8 +34,8 @@ from lynkeus.layers import (
     Cell,
     LayerDescription,
     Point,
-    Reduction,
     Reference,
+    ResultReduction,
     SeriesDescription,
     SeriesRun,
     ToolRun,
@@ -45,9 +45,10 @@ from lynkeus.writing import PROGRAM, Grid, LayerError, grid_of, read_layer, writ
 EDGE_POINTS = 21
 """The number of points on each side of a grid from which the rectangle around the grid is made."""
 
-_REDUCED: dict[Reduction, str] = {
+_REDUCED: dict[ResultReduction, str] = {
     "mean": "by averaging the values",
     "mean-power": "as the decibels of the mean of the linear power",
+    "mode": "by taking the most frequent class",
 }
 """How the reduced copies of a result are made, in the words of its record."""
 
@@ -87,11 +88,11 @@ def run_tool(
         scale and method are those that the function of the tool returns. Its
         dates and input files are those of the input layers. The reduced
         copies of its file are made as the function of the tool declares,
-        and the words of the two ends of its legend and the note are those
-        that the function gives. The record repeats the note in its lineage.
-        With an area, its statistics are those of the values of the result at
-        full resolution in the cells whose centre lies inside the area
-        (``lynkeus.areas.statistics_inside``).
+        and the words of the two ends of its legend, the table of its classes
+        and the note are those that the function gives. The record repeats the
+        note in its lineage. With an area, its statistics are those of the
+        values of the result at full resolution in the cells whose centre lies
+        inside the area (``lynkeus.areas.statistics_inside``).
 
     Raises
     ------
@@ -164,7 +165,9 @@ def _run_tool(
         ),
         method=result.method,
         ends=result.ends,
+        classes=result.classes,
         note=result.note,
+        averaged=result.reduction != "mode",
         decibels=result.reduction == "mean-power",
         links=[
             {"rel": "derived_from", "href": description.record, "type": "application/geo+json"}

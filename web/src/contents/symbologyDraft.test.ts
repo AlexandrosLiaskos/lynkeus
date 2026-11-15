@@ -4,6 +4,7 @@ import { expect, test } from "vitest";
 import type { LayerDescription } from "../shared/layer";
 import { firstDisplay } from "./state";
 import { changeOf, draftOf, numberOf, numberText, stretchOf, type Draft } from "./symbologyDraft";
+import { inundation } from "./testClasses";
 
 const BACKSCATTER: LayerDescription = {
   id: "backscatter",
@@ -126,4 +127,16 @@ test("the stretch of a draft carries its number", () => {
     count: 2.5,
   });
   expect(stretchOf(coherenceDraft({ stretch: "extremes" }))).toEqual({ kind: "extremes" });
+});
+
+test("a layer of classes keeps the colours of its classes, and the pane changes only its cells without data", () => {
+  const classes = inundation();
+  const draft = draftOf(classes, firstDisplay(classes));
+  const coloured = { ...draft, noData: true, noDataColour: "#FF8800", colours: "viridis", lowest: "no number" };
+  expect(changeOf(classes, coloured)).toEqual({ noDataColour: "#ff8800" });
+  expect(changeOf(classes, { ...draft, noData: false })).toEqual({ noDataColour: undefined });
+  expect(changeOf(classes, { ...draft, noData: true, noDataColour: "red" })).toEqual({
+    field: "noDataColour",
+    text: "Choose a colour.",
+  });
 });

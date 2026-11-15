@@ -1,0 +1,429 @@
+{
+ "queried_at_utc": "2026-11-15T18:49:39Z",
+ "queries": [
+  {
+   "collection_short_name": "NISAR_L2_GCOV_V1",
+   "url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?short_name=NISAR_L2_GCOV_V1&attribute%5B%5D=int%2CTRACK_NUMBER%2C141&attribute%5B%5D=int%2CFRAME_NUMBER%2C67&bounding_box=-71.2%2C42.6%2C-70.75%2C42.95&page_size=200&sort_key=start_date",
+   "cmr_hits": "2",
+   "granules": [
+    {
+     "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+     "concept_id": "G4405194348-ASF",
+     "start": "2026-10-21T23:43:30.000000Z",
+     "polarizations": [
+      "HH",
+      "HV"
+     ],
+     "attributes": {
+      "ASCENDING_DESCENDING": [
+       "DESCENDING"
+      ],
+      "FRAME_NUMBER": [
+       "67"
+      ],
+      "FREQUENCY_A_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "FREQUENCY_B_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "PRODUCT_VERSION": [
+       "1.0.20"
+      ],
+      "TRACK_NUMBER": [
+       "141"
+      ]
+     }
+    },
+    {
+     "granule": "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001",
+     "concept_id": "G4408709868-ASF",
+     "start": "2026-11-02T23:43:30.000000Z",
+     "polarizations": [
+      "HH",
+      "HV"
+     ],
+     "attributes": {
+      "ASCENDING_DESCENDING": [
+       "DESCENDING"
+      ],
+      "FRAME_NUMBER": [
+       "67"
+      ],
+      "FREQUENCY_A_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "FREQUENCY_B_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "PRODUCT_VERSION": [
+       "1.0.20"
+      ],
+      "TRACK_NUMBER": [
+       "141"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "collection_short_name": "NISAR_L2_GCOV_PROVISIONAL_V1",
+   "url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?short_name=NISAR_L2_GCOV_PROVISIONAL_V1&attribute%5B%5D=int%2CTRACK_NUMBER%2C141&attribute%5B%5D=int%2CFRAME_NUMBER%2C67&bounding_box=-71.2%2C42.6%2C-70.75%2C42.95&page_size=200&sort_key=start_date",
+   "cmr_hits": "9",
+   "granules": [
+    {
+     "granule": "NISAR_L2_PR_GCOV_023_141_D_067_4005_DHDH_A_20260623T234333_20260623T234408_P05023_N_F_J_001",
+     "concept_id": "G4244558980-ASF",
+     "start": "2026-06-23T23:43:33.000000Z",
+     "polarizations": [
+      "HH",
+      "HV"
+     ],
+     "attributes": {
+      "ASCENDING_DESCENDING": [
+       "DESCENDING"
+      ],
+      "FRAME_NUMBER": [
+       "67"
+      ],
+      "FREQUENCY_A_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "FREQUENCY_B_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "PRODUCT_VERSION": [
+       "1.0.11"
+      ],
+      "TRACK_NUMBER": [
+       "141"
+      ]
+     }
+    },
+    {
+     "granule": "NISAR_L2_PR_GCOV_024_141_D_067_4005_DHDH_A_20260705T234333_20260705T234408_P05023_N_F_J_001",
+     "concept_id": "G4246695615-ASF",
+     "start": "2026-07-05T23:43:33.000000Z",
+     "polarizations": [
+      "HH",
+      "HV"
+     ],
+     "attributes": {
+      "ASCENDING_DESCENDING": [
+       "DESCENDING"
+      ],
+      "FRAME_NUMBER": [
+       "67"
+      ],
+      "FREQUENCY_A_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "FREQUENCY_B_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "PRODUCT_VERSION": [
+       "1.0.11"
+      ],
+      "TRACK_NUMBER": [
+       "141"
+      ]
+     }
+    },
+    {
+     "granule": "NISAR_L2_PR_GCOV_025_141_D_067_4005_DHDH_A_20260717T234332_20260717T234407_P05023_N_F_J_001",
+     "concept_id": "G4255048321-ASF",
+     "start": "2026-07-17T23:43:32.000000Z",
+     "polarizations": [
+      "HH",
+      "HV"
+     ],
+     "attributes": {
+      "ASCENDING_DESCENDING": [
+       "DESCENDING"
+      ],
+      "FRAME_NUMBER": [
+       "67"
+      ],
+      "FREQUENCY_A_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "FREQUENCY_B_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "PRODUCT_VERSION": [
+       "1.0.11"
+      ],
+      "TRACK_NUMBER": [
+       "141"
+      ]
+     }
+    },
+    {
+     "granule": "NISAR_L2_PR_GCOV_027_141_D_067_4005_DHDH_A_20260810T234331_20260810T234406_P05023_N_F_J_001",
+     "concept_id": "G4279633326-ASF",
+     "start": "2026-08-10T23:43:31.000000Z",
+     "polarizations": [
+      "HH",
+      "HV"
+     ],
+     "attributes": {
+      "ASCENDING_DESCENDING": [
+       "DESCENDING"
+      ],
+      "FRAME_NUMBER": [
+       "67"
+      ],
+      "FREQUENCY_A_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "FREQUENCY_B_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "PRODUCT_VERSION": [
+       "1.0.11"
+      ],
+      "TRACK_NUMBER": [
+       "141"
+      ]
+     }
+    },
+    {
+     "granule": "NISAR_L2_PR_GCOV_028_141_D_067_4005_DHDH_A_20260822T234330_20260822T234405_P05023_N_F_J_001",
+     "concept_id": "G4288931612-ASF",
+     "start": "2026-08-22T23:43:30.000000Z",
+     "polarizations": [
+      "HH",
+      "HV"
+     ],
+     "attributes": {
+      "ASCENDING_DESCENDING": [
+       "DESCENDING"
+      ],
+      "FRAME_NUMBER": [
+       "67"
+      ],
+      "FREQUENCY_A_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "FREQUENCY_B_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "PRODUCT_VERSION": [
+       "1.0.11"
+      ],
+      "TRACK_NUMBER": [
+       "141"
+      ]
+     }
+    },
+    {
+     "granule": "NISAR_L2_PR_GCOV_029_141_D_067_4005_DHDH_A_20260903T234330_20260903T234405_P05023_N_F_J_001",
+     "concept_id": "G4304094509-ASF",
+     "start": "2026-09-03T23:43:30.000000Z",
+     "polarizations": [
+      "HH",
+      "HV"
+     ],
+     "attributes": {
+      "ASCENDING_DESCENDING": [
+       "DESCENDING"
+      ],
+      "FRAME_NUMBER": [
+       "67"
+      ],
+      "FREQUENCY_A_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "FREQUENCY_B_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "PRODUCT_VERSION": [
+       "1.0.11"
+      ],
+      "TRACK_NUMBER": [
+       "141"
+      ]
+     }
+    },
+    {
+     "granule": "NISAR_L2_PR_GCOV_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001",
+     "concept_id": "G4314749749-ASF",
+     "start": "2026-09-15T23:43:30.000000Z",
+     "polarizations": [
+      "HH",
+      "HV"
+     ],
+     "attributes": {
+      "ASCENDING_DESCENDING": [
+       "DESCENDING"
+      ],
+      "FRAME_NUMBER": [
+       "67"
+      ],
+      "FREQUENCY_A_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "FREQUENCY_B_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "PRODUCT_VERSION": [
+       "1.0.11"
+      ],
+      "TRACK_NUMBER": [
+       "141"
+      ]
+     }
+    },
+    {
+     "granule": "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001",
+     "concept_id": "G4328561952-ASF",
+     "start": "2026-09-27T23:43:30.000000Z",
+     "polarizations": [
+      "HH",
+      "HV"
+     ],
+     "attributes": {
+      "ASCENDING_DESCENDING": [
+       "DESCENDING"
+      ],
+      "FRAME_NUMBER": [
+       "67"
+      ],
+      "FREQUENCY_A_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "FREQUENCY_B_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "PRODUCT_VERSION": [
+       "1.0.11"
+      ],
+      "TRACK_NUMBER": [
+       "141"
+      ]
+     }
+    },
+    {
+     "granule": "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001",
+     "concept_id": "G4359335097-ASF",
+     "start": "2026-10-09T23:43:30.000000Z",
+     "polarizations": [
+      "HH",
+      "HV"
+     ],
+     "attributes": {
+      "ASCENDING_DESCENDING": [
+       "DESCENDING"
+      ],
+      "FRAME_NUMBER": [
+       "67"
+      ],
+      "FREQUENCY_A_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "FREQUENCY_B_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "PRODUCT_VERSION": [
+       "1.0.11"
+      ],
+      "TRACK_NUMBER": [
+       "141"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "collection_short_name": "NISAR_L2_GCOV_BETA_V1",
+   "url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?short_name=NISAR_L2_GCOV_BETA_V1&attribute%5B%5D=int%2CTRACK_NUMBER%2C141&attribute%5B%5D=int%2CFRAME_NUMBER%2C67&bounding_box=-71.2%2C42.6%2C-70.75%2C42.95&page_size=200&sort_key=start_date",
+   "cmr_hits": "2",
+   "granules": [
+    {
+     "granule": "NISAR_L2_PR_GCOV_007_141_D_067_4005_DHDH_A_20251213T234332_20251213T234407_X05009_N_F_J_001",
+     "concept_id": "G4058456731-ASF",
+     "start": "2025-12-13T23:43:32.000000Z",
+     "polarizations": [
+      "HH",
+      "HV"
+     ],
+     "attributes": {
+      "ASCENDING_DESCENDING": [
+       "DESCENDING"
+      ],
+      "FRAME_NUMBER": [
+       "67"
+      ],
+      "FREQUENCY_A_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "FREQUENCY_B_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "PRODUCT_VERSION": [
+       "1.0.2"
+      ],
+      "TRACK_NUMBER": [
+       "141"
+      ]
+     }
+    },
+    {
+     "granule": "NISAR_L2_PR_GCOV_008_141_D_067_4005_DHDH_A_20251225T234333_20251225T234408_X05009_N_F_J_001",
+     "concept_id": "G4058594965-ASF",
+     "start": "2025-12-25T23:43:33.000000Z",
+     "polarizations": [
+      "HH",
+      "HV"
+     ],
+     "attributes": {
+      "ASCENDING_DESCENDING": [
+       "DESCENDING"
+      ],
+      "FRAME_NUMBER": [
+       "67"
+      ],
+      "FREQUENCY_A_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "FREQUENCY_B_POLARIZATION": [
+       "HH",
+       "HV"
+      ],
+      "PRODUCT_VERSION": [
+       "1.0.2"
+      ],
+      "TRACK_NUMBER": [
+       "141"
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

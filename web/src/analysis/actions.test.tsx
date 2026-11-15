@@ -26,6 +26,7 @@ test("exactly the buttons of the eleven finished tools have an action", () => {
   expect(Object.keys(actions)).toEqual([
     "backscatter-state",
     "backscatter-change",
+    "backscatter-map",
     "coherence-state",
     "coherence-change",
     "displacement-state",
@@ -78,7 +79,7 @@ test("the eleven finished buttons are active, and every other button of the tab 
     ]),
   );
   expect(inactive).toEqual({
-    Backscatter: [false, false, false, true],
+    Backscatter: [false, false, false, false],
     Coherence: [false, false, false],
     "Surface displacement": [false, false],
     "Soil moisture": [false, false, false],
