@@ -177,6 +177,11 @@ class OwnServer:
         """Ask for tasks."""
         return self.client.post(f"/api/link/tasks?wait={wait}", headers=self.headers)
 
+    def leave(self) -> httpx2.Response:
+        """Say that the program is quit, as the program does when its user quits it."""
+        self._stop.set()
+        return self.client.post("/api/link/leave", headers=self.headers)
+
     def step(self, wait: int = 0) -> list[Task]:
         """Ask for tasks once and carry them out. Return the tasks."""
         response = self.ask_tasks(wait)
@@ -338,7 +343,8 @@ class OwnServer:
         self.report()
         while not self._stop.is_set() and not self.forgotten:
             self.step(wait)
-            if self._changed or time.monotonic() - self._reported >= self.pause:
+            # A program that is quit sends nothing more.
+            if not self._stop.is_set() and (self._changed or time.monotonic() - self._reported >= self.pause):
                 self.report()
 
     @contextmanager

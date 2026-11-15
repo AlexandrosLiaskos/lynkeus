@@ -7,7 +7,10 @@ backscatter, written by ``lynkeus.writing``.
 
 import hashlib
 import json
+import signal
 import socket
+import subprocess
+import sys
 import threading
 import time
 from collections.abc import Callable, Iterator
@@ -463,6 +466,138 @@ def test_task_is_answered_once_and_in_its_own_form(site: Site) -> None:
     problem(machine.client.post(f"{address}/done", json={"ok": "perhaps"}, headers=headers), 422)
     assert machine.client.post(f"{address}/done", json={"ok": True}, headers=headers).status_code == 204
     problem(machine.client.post(f"{address}/done", json={"ok": True}, headers=headers), 404)
+
+
+def test_program_that_is_quit_leaves_its_server_not_connected_at_once(site: Site) -> None:
+    visitor, machine = site.visit("a_user"), site.machine()
+    server = machine.pair(visitor)
+    problem(machine.client.post("/api/link/leave", headers={"Authorization": "Bearer " + "k" * 43}), 401)
+    with machine.serving(wait=20):
+        done = state(visitor, started(visitor, server=server)["jobID"])
+        layer = visitor.get(f"/api/jobs/{done['jobID']}/results").json()
+        assert listed(visitor)[0]["connected"] is True
+        # A request of the visitor waits for the server when its program is quit.
+        machine.silent = {"read"}
+        answers: list[httpx2.Response] = []
+        reader = threading.Thread(target=lambda: answers.append(visitor.get(layer["url"])))
+        reader.start()
+        until(lambda: any(isinstance(task, ReadTask) for task in machine.tasks))
+        begin = time.monotonic()
+        left = machine.leave()
+        assert (left.status_code, left.content) == (204, b"")
+        reader.join()
+    # The waiting request and the open question of the program ended at once, the question without a task.
+    assert time.monotonic() - begin < 5
+    problem(answers[0], 503, "Your server Field laptop is not connected.")
+    machine.silent = set()
+    [found] = listed(visitor)
+    assert (found["connected"], found["state"]["layers"]) == (False, 1)
+    assert found["seen"] > found["paired"]
+    # The list, a new job, the automatic choice and the requests for the layer behave as for a server that is away.
+    problem(start(visitor, server=server), 503, "Your server Field laptop is not connected.")
+    assert started(visitor)["server"] is None
+    for away in (
+        visitor.get(layer["url"]),
+        visitor.get(layer["record"], headers={"Range": "bytes=0-9"}),
+        visitor.patch(f"/api/layers/{layer['id']}", json={"title": "Other"}),
+        visitor.delete(f"/api/layers/{layer['id']}"),
+    ):
+        problem(away, 503, "Your server Field laptop is not connected.")
+    assert time.monotonic() - begin < 10
+    assert [entry["layer"]["id"] for entry in visitor.get("/api/layers").json()["layers"] if entry["server"]] == [
+        layer["id"]
+    ]
+    # Its next message connects it again.
+    assert machine.ask_tasks().json() == {"tasks": []}
+    assert listed(visitor)[0]["connected"] is True
+    assert machine.leave().status_code == 204
+    assert listed(visitor)[0]["connected"] is False
+    assert machine.report().status_code == 204
+    with machine.serving():
+        assert listed(visitor)[0]["connected"] is True
+        assert visitor.get(layer["url"]).content == machine.file(layer["id"], "gcov-hhhh-20261021-small.tif")
+        assert started(visitor)["server"] == {"id": server, "name": "Field laptop"}
+
+
+def test_requests_that_wait_for_an_own_server_are_answered_with_503_when_the_service_stops(site: Site) -> None:
+    visitor = site.visit("a_user")
+    keeper, asker = site.machine("Keeper"), site.machine("Asker")
+    keeper.pair(visitor)
+    asker.pair(visitor)
+    with keeper.serving():
+        done = state(visitor, started(visitor, server=keeper.server)["jobID"])
+        layer = visitor.get(f"/api/jobs/{done['jobID']}/results").json()
+    # One request waits for a part of a file, and one server holds a question for tasks open.
+    answers: dict[str, httpx2.Response] = {}
+    waiting = [
+        threading.Thread(target=lambda: answers.update(file=visitor.get(layer["url"]))),
+        threading.Thread(target=lambda: answers.update(question=asker.ask_tasks(20))),
+    ]
+    for thread in waiting:
+        thread.start()
+    time.sleep(1)
+    assert answers == {}
+    begin = time.monotonic()
+    site.service.servers.stop()
+    for thread in waiting:
+        thread.join()
+    assert time.monotonic() - begin < 5
+    later = site.visit("a_user")
+    for response in (answers["file"], answers["question"], asker.ask_tasks(20), later.get(layer["url"])):
+        problem(response, 503, "Lynkeus is being restarted. Ask again in a moment.")
+        assert response.headers["retry-after"] == "5"
+    assert time.monotonic() - begin < 5
+    # The addresses that wait for no own server still answer until the service has stopped.
+    assert asker.report().status_code == 204
+    assert len(listed(later)) == 2
+
+
+def test_stopped_service_answers_the_open_question_with_503_and_writes_no_error(tmp_path: Path) -> None:
+    command = [sys.executable, "-m", "tests.service", str(tmp_path / "project")]
+    with (
+        subprocess.Popen(  # noqa: S603 - the interpreter of the tests runs the web service
+            command, cwd=Path(__file__).parent.parent, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+        ) as process,
+        httpx2.Client(timeout=40) as visitor,
+        httpx2.Client(timeout=40) as connection,
+    ):
+        try:
+            assert process.stdout is not None
+            assert process.stderr is not None
+            visitor.base_url = connection.base_url = f"http://127.0.0.1:{int(process.stdout.readline())}"
+
+            def answers() -> bool:
+                try:
+                    return visitor.get("/api/session").status_code == 200
+                except httpx2.TransportError:
+                    return False
+
+            until(answers)
+            assert visitor.post("/api/session/earthdata", json={"token": token("a_user")}).status_code == 200
+            machine = OwnServer(connection, tmp_path / "machine")
+            machine.pair(visitor)
+            questions: list[httpx2.Response] = []
+            question = threading.Thread(target=lambda: questions.append(machine.ask_tasks(25)))
+            question.start()
+            time.sleep(1)
+            assert questions == []
+            # The container of the web service is stopped with this signal.
+            begin = time.monotonic()
+            process.send_signal(signal.SIGTERM)
+            question.join()
+            assert time.monotonic() - begin < 5
+            problem(questions[0], 503, "Lynkeus is being restarted. Ask again in a moment.")
+            code = process.wait(20)
+            assert time.monotonic() - begin < 10
+            log = process.stderr.read()
+        finally:
+            if process.poll() is None:
+                process.kill()
+    # The web server ends its process with the signal that it received, once it has stopped in order.
+    assert code in (0, -signal.SIGTERM)
+    assert "Shutting down" in log
+    assert "Finished server process" in log
+    assert not any(word in log for word in ("ERROR", "Traceback", "Cancel", "Exception")), log
 
 
 # Jobs and layers of an own server
