@@ -1,4 +1,5 @@
 @use "uswds-core" as uswds;
+@use "../../shared/tokens/tokens";
 
 // The version beside the name in the title bar, and the notice that it opens.
 
@@ -6,27 +7,27 @@
 // smallest target that criterion 2.5.8 of the Web Content Accessibility Guidelines 2.2 accepts.
 .version-button {
   flex: none;
-  min-width: 1.5rem;
-  height: 1.5rem;
-  margin-left: 0.375rem;
-  padding: 0 0.25rem;
+  min-width: tokens.$target;
+  height: tokens.$target;
+  margin-left: tokens.$space-1;
+  padding: 0 tokens.$space-1;
   border: 0;
   border-radius: 0.125rem;
   background: none;
-  color: uswds.color("base-dark");
+  color: tokens.$muted;
   font: inherit;
-  font-size: 0.75rem;
+  font-size: tokens.$text-small;
   cursor: pointer;
 }
 
 .version-button:hover {
   background: uswds.color("base-lighter");
-  color: uswds.color("ink");
+  color: tokens.$ink;
 }
 
 // The text of the notice. The dialog gives it its size.
 .version-notice p {
-  margin: 0 0 0.5rem;
+  margin: 0 0 tokens.$space-2;
 }
 
 .version-notice p:last-child {
@@ -34,15 +35,15 @@
 }
 
 .version-notice h3 {
-  margin: 0.75rem 0 0.375rem;
+  margin: tokens.$space-3 0 tokens.$space-1;
   font-size: inherit;
 }
 
 .version-notice ul {
-  margin: 0 0 0.75rem;
-  padding-left: 1.25rem;
+  margin: 0 0 tokens.$space-3;
+  padding-left: tokens.$space-4;
 }
 
 .version-notice li + li {
-  margin-top: 0.25rem;
+  margin-top: tokens.$space-1;
 }

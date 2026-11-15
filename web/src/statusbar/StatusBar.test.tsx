@@ -13,7 +13,7 @@ import { addToMap, mapLayersStore } from "../shared/mapLayers";
 import { messagesStore } from "../shared/messages/messages";
 import { scaleAt } from "./scale";
 import { coordinateFormatStore, statusBarStore } from "./state";
-import { StatusBar } from "./StatusBar";
+import { ITEM_NAMES, StatusBar } from "./StatusBar";
 
 vi.mock("../contents/display", () => ({ valueAt: vi.fn() }));
 const read = vi.mocked(valueAt);
@@ -57,7 +57,7 @@ function setUp() {
   );
   /** The values that the bar shows, without the unseen texts that keep the widths of the fields. */
   const values = () => [...container.querySelectorAll(".statusbar-field-text")].map((field) => field.textContent);
-  return { map, values };
+  return { map, values, container };
 }
 
 test("the bar shows the scale at the centre of the map", () => {
@@ -171,10 +171,64 @@ test("the bar says that the map is loading until the loading ends", () => {
     map.dispatchEvent("loadstart");
   });
   expect(values().at(-1)).toBe("Loading");
+  expect(screen.getByTitle(ITEM_NAMES.loading)).toBeDefined();
   act(() => {
     map.dispatchEvent("loadend");
   });
   expect(values().at(-1)).toBe("");
+  expect(screen.queryByTitle(ITEM_NAMES.loading)).toBeNull();
+});
+
+/** The names of the items of the bar, in their order: the texts of their `title` attributes. */
+function itemNames(): (string | null)[] {
+  return [...document.querySelectorAll(".statusbar [title]")].map((item) => item.getAttribute("title"));
+}
+
+test("every item of the bar carries its name, which the browser shows under the pointer", () => {
+  const { map } = setUp();
+  read.mockReturnValue(null);
+  expect(itemNames()).toEqual([
+    "Scale of the map",
+    "Coordinates of the centre of the map",
+    "Coordinate format",
+    "Projection of the map: WGS 84 / Pseudo-Mercator (EPSG:3857)",
+  ]);
+  act(() => {
+    const coordinate = fromLonLat([23.7281, 37.9838]);
+    map.dispatchEvent({ type: "pointermove", pixel: [10, 20], coordinate } as unknown as BaseEvent);
+    map.getView().setRotation(Math.PI / 6);
+    addToMap(LAYER);
+    selectedLayerStore.set(LAYER.id);
+  });
+  expect(itemNames()).toEqual([
+    "Scale of the map",
+    "Coordinates under the pointer",
+    "Coordinate format",
+    `Value of ${LAYER.title} under the pointer`,
+    "Rotation of the map, clockwise",
+    "Projection of the map: WGS 84 / Pseudo-Mercator (EPSG:3857)",
+  ]);
+  act(() => {
+    map.getViewport()?.dispatchEvent(new Event("pointerleave"));
+  });
+  expect(itemNames()[3]).toBe(`Value of ${LAYER.title} at the centre of the map`);
+});
+
+test("the name of an item stands in the element of names and its value outside it", () => {
+  const { container } = setUp();
+  read.mockReturnValue(null);
+  act(() => {
+    addToMap(LAYER);
+    selectedLayerStore.set(LAYER.id);
+  });
+  expect([...container.querySelectorAll(".statusbar-label")].map((label) => label.textContent)).toEqual([
+    "Scale",
+    "PointerCentreCentre",
+    LAYER.title,
+  ]);
+  for (const item of container.querySelectorAll(".statusbar-item")) {
+    expect(item.parentElement?.className).toBe("statusbar");
+  }
 });
 
 test("the bar is a named region of the page, and is not drawn while it is hidden", () => {

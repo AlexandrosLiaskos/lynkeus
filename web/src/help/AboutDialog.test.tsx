@@ -12,9 +12,21 @@ function open() {
   return screen.getByRole<HTMLDialogElement>("dialog", { name: "About Lynkeus" });
 }
 
-/** The fact that stands beside a name in a list of facts. */
-function fact(list: HTMLElement, name: string): string | null | undefined {
-  return within(list).getByText(name, { selector: "dt" }).nextElementSibling?.textContent;
+/** The names and the values of a list of names and values, row by row. */
+function rows(list: Element | null | undefined): (string | null | undefined)[][] {
+  return Array.from(list?.querySelectorAll(".property-row") ?? [], (row) => [
+    row.querySelector("dt")?.textContent,
+    row.querySelector(".property-value-text")?.textContent,
+  ]);
+}
+
+/** The section of the dialog that carries a name. */
+function section(dialog: HTMLElement, name: string): HTMLElement {
+  const found = within(dialog).getByRole("heading", { level: 3, name }).closest<HTMLElement>(".section");
+  if (!found) {
+    throw new Error(`The dialog has no section ${name}.`);
+  }
+  return found;
 }
 
 beforeEach(() => {
@@ -36,56 +48,64 @@ test("the dialog states what Lynkeus is and that it is independent of NASA, and 
   expect(dialog.querySelector("img")).toBeNull();
 });
 
-test("the dialog shows the version of package.json, the team, the licence and the two links", () => {
+test("the dialog shows the version of package.json, the team, the licence and the two links as names and values", () => {
   const dialog = open();
-  const [facts] = within(dialog)
-    .getAllByRole("definition")
-    .map((cell) => cell.parentElement);
-  if (!facts) {
-    throw new Error("The dialog has no list of facts.");
-  }
-  expect(fact(facts, "Version")).toBe(version);
-  expect(fact(facts, "Developed by")).toBe("Team Lynkeus");
-  expect(fact(facts, "Licence")).toBe(
-    "Copyright 2026 Alexandros Liaskos. This product is licensed under the Apache License, Version 2.0.",
-  );
+  expect(rows(dialog.querySelector(".property-list"))).toEqual([
+    ["Version", version],
+    ["Developed by", "Team Lynkeus"],
+    ["Licence", "Copyright 2026 Alexandros Liaskos. This product is licensed under the Apache License, Version 2.0."],
+    ["Team log", "https://lynkeus.nkua.cloud/team-log/"],
+    ["Repository", "https://github.com/AlexandrosLiaskos/lynkeus"],
+  ]);
   const links = within(dialog).getAllByRole<HTMLAnchorElement>("link");
-  expect(links.map((link) => [link.textContent, link.getAttribute("href")])).toEqual([
-    ["https://lynkeus.nkua.cloud/team-log/", "https://lynkeus.nkua.cloud/team-log/"],
-    ["https://github.com/AlexandrosLiaskos/lynkeus", "https://github.com/AlexandrosLiaskos/lynkeus"],
+  expect(links.map((link) => [link.textContent, link.getAttribute("href"), link.target])).toEqual([
+    ["https://lynkeus.nkua.cloud/team-log/", "https://lynkeus.nkua.cloud/team-log/", "_blank"],
+    ["https://github.com/AlexandrosLiaskos/lynkeus", "https://github.com/AlexandrosLiaskos/lynkeus", "_blank"],
   ]);
 });
 
-test("the dialog shows the citation entry under its own heading", () => {
+test("the citation entry stands in a section of its own, with its explanation behind the i", () => {
   const dialog = open();
-  const heading = within(dialog).getByRole("heading", { level: 3, name: "Citation" });
-  expect(heading.nextElementSibling?.textContent).toBe(ABOUT.cite);
-  const entry = heading.nextElementSibling?.nextElementSibling;
-  expect(Array.from(entry?.children ?? [], (cell) => cell.textContent)).toEqual([
-    "Title",
-    "Lynkeus",
-    "Author",
-    "Alexandros Liaskos",
-    "Version",
-    version,
-    "Address",
-    "https://lynkeus.nkua.cloud/",
-    "Repository",
-    "https://github.com/AlexandrosLiaskos/lynkeus",
-    "Licence",
-    "Apache-2.0",
+  const citation = section(dialog, "Citation");
+  expect(within(citation).getByRole("button", { name: "Citation" }).getAttribute("aria-expanded")).toBe("true");
+  const info = within(citation).getByRole("button", { name: "Information about Citation" });
+  expect(document.getElementById(info.getAttribute("aria-describedby") ?? "")?.textContent).toBe(ABOUT.cite);
+  expect(rows(citation)).toEqual([
+    ["Title", "Lynkeus"],
+    ["Author", "Alexandros Liaskos"],
+    ["Version", version],
+    ["Address", "https://lynkeus.nkua.cloud/"],
+    ["Repository", "https://github.com/AlexandrosLiaskos/lynkeus"],
+    ["Licence", "Apache-2.0"],
   ]);
+  expect(
+    within(citation)
+      .getAllByRole("button", { name: /^Copy / })
+      .map((button) => button.getAttribute("aria-label")),
+  ).toEqual(["Copy Address", "Copy Repository"]);
 });
 
-test("the dialog states what is stored about a visitor", () => {
+test("no explanation stands as text under a heading of the dialog", () => {
   const dialog = open();
-  const heading = within(dialog).getByRole("heading", { level: 3, name: "What Lynkeus stores about a visitor" });
-  expect(Array.from(heading.nextElementSibling?.children ?? [], (item) => item.textContent)).toEqual([
+  expect(within(dialog).queryByText(ABOUT.cite, { selector: "p" })).toBeNull();
+  expect(dialog.querySelector(".usa-hint")).toBeNull();
+});
+
+test("the dialog states what is stored about a visitor, in a section that starts closed", async () => {
+  const dialog = open();
+  const stored = section(dialog, "Stored data");
+  const toggle = within(stored).getByRole("button", { name: "Stored data" });
+  expect(toggle.getAttribute("aria-expanded")).toBe("false");
+  expect(Array.from(stored.querySelectorAll("li"), (item) => item.textContent)).toEqual([
     ABOUT.applicationStores,
     `${ABOUT.sessionStarts} ${ABOUT.session} ${ABOUT.sessionEnds}`,
     ABOUT.teamLogStores,
     ABOUT.serverStores,
   ]);
+  expect(stored.querySelector("ul")?.closest("[hidden]")).not.toBeNull();
+  await userEvent.click(toggle);
+  expect(toggle.getAttribute("aria-expanded")).toBe("true");
+  expect(stored.querySelector("ul")?.closest("[hidden]")).toBeNull();
 });
 
 test("the close button closes the dialog", async () => {
