@@ -23,8 +23,9 @@ use of its server and the limits that follow, each with its reason. The reposito
 holds the formats that connect the interface and the server, the program that publishes the team log as a
 web page, and the service that counts page visits. A button of the ribbon is grey until its function is finished.
 
-When the page opens, a welcome window names the platform, describes it in a few sentences, and shows the team,
-the developer of the site, the total of recorded page visits and the event for which Lynkeus was started.
+When the page opens, a welcome screen covers it: an illustration of the NISAR satellite with the name of the
+platform, the team, the developer of the site, the total of recorded page visits and the event for which Lynkeus
+was started. The visitor slides the screen up to enter.
 
 ## Repository
 
@@ -131,12 +132,15 @@ changes.
 
 ## Logos
 
-The welcome window shows the NASA insignia, the logo of the NASA Space Apps Challenge and the emblems of the
+The welcome screen shows the NASA insignia, the logo of the NASA Space Apps Challenge and the emblems of the
 National and Kapodistrian University of Athens and the National Technical University of Athens
 (`web/public/assets/welcome/`). They name the event for which Lynkeus was started and the universities of the
 team. They belong to their owners, the licence of Lynkeus does not cover them, and their presence does not mean
 sponsorship or endorsement. The emblem of the National Technical University of Athens stands beside its name,
-set as in the logo of the other university.
+set as in the logo of the other university. The image of the welcome screen is NASA's illustration of the NISAR
+satellite ([PIA26611](https://photojournal.jpl.nasa.gov/catalog/PIA26611), an artist's concept; credit
+NASA/JPL-Caltech), without the label that the original carries in its corner; the screen names it as an artist's
+concept in its credit line.
 
 The mark of the team (`web/public/assets/lynkeus-mark.svg`) is the silhouette of a Eurasian lynx (*Lynx lynx*) by
 Margot Michaud, from [PhyloPic](https://www.phylopic.org/images/27a2173a-5903-46fc-83c5-29ed7f421046), dedicated to
@@ -164,7 +168,7 @@ the public domain (CC0 1.0).
 | [TypeScript](https://www.typescriptlang.org/) | 6.0.3 | Apache-2.0 | Language of the interface |
 | [Vite](https://vite.dev/) | 8.3.8 | MIT | Builds the interface |
 | [Sass](https://sass-lang.com/) | 1.108.2 | MIT | Compiles the styles |
-| [EB Garamond](https://github.com/octaviopardo/EBGaramond12), packaged by [Fontsource](https://fontsource.org/) | 5.3.0 | OFL-1.1 | Typeface of the welcome window |
+| [EB Garamond](https://github.com/octaviopardo/EBGaramond12), packaged by [Fontsource](https://fontsource.org/) | 5.3.0 | OFL-1.1 | Typeface of the welcome screen |
 | [uv](https://docs.astral.sh/uv/) | 0.13.8 | MIT OR Apache-2.0 | Installs the exact versions |
 | [Ruff](https://docs.astral.sh/ruff/) | 0.17.5 | MIT | Style check |
 | [mypy](https://mypy-lang.org/) | 2.4.1 | MIT | Type check |
