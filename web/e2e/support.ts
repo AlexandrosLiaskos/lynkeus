@@ -42,9 +42,6 @@ async function answer(route: Route): Promise<void> {
   const path = new URL(request.url()).pathname;
   const json = (status: number, content: unknown) =>
     route.fulfill({ status, contentType: "application/json", body: JSON.stringify(content) });
-  if (path === "/api/visit") {
-    return json(200, { count: 1 });
-  }
   if (request.method() !== "GET") {
     return json(404, { detail: "Not found." });
   }
@@ -151,6 +148,12 @@ export class Findings {
       );
       await page.route((address) => address.pathname.startsWith("/api/"), answer);
     }
+    // The checks are not visits. The counter of visits is answered here on every address, the running site
+    // included, so that it does not count them.
+    await page.route(
+      (address) => address.pathname === "/api/visit",
+      (route) => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ count: 1 }) }),
+    );
   }
 
   /** Scan the page as it stands with axe-core and keep the violations under the name of the state. */
