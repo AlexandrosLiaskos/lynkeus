@@ -30,13 +30,13 @@ export const MAP_TAB = {
           id: "zoom-to-layer",
           label: "Zoom to layer",
           icon: "search",
-          description: "Shows the whole of a layer, which must first be selected in the Contents pane.",
+          description: "Shows the whole of the layer that is selected in the Contents pane.",
         },
         {
           id: "zoom-to-area",
           label: "Zoom to area",
           icon: "my_location",
-          description: "Shows the whole of the area, which must first be set with a button of the group Area.",
+          description: "Shows the whole of the area.",
         },
         {
           id: "previous-extent",
@@ -161,7 +161,7 @@ export const MAP_TAB = {
           label: "Swipe",
           icon: "drag_handle",
           description:
-            "Uncovers what lies below a layer along a line that is moved across the map; the layer must first be selected in the Contents pane.",
+            "Uncovers what lies below the layer that is selected in the Contents pane, along a line that is moved across the map.",
         },
       ],
     },

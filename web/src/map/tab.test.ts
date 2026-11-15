@@ -5,10 +5,9 @@ import { MAP_TAB } from "./tab";
 const tab: RibbonTab = MAP_TAB;
 const descriptions = new Map(tab.groups.flatMap(({ tools }) => tools.map(({ id, description }) => [id, description])));
 
-test("a button that needs a selected layer or an area first says so in its description", () => {
-  expect(descriptions.get("zoom-to-layer")).toMatch(/must first be selected in the Contents pane/);
-  expect(descriptions.get("swipe")).toMatch(/must first be selected in the Contents pane/);
-  expect(descriptions.get("zoom-to-area")).toMatch(/must first be set with a button of the group Area/);
+test("a button that acts on the selected layer names the Contents pane in its description", () => {
+  expect(descriptions.get("zoom-to-layer")).toMatch(/the layer that is selected in the Contents pane/);
+  expect(descriptions.get("swipe")).toMatch(/the layer that is selected in the Contents pane/);
 });
 
 test("the descriptions name the map under the layers the basemap", () => {
