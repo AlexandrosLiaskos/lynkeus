@@ -107,7 +107,7 @@ const choose = (command: string) => userEvent.click(within(screen.getByRole("men
 function rowsOf(dialog: HTMLElement): string[] {
   return [...dialog.querySelectorAll(".property-row")].map(
     (row) =>
-      `${row.querySelector(".property-name")?.textContent ?? ""}: ${row.querySelector(".property-value-text")?.textContent ?? ""}`,
+      `${row.querySelector(".property-name > span")?.textContent ?? ""}: ${row.querySelector(".property-value-text")?.textContent ?? ""}`,
   );
 }
 
@@ -143,14 +143,21 @@ test("a layer shows the command that fits its state: Add to the map, and Zoom to
       .getAllByRole("button")
       .map((button) => button.getAttribute("aria-label") ?? button.textContent);
   expect(shown()).toEqual(["Add to the map", `More commands of ${title}`]);
-  expect(await moreOf(title)).toEqual(["Zoom to", "Details", "Download GeoTIFF", "Rename", "Remove"]);
+  expect(await moreOf(title)).toEqual(["Zoom to", "Details", "Download GeoTIFF", "Keep longer", "Rename", "Remove"]);
   await userEvent.keyboard("{Escape}");
   await userEvent.click(commandsOf(title).getByRole("button", { name: "Add to the map" }));
   expect(mapLayersStore.get().map(({ id }) => id)).toEqual(["back"]);
   expect(item(/^Backscatter HH/).textContent).toMatch(/57 MB · On the map$/);
   expect(screen.getByRole("status").textContent).toBe("The files take 100 MB. 1 layer is on the map.");
   expect(shown()).toEqual(["Zoom to", `More commands of ${title}`]);
-  expect(await moreOf(title)).toEqual(["Remove from the map", "Details", "Download GeoTIFF", "Rename", "Remove"]);
+  expect(await moreOf(title)).toEqual([
+    "Remove from the map",
+    "Details",
+    "Download GeoTIFF",
+    "Keep longer",
+    "Rename",
+    "Remove",
+  ]);
   await choose("Remove from the map");
   expect(mapLayersStore.get()).toEqual([]);
   expect(layersStore.get()).toHaveLength(3);
@@ -416,8 +423,8 @@ test("the list shows the server of each layer in its last line", async () => {
   expect(
     [...document.querySelectorAll(".layer .catalog-pick .item-line:last-child")].map((line) => line.textContent),
   ).toEqual([
-    "21 Oct 2026 · 81 MB · On Office computer",
-    "21 Oct 2026 · 81 MB · On Laboratory server, which is not connected",
+    "21 Oct 2026 · 81 MB · On Office computer · Kept until you remove it",
+    "21 Oct 2026 · 81 MB · On Laboratory server, which is not connected · Kept until you remove it",
     "21 Oct 2026 · 57 MB · On the project server",
   ]);
 });

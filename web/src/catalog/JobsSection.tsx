@@ -49,7 +49,7 @@ const STATUS_ICONS: Record<JobStatus, string> = {
 
 /** The explanation of the section. It shows from the "i" beside its title. */
 export const ABOUT_JOBS =
-  "The requests of this session to receive a layer or to run an analysis tool. A job that waits or runs can be cancelled, and a finished job can be run again with the same inputs. The removal of the record of a job leaves the layer that the job produced.";
+  "The requests of your Earthdata account to receive a layer or to run an analysis tool. A job that waits or runs can be cancelled, and a finished job can be run again with the same inputs. The removal of the record of a job leaves the layer that the job produced.";
 
 /** State how many jobs of the list are in each state, as "1 running, 2 finished." */
 export function jobsSentence(jobs: readonly Job[]): string {
