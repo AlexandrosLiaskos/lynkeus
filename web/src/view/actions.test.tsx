@@ -10,7 +10,7 @@ import { messagesStore } from "../shared/messages/messages";
 import { Pane } from "../shared/pane/Pane";
 import { PANE_WIDTH, panesStore, resetPanes, setPaneWidth, type PaneId } from "../shared/panes";
 import { statusBarStore } from "../statusbar/state";
-import { useViewActions } from "./actions";
+import { NO_FULL_SCREEN, useViewActions } from "./actions";
 
 beforeEach(() => {
   resetDock();
@@ -85,18 +85,30 @@ test("the Contents and Catalog buttons hide and show their panes and are pressed
   expect(actions()["view-catalog"]?.pressed).toBe(false);
 });
 
-test("the button of a pane that has nothing to show is not pressed, and a press says why", () => {
+test("the button of a pane is pressed only while the pane is on the page, and a press on it leaves no message", () => {
   setFullScreen(true);
   const { actions } = setUp({ panes: ["contents"] });
+  // The Catalog pane is open in the store, and the page of this test does not draw it.
   expect(panesStore.get().catalog.open).toBe(true);
   expect(screen.queryByRole("complementary", { name: "Catalog" })).toBeNull();
   expect(actions()["view-catalog"]?.pressed).toBe(false);
   act(() => actions()["view-catalog"]?.run());
   expect(panesStore.get().catalog.open).toBe(true);
-  expect(messagesStore.get().map(({ kind, text }) => [kind, text])).toEqual([
-    ["info", "The Catalog pane has nothing to show yet."],
-  ]);
+  expect(messagesStore.get()).toEqual([]);
   expect(actions()["view-contents"]?.pressed).toBe(true);
+});
+
+test("a press opens a pane that was closed and brings it to the front of its side", () => {
+  setFullScreen(true);
+  const { actions } = setUp();
+  act(() => actions()["view-catalog"]?.run());
+  expect(panesStore.get().catalog.open).toBe(false);
+  act(() => enterDock({ id: "tool", title: "Tool" }));
+  expect(frontOf(dockStore.get(), "right")).toBe("tool");
+  act(() => actions()["view-catalog"]?.run());
+  expect(panesStore.get().catalog.open).toBe(true);
+  expect(frontOf(dockStore.get(), "right")).toBe("catalog");
+  expect(actions()["view-catalog"]?.pressed).toBe(true);
 });
 
 test("a press brings a pane that stands behind the pane of a tool to the front, and the next press hides it", () => {
@@ -143,11 +155,16 @@ test("the Status bar button shows and hides the status bar", () => {
   expect(statusBarStore.get()).toBe(true);
 });
 
-test("in a browser that cannot fill the screen the Full screen button has no action", () => {
+test("in a browser that cannot fill the screen the Full screen button is inactive and says why", () => {
   setFullScreen(false);
-  const { actions } = setUp();
-  expect(actions()["view-full-screen"]).toBeUndefined();
-  expect(actions()["view-contents"]).toBeDefined();
+  const { frame, actions } = setUp();
+  const request = vi.fn(() => Promise.resolve());
+  frame.requestFullscreen = request;
+  expect(actions()["view-full-screen"]?.missing).toBe(NO_FULL_SCREEN);
+  expect(actions()["view-full-screen"]?.pressed).toBeUndefined();
+  act(() => actions()["view-full-screen"]?.run());
+  expect(request).not.toHaveBeenCalled();
+  expect(actions()["view-contents"]?.missing).toBeUndefined();
 });
 
 test("Full screen asks the browser to show the frame of the map over the whole screen and gives the keyboard focus to the map", async () => {

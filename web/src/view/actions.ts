@@ -1,7 +1,6 @@
 import type { ToolAction, ToolActions } from "../ribbon/types";
 import { closeToolPane, dockStore, frontOf, showPane, sideOf, type DockState } from "../shared/dock/dock";
 import { useMap } from "../shared/map";
-import { report } from "../shared/messages/messages";
 import { panesStore, resetPanes, setPaneOpen, type PaneId } from "../shared/panes";
 import { useStore } from "../shared/store";
 import { statusBarStore } from "../statusbar/state";
@@ -18,13 +17,12 @@ export function resetAllPanes(): void {
 }
 
 /**
- * What the button of the Contents pane or of the Catalog pane does. The button is pressed while the pane is on
- * the page, so that it shows what the user sees: a pane that is open but has nothing to show is not on the page.
- * A press hides a pane that stands in front of its side and brings a pane that stands behind another one to the
- * front. A press on the button of a pane that is not on the page opens the pane; when the pane has nothing to
- * show, a message says so, and the pane appears with its first content.
+ * What the button of the Contents pane or of the Catalog pane does. Each of the two panes has something to show
+ * whenever it is open, so the button is pressed while its pane is on the page, which is what the user sees. A
+ * press hides a pane that stands in front of its side, brings a pane that stands behind another one to the front,
+ * and opens a pane that is not on the page.
  */
-export function paneAction(id: PaneId, title: string, open: boolean, dock: DockState): ToolAction {
+export function paneAction(id: PaneId, open: boolean, dock: DockState): ToolAction {
   const onPage = open && dock.panes.some((pane) => pane.id === id);
   const inFront = frontOf(dock, sideOf(id)) === id;
   return {
@@ -34,8 +32,6 @@ export function paneAction(id: PaneId, title: string, open: boolean, dock: DockS
         setPaneOpen(id, false);
       } else if (onPage) {
         showPane(id);
-      } else if (open) {
-        report("info", `The ${title} pane has nothing to show yet.`);
       } else {
         setPaneOpen(id, true);
       }
@@ -43,9 +39,12 @@ export function paneAction(id: PaneId, title: string, open: boolean, dock: DockS
   };
 }
 
+/** What the Full screen button says in a browser that cannot show an element over the whole screen. */
+export const NO_FULL_SCREEN = "This browser does not allow a page to fill the screen.";
+
 /**
  * What the finished buttons of the View tab do. A button that shows and hides an element stays pressed while
- * the element is shown. The Full screen button is inactive in a browser that cannot fill the screen.
+ * the element is shown. In a browser that cannot fill the screen the Full screen button is inactive and says so.
  */
 export function useViewActions(): ToolActions<ViewToolId> {
   const map = useMap();
@@ -54,14 +53,13 @@ export function useViewActions(): ToolActions<ViewToolId> {
   const statusBar = useStore(statusBarStore);
   const fullScreen = useFullScreenElement();
 
-  const actions: ToolActions<ViewToolId> = {
-    "view-contents": paneAction("contents", "Contents", contents.open, dock),
-    "view-catalog": paneAction("catalog", "Catalog", catalog.open, dock),
+  return {
+    "view-contents": paneAction("contents", contents.open, dock),
+    "view-catalog": paneAction("catalog", catalog.open, dock),
     "view-reset-panes": { run: resetAllPanes },
+    "view-full-screen": canFillScreen()
+      ? { run: () => toggleFullScreen(map), pressed: fullScreen !== null }
+      : { run: () => undefined, missing: NO_FULL_SCREEN },
     "view-status-bar": { run: () => statusBarStore.set(!statusBar), pressed: statusBar },
   };
-  if (canFillScreen()) {
-    actions["view-full-screen"] = { run: () => toggleFullScreen(map), pressed: fullScreen !== null };
-  }
-  return actions;
 }
