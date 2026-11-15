@@ -53,6 +53,18 @@ A `PairingKey` also carries `user`, the Earthdata user name of the owner, which 
 computer. The program keeps `server`, `key` and `user` in its settings file. The project server keeps the
 SHA-256 digest of the key only.
 
+The project server answers a question of step 5 with `authorization_pending` before the confirmation, with
+`slow_down` when the question comes less than `interval` seconds after the last one that received another
+answer, with `expired_token` when the device code names no pairing in progress, and with `access_denied`
+when the owner removed the server before the program received its key. A server whose program does not ask
+for its key while the codes are valid is removed. A request of the program whose body is not in its format
+is answered with 422, at the pairing and afterwards, because 400 at the pairing carries a `PairingRefusal`.
+
+A user code is one of 20 to the power 8 codes. A signed-in user who gives 5 codes that name no pairing
+receives 429 at steps 3 and 4 until the oldest of them is 15 minutes old; RFC 8628, section 5.1, recommends
+such a limit and gives this number. At most 1000 pairings are in progress, and step 1 is answered with 503
+beyond that.
+
 ## Connection of a paired server
 
 Every request carries the header `Authorization: Bearer <key>`. The answer 401 means that the owner
@@ -92,6 +104,29 @@ A report may name a job that an earlier report already named: after a start of t
 reports name every job of the pairing whose record it keeps. An answer `done` with `ok` false carries one
 sentence for the visitor, for example when the storage of the server is full.
 
+A server counts as connected from the answer that gives it its key. The project server holds the tasks of
+a server in memory, at most 256 for one server, and gives each task once. It may give a task that asks for
+the same thing as an earlier one, under another name: `dismiss` for a job that a report names and that the
+record holds as dismissed or not at all, `remove` for the layer of such a job when the record holds no layer
+of that name, and `limits` when a report states other limits than the owner set on the site. After the
+owner removed a server, its next question for tasks within `CONNECTED_TIME` seconds receives `forget`, and
+every other request with its key receives 401.
+
+### A server that stops reporting
+
+A job keeps its last state while its server is away, and it continues when the server reports again. The
+project server records a job of an own server as failed, with one sentence, in three cases only.
+
+| Case | Sentence |
+|---|---|
+| The server answers the task `start` with `ok` false | The sentence of the server |
+| The project server was restarted before the server answered the task `start`. The tasks are held in memory only, because that task carries the Earthdata token | Lynkeus was restarted before your server took the job. Start the job again. |
+| The server no longer knows the job: a report states that the server runs and holds no job (`running` and `waiting` are 0) and does not name the job, although the server had answered the task `start` before its previous report | Your server no longer holds this job. Start the job again. |
+
+For the last case the program sends its reports one after the other, and it counts in `running` and
+`waiting` every job that it has recorded and not finished. A task `start` that is not answered within 120
+seconds counts as answered, so that the reports decide about its job.
+
 ## Addresses for the interface
 
 | Request | Body | Answer |
@@ -109,6 +144,18 @@ that holds every input layer, and to the project server when there is none.
 The state of a job (`statusInfo`) and every entry of `GET /api/layers` carry the member `server`: `null`
 for the project server and otherwise a `ServerName`.
 
+The jobs and the layers of an own server belong to its owner. `GET /api/jobs` and `GET /api/layers` list
+them, with those of the session, in every session in which the owner is signed in, and no other visitor
+reaches them. The addresses answer for an own server as follows.
+
+| Request | Answer |
+|---|---|
+| `POST /api/processes/{name}/execution` | 404 when the visitor has no server of the name in `server`; 422 when the input layers are not all kept on the server of the job; 503 when that server is not connected; 429 when it has 100 jobs that wait or run; 507 when the record holds 1000 layers of it |
+| `DELETE /api/jobs/{id}` | As before, at once. The server receives `dismiss`, unless it has not received the job yet |
+| `PATCH /api/layers/{id}`, `DELETE /api/layers/{id}` | As before, after the server has answered the task `rename` or `remove`; 503 when the server is not connected; 504 when it does not answer within `READ_TIME` seconds; 409 with the sentence of the server when it answers with `ok` false |
+| `PATCH /api/servers/{id}` | The name changes at once. The limits are recorded, and the server receives `limits` at once when it is connected and otherwise after its next report. `state.limits` shows the limits that the server applies |
+| `GET /api/servers/{id}/files/{layer}/{file}` | 404 when the server keeps no such file; 416 when the range starts after the end of the file; 502 when the server could not read the file. A request for several ranges receives the whole file. When a part fails after the answer has begun, the answer ends before the length that it stated |
+
 ## Web servers
 
 | Setting | Value | Reason |
@@ -117,6 +164,12 @@ for the project server and otherwise a `ServerName`.
 | Requests under `/api/link/` | a rate limit of their own, by address | An own server asks more often than a browser |
 | Requests under `/api/servers/*/files/` | a rate limit of their own, by address | A map reads many parts of a file |
 | Wait for tasks | at most 25 seconds | The web servers end a request without an answer after 60 seconds |
+
+`web/nginx.conf` takes 60 requests a second from one address, with a burst of 240, under
+`/api/servers/*/files/`. Under `/api/link/` it takes 150 a second, with a burst of 600, because an own
+server makes two requests for every part that a map reads: it sends the part and asks for its next tasks.
+At `POST /api/link/pairings`, which needs no key, it takes 6 requests a minute with a burst of 5. It passes
+the bytes of a file on as they arrive and keeps none.
 
 The front web server of the machine is not changed.
 
