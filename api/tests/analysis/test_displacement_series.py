@@ -77,7 +77,12 @@ def values_of(result: Any) -> list[tuple[Any, Any, int]]:
 
 def test_the_tool_is_listed_under_the_name_of_its_button() -> None:
     assert SERIES_TOOLS["displacement-series"] is displacement_series
-    assert list(SERIES_TOOLS) == ["backscatter-series", "coherence-series", "displacement-series"]
+    assert list(SERIES_TOOLS) == [
+        "backscatter-series",
+        "coherence-series",
+        "displacement-series",
+        "soil-moisture-series",
+    ]
 
 
 def test_a_chain_of_pairs_gives_the_sum_of_the_referenced_phases_times_the_factor() -> None:
