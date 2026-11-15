@@ -177,6 +177,8 @@ The range and the colour scale are those of the source program
 `quantile([0.05, 0.95])`, `cmap="grey"`, label "γ⁰ (dB)"). The quality-assurance program of the
 mission, nisarqa, clips its backscatter images to the same percentiles by default
 ([`percentile_for_clipping`, default `(5.0, 95.0)`](https://github.com/isce-framework/nisarqa/blob/a8bc425f5e8873174471d6a12fe622df338623d1/src/nisarqa/parameters/rslc_caltools_params.py)).
+This sheet numbers the cells of the notebook from 0, in the order of the notebook file: cell 24 is
+its 25th cell, which Jupyter shows as `In [11]`, and cell 26 is shown as `In [12]`.
 
 The notebook takes its percentiles over all dates of its data cube. The tool receives one date, so
 it applies the same line to that date alone. The range therefore differs from one date to another.

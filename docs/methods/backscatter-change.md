@@ -172,7 +172,9 @@ The range and the colour scale are those of the source program
 ([cell 59](https://github.com/ASFOpenSARlab/NISAR_Cookbook/blob/17b69c87a7320610740be7f2c7e605601cb7fe43/notebooks/NISAR_GCOV_SARChangeDetectionMethods.ipynb):
 `quantile(0.99)` of the absolute ratio, `cmap='RdBu'`, `vmin=-dynamic_range`, `vmax=dynamic_range`).
 In `RdBu` of Matplotlib 3.11.2 the lowest value is dark red, the centre near white and the highest
-value dark blue (tried on 14 Nov 2026). On the pilot pair r is 7.17 dB.
+value dark blue (tried on 14 Nov 2026). On the pilot pair r is 7.17 dB. This sheet numbers the cells
+of the notebook from 0, in the order of the notebook file: cell 56 is its 57th cell, which Jupyter
+shows as `In [30]`, and cell 59 is shown as `In [32]`.
 
 The colours of an increase are not a convention. The figure of the Sentinel-1 RTC Product Guide of
 ASF uses the opposite colours: red for an increase, blue for a decrease and yellow for little change

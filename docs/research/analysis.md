@@ -33,6 +33,9 @@ on 31 Oct 2026, were withdrawn; no statement of this note rests on them.
 | Names, units and no-data values of the layers of SME2 | Not checked. It is due before the soil moisture tools (level 2). | |
 | The source program for the comparison of each level-1 tool | The ASF NISAR Cookbook for the two backscatter tools. ISCE3, the program of the mission, for the coherence layer. See part 3. | Part 3 |
 
+This note numbers the cells of the notebook from 0, in the order of the notebook file: cell 24 is
+its 25th cell, which Jupyter shows as `In [11]`.
+
 ## 2. Layers that the three tools use
 
 ### 2.1 GCOV
