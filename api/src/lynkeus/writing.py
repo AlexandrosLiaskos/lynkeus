@@ -246,6 +246,7 @@ def write_layer(
     dates: Sequence[date],
     inputs: Sequence[str],
     lineage: str,
+    layer: str | None = None,
     method: str | None = None,
     level: str | None = None,
     links: Sequence[Mapping[str, str]] = (),
@@ -290,6 +291,10 @@ def write_layer(
         Names of the product files used.
     lineage : str
         How the values were produced, for the record.
+    layer : str, optional
+        Name of the layer inside the product, as the layer request gave it,
+        for example ``HHHH``. A layer received from NASA has one, and a
+        result has none. The record carries it as the name of the band.
     method : str, optional
         Reference of the method. A result has one, and a layer has none.
     level : str, optional
@@ -314,7 +319,9 @@ def write_layer(
         If no cell holds data, a cell holds an infinite value, or the files
         cannot be written.
     ValueError
-        If the array does not fit the grid, or ``name`` has another form.
+        If the array does not fit the grid, ``name`` has another form, or
+        the fields do not make a layer description, for example when a
+        result is given the name of a layer.
     """
     if values.shape != (grid.height, grid.width):
         raise ValueError("the array does not fit the grid")
@@ -334,6 +341,7 @@ def write_layer(
         colours=colours,
         dates=tuple(dates),
         inputs=tuple(inputs),
+        layer=layer,
         program=PROGRAM,
         method=method,
         record=f"{address}/{name}.json",
@@ -475,6 +483,9 @@ def _record(
     system = CRS.from_string(grid.crs)
     if system.is_projected and system.linear_units_factor[1] == 1.0:
         band["raster:spatial_resolution"] = math.sqrt(abs(a * e - b * d))
+    if description.layer is not None:
+        # The name of a band is the name that the data provider uses for it (STAC 1.1.0, common metadata, Band Object).
+        band = {"name": description.layer, **band}
     return {
         "type": "Feature",
         "stac_version": STAC_VERSION,

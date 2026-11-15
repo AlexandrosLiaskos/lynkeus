@@ -29,6 +29,11 @@ export interface LayerDescription {
   dates: readonly string[];
   /** Names of the product files used. */
   inputs: readonly string[];
+  /**
+   * Name of the layer inside the product, as the layer request gave it, for example "HHHH". A layer received from
+   * NASA has one. A result has null, and a layer stored before this field existed has null or no field.
+   */
+  layer?: string | null;
   /** Program and version that produced the file. */
   program: string;
   /** Reference of the method. A result has one, and a layer has null. */
@@ -74,6 +79,7 @@ export function isLayerDescription(value: unknown): value is LayerDescription {
   }
   const layer = value as Record<string, unknown>;
   const { kind, range, method } = layer;
+  const name = layer.layer ?? null;
   return (
     [layer.id, layer.title, layer.url, layer.quantity, layer.unit, layer.colours, layer.program, layer.record].every(
       isText,
@@ -86,6 +92,7 @@ export function isLayerDescription(value: unknown): value is LayerDescription {
     range[0] < range[1] &&
     isList(layer.dates, (date) => typeof date === "string" && DATE.test(date)) &&
     isList(layer.inputs, isText) &&
+    (kind === "result" ? name === null : name === null || isText(name)) &&
     (kind === "result" ? isText(method) : method === null)
   );
 }

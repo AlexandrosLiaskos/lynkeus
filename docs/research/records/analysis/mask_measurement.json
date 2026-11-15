@@ -1,0 +1,199 @@
+{
+ "measured": "2026-11-15T06:59:35Z",
+ "python": "3.13.18",
+ "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+ "numpy": "2.5.4",
+ "rasterio": "1.5.2",
+ "gdal": "3.12.2",
+ "dates": {
+  "20261021": {
+   "mask_file": "gcov-mask-20261021.tif",
+   "mask_file_sha256": "63513f354b619e6fd3378861c6833a46b2b3ae9bf594e5c7cbd16797fd707acf",
+   "sha256_quoted_in_part_4_4": "63513f354b619e6fd3378861c6833a46b2b3ae9bf594e5c7cbd16797fd707acf",
+   "sha256_equals_quoted": true,
+   "hhhh_file": "gcov-hhhh-20261021.tif",
+   "hhhh_file_sha256": "e808a7bfed69c0bd1eabc38faae539bae7aaadd81c86b1bf963900c996dffb84",
+   "mask_file_properties": {
+    "dtype": "uint8",
+    "nodata": 255.0,
+    "bands": 1,
+    "overviews": [
+     2,
+     4,
+     8
+    ]
+   },
+   "grid_of_mask_file": {
+    "columns": 3772,
+    "rows": 3972,
+    "crs": "EPSG:32619",
+    "transform": [
+     10.0,
+     0.0,
+     319520.0,
+     0.0,
+     -10.0,
+     4757610.0
+    ],
+    "bounds": [
+     319520.0,
+     4717890.0,
+     357240.0,
+     4757610.0
+    ]
+   },
+   "grid_of_hhhh_file": {
+    "columns": 3772,
+    "rows": 3972,
+    "crs": "EPSG:32619",
+    "transform": [
+     10.0,
+     0.0,
+     319520.0,
+     0.0,
+     -10.0,
+     4757610.0
+    ],
+    "bounds": [
+     319520.0,
+     4717890.0,
+     357240.0,
+     4757610.0
+    ]
+   },
+   "grids_equal": true,
+   "cells": 14982384,
+   "cells_for_each_mask_value": {
+    "0": 27,
+    "1": 14316413,
+    "255": 665944
+   },
+   "mask_0": 27,
+   "mask_1": 14316413,
+   "mask_2_to_5": 0,
+   "mask_255": 665944,
+   "mask_other_values": 0,
+   "mask_0_with_nan_in_HHHH": 27,
+   "mask_255_with_nan_in_HHHH": 665944,
+   "value_of_HHHH_where_mask_is_0_or_255": 0,
+   "nan_in_HHHH_where_mask_is_1_to_5": 0,
+   "nan_cells_of_HHHH": 665971,
+   "nan_cells_of_HHHH_are_exactly_the_cells_with_mask_0_or_255": true,
+   "HHHH_cells_below_minus_40_dB": 0,
+   "cells_that_the_mask_would_turn_into_no_data": 0,
+   "band_tag_min_value_of_HHHH": "1.6706227e-16",
+   "band_tag_max_value_of_HHHH": "51839.094"
+  },
+  "20261102": {
+   "mask_file": "gcov-mask-20261102.tif",
+   "mask_file_sha256": "b97a766ebeb92ecdc564989f285b261c5ef6210ecefc66bf3f08c1eb121f9224",
+   "sha256_quoted_in_part_4_4": "b97a766ebeb92ecdc564989f285b261c5ef6210ecefc66bf3f08c1eb121f9224",
+   "sha256_equals_quoted": true,
+   "hhhh_file": "gcov-hhhh-20261102.tif",
+   "hhhh_file_sha256": "f9d950ad3b30c07d6d77a3f63d1dd4c106fa1b775982c0834c35e715ac91ac43",
+   "mask_file_properties": {
+    "dtype": "uint8",
+    "nodata": 255.0,
+    "bands": 1,
+    "overviews": [
+     2,
+     4,
+     8
+    ]
+   },
+   "grid_of_mask_file": {
+    "columns": 3772,
+    "rows": 3972,
+    "crs": "EPSG:32619",
+    "transform": [
+     10.0,
+     0.0,
+     319520.0,
+     0.0,
+     -10.0,
+     4757610.0
+    ],
+    "bounds": [
+     319520.0,
+     4717890.0,
+     357240.0,
+     4757610.0
+    ]
+   },
+   "grid_of_hhhh_file": {
+    "columns": 3772,
+    "rows": 3972,
+    "crs": "EPSG:32619",
+    "transform": [
+     10.0,
+     0.0,
+     319520.0,
+     0.0,
+     -10.0,
+     4757610.0
+    ],
+    "bounds": [
+     319520.0,
+     4717890.0,
+     357240.0,
+     4757610.0
+    ]
+   },
+   "grids_equal": true,
+   "cells": 14982384,
+   "cells_for_each_mask_value": {
+    "0": 24,
+    "1": 14316416,
+    "255": 665944
+   },
+   "mask_0": 24,
+   "mask_1": 14316416,
+   "mask_2_to_5": 0,
+   "mask_255": 665944,
+   "mask_other_values": 0,
+   "mask_0_with_nan_in_HHHH": 24,
+   "mask_255_with_nan_in_HHHH": 665944,
+   "value_of_HHHH_where_mask_is_0_or_255": 0,
+   "nan_in_HHHH_where_mask_is_1_to_5": 0,
+   "nan_cells_of_HHHH": 665968,
+   "nan_cells_of_HHHH_are_exactly_the_cells_with_mask_0_or_255": true,
+   "HHHH_cells_below_minus_40_dB": 0,
+   "cells_that_the_mask_would_turn_into_no_data": 0,
+   "band_tag_min_value_of_HHHH": "7.2686074e-17",
+   "band_tag_max_value_of_HHHH": "24645.711"
+  }
+ },
+ "both_dates": {
+  "pairs_of_mask_values_21_Oct_then_2_Nov": {
+   "0,0": {
+    "cells": 16,
+    "with_a_value_of_the_change": 0
+   },
+   "0,1": {
+    "cells": 11,
+    "with_a_value_of_the_change": 0
+   },
+   "1,0": {
+    "cells": 8,
+    "with_a_value_of_the_change": 0
+   },
+   "1,1": {
+    "cells": 14316405,
+    "with_a_value_of_the_change": 14316405
+   },
+   "255,255": {
+    "cells": 665944,
+    "with_a_value_of_the_change": 0
+   }
+  },
+  "mask_0_on_both_dates": 16,
+  "cells_in_which_the_mask_differs": 19,
+  "mask_1_on_both_dates": 14316405,
+  "mask_1_on_both_dates_with_a_value_of_the_change": 14316405,
+  "cells_with_a_value_of_the_change": 14316405,
+  "values_of_the_change_where_either_mask_is_0_or_255": 0,
+  "cells_that_the_masks_would_turn_into_no_data": 0
+ },
+ "numbers_compared_with_part_4_4": 39,
+ "numbers_that_differ_from_part_4_4": []
+}

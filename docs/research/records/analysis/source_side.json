@@ -1,0 +1,261 @@
+{
+ "notebook_sha256": "a6373e20921ab15989c82aa1f13d7c4d93eea87e4a5981f12d3a0f48af92cc7f",
+ "notebook_cells": 74,
+ "executed": [
+  {
+   "cell": 11,
+   "statement": "import xarray as xr\nimport rioxarray\n"
+  },
+  {
+   "cell": 12,
+   "statement": "import re\nfrom urllib.parse import urlparse\nfrom datetime import datetime\nfrom pathlib import PurePosixPath\n\nNISAR_TS_RE = re.compile(r\"_(\\d{8}T\\d{6})_\")\n\ndef nisar_start_time_from_url(pth: str) -> datetime:\n    name = pth.name\n    \n    m = NISAR_TS_RE.search(name)\n    if not m:\n        raise ValueError(f\"No NISAR timestamp found in: {pth}\")\n    \n    return datetime.strptime(m.group(1), \"%Y%m%dT%H%M%S\")\n\ndts = [nisar_start_time_from_url(pth) for pth in gcov_files]\n\ndataarrays = [\n    tree.ds.assign_coords(time=dt).expand_dims(time=1)\n    for dt, tree in zip(dts, datatrees)\n]\n\ndataarrays[0].time"
+  },
+  {
+   "cell": 13,
+   "statement": "datacube = xr.concat(dataarrays, dim=\"time\")"
+  },
+  {
+   "cell": 16,
+   "statement": "polarization = \"HVHV\""
+  },
+  {
+   "cell": 16,
+   "statement": "datacube = datacube[polarization].isel("
+  },
+  {
+   "cell": 24,
+   "statement": "import numpy as np\n\ndatacube_db = 10*np.log10(datacube)"
+  },
+  {
+   "cell": 26,
+   "statement": "vmin, vmax = (datacube_db.quantile([0.05, 0.95], skipna=True).values.astype(float))"
+  },
+  {
+   "cell": 54,
+   "statement": "from datetime import datetime\n\n# extract dataset acquisition times\ntindex = datacube.time.values\n\n# define target dates for comparison\ndates = ('2025-11-15', '2025-12-01')\n\n# convert strings into NumPy-compatible datetime objects\ndates_ = [np.datetime64(datetime.strptime(date, '%Y-%m-%d')) for date in dates]\n\n# find the nearest acquisition index for each target date\ndates_ind = [np.argmin(np.abs(date - tindex)) for date in dates_]\n\n# print the matching acquisition dates from the dataset\nprint(f'Comparing image {dates_ind[0]} from {tindex[dates_ind[0]]} with {dates_ind[1]} from {tindex[dates_ind[1]]}')"
+  },
+  {
+   "cell": 56,
+   "statement": "date_0 = datacube.isel(time=dates_ind[0])\ndate_1 = datacube.isel(time=dates_ind[1])\n"
+  },
+  {
+   "cell": 56,
+   "statement": "ratio_dB = 10 * np.log10(date_1 / date_0)"
+  },
+  {
+   "cell": 59,
+   "statement": "abs_ratio_dB = np.abs(ratio_dB)\ndynamic_range = abs_ratio_dB.quantile(0.99, skipna=True).compute().item()"
+  },
+  {
+   "cell": 58,
+   "statement": "low, high = (ratio_dB.quantile([0.01, 0.99]))"
+  }
+ ],
+ "replaced_statements": [
+  {
+   "cell": 11,
+   "as_written": "datatrees = [xr.open_datatree(f, engine=\"h5netcdf\", decode_timedelta=False, phony_dims=\"access\", chunks=\"auto\", group=group_path) for f in gcov_files]",
+   "executed": "rioxarray.open_rasterio(<sample GeoTIFF>, chunks=<variant>, masked=False), band dropped, dimensions renamed to yCoordinates and xCoordinates, as the variable HHHH of a dataset",
+   "reason": "the inputs are the GeoTIFF samples that Harmony delivered, not HDF5 product files"
+  },
+  {
+   "cell": 12,
+   "as_written": "gcov_files (paths of the HDF5 files)",
+   "executed": "the product file names of samples.json, with the ending .h5",
+   "reason": "cell 12 reads the time from the name of the product file; the sample file names hold no time"
+  },
+  {
+   "cell": 13,
+   "as_written": "projection = datacube.isel(time=0).projection.item()",
+   "executed": "not executed",
+   "reason": "used only for writing GeoTIFF files later in the notebook"
+  },
+  {
+   "cell": 16,
+   "as_written": "polarization = \"HVHV\"; datacube = datacube[polarization].isel(xCoordinates=slice(8000, 11000), yCoordinates=slice(8000, 11000))",
+   "executed": "polarization = \"HHHH\"; datacube = datacube[polarization]",
+   "reason": "the samples hold the term HHHH; the whole box is compared, without the window of 3000 by 3000 cells"
+  },
+  {
+   "cell": 54,
+   "as_written": "dates = ('2025-11-15', '2025-12-01')",
+   "executed": "dates = ('2026-10-21', '2026-11-02')",
+   "reason": "dates of the samples"
+  },
+  {
+   "cell": 26,
+   "as_written": "the quantile line over the whole cube",
+   "executed": "also executed on each date alone (datacube_db.isel(time=[i]))",
+   "reason": "the Lynkeus tool receives one date"
+  }
+ ],
+ "variants": {
+  "dask_chunks_auto": {
+   "chunks_argument": "'auto'",
+   "datacube_dtype": "float32",
+   "datacube_dims": {
+    "time": 2,
+    "yCoordinates": 3972,
+    "xCoordinates": 3772
+   },
+   "datacube_chunks": "((1, 1), (3972,), (3772,))",
+   "times": [
+    "2026-10-21T23:43:30.000000",
+    "2026-11-02T23:43:30.000000"
+   ],
+   "datacube_db_dtype": "float32",
+   "cell26_as_written_both_dates": [
+    "-18.15253448486328",
+    "-0.8111261129379272"
+   ],
+   "cell26_as_written_both_dates_type": "<class 'numpy.float64'>",
+   "cell26_date0_alone": [
+    "-17.824283599853516",
+    "-0.8974864482879639"
+   ],
+   "cell26_date0_alone_type": "<class 'numpy.float64'>",
+   "cell26_date1_alone": [
+    "-18.472387313842773",
+    "-0.731230616569519"
+   ],
+   "cell26_date1_alone_type": "<class 'numpy.float64'>",
+   "dates_ind": [
+    0,
+    1
+   ],
+   "ratio_dtype": "float32",
+   "cell59_dynamic_range": "7.168050689697264",
+   "cell59_dynamic_range_type": "<class 'float'>",
+   "cell58_low_high": [
+    "-6.419355773925781",
+    "6.26850051879881"
+   ],
+   "array_sha256": {
+    "db0": "3b7f2dfab1694b478941937522cb512c4a72c8d496d901db6c57a75c86424c68",
+    "db1": "8d32c8078a047d2cfccf4d8c7a9df82f91dd305d0b3663e7204fa0e3604e5c65",
+    "ratio": "0333462a5e702218b06d47505367ef8b480f7532e8a9620d75939855875591a0",
+    "in0": "7a9f95e1034b1d9a97282c18c7a64b09a3cb2389bec58fa66f0ab19fa9494a60",
+    "in1": "12fb0c0723178cbfe41ce7187b314c5e7923e6bb16ec40a824c5403ebe55b87c"
+   },
+   "array_dtype": {
+    "db0": "float32",
+    "db1": "float32",
+    "ratio": "float32",
+    "in0": "float32",
+    "in1": "float32"
+   }
+  },
+  "in_memory": {
+   "chunks_argument": "None",
+   "datacube_dtype": "float32",
+   "datacube_dims": {
+    "time": 2,
+    "yCoordinates": 3972,
+    "xCoordinates": 3772
+   },
+   "datacube_chunks": "None",
+   "times": [
+    "2026-10-21T23:43:30.000000",
+    "2026-11-02T23:43:30.000000"
+   ],
+   "datacube_db_dtype": "float32",
+   "cell26_as_written_both_dates": [
+    "-18.15253448486328",
+    "-0.8111261129379272"
+   ],
+   "cell26_as_written_both_dates_type": "<class 'numpy.float64'>",
+   "cell26_date0_alone": [
+    "-17.824283599853516",
+    "-0.8974864482879639"
+   ],
+   "cell26_date0_alone_type": "<class 'numpy.float64'>",
+   "cell26_date1_alone": [
+    "-18.472387313842773",
+    "-0.731230616569519"
+   ],
+   "cell26_date1_alone_type": "<class 'numpy.float64'>",
+   "dates_ind": [
+    0,
+    1
+   ],
+   "ratio_dtype": "float32",
+   "cell59_dynamic_range": "7.168050689697264",
+   "cell59_dynamic_range_type": "<class 'float'>",
+   "cell58_low_high": [
+    "-6.419355773925781",
+    "6.26850051879881"
+   ],
+   "array_sha256": {
+    "db0": "3b7f2dfab1694b478941937522cb512c4a72c8d496d901db6c57a75c86424c68",
+    "db1": "8d32c8078a047d2cfccf4d8c7a9df82f91dd305d0b3663e7204fa0e3604e5c65",
+    "ratio": "0333462a5e702218b06d47505367ef8b480f7532e8a9620d75939855875591a0",
+    "in0": "7a9f95e1034b1d9a97282c18c7a64b09a3cb2389bec58fa66f0ab19fa9494a60",
+    "in1": "12fb0c0723178cbfe41ce7187b314c5e7923e6bb16ec40a824c5403ebe55b87c"
+   },
+   "array_dtype": {
+    "db0": "float32",
+    "db1": "float32",
+    "ratio": "float32",
+    "in0": "float32",
+    "in1": "float32"
+   }
+  }
+ },
+ "warnings": [
+  "DeprecationWarning: Setting the shape on a NumPy array has been deprecated in NumPy 2.5.\nAs an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+  "PendingDeprecationWarning: Use `@` matmul instead of `*` mul operator for matrix multiplication"
+ ],
+ "saved_variant": "dask_chunks_auto",
+ "matplotlib": {
+  "version": "3.11.2",
+  "RdBu": {
+   "0.0": "#67001f",
+   "0.25": "#e58368",
+   "0.5": "#f6f7f7",
+   "0.75": "#68abd0",
+   "1.0": "#053061"
+  },
+  "grey": {
+   "0.0": "#000000",
+   "0.5": "#808080",
+   "1.0": "#ffffff"
+  },
+  "grey_is_gray": true
+ },
+ "environment": {
+  "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+  "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+  "packages": {
+   "affine": "3.0.1",
+   "attrs": "26.1.0",
+   "certifi": "2026.10.23",
+   "click": "8.5.1",
+   "click-plugins": "1.1.1.2",
+   "cligj": "0.7.2",
+   "cloudpickle": "3.1.2",
+   "contourpy": "1.4.0",
+   "cycler": "0.12.1",
+   "dask": "2025.12.0",
+   "fonttools": "4.68.0",
+   "fsspec": "2026.9.0",
+   "kiwisolver": "1.5.1",
+   "locket": "1.0.0",
+   "matplotlib": "3.11.2",
+   "numpy": "2.5.3",
+   "packaging": "26.3",
+   "pandas": "3.1.1",
+   "partd": "1.4.2",
+   "pillow": "13.0.0",
+   "pyparsing": "3.3.3",
+   "pyproj": "3.8.0",
+   "python-dateutil": "4.0.0",
+   "PyYAML": "6.0.3",
+   "rasterio": "1.4.4",
+   "rioxarray": "0.22.0",
+   "toolz": "1.2.0",
+   "tzdata": "2026.6",
+   "xarray": "2026.7.0"
+  },
+  "gdal_in_rasterio": "3.10.3"
+ }
+}

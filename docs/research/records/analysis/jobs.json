@@ -1,0 +1,1285 @@
+{
+ "started": "2026-11-15T06:48:25Z",
+ "area": {
+  "west": -71.2,
+  "south": 42.6,
+  "east": -70.75,
+  "north": 42.95
+ },
+ "layers": {
+  "hh_21oct": {
+   "process": "get-layer",
+   "inputs": {
+    "product": "GCOV",
+    "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "layer": "HHHH",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T06:48:26Z",
+   "http_status": 201,
+   "job": "996bb2ebac95f676dc176bfc30daf07d",
+   "job_title": "Backscatter HH of NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+   "status": "successful",
+   "message": "The layer is ready.",
+   "created": "2026-11-15T06:48:26Z",
+   "started": "2026-11-15T06:48:26Z",
+   "finished": "2026-11-15T06:50:27Z",
+   "layer_id": "4e80e3dffd0395ca69b0a0d3d48e3731",
+   "results_http_status": 200,
+   "result": {
+    "id": "4e80e3dffd0395ca69b0a0d3d48e3731",
+    "title": "Backscatter HH, 21 Oct 2026",
+    "kind": "layer",
+    "url": "/files/4e80e3dffd0395ca69b0a0d3d48e3731/gcov-hhhh-20261021.tif",
+    "quantity": "Radar backscatter gamma nought, HH, linear power",
+    "unit": "1",
+    "range": [
+     0.011646270751953125,
+     1.185333251953125
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "HHHH",
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/4e80e3dffd0395ca69b0a0d3d48e3731/gcov-hhhh-20261021.json"
+   }
+  },
+  "hh_2nov": {
+   "process": "get-layer",
+   "inputs": {
+    "product": "GCOV",
+    "granule": "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001",
+    "layer": "HHHH",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T06:48:26Z",
+   "http_status": 201,
+   "job": "42d74083b7bc53801ba34dfb366266b6",
+   "job_title": "Backscatter HH of NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001",
+   "status": "successful",
+   "message": "The layer is ready.",
+   "created": "2026-11-15T06:48:26Z",
+   "started": "2026-11-15T06:48:26Z",
+   "finished": "2026-11-15T06:50:26Z",
+   "layer_id": "9b64086d85ace37852d91ee74fb1e847",
+   "results_http_status": 200,
+   "result": {
+    "id": "9b64086d85ace37852d91ee74fb1e847",
+    "title": "Backscatter HH, 2 Nov 2026",
+    "kind": "layer",
+    "url": "/files/9b64086d85ace37852d91ee74fb1e847/gcov-hhhh-20261102.tif",
+    "quantity": "Radar backscatter gamma nought, HH, linear power",
+    "unit": "1",
+    "range": [
+     0.009898543357849121,
+     1.214141845703125
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-11-02"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "HHHH",
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/9b64086d85ace37852d91ee74fb1e847/gcov-hhhh-20261102.json"
+   }
+  },
+  "coherence": {
+   "process": "get-layer",
+   "inputs": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T06:48:26Z",
+   "http_status": 201,
+   "job": "1a09923173733ad2f93fd504fe21dc93",
+   "job_title": "Coherence HH, 20 m of NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+   "status": "successful",
+   "message": "The layer is ready.",
+   "created": "2026-11-15T06:48:26Z",
+   "started": "2026-11-15T06:50:26Z",
+   "finished": "2026-11-15T06:51:29Z",
+   "layer_id": "d3021760583f65bdfe8854964783acd6",
+   "results_http_status": 200,
+   "result": {
+    "id": "d3021760583f65bdfe8854964783acd6",
+    "title": "Coherence HH, 20 m, 9 Oct 2026 to 21 Oct 2026",
+    "kind": "layer",
+    "url": "/files/d3021760583f65bdfe8854964783acd6/gunw-wrappedinterferogram-hh-coherencemagnitude-20261009-20261021.tif",
+    "quantity": "Interferometric coherence magnitude, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-10-09",
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/d3021760583f65bdfe8854964783acd6/gunw-wrappedinterferogram-hh-coherencemagnitude-20261009-20261021.json"
+   }
+  },
+  "hv_2nov": {
+   "process": "get-layer",
+   "inputs": {
+    "product": "GCOV",
+    "granule": "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001",
+    "layer": "HVHV",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T06:48:26Z",
+   "http_status": 201,
+   "job": "f368943c861bc690960b86f74c1986af",
+   "job_title": "Backscatter HV of NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001",
+   "status": "successful",
+   "message": "The layer is ready.",
+   "created": "2026-11-15T06:48:26Z",
+   "started": "2026-11-15T06:50:27Z",
+   "finished": "2026-11-15T06:52:14Z",
+   "layer_id": "2bf7b7356b8b60cd679687b023d96a9a",
+   "results_http_status": 200,
+   "result": {
+    "id": "2bf7b7356b8b60cd679687b023d96a9a",
+    "title": "Backscatter HV, 2 Nov 2026",
+    "kind": "layer",
+    "url": "/files/2bf7b7356b8b60cd679687b023d96a9a/gcov-hvhv-20261102.tif",
+    "quantity": "Radar backscatter gamma nought, HV, linear power",
+    "unit": "1",
+    "range": [
+     0.0024936795234680176,
+     0.2729759216308594
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-11-02"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "HVHV",
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/2bf7b7356b8b60cd679687b023d96a9a/gcov-hvhv-20261102.json"
+   }
+  },
+  "mask_21oct": {
+   "process": "get-layer",
+   "inputs": {
+    "product": "GCOV",
+    "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "layer": "mask",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T06:52:16Z",
+   "http_status": 201,
+   "job": "f5b4cda29db8e98541c28132d3f33b78",
+   "job_title": "Mask of valid samples of NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+   "status": "successful",
+   "message": "The layer is ready.",
+   "created": "2026-11-15T06:52:16Z",
+   "started": "2026-11-15T06:52:16Z",
+   "finished": "2026-11-15T06:53:44Z",
+   "layer_id": "c978d85eb40832c1801901e521f72aba",
+   "results_http_status": 200,
+   "result": {
+    "id": "c978d85eb40832c1801901e521f72aba",
+    "title": "Mask of valid samples, 21 Oct 2026",
+    "kind": "layer",
+    "url": "/files/c978d85eb40832c1801901e521f72aba/gcov-mask-20261021.tif",
+    "quantity": "Number of the subswath of the valid samples of a cell, or 0 where a sample is not valid",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "tab10",
+    "dates": [
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "mask",
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/c978d85eb40832c1801901e521f72aba/gcov-mask-20261021.json"
+   }
+  },
+  "components": {
+   "process": "get-layer",
+   "inputs": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "submitted": "2026-11-15T06:52:17Z",
+   "http_status": 201,
+   "job": "d703e0c402811169cb59ab76f00ad749",
+   "job_title": "Connected components HH of NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+   "status": "successful",
+   "message": "The layer is ready.",
+   "created": "2026-11-15T06:52:16Z",
+   "started": "2026-11-15T06:52:17Z",
+   "finished": "2026-11-15T06:53:04Z",
+   "layer_id": "555acd0856274c7e3654781e3c94fd57",
+   "results_http_status": 200,
+   "result": {
+    "id": "555acd0856274c7e3654781e3c94fd57",
+    "title": "Connected components HH, 9 Oct 2026 to 21 Oct 2026",
+    "kind": "layer",
+    "url": "/files/555acd0856274c7e3654781e3c94fd57/gunw-unwrappedinterferogram-hh-connectedcomponents-20261009-20261021.tif",
+    "quantity": "Connected component of the phase unwrapping, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "tab10",
+    "dates": [
+     "2026-10-09",
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/555acd0856274c7e3654781e3c94fd57/gunw-unwrappedinterferogram-hh-connectedcomponents-20261009-20261021.json"
+   }
+  }
+ },
+ "tools": {
+  "state_21oct": {
+   "process": "backscatter-state",
+   "inputs": {
+    "inputs": [
+     "4e80e3dffd0395ca69b0a0d3d48e3731"
+    ],
+    "title": "Backscatter HH in dB, 21 Oct 2026"
+   },
+   "submitted": "2026-11-15T06:53:45Z",
+   "http_status": 201,
+   "job": "7dd4b5f1f7b5f455d4022b59248f2299",
+   "job_title": "Backscatter HH in dB, 21 Oct 2026",
+   "given": [
+    "hh_21oct"
+   ],
+   "status": "successful",
+   "message": "The layer is ready.",
+   "created": "2026-11-15T06:53:45Z",
+   "started": "2026-11-15T06:53:45Z",
+   "finished": "2026-11-15T06:54:04Z",
+   "layer_id": "a7c49333c7f7dac7264461aad06341a5",
+   "results_http_status": 200,
+   "result": {
+    "id": "a7c49333c7f7dac7264461aad06341a5",
+    "title": "Backscatter HH in dB, 21 Oct 2026",
+    "kind": "result",
+    "url": "/files/a7c49333c7f7dac7264461aad06341a5/backscatter-state.tif",
+    "quantity": "Radar backscatter gamma0",
+    "unit": "dB",
+    "range": [
+     -17.824283599853516,
+     -0.8974864482879639
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "program": "Lynkeus 0.1.0",
+    "method": "10*log10 of the covariance term, the conversion that the product states in its field outputBackscatterDecibelConversionFormula (NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)",
+    "record": "/files/a7c49333c7f7dac7264461aad06341a5/backscatter-state.json"
+   }
+  },
+  "state_2nov": {
+   "process": "backscatter-state",
+   "inputs": {
+    "inputs": [
+     "9b64086d85ace37852d91ee74fb1e847"
+    ],
+    "title": "Backscatter HH in dB, 2 Nov 2026"
+   },
+   "submitted": "2026-11-15T06:53:45Z",
+   "http_status": 201,
+   "job": "b313925af5946e58963d9c44c2572822",
+   "job_title": "Backscatter HH in dB, 2 Nov 2026",
+   "given": [
+    "hh_2nov"
+   ],
+   "status": "successful",
+   "message": "The layer is ready.",
+   "created": "2026-11-15T06:53:45Z",
+   "started": "2026-11-15T06:53:45Z",
+   "finished": "2026-11-15T06:54:03Z",
+   "layer_id": "cc8cd497be3d9e223c522df9b78f2b3a",
+   "results_http_status": 200,
+   "result": {
+    "id": "cc8cd497be3d9e223c522df9b78f2b3a",
+    "title": "Backscatter HH in dB, 2 Nov 2026",
+    "kind": "result",
+    "url": "/files/cc8cd497be3d9e223c522df9b78f2b3a/backscatter-state.tif",
+    "quantity": "Radar backscatter gamma0",
+    "unit": "dB",
+    "range": [
+     -18.472387313842773,
+     -0.731230616569519
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-11-02"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "program": "Lynkeus 0.1.0",
+    "method": "10*log10 of the covariance term, the conversion that the product states in its field outputBackscatterDecibelConversionFormula (NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)",
+    "record": "/files/cc8cd497be3d9e223c522df9b78f2b3a/backscatter-state.json"
+   }
+  },
+  "change": {
+   "process": "backscatter-change",
+   "inputs": {
+    "inputs": [
+     "4e80e3dffd0395ca69b0a0d3d48e3731",
+     "9b64086d85ace37852d91ee74fb1e847"
+    ],
+    "title": "Change of backscatter HH, 21 Oct to 2 Nov 2026"
+   },
+   "submitted": "2026-11-15T06:53:45Z",
+   "http_status": 201,
+   "job": "ba1dc891645b206b1cb6e0b1f5cfc55f",
+   "job_title": "Change of backscatter HH, 21 Oct to 2 Nov 2026",
+   "given": [
+    "hh_21oct",
+    "hh_2nov"
+   ],
+   "status": "successful",
+   "message": "The layer is ready.",
+   "created": "2026-11-15T06:53:45Z",
+   "started": "2026-11-15T06:54:03Z",
+   "finished": "2026-11-15T06:54:18Z",
+   "layer_id": "d55de1c01732e54553c9e7a790f268cb",
+   "results_http_status": 200,
+   "result": {
+    "id": "d55de1c01732e54553c9e7a790f268cb",
+    "title": "Change of backscatter HH, 21 Oct to 2 Nov 2026",
+    "kind": "result",
+    "url": "/files/d55de1c01732e54553c9e7a790f268cb/backscatter-change.tif",
+    "quantity": "Change of radar backscatter gamma0",
+    "unit": "dB",
+    "range": [
+     -7.168050689697264,
+     7.168050689697264
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-10-21",
+     "2026-11-02"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "program": "Lynkeus 0.1.0",
+    "method": "Ratio of the backscatter of two dates, in decibels (Rignot and van Zyl, 1993, https://doi.org/10.1109/36.239913)",
+    "record": "/files/d55de1c01732e54553c9e7a790f268cb/backscatter-change.json"
+   }
+  },
+  "coherence": {
+   "process": "coherence-state",
+   "inputs": {
+    "inputs": [
+     "d3021760583f65bdfe8854964783acd6"
+    ],
+    "title": "Coherence HH, 9 to 21 Oct 2026"
+   },
+   "submitted": "2026-11-15T06:53:45Z",
+   "http_status": 201,
+   "job": "8af16d357936be95c8061305d495e0d6",
+   "job_title": "Coherence HH, 9 to 21 Oct 2026",
+   "given": [
+    "coherence"
+   ],
+   "status": "successful",
+   "message": "The layer is ready.",
+   "created": "2026-11-15T06:53:45Z",
+   "started": "2026-11-15T06:54:04Z",
+   "finished": "2026-11-15T06:54:13Z",
+   "layer_id": "818f9d737e74e0e9f6ffed7436466710",
+   "results_http_status": 200,
+   "result": {
+    "id": "818f9d737e74e0e9f6ffed7436466710",
+    "title": "Coherence HH, 9 to 21 Oct 2026",
+    "kind": "result",
+    "url": "/files/818f9d737e74e0e9f6ffed7436466710/coherence-state.tif",
+    "quantity": "Interferometric coherence (magnitude)",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-10-09",
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "program": "Lynkeus 0.1.0",
+    "method": "Layer coherenceMagnitude of the product, unchanged (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)",
+    "record": "/files/818f9d737e74e0e9f6ffed7436466710/coherence-state.json"
+   }
+  }
+ },
+ "refusals": {
+  "state of a GUNW layer": {
+   "process": "backscatter-state",
+   "inputs": {
+    "inputs": [
+     "d3021760583f65bdfe8854964783acd6"
+    ],
+    "title": "Trial: state of a GUNW layer"
+   },
+   "submitted": "2026-11-15T06:54:21Z",
+   "http_status": 201,
+   "job": "9b3ec76a007f343fa065e4b428824633",
+   "job_title": "Trial: state of a GUNW layer",
+   "given": [
+    "coherence"
+   ],
+   "status": "failed",
+   "message": "The layer \"Coherence HH, 20 m, 9 Oct 2026 to 21 Oct 2026\" is not a layer received from one NISAR GCOV product.",
+   "created": "2026-11-15T06:54:21Z",
+   "started": "2026-11-15T06:54:21Z",
+   "finished": "2026-11-15T06:54:32Z",
+   "layer_id": null,
+   "results_http_status": 500,
+   "result": {
+    "type": "about:blank",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "The layer \"Coherence HH, 20 m, 9 Oct 2026 to 21 Oct 2026\" is not a layer received from one NISAR GCOV product."
+   }
+  },
+  "state of the layer mask": {
+   "process": "backscatter-state",
+   "inputs": {
+    "inputs": [
+     "c978d85eb40832c1801901e521f72aba"
+    ],
+    "title": "Trial: state of the layer mask"
+   },
+   "submitted": "2026-11-15T06:54:21Z",
+   "http_status": 201,
+   "job": "2f3f2fc798637ceec7361e5b6bab8c3a",
+   "job_title": "Trial: state of the layer mask",
+   "given": [
+    "mask_21oct"
+   ],
+   "status": "failed",
+   "message": "The layer \"Mask of valid samples, 21 Oct 2026\" is the layer mask of its product, and the tool reads a diagonal covariance term (HHHH, HVHV, VHVH, VVVV, RHRH or RVRV).",
+   "created": "2026-11-15T06:54:21Z",
+   "started": "2026-11-15T06:54:21Z",
+   "finished": "2026-11-15T06:54:32Z",
+   "layer_id": null,
+   "results_http_status": 500,
+   "result": {
+    "type": "about:blank",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "The layer \"Mask of valid samples, 21 Oct 2026\" is the layer mask of its product, and the tool reads a diagonal covariance term (HHHH, HVHV, VHVH, VVVV, RHRH or RVRV)."
+   }
+  },
+  "state of a result": {
+   "process": "backscatter-state",
+   "inputs": {
+    "inputs": [
+     "a7c49333c7f7dac7264461aad06341a5"
+    ],
+    "title": "Trial: state of a result"
+   },
+   "submitted": "2026-11-15T06:54:21Z",
+   "http_status": 201,
+   "job": "f37c6207a13bd4b348301e07ffec836d",
+   "job_title": "Trial: state of a result",
+   "given": [
+    "a7c49333c7f7dac7264461aad06341a5"
+   ],
+   "status": "failed",
+   "message": "The layer \"Backscatter HH in dB, 21 Oct 2026\" is not a layer received from one NISAR GCOV product.",
+   "created": "2026-11-15T06:54:21Z",
+   "started": "2026-11-15T06:54:32Z",
+   "finished": "2026-11-15T06:54:41Z",
+   "layer_id": null,
+   "results_http_status": 500,
+   "result": {
+    "type": "about:blank",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "The layer \"Backscatter HH in dB, 21 Oct 2026\" is not a layer received from one NISAR GCOV product."
+   }
+  },
+  "state of two layers": {
+   "process": "backscatter-state",
+   "inputs": {
+    "inputs": [
+     "4e80e3dffd0395ca69b0a0d3d48e3731",
+     "9b64086d85ace37852d91ee74fb1e847"
+    ],
+    "title": "Trial: state of two layers"
+   },
+   "submitted": "2026-11-15T06:54:21Z",
+   "http_status": 201,
+   "job": "c80bd3745c0e9d2e0d7693b562d292d0",
+   "job_title": "Trial: state of two layers",
+   "given": [
+    "hh_21oct",
+    "hh_2nov"
+   ],
+   "status": "failed",
+   "message": "The number of input layers must be 1, and it is 2.",
+   "created": "2026-11-15T06:54:21Z",
+   "started": "2026-11-15T06:54:32Z",
+   "finished": "2026-11-15T06:54:41Z",
+   "layer_id": null,
+   "results_http_status": 500,
+   "result": {
+    "type": "about:blank",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "The number of input layers must be 1, and it is 2."
+   }
+  },
+  "change with the later date first": {
+   "process": "backscatter-change",
+   "inputs": {
+    "inputs": [
+     "9b64086d85ace37852d91ee74fb1e847",
+     "4e80e3dffd0395ca69b0a0d3d48e3731"
+    ],
+    "title": "Trial: change with the later date first"
+   },
+   "submitted": "2026-11-15T06:54:42Z",
+   "http_status": 201,
+   "job": "398370bb85f9466934870a21108e4ade",
+   "job_title": "Trial: change with the later date first",
+   "given": [
+    "hh_2nov",
+    "hh_21oct"
+   ],
+   "status": "failed",
+   "message": "The first layer must be of an earlier date than the second.",
+   "created": "2026-11-15T06:54:42Z",
+   "started": "2026-11-15T06:54:42Z",
+   "finished": "2026-11-15T06:54:49Z",
+   "layer_id": null,
+   "results_http_status": 500,
+   "result": {
+    "type": "about:blank",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "The first layer must be of an earlier date than the second."
+   }
+  },
+  "change of HHHH and HVHV": {
+   "process": "backscatter-change",
+   "inputs": {
+    "inputs": [
+     "4e80e3dffd0395ca69b0a0d3d48e3731",
+     "2bf7b7356b8b60cd679687b023d96a9a"
+    ],
+    "title": "Trial: change of HHHH and HVHV"
+   },
+   "submitted": "2026-11-15T06:54:42Z",
+   "http_status": 201,
+   "job": "edae0bac41bbb2153b41ae833b15b5a9",
+   "job_title": "Trial: change of HHHH and HVHV",
+   "given": [
+    "hh_21oct",
+    "hv_2nov"
+   ],
+   "status": "failed",
+   "message": "The two layers are not the same covariance term: the first is HHHH and the second is HVHV.",
+   "created": "2026-11-15T06:54:42Z",
+   "started": "2026-11-15T06:54:42Z",
+   "finished": "2026-11-15T06:54:50Z",
+   "layer_id": null,
+   "results_http_status": 500,
+   "result": {
+    "type": "about:blank",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "The two layers are not the same covariance term: the first is HHHH and the second is HVHV."
+   }
+  },
+  "change of the layer mask and HHHH": {
+   "process": "backscatter-change",
+   "inputs": {
+    "inputs": [
+     "c978d85eb40832c1801901e521f72aba",
+     "9b64086d85ace37852d91ee74fb1e847"
+    ],
+    "title": "Trial: change of the layer mask and HHHH"
+   },
+   "submitted": "2026-11-15T06:54:42Z",
+   "http_status": 201,
+   "job": "2c2987d734e92e3cc505c6d3faa9fb62",
+   "job_title": "Trial: change of the layer mask and HHHH",
+   "given": [
+    "mask_21oct",
+    "hh_2nov"
+   ],
+   "status": "failed",
+   "message": "The layer \"Mask of valid samples, 21 Oct 2026\" is the layer mask of its product, and the tool reads a diagonal covariance term (HHHH, HVHV, VHVH, VVVV, RHRH or RVRV).",
+   "created": "2026-11-15T06:54:42Z",
+   "started": "2026-11-15T06:54:49Z",
+   "finished": "2026-11-15T06:54:59Z",
+   "layer_id": null,
+   "results_http_status": 500,
+   "result": {
+    "type": "about:blank",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "The layer \"Mask of valid samples, 21 Oct 2026\" is the layer mask of its product, and the tool reads a diagonal covariance term (HHHH, HVHV, VHVH, VVVV, RHRH or RVRV)."
+   }
+  },
+  "change of layers on different grids": {
+   "process": "backscatter-change",
+   "inputs": {
+    "inputs": [
+     "4e80e3dffd0395ca69b0a0d3d48e3731",
+     "d3021760583f65bdfe8854964783acd6"
+    ],
+    "title": "Trial: change of layers on different grids"
+   },
+   "submitted": "2026-11-15T06:54:42Z",
+   "http_status": 201,
+   "job": "67e7fbc9211500b89157ca057b037275",
+   "job_title": "Trial: change of layers on different grids",
+   "given": [
+    "hh_21oct",
+    "coherence"
+   ],
+   "status": "failed",
+   "message": "The layers of the analysis do not have the same grid.",
+   "created": "2026-11-15T06:54:42Z",
+   "started": "2026-11-15T06:54:50Z",
+   "finished": "2026-11-15T06:54:59Z",
+   "layer_id": null,
+   "results_http_status": 500,
+   "result": {
+    "type": "about:blank",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "The layers of the analysis do not have the same grid."
+   }
+  },
+  "change of one layer": {
+   "process": "backscatter-change",
+   "inputs": {
+    "inputs": [
+     "4e80e3dffd0395ca69b0a0d3d48e3731"
+    ],
+    "title": "Trial: change of one layer"
+   },
+   "submitted": "2026-11-15T06:55:02Z",
+   "http_status": 201,
+   "job": "fbe14055e7bfe74d1eade6e5d9122b7d",
+   "job_title": "Trial: change of one layer",
+   "given": [
+    "hh_21oct"
+   ],
+   "status": "failed",
+   "message": "The number of input layers must be 2, and it is 1.",
+   "created": "2026-11-15T06:55:02Z",
+   "started": "2026-11-15T06:55:02Z",
+   "finished": "2026-11-15T06:55:14Z",
+   "layer_id": null,
+   "results_http_status": 500,
+   "result": {
+    "type": "about:blank",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "The number of input layers must be 2, and it is 1."
+   }
+  },
+  "change of one layer given twice": {
+   "process": "backscatter-change",
+   "inputs": {
+    "inputs": [
+     "4e80e3dffd0395ca69b0a0d3d48e3731",
+     "4e80e3dffd0395ca69b0a0d3d48e3731"
+    ],
+    "title": "Trial: change of one layer given twice"
+   },
+   "submitted": "2026-11-15T06:55:02Z",
+   "http_status": 400,
+   "answer": {
+    "type": "about:blank",
+    "title": "Bad Request",
+    "status": 400,
+    "detail": "The input inputs is not valid: a layer is given more than once."
+   },
+   "given": [
+    "hh_21oct",
+    "hh_21oct"
+   ]
+  },
+  "coherence of a GCOV layer": {
+   "process": "coherence-state",
+   "inputs": {
+    "inputs": [
+     "4e80e3dffd0395ca69b0a0d3d48e3731"
+    ],
+    "title": "Trial: coherence of a GCOV layer"
+   },
+   "submitted": "2026-11-15T06:55:03Z",
+   "http_status": 201,
+   "job": "6eee04b9f91786fbd6a1dae1be968935",
+   "job_title": "Trial: coherence of a GCOV layer",
+   "given": [
+    "hh_21oct"
+   ],
+   "status": "failed",
+   "message": "The layer \"Backscatter HH, 21 Oct 2026\" is not a layer received from one NISAR GUNW product.",
+   "created": "2026-11-15T06:55:02Z",
+   "started": "2026-11-15T06:55:03Z",
+   "finished": "2026-11-15T06:55:14Z",
+   "layer_id": null,
+   "results_http_status": 500,
+   "result": {
+    "type": "about:blank",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "The layer \"Backscatter HH, 21 Oct 2026\" is not a layer received from one NISAR GUNW product."
+   }
+  },
+  "coherence of the layer connectedComponents": {
+   "process": "coherence-state",
+   "inputs": {
+    "inputs": [
+     "555acd0856274c7e3654781e3c94fd57"
+    ],
+    "title": "Trial: coherence of the layer connectedComponents"
+   },
+   "submitted": "2026-11-15T06:55:03Z",
+   "http_status": 201,
+   "job": "2d7122d97d5a0b99322e1d7b0b5025ab",
+   "job_title": "Trial: coherence of the layer connectedComponents",
+   "given": [
+    "components"
+   ],
+   "status": "failed",
+   "message": "The layer \"Connected components HH, 9 Oct 2026 to 21 Oct 2026\" is the layer unwrappedInterferogram/HH/connectedComponents of its product, and the tool reads the layer coherenceMagnitude.",
+   "created": "2026-11-15T06:55:03Z",
+   "started": "2026-11-15T06:55:14Z",
+   "finished": "2026-11-15T06:55:18Z",
+   "layer_id": null,
+   "results_http_status": 500,
+   "result": {
+    "type": "about:blank",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "The layer \"Connected components HH, 9 Oct 2026 to 21 Oct 2026\" is the layer unwrappedInterferogram/HH/connectedComponents of its product, and the tool reads the layer coherenceMagnitude."
+   }
+  },
+  "coherence of one layer given twice": {
+   "process": "coherence-state",
+   "inputs": {
+    "inputs": [
+     "d3021760583f65bdfe8854964783acd6",
+     "d3021760583f65bdfe8854964783acd6"
+    ],
+    "title": "Trial: coherence of one layer given twice"
+   },
+   "submitted": "2026-11-15T06:55:19Z",
+   "http_status": 400,
+   "answer": {
+    "type": "about:blank",
+    "title": "Bad Request",
+    "status": 400,
+    "detail": "The input inputs is not valid: a layer is given more than once."
+   },
+   "given": [
+    "coherence",
+    "coherence"
+   ]
+  },
+  "state of a layer that does not exist": {
+   "process": "backscatter-state",
+   "inputs": {
+    "inputs": [
+     "0123456789abcdef0123456789abcdef"
+    ],
+    "title": "Trial: state of a layer that does not exist"
+   },
+   "submitted": "2026-11-15T06:55:19Z",
+   "http_status": 201,
+   "job": "191dfb3c4abb72de2fd5c59d47a6c32f",
+   "job_title": "Trial: state of a layer that does not exist",
+   "given": [
+    "0123456789abcdef0123456789abcdef"
+   ],
+   "status": "failed",
+   "message": "A layer of the analysis no longer exists.",
+   "created": "2026-11-15T06:55:19Z",
+   "started": "2026-11-15T06:55:19Z",
+   "finished": "2026-11-15T06:55:23Z",
+   "layer_id": null,
+   "results_http_status": 500,
+   "result": {
+    "type": "about:blank",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "A layer of the analysis no longer exists."
+   }
+  },
+  "state of a layer stored without the field": {
+   "process": "backscatter-state",
+   "inputs": {
+    "inputs": [
+     "9b64086d85ace37852d91ee74fb1e847"
+    ],
+    "title": "Trial: state of a layer stored without its name"
+   },
+   "submitted": "2026-11-15T06:55:23Z",
+   "http_status": 201,
+   "job": "b8d234d75c00639cfd70446f538ac185",
+   "job_title": "Trial: state of a layer stored without its name",
+   "given": [
+    "hh_2nov"
+   ],
+   "status": "failed",
+   "message": "The layer \"Backscatter HH, 2 Nov 2026\" does not record which layer of its product it is; receive it again with Get layer.",
+   "created": "2026-11-15T06:55:23Z",
+   "started": "2026-11-15T06:55:23Z",
+   "finished": "2026-11-15T06:55:31Z",
+   "layer_id": null,
+   "results_http_status": 500,
+   "result": {
+    "type": "about:blank",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "The layer \"Backscatter HH, 2 Nov 2026\" does not record which layer of its product it is; receive it again with Get layer."
+   }
+  },
+  "change with a layer stored without the field": {
+   "process": "backscatter-change",
+   "inputs": {
+    "inputs": [
+     "4e80e3dffd0395ca69b0a0d3d48e3731",
+     "9b64086d85ace37852d91ee74fb1e847"
+    ],
+    "title": "Trial: change with a layer stored without its name"
+   },
+   "submitted": "2026-11-15T06:55:23Z",
+   "http_status": 201,
+   "job": "be1d19a6d74c03e8acac3f6fbffa3cfc",
+   "job_title": "Trial: change with a layer stored without its name",
+   "given": [
+    "hh_21oct",
+    "hh_2nov"
+   ],
+   "status": "failed",
+   "message": "The layer \"Backscatter HH, 2 Nov 2026\" does not record which layer of its product it is; receive it again with Get layer.",
+   "created": "2026-11-15T06:55:23Z",
+   "started": "2026-11-15T06:55:23Z",
+   "finished": "2026-11-15T06:55:31Z",
+   "layer_id": null,
+   "results_http_status": 500,
+   "result": {
+    "type": "about:blank",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "The layer \"Backscatter HH, 2 Nov 2026\" does not record which layer of its product it is; receive it again with Get layer."
+   }
+  }
+ },
+ "notes": [],
+ "sign_in_http_status": 200,
+ "signed_in": true,
+ "stored_description_before": {
+  "id": "9b64086d85ace37852d91ee74fb1e847",
+  "title": "Backscatter HH, 2 Nov 2026",
+  "kind": "layer",
+  "url": "/files/9b64086d85ace37852d91ee74fb1e847/gcov-hhhh-20261102.tif",
+  "quantity": "Radar backscatter gamma nought, HH, linear power",
+  "unit": "1",
+  "range": [
+   0.009898543357849121,
+   1.214141845703125
+  ],
+  "colours": "grey",
+  "dates": [
+   "2026-11-02"
+  ],
+  "inputs": [
+   "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+  ],
+  "layer": "HHHH",
+  "program": "Lynkeus 0.1.0",
+  "method": null,
+  "record": "/files/9b64086d85ace37852d91ee74fb1e847/gcov-hhhh-20261102.json"
+ },
+ "old_layer_as_the_service_lists_it": {
+  "id": "9b64086d85ace37852d91ee74fb1e847",
+  "title": "Backscatter HH, 2 Nov 2026",
+  "kind": "layer",
+  "url": "/files/9b64086d85ace37852d91ee74fb1e847/gcov-hhhh-20261102.tif",
+  "quantity": "Radar backscatter gamma nought, HH, linear power",
+  "unit": "1",
+  "range": [
+   0.009898543357849121,
+   1.214141845703125
+  ],
+  "colours": "grey",
+  "dates": [
+   "2026-11-02"
+  ],
+  "inputs": [
+   "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+  ],
+  "program": "Lynkeus 0.1.0",
+  "method": null,
+  "record": "/files/9b64086d85ace37852d91ee74fb1e847/gcov-hhhh-20261102.json"
+ },
+ "layers_of_the_session_at_the_end": {
+  "layers": [
+   {
+    "layer": {
+     "id": "d55de1c01732e54553c9e7a790f268cb",
+     "title": "Change of backscatter HH, 21 Oct to 2 Nov 2026",
+     "kind": "result",
+     "url": "/files/d55de1c01732e54553c9e7a790f268cb/backscatter-change.tif",
+     "quantity": "Change of radar backscatter gamma0",
+     "unit": "dB",
+     "range": [
+      -7.168050689697264,
+      7.168050689697264
+     ],
+     "colours": "RdBu",
+     "dates": [
+      "2026-10-21",
+      "2026-11-02"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": null,
+     "program": "Lynkeus 0.1.0",
+     "method": "Ratio of the backscatter of two dates, in decibels (Rignot and van Zyl, 1993, https://doi.org/10.1109/36.239913)",
+     "record": "/files/d55de1c01732e54553c9e7a790f268cb/backscatter-change.json"
+    },
+    "size": 69604298,
+    "created": "2026-11-15T06:54:18Z"
+   },
+   {
+    "layer": {
+     "id": "818f9d737e74e0e9f6ffed7436466710",
+     "title": "Coherence HH, 9 to 21 Oct 2026",
+     "kind": "result",
+     "url": "/files/818f9d737e74e0e9f6ffed7436466710/coherence-state.tif",
+     "quantity": "Interferometric coherence (magnitude)",
+     "unit": "1",
+     "range": [
+      0.0,
+      1.0
+     ],
+     "colours": "grey",
+     "dates": [
+      "2026-10-09",
+      "2026-10-21"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": null,
+     "program": "Lynkeus 0.1.0",
+     "method": "Layer coherenceMagnitude of the product, unchanged (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)",
+     "record": "/files/818f9d737e74e0e9f6ffed7436466710/coherence-state.json"
+    },
+    "size": 15198946,
+    "created": "2026-11-15T06:54:13Z"
+   },
+   {
+    "layer": {
+     "id": "a7c49333c7f7dac7264461aad06341a5",
+     "title": "Backscatter HH in dB, 21 Oct 2026",
+     "kind": "result",
+     "url": "/files/a7c49333c7f7dac7264461aad06341a5/backscatter-state.tif",
+     "quantity": "Radar backscatter gamma0",
+     "unit": "dB",
+     "range": [
+      -17.824283599853516,
+      -0.8974864482879639
+     ],
+     "colours": "grey",
+     "dates": [
+      "2026-10-21"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": null,
+     "program": "Lynkeus 0.1.0",
+     "method": "10*log10 of the covariance term, the conversion that the product states in its field outputBackscatterDecibelConversionFormula (NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)",
+     "record": "/files/a7c49333c7f7dac7264461aad06341a5/backscatter-state.json"
+    },
+    "size": 62860309,
+    "created": "2026-11-15T06:54:04Z"
+   },
+   {
+    "layer": {
+     "id": "cc8cd497be3d9e223c522df9b78f2b3a",
+     "title": "Backscatter HH in dB, 2 Nov 2026",
+     "kind": "result",
+     "url": "/files/cc8cd497be3d9e223c522df9b78f2b3a/backscatter-state.tif",
+     "quantity": "Radar backscatter gamma0",
+     "unit": "dB",
+     "range": [
+      -18.472387313842773,
+      -0.731230616569519
+     ],
+     "colours": "grey",
+     "dates": [
+      "2026-11-02"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": null,
+     "program": "Lynkeus 0.1.0",
+     "method": "10*log10 of the covariance term, the conversion that the product states in its field outputBackscatterDecibelConversionFormula (NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)",
+     "record": "/files/cc8cd497be3d9e223c522df9b78f2b3a/backscatter-state.json"
+    },
+    "size": 62925860,
+    "created": "2026-11-15T06:54:03Z"
+   },
+   {
+    "layer": {
+     "id": "c978d85eb40832c1801901e521f72aba",
+     "title": "Mask of valid samples, 21 Oct 2026",
+     "kind": "layer",
+     "url": "/files/c978d85eb40832c1801901e521f72aba/gcov-mask-20261021.tif",
+     "quantity": "Number of the subswath of the valid samples of a cell, or 0 where a sample is not valid",
+     "unit": "1",
+     "range": [
+      0.0,
+      1.0
+     ],
+     "colours": "tab10",
+     "dates": [
+      "2026-10-21"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "mask",
+     "program": "Lynkeus 0.1.0",
+     "method": null,
+     "record": "/files/c978d85eb40832c1801901e521f72aba/gcov-mask-20261021.json"
+    },
+    "size": 341971,
+    "created": "2026-11-15T06:53:44Z"
+   },
+   {
+    "layer": {
+     "id": "555acd0856274c7e3654781e3c94fd57",
+     "title": "Connected components HH, 9 Oct 2026 to 21 Oct 2026",
+     "kind": "layer",
+     "url": "/files/555acd0856274c7e3654781e3c94fd57/gunw-unwrappedinterferogram-hh-connectedcomponents-20261009-20261021.tif",
+     "quantity": "Connected component of the phase unwrapping, HH",
+     "unit": "1",
+     "range": [
+      0.0,
+      1.0
+     ],
+     "colours": "tab10",
+     "dates": [
+      "2026-10-09",
+      "2026-10-21"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "unwrappedInterferogram/HH/connectedComponents",
+     "program": "Lynkeus 0.1.0",
+     "method": null,
+     "record": "/files/555acd0856274c7e3654781e3c94fd57/gunw-unwrappedinterferogram-hh-connectedcomponents-20261009-20261021.json"
+    },
+    "size": 21483,
+    "created": "2026-11-15T06:53:04Z"
+   },
+   {
+    "layer": {
+     "id": "2bf7b7356b8b60cd679687b023d96a9a",
+     "title": "Backscatter HV, 2 Nov 2026",
+     "kind": "layer",
+     "url": "/files/2bf7b7356b8b60cd679687b023d96a9a/gcov-hvhv-20261102.tif",
+     "quantity": "Radar backscatter gamma nought, HV, linear power",
+     "unit": "1",
+     "range": [
+      0.0024936795234680176,
+      0.2729759216308594
+     ],
+     "colours": "grey",
+     "dates": [
+      "2026-11-02"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "HVHV",
+     "program": "Lynkeus 0.1.0",
+     "method": null,
+     "record": "/files/2bf7b7356b8b60cd679687b023d96a9a/gcov-hvhv-20261102.json"
+    },
+    "size": 51889298,
+    "created": "2026-11-15T06:52:14Z"
+   },
+   {
+    "layer": {
+     "id": "d3021760583f65bdfe8854964783acd6",
+     "title": "Coherence HH, 20 m, 9 Oct 2026 to 21 Oct 2026",
+     "kind": "layer",
+     "url": "/files/d3021760583f65bdfe8854964783acd6/gunw-wrappedinterferogram-hh-coherencemagnitude-20261009-20261021.tif",
+     "quantity": "Interferometric coherence magnitude, HH",
+     "unit": "1",
+     "range": [
+      0.0,
+      1.0
+     ],
+     "colours": "grey",
+     "dates": [
+      "2026-10-09",
+      "2026-10-21"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+     "program": "Lynkeus 0.1.0",
+     "method": null,
+     "record": "/files/d3021760583f65bdfe8854964783acd6/gunw-wrappedinterferogram-hh-coherencemagnitude-20261009-20261021.json"
+    },
+    "size": 15199116,
+    "created": "2026-11-15T06:51:29Z"
+   },
+   {
+    "layer": {
+     "id": "4e80e3dffd0395ca69b0a0d3d48e3731",
+     "title": "Backscatter HH, 21 Oct 2026",
+     "kind": "layer",
+     "url": "/files/4e80e3dffd0395ca69b0a0d3d48e3731/gcov-hhhh-20261021.tif",
+     "quantity": "Radar backscatter gamma nought, HH, linear power",
+     "unit": "1",
+     "range": [
+      0.011646270751953125,
+      1.185333251953125
+     ],
+     "colours": "grey",
+     "dates": [
+      "2026-10-21"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "HHHH",
+     "program": "Lynkeus 0.1.0",
+     "method": null,
+     "record": "/files/4e80e3dffd0395ca69b0a0d3d48e3731/gcov-hhhh-20261021.json"
+    },
+    "size": 52051748,
+    "created": "2026-11-15T06:50:27Z"
+   },
+   {
+    "layer": {
+     "id": "9b64086d85ace37852d91ee74fb1e847",
+     "title": "Backscatter HH, 2 Nov 2026",
+     "kind": "layer",
+     "url": "/files/9b64086d85ace37852d91ee74fb1e847/gcov-hhhh-20261102.tif",
+     "quantity": "Radar backscatter gamma nought, HH, linear power",
+     "unit": "1",
+     "range": [
+      0.009898543357849121,
+      1.214141845703125
+     ],
+     "colours": "grey",
+     "dates": [
+      "2026-11-02"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "HHHH",
+     "program": "Lynkeus 0.1.0",
+     "method": null,
+     "record": "/files/9b64086d85ace37852d91ee74fb1e847/gcov-hhhh-20261102.json"
+    },
+    "size": 52025309,
+    "created": "2026-11-15T06:50:26Z"
+   }
+  ]
+ },
+ "sign_out_http_status": 204,
+ "ended": "2026-11-15T06:55:35Z"
+}
