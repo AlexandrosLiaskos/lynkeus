@@ -20,7 +20,7 @@ from collections.abc import Sequence
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-from lynkeus import __version__, computer
+from lynkeus import OTHER_MAP_DATA, __version__, computer
 from lynkeus.link import PROJECT_SERVER, Link, View
 from lynkeus.offered import processes
 
@@ -294,6 +294,10 @@ def main(given: Sequence[str] | None = None) -> int:
         return 2
     _record_in(folder, terminal=not window)
     logging.getLogger(__name__).info("%s %s started on the data folder %s.", NAME, __version__, folder)
+    if OTHER_MAP_DATA:
+        logging.getLogger(__name__).info(
+            "The computer names map data of other programs in %s. The program uses its own.", ", ".join(OTHER_MAP_DATA)
+        )
     if not window:
         return _terminal(link)
     return _window(link, opens_browser=not link.view().paired)

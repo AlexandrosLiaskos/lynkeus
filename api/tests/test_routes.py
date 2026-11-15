@@ -12,7 +12,7 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from lynkeus import jobs, routes, server, sessions
+from lynkeus import __version__, jobs, routes, server, sessions
 from lynkeus.references import UnreadableReferenceError
 from lynkeus.routes import Service, install
 from tests.standin import SIGNED_IN, STAND_IN, KeyServer, key_server, token
@@ -330,7 +330,7 @@ def test_process_description_gives_inputs_and_output_and_an_unknown_process_is_a
     body = response.json()
     assert (body["id"], body["version"], body["jobControlOptions"]) == (
         "stand-in",
-        "0.1.0",
+        __version__,
         ["async-execute", "dismiss"],
     )
     assert body["inputs"]["name"]["schema"]["type"] == "string"
