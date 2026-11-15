@@ -2,6 +2,7 @@ import type OlMap from "ol/Map";
 import WebGLTileLayer from "ol/layer/WebGLTile";
 import type { LayerDescription } from "../shared/layer";
 import { report } from "../shared/messages/messages";
+import { FIRST_Z_INDEX } from "../shared/shapeLayers";
 import { createStore } from "../shared/store";
 import { CogError, type Cog } from "./cog";
 import { CogSource } from "./CogSource";
@@ -9,9 +10,6 @@ import { fileOf, forgetFile } from "./files";
 import { inDecibels, shownRange } from "./scaling";
 import { firstDisplay, type LayerDisplay } from "./state";
 import { NO_MASK, layerStyle, type StyleChoices } from "./style";
-
-/** The drawing order of the first layer of the Contents pane. The background maps are drawn below it. */
-export const FIRST_Z_INDEX = 100;
 
 /**
  * The largest number of tiles of one layer that the map keeps for drawing. A tile of 512 by 512 cells takes two
@@ -66,14 +64,22 @@ export class LayerDrawing {
   /**
    * Bring the map in line with the layers of the Contents pane, given in drawing order with the bottom layer
    * first, and with their displays.
+   *
+   * @param order The ids of all the layers of the map in drawing order, the bottom layer first: these layers and
+   *   the shape layers that other parts draw. A layer is drawn at its place in this order, so that a shape layer
+   *   can lie between two of these layers. Without it the layers given are the whole order.
    */
-  update(layers: readonly LayerDescription[], displays: Readonly<Record<string, LayerDisplay>>): void {
+  update(
+    layers: readonly LayerDescription[],
+    displays: Readonly<Record<string, LayerDisplay>>,
+    order: readonly string[] = layers.map(({ id }) => id),
+  ): void {
     for (const [id, { url }] of this.drawn) {
       if (!layers.some((layer) => layer.id === id && layer.url === url)) {
         this.remove(id);
       }
     }
-    layers.forEach((description, place) => {
+    layers.forEach((description, index) => {
       const display = displays[description.id] ?? firstDisplay(description);
       const decibels = inDecibels(description, display);
       const choices = choicesOf(display);
@@ -94,7 +100,9 @@ export class LayerDrawing {
       layer.updateStyleVariables({ lowest, highest, maskLowest, maskHighest });
       layer.setVisible(display.visible);
       layer.setOpacity(display.opacity);
-      layer.setZIndex(FIRST_Z_INDEX + place);
+      // A layer that the order does not name is drawn above the layers that it names.
+      const place = order.indexOf(description.id);
+      layer.setZIndex(FIRST_Z_INDEX + (place < 0 ? order.length + index : place));
     });
   }
 

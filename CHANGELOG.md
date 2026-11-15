@@ -77,6 +77,10 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The interface guide, and the shared building blocks of a pane that carry its rules: section, empty state,
   notice, property list, toolbar of icon buttons, menu button and the line of a tool pane that states what is
   missing.
+- The layers of shapes in the Contents pane: the area of the Map tab, the area of the search and the
+  outlines of the products found, the last as one group that lists its products. Such a layer is shown and
+  hidden, has a legend and an opacity, is selected, zoomed to, moved in the drawing order among the other
+  layers and removed, and the Properties window states what it is.
 
 ### Changed
 
@@ -120,6 +124,11 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   the tint of a chosen element.
 - The messages of the Share tab say basemap, and the More button of a job and of a layer in the Catalog pane
   is named after its item.
+- The outline of the selected product is drawn in cyan over a dark edge, the colour of a selection in
+  ArcGIS Pro. The outlines and the area of the search stay on the map after the search pane closes, as
+  layers of the Contents pane, where they are hidden or removed.
+- The Contents pane and the map keep one drawing order for all layers, so that a layer of shapes can stand
+  under a layer of data.
 
 ### Removed
 

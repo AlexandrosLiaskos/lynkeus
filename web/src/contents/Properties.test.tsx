@@ -4,6 +4,7 @@ import { beforeEach, expect, test, vi } from "vitest";
 import { copyText } from "../shared/clipboard";
 import type { LayerDescription } from "../shared/layer";
 import { addToMap, mapLayersStore } from "../shared/mapLayers";
+import { putShapeLayer, shapeLayersStore, type ShapeLayer } from "../shared/shapeLayers";
 import { PropertiesWindow, wholeAddress } from "./Properties";
 import { propertiesStore } from "./state";
 
@@ -65,6 +66,7 @@ function show(layer: LayerDescription) {
 beforeEach(() => {
   vi.mocked(copyText).mockReset().mockResolvedValue(undefined);
   mapLayersStore.set([]);
+  shapeLayersStore.set([]);
   propertiesStore.set(null);
 });
 
@@ -198,4 +200,37 @@ test("a file that cannot be read is named in a notice, and the list keeps the la
 test("without a layer the window is closed", () => {
   const { container } = render(<PropertiesWindow />);
   expect(container.querySelector("dialog")?.open).toBe(false);
+});
+
+const AREA: ShapeLayer = {
+  id: "area",
+  title: "Area",
+  symbols: [{ label: "Area", line: "#d83933", width: 2 }],
+  properties: [
+    { name: "Kind", value: "Area of the Map tab" },
+    { name: "West", value: "23.5°" },
+  ],
+  remove: () => undefined,
+};
+
+test("the window of a shape layer lists its name and what its description states, in one group", () => {
+  putShapeLayer(AREA);
+  propertiesStore.set({ id: "area", time: 1 });
+  render(<PropertiesWindow />);
+  expect(screen.getByRole("heading", { name: "Properties of Area" })).toBeTruthy();
+  expect(screen.getAllByRole("heading", { level: 4 }).map((heading) => heading.textContent)).toEqual(["Layer"]);
+  expect(namesOf("Layer")).toEqual(["Name", "Kind", "West"]);
+  expect(valueOf("Layer", "Name")).toBe("Area");
+  expect(valueOf("Layer", "Kind")).toBe("Area of the Map tab");
+  expect(valueOf("Layer", "West")).toBe("23.5°");
+  // The file of a layer is not read for a shape layer, so no notice shows.
+  expect(screen.queryByRole("status")).toBeNull();
+});
+
+test("a shape layer whose description states its name has one row of that name", () => {
+  putShapeLayer({ ...AREA, properties: [{ name: "Name", value: "Area of the Map tab" }] });
+  propertiesStore.set({ id: "area", time: 1 });
+  render(<PropertiesWindow />);
+  expect(namesOf("Layer")).toEqual(["Name"]);
+  expect(valueOf("Layer", "Name")).toBe("Area of the Map tab");
 });

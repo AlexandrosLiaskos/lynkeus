@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef } from "react";
 import { exportName, productsCsv, productsGeoJson, saveFile } from "../data/export";
-import { zoomToProducts } from "../data/Footprints";
+import { showOutlines, zoomToProducts } from "../data/Footprints";
+import { PRODUCTS_LAYER_ID } from "../data/footprints";
 import { formatCount, formatDay, formatSize, pairDays, SORTS, type Product, type Sort } from "../data/products";
 import { canLoadMore, loadMore, MOST_LISTED, sortProducts } from "../data/run";
 import { describeSearch, PAGE, type ProductSearch } from "../data/search";
@@ -19,6 +20,7 @@ import { EmptyState } from "../shared/empty/EmptyState";
 import { Info } from "../shared/info/Info";
 import { useMap } from "../shared/map";
 import { MenuButton } from "../shared/menu/MenuButton";
+import { FIRST_SHAPE_DISPLAY, setShapeDisplay, shapeDisplayStore } from "../shared/shapeLayers";
 import { useStore } from "../shared/store";
 import { IconButton } from "../shared/toolbar/IconButton";
 import { Toolbar } from "../shared/toolbar/Toolbar";
@@ -165,7 +167,9 @@ interface ProductListProps {
 /**
  * The list of the products found: one line that names the search, the toolbar of the list, the products in
  * their groups and, at the foot, the button that loads more products. The full statement of the search stands
- * behind the "i" beside its line.
+ * behind the "i" beside its line. The button "Outlines on the map" is pressed while the layer of the outlines
+ * is on the map and shown: a press hides the layer, and another press shows it, after putting the outlines
+ * back on the map when the layer was removed in the Contents pane.
  */
 export function ProductList({ results, grouping, onGrouping, onDetails, focusSelected }: ProductListProps) {
   const map = useMap();
@@ -173,7 +177,9 @@ export function ProductList({ results, grouping, onGrouping, onDetails, focusSel
   const list = useRef<HTMLDivElement>(null);
   const selected = useStore(selectedProductStore);
   const hovered = useStore(hoveredProductStore);
-  const outlines = useStore(outlinesStore);
+  const onMap = useStore(outlinesStore);
+  const shown = (useStore(shapeDisplayStore)[PRODUCTS_LAYER_ID] ?? FIRST_SHAPE_DISPLAY).visible;
+  const outlines = onMap && shown;
   const searching = useStore(searchingStore);
   const { search, found, products } = results;
   const listed = products.length;
@@ -243,7 +249,7 @@ export function ProductList({ results, grouping, onGrouping, onDetails, focusSel
             icon="visibility"
             label="Outlines on the map"
             pressed={outlines}
-            onClick={() => outlinesStore.set(!outlines)}
+            onClick={() => (outlines ? setShapeDisplay(PRODUCTS_LAYER_ID, { visible: false }) : showOutlines())}
           />
           <MenuButton
             icon="file_download"

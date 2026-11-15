@@ -1,9 +1,17 @@
 import { report } from "../shared/messages/messages";
 import { setPaneOpen } from "../shared/panes";
+import { showOutlines } from "./Footprints";
 import { MISSION_START, dayOf } from "./period";
 import { formatCount, type Maturity, type Product, type Sort } from "./products";
 import { findProducts, type ProductSearch } from "./search";
-import { hoveredProductStore, productsStore, searchDraftStore, searchingStore, selectedProductStore } from "./state";
+import {
+  hoveredProductStore,
+  productsStore,
+  searchDraftStore,
+  searchingStore,
+  selectedProductStore,
+  showEveryProduct,
+} from "./state";
 
 /** The largest number of products that the list holds. A longer list makes the page slow. */
 export const MOST_LISTED = 2000;
@@ -28,9 +36,10 @@ export interface SearchOutcome {
 }
 
 /**
- * Search the catalogue and show the first products found in the Catalog pane and on the map. The promise gives
- * the sentence that states the outcome. It is rejected with an error whose message can be shown to the user,
- * and the earlier list then stays as it is.
+ * Search the catalogue and show the first products found in the Catalog pane and on the map: the outlines are
+ * put on the map again if their layer was removed, the layer is shown and no product is hidden. The promise
+ * gives the sentence that states the outcome. It is rejected with an error whose message can be shown to the
+ * user, and the earlier list and its outlines then stay as they are.
  */
 export async function runSearch(search: ProductSearch): Promise<SearchOutcome> {
   stopSearch();
@@ -41,6 +50,8 @@ export async function runSearch(search: ProductSearch): Promise<SearchOutcome> {
     const answer = await findProducts(search, 0, controller.signal);
     selectedProductStore.set(null);
     hoveredProductStore.set(null);
+    showEveryProduct();
+    showOutlines();
     productsStore.set({ search, found: answer.found, products: answer.products });
     const listed = answer.products.length;
     if (answer.found === 0) {

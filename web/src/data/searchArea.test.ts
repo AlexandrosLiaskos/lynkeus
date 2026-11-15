@@ -11,6 +11,8 @@ import {
   areaExtent,
   areaFault,
   areaGeometry,
+  areaKind,
+  areaProperties,
   densify,
   describeArea,
   fitRings,
@@ -21,6 +23,7 @@ import {
   rectangleOfExtent,
   ringsOfGeometry,
   ringText,
+  sameArea,
   viewArea,
   wrapLongitude,
 } from "./searchArea";
@@ -225,6 +228,53 @@ test("an area is described in words", () => {
   );
   expect(describeArea({ kind: "polygons", rings: [SQUARE] })).toBe("a polygon of 4 points");
   expect(describeArea({ kind: "polygons", rings: [SQUARE, SQUARE] })).toBe("2 polygons of 8 points");
+});
+
+test("the kind of an area is named in a word or two", () => {
+  expect(areaKind({ kind: "rectangle", west: -71.2, south: 42.6, east: -70.75, north: 42.95 })).toBe("Rectangle");
+  expect(areaKind({ kind: "polygons", rings: [SQUARE] })).toBe("Polygon");
+  expect(areaKind({ kind: "polygons", rings: [SQUARE, SQUARE, SQUARE] })).toBe("3 polygons");
+});
+
+test("the properties of an area are its kind, its four sides in degrees and the points of its polygons", () => {
+  expect(areaProperties({ kind: "rectangle", west: -71.2, south: 42.6, east: -70.75, north: 42.95 })).toEqual([
+    { name: "Kind", value: "Rectangle" },
+    { name: "West", value: "71.2° W" },
+    { name: "South", value: "42.6° N" },
+    { name: "East", value: "70.75° W" },
+    { name: "North", value: "42.95° N" },
+  ]);
+  // A rectangle across the meridian of 180 degrees, south of the equator.
+  expect(
+    areaProperties({ kind: "rectangle", west: 170, south: -20, east: -170, north: -10 }).map(({ value }) => value),
+  ).toEqual(["Rectangle", "170° E", "20° S", "170° W", "10° S"]);
+  // The sides of polygons are those of the rectangle around them.
+  const east: Ring = SQUARE.map(([longitude, latitude]) => [longitude + 10, latitude - 5] as const);
+  expect(areaProperties({ kind: "polygons", rings: [SQUARE, east] })).toEqual([
+    { name: "Kind", value: "2 polygons" },
+    { name: "West", value: "0° E" },
+    { name: "South", value: "5° S" },
+    { name: "East", value: "11° E" },
+    { name: "North", value: "1° N" },
+    { name: "Points", value: "8" },
+  ]);
+  expect(areaProperties({ kind: "polygons", rings: [SQUARE] }).slice(-1)).toEqual([{ name: "Points", value: "4" }]);
+});
+
+test("two areas are the same when both are none, the same rectangle or the same polygons", () => {
+  const box = { kind: "rectangle", west: -71.2, south: 42.6, east: -70.75, north: 42.95 } as const;
+  const polygon = { kind: "polygons", rings: [SQUARE] } as const;
+  expect(sameArea(null, null)).toBe(true);
+  expect(sameArea(box, null)).toBe(false);
+  expect(sameArea(null, polygon)).toBe(false);
+  expect(sameArea(box, { ...box })).toBe(true);
+  expect(sameArea(box, { ...box, north: 43 })).toBe(false);
+  expect(sameArea(box, polygon)).toBe(false);
+  expect(sameArea(polygon, box)).toBe(false);
+  expect(sameArea(polygon, polygon)).toBe(true);
+  expect(sameArea(polygon, { kind: "polygons", rings: [[...SQUARE]] })).toBe(true);
+  expect(sameArea(polygon, { kind: "polygons", rings: [SQUARE, SQUARE] })).toBe(false);
+  expect(sameArea(polygon, { kind: "polygons", rings: [SQUARE.slice(0, 4)] })).toBe(false);
 });
 
 test("a ring is written as the catalogue reads a polygon", () => {
