@@ -1,7 +1,7 @@
-"""The record of the sessions, jobs and layers, kept in one SQLite file.
+"""The record of the sessions, jobs, layers and series, kept in one SQLite file.
 
-The file outlives a restart of the server, so a visitor keeps the layers and
-the finished jobs of a session. It holds the SHA-256 digest of a session key
+The file outlives a restart of the server, so a visitor keeps the layers, the
+series and the finished jobs of a session. It holds the SHA-256 digest of a session key
 and not the key, and it never holds an Earthdata token.
 """
 
@@ -16,7 +16,11 @@ from typing import Any, Literal
 type Status = Literal["accepted", "running", "successful", "failed", "dismissed"]
 
 VERSION = 1
-"""The version of the tables. A file of another version is not opened."""
+"""The version of the tables. A file of another version is not opened.
+
+The table ``series`` was added without a new version, because it changes no other table: a file that was
+made before it gains the empty table when it is opened.
+"""
 
 _TABLES = """
 CREATE TABLE IF NOT EXISTS sessions (
@@ -50,6 +54,13 @@ CREATE TABLE IF NOT EXISTS layers (
     created REAL NOT NULL
 );
 CREATE INDEX IF NOT EXISTS layers_of_session ON layers (session, created);
+CREATE TABLE IF NOT EXISTS series (
+    id TEXT PRIMARY KEY,
+    session TEXT NOT NULL REFERENCES sessions (id) ON DELETE CASCADE,
+    description TEXT NOT NULL,
+    created REAL NOT NULL
+);
+CREATE INDEX IF NOT EXISTS series_of_session ON series (session, created);
 """
 
 _JOB = (
@@ -104,7 +115,7 @@ class JobRecord:
     started, finished : float or None
         Times at which the work started and ended.
     layer : str or None
-        Name of the layer that a successful job produced.
+        Name of the layer, or of the series, that a successful job produced.
     """
 
     id: str
@@ -148,8 +159,30 @@ class LayerRecord:
     created: float
 
 
+@dataclass(frozen=True)
+class SeriesRecord:
+    """A series of a session. A series has no files.
+
+    Attributes
+    ----------
+    id : str
+        Name of the series.
+    session : str
+        Name of the session that owns the series.
+    description : str
+        Series description, as JSON.
+    created : float
+        Time of creation, in seconds since 1 January 1970 (UTC).
+    """
+
+    id: str
+    session: str
+    description: str
+    created: float
+
+
 class Store:
-    """The sessions, jobs and layers, in one SQLite file.
+    """The sessions, jobs, layers and series, in one SQLite file.
 
     Every method may be called from any thread.
     """
@@ -214,7 +247,7 @@ class Store:
         self._rows("UPDATE sessions SET key_digest = ? WHERE id = ?", (key_digest, session))
 
     def remove_session(self, session: str) -> None:
-        """Remove a session with the records of its jobs and layers."""
+        """Remove a session with the records of its jobs, layers and series."""
         self._rows("DELETE FROM sessions WHERE id = ?", (session,))
 
     def count_sessions(self) -> int:
@@ -226,9 +259,10 @@ class Store:
         return [str(session) for [session] in self._rows("SELECT id FROM sessions WHERE used < ?", (time,))]
 
     def sessions_without_content(self) -> list[str]:
-        """Return the sessions that hold no layer and no job, the one unused for the longest time first."""
+        """Return the sessions that hold no layer, no series and no job, the one unused for the longest time first."""
         rows = self._rows(
             "SELECT id FROM sessions WHERE id NOT IN (SELECT session FROM layers)"
+            " AND id NOT IN (SELECT session FROM series)"
             " AND id NOT IN (SELECT session FROM jobs WHERE status != 'dismissed') ORDER BY used"
         )
         return [str(session) for [session] in rows]
@@ -332,6 +366,28 @@ class Store:
                 )
         return bool(changed)
 
+    def succeed_job_with_series(self, job: str, message: str, series: SeriesRecord) -> bool:
+        """Record that a running job produced a series, and record the series.
+
+        Returns
+        -------
+        bool
+            False when the job no longer runs, for example because it was
+            dismissed. Nothing is recorded then.
+        """
+        with self._change() as database:
+            changed = database.execute(
+                "UPDATE jobs SET status = 'successful', message = ?, progress = 100, finished = ?, updated = ?,"
+                " layer = ? WHERE id = ? AND status = 'running'",
+                (message, series.created, series.created, series.id, job),
+            ).rowcount
+            if changed:
+                database.execute(
+                    "INSERT INTO series (id, session, description, created) VALUES (?, ?, ?, ?)",
+                    (series.id, series.session, series.description, series.created),
+                )
+        return bool(changed)
+
     def dismiss_job(self, job: str, message: str, now: float) -> None:
         """Record that a job was dismissed."""
         self._rows(
@@ -388,3 +444,28 @@ class Store:
         if session is None:
             return self._number("SELECT COALESCE(SUM(size), 0) FROM layers")
         return self._number("SELECT COALESCE(SUM(size), 0) FROM layers WHERE session = ?", (session,))
+
+    # Series
+
+    def series(self, series: str) -> SeriesRecord | None:
+        """Return a series, or None when no series has this name."""
+        rows = self._rows("SELECT id, session, description, created FROM series WHERE id = ?", (series,))
+        return SeriesRecord(*rows[0]) if rows else None
+
+    def series_of(self, session: str) -> list[SeriesRecord]:
+        """Return the series of a session, the newest first."""
+        rows = self._rows(
+            "SELECT id, session, description, created FROM series WHERE session = ? ORDER BY created DESC, rowid DESC",
+            (session,),
+        )
+        return [SeriesRecord(*row) for row in rows]
+
+    def change_series(self, series: str, description: str) -> None:
+        """Replace the description of a series."""
+        self._rows("UPDATE series SET description = ? WHERE id = ?", (description, series))
+
+    def remove_series(self, series: str) -> None:
+        """Remove the record of a series and of the job that produced it."""
+        with self._change() as database:
+            database.execute("DELETE FROM jobs WHERE layer = ?", (series,))
+            database.execute("DELETE FROM series WHERE id = ?", (series,))

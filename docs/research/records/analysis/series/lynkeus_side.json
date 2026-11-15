@@ -1,0 +1,1074 @@
+{
+ "files": {
+  "hh_0927": {
+   "granule": "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001",
+   "layer_id": "ab08c2a0ebb107e2238acde5fb8a329e",
+   "file": "gcov-hhhh-20260927.tif",
+   "file_sha256": "f3184485fdeac534b436d670bf3d4a5a8a324360e230399ae710ba1274e8dadf",
+   "values_sha256": "7e6d901869cf34194795f473ddc1c51f4d9878416ec7c28455cf49658288cd7e",
+   "crs": "EPSG:32619",
+   "transform": [
+    10.0,
+    0.0,
+    319520.0,
+    0.0,
+    -10.0,
+    4757610.0
+   ],
+   "width": 3772,
+   "height": 3972,
+   "cells": 14982384,
+   "cells_with_a_value": 14316415,
+   "cells_zero_negative_infinite": [
+    0,
+    0,
+    0
+   ],
+   "lowest": "0.0010199546813964844",
+   "highest": "4389.875"
+  },
+  "hh_1009": {
+   "granule": "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001",
+   "layer_id": "ffbfd0c3360f0be55fe4f6453412b415",
+   "file": "gcov-hhhh-20261009.tif",
+   "file_sha256": "bfba2bfa3488451f0972df3dbc34242162ae00a5a7adc9ee85826f5ce7d539f0",
+   "values_sha256": "1c8fbffdbcc625aa0a0b2b828db870ede7727e6e2ce44c15dbf07cdffbbc8140",
+   "crs": "EPSG:32619",
+   "transform": [
+    10.0,
+    0.0,
+    319520.0,
+    0.0,
+    -10.0,
+    4757610.0
+   ],
+   "width": 3772,
+   "height": 3972,
+   "cells": 14982384,
+   "cells_with_a_value": 14316411,
+   "cells_zero_negative_infinite": [
+    0,
+    0,
+    0
+   ],
+   "lowest": "0.0006636157631874084",
+   "highest": "4034.71875"
+  },
+  "hh_1021": {
+   "granule": "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+   "layer_id": "e7045ec025f8a7a2397fca7a99902276",
+   "file": "gcov-hhhh-20261021.tif",
+   "file_sha256": "19d013fbe63fb2501893681e9d865b3f5aa93afeaf3cbce6949d0ed7ea0ff262",
+   "values_sha256": "7a9f95e1034b1d9a97282c18c7a64b09a3cb2389bec58fa66f0ab19fa9494a60",
+   "crs": "EPSG:32619",
+   "transform": [
+    10.0,
+    0.0,
+    319520.0,
+    0.0,
+    -10.0,
+    4757610.0
+   ],
+   "width": 3772,
+   "height": 3972,
+   "cells": 14982384,
+   "cells_with_a_value": 14316413,
+   "cells_zero_negative_infinite": [
+    0,
+    0,
+    0
+   ],
+   "lowest": "0.0006908252835273743",
+   "highest": "3504.90625",
+   "sample": "gcov-hhhh-20261021.tif",
+   "sample_sha256": "e808a7bfed69c0bd1eabc38faae539bae7aaadd81c86b1bf963900c996dffb84",
+   "equal_to_sample_bit_for_bit": true
+  },
+  "hh_1102": {
+   "granule": "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001",
+   "layer_id": "e7084528cd2fbdabe0da018099e8ba69",
+   "file": "gcov-hhhh-20261102.tif",
+   "file_sha256": "9ea6c973f9e79c39bf5881a75ccede4b50f5875b394c0330981b311884884b34",
+   "values_sha256": "12fb0c0723178cbfe41ce7187b314c5e7923e6bb16ec40a824c5403ebe55b87c",
+   "crs": "EPSG:32619",
+   "transform": [
+    10.0,
+    0.0,
+    319520.0,
+    0.0,
+    -10.0,
+    4757610.0
+   ],
+   "width": 3772,
+   "height": 3972,
+   "cells": 14982384,
+   "cells_with_a_value": 14316416,
+   "cells_zero_negative_infinite": [
+    0,
+    0,
+    0
+   ],
+   "lowest": "0.0011148601770401",
+   "highest": "3488.90625",
+   "sample": "gcov-hhhh-20261102.tif",
+   "sample_sha256": "f9d950ad3b30c07d6d77a3f63d1dd4c106fa1b775982c0834c35e715ac91ac43",
+   "equal_to_sample_bit_for_bit": true
+  },
+  "coh_0915_0927": {
+   "granule": "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001",
+   "layer_id": "8f9eb9a99bf63efa50af31a061da3265",
+   "file": "gunw-wrappedinterferogram-hh-coherencemagnitude-20260915-20260927.tif",
+   "file_sha256": "605dd1a6e8bb17341e6c8815d569039e454c93ef8c7d29b79eb546f4ea3589b8",
+   "values_sha256": "9ae599e5b62101b8eddccc82c26f3e36291e423582d1522891787a7be8a89d0e",
+   "crs": "EPSG:32619",
+   "transform": [
+    20.0,
+    0.0,
+    319520.0,
+    0.0,
+    -20.0,
+    4757600.0
+   ],
+   "width": 1886,
+   "height": 1985,
+   "cells": 3743710,
+   "cells_with_a_value": 3579092,
+   "cells_zero_negative_infinite": [
+    0,
+    0,
+    0
+   ],
+   "lowest": "0.007796482183039188",
+   "highest": "0.9949631094932556"
+  },
+  "coh_0927_1009": {
+   "granule": "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001",
+   "layer_id": "2df74db4382a6aeed2164231bcc9d0e8",
+   "file": "gunw-wrappedinterferogram-hh-coherencemagnitude-20260927-20261009.tif",
+   "file_sha256": "adf53bf40f856f216a372c98974aefb2697e0b505017dac1f15433c871079f3e",
+   "values_sha256": "b96164a81f4ab7027f1f53a2c7f58ce1c033f8cacc5962c41580a5ecb07a39d3",
+   "crs": "EPSG:32619",
+   "transform": [
+    20.0,
+    0.0,
+    319520.0,
+    0.0,
+    -20.0,
+    4757600.0
+   ],
+   "width": 1886,
+   "height": 1985,
+   "cells": 3743710,
+   "cells_with_a_value": 3579092,
+   "cells_zero_negative_infinite": [
+    0,
+    0,
+    0
+   ],
+   "lowest": "0.006507661193609238",
+   "highest": "0.9939925074577332"
+  },
+  "coh_1009_1021": {
+   "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+   "layer_id": "d34069fb70f91b284adc41acab5e765e",
+   "file": "gunw-wrappedinterferogram-hh-coherencemagnitude-20261009-20261021.tif",
+   "file_sha256": "458a0065fbef17f23c755e27545ca00049348bce18ef03bdd974ce2557162e10",
+   "values_sha256": "f29816600880f897576f065a85663c6b220de092cd3ea930577b89094a104b4d",
+   "crs": "EPSG:32619",
+   "transform": [
+    20.0,
+    0.0,
+    319520.0,
+    0.0,
+    -20.0,
+    4757600.0
+   ],
+   "width": 1886,
+   "height": 1985,
+   "cells": 3743710,
+   "cells_with_a_value": 3579092,
+   "cells_zero_negative_infinite": [
+    0,
+    0,
+    0
+   ],
+   "lowest": "0.004557579755783081",
+   "highest": "0.9964798092842102",
+   "sample": "gunw-coherence-20261009-20261021.tif",
+   "sample_sha256": "e02cb42feeae25a9420c6298a98b59583b0f3a3e70cd0cba5241be484ea1de81",
+   "equal_to_sample_bit_for_bit": true
+  }
+ },
+ "series": {
+  "backscatter-series": {
+   "area": {
+    "id": "comparison",
+    "title": "Comparison",
+    "kind": "series",
+    "quantity": "Radar backscatter gamma0",
+    "unit": "dB",
+    "reduction": "mean-power",
+    "range": null,
+    "point": null,
+    "cell": null,
+    "area": {
+     "west": -71.21240946923143,
+     "south": 42.59232397512833,
+     "east": -70.74021462753375,
+     "north": 42.957757337981135
+    },
+    "entries": [
+     {
+      "dates": [
+       "2026-09-27"
+      ],
+      "value": -4.315111978395169,
+      "cells": 14316415
+     },
+     {
+      "dates": [
+       "2026-10-09"
+      ],
+      "value": -4.832534317123461,
+      "cells": 14316411
+     },
+     {
+      "dates": [
+       "2026-10-21"
+      ],
+      "value": -4.833044960998819,
+      "cells": 14316413
+     },
+     {
+      "dates": [
+       "2026-11-02"
+      ],
+      "value": -4.73623294188971,
+      "cells": 14316416
+     }
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "HHHH",
+    "program": "Lynkeus 0.1.0",
+    "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+   },
+   "points": {
+    "p1": {
+     "id": "comparison",
+     "title": "Comparison",
+     "kind": "series",
+     "quantity": "Radar backscatter gamma0",
+     "unit": "dB",
+     "reduction": "mean-power",
+     "range": null,
+     "point": {
+      "longitude": -71.0,
+      "latitude": 42.8
+     },
+     "cell": {
+      "row": 1706,
+      "column": 1693,
+      "longitude": -70.99997498471882,
+      "latitude": 42.79999721314369
+     },
+     "area": {
+      "west": -71.21240946923143,
+      "south": 42.59232397512833,
+      "east": -70.74021462753375,
+      "north": 42.957757337981135
+     },
+     "entries": [
+      {
+       "dates": [
+        "2026-09-27"
+       ],
+       "value": -7.610060343936754,
+       "cells": 1
+      },
+      {
+       "dates": [
+        "2026-10-09"
+       ],
+       "value": -5.936009545230867,
+       "cells": 1
+      },
+      {
+       "dates": [
+        "2026-10-21"
+       ],
+       "value": -7.364715987858739,
+       "cells": 1
+      },
+      {
+       "dates": [
+        "2026-11-02"
+       ],
+       "value": -10.232091597445104,
+       "cells": 1
+      }
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+      "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "HHHH",
+     "program": "Lynkeus 0.1.0",
+     "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+    },
+    "p2": {
+     "id": "comparison",
+     "title": "Comparison",
+     "kind": "series",
+     "quantity": "Radar backscatter gamma0",
+     "unit": "dB",
+     "reduction": "mean-power",
+     "range": null,
+     "point": {
+      "longitude": -70.9,
+      "latitude": 42.7
+     },
+     "cell": {
+      "row": 2835,
+      "column": 2486,
+      "longitude": -70.89994601481905,
+      "latitude": 42.70003373938693
+     },
+     "area": {
+      "west": -71.21240946923143,
+      "south": 42.59232397512833,
+      "east": -70.74021462753375,
+      "north": 42.957757337981135
+     },
+     "entries": [
+      {
+       "dates": [
+        "2026-09-27"
+       ],
+       "value": -8.84405890619715,
+       "cells": 1
+      },
+      {
+       "dates": [
+        "2026-10-09"
+       ],
+       "value": -12.453390801435738,
+       "cells": 1
+      },
+      {
+       "dates": [
+        "2026-10-21"
+       ],
+       "value": -10.474212409586123,
+       "cells": 1
+      },
+      {
+       "dates": [
+        "2026-11-02"
+       ],
+       "value": -14.201334454160271,
+       "cells": 1
+      }
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+      "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "HHHH",
+     "program": "Lynkeus 0.1.0",
+     "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+    },
+    "p3": {
+     "id": "comparison",
+     "title": "Comparison",
+     "kind": "series",
+     "quantity": "Radar backscatter gamma0",
+     "unit": "dB",
+     "reduction": "mean-power",
+     "range": null,
+     "point": {
+      "longitude": -71.1,
+      "latitude": 42.65
+     },
+     "cell": {
+      "row": 3352,
+      "column": 834,
+      "longitude": -71.09994962487058,
+      "latitude": 42.64998387611088
+     },
+     "area": {
+      "west": -71.21240946923143,
+      "south": 42.59232397512833,
+      "east": -70.74021462753375,
+      "north": 42.957757337981135
+     },
+     "entries": [
+      {
+       "dates": [
+        "2026-09-27"
+       ],
+       "value": -7.1289854327232804,
+       "cells": 1
+      },
+      {
+       "dates": [
+        "2026-10-09"
+       ],
+       "value": -6.029024124436332,
+       "cells": 1
+      },
+      {
+       "dates": [
+        "2026-10-21"
+       ],
+       "value": -8.954701291266648,
+       "cells": 1
+      },
+      {
+       "dates": [
+        "2026-11-02"
+       ],
+       "value": -3.750911866671517,
+       "cells": 1
+      }
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+      "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "HHHH",
+     "program": "Lynkeus 0.1.0",
+     "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+    },
+    "p4": {
+     "id": "comparison",
+     "title": "Comparison",
+     "kind": "series",
+     "quantity": "Radar backscatter gamma0",
+     "unit": "dB",
+     "reduction": "mean-power",
+     "range": null,
+     "point": {
+      "longitude": -70.8,
+      "latitude": 42.9
+     },
+     "cell": {
+      "row": 632,
+      "column": 3352,
+      "longitude": -70.8000063882048,
+      "latitude": 42.900029797240485
+     },
+     "area": {
+      "west": -71.21240946923143,
+      "south": 42.59232397512833,
+      "east": -70.74021462753375,
+      "north": 42.957757337981135
+     },
+     "entries": [
+      {
+       "dates": [
+        "2026-09-27"
+       ],
+       "value": -16.068267077710118,
+       "cells": 1
+      },
+      {
+       "dates": [
+        "2026-10-09"
+       ],
+       "value": -19.467349903766245,
+       "cells": 1
+      },
+      {
+       "dates": [
+        "2026-10-21"
+       ],
+       "value": -16.988306566405114,
+       "cells": 1
+      },
+      {
+       "dates": [
+        "2026-11-02"
+       ],
+       "value": -18.58491247229638,
+       "cells": 1
+      }
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+      "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "HHHH",
+     "program": "Lynkeus 0.1.0",
+     "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+    },
+    "p5": {
+     "id": "comparison",
+     "title": "Comparison",
+     "kind": "series",
+     "quantity": "Radar backscatter gamma0",
+     "unit": "dB",
+     "reduction": "mean-power",
+     "range": null,
+     "point": {
+      "longitude": -70.8726,
+      "latitude": 42.8126
+     },
+     "cell": {
+      "row": 1590,
+      "column": 2738,
+      "longitude": -70.87256685541492,
+      "latitude": 42.81259814475194
+     },
+     "area": {
+      "west": -71.21240946923143,
+      "south": 42.59232397512833,
+      "east": -70.74021462753375,
+      "north": 42.957757337981135
+     },
+     "entries": [
+      {
+       "dates": [
+        "2026-09-27"
+       ],
+       "value": 8.019781976145936,
+       "cells": 1
+      },
+      {
+       "dates": [
+        "2026-10-09"
+       ],
+       "value": 4.899708321337691,
+       "cells": 1
+      },
+      {
+       "dates": [
+        "2026-10-21"
+       ],
+       "value": 5.478684092300843,
+       "cells": 1
+      },
+      {
+       "dates": [
+        "2026-11-02"
+       ],
+       "value": 6.056763832331706,
+       "cells": 1
+      }
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+      "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+      "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+      "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "HHHH",
+     "program": "Lynkeus 0.1.0",
+     "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+    }
+   },
+   "area_layers_in_reverse_order": {
+    "id": "comparison",
+    "title": "Comparison",
+    "kind": "series",
+    "quantity": "Radar backscatter gamma0",
+    "unit": "dB",
+    "reduction": "mean-power",
+    "range": null,
+    "point": null,
+    "cell": null,
+    "area": {
+     "west": -71.21240946923143,
+     "south": 42.59232397512833,
+     "east": -70.74021462753375,
+     "north": 42.957757337981135
+    },
+    "entries": [
+     {
+      "dates": [
+       "2026-09-27"
+      ],
+      "value": -4.315111978395169,
+      "cells": 14316415
+     },
+     {
+      "dates": [
+       "2026-10-09"
+      ],
+      "value": -4.832534317123461,
+      "cells": 14316411
+     },
+     {
+      "dates": [
+       "2026-10-21"
+      ],
+      "value": -4.833044960998819,
+      "cells": 14316413
+     },
+     {
+      "dates": [
+       "2026-11-02"
+      ],
+      "value": -4.73623294188971,
+      "cells": 14316416
+     }
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GCOV_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+     "NISAR_L2_PR_GCOV_034_141_D_067_4005_DHDH_A_20261102T234330_20261102T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "HHHH",
+    "program": "Lynkeus 0.1.0",
+    "method": "Mean of the backscatter in linear power over the cells that hold a value, converted to decibels with 10*log10 (ASF NISAR Cookbook, notebook NISAR_GCOV_Time_Series_Example, section 8, commit 17b69c8; NASA SDS Product Specification, L2 GCOV, JPL D-102274 Rev F, Table 5-7)"
+   }
+  },
+  "coherence-series": {
+   "area": {
+    "id": "comparison",
+    "title": "Comparison",
+    "kind": "series",
+    "quantity": "Interferometric coherence (magnitude)",
+    "unit": "1",
+    "reduction": "mean",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "point": null,
+    "cell": null,
+    "area": {
+     "west": -71.21240624479763,
+     "south": 42.59241396597496,
+     "east": -70.74021713322617,
+     "north": 42.957667328501266
+    },
+    "entries": [
+     {
+      "dates": [
+       "2026-09-15",
+       "2026-09-27"
+      ],
+      "value": 0.31936795717771277,
+      "cells": 3579092
+     },
+     {
+      "dates": [
+       "2026-09-27",
+       "2026-10-09"
+      ],
+      "value": 0.3067074436510622,
+      "cells": 3579092
+     },
+     {
+      "dates": [
+       "2026-10-09",
+       "2026-10-21"
+      ],
+      "value": 0.5062995480591644,
+      "cells": 3579092
+     }
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "program": "Lynkeus 0.1.0",
+    "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+   },
+   "points": {
+    "p1": {
+     "id": "comparison",
+     "title": "Comparison",
+     "kind": "series",
+     "quantity": "Interferometric coherence (magnitude)",
+     "unit": "1",
+     "reduction": "mean",
+     "range": [
+      0.0,
+      1.0
+     ],
+     "point": {
+      "longitude": -71.0,
+      "latitude": 42.8
+     },
+     "cell": {
+      "row": 852,
+      "column": 846,
+      "longitude": -71.00003754277799,
+      "latitude": 42.80004114499954
+     },
+     "area": {
+      "west": -71.21240624479763,
+      "south": 42.59241396597496,
+      "east": -70.74021713322617,
+      "north": 42.957667328501266
+     },
+     "entries": [
+      {
+       "dates": [
+        "2026-09-15",
+        "2026-09-27"
+       ],
+       "value": 0.36974722146987915,
+       "cells": 1
+      },
+      {
+       "dates": [
+        "2026-09-27",
+        "2026-10-09"
+       ],
+       "value": 0.3215233087539673,
+       "cells": 1
+      },
+      {
+       "dates": [
+        "2026-10-09",
+        "2026-10-21"
+       ],
+       "value": 0.6482067108154297,
+       "cells": 1
+      }
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+      "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+      "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+     "program": "Lynkeus 0.1.0",
+     "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+    },
+    "p2": {
+     "id": "comparison",
+     "title": "Comparison",
+     "kind": "series",
+     "quantity": "Interferometric coherence (magnitude)",
+     "unit": "1",
+     "reduction": "mean",
+     "range": [
+      0.0,
+      1.0
+     ],
+     "point": {
+      "longitude": -70.9,
+      "latitude": 42.7
+     },
+     "cell": {
+      "row": 1417,
+      "column": 1243,
+      "longitude": -70.89988362862626,
+      "latitude": 42.69998974875195
+     },
+     "area": {
+      "west": -71.21240624479763,
+      "south": 42.59241396597496,
+      "east": -70.74021713322617,
+      "north": 42.957667328501266
+     },
+     "entries": [
+      {
+       "dates": [
+        "2026-09-15",
+        "2026-09-27"
+       ],
+       "value": 0.332411527633667,
+       "cells": 1
+      },
+      {
+       "dates": [
+        "2026-09-27",
+        "2026-10-09"
+       ],
+       "value": 0.22321242094039917,
+       "cells": 1
+      },
+      {
+       "dates": [
+        "2026-10-09",
+        "2026-10-21"
+       ],
+       "value": 0.5040841698646545,
+       "cells": 1
+      }
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+      "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+      "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+     "program": "Lynkeus 0.1.0",
+     "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+    },
+    "p3": {
+     "id": "comparison",
+     "title": "Comparison",
+     "kind": "series",
+     "quantity": "Interferometric coherence (magnitude)",
+     "unit": "1",
+     "reduction": "mean",
+     "range": [
+      0.0,
+      1.0
+     ],
+     "point": {
+      "longitude": -71.1,
+      "latitude": 42.65
+     },
+     "cell": {
+      "row": 1675,
+      "column": 417,
+      "longitude": -71.09989018191416,
+      "latitude": 42.650029991892474
+     },
+     "area": {
+      "west": -71.21240624479763,
+      "south": 42.59241396597496,
+      "east": -70.74021713322617,
+      "north": 42.957667328501266
+     },
+     "entries": [
+      {
+       "dates": [
+        "2026-09-15",
+        "2026-09-27"
+       ],
+       "value": 0.14651069045066833,
+       "cells": 1
+      },
+      {
+       "dates": [
+        "2026-09-27",
+        "2026-10-09"
+       ],
+       "value": 0.34934714436531067,
+       "cells": 1
+      },
+      {
+       "dates": [
+        "2026-10-09",
+        "2026-10-21"
+       ],
+       "value": 0.5242114663124084,
+       "cells": 1
+      }
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+      "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+      "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+     "program": "Lynkeus 0.1.0",
+     "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+    },
+    "p4": {
+     "id": "comparison",
+     "title": "Comparison",
+     "kind": "series",
+     "quantity": "Interferometric coherence (magnitude)",
+     "unit": "1",
+     "reduction": "mean",
+     "range": [
+      0.0,
+      1.0
+     ],
+     "point": {
+      "longitude": -70.8,
+      "latitude": 42.9
+     },
+     "cell": {
+      "row": 315,
+      "column": 1676,
+      "longitude": -70.79994648375636,
+      "latitude": 42.900075763961176
+     },
+     "area": {
+      "west": -71.21240624479763,
+      "south": 42.59241396597496,
+      "east": -70.74021713322617,
+      "north": 42.957667328501266
+     },
+     "entries": [
+      {
+       "dates": [
+        "2026-09-15",
+        "2026-09-27"
+       ],
+       "value": 0.28476378321647644,
+       "cells": 1
+      },
+      {
+       "dates": [
+        "2026-09-27",
+        "2026-10-09"
+       ],
+       "value": 0.281078577041626,
+       "cells": 1
+      },
+      {
+       "dates": [
+        "2026-10-09",
+        "2026-10-21"
+       ],
+       "value": 0.3181857764720917,
+       "cells": 1
+      }
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+      "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+      "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+     "program": "Lynkeus 0.1.0",
+     "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+    },
+    "p5": {
+     "id": "comparison",
+     "title": "Comparison",
+     "kind": "series",
+     "quantity": "Interferometric coherence (magnitude)",
+     "unit": "1",
+     "reduction": "mean",
+     "range": [
+      0.0,
+      1.0
+     ],
+     "point": {
+      "longitude": -70.8726,
+      "latitude": 42.8126
+     },
+     "cell": {
+      "row": 794,
+      "column": 1369,
+      "longitude": -70.8725070883643,
+      "latitude": 42.81264414749732
+     },
+     "area": {
+      "west": -71.21240624479763,
+      "south": 42.59241396597496,
+      "east": -70.74021713322617,
+      "north": 42.957667328501266
+     },
+     "entries": [
+      {
+       "dates": [
+        "2026-09-15",
+        "2026-09-27"
+       ],
+       "value": 0.7239977121353149,
+       "cells": 1
+      },
+      {
+       "dates": [
+        "2026-09-27",
+        "2026-10-09"
+       ],
+       "value": 0.7051378488540649,
+       "cells": 1
+      },
+      {
+       "dates": [
+        "2026-10-09",
+        "2026-10-21"
+       ],
+       "value": 0.8103115558624268,
+       "cells": 1
+      }
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+      "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+      "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+     "program": "Lynkeus 0.1.0",
+     "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+    }
+   },
+   "area_layers_in_reverse_order": {
+    "id": "comparison",
+    "title": "Comparison",
+    "kind": "series",
+    "quantity": "Interferometric coherence (magnitude)",
+    "unit": "1",
+    "reduction": "mean",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "point": null,
+    "cell": null,
+    "area": {
+     "west": -71.21240624479763,
+     "south": 42.59241396597496,
+     "east": -70.74021713322617,
+     "north": 42.957667328501266
+    },
+    "entries": [
+     {
+      "dates": [
+       "2026-09-15",
+       "2026-09-27"
+      ],
+      "value": 0.31936795717771277,
+      "cells": 3579092
+     },
+     {
+      "dates": [
+       "2026-09-27",
+       "2026-10-09"
+      ],
+      "value": 0.3067074436510622,
+      "cells": 3579092
+     },
+     {
+      "dates": [
+       "2026-10-09",
+       "2026-10-21"
+      ],
+      "value": 0.5062995480591644,
+      "cells": 3579092
+     }
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "program": "Lynkeus 0.1.0",
+    "method": "Mean of the layer coherenceMagnitude of the product over the cells that hold a value (NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E; Touzi et al., 1999, https://doi.org/10.1109/36.739146)"
+   }
+  }
+ },
+ "peak_memory_kilobytes": 349484,
+ "environment": {
+  "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+  "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+  "gdal_in_rasterio": "3.12.2",
+  "packages": {
+   "lynkeus": "0.1.0",
+   "numpy": "2.5.4",
+   "pydantic": "2.14.3",
+   "rasterio": "1.5.2"
+  }
+ }
+}
