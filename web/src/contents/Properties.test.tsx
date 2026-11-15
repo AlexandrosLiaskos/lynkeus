@@ -214,7 +214,7 @@ test("the file of a layer says which server keeps it", () => {
   expect(keptRow(fileOn(LABORATORY.id), SERVERS.servers).value).toBe(
     'Your server "Laboratory server", which is not connected',
   );
-  expect(keptRow(fileOn(OFFICE.id), []).value).toBe("An own server");
+  expect(keptRow(fileOn(OFFICE.id), []).value).toBe("A server of yours");
 });
 
 test("the window names the own server that keeps the file of a layer", async () => {

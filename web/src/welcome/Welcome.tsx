@@ -1,5 +1,6 @@
 import {
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   type KeyboardEvent,
@@ -16,14 +17,39 @@ export const SLIDE_TIME = 700;
 /** How far upward a drag must go to open the page, in pixels. */
 const DRAG_LIMIT = 80;
 
-/** Tell whether an event began on a link or a button of the screen, which then keeps its own meaning. */
+/** How far the pointer may move between its press and its release for the two to count as a click, in pixels. */
+const CLICK_LIMIT = 6;
+
+/** Tell whether an event began on a link, a button or the note of the image, which then keeps its own meaning. */
 function onControl(target: EventTarget): boolean {
-  return target instanceof Element && target.closest("a, button") !== null;
+  return target instanceof Element && target.closest("a, button, .welcome-credit") !== null;
 }
+
+/**
+ * Tell whether a key opens the page. Enter, Space, the arrows and the keys that write a character do. The Tab
+ * key moves between the links, and a key held with Control, Alt or the Meta key is a command of the browser.
+ */
+function opens(event: KeyboardEvent): boolean {
+  if (event.ctrlKey || event.altKey || event.metaKey) {
+    return false;
+  }
+  return event.key.length === 1 || ["Enter", "ArrowUp", "ArrowDown", "PageUp", "PageDown"].includes(event.key);
+}
+
+/** The time from the start of the entrance until the screen has appeared in full, in milliseconds. */
+export const SETTLE_TIME = 1700;
+
+/** The longest time that the screen waits for its image and its typeface before it appears, in milliseconds. */
+const READY_LIMIT = 1200;
+
+/** The cuts of the typeface that the screen shows. */
+const FONTS = ['500 1em "EB Garamond"', 'italic 400 1em "EB Garamond"', '400 1em "EB Garamond"'];
 
 interface WelcomeProps {
   /** Count the visit. A test gives its own. */
   count?: () => Promise<number>;
+  /** Called when the screen has appeared in full, or when the visitor enters before that. */
+  onSettled?: () => void;
 }
 
 /**
@@ -33,28 +59,70 @@ interface WelcomeProps {
  * universities of the team. Every member, the event and every logo is a link. A small letter i in the lower left
  * corner names the source of the image.
  *
- * The visitor slides the screen up to enter: with the button at the middle of its foot, by dragging it upward, by
- * scrolling, or
- * with the Enter, Space, Up or Escape key. The screen then moves up out of the window and the page stands under
- * it.
+ * The visitor enters as on the lock screen of a computer, by any of the first things a visitor tries: a click or a
+ * tap anywhere on the screen, the button at the middle of its foot, a drag upward, a scroll, or a key. The screen
+ * then moves up out of the window and the page stands under it. Until the visitor touches it, the screen lifts a
+ * little every few seconds and shows the edge of the page under it, so that nobody takes it for the whole site.
  *
  * It is the dialog element of the browser, opened as a modal, so the browser keeps the keyboard focus inside it
  * until the visitor enters.
  */
-export function Welcome({ count = visits }: WelcomeProps) {
+export function Welcome({ count = visits, onSettled }: WelcomeProps) {
   const dialog = useRef<HTMLDialogElement>(null);
   const content = useRef<HTMLDivElement>(null);
+  const image = useRef<HTMLImageElement>(null);
   // The height of the pointer where a drag began, and null while nothing is dragged.
   const drag = useRef<number | null>(null);
   const [leaving, setLeaving] = useState(false);
+  // Whether the screen still lifts a little now and then, which it does until the visitor touches it.
+  const [hinting, setHinting] = useState(true);
+  // Whether the image and the typeface are at hand, so that the screen appears without a change afterwards.
+  const [ready, setReady] = useState(false);
 
-  useEffect(() => {
+  // The screen opens before the browser paints the page, and it takes the place of the dark ground that
+  // `index.html` holds from the first paint. So neither a white window nor the application shows before it.
+  useLayoutEffect(() => {
     const element = dialog.current;
     if (element && !element.open) {
       element.showModal();
       element.focus();
     }
+    document.getElementById("cover")?.remove();
   }, []);
+
+  // The entrance waits until the image is decoded and the typeface is loaded, so that the image does not arrive
+  // in the middle of it and the words do not change their shape. It does not wait longer than a moment.
+  useEffect(() => {
+    let waiting = true;
+    const show = () => {
+      if (waiting) {
+        waiting = false;
+        setReady(true);
+      }
+    };
+    const timer = window.setTimeout(show, READY_LIMIT);
+    try {
+      const picture = image.current?.decode() ?? Promise.resolve();
+      void Promise.all([picture, ...FONTS.map((font) => document.fonts.load(font))]).then(show, show);
+    } catch {
+      // A browser without these functions shows the screen when the time has passed.
+    }
+    return () => {
+      waiting = false;
+      window.clearTimeout(timer);
+    };
+  }, []);
+
+  // The owner draws the page under the screen when the screen has appeared in full.
+  useEffect(() => {
+    if (!ready || !onSettled) {
+      return;
+    }
+    const timer = window.setTimeout(onSettled, SETTLE_TIME);
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [ready, onSettled]);
 
   // The visit is counted once for each browser. The screen does not show the total, so a counter that does not
   // answer changes nothing here.
@@ -81,11 +149,12 @@ export function Welcome({ count = visits }: WelcomeProps) {
       element.style.transition = "";
       element.style.transform = "";
     }
+    onSettled?.();
     setLeaving(true);
   };
 
   const onKeyDown = (event: KeyboardEvent<HTMLDialogElement>) => {
-    if (["Enter", " ", "ArrowUp"].includes(event.key) && !onControl(event.target)) {
+    if (opens(event) && !onControl(event.target)) {
       event.preventDefault();
       enter();
     }
@@ -108,6 +177,7 @@ export function Welcome({ count = visits }: WelcomeProps) {
   const onPointerDown = (event: PointerEvent<HTMLDialogElement>) => {
     if (event.button === 0 && !onControl(event.target)) {
       drag.current = event.clientY;
+      setHinting(false);
     }
   };
 
@@ -120,14 +190,15 @@ export function Welcome({ count = visits }: WelcomeProps) {
     }
   };
 
-  // A drag that went far enough opens the page, and a shorter one lets the screen return.
+  // A drag upward that went far enough opens the page, and so does a click, which hardly moves the pointer. A
+  // shorter drag lets the screen return.
   const onPointerEnd = (event: PointerEvent<HTMLDialogElement>) => {
     if (drag.current === null) {
       return;
     }
     const moved = drag.current - event.clientY;
     drag.current = null;
-    if (moved > DRAG_LIMIT) {
+    if (moved > DRAG_LIMIT || (event.type === "pointerup" && Math.abs(moved) <= CLICK_LIMIT)) {
       enter();
     } else {
       event.currentTarget.style.transition = "";
@@ -138,7 +209,13 @@ export function Welcome({ count = visits }: WelcomeProps) {
   return (
     <dialog
       ref={dialog}
-      className={leaving ? "welcome welcome-leaving" : "welcome"}
+      className={[
+        "welcome",
+        ready ? "welcome-ready" : "",
+        leaving ? "welcome-leaving" : hinting ? "welcome-hinting" : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
       aria-label={`${WELCOME.name}: ${WELCOME.subtitle}`}
       tabIndex={-1}
       onCancel={onCancel}
@@ -149,7 +226,14 @@ export function Welcome({ count = visits }: WelcomeProps) {
       onPointerUp={onPointerEnd}
       onPointerCancel={onPointerEnd}
     >
-      <img className="welcome-image" src={`/assets/welcome/${WELCOME.image.file}`} alt="" draggable={false} />
+      <img
+        ref={image}
+        className="welcome-image"
+        src={`/assets/welcome/${WELCOME.image.file}`}
+        alt=""
+        fetchPriority="high"
+        draggable={false}
+      />
       <div className="welcome-content" ref={content}>
         <header className="welcome-head">
           <img className="welcome-mark" src="/assets/lynkeus-mark-white.svg" alt="" draggable={false} />
@@ -199,10 +283,14 @@ export function Welcome({ count = visits }: WelcomeProps) {
         <span className="welcome-credit-text">{WELCOME.image.credit}</span>
       </span>
       <button type="button" className="welcome-enter" onClick={enter}>
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <polyline points="5,13 12,6 19,13" />
-          <polyline points="5,20 12,13 19,20" />
-        </svg>
+        <span className="welcome-arrows" aria-hidden="true">
+          <svg viewBox="0 0 24 9" focusable="false">
+            <polyline points="5,8 12,1 19,8" />
+          </svg>
+          <svg viewBox="0 0 24 9" focusable="false">
+            <polyline points="5,8 12,1 19,8" />
+          </svg>
+        </span>
         <span>{WELCOME.enter}</span>
       </button>
     </dialog>

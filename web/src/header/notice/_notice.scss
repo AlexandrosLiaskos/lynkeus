@@ -3,7 +3,8 @@
 
 // The version beside the name in the title bar, and the notice that it opens.
 
-// The version is a button without a frame, in smaller and lighter text than the name. It is 24 pixels high, the
+// The version is a button without a frame, in smaller text than the name and in a white that the dark title bar
+// shows through a little. It is 24 pixels high, the
 // smallest target that criterion 2.5.8 of the Web Content Accessibility Guidelines 2.2 accepts.
 .version-button {
   flex: none;
@@ -14,15 +15,15 @@
   border: 0;
   border-radius: 0.125rem;
   background: none;
-  color: tokens.$muted;
+  color: rgb(255 255 255 / 80%);
   font: inherit;
   font-size: tokens.$text-small;
   cursor: pointer;
 }
 
 .version-button:hover {
-  background: uswds.color("base-lighter");
-  color: tokens.$ink;
+  background: rgb(255 255 255 / 16%);
+  color: uswds.color("white");
 }
 
 // The text of the notice. The dialog gives it its size.

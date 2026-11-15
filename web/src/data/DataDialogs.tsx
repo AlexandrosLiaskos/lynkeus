@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { ServersDialog } from "../servers/ServersDialog";
+import { ServersPane } from "../servers/ServersPane";
 import { followSession } from "./follow";
 import { Footprints } from "./Footprints";
 import { GetLayerPane } from "./GetLayerPane";
@@ -10,8 +10,8 @@ import { signInEnded } from "./session";
 import { SignInPane } from "./SignInPane";
 
 /**
- * The panes of the Data tab, the dialog of the servers of the visitor, and what the search draws on the map: the
- * area of the search and the outlines of the products found. The page holds them once.
+ * The panes of the Data tab, among them the pane of the servers of the visitor, and what the search draws on the
+ * map: the area of the search and the outlines of the products found. The page holds them once.
  */
 export function DataDialogs() {
   // The jobs and the layers of the session are read when the page loads. From then on a job that ends is
@@ -26,7 +26,7 @@ export function DataDialogs() {
       <SignInPane />
       <SearchPane />
       <GetLayerPane />
-      <ServersDialog />
+      <ServersPane />
       <SearchAreaLayer />
       <Footprints />
     </>

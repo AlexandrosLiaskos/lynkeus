@@ -25,14 +25,14 @@ export const DATA_TAB = {
       ],
     },
     {
-      label: "Own servers",
+      label: "Servers",
       tools: [
         {
           id: "servers",
           label: "Servers",
           icon: "electrical_services",
           description:
-            "Lists the computers of your own that run your jobs and keep their layers, and connects, renames, limits and removes them, and needs a sign-in to Earthdata.",
+            "Lists your computers that run your jobs and keep their layers, and connects, renames, limits and removes them, and needs a sign-in to Earthdata.",
         },
       ],
     },

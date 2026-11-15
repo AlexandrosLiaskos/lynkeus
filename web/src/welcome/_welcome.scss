@@ -27,6 +27,12 @@ $slide: 0.7s;
   transition: transform $slide cubic-bezier(0.7, 0, 0.2, 1);
   user-select: none;
 
+  // A click anywhere opens the page, and the pointer says so.
+  cursor: pointer;
+
+  // The screen moves as one layer of the graphics card.
+  will-change: transform;
+
   // A swipe upward on a touch screen moves the screen and not the page of the browser.
   touch-action: none;
 }
@@ -44,6 +50,17 @@ $slide: 0.7s;
   transform: translateY(-100%);
 }
 
+// The entrance of every element waits until the image and the typeface are at hand.
+.welcome:not(.welcome-ready) :is(.welcome-image, .welcome-content > *, .welcome-credit, .welcome-enter) {
+  animation-play-state: paused;
+}
+
+// Until the visitor touches the screen, it lifts a little now and then and shows the edge of the page under it. The
+// first lift comes 8 seconds after the screen has appeared, and the next ones every 8 seconds.
+.welcome-ready.welcome-hinting {
+  animation: welcome-peek 8s cubic-bezier(0.3, 0, 0.2, 1) 8s infinite;
+}
+
 // The image fills the window. Its left third stays in view in a narrow window, because the satellite is there.
 .welcome-image {
   position: absolute;
@@ -54,6 +71,7 @@ $slide: 0.7s;
   object-fit: cover;
   object-position: 30% 50%;
   animation: welcome-image 1.8s $ease both;
+  will-change: transform, opacity;
 }
 
 // A shade darkens the lower part of the image, under the texts and the arrow, and a little of its right part.
@@ -74,7 +92,7 @@ $slide: 0.7s;
   position: absolute;
   z-index: 2;
   right: clamp(1.5rem, 4vw, 4rem);
-  bottom: clamp(6.75rem, 15vh, 9.5rem);
+  bottom: clamp(8rem, 17vh, 10.5rem);
   display: flex;
   flex-direction: column;
   width: min(54rem, calc(100vw - 3rem));
@@ -152,7 +170,7 @@ $slide: 0.7s;
   margin: 0.8rem 0 0;
   color: rgb(255 255 255 / 84%);
   font-family: $serif;
-  font-size: 1.3rem;
+  font-size: 1.15rem;
   font-style: italic;
   line-height: 1.2;
 }
@@ -299,12 +317,12 @@ $slide: 0.7s;
   position: absolute;
   z-index: 3;
   right: 0;
-  bottom: 0.8rem;
+  bottom: 0.5rem;
   left: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.1rem;
+  gap: 1.4rem;
   width: fit-content;
   margin: 0 auto;
   padding: 0.2rem 0.8rem;
@@ -312,7 +330,7 @@ $slide: 0.7s;
   background: none;
   color: #fff;
   font-family: $serif;
-  font-size: 1.05rem;
+  font-size: 1.4rem;
   font-style: italic;
   cursor: pointer;
   animation: welcome-rise 0.9s $ease 1.3s both;
@@ -329,23 +347,33 @@ $slide: 0.7s;
   text-underline-offset: 4px;
 }
 
-.welcome-enter svg {
-  width: 1.5rem;
-  height: 1.5rem;
+// The two strokes are two drawings, so that the graphics card moves each one without drawing it again.
+.welcome-arrows {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.welcome-arrows svg {
+  display: block;
+  width: 2rem;
+  height: 0.75rem;
   overflow: visible;
   fill: none;
   stroke: currentcolor;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 1.5;
-}
-
-.welcome-enter polyline {
+  stroke-width: 1.8;
   animation: welcome-hint 1.8s ease-in-out infinite;
+  will-change: transform, opacity;
 }
 
-.welcome-enter polyline:first-child {
+.welcome-arrows svg:first-child {
   animation-delay: 0.25s;
+}
+
+.welcome-arrows svg + svg {
+  margin-top: -0.17rem;
 }
 
 @keyframes welcome-image {
@@ -372,10 +400,22 @@ $slide: 0.7s;
   }
 }
 
+@keyframes welcome-peek {
+  0%,
+  16%,
+  100% {
+    transform: none;
+  }
+
+  8% {
+    transform: translateY(-2rem);
+  }
+}
+
 @keyframes welcome-hint {
   0%,
   100% {
-    opacity: 0.2;
+    opacity: 0.5;
     transform: translateY(0.2rem);
   }
 

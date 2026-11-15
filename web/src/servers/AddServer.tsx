@@ -13,7 +13,7 @@ import { codeOf, forgetConnect, isUserCode } from "./connect";
 import { focusHeading } from "./focus";
 import { latestRelease, releasesPage, REPOSITORY, systemOfAgent, SYSTEMS, type Downloads } from "./downloads";
 import { confirmPairing, readPairing } from "./requests";
-import { serversDialogStore } from "./state";
+import { serversViewStore, showServerList } from "./state";
 
 const MINUTES = String(PAIRING_TIME / 60);
 
@@ -126,7 +126,7 @@ interface AddServerProps {
  * three steps, the downloads and a field for the code.
  *
  * An unknown code and an account with the most servers allowed are each stated in one notice. When the
- * project server answers that the visitor is not signed in, the dialog shows the sign-in in the place of these
+ * project server answers that the visitor is not signed in, the pane shows the sign-in in the place of these
  * steps and keeps the code.
  */
 export function AddServer({ code, user }: AddServerProps) {
@@ -168,7 +168,7 @@ export function AddServer({ code, user }: AddServerProps) {
     };
   }, [wanted]);
 
-  // The button of a step leaves the dialog with its step, and the focus goes to the heading of the dialog.
+  // The button of a step leaves the pane with its step, and the focus goes to the title of the pane.
   useEffect(focusHeading, [pairing.state]);
 
   const find = (event: SyntheticEvent) => {
@@ -180,8 +180,8 @@ export function AddServer({ code, user }: AddServerProps) {
       return;
     }
     setFault(null);
-    // The dialog keeps the code, so that it is still there after a sign-in.
-    serversDialogStore.set({ ...serversDialogStore.get(), code: next });
+    // The pane keeps the code, so that it is still there after a sign-in.
+    serversViewStore.set({ ...serversViewStore.get(), code: next });
     setPairing({ state: "reading", code: next });
     setWanted({ code: next, turn: (wanted?.turn ?? 0) + 1 });
   };
@@ -208,7 +208,7 @@ export function AddServer({ code, user }: AddServerProps) {
         (server) => {
           report("success", `The computer "${server.name}" is connected as a server of your Earthdata account.`);
           forgetConnect();
-          serversDialogStore.set({ open: true, view: "list", code: null });
+          showServerList();
         },
         (error: unknown) => {
           if (error instanceof Refusal && error.status === 404) {

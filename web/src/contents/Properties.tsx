@@ -65,11 +65,11 @@ export function keptRow(address: string, servers: readonly Server[]): Property {
       ? PROJECT_SERVER_WORDS
       : server
         ? `Your server "${server.name}"${server.connected ? "" : ", which is not connected"}`
-        : "An own server";
+        : "A server of yours";
   return {
     name: "Kept on",
     value,
-    info: "The server that keeps the file: the project server of Lynkeus, or an own server of yours. The file of a layer of an own server is read through the project server while that server is connected.",
+    info: "The server that keeps the file: the project server of Lynkeus, or a server of yours. The file of a layer on your server is read through the project server while your server is connected.",
   };
 }
 

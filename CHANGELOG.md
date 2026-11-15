@@ -168,6 +168,9 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The forms of the Analysis tab show only the layer, the name of the result, the box that adds the result to
   the map and a link Method. The page Methods of the Help tab shows for each tool eight short rows, which
   stand in a new section In brief of its method sheet, and the address of the full sheet.
+- The title bar stands on a dark strip of the image of the welcome screen, with the mark, the name and the
+  version in white. The Earthdata account at its right end shows the picture of an account alone, and its
+  name shows while the pointer or the keyboard focus rests on it.
 
 ### Removed
 

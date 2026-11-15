@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { dockStore, resetDock } from "../shared/dock/dock";
 import { messagesStore } from "../shared/messages/messages";
-import { resetServersState, serversDialogStore } from "../servers/state";
+import { resetServersState, serversViewStore } from "../servers/state";
 import { EarthdataAccount } from "./EarthdataAccount";
 import { resetSession, sessionStore } from "./session";
 import { earthdata } from "./testSignIn";
@@ -46,6 +46,10 @@ test("while nobody is signed in the title bar says so, and a press opens the pan
   sessionStore.set({ state: "signed-out" });
   render(<Bar />);
   const button = account("Earthdata: not signed in");
+  // The button shows the picture of an account alone, and its name stands in its tooltip.
+  expect(button.textContent).toBe("");
+  expect(button.querySelectorAll("svg")).toHaveLength(1);
+  expect(screen.getByRole("tooltip", { hidden: true }).textContent).toBe("Earthdata: not signed in");
   expect(button.getAttribute("aria-expanded")).toBeNull();
   await userEvent.click(button);
   expect(dockStore.get().tools).toEqual(["sign-in"]);
@@ -64,6 +68,8 @@ test("while the visitor is signed in the title bar shows the user name, and a pr
   sessionStore.set({ state: "signed-in", user: "a_user" });
   render(<Bar />);
   const button = account("Earthdata: a_user");
+  expect(button.textContent).toBe("");
+  expect(button.querySelectorAll("svg")).toHaveLength(1);
   expect(button.getAttribute("aria-expanded")).toBe("false");
   expect(screen.queryByRole("button", { name: "Sign out" })).toBeNull();
   await userEvent.click(button);
@@ -153,6 +159,7 @@ test("the command Servers of the menu opens the list of the servers of the accou
   render(<Bar />);
   await userEvent.click(account("Earthdata: a_user"));
   await userEvent.click(screen.getByRole("button", { name: "Servers" }));
-  expect(serversDialogStore.get()).toEqual({ open: true, view: "list", code: null });
+  expect(dockStore.get().tools).toEqual(["servers"]);
+  expect(serversViewStore.get()).toEqual({ view: "list", code: null });
   expect(screen.queryByRole("button", { name: "Servers" })).toBeNull();
 });

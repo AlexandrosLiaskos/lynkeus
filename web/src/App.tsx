@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useAnalysisActions } from "./analysis/actions";
 import { AnalysisDialogs } from "./analysis/AnalysisDialogs";
 import { CatalogPane } from "./catalog/CatalogPane";
@@ -46,7 +46,7 @@ const PANE_ICONS: Readonly<Record<string, string>> = {
 
 /**
  * The elements of the page, in their places: the header, the ribbon, the map between the panes of its two sides,
- * and the status bar. The welcome screen covers them when the page opens, until the visitor slides it up. The credits that must stand on the map itself are drawn over its lower right corner. Each
+ * and the status bar. The credits that must stand on the map itself are drawn over its lower right corner. Each
  * element comes from the folder of its owner, and the ribbon receives the actions of every tab. The dialogs and
  * the tool panes of every tab are declared inside the right side, where a tool pane is drawn; a dialog is drawn
  * over the page wherever it is declared.
@@ -89,7 +89,6 @@ function Page() {
         </Dock>
       </div>
       <StatusBar />
-      <Welcome />
     </>
   );
 }
@@ -104,12 +103,21 @@ function createPageMap() {
   return map;
 }
 
-/** The page of the application. It creates the map once and gives it to every element. */
+/**
+ * The page of the application. It creates the map once and gives it to every element.
+ *
+ * The welcome screen covers the page when it opens. The elements of the page are drawn only when the screen has
+ * settled or the visitor enters, whichever comes first, so that the start of the map and of the panes does not
+ * take time from the appearance of the screen.
+ */
 export function App() {
   const [map] = useState(createPageMap);
+  const [started, setStarted] = useState(false);
+  const start = useCallback(() => setStarted(true), []);
   return (
     <MapContext value={map}>
-      <Page />
+      {started ? <Page /> : null}
+      <Welcome onSettled={start} />
     </MapContext>
   );
 }
