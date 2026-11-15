@@ -107,6 +107,7 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The forms of the analysis tools Coherence, Change and Soil moisture, One date and Change, in the tool pane,
   and the section In brief of their method sheets in the dialog Methods of the Help tab. The form of
   Coherence, Change says in one sentence why it does not compare two pairs of dates.
+- The sources of these three tools in the dialog Sources of the Help tab.
   screen.
 
 ### Changed
