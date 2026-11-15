@@ -49,29 +49,29 @@ and its message is one sentence for the visitor.
 | 1 | the number of input layers is not two | `The number of input layers must be 2, and it is <number>.` |
 | 2 | the two arrays do not have the same number of rows and of columns | `The input layers do not have the same grid.` |
 | 3 | a layer was not received from one product file of the type GCOV: its `kind` is not `layer`, its `inputs` do not hold exactly one name, or that name does not begin as the name of a NISAR product file of the type GCOV | `The layer "<title>" is not a layer received from one NISAR GCOV product.` |
-| 4 | the unit of a layer is not `1` | `The layer "<title>" has the unit <unit>, and the tool reads the unit 1.` |
-| 5 | a layer does not have one date | `The number of dates of the layer "<title>" must be 1, and it is <number>.` |
-| 6 | the two products are not of the same track, direction of the orbit and frame | `The two layers are not of the same track, direction and frame.` |
-| 7 | the date of the first layer is not earlier than the date of the second | `The first layer must be of an earlier date than the second.` |
-| 8 | no cell of the result would hold a value | `The result would hold no value in any cell.` |
-| 9 | the 99th percentile of the absolute values of the result is zero, so the legend has no range | `The values of the result are too alike to give the legend a range.` |
+| 4 | the description of a layer does not hold the name of the layer inside the product (field `layer`); this is the case of a layer that was received before Lynkeus recorded that name | `The layer "<title>" does not record which layer of its product it is; receive it again with Get layer.` |
+| 5 | the name of a layer inside its product is not one of the six diagonal covariance terms `HHHH`, `HVHV`, `VHVH`, `VVVV`, `RHRH` and `RVRV` | `The layer "<title>" is the layer <name> of its product, and the tool reads a diagonal covariance term (HHHH, HVHV, VHVH, VVVV, RHRH or RVRV).` |
+| 6 | the unit of a layer is not `1` | `The layer "<title>" has the unit <unit>, and the tool reads the unit 1.` |
+| 7 | a layer does not have one date | `The number of dates of the layer "<title>" must be 1, and it is <number>.` |
+| 8 | the two layers are not the same term | `The two layers are not the same covariance term: the first is <name> and the second is <name>.` |
+| 9 | the two products are not of the same instrument, track, direction of the orbit and frame | `The two layers are not of the same instrument, track, direction and frame.` |
+| 10 | the date of the first layer is not earlier than the date of the second | `The first layer must be of an earlier date than the second.` |
+| 11 | no cell of the result would hold a value | `The result would hold no value in any cell.` |
+| 12 | the 99th percentile of the absolute values of the result is zero, so the legend has no range | `The values of the result are too alike to give the legend a range.` |
 
-Checks 2 to 5 are made for the first layer and then for the second. The product type, the track, the
-direction (`A` or `D`) and the frame are read from the beginning of the name of each product file
-(naming conventions, sections 3.7 and 3.8). The instrument (`L` or `S`) in the name is not compared.
+Checks 2 to 7 are made for the first layer and then for the second. The product type, the
+instrument (`L` or `S`), the track, the direction (`A` or `D`) and the frame are read from the
+beginning of the name of each product file (naming conventions, sections 3.7 and 3.8).
 An array that is not two-dimensional Float32 is a fault of the calling program and raises
 `ValueError`, which is not a refusal for the visitor.
 
-The layer description has no field for the name of the layer inside the product. The tool therefore
-cannot verify that its inputs are backscatter terms, nor that the two inputs are the same term of
-the same frequency: the choice of the visitor decides. In `main` at commit `0ad795b` the Data part
-offers, with the unit `1`, the terms of the channels HH, HV, VH and VV and the layers
-`rtcGammaToSigmaFactor`, `numberOfLooks` and `mask` of a GCOV product (`api/src/lynkeus/harmony.py`,
-lines 271 to 291). Any two of them, from products of two dates and of one track, direction and
-frame, pass checks 1 to 7. In a trial the tool accepted the term `HHHH` of the earlier date with the
-term `HVHV` of the later date, and the layer `numberOfLooks` with the term `HHHH`
-(`docs/research/analysis.md`, part 3.4). The trial called the function directly, on a local copy and
-with made-up arrays; it was not made on the server.
+The name of the layer inside the product is the field `layer` of the layer description, which the
+Data part fills for every layer that it receives (sheet Backscatter, One date, section What the tool
+refuses). Check 5 refuses a layer that is not a diagonal covariance term, among them the layers
+`rtcGammaToSigmaFactor`, `numberOfLooks` and `mask`. Check 8 refuses two different terms, for
+example `HHHH` of the earlier date with `HVHV` of the later date. The Data part receives the layers
+of the group `frequencyA` only (`_GROUPS` in `api/src/lynkeus/harmony.py`), so the two terms are of
+the same frequency; the field `layer` does not name the frequency.
 
 The tool does not resample. The function receives the two arrays and no coordinates, so it can check
 only their numbers of rows and of columns. In `main` at commit `0ad795b` the server reads the layers
@@ -89,7 +89,9 @@ A GCOV product holds a layer `mask` beside the terms: `0` for a cell that is inv
 focused, `1` to `5` for a valid cell, and `255` for a cell outside the acquisition (specification,
 section 4.3.3; the sheet Backscatter, One date gives the layer in full).
 
-The tool does not read the masks of the two products. Its only inputs are the two terms.
+The tool does not read the masks of the two products and applies none. Its only inputs are the two
+terms. The statements of the source program apply no mask either: no cell of the notebook reads the
+layer `mask` of a product (notebook at commit `17b69c8`, read on 15 Nov 2026).
 
 The masks of the two sample products were received from NASA Harmony on 14 Nov 2026, clipped to the
 box of the pilot area, on the grid of the terms.
@@ -216,11 +218,10 @@ The exact numbers of the comparison are in `docs/research/analysis.md`, part 4.
 ## Not yet confirmed
 
 1. Whether the masks are needed in other areas (section The mask of the product). Andreas measures
-   it on the next area. The Data part now offers the mask as a layer; whether the tool takes the
-   masks as further inputs is to be decided (Alexandros and Andreas).
-2. One field of the layer description for the name of the layer inside the product, without which
-   the tool cannot verify that its inputs are the same term of the same frequency (Alexandros; it
-   changes a shared format).
+   it on the next area. The tool applies no mask, as the source program applies none.
+2. The terms `RHRH` and `RVRV`, and two products of different instruments, tracks, directions or
+   frames: the checks were tried in the tests of the code with made-up layers, and no such layers
+   were received.
 3. That the sentence of a refusal reaches the visitor through a job of the server. The tool raises
    `LayerError`, which `run_tool` passes on (`api/src/lynkeus/tools.py`, lines 59 to 64, at commit
    `0ad795b` of `main`). This was read in the files; no job of a tool was run
