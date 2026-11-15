@@ -63,6 +63,7 @@ def write(folder: Path, values: NDArray[np.float32], grid: Grid, **changes: Any)
         "colours": "grey",
         "dates": (date(2026, 10, 21),),
         "inputs": (GRANULE,),
+        "layer": "HHHH",
         "lineage": "Layer HHHH of the product, clipped by NASA Harmony.",
         "level": "L2",
         "links": ({"rel": "via", "href": SOURCE, "type": "application/json"},),
@@ -199,11 +200,30 @@ def test_description_gives_the_addresses_and_a_legend_from_the_data(tmp_path: Pa
 
 def test_result_keeps_its_legend_and_its_method(tmp_path: Path) -> None:
     values, grid = read_layer(BACKSCATTER)
-    description = write(tmp_path, values, grid, kind="result", legend=(0.0, 2.0), method="Reference of the method")
+    description = write(
+        tmp_path, values, grid, kind="result", legend=(0.0, 2.0), layer=None, method="Reference of the method"
+    )
     assert description.range == (0.0, 2.0)
     assert description.method == "Reference of the method"
     with rasterio.open(tmp_path / "gcov-hhhh-20261021.tif") as source:
         assert source.tags()["method"] == "Reference of the method"
+
+
+def test_layer_carries_its_name_inside_the_product_and_a_result_carries_none(tmp_path: Path) -> None:
+    values, grid = read_layer(BACKSCATTER)
+    name = "unwrappedInterferogram/HH/coherenceMagnitude"
+    assert write(tmp_path, values, grid).layer == "HHHH"
+    assert write(tmp_path, values, grid, layer=name).layer == name
+    record = json.loads((tmp_path / "gcov-hhhh-20261021.json").read_text(encoding="utf-8"))
+    assert record["assets"]["data"]["bands"][0]["name"] == name
+    assert stac_faults(record) == []
+    result = write(tmp_path, values, grid, kind="result", layer=None, method="Reference of the method")
+    assert result.layer is None
+    record = json.loads((tmp_path / "gcov-hhhh-20261021.json").read_text(encoding="utf-8"))
+    assert "name" not in record["assets"]["data"]["bands"][0]
+    assert stac_faults(record) == []
+    with pytest.raises(ValueError, match="so it has no name of one"):
+        write(tmp_path, values, grid, kind="result", method="Reference of the method")
 
 
 def test_record_is_a_valid_stac_item(tmp_path: Path) -> None:
@@ -239,6 +259,7 @@ def test_record_describes_the_file(tmp_path: Path) -> None:
     assert asset["href"] == "./gcov-hhhh-20261021.tif"
     assert asset["type"] == "image/tiff; application=geotiff; profile=cloud-optimized"
     band = asset["bands"][0]
+    assert band["name"] == "HHHH"
     assert (band["data_type"], band["nodata"], band["unit"]) == ("float32", "nan", "1")
     assert band["raster:spatial_resolution"] == 10.0
     assert band["statistics"]["minimum"] == float(values.min())

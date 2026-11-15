@@ -19,6 +19,7 @@ LAYER: dict[str, Any] = {
     "colours": "grey",
     "dates": ["2026-10-20"],
     "inputs": ["product-file.h5"],
+    "layer": "HHHH",
     "program": "Lynkeus 0.1.0",
     "method": None,
     "record": "/files/gcov-hhhh-20261020.json",
@@ -39,11 +40,27 @@ def test_layer_description_is_read_and_written_in_the_same_form() -> None:
     assert layer.model_dump(mode="json") == {**LAYER, "range": [-25.0, 0.0]}
 
 
+def test_layer_stored_without_the_name_of_its_layer_is_read() -> None:
+    stored = {name: value for name, value in LAYER.items() if name != "layer"}
+    layer = LayerDescription.model_validate(stored)
+    assert layer.layer is None
+    assert layer.model_dump(mode="json") == {**stored, "layer": None, "range": [-25.0, 0.0]}
+    assert LayerDescription.model_validate_json(layer.model_dump_json()) == layer
+
+
 def test_result_needs_its_method() -> None:
     with pytest.raises(ValidationError, match="needs the reference of its method"):
-        LayerDescription.model_validate({**LAYER, "kind": "result"})
-    result = LayerDescription.model_validate({**LAYER, "kind": "result", "method": "Reference of the method"})
+        LayerDescription.model_validate({**LAYER, "kind": "result", "layer": None})
+    result = LayerDescription.model_validate(
+        {**LAYER, "kind": "result", "layer": None, "method": "Reference of the method"}
+    )
     assert result.method == "Reference of the method"
+    assert result.layer is None
+
+
+def test_result_has_no_name_of_a_layer_inside_a_product() -> None:
+    with pytest.raises(ValidationError, match="so it has no name of one"):
+        LayerDescription.model_validate({**LAYER, "kind": "result", "method": "Reference of the method"})
 
 
 @pytest.mark.parametrize(
@@ -59,6 +76,7 @@ def test_result_needs_its_method() -> None:
         {"dates": []},
         {"dates": ["20 Oct 2026"]},
         {"inputs": []},
+        {"layer": ""},
         {"method": "Reference of the method"},
         {"other": 1},
     ],

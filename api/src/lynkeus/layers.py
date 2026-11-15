@@ -75,6 +75,10 @@ class LayerDescription(Format):
         Date or dates of the data.
     inputs : tuple of str
         Names of the product files used.
+    layer : str or None
+        Name of the layer inside the product, as the layer request gave it,
+        for example ``HHHH``. A layer received from NASA has one. A result
+        has none, and a layer stored before this field existed has none.
     program : str
         Program and version that produced the file.
     method : str or None
@@ -93,6 +97,7 @@ class LayerDescription(Format):
     colours: Text
     dates: tuple[date, ...] = Field(min_length=1)
     inputs: tuple[Text, ...] = Field(min_length=1)
+    layer: Text | None = None
     program: Text
     method: Text | None = None
     record: Text
@@ -106,6 +111,8 @@ class LayerDescription(Format):
             raise ValueError("a result needs the reference of its method")
         if self.kind == "layer" and self.method is not None:
             raise ValueError("a layer received from NASA has no method")
+        if self.kind == "result" and self.layer is not None:
+            raise ValueError("a result is not a layer of a product, so it has no name of one")
         return self
 
 

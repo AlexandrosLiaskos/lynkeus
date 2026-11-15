@@ -184,7 +184,8 @@ def get_layer(
     -------
     LayerDescription
         The description of the layer. Its values are those of the product, in
-        the unit and on the grid of the product.
+        the unit and on the grid of the product. Its field ``layer`` holds the
+        name of the layer as the request gave it.
 
     Raises
     ------
@@ -242,6 +243,7 @@ def _get_layer(
         colours=layer.colours,
         dates=product.dates,
         inputs=(f"{product.name}.h5",),
+        layer=request.layer,
         lineage=(
             f"Layer {variable} of the NISAR product {product.name}, clipped to the area "
             f"{area.west}, {area.south}, {area.east}, {area.north} (west, south, east and north, in degrees) "
