@@ -3,7 +3,8 @@
 Every tool is one function. It receives the arrays of its input layers, in
 the order that its method sheet gives, with their layer descriptions, and it
 returns the array of the result with its quantity, unit, value range, colour
-scale and method. A cell without data holds ``nan`` in every array. The
+scale and method, and with its table of classes when the result is a map of
+classes. A cell without data holds ``nan`` in every array. The
 function reads no file, writes no file and contacts no service.
 
 ``TOOLS`` lists every finished tool under the name of its button, for example
@@ -25,6 +26,7 @@ from numpy.typing import NDArray
 from lynkeus.analysis.backscatter import backscatter_change, backscatter_state
 from lynkeus.analysis.coherence import coherence_change, coherence_state
 from lynkeus.analysis.displacement import displacement_state
+from lynkeus.analysis.inundation import backscatter_map
 from lynkeus.analysis.series import backscatter_series, coherence_series
 from lynkeus.analysis.soil_moisture import soil_moisture_change, soil_moisture_state
 from lynkeus.layers import AnalysisResult, LayerDescription, SeriesResult
@@ -34,6 +36,7 @@ type AnalysisFunction = Callable[[Sequence[NDArray[np.float32]], Sequence[LayerD
 TOOLS: dict[str, AnalysisFunction] = {
     "backscatter-state": backscatter_state,
     "backscatter-change": backscatter_change,
+    "backscatter-map": backscatter_map,
     "coherence-state": coherence_state,
     "coherence-change": coherence_change,
     "displacement-state": displacement_state,

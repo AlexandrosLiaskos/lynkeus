@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 from pydantic import ValidationError
 
-from lynkeus.layers import AnalysisResult, Area, LayerDescription, LayerRequest, ToolRun
+from lynkeus.layers import AnalysisResult, Area, LayerClass, LayerDescription, LayerRequest, ToolRun
 
 LAYER: dict[str, Any] = {
     "id": "gcov-hhhh-20261020",
@@ -38,7 +38,13 @@ def test_layer_description_is_read_and_written_in_the_same_form() -> None:
     layer = LayerDescription.model_validate(LAYER)
     assert layer.dates == (date(2026, 10, 20),)
     assert layer.range == (-25.0, 0.0)
-    assert layer.model_dump(mode="json") == {**LAYER, "ends": None, "frequency": None, "range": [-25.0, 0.0]}
+    assert layer.model_dump(mode="json") == {
+        **LAYER,
+        "ends": None,
+        "classes": None,
+        "frequency": None,
+        "range": [-25.0, 0.0],
+    }
 
 
 def test_layer_stored_without_the_name_of_its_layer_is_read() -> None:
@@ -49,6 +55,7 @@ def test_layer_stored_without_the_name_of_its_layer_is_read() -> None:
         **stored,
         "layer": None,
         "ends": None,
+        "classes": None,
         "frequency": None,
         "range": [-25.0, 0.0],
     }
@@ -214,3 +221,92 @@ def test_result_of_a_tool_has_no_centre_frequency() -> None:
     assert LayerDescription.model_validate(RESULT).frequency is None
     with pytest.raises(ValidationError, match="it has no centre frequency of a radar band"):
         LayerDescription.model_validate({**RESULT, "frequency": 1239000000.0})
+
+
+CLASSES: list[dict[str, Any]] = [
+    {"value": 1, "name": "Not inundated", "colour": "#ececee"},
+    {"value": 2, "name": "Open water", "colour": "#151b73"},
+    {"value": 3, "name": "Inundated vegetation", "colour": "#42e9f5"},
+]
+RESULT_OF_CLASSES: dict[str, Any] = {
+    **LAYER,
+    "kind": "result",
+    "layer": None,
+    "unit": "1",
+    "range": [1, 3],
+    "colours": "classes",
+    "method": "Reference of the method",
+    "classes": CLASSES,
+}
+
+
+def test_result_may_carry_a_table_of_classes() -> None:
+    result = LayerDescription.model_validate(RESULT_OF_CLASSES)
+    assert result.classes == (
+        LayerClass(value=1, name="Not inundated", colour="#ececee"),
+        LayerClass(value=2, name="Open water", colour="#151b73"),
+        LayerClass(value=3, name="Inundated vegetation", colour="#42e9f5"),
+    )
+    assert result.model_dump(mode="json")["classes"] == CLASSES
+    assert LayerDescription.model_validate_json(result.model_dump_json()) == result
+
+
+def test_description_stored_without_a_table_of_classes_is_read() -> None:
+    stored = {name: value for name, value in RESULT_OF_CLASSES.items() if name != "classes"}
+    assert LayerDescription.model_validate(stored).classes is None
+
+
+def test_layer_received_from_nasa_has_no_table_of_classes() -> None:
+    with pytest.raises(ValidationError, match="only a result may have classes"):
+        LayerDescription.model_validate({**LAYER, "unit": "1", "range": [1, 3], "classes": CLASSES})
+
+
+@pytest.mark.parametrize(
+    "classes",
+    [
+        [],
+        CLASSES[:1],
+        [CLASSES[0], CLASSES[0], CLASSES[2]],
+        [CLASSES[1], CLASSES[0], CLASSES[2]],
+    ],
+)
+def test_table_of_classes_needs_two_classes_or_more_in_the_order_of_their_values(classes: list[Any]) -> None:
+    with pytest.raises(ValidationError, match="at least two classes, with different values in increasing order"):
+        LayerDescription.model_validate({**RESULT_OF_CLASSES, "classes": classes})
+
+
+@pytest.mark.parametrize("bounds", [[0, 3], [1, 2], [1, 4]])
+def test_range_of_a_result_of_classes_runs_from_its_lowest_to_its_highest_class(bounds: list[float]) -> None:
+    with pytest.raises(ValidationError, match="from the lowest to the highest value of its classes"):
+        LayerDescription.model_validate({**RESULT_OF_CLASSES, "range": bounds})
+
+
+@pytest.mark.parametrize(
+    "change",
+    [
+        {"value": -1},
+        {"value": 1.5},
+        {"value": "1"},
+        {"value": True},
+        {"name": ""},
+        {"colour": "ececee"},
+        {"colour": "#ECECEE"},
+        {"colour": "#ececee80"},
+        {"colour": "grey"},
+        {"other": 1},
+    ],
+)
+def test_wrong_class_is_rejected(change: dict[str, Any]) -> None:
+    with pytest.raises(ValidationError):
+        LayerClass.model_validate({**CLASSES[0], **change})
+
+
+def test_result_of_a_tool_has_classes_when_and_only_when_its_reduced_copies_take_the_most_frequent_value() -> None:
+    values = np.array([[1, 2, 3]], dtype=np.float32)
+    classes = tuple(LayerClass.model_validate(entry) for entry in CLASSES)
+    result = AnalysisResult(values, "Class", "1", (1.0, 3.0), "classes", "Method", "mode", classes=classes)
+    assert (result.reduction, result.classes) == ("mode", classes)
+    with pytest.raises(ValueError, match="when, and only when"):
+        AnalysisResult(values, "Class", "1", (1.0, 3.0), "classes", "Method", "mean", classes=classes)
+    with pytest.raises(ValueError, match="when, and only when"):
+        AnalysisResult(values, "Class", "1", (1.0, 3.0), "classes", "Method", "mode")

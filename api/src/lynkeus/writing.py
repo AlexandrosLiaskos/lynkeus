@@ -32,7 +32,7 @@ from rasterio.transform import Affine
 from rasterio.warp import transform
 
 from lynkeus import __version__
-from lynkeus.layers import LayerDescription
+from lynkeus.layers import LayerClass, LayerDescription
 
 type Rule = Literal["percentiles", "symmetric", "extremes"]
 """A rule that gives the range of a legend from the values of the layer."""
@@ -56,6 +56,8 @@ STAC_EXTENSIONS = (
     "https://stac-extensions.github.io/raster/v2.0.0/schema.json",
     "https://stac-extensions.github.io/processing/v1.2.0/schema.json",
 )
+CLASSIFICATION_EXTENSION = "https://stac-extensions.github.io/classification/v2.0.0/schema.json"
+"""The STAC extension that the record of a layer of classes names for its table of classes."""
 GEOTIFF_TYPE = "image/tiff; application=geotiff; profile=cloud-optimized"
 
 _NAME = re.compile(r"[a-z0-9]+(-[a-z0-9]+)*")
@@ -250,6 +252,7 @@ def write_layer(
     layer: str | None = None,
     method: str | None = None,
     ends: tuple[str, str] | None = None,
+    classes: Sequence[LayerClass] | None = None,
     frequency: float | None = None,
     level: str | None = None,
     links: Sequence[Mapping[str, str]] = (),
@@ -305,6 +308,11 @@ def write_layer(
         Words that name the lowest and the highest end of the legend, for
         example ``("decrease", "increase")``. Only a result may have them.
         They stand in the description only, not in the two files.
+    classes : sequence of LayerClass, optional
+        The classes of a layer of classes, in the order of their values. Only
+        a result may have them, and it needs ``averaged`` to be False. They
+        stand in the description, in the record as the table of the STAC
+        extension Classification 2.0.0, and in the metadata of the GeoTIFF.
     frequency : float, optional
         Centre frequency of the radar band of the layer, in hertz, as the
         product states it. Only a layer received from NASA may have one. It
@@ -337,14 +345,16 @@ def write_layer(
         cannot be written.
     ValueError
         If the array does not fit the grid, ``name`` has another form,
-        ``decibels`` is asked without ``averaged``, or the fields do not make
-        a layer description, for example when a result is given the name of
-        a layer.
+        ``decibels`` is asked without ``averaged``, ``classes`` are given with
+        ``averaged``, or the fields do not make a layer description, for
+        example when a result is given the name of a layer.
     """
     if values.shape != (grid.height, grid.width):
         raise ValueError("the array does not fit the grid")
     if decibels and not averaged:
         raise ValueError("values in decibels are reduced by averaging their power")
+    if classes is not None and averaged:
+        raise ValueError("classes are reduced by taking the most frequent value, not by averaging")
     if not _NAME.fullmatch(name):
         raise ValueError("the name of the files must hold lower-case letters, digits and hyphens")
     values = np.asarray(values, dtype=np.float32)
@@ -363,6 +373,7 @@ def write_layer(
         inputs=tuple(inputs),
         layer=layer,
         ends=ends,
+        classes=None if classes is None else tuple(classes),
         frequency=frequency,
         program=PROGRAM,
         method=method,
@@ -420,6 +431,7 @@ def _write_geotiff(
                 dates=", ".join(day.isoformat() for day in description.dates),
                 inputs=", ".join(description.inputs),
                 **({} if description.method is None else {"method": description.method}),
+                **({} if description.classes is None else {"classes": _classes_tag(description.classes)}),
             )
         source = _with_copies_of_the_mean_power(values, grid, plain, others) if decibels else None
         if source is None:
@@ -430,6 +442,25 @@ def _write_geotiff(
     finally:
         for file in (plain, *others):
             file.unlink(missing_ok=True)
+
+
+def _classes_tag(classes: Sequence[LayerClass]) -> str:
+    """Return the table of classes as one text for the metadata of the GeoTIFF, for example ``1: Water (#151b73)``."""
+    return "; ".join(f"{entry.value}: {entry.name} ({entry.colour})" for entry in classes)
+
+
+def _class_object(entry: LayerClass) -> dict[str, Any]:
+    """Return a class as a Class Object of the STAC extension Classification 2.0.0.
+
+    The extension asks for a ``name`` of letters, digits, hyphens and underscores; it is made from the name of the
+    class, which stands whole as ``title``. ``color_hint`` is the colour without its ``#``.
+    """
+    return {
+        "value": entry.value,
+        "name": re.sub(r"[^0-9a-z]+", "-", entry.name.lower()).strip("-"),
+        "title": entry.name,
+        "color_hint": entry.colour.removeprefix("#"),
+    }
 
 
 def _plain(grid: Grid) -> dict[str, Any]:
@@ -576,24 +607,28 @@ def _record(
     if description.layer is not None:
         # The name of a band is the name that the data provider uses for it (STAC 1.1.0, common metadata, Band Object).
         band = {"name": description.layer, **band}
+    asset: dict[str, Any] = {
+        "href": f"./{name}.tif",
+        "type": GEOTIFF_TYPE,
+        "title": description.title,
+        "roles": ["data"],
+        "bands": [band],
+    }
+    extensions = list(STAC_EXTENSIONS)
+    if description.classes is not None:
+        # The schema of the extension checks its fields in an asset, where the table of the one band stands.
+        asset["classification:classes"] = [_class_object(entry) for entry in description.classes]
+        extensions.append(CLASSIFICATION_EXTENSION)
     return {
         "type": "Feature",
         "stac_version": STAC_VERSION,
-        "stac_extensions": list(STAC_EXTENSIONS),
+        "stac_extensions": extensions,
         "id": description.id,
         "geometry": {"type": "Polygon", "coordinates": [ring]},
         "bbox": [min(longitudes), min(latitudes), max(longitudes), max(latitudes)],
         "properties": properties,
         "links": [dict(link) for link in links],
-        "assets": {
-            "data": {
-                "href": f"./{name}.tif",
-                "type": GEOTIFF_TYPE,
-                "title": description.title,
-                "roles": ["data"],
-                "bands": [band],
-            }
-        },
+        "assets": {"data": asset},
     }
 
 
