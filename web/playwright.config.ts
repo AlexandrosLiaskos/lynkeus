@@ -19,7 +19,13 @@ export default defineConfig({
   expect: { timeout: 10_000 },
   reporter: [["list"], ["html", { open: "never", outputFolder: "playwright-report" }]],
   // The trace, the video and the screenshot of every test are kept, so that a fault can be looked at afterwards.
-  use: { baseURL: built ? "http://localhost:4173" : address, trace: "on", video: "on", screenshot: "on" },
+  use: {
+    baseURL: built ? "http://localhost:4173" : address,
+    actionTimeout: 15_000,
+    trace: "on",
+    video: "on",
+    screenshot: "on",
+  },
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
     { name: "firefox", use: { ...devices["Desktop Firefox"] } },

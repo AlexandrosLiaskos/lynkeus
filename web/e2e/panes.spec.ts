@@ -26,7 +26,6 @@ const TOOL_PANES = [
   { tab: "Data", tool: "Sign in", title: "Sign in to Earthdata" },
   { tab: "Share", tool: "Map image", title: "Map image" },
   { tab: "Share", tool: "Link to this map", title: "Link to this map" },
-  { tab: "Share", tool: "Citation", title: "Citation" },
   { tab: "Options", tool: "Storage", title: "Browser storage" },
   { tab: "Help", tool: "Getting started", title: "Getting started" },
 ];

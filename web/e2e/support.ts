@@ -87,6 +87,8 @@ interface PolicyViolation {
   blocked: string;
   source: string;
   line: number;
+  /** The start of every style element of the page at that moment, to find the one that the policy refused. */
+  styleElements: string[];
 }
 
 declare global {
@@ -102,7 +104,7 @@ declare global {
  * findings; they do not fail the test.
  */
 export class Findings {
-  private readonly states: { state: string; violations: unknown[] }[] = [];
+  private readonly states: { state: string; passes: number; violations: unknown[]; incomplete: unknown[] }[] = [];
   private readonly consoleErrors: { text: string; location: string }[] = [];
   private readonly pageErrors: string[] = [];
   private readonly failedRequests: { address: string; failure: string }[] = [];
@@ -133,6 +135,7 @@ export class Findings {
           blocked: event.blockedURI,
           source: event.sourceFile,
           line: event.lineNumber,
+          styleElements: Array.from(document.querySelectorAll("style"), (style) => style.outerHTML.slice(0, 300)),
         });
       });
     });
@@ -160,8 +163,10 @@ export class Findings {
         .map((animation) => animation.finished.catch(() => undefined));
       await Promise.race([Promise.all(ending), new Promise((resolve) => setTimeout(resolve, 4000))]);
     });
-    const { violations } = await new AxeBuilder({ page: this.page }).withTags(WCAG).analyze();
-    this.states.push({ state, violations });
+    // The rules that axe-core could not decide (for example the contrast of a text over an image) are kept
+    // too, because a person has to look at them. The number of rules that passed shows that the scan ran.
+    const { passes, violations, incomplete } = await new AxeBuilder({ page: this.page }).withTags(WCAG).analyze();
+    this.states.push({ state, passes: passes.length, violations, incomplete });
     await this.info.attach(`axe ${state}.json`, {
       body: JSON.stringify(violations, null, 2),
       contentType: "application/json",
