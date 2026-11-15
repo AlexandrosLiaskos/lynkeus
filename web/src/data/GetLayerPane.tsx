@@ -1,5 +1,5 @@
 import { memo, useEffect, useId, useState } from "react";
-import { ServerField, useServerChoice } from "../servers/ServerField";
+import { ServerField, useCellsLimit, useServerChoice } from "../servers/ServerField";
 import { dockStore, openToolPane, showPane } from "../shared/dock/dock";
 import { EmptyState } from "../shared/empty/EmptyState";
 import { Info } from "../shared/info/Info";
@@ -199,7 +199,7 @@ export interface Needs {
   area: boolean;
   /** Whether the area lies outside the outline of a product of which a layer is chosen. */
   outside: boolean;
-  /** Whether a chosen layer would hold more cells than the server receives. */
+  /** Whether a chosen layer would hold more cells than the server of the job receives. */
   tooLarge: boolean;
 }
 
@@ -317,7 +317,7 @@ interface GetLayerFormProps {
   onSelect: (product: string | null) => void;
 }
 
-/** Read the limit of the server on the cells of a layer each time the pane opens. */
+/** Read the limit of the project server on the cells of a layer each time the pane opens. */
 function CellLimit() {
   useEffect(() => {
     void loadCellLimit();
@@ -338,10 +338,12 @@ export function GetLayerForm({ found, selected, products, session, onSignIn, onS
   const id = useId();
   const jobs = useStore(jobsStore);
   const draft = useStore(searchDraftStore);
-  const limit = useStore(cellLimitStore);
   const addWhenReady = useStore(addWhenReadyStore);
   const mapLayers = useStore(mapLayersStore);
   const server = useServerChoice();
+  // The area is checked against the limit of the server on which the jobs would run: a server of the visitor,
+  // or the project server, whose number the description of the process gives.
+  const limit = useCellsLimit(useStore(cellLimitStore));
   const [chosen, setChosen] = useState<Record<string, readonly string[] | undefined>>({});
   const [started, setStarted] = useState<Started | null>(null);
 
@@ -374,7 +376,8 @@ export function GetLayerForm({ found, selected, products, session, onSignIn, onS
     const size = estimate(request.area, choice);
     return size ? [{ key: `${product.id} ${choice.name}`, product, choice, ...size }] : [];
   });
-  const overLimit = limit === null ? [] : estimates.filter(({ cells }) => cells > limit);
+  const most = limit.limit;
+  const overLimit = most === null ? [] : estimates.filter(({ cells }) => cells > most);
   const lacking = missingOf({
     session,
     found: found.length,
@@ -565,7 +568,7 @@ export function GetLayerForm({ found, selected, products, session, onSignIn, onS
               <PropertyList groups={[{ rows: estimateRows }]} />
               {overLimit.map(({ key, choice, cells }) => (
                 <p key={key} className="usa-error-message" role="alert">
-                  {tooLarge(choice.title, cells, limit ?? 0)}
+                  {tooLarge(choice.title, cells, limit)}
                 </p>
               ))}
             </Section>

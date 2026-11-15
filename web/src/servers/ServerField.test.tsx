@@ -87,6 +87,7 @@ test("the automatic choice sends no parameter and names the server of this momen
     "At present: Office computer",
     "Jobs at the same time: 4 (1 running, 2 waiting)",
     "Largest layer: 10 GB",
+    "Most cells of a layer: 100 million",
     "Space for layers: 1.3 GB of 100 GB used",
     "Free disk space: 412 GB",
   ]);
@@ -109,6 +110,7 @@ test("the choice of an own server is sent as the parameter, and the limits are t
   expect(rows()).toEqual([
     "Jobs at the same time: 4 (1 running, 2 waiting)",
     "Largest layer: 10 GB",
+    "Most cells of a layer: 100 million",
     "Space for layers: 1.3 GB of 100 GB used",
     "Free disk space: 412 GB",
   ]);
@@ -123,10 +125,11 @@ test("the choice of the project server is sent as the word project, with the lim
     expect(rows()).toEqual([
       "Jobs at the same time: 2 for all visitors",
       "Largest layer: 500 MB",
+      "Most cells of a layer: 25 million",
       "Space for layers: 2 GB and 50 layers for one session",
     ]),
   );
-  expect(projectRows(SAMPLE)).toHaveLength(3);
+  expect(projectRows(SAMPLE)).toHaveLength(4);
   expect(server.sent("GET", "/api/limits")).toHaveLength(1);
 });
 

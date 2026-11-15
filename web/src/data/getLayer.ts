@@ -1,3 +1,4 @@
+import type { CellsLimit } from "../servers/choice";
 import { isArea, type Area } from "../shared/area";
 import type { LayerRequest, ProductType } from "../shared/layer";
 import { createStore } from "../shared/store";
@@ -246,9 +247,20 @@ export function plan(
   );
 }
 
-/** Return the sentence for a layer that would hold more cells than the server receives. */
-export function tooLarge(title: string, cells: number, limit: number): string {
-  return `The area is too large for the layer "${title}": the layer would have about ${formatCells(cells)}, and Lynkeus receives at most ${(limit / 1e6).toLocaleString("en-US")} million. Choose a smaller area.`;
+/**
+ * Return the sentence for a layer that would hold more cells than the server of the job receives. The sentence
+ * names that server and its limit: a server of the visitor by its name, and otherwise the project server, which
+ * is Lynkeus itself for a visitor without a server of his own. When a connected server of the visitor
+ * receives more cells, the sentence names it as the server to choose.
+ */
+export function tooLarge(title: string, cells: number, { limit, server, several, larger }: CellsLimit): string {
+  const million = (count: number) => (count / 1e6).toLocaleString("en-US");
+  const where = server !== null ? ` on your server "${server}"` : several ? " on the project server" : "";
+  const who = server !== null ? "that server" : several ? "the project server" : "Lynkeus";
+  const advice = larger
+    ? `Choose a smaller area, or your server "${larger.name}", which receives at most ${million(larger.limit)} million.`
+    : "Choose a smaller area.";
+  return `The area is too large for the layer "${title}"${where}: the layer would have about ${formatCells(cells)}, and ${who} receives at most ${million(limit ?? 0)} million. ${advice}`;
 }
 
 /**

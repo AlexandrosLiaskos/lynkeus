@@ -4,5 +4,6 @@
   "connected": false,
   "paired": 1794735540.0,
   "seen": 1794735540.0,
-  "state": null
+  "state": null,
+  "knows_cells": false
 }

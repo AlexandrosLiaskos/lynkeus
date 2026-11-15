@@ -1,5 +1,5 @@
 import type { LayerEntry } from "../data/layers";
-import { PROJECT_SERVER, type Server } from "../shared/servers";
+import { FIRST_LAYER_CELLS, layerCells, PROJECT_SERVER, type Server } from "../shared/servers";
 import { AUTOMATIC, serverParameter, validChoice } from "./state";
 
 /** What follows from the choice of the field Server of a tool, among the servers of the visitor. */
@@ -74,4 +74,45 @@ export function chosenOf(choice: string, servers: readonly Server[], holders: re
   const missing =
     server !== null && !server.connected ? `Choose a server that is connected: "${server.name}" is not.` : null;
   return { choice: valid, parameter, server, missing, apart };
+}
+
+/** The limit on the cells of a layer that holds for a job of a form, with the server that sets it. */
+export interface CellsLimit {
+  /** The most cells of one layer that the server of the job receives, or null while it is not known. */
+  limit: number | null;
+  /** The name of the server of the visitor on which the job would run, or null for the project server. */
+  server: string | null;
+  /** Whether the visitor has a server of his own, so that a sentence tells the servers apart. */
+  several: boolean;
+  /**
+   * The connected server of the visitor that receives the most cells of a layer, when that is more than
+   * `limit`, or null. A sentence about an area that is too large names it as the server to choose.
+   */
+  larger: { name: string; limit: number } | null;
+}
+
+/** Return the most cells of one layer that a server of the visitor receives, as it last reported its limits. */
+function cellsOfServer(server: Server): number {
+  return server.state ? layerCells(server.state.limits) : FIRST_LAYER_CELLS;
+}
+
+/**
+ * Return the limit on the cells of a layer for the job that a form would start (`docs/Own_Servers.md`, Cells of
+ * a layer): the limit of the server chosen, of the server that Automatic names, or the number of the project
+ * server, which `project` gives (null while the description of its process is not read). `chosen` is null for
+ * a visitor without a server, whose job runs on the project server.
+ */
+export function cellsLimitOf(chosen: Chosen | null, servers: readonly Server[], project: number | null): CellsLimit {
+  const server = chosen?.server ?? null;
+  const limit = server === null ? project : cellsOfServer(server);
+  let larger: CellsLimit["larger"] = null;
+  if (limit !== null) {
+    for (const other of servers) {
+      const cells = cellsOfServer(other);
+      if (other.connected && other.id !== server?.id && cells > Math.max(limit, larger?.limit ?? 0)) {
+        larger = { name: other.name, limit: cells };
+      }
+    }
+  }
+  return { limit, server: server?.name ?? null, several: servers.length > 0, larger };
 }
