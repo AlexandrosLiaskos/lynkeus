@@ -22,6 +22,13 @@ type ProductType = Literal["GCOV", "GUNW", "GOFF", "SME2"]
 
 type Text = Annotated[str, Field(min_length=1)]
 
+type Reduction = Literal["mean", "mean-power"]
+"""How the reduced copies (overviews) of a result are made from its values.
+
+``mean`` takes the mean of the values. ``mean-power`` is for values in decibels
+of a power: it takes the mean of the linear power and gives it in decibels.
+"""
+
 
 class Format(BaseModel):
     """A format that accepts no unknown field and cannot be changed after it is made."""
@@ -75,6 +82,15 @@ class LayerDescription(Format):
         Date or dates of the data.
     inputs : tuple of str
         Names of the product files used.
+    layer : str or None
+        Name of the layer inside the product, as the layer request gave it,
+        for example ``HHHH``. A layer received from NASA has one. A result
+        has none, and a layer stored before this field existed has none.
+    ends : tuple of str or None
+        Words that name the lowest and the highest end of the legend, for
+        example ``("decrease", "increase")``. Only a result may have them,
+        when its tool gives them. A layer has none, and a description stored
+        before this field existed has none.
     program : str
         Program and version that produced the file.
     method : str or None
@@ -93,6 +109,8 @@ class LayerDescription(Format):
     colours: Text
     dates: tuple[date, ...] = Field(min_length=1)
     inputs: tuple[Text, ...] = Field(min_length=1)
+    layer: Text | None = None
+    ends: tuple[Text, Text] | None = None
     program: Text
     method: Text | None = None
     record: Text
@@ -106,6 +124,10 @@ class LayerDescription(Format):
             raise ValueError("a result needs the reference of its method")
         if self.kind == "layer" and self.method is not None:
             raise ValueError("a layer received from NASA has no method")
+        if self.kind == "result" and self.layer is not None:
+            raise ValueError("a result is not a layer of a product, so it has no name of one")
+        if self.kind == "layer" and self.ends is not None:
+            raise ValueError("only the legend of a result has words for its two ends")
         return self
 
 
@@ -167,6 +189,14 @@ class AnalysisResult:
         Name of the colour scale.
     method : str
         Reference of the method.
+    reduction : {"mean", "mean-power"}
+        How the reduced copies of the result are made from ``values``: the
+        mean of the values, or, for decibels of a power, the decibels of the
+        mean of the linear power.
+    ends : tuple of str or None
+        Words that name the lowest and the highest end of the legend, for
+        example ``("decrease", "increase")``, or None when the two values of
+        ``range`` say enough.
     """
 
     values: NDArray[np.float32]
@@ -175,3 +205,5 @@ class AnalysisResult:
     range: tuple[float, float]
     colours: str
     method: str
+    reduction: Reduction = "mean"
+    ends: tuple[str, str] | None = None

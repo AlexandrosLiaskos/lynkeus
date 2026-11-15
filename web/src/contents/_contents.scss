@@ -118,7 +118,8 @@ button.contents-fold {
   @include section.arrow-closed;
 }
 
-.contents-visible input {
+.contents-visible input,
+.contents-member-visible input {
   width: tokens.$icon;
   height: tokens.$icon;
   margin: 0;
@@ -185,6 +186,46 @@ button.contents-fold {
   flex: none;
   width: 2.5rem;
   text-align: right;
+}
+
+// The shapes of a group stand under the legend and the opacity of the group, in a section that opens and closes.
+// The arrow of the section stands under the box of the group, one step in from the arrow of the group, as the
+// children of a tree do, and the section reaches as far to the right as the row of the group.
+.contents-details > .section {
+  margin: tokens.$space-2 (tokens.$space-1 - tokens.$pane-padding) 0 (-(tokens.$target + tokens.$space-1));
+}
+
+.contents-details > .section > .section-body {
+  padding-bottom: 0;
+}
+
+// One shape of a group: its box, its name, which selects it, and the button that zooms to it, which stands under
+// the menu button of the group. The row is 28 pixels high, and its box takes a target of 24 pixels.
+.contents-members > .item {
+  gap: 0;
+  padding: (tokens.$row - tokens.$target) * 0.5 tokens.$space-1;
+}
+
+.contents-member-visible {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: tokens.$target;
+  height: tokens.$target;
+}
+
+// The name of a shape and, under it, its secondary line, as a button without a look of its own.
+.contents-member-name {
+  display: flex;
+  flex-direction: column;
+  padding: tokens.$space-1 * 0.5 tokens.$space-1 tokens.$space-1 * 0.5 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 
 // The basemap, the bottom layer. Its name is not a button, since the basemap has no legend to select.
@@ -265,6 +306,13 @@ button.contents-fold {
   width: tokens.$icon;
   height: tokens.$space-3;
   border: 1px solid uswds.color("base");
+}
+
+// The sample of a symbol of a shape layer: its line, with its fill and its casing, 24 pixels wide and 12 high.
+.legend-sample {
+  flex: none;
+  width: tokens.$target;
+  height: tokens.$space-3;
 }
 
 // The Symbology pane. The name of its layer stands above the groups, as the title of an item with its dates.

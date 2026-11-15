@@ -7,18 +7,21 @@ describes.
 
 import json
 from collections.abc import Sequence
+from dataclasses import replace
 from datetime import date
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 import pytest
+import rasterio
 from numpy.typing import NDArray
 
 from lynkeus.analysis import TOOLS
+from lynkeus.analysis.backscatter import backscatter_state
 from lynkeus.layers import AnalysisResult, LayerDescription, ToolRun
 from lynkeus.tools import run_tool
-from lynkeus.writing import LayerError, read_layer
+from lynkeus.writing import LayerError, read_layer, write_layer
 from tests.records import LAYERS, stac_faults
 
 METHOD = "Reference of the method of the stand-in"
@@ -95,6 +98,22 @@ def test_result_is_described_by_the_tool_and_by_its_layers(tmp_path: Path) -> No
     assert description.dates == (date(2026, 10, 21), date(2026, 11, 2))
     assert description.inputs == ("product-of-21-october.h5", "product-of-2-november.h5")
     assert description.program == "Lynkeus 0.1.0"
+    assert description.ends is None
+
+
+def test_result_carries_the_words_that_the_tool_gives_for_the_ends_of_its_legend(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def with_words(arrays: Sequence[NDArray[np.float32]], descriptions: Sequence[LayerDescription]) -> AnalysisResult:
+        return replace(ratio(arrays, descriptions), ends=("decrease", "increase"))
+
+    monkeypatch.setitem(TOOLS, "backscatter-change", with_words)
+    description = run(tmp_path)
+    assert description.ends == ("decrease", "increase")
+    assert description.model_dump(mode="json")["ends"] == ["decrease", "increase"]
+    record = json.loads((tmp_path / "backscatter-change.json").read_text(encoding="utf-8"))
+    assert stac_faults(record) == []
+    assert "decrease" not in json.dumps(record)
 
 
 def test_record_of_a_result_names_its_layers_and_its_method(tmp_path: Path) -> None:
@@ -116,10 +135,59 @@ def test_record_of_a_result_names_its_layers_and_its_method(tmp_path: Path) -> N
     lineage = record["properties"]["processing:lineage"]
     assert "backscatter-change" in lineage
     assert METHOD in lineage
+    assert lineage.endswith("Reduced copies made by averaging the values.")
     assert "processing:level" not in record["properties"]
     assert record["properties"]["start_datetime"] == "2026-10-21T00:00:00Z"
     assert record["properties"]["end_datetime"] == "2026-11-02T23:59:59Z"
     assert record["assets"]["data"]["bands"][0]["unit"] == "dB"
+
+
+def test_reduced_copy_of_a_result_in_decibels_is_the_tool_applied_to_the_reduced_copy_of_its_layer(
+    tmp_path: Path,
+) -> None:
+    granule = "NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001"
+    power, grid = read_layer(LAYERS / "gcov-hhhh-20261021.tif")
+    (tmp_path / "layer").mkdir()
+    (tmp_path / "result").mkdir()
+    received = write_layer(
+        power,
+        grid,
+        layer_id="layer",
+        folder=tmp_path / "layer",
+        address="/files/layer",
+        name="gcov-hhhh-20261021",
+        title="Backscatter HH, 21 Oct 2026",
+        kind="layer",
+        quantity="Radar backscatter gamma nought, HH, linear power",
+        unit="1",
+        legend="percentiles",
+        colours="grey",
+        dates=(date(2026, 10, 21),),
+        inputs=(f"{granule}.h5",),
+        layer="HHHH",
+        lineage="Layer HHHH of the product.",
+    )
+    description = run_tool(
+        ToolRun(tool="backscatter-state", inputs=("layer",), title="Backscatter HH in dB"),
+        layers={"layer": (received, tmp_path / "layer" / "gcov-hhhh-20261021.tif")},
+        layer_id="result",
+        folder=tmp_path / "result",
+        address="/files/result",
+        report=lambda progress, message: None,
+    )
+    assert (description.unit, description.kind) == ("dB", "result")
+    with rasterio.open(tmp_path / "result" / "backscatter-state.tif", overview_level=0) as source:
+        of_result = source.read(1)
+    with rasterio.open(tmp_path / "layer" / "gcov-hhhh-20261021.tif", overview_level=0) as source:
+        of_layer = source.read(1)
+    assert of_result.shape == of_layer.shape == (280, 300)
+    np.testing.assert_allclose(of_result, 10 * np.log10(of_layer), rtol=0, atol=2e-5)
+    written, _ = read_layer(tmp_path / "result" / "backscatter-state.tif")
+    assert written.tobytes() == backscatter_state([power], [received]).values.tobytes()
+    record = json.loads((tmp_path / "result" / "backscatter-state.json").read_text(encoding="utf-8"))
+    assert stac_faults(record) == []
+    lineage = record["properties"]["processing:lineage"]
+    assert lineage.endswith("Reduced copies made as the decibels of the mean of the linear power.")
 
 
 def test_layers_on_different_grids_are_refused(tmp_path: Path) -> None:

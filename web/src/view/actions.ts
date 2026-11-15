@@ -1,21 +1,31 @@
 import type { ToolAction, ToolActions } from "../ribbon/types";
-import { closeToolPane, dockStore, setAutoHide, showPane, shownOf, sideOf, type DockState } from "../shared/dock/dock";
+import {
+  closeToolPane,
+  dockStore,
+  isShown,
+  openToolPane,
+  pinAllPanes,
+  showPane,
+  type DockState,
+} from "../shared/dock/dock";
 import { useMap } from "../shared/map";
 import { panesStore, resetPanes, setPaneOpen, type PaneId } from "../shared/panes";
 import { useStore } from "../shared/store";
 import { statusBarStore } from "../statusbar/state";
 import { canFillScreen, toggleFullScreen, useFullScreenElement } from "./fullScreen";
+import { STORAGE_PANE } from "./StoragePane";
+// The panes are kept in the browser from the moment at which the View tab is loaded.
+import "./storedPanes";
 import type { ViewToolId } from "./tab";
 
 /**
  * Return the panes beside the map to their first state, as Reset Panes for Mapping does in ArcGIS Pro: the
- * Contents pane and the Catalog pane are open at their first width, no side hides its panes, and the pane of
- * every tool is closed.
+ * Contents pane and the Catalog pane are open at their first width, no pane hides automatically, and the pane
+ * of every tool is closed.
  */
 export function resetAllPanes(): void {
   dockStore.get().tools.forEach(closeToolPane);
-  setAutoHide("left", false);
-  setAutoHide("right", false);
+  pinAllPanes();
   resetPanes();
 }
 
@@ -27,7 +37,7 @@ export function resetAllPanes(): void {
  */
 export function paneAction(id: PaneId, open: boolean, dock: DockState): ToolAction {
   const onPage = open && dock.panes.some((pane) => pane.id === id);
-  const visible = shownOf(dock, sideOf(id)) === id;
+  const visible = isShown(dock, id);
   return {
     pressed: onPage,
     run: () => {
@@ -64,5 +74,6 @@ export function useViewActions(): ToolActions<ViewToolId> {
       ? { run: () => toggleFullScreen(map), pressed: fullScreen !== null }
       : { run: () => undefined, missing: NO_FULL_SCREEN },
     "view-status-bar": { run: () => statusBarStore.set(!statusBar), pressed: statusBar },
+    [STORAGE_PANE]: { run: () => openToolPane(STORAGE_PANE) },
   };
 }

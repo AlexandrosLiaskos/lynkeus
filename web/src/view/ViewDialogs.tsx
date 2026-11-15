@@ -1,4 +1,9 @@
-/** The dialogs of the View tab. The page holds them once, so that any button can open them. */
+import { StoragePane } from "./StoragePane";
+
+/**
+ * The pane of the View tab. The page holds it once, on the right side of the map, where a pane is drawn, so that
+ * its ribbon button can open it.
+ */
 export function ViewDialogs() {
-  return null;
+  return <StoragePane />;
 }

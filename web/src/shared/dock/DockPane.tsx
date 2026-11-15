@@ -8,13 +8,15 @@ import {
   concealPanes,
   dockStore,
   enterDock,
+  isHidden,
+  isShown,
   leaveDock,
   paneElementId,
-  panesOf,
   passFocus,
+  revealedOf,
   setAutoHide,
-  shownOf,
   sideOf,
+  stackOf,
   tabElementId,
 } from "./dock";
 
@@ -36,8 +38,9 @@ interface DockPaneProps {
  * pane with an explanation shows the button of the explanation beside its title. The pane enters the stack of its
  * side while it is drawn. Only the pane in front is visible; the others keep their state.
  *
- * The pin makes the side hide its panes automatically, as Auto-Hide does in ArcGIS Pro: the panes become tabs at
- * the edge of the window (see `Dock`). The pin of a pane that shows over the map keeps the side open again.
+ * The pin makes the pane hide automatically, as Auto-Hide does in ArcGIS Pro: the pane leaves the stack and
+ * becomes a tab at the edge of the window (see `Dock`). The pin of a pane that shows from its tab returns the pane
+ * to the stack.
  *
  * The pane is not modal. The Escape key returns the keyboard focus to the map, as ArcGIS Pro documents for its
  * Contents pane, and Shift with Escape closes the pane, as ArcGIS Pro 3.0 documents for the active pane. The
@@ -51,9 +54,9 @@ export function DockPane({ id, title, info, onClose, children }: DockPaneProps) 
   const heading = useRef<HTMLHeadingElement>(null);
   const answered = useRef<object | null>(null);
   const side = sideOf(id);
-  const autoHide = dock.autoHide[side];
-  const shown = shownOf(dock, side) === id;
-  const stacked = !autoHide && panesOf(dock, side).length > 1;
+  const autoHide = isHidden(dock, id);
+  const shown = isShown(dock, id);
+  const stacked = !autoHide && stackOf(dock, side).length > 1;
   const request = dock.focus;
 
   // The pane is in the stack from before the page is painted, so no other pane shows in its place for a moment.
@@ -70,18 +73,19 @@ export function DockPane({ id, title, info, onClose, children }: DockPaneProps) 
     }
   }, [shown, request, id]);
 
-  // A pane that showed over the map and closes does not leave the pane behind it in its place.
   const close = () => {
-    concealPanes(side);
+    if (revealedOf(dock, side) === id) {
+      concealPanes(side);
+    }
     onClose();
   };
 
   // The pin button leaves the page with the pane that hides, so the keyboard focus moves to the tab of the pane.
   const togglePin = () => {
     if (autoHide) {
-      setAutoHide(side, false);
+      setAutoHide(id, false);
     } else {
-      flushSync(() => setAutoHide(side, true));
+      flushSync(() => setAutoHide(id, true));
       document.getElementById(tabElementId(id))?.focus();
     }
   };
@@ -101,7 +105,7 @@ export function DockPane({ id, title, info, onClose, children }: DockPaneProps) 
 
   return (
     <div
-      className="dock-pane"
+      className={autoHide ? "dock-pane dock-pane--over" : "dock-pane"}
       id={paneElementId(id)}
       role={stacked ? "tabpanel" : undefined}
       aria-labelledby={stacked ? tabElementId(id) : undefined}
@@ -125,7 +129,7 @@ export function DockPane({ id, title, info, onClose, children }: DockPaneProps) 
           <span className="pane-buttons">
             <IconButton
               icon="push_pin"
-              label={autoHide ? "Pin the panes of this side" : "Auto-hide the panes of this side"}
+              label={autoHide ? `Pin the ${title} pane` : `Auto-hide the ${title} pane`}
               onClick={togglePin}
             />
             <button type="button" className="pane-close" aria-label={`Close the ${title} pane`} onClick={close}>

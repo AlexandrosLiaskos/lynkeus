@@ -1,5 +1,6 @@
 import type OlMap from "ol/Map";
 import { fromLonLat, toLonLat } from "ol/proj";
+import { keepInBrowser } from "../shared/storage/storage";
 import { createStore } from "../shared/store";
 
 /** A view of the map that the user has saved under a name. */
@@ -48,28 +49,37 @@ export function isBookmark(value: unknown): value is Bookmark {
   );
 }
 
+/** The bookmarks, in the order in which they were saved. */
+export const bookmarksStore = createStore<readonly Bookmark[]>([]);
+
+/**
+ * The bookmarks as a part of the work that the browser keeps. They are stored as a plain list under the name
+ * that they had before the other parts were kept, so that bookmarks stored earlier are still read. Whatever is
+ * not a bookmark in the stored list is left out.
+ */
+const kept = keepInBrowser<readonly Bookmark[]>({
+  key: BOOKMARKS_KEY,
+  title: "Bookmarks",
+  description: "The views of the map that were saved under a name in the Bookmarks pane.",
+  plain: true,
+  read: () => bookmarksStore.get(),
+  check: (stored) => (Array.isArray(stored) ? stored.filter(isBookmark) : undefined),
+  restore: (bookmarks) => bookmarksStore.set(bookmarks),
+  subscribe: bookmarksStore.subscribe,
+});
+
 /** Read the bookmarks from the local storage. Whatever is not a bookmark there is left out. */
 export function readBookmarks(): Bookmark[] {
-  try {
-    const stored: unknown = JSON.parse(window.localStorage.getItem(BOOKMARKS_KEY) ?? "[]");
-    return Array.isArray(stored) ? stored.filter(isBookmark) : [];
-  } catch {
-    return [];
-  }
+  return [...(kept.stored() ?? [])];
 }
 
-/** The bookmarks, in the order in which they were saved. */
-export const bookmarksStore = createStore<readonly Bookmark[]>(readBookmarks());
-
-/** Keep the bookmarks in the store and in the local storage. Returns false when the browser did not store them. */
+/**
+ * Keep the bookmarks in the store, from which they reach the local storage while the user lets the browser keep
+ * them. Returns false when the browser did not store them.
+ */
 function keep(bookmarks: readonly Bookmark[]): boolean {
   bookmarksStore.set(bookmarks);
-  try {
-    window.localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(bookmarks));
-    return true;
-  } catch {
-    return false;
-  }
+  return !kept.failed();
 }
 
 /** The outcome of a change of the bookmarks: null, or the sentence that says what went wrong. */

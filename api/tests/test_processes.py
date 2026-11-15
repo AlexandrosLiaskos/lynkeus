@@ -102,6 +102,9 @@ def test_output_is_the_layer_description() -> None:
         "maxItems": 2,
     }
     assert schema["properties"]["method"]["nullable"] is True
+    ends = schema["properties"]["ends"]
+    assert (ends["type"], ends["minItems"], ends["maxItems"], ends["nullable"]) == ("array", 2, 2, True)
+    assert ends["items"]["type"] == "string"
     assert schema["properties"]["kind"]["enum"] == ["layer", "result"]
 
 

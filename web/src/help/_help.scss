@@ -111,3 +111,8 @@
 .sources .usa-table a {
   overflow-wrap: anywhere;
 }
+
+// The dialog Methods: the summary of the method of each tool. A long address or path breaks where its line ends.
+.methods :is(a, code) {
+  overflow-wrap: anywhere;
+}

@@ -268,6 +268,7 @@ def test_layer_is_received_and_written(visit: Visit) -> None:
     assert (description.unit, description.colours) == ("1", "grey")
     assert description.dates == (date(2026, 10, 21),)
     assert description.inputs == (f"{BACKSCATTER}.h5",)
+    assert description.layer == "HHHH"
     assert sorted(path.name for path in visit.folder.iterdir()) == ["gcov-hhhh-20261021.json", "gcov-hhhh-20261021.tif"]
     written, _ = read_layer(visit.folder / "gcov-hhhh-20261021.tif")
     with rasterio.open(LAYERS / "gcov-hhhh-20261021.tif") as source:
@@ -311,6 +312,7 @@ def test_record_names_the_product_and_the_job(visit: Visit) -> None:
     assert "-71.2, 42.6, -70.75, 42.95" in lineage
     assert item["links"][0]["rel"] == "via"
     assert item["links"][0]["href"] == "https://cmr.earthdata.nasa.gov/search/concepts/G4405194348-ASF.umm_json"
+    assert item["assets"]["data"]["bands"][0]["name"] == "HHHH"
 
 
 def test_soil_moisture_keeps_its_unit_and_loses_its_no_data_value(
@@ -321,6 +323,7 @@ def test_soil_moisture_keeps_its_unit_and_loses_its_no_data_value(
     description = visit.get(product="SME2", granule=f"{name}.h5", layer="soilMoisture")
     assert description.title == "Soil moisture, 9 Oct 2026"
     assert (description.quantity, description.unit, description.colours) == ("Soil moisture", "m3 m-3", "YlGnBu")
+    assert description.layer == "soilMoisture"
     assert description.url == "/files/k3v9x2/sme2-soilmoisture-20261009.tif"
     assert description.inputs == (f"{name}.h5",)
     assert 0.08 <= description.range[0] < description.range[1] <= 0.6
@@ -346,6 +349,7 @@ def test_classes_of_an_interferogram_are_received_as_classes(monkeypatch: pytest
     )
     assert description.title == "Connected components HH, 9 Oct 2026 to 21 Oct 2026"
     assert description.dates == (date(2026, 10, 9), date(2026, 10, 21))
+    assert description.layer == layer
     assert (description.unit, description.range, description.colours) == ("1", (0.0, 1.0), "tab10")
     name = "gunw-unwrappedinterferogram-hh-connectedcomponents-20261009-20261021"
     assert description.url == f"/files/k3v9x2/{name}.tif"
@@ -353,6 +357,8 @@ def test_classes_of_an_interferogram_are_received_as_classes(monkeypatch: pytest
     assert set(np.unique(values[~np.isnan(values)])) == {0.0, 1.0}
     item = json.loads((tmp_path / f"{name}.json").read_text(encoding="utf-8"))
     assert "reduced copies made by taking the most frequent value" in item["properties"]["processing:lineage"]
+    assert item["assets"]["data"]["bands"][0]["name"] == layer
+    assert stac_faults(item) == []
 
 
 def test_product_that_the_catalogue_does_not_hold_is_refused(visit: Visit) -> None:

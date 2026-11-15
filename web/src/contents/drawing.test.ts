@@ -4,9 +4,10 @@ import WebGLTileLayer from "ol/layer/WebGLTile";
 import { beforeEach, expect, test, vi } from "vitest";
 import type { LayerDescription } from "../shared/layer";
 import { messagesStore } from "../shared/messages/messages";
+import { FIRST_Z_INDEX } from "../shared/shapeLayers";
 import { CogSource } from "./CogSource";
 import { extentOf, findLayer } from "./display";
-import { drawAgain, drawAgainStore, FIRST_Z_INDEX, LayerDrawing, layerProblemsStore } from "./drawing";
+import { drawAgain, drawAgainStore, LayerDrawing, layerProblemsStore } from "./drawing";
 import type { LayerProblem } from "./fileProblem";
 import { firstDisplay } from "./state";
 import { openTestFile } from "./testdata/files";
@@ -76,6 +77,27 @@ test("a new order changes the places and keeps the layers", () => {
   expect(layerOf(map, "coherence")).toBe(coherence);
   expect(coherence.getZIndex()).toBe(FIRST_Z_INDEX + 1);
   expect(layerOf(map, "backscatter").getZIndex()).toBe(FIRST_Z_INDEX);
+});
+
+test("a layer is drawn at its place in the drawing order of all the layers, which holds the shape layers too", () => {
+  const { map, drawing } = start();
+  drawing.update([COHERENCE, BACKSCATTER], {}, ["coherence", "area", "backscatter"]);
+  expect(layerOf(map, "coherence").getZIndex()).toBe(FIRST_Z_INDEX);
+  expect(layerOf(map, "backscatter").getZIndex()).toBe(FIRST_Z_INDEX + 2);
+  // The shape layer moves to the bottom: the two layers keep their order and are drawn one place higher or as before.
+  drawing.update([COHERENCE, BACKSCATTER], {}, ["area", "coherence", "backscatter"]);
+  expect(layerOf(map, "coherence").getZIndex()).toBe(FIRST_Z_INDEX + 1);
+  expect(layerOf(map, "backscatter").getZIndex()).toBe(FIRST_Z_INDEX + 2);
+  drawing.update([COHERENCE, BACKSCATTER], {}, ["coherence", "backscatter", "area", "products"]);
+  expect(layerOf(map, "coherence").getZIndex()).toBe(FIRST_Z_INDEX);
+  expect(layerOf(map, "backscatter").getZIndex()).toBe(FIRST_Z_INDEX + 1);
+});
+
+test("a layer that the drawing order does not name is drawn above the layers that it names", () => {
+  const { map, drawing } = start();
+  drawing.update([COHERENCE, BACKSCATTER], {}, ["area", "coherence"]);
+  expect(layerOf(map, "coherence").getZIndex()).toBe(FIRST_Z_INDEX + 1);
+  expect(layerOf(map, "backscatter").getZIndex()).toBe(FIRST_Z_INDEX + 3);
 });
 
 test("a layer that leaves the pane leaves the map", () => {
@@ -259,12 +281,12 @@ test("the file of a layer is opened anew when the visitor asks to draw the layer
   drawing.update([OWN], {});
   await vi.waitFor(() => expect(layerProblemsStore.get()).toEqual({ own: AWAY }));
   const first = layerOf(map, "own");
-  drawing.update([OWN], {}, drawAgainStore.get());
+  drawing.update([OWN], {}, undefined, drawAgainStore.get());
   expect(layerOf(map, "own")).toBe(first);
   connected = true;
   drawAgain("own");
   expect(drawAgainStore.get()).toEqual({ own: 1 });
-  drawing.update([OWN], {}, drawAgainStore.get());
+  drawing.update([OWN], {}, undefined, drawAgainStore.get());
   expect(opened).toEqual([OWN.url, OWN.url]);
   expect(layerOf(map, "own")).not.toBe(first);
   expect(layerProblemsStore.get()).toEqual({});

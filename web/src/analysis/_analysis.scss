@@ -1,1 +1,9 @@
-// The style of the elements of the Analysis tab.
+@use "../shared/tokens/tokens";
+
+// The style of the elements of the Analysis tab. The sizes, the distances and the colours come from
+// `shared/tokens`; the fields, the lists of names and values, the sections and the notices bring their own style.
+
+// A check box that stands alone among the fields keeps the distance of a field to the field before it.
+.analysis-option {
+  margin-top: tokens.$field-gap;
+}

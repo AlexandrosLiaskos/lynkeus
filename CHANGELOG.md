@@ -32,8 +32,9 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The tool pane: the form of a tool opens in a pane on the right of the map, with its run button, the
   progress of a run and its outcome.
 - The stack of panes on each side of the map, with a tab for each pane.
-- The pin in the title bar of a pane, which hides the panes of its side into tabs at the edge of the window,
-  as Auto-Hide does in ArcGIS Pro. A tab shows its pane over the map until the user works in the map or in the ribbon.
+- The pin in the title bar of a pane, which makes the pane hide automatically, as Auto-Hide does in ArcGIS
+  Pro: the pane becomes a tab at the edge of the window, and the tab shows it over the map until the user
+  works in the map. The other panes of the side stay in the stack.
 - One size for the form elements inside the panes and the dialogs.
 - The explanation of a title: a small circled "i" beside the title of a field, a group, a section or a
   tool, which shows the explanation in a bubble.
@@ -76,6 +77,30 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The interface guide, and the shared building blocks of a pane that carry its rules: section, empty state,
   notice, property list, toolbar of icon buttons, menu button and the line of a tool pane that states what is
   missing.
+- The layers of shapes in the Contents pane: the area of the Map tab, the area of the search and the
+  outlines of the products found, the last as one group that lists its products. Such a layer is shown and
+  hidden, has a legend and an opacity, is selected, zoomed to, moved in the drawing order among the other
+  layers and removed, and the Properties window states what it is.
+- The analysis tools Backscatter, One date, Backscatter, Change and Coherence, One pair in the server, each
+  with its method sheet in `docs/methods/`. A tool refuses a layer that it does not read, with a sentence
+  that says why.
+- The name of a layer inside its product, in the layer description and as the name of the band in the STAC
+  record of the layer.
+- The reduced copies of a result of Backscatter, One date, made as the decibels of the mean power of the
+  cells that each of their cells covers.
+- The forms of the three analysis tools, in the tool pane. A form offers the layers of the session that its
+  tool reads, proposes the name of the result, shows the method in the words of the method sheet and starts
+  the tool as a job.
+- The dialog Methods of the Help tab, with the method sheet of each finished analysis tool.
+- The words at the two ends of the legend of a result of Backscatter, Change, decrease and increase, which
+  the Contents pane writes beside the lowest and the highest value.
+- The work that is kept in the browser: the bookmarks, the view of the map, the panes, the area, the form of
+  the search and the layers of the map return when the page opens again. The pane Browser storage of the
+  View tab switches each part on and off, states the size of its stored copy and clears it.
+- The welcome window of the application page, shown when the page opens: the name and a description of the
+  platform, three facts of the NISAR satellite, the team, the developer of the site, the total of recorded page
+  visits, and the event with the logos of NASA, the NASA Space Apps Challenge and the universities of the team.
+- The mark of the team as a vector drawing of the constellation Lynx, in the title bar and the welcome window.
 
 ### Changed
 
@@ -119,6 +144,16 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   the tint of a chosen element.
 - The messages of the Share tab say basemap, and the More button of a job and of a layer in the Catalog pane
   is named after its item.
+- The outline of the selected product is drawn in cyan over a dark edge, the colour of a selection in
+  ArcGIS Pro. The outlines and the area of the search stay on the map after the search pane closes, as
+  layers of the Contents pane, where they are hidden or removed.
+- The Contents pane and the map keep one drawing order for all layers, so that a layer of shapes can stand
+  under a layer of data.
+- The form of the search is filled when its pane, or the pane of Get layer, first opens. The area of the
+  search is therefore not on the map, nor in the Contents pane, when the page loads.
+- The forms of the Analysis tab show only the layer, the name of the result, the box that adds the result to
+  the map and a link Method. The page Methods of the Help tab shows for each tool eight short rows, which
+  stand in a new section In brief of its method sheet, and the address of the full sheet.
 
 ### Removed
 
