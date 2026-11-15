@@ -1,8 +1,15 @@
 import { useEffect, useId, useMemo, useState } from "react";
+import { EmptyState } from "../shared/empty/EmptyState";
+import { FieldTitle, infoId } from "../shared/field/FieldTitle";
+import { Info } from "../shared/info/Info";
 import type { LayerDescription } from "../shared/layer";
 import { mapLayersStore } from "../shared/mapLayers";
+import { Notice } from "../shared/notice/Notice";
+import { setPaneOpen } from "../shared/panes";
+import { PropertyList } from "../shared/properties/PropertyList";
+import { Section } from "../shared/section/Section";
 import { useStore } from "../shared/store";
-import { ToolPane, ToolPaneGroup, type ToolPaneRun } from "../shared/toolpane/ToolPane";
+import { ToolPane, type ToolPaneRun } from "../shared/toolpane/ToolPane";
 import { decibels, type Cog } from "./cog";
 import { COLOUR_SCALES, colourScale, scaleKind, type ScaleKind } from "./colours";
 import { formatDates } from "./dates";
@@ -25,6 +32,7 @@ import {
 /** The number of classes of the histogram. */
 const CLASSES = 48;
 
+/** The groups of the list of colour scales, by the use of a scale. */
 const KINDS: readonly { kind: ScaleKind; label: string }[] = [
   { kind: "sequential", label: "From low to high" },
   { kind: "diverging", label: "Two sides of a middle value" },
@@ -32,12 +40,31 @@ const KINDS: readonly { kind: ScaleKind; label: string }[] = [
   { kind: "classes", label: "Classes" },
 ];
 
+/** The ways in which the range of the colour scale is set. */
 const STRETCHES: readonly { kind: Stretch["kind"]; label: string }[] = [
   { kind: "typed", label: "Typed values" },
   { kind: "extremes", label: "Lowest and highest value" },
   { kind: "percent", label: "Percent clip" },
   { kind: "deviations", label: "Standard deviations" },
 ];
+
+/** The groups of the pane. Each one opens and closes. */
+type Group = "colours" | "range" | "statistics" | "noData" | "mask";
+
+/** The group that holds each field in which a value can be wrong. */
+const GROUP_OF: Readonly<Record<Field, Group>> = {
+  colours: "colours",
+  percent: "range",
+  deviations: "range",
+  lowest: "range",
+  highest: "range",
+  noDataColour: "noData",
+  maskLowest: "mask",
+  maskHighest: "mask",
+};
+
+/** The fields whose title carries an explanation, which a screen reader reads with the field. */
+const EXPLAINED: readonly Field[] = ["colours", "percent", "deviations"];
 
 /** What the pane has read of the file of the layer: its header and the values of its most reduced copy. */
 interface Read {
@@ -100,14 +127,25 @@ function Histogram({ values, summary, lowest, highest, unit }: HistogramProps) {
   );
 }
 
-/** The Symbology pane of one layer. It starts again each time it opens. */
+/**
+ * The Symbology pane of one layer. It starts again each time it opens. Its fields stand in five groups: the
+ * colours, the range of the colour scale, the statistics of the values with their histogram, the cells without
+ * data and the mask. The Apply button is the one filled button, and the link under the groups returns the layer
+ * to its first display.
+ */
 function SymbologyOf({ layer }: { layer: LayerDescription }) {
   const [draft, setDraft] = useState(() => draftOf(layer, displayOf(layer)));
   const [read, setRead] = useState<Read | "reading" | "failed">("reading");
   const [problem, setProblem] = useState<Problem | null>(null);
   const [run, setRun] = useState<ToolPaneRun | null>(null);
-  // A group that is in use when the pane opens starts open. Afterwards the user opens and closes it.
-  const [openAtStart] = useState({ noData: draft.noData, masked: draft.masked });
+  // The groups that are open. A group that is in use when the pane opens starts open.
+  const [open, setOpen] = useState<Readonly<Record<Group, boolean>>>({
+    colours: true,
+    range: true,
+    statistics: true,
+    noData: draft.noData,
+    mask: draft.masked,
+  });
   const id = useId();
   const power = isLinearPower(layer);
   const inDb = power && draft.decibels;
@@ -135,6 +173,13 @@ function SymbologyOf({ layer }: { layer: LayerDescription }) {
       current = false;
     };
   }, [layer.url]);
+
+  // The field with a wrong value receives the focus after its group has opened.
+  useEffect(() => {
+    if (problem) {
+      document.getElementById(`${id}-${problem.field}`)?.focus();
+    }
+  }, [problem, id]);
 
   const shown = useMemo(() => (typeof read === "string" ? null : valuesOf(read, inDb)), [read, inDb]);
 
@@ -178,9 +223,9 @@ function SymbologyOf({ layer }: { layer: LayerDescription }) {
   const apply = () => {
     const result = changeOf(layer, draft);
     if ("field" in result) {
+      setOpen({ ...open, [GROUP_OF[result.field]]: true });
       setProblem(result);
-      setRun({ state: "error", text: "The display was not changed, because a value is wrong." });
-      document.getElementById(`${id}-${result.field}`)?.focus();
+      setRun({ state: "error", text: "The display was not changed. Correct the value of the marked field." });
     } else {
       setDisplay(layer, result);
       setProblem(null);
@@ -195,12 +240,25 @@ function SymbologyOf({ layer }: { layer: LayerDescription }) {
     setRun({ state: "success", text: `${layer.title} has its first display again.` });
   };
 
-  /** The properties that tie a field to the sentence about its wrong value. */
-  const field = (name: Field) => ({
-    id: `${id}-${name}`,
-    "aria-invalid": problem?.field === name ? true : undefined,
-    "aria-describedby": problem?.field === name ? `${id}-problem` : undefined,
+  /** The properties of a group: whether it is open, and the call that opens and closes it. */
+  const group = (name: Group) => ({
+    open: open[name],
+    onToggle: (next: boolean) => setOpen({ ...open, [name]: next }),
   });
+
+  /** The properties that tie a field to the explanation of its title and to the sentence about its wrong value. */
+  const field = (name: Field) => {
+    const wrong = problem?.field === name;
+    const described = [
+      ...(EXPLAINED.includes(name) ? [infoId(`${id}-${name}`)] : []),
+      ...(wrong ? [`${id}-problem`] : []),
+    ];
+    return {
+      id: `${id}-${name}`,
+      "aria-invalid": wrong ? true : undefined,
+      "aria-describedby": described.length > 0 ? described.join(" ") : undefined,
+    };
+  };
   const message = (name: Field) =>
     problem?.field === name ? (
       <p className="usa-error-message" id={`${id}-problem`}>
@@ -215,155 +273,210 @@ function SymbologyOf({ layer }: { layer: LayerDescription }) {
     value: draft[name],
   });
 
-  return (
-    <ToolPane id={SYMBOLOGY_PANE} title="Symbology" runLabel="Apply" onRun={apply} run={run}>
-      <p className="symbology-layer">
-        {layer.title}, {formatDates(layer.dates)}
-      </p>
+  /** The statistics as rows of names and values, each value with the unit in which the layer is shown. */
+  const statistic = (name: string, value: number) => ({ name, value: `${formatNumber(value)}${unit && ` ${unit}`}` });
 
-      <label className="usa-label" htmlFor={`${id}-colours`}>
-        Colour scale
-      </label>
-      <select
-        {...field("colours")}
-        className="usa-select"
-        value={draft.colours}
-        onChange={(event) => change({ colours: event.target.value })}
-      >
-        {KINDS.map(({ kind, label }) => (
-          <optgroup key={kind} label={label}>
-            {COLOUR_SCALES.filter((scale) => scale.kind === kind).map(({ name }) => (
-              <option key={name} value={name}>
-                {name}
-              </option>
-            ))}
-          </optgroup>
-        ))}
-      </select>
-      {message("colours")}
-      <div
-        className="symbology-ramp"
-        role="img"
-        aria-label={`Colours of the scale ${draft.colours}${draft.inverted && !classes ? ", inverted" : ""}`}
-        style={{
-          background: rampImage(
-            draft.inverted && !classes ? [...colourScale(draft.colours)].reverse() : colourScale(draft.colours),
-            scaleKind(draft.colours),
-            "right",
-          ),
-        }}
-      />
-      <div className="usa-checkbox">
-        <input
-          className="usa-checkbox__input"
-          id={`${id}-inverted`}
-          type="checkbox"
-          checked={draft.inverted}
-          disabled={classes}
-          onChange={(event) => change({ inverted: event.target.checked })}
-        />
-        <label className="usa-checkbox__label" htmlFor={`${id}-inverted`}>
-          Invert the colour scale
-        </label>
+  return (
+    <ToolPane
+      id={SYMBOLOGY_PANE}
+      title="Symbology"
+      info="The pane sets how the layer is drawn: its colour scale, the range of the scale, the colour of the cells without data and a mask. The Apply button changes the display of the layer on the map."
+      runLabel="Apply"
+      onRun={apply}
+      run={run}
+    >
+      <div className="symbology-layer">
+        <p className="item-title">{layer.title}</p>
+        <p className="item-line">{formatDates(layer.dates)}</p>
       </div>
-      {power ? (
-        <div className="usa-checkbox">
+
+      <Section title="Colours" {...group("colours")}>
+        <FieldTitle field={`${id}-colours`} title="Colour scale">
+          The colours that the values of the layer receive, from the lowest value of the range to the highest. The list
+          groups the scales by their use.
+        </FieldTitle>
+        <select
+          {...field("colours")}
+          className="usa-select"
+          value={draft.colours}
+          onChange={(event) => change({ colours: event.target.value })}
+        >
+          {KINDS.map(({ kind, label }) => (
+            <optgroup key={kind} label={label}>
+              {COLOUR_SCALES.filter((scale) => scale.kind === kind).map(({ name }) => (
+                <option key={name} value={name}>
+                  {name}
+                </option>
+              ))}
+            </optgroup>
+          ))}
+        </select>
+        {message("colours")}
+        <div
+          className="symbology-ramp"
+          role="img"
+          aria-label={`Colours of the scale ${draft.colours}${draft.inverted && !classes ? ", inverted" : ""}`}
+          style={{
+            background: rampImage(
+              draft.inverted && !classes ? [...colourScale(draft.colours)].reverse() : colourScale(draft.colours),
+              scaleKind(draft.colours),
+              "right",
+            ),
+          }}
+        />
+        <div className="usa-checkbox symbology-option">
           <input
             className="usa-checkbox__input"
-            id={`${id}-decibels`}
+            id={`${id}-inverted`}
             type="checkbox"
-            checked={draft.decibels}
-            onChange={(event) => changeDecibels(event.target.checked)}
+            checked={draft.inverted}
+            disabled={classes}
+            onChange={(event) => change({ inverted: event.target.checked })}
           />
-          <label className="usa-checkbox__label" htmlFor={`${id}-decibels`}>
-            Show in decibels
+          <label className="usa-checkbox__label" htmlFor={`${id}-inverted`}>
+            Invert the colour scale
           </label>
         </div>
-      ) : null}
+      </Section>
 
-      <label className="usa-label" htmlFor={`${id}-stretch`}>
-        Range of the colour scale
-      </label>
-      <select
-        className="usa-select"
-        id={`${id}-stretch`}
-        value={draft.stretch}
-        onChange={(event) => {
-          const chosen = STRETCHES.find(({ kind }) => kind === event.target.value);
-          if (chosen) {
-            change({ stretch: chosen.kind });
-          }
-        }}
+      <Section
+        title="Range"
+        info="The lowest and the highest value receive the first and the last colour of the scale. A value outside the range receives the colour of the nearer end."
+        {...group("range")}
       >
-        {STRETCHES.map(({ kind, label }) => (
-          <option key={kind} value={kind} disabled={kind !== "typed" && !shown?.summary}>
-            {label}
-          </option>
-        ))}
-      </select>
-      {draft.stretch === "percent" ? (
-        <>
-          <label className="usa-label" htmlFor={`${id}-percent`}>
-            Percent of the cells left out at each end
-          </label>
-          <input {...text("percent")} onChange={(event) => change({ percent: event.target.value })} />
-          {message("percent")}
-        </>
-      ) : null}
-      {draft.stretch === "deviations" ? (
-        <>
-          <label className="usa-label" htmlFor={`${id}-deviations`}>
-            Standard deviations on each side of the mean
-          </label>
-          <input {...text("deviations")} onChange={(event) => change({ deviations: event.target.value })} />
-          {message("deviations")}
-        </>
-      ) : null}
-      <div className="symbology-pair">
-        <div>
-          <label className="usa-label" htmlFor={`${id}-lowest`}>
-            Lowest value{inUnit}
-          </label>
-          <input {...text("lowest")} onChange={(event) => change({ lowest: event.target.value, stretch: "typed" })} />
+        {power ? (
+          <div className="usa-checkbox symbology-option">
+            <input
+              className="usa-checkbox__input"
+              id={`${id}-decibels`}
+              type="checkbox"
+              checked={draft.decibels}
+              onChange={(event) => changeDecibels(event.target.checked)}
+            />
+            <label className="usa-checkbox__label" htmlFor={`${id}-decibels`}>
+              Show in decibels
+            </label>
+          </div>
+        ) : null}
+        <FieldTitle field={`${id}-stretch`} title="Method">
+          The way in which the range is set. Its two values are typed, or they are taken from the values of the layer:
+          the lowest and the highest value, a percent clip, or the mean and a number of standard deviations.
+        </FieldTitle>
+        <select
+          className="usa-select"
+          id={`${id}-stretch`}
+          aria-describedby={infoId(`${id}-stretch`)}
+          value={draft.stretch}
+          onChange={(event) => {
+            const chosen = STRETCHES.find(({ kind }) => kind === event.target.value);
+            if (chosen) {
+              change({ stretch: chosen.kind });
+            }
+          }}
+        >
+          {STRETCHES.map(({ kind, label }) => (
+            <option key={kind} value={kind} disabled={kind !== "typed" && !shown?.summary}>
+              {label}
+            </option>
+          ))}
+        </select>
+        {draft.stretch === "percent" ? (
+          <>
+            <FieldTitle field={`${id}-percent`} title="Clip (%)">
+              The percent of the cells that is left out at each end of the values, as a number from 0 to below 50, for
+              example 2.
+            </FieldTitle>
+            <input {...text("percent")} onChange={(event) => change({ percent: event.target.value })} />
+            {message("percent")}
+          </>
+        ) : null}
+        {draft.stretch === "deviations" ? (
+          <>
+            <FieldTitle field={`${id}-deviations`} title="Standard deviations">
+              The number of standard deviations on each side of the mean, as a number above 0, for example 2.
+            </FieldTitle>
+            <input {...text("deviations")} onChange={(event) => change({ deviations: event.target.value })} />
+            {message("deviations")}
+          </>
+        ) : null}
+        <div className="symbology-pair">
+          <div>
+            <label className="usa-label" htmlFor={`${id}-lowest`}>
+              Lowest value{inUnit}
+            </label>
+            <input {...text("lowest")} onChange={(event) => change({ lowest: event.target.value, stretch: "typed" })} />
+          </div>
+          <div>
+            <label className="usa-label" htmlFor={`${id}-highest`}>
+              Highest value{inUnit}
+            </label>
+            <input
+              {...text("highest")}
+              onChange={(event) => change({ highest: event.target.value, stretch: "typed" })}
+            />
+          </div>
         </div>
-        <div>
-          <label className="usa-label" htmlFor={`${id}-highest`}>
-            Highest value{inUnit}
-          </label>
-          <input {...text("highest")} onChange={(event) => change({ highest: event.target.value, stretch: "typed" })} />
-        </div>
-      </div>
-      {message("lowest")}
-      {message("highest")}
+        {message("lowest")}
+        {message("highest")}
+      </Section>
 
-      {read === "reading" ? <p className="usa-hint">Reading the values of the layer.</p> : null}
-      {read === "failed" ? <p className="usa-hint">The values of the layer could not be read.</p> : null}
-      {typeof read !== "string" && shown?.summary && shown.sampled ? (
-        <>
-          <Histogram
-            values={shown.values}
-            summary={shown.sampled}
-            lowest={numberOf(draft.lowest)}
-            highest={numberOf(draft.highest)}
-            unit={unit}
-          />
-          <p className="usa-hint">
-            {shown.ofFile
-              ? "Statistics that the file states for all its cells: "
-              : "Statistics of the cells that the histogram counts: "}
-            lowest value {formatNumber(shown.summary.minimum)}, highest value {formatNumber(shown.summary.maximum)},
-            mean {formatNumber(shown.summary.mean)}, standard deviation {formatNumber(shown.summary.deviation)}
-            {unit && ` ${unit}`}. The histogram and the percent clip use{" "}
-            {read.sample.full
-              ? "all the cells of the file"
-              : `the most reduced copy of the file, of ${String(read.sample.size[0])} by ${String(read.sample.size[1])} cells`}
-            .
-          </p>
-        </>
-      ) : null}
+      <Section
+        title="Statistics"
+        info={
+          typeof read !== "string" && shown?.summary
+            ? `${
+                shown.ofFile
+                  ? "The file of the layer states these statistics for all its cells."
+                  : "The statistics are computed from the cells that the histogram counts."
+              } The histogram and the percent clip use ${
+                read.sample.full
+                  ? "all the cells of the file"
+                  : `the most reduced copy of the file, of ${String(read.sample.size[0])} by ${String(read.sample.size[1])} cells`
+              }. The two lines of the histogram mark the range.`
+            : undefined
+        }
+        {...group("statistics")}
+      >
+        {read === "reading" ? <Notice kind="info">Reading the values of the layer.</Notice> : null}
+        {read === "failed" ? (
+          <Notice kind="warning">
+            The values of the layer could not be read. Type the lowest and the highest value of the range.
+          </Notice>
+        ) : null}
+        {typeof read !== "string" && !(shown?.summary && shown.sampled) ? (
+          <Notice kind="info">The layer holds no values for a histogram and for statistics.</Notice>
+        ) : null}
+        {typeof read !== "string" && shown?.summary && shown.sampled ? (
+          <>
+            <Histogram
+              values={shown.values}
+              summary={shown.sampled}
+              lowest={numberOf(draft.lowest)}
+              highest={numberOf(draft.highest)}
+              unit={unit}
+            />
+            <PropertyList
+              groups={[
+                {
+                  rows: [
+                    statistic("Lowest value", shown.summary.minimum),
+                    statistic("Highest value", shown.summary.maximum),
+                    statistic("Mean", shown.summary.mean),
+                    statistic("Standard deviation", shown.summary.deviation),
+                  ],
+                },
+              ]}
+            />
+          </>
+        ) : null}
+      </Section>
 
-      <ToolPaneGroup title="Cells without data" open={openAtStart.noData}>
-        <div className="usa-checkbox">
+      <Section
+        title="Cells without data"
+        info="A cell without data is transparent, unless a colour is chosen for it here."
+        {...group("noData")}
+      >
+        <div className="usa-checkbox symbology-option">
           <input
             className="usa-checkbox__input"
             id={`${id}-noData`}
@@ -372,7 +485,7 @@ function SymbologyOf({ layer }: { layer: LayerDescription }) {
             onChange={(event) => change({ noData: event.target.checked })}
           />
           <label className="usa-checkbox__label" htmlFor={`${id}-noData`}>
-            Draw the cells without data in a colour
+            Draw in a colour
           </label>
         </div>
         <label className="usa-label" htmlFor={`${id}-noDataColour`}>
@@ -387,10 +500,14 @@ function SymbologyOf({ layer }: { layer: LayerDescription }) {
           onChange={(event) => change({ noDataColour: event.target.value })}
         />
         {message("noDataColour")}
-      </ToolPaneGroup>
+      </Section>
 
-      <ToolPaneGroup title="Mask" open={openAtStart.masked}>
-        <div className="usa-checkbox">
+      <Section
+        title="Mask"
+        info="The mask hides the cells whose value lies below the first limit or above the second one. The limits are typed in the unit of the range."
+        {...group("mask")}
+      >
+        <div className="usa-checkbox symbology-option">
           <input
             className="usa-checkbox__input"
             id={`${id}-masked`}
@@ -399,7 +516,7 @@ function SymbologyOf({ layer }: { layer: LayerDescription }) {
             onChange={(event) => change({ masked: event.target.checked })}
           />
           <label className="usa-checkbox__label" htmlFor={`${id}-masked`}>
-            Hide the cells whose value lies outside a range
+            Hide values outside limits
           </label>
         </div>
         <div className="symbology-pair">
@@ -426,13 +543,21 @@ function SymbologyOf({ layer }: { layer: LayerDescription }) {
         </div>
         {message("maskLowest")}
         {message("maskHighest")}
-      </ToolPaneGroup>
+      </Section>
 
-      <p className="symbology-reset">
-        <button type="button" className="usa-button usa-button--unstyled" onClick={reset}>
-          Return to the first display
+      <div className="info-title">
+        <button
+          type="button"
+          className="usa-button usa-button--unstyled"
+          aria-describedby={`${id}-reset-info`}
+          onClick={reset}
+        >
+          Reset display
         </button>
-      </p>
+        <Info id={`${id}-reset-info`} about="Reset display">
+          The layer returns at once to the display with which it was added to the map.
+        </Info>
+      </div>
     </ToolPane>
   );
 }
@@ -441,14 +566,26 @@ function SymbologyOf({ layer }: { layer: LayerDescription }) {
  * The Symbology pane: the colour scale of a layer, the range of the scale, typed or taken from the values of the
  * layer, beside the histogram of the values, the colour of the cells without data and a mask by value. The
  * command Symbology of the menu of a layer opens it for that layer, and the Apply button changes the display.
+ * After its layer has left the map, the pane says so and its foot states how it is opened for another layer.
  */
 export function SymbologyPane() {
   const shown = useStore(symbologyStore);
   const layer = useStore(mapLayersStore).find(({ id }) => id === shown?.id);
   if (!shown || !layer) {
     return (
-      <ToolPane id={SYMBOLOGY_PANE} title="Symbology" runLabel="Apply" onRun={() => undefined} ready={false}>
-        <p className="usa-hint">The layer is no longer on the map. Choose Symbology in the menu of a layer.</p>
+      <ToolPane
+        id={SYMBOLOGY_PANE}
+        title="Symbology"
+        runLabel="Apply"
+        onRun={() => undefined}
+        ready={false}
+        missing="Choose Symbology in the menu of a layer."
+      >
+        <EmptyState
+          title="No layer"
+          text="The layer of this pane is no longer on the map."
+          action={{ label: "Show Contents pane", onClick: () => setPaneOpen("contents", true) }}
+        />
       </ToolPane>
     );
   }

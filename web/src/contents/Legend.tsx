@@ -83,7 +83,8 @@ function RampLegend({ layer }: { layer: LayerDescription }) {
 /**
  * The legend of a layer: its quantity, its unit and its colour scale, with the lowest and the highest value of
  * the scale and round values between them. The legend follows the display of the layer. For a layer that is
- * shown in decibels the legend says so, and the values beside the scale are decibels.
+ * shown in decibels the legend says so, and the values beside the scale are decibels. Every note of the legend,
+ * such as the one on decibels, on hidden values or on the cells without data, has one style.
  */
 export function Legend({ layer }: { layer: LayerDescription }) {
   const display = useStore(displayStore)[layer.id] ?? firstDisplay(layer);
@@ -102,7 +103,7 @@ export function Legend({ layer }: { layer: LayerDescription }) {
         <RampLegend layer={layer} />
       )}
       {display.noDataColour && (
-        <p className="legend-nodata">
+        <p className="legend-note legend-nodata">
           <span className="legend-swatch" style={{ background: display.noDataColour }} aria-hidden="true" />
           No data
         </p>
