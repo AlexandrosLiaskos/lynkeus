@@ -48,16 +48,38 @@ test("the version shown is the version of the citation entry, of the server pack
   expect(/^__version__ = "([^"]+)"$/m.exec(readFileSync("../api/src/lynkeus/__init__.py", "utf8"))?.[1]).toBe(version);
 });
 
-test("the page of the application keeps the bookmarks in the browser and nothing else", () => {
+test("the page of the application keeps in the browser the parts of the work that the dialog names, and nothing else", () => {
   const storage = /localStorage|sessionStorage|indexedDB|document\.cookie|cookieStore/;
-  const files = readdirSync("src", { recursive: true, encoding: "utf8" }).filter(
-    (name) => /\.tsx?$/.test(name) && !/\.test\.tsx?$/.test(name),
-  );
+  const files = readdirSync("src", { recursive: true, encoding: "utf8" })
+    .map((name) => name.replaceAll("\\", "/"))
+    // The set-up of the tests is no file of the page: it empties the storage before each test.
+    .filter((name) => /\.tsx?$/.test(name) && !/\.test\.tsx?$/.test(name) && name !== "test-setup.ts")
+    .sort();
+  const read = (name: string) => readFileSync(`src/${name}`, "utf8");
+  // One file reaches the storage of the browser, and it stores only what a part declares and its own options.
+  expect(files.filter((name) => storage.test(read(name)))).toEqual(["shared/storage/storage.ts"]);
   // Another file named here keeps something in the browser: the dialog About must then say so, in `about.ts`.
-  expect(files.filter((name) => storage.test(readFileSync(`src/${name}`, "utf8")))).toEqual(["map/bookmarks.ts"]);
-  const bookmarks = readFileSync("src/map/bookmarks.ts", "utf8");
-  expect(bookmarks).toContain("/** A view of the map that the user has saved under a name. */");
-  expect(bookmarks.match(/\.setItem\(.*$/gm)).toEqual([".setItem(BOOKMARKS_KEY, JSON.stringify(bookmarks));"]);
+  const owners = files.filter((name) => /\bkeepInBrowser</.test(read(name)) && name !== "shared/storage/storage.ts");
+  expect(owners).toEqual([
+    "contents/storedLayers.ts",
+    "data/storedSearch.ts",
+    "map/bookmarks.ts",
+    "map/storedView.ts",
+    "shared/area.ts",
+    "view/storedPanes.ts",
+  ]);
+  const keys = owners.map((name) => /"(lynkeus\.[a-z]+)"/.exec(read(name))?.[1]);
+  expect(keys).toEqual([
+    "lynkeus.layers",
+    "lynkeus.search",
+    "lynkeus.bookmarks",
+    "lynkeus.view",
+    "lynkeus.area",
+    "lynkeus.panes",
+  ]);
+  for (const part of ["bookmarks", "view of the map", "panes", "area", "form of the search", "layers of the map"]) {
+    expect(ABOUT.applicationStores).toContain(`the ${part}`);
+  }
   expect(readFileSync("index.html", "utf8")).not.toContain("visits.js");
 });
 

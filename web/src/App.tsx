@@ -14,6 +14,7 @@ import { useMapActions } from "./map/actions";
 import { createMap } from "./map/map";
 import { MapDialogs } from "./map/MapDialogs";
 import { MapView } from "./map/MapView";
+import { keepMapView } from "./map/storedView";
 import { Ribbon } from "./ribbon/Ribbon";
 import { TABS } from "./ribbon/tabs";
 import type { ToolActions } from "./ribbon/types";
@@ -87,9 +88,19 @@ function Page() {
   );
 }
 
+/**
+ * Create the map of the page. Its view is kept in the browser from this moment, and the stored view is restored
+ * before the page is drawn.
+ */
+function createPageMap() {
+  const map = createMap();
+  keepMapView(map);
+  return map;
+}
+
 /** The page of the application. It creates the map once and gives it to every element. */
 export function App() {
-  const [map] = useState(createMap);
+  const [map] = useState(createPageMap);
   return (
     <MapContext value={map}>
       <Page />
