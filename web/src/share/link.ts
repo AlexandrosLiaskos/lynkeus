@@ -176,7 +176,7 @@ const PARTS: readonly LinkPart[] = ["map", "rotation", "basemap", "imagery", "ar
 const PART_NAMES: Readonly<Record<LinkPart, string>> = {
   map: "a view",
   rotation: "a rotation",
-  basemap: "a background map",
+  basemap: "a basemap",
   imagery: "an image of a date",
   area: "an area",
 };
