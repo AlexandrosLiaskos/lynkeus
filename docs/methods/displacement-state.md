@@ -5,7 +5,7 @@
 | Tool | `displacement-state` (Analysis tab, group Surface displacement, button One pair) |
 | NISAR product | GUNW, Level-2 Geocoded Unwrapped Interferogram |
 | Result | Displacement of the ground along the line of sight of the radar between the two dates of one pair, in metres (m). The values are relative, and the effects of the atmosphere are not removed |
-| State | The comparison (D-17) was made on 15 Nov 2026 on the layers of two pairs of the pilot area, which were received through `lynkeus.harmony.get_layer`. The tool was run on them directly and through `lynkeus.tools.run_tool`. It was not run as a job of the web service. |
+| State | The comparison (D-17) was made on 15 Nov 2026 on the layers of two pairs of the pilot area, which were received through `lynkeus.harmony.get_layer`. The tool was run on them directly and through `lynkeus.tools.run_tool`. It was not run as a job of the web service. On the same day the work was fitted onto the branch `analysis-raster`; the phase layer of the pair of 9 and 21 Oct 2026 was received again, and the tool and the comparison were repeated on the code of commit `6b7572e`, with the same frequency, the same results and the same legends. |
 
 ## Reference
 
@@ -53,9 +53,10 @@ same polarisation channel, at the spacing of 80 m.
 The tool also needs the centre frequency of the radar band of the product, in hertz. The product
 holds it as `/science/LSAR/GUNW/grids/frequencyA/centerFrequency` (Float64, unit `hertz`). The tool
 reads it from the field `frequency` of the layer description of the phase. The Data part fills this
-field when it receives a phase layer of a GUNW product: NASA Harmony does not deliver the field of
-the product, so the Data part reads the same value from the ISO XML file that accompanies the
-product in NASA's archive (`docs/research/analysis-displacement.md`, part 2.3). The frequency
+field when it receives the layer `unwrappedPhase` of a GUNW product, and for no other layer: NASA
+Harmony does not deliver the field of the product, so the Data part reads the same value from the
+ISO XML file that accompanies the product in NASA's archive
+(`docs/research/analysis-displacement.md`, part 2.3). The frequency
 differs between the acquisition modes: 1,229,000,000 Hz, 1,239,000,000 Hz and 1,257,500,000 Hz were
 read in products of the range bandwidths 20, 40 and 77 MHz (part 4.3 of the same note). The tool
 therefore holds no wavelength of its own.
@@ -206,12 +207,12 @@ the two pairs of the pilot area the range is -0.0264 to 0.0780 m (9 to 21 Oct 20
 | Licence | GPL-3.0-or-later. MintPy was run for the comparison only; none of its code is in the repository |
 | Comparison | The array of the tool against the array that the function of MintPy returns for the same phase values, with the unit `radian`, the display unit `m` and the wavelength of the product. The wavelength was computed as line 775 of `prep_nisar.py` computes it, from the field `centerFrequency` that was read from the HDF5 product file (`1239000000.0` Hz for both pairs). The module `prep_nisar` was not imported, because it needs the GDAL Python bindings, which the environment of the comparison did not hold; its line was read, and the division was executed with the constant of `mintpy.constants`. The function `scale_data2disp_unit` was executed as it stands |
 | Files compared | `gunw-unwrappedinterferogram-hh-unwrappedphase-20261009-20261021.tif` (SHA-256 `77024532e183d09a578088a47b362f470ef27bfc70066beb21f74ce568247583`) and `gunw-unwrappedinterferogram-hh-connectedcomponents-20261009-20261021.tif` (SHA-256 `07cb2f746ef6469737e7cf072cc6813cf933425e4d383149e26b417a20aa23ab`), layers of the product `NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001`; `gunw-unwrappedinterferogram-hh-unwrappedphase-20260927-20261009.tif` (SHA-256 `9e9390b2b46269b3d35b04624e95fa537bf318bc19f400277f77d7967c25f5d4`) and `gunw-unwrappedinterferogram-hh-connectedcomponents-20260927-20261009.tif` (SHA-256 `057974486c2c116c5a2aace2e40f16b8ba02fc3919c977d04bd78ec4a2b350fd`), layers of the product `NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001`. Each file is the Cloud Optimized GeoTIFF that the Data part wrote for the box of the pilot area, with cells of 80 m, read at full resolution |
-| Platform | `Linux-6.8.0-146-generic-x86_64-with-glibc2.41`, Python 3.13.18, numpy 2.5.4 on both sides. The files were read with rasterio 1.5.2 (GDAL 3.12.2). The environment of MintPy held 24 packages, among them scipy 1.18.1, h5py 3.16.0, matplotlib 3.11.2 and pyproj 3.8.0. The comparison was made on 15 Nov 2026; its records are kept in `docs/research/records/analysis/displacement/` (`comparison.json`, `lynkeus_side.json`, `source_side.json`) |
+| Platform | `Linux-6.8.0-146-generic-x86_64-with-glibc2.41`, Python 3.13.18, numpy 2.5.4 on both sides. The files were read with rasterio 1.5.2 (GDAL 3.12.2). The environment of MintPy held 24 packages, among them scipy 1.18.1, h5py 3.16.0, matplotlib 3.11.2 and pyproj 3.8.0. The comparison was made on 15 Nov 2026; its records are kept in `docs/research/records/analysis/displacement/` (`comparison.json`, `lynkeus_side.json`, `source_side.json`). It was repeated on the same day on the code of commit `6b7572e`, on the same platform and with the same versions, after the phase layer of the pair of 9 and 21 Oct 2026 had been received again (SHA-256 of that file `0e3ed0a05c20d75ec55d04a0c915e6d2b1e3c221b2aa74b3c1b9d07622c2551d`; its values equal those of the first file). The numbers of the repetition are those of this table (`refit_comparison.json`, `refit_lynkeus_side.json`, `refit_source_side.json`) |
 | Largest difference | 0.0 m in both pairs. 0 of 196,804 cells differ in the pair of 9 and 21 Oct 2026, and 0 of 155,024 cells in the pair of 27 Sep and 9 Oct 2026: the result is bit-identical to the array of MintPy in every cell in which the tool gives a value. The function of MintPy converts every cell that holds a phase; the tool gives no data in 26,889 and 68,669 of these cells, which have the connected component 0. No cell holds a value in the tool only |
 | Not reached | MintPy was not run as its own workflow on the HDF5 product files: one function of it was run on the values of the layers. The masking by the connected components is not part of that function; it was checked by a separate count: the cells without a value in the result are exactly the cells without a phase and the cells with the label 0. On 15 Nov 2026 each layer was read from the original HDF5 product file for the rectangle of the pilot area: the 223,693 cells that hold a value in a layer equal the product. One area, two pairs, the channel HH and the range bandwidth of 40 MHz were compared |
 
 The exact numbers of the comparison are in `docs/research/analysis-displacement.md`, parts 4.4 to
-4.7.
+4.7, and those of its repetition in part 4.9.
 
 ## Not yet confirmed
 

@@ -1,0 +1,145 @@
+{
+ "made": "2026-11-15T12:53:38Z",
+ "commit": "6b7572ea4330e8089a1417db4392bbe613a4e1ff",
+ "code_sha256": {
+  "analysis/displacement.py": "3cb8608bcbedd22230de397e6a927472908cf8bd0a28f77c2d219a5739bb482a",
+  "analysis/inputs.py": "9592e707ab550d0ba4c84b38d88578c86421526da276643dda4916c508ea1148",
+  "harmony.py": "bc7892163d4e2fe6d8829090ea0fbcf37e60a826f67ebb6a340b5fde34bb4694",
+  "layers.py": "94743fb30a1bfc60a1927af5c7215c75e08697bd88b557429b628d05f9ce5cfb",
+  "writing.py": "98e97ac196e2a96927f4077888b6e06f73da578655c658381523a86fedabedd6",
+  "tools.py": "a2af3ded080c9ba822a73aeee1ff4ee30165ef22e26961d6b667e6515a555935"
+ },
+ "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+ "python": "3.13.18",
+ "numpy": "2.5.4",
+ "rasterio": "1.5.2",
+ "gdal": "3.12.2",
+ "tools": [
+  "backscatter-change",
+  "backscatter-state",
+  "coherence-change",
+  "coherence-state",
+  "displacement-state",
+  "soil-moisture-change",
+  "soil-moisture-state"
+ ],
+ "pairs": {
+  "20261009-20261021": {
+   "phase_layer": "phase-refit-20261009-20261021",
+   "phase_file_sha256": "0e3ed0a05c20d75ec55d04a0c915e6d2b1e3c221b2aa74b3c1b9d07622c2551d",
+   "components_file_sha256": "07cb2f746ef6469737e7cf072cc6813cf933425e4d383149e26b417a20aa23ab",
+   "frequency": "1239000000.0",
+   "phase_values_sha256": "0805f9749474e1c31673ef5fc0049721d89290b1d59a7352978b0c70d88b499d",
+   "cells_with_a_value": 196804,
+   "result_sha256": "5e6c37b691f7ceb9d81442dcccc7f9d00f3738c297c4c53e218e2a565b01b311",
+   "result_sha256_of_the_first_record": "5e6c37b691f7ceb9d81442dcccc7f9d00f3738c297c4c53e218e2a565b01b311",
+   "result_equals_the_first_record": true,
+   "legend": [
+    "-0.026392306499183178",
+    "0.07798769235610963"
+   ],
+   "legend_of_the_first_record": [
+    "-0.026392306499183178",
+    "0.07798769235610963"
+   ],
+   "legend_equals_the_first_record": true,
+   "quantity": "Relative displacement along the line of sight",
+   "unit": "m",
+   "colours": "RdBu",
+   "ends": [
+    "away from the radar",
+    "toward the radar"
+   ],
+   "method_equals_the_first_record": true,
+   "run_tool": {
+    "values_equal_the_function": true,
+    "grid_equal_the_inputs": true,
+    "range": [
+     -0.026392306499183178,
+     0.07798769235610963
+    ],
+    "frequency_of_the_result": null,
+    "kind": "result"
+   }
+  },
+  "20260927-20261009": {
+   "phase_layer": "phase-20260927-20261009",
+   "phase_file_sha256": "9e9390b2b46269b3d35b04624e95fa537bf318bc19f400277f77d7967c25f5d4",
+   "components_file_sha256": "057974486c2c116c5a2aace2e40f16b8ba02fc3919c977d04bd78ec4a2b350fd",
+   "frequency": "1239000000.0",
+   "phase_values_sha256": "c9216160c03e5d7b59a107bf1e14a3a3fc8c04fb72af43434074df616fbf36f2",
+   "cells_with_a_value": 155024,
+   "result_sha256": "2cfc62ef3163384b2609674e3b568a9aee3f7f3966ee8409fa1b5a12c361f661",
+   "result_sha256_of_the_first_record": "2cfc62ef3163384b2609674e3b568a9aee3f7f3966ee8409fa1b5a12c361f661",
+   "result_equals_the_first_record": true,
+   "legend": [
+    "0.03276995480060577",
+    "0.12282590895891192"
+   ],
+   "legend_of_the_first_record": [
+    "0.03276995480060577",
+    "0.12282590895891192"
+   ],
+   "legend_equals_the_first_record": true,
+   "quantity": "Relative displacement along the line of sight",
+   "unit": "m",
+   "colours": "RdBu",
+   "ends": [
+    "away from the radar",
+    "toward the radar"
+   ],
+   "method_equals_the_first_record": true,
+   "run_tool": {
+    "values_equal_the_function": true,
+    "grid_equal_the_inputs": true,
+    "range": [
+     0.03276995480060577,
+     0.12282590895891192
+    ],
+    "frequency_of_the_result": null,
+    "kind": "result"
+   }
+  }
+ },
+ "received_again": {
+  "phase-refit-20261009-20261021": {
+   "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+   "seconds": 47.4,
+   "frequency": 1239000000.0,
+   "unit": "rad",
+   "files": {
+    "gunw-unwrappedinterferogram-hh-unwrappedphase-20261009-20261021.json": {
+     "bytes": 5005,
+     "sha256": "b12be8a633753353ea0218319b9a2b9633ce04a9ef6179f860aaf5d42d3e67e0"
+    },
+    "gunw-unwrappedinterferogram-hh-unwrappedphase-20261009-20261021.tif": {
+     "bytes": 739189,
+     "sha256": "0e3ed0a05c20d75ec55d04a0c915e6d2b1e3c221b2aa74b3c1b9d07622c2551d"
+    }
+   }
+  },
+  "ionosphere-refit-20261009-20261021": {
+   "layer": "unwrappedInterferogram/HH/ionospherePhaseScreen",
+   "seconds": 48.5,
+   "frequency": null,
+   "unit": "rad",
+   "files": {
+    "gunw-unwrappedinterferogram-hh-ionospherephasescreen-20261009-20261021.json": {
+     "bytes": 5027,
+     "sha256": "140be06f510c08d710448829a69a0678b7586a0c3f4bd0bf7caec5bc6479cb42"
+    },
+    "gunw-unwrappedinterferogram-hh-ionospherephasescreen-20261009-20261021.tif": {
+     "bytes": 481234,
+     "sha256": "b350e2113b42cca66bbb509f961a3c9474746fc4775b18f8d6a3932aa93d7504"
+    }
+   }
+  }
+ },
+ "phase_received_again": {
+  "frequency": "1239000000.0",
+  "frequency_of_the_first_record": "1239000000.0",
+  "values_equal_the_layer_of_the_first_proof": true,
+  "values_sha256": "0805f9749474e1c31673ef5fc0049721d89290b1d59a7352978b0c70d88b499d",
+  "values_sha256_of_the_first_record": "0805f9749474e1c31673ef5fc0049721d89290b1d59a7352978b0c70d88b499d"
+ }
+}

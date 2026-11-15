@@ -1,0 +1,97 @@
+{
+ "made": "2026-11-15T12:59:09Z",
+ "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+ "python": "3.13.18",
+ "mintpy": "1.6.4",
+ "mintpy_licence": "GPL-3.0-or-later",
+ "numpy": "2.5.4",
+ "rasterio": "1.5.2",
+ "gdal": "3.12.2",
+ "modules_added": [],
+ "packages": [
+  "Cartopy==0.26.0",
+  "affine==3.0.1",
+  "attrs==26.1.0",
+  "certifi==2026.10.23",
+  "click==8.5.1",
+  "contourpy==1.4.0",
+  "cycler==0.12.1",
+  "fonttools==4.68.0",
+  "h5py==3.16.0",
+  "kiwisolver==1.5.1",
+  "matplotlib==3.11.2",
+  "mintpy==1.6.4",
+  "numpy==2.5.4",
+  "packaging==26.3",
+  "pillow==13.0.0",
+  "pip==26.2.2",
+  "pyparsing==3.3.3",
+  "pyproj==3.8.0",
+  "pyshp==3.1.8",
+  "python-dateutil==4.0.0",
+  "rasterio==1.5.2",
+  "scipy==1.18.1",
+  "shapely==2.2.0",
+  "tzdata==2026.6"
+ ],
+ "pairs": {
+  "20261009-20261021": {
+   "input": "gunw-unwrappedinterferogram-hh-unwrappedphase-20261009-20261021.tif",
+   "input_sha256": "0e3ed0a05c20d75ec55d04a0c915e6d2b1e3c221b2aa74b3c1b9d07622c2551d",
+   "input_dtype": "float32",
+   "shape": [
+    496,
+    471
+   ],
+   "input_values_sha256": "0805f9749474e1c31673ef5fc0049721d89290b1d59a7352978b0c70d88b499d",
+   "centerFrequency": "1239000000.0",
+   "WAVELENGTH": "0.2419632429378531",
+   "scale": "-0.01925482308005223",
+   "unit": "m",
+   "result_dtype": "float32",
+   "result_sha256": "c767d54d989fd666e430fba55e186533423143c539ba3a9c7bdd77eaa283217a",
+   "valued": 223693,
+   "min": "-0.1884172111749649",
+   "max": "0.19306480884552002"
+  },
+  "20260927-20261009": {
+   "input": "gunw-unwrappedinterferogram-hh-unwrappedphase-20260927-20261009.tif",
+   "input_sha256": "9e9390b2b46269b3d35b04624e95fa537bf318bc19f400277f77d7967c25f5d4",
+   "input_dtype": "float32",
+   "shape": [
+    496,
+    471
+   ],
+   "input_values_sha256": "c9216160c03e5d7b59a107bf1e14a3a3fc8c04fb72af43434074df616fbf36f2",
+   "centerFrequency": "1239000000.0",
+   "WAVELENGTH": "0.2419632429378531",
+   "scale": "-0.01925482308005223",
+   "unit": "m",
+   "result_dtype": "float32",
+   "result_sha256": "7c374ac1a677f543d48dea12362cff03954a52d2a729fba47c73dd89db264101",
+   "valued": 223693,
+   "min": "-0.14928056299686432",
+   "max": "0.29912734031677246"
+  }
+ },
+ "prep_nisar_imported": false,
+ "prep_nisar_wavelength_lines": [
+  775
+ ],
+ "prep_nisar_wavelength_statement_is_the_division": [
+  true
+ ],
+ "prep_nisar_center_frequency_path_lines": [
+  83
+ ],
+ "prep_nisar_sha256": "598b93df157dca35436359f2b4f2f6ec0e4220c973da76d28196f405da1d397a",
+ "scale_data2disp_unit_lines": [
+  1922,
+  2025
+ ],
+ "plot_sha256": "5f2edb4ec5c798f98903d9bb70bca965ece96bfa017d8d6845177fc2a05bdfe6",
+ "phase2range_lines": [
+  1972
+ ],
+ "SPEED_OF_LIGHT": "299792458"
+}

@@ -5,7 +5,7 @@
 | Part | Analysis tab, group Surface displacement |
 | Covers | The tool Surface displacement, One pair (`displacement-state`), and why the tool Change (`displacement-change`) and the pixel offsets were not built |
 | Written | 15 Nov 2026. Every source below was read on that day. |
-| Code state | Branch `an2-disp`, made from the branch `analysis-level-2` at commit `05930fb` |
+| Code state | Branch `displacement`, made from the branch `analysis-raster` at commit `14ea838`. The work was first built on the branch `an2-disp`, made from the branch `analysis-level-2` at commit `05930fb`, and was fitted onto the new base on 15 Nov 2026 (part 4.9) |
 | Pilot area | Lower Merrimack River: box −71.20, 42.60, −70.75, 42.95 (west, south, east, north); track 141, frame 67, descending |
 | Names of the tools | `displacement-state` is listed in `lynkeus.analysis.TOOLS`. `displacement-change`, `displacement-series` and `displacement-map` are not built |
 
@@ -121,10 +121,14 @@ The smallest change that carries the value is therefore:
    `frequency`: the centre frequency of the radar band of the layer, in hertz. Only a layer received
    from NASA may have one. A description that was stored before the field existed is read with the
    value `None`.
-2. **Data part.** `get_layer` in `api/src/lynkeus/harmony.py` fills the field for a layer of a GUNW
-   product whose unit is `rad`. `_find` returns the address of the ISO XML file from the record of
-   the product, and `_centre_frequency` fetches the file with the client of Harmony, that is with
-   the credentials of the request, and reads the attribute. Because the credentials go with the
+2. **Data part.** `get_layer` in `api/src/lynkeus/harmony.py` fills the field for the layer
+   `unwrappedPhase` of a GUNW product, which is the only layer that the tool converts. The list of
+   the layers of the Data part marks this layer with the flag `frequency`, and `get_layer` asks for
+   the ISO XML file only for a layer that carries the flag. The ionosphere layers, whose unit is
+   `rad` as well, are received without this request and without a frequency. `_find` returns the
+   address of the ISO XML file from the record of the product, and `_centre_frequency` fetches the
+   file with the client of Harmony, that is with the credentials of the request, and reads the
+   attribute. Because the credentials go with the
    request, an address is used only when it begins with `https://` and its host is under `nasa.gov`.
    The value is taken only when exactly one attribute has the name, the description and the unit
    given above and its value is a finite number above zero. In every other case, and when the file
@@ -134,6 +138,19 @@ The smallest change that carries the value is therefore:
    part changes nothing under `web/`. Its check `isLayerDescription` (lines 82 to 106) reads the
    fields that it knows and does not refuse a description with a further field; this was read in the
    code and not tried in a browser.
+
+4. **A visitor's own server.** This point was read in the code and was not run. The program of an
+   own server (`lynkeus.link`) runs the same processes (`lynkeus.offered`) on the computer of the
+   visitor. `get_layer` therefore fetches the ISO XML file from NASA on that computer, with the
+   Earthdata token of the request, and the field `frequency` is part of the description that the
+   program stores there. The program reports the description to the project server in the state of
+   the job (`JobState.layer` in `lynkeus.linking`). The project server validates it as a
+   `LayerDescription` and stores it (`lynkeus.servers`), so the field reaches the interface
+   unchanged. A program of an own server that is older than the field reports a description without
+   it, which is read with the value `None`; the tool then refuses the layer with the sentence of
+   check 11 of the method sheet. The formats refuse a field that they do not know
+   (`extra="forbid"`). A project server that is older than the field would therefore refuse the
+   report of a newer program of an own server, so the project server is to be updated first.
 
 The field stands in the layer description only. It is not written into the GeoTIFF or into the STAC
 record of the layer.
@@ -316,6 +333,10 @@ copied from a record of the folder `docs/research/records/analysis/displacement/
 | `received_c.json` | `c9f13771f9bac2ad10344649b5b5a1dff261242af0c1040f0c154feaee746277` | The phase layer of the pair of 9 and 21 Oct 2026, received again with the changed Data part |
 | `received_d.json` | `01edb7a4a9b67c5dbcf5fff42f64163c5b8043a6e410e206dbade622caa2b3b6` | The phase layer of the pair of 9 and 21 Oct 2026, received once more with the final state of the Data part, in which the address of the ISO XML file must be of a NASA host |
 | `sidecar.json` | `3793c18b2ab9d29c772c0e8d2568ed1722e3e7aaf41dd1c805db560161cc70e4` | The small files that accompany the pilot product (ISO XML, run configuration, quality summary), searched for the centre frequency (part 2.3) |
+| `received_e.json` | `42bf3611158fef1c77d4ba21014647c15c467ff33bab9a5faab68192b30e6ad2` | The layers `unwrappedPhase` and `ionospherePhaseScreen` of the pair of 9 and 21 Oct 2026, received on the branch `displacement` at commit `6b7572e`, with their layer descriptions (part 4.9) |
+| `refit_lynkeus_side.json` | `0d2a20f942a70a30bcbc6ec3c7b7b81c683c103b68316eff1dea69bdfde74b3f` | The tool on the layers of the two pairs at commit `6b7572e`, with the SHA-256 of six files of the code, against the numbers of `lynkeus_side.json` (part 4.9) |
+| `refit_source_side.json` | `ecea745aa15026b533c4215cbd5d6adbf0eda7f8970d57d21a405a4ebff8c9b0` | The run of MintPy that was repeated for part 4.9 |
+| `refit_comparison.json` | `b5935fde9950dba5e94b0e71f85f67312cefacc94ee4c5b3d2da4446e36b2f45` | The result of the tool at commit `6b7572e` against the result of the source program, for the two pairs (part 4.9) |
 
 ### 4.2 The layers received
 
@@ -510,6 +531,34 @@ The layers are those of the GUNW product of 9 and 21 Oct 2026 (`layers_described
 of the phase of the same pair span about 0.19 m (part 4.4). The offsets are about one metre from
 zero in every cell, with a spread of some tenths of a metre.
 
+### 4.9 The proof repeated on the final code
+
+The records of parts 4.4, 4.5 and 4.7 were made on the branch `an2-disp` before two later edits of
+the code. On 15 Nov 2026 the work was fitted onto the branch `analysis-raster`, in which the Data
+part had changed, and the proof was repeated on the code of commit `6b7572e` of the branch
+`displacement`. The record `refit_lynkeus_side.json` holds the SHA-256 of the six files of the code
+that the run used (`analysis/displacement.py`, `analysis/inputs.py`, `harmony.py`, `layers.py`,
+`writing.py` and `tools.py`).
+
+| Step | Outcome | Record |
+|---|---|---|
+| The layer `unwrappedPhase` of the pair of 9 and 21 Oct 2026, received again through `get_layer` | Received in 47.4 seconds. The field `frequency` of its description is `1239000000.0`, as in the first record. Its values equal the values of the layer of the first proof (SHA-256 of the values `0805f9749474e1c31673ef5fc0049721d89290b1d59a7352978b0c70d88b499d`). The GeoTIFF of each reception has another SHA-256 and the same size, 739,189 bytes | `received_e.json`, `refit_lynkeus_side.json` |
+| The layer `ionospherePhaseScreen` of the same pair, received through `get_layer` | Received in 48.5 seconds. Its unit is `rad` and its description holds no frequency | `received_e.json` |
+| `displacement_state` on the two pairs | The result of each pair has the SHA-256 of the first record (`5e6c37b6…` for 9 and 21 Oct 2026, `2cfc62ef…` for 27 Sep and 9 Oct 2026), the same number of cells with a value (196,804 and 155,024) and the same legend | `refit_lynkeus_side.json` |
+| `run_tool` on the two pairs | The values of the written file equal the values of the function, the grid equals the grid of the inputs, and the description of the result holds no frequency | `refit_lynkeus_side.json` |
+| MintPy 1.6.4, function `scale_data2disp_unit`, run again on the same phase values | 0 cells differ in both pairs, and the largest difference is `0.0` m: the result is bit-identical in every cell in which the tool gives a value | `refit_source_side.json`, `refit_comparison.json` |
+
+What this repetition did not do:
+
+1. The layer of the connected components of the pair of 9 and 21 Oct 2026 and the two layers of the
+   pair of 27 Sep and 9 Oct 2026 were not received again. They are the files of the first proof.
+2. The record shows that the ionosphere layer was received without a frequency. That no request for
+   the ISO XML file is made for it was read in the code and is covered by a test of
+   `api/tests/test_harmony.py`; the requests of the run itself were not recorded.
+3. The comparison with the HDF5 product files (part 4.6) and the refusals (part 4.7) were not
+   repeated. The tests of `api/tests/analysis/test_displacement.py` cover the refusals.
+4. The reception through a visitor's own server was not run (part 2.3, point 4).
+
 ## 5. How GIS programs offer this function
 
 The table follows the row layout of `docs/research/analysis.md`, part 5. A statement is made only
@@ -563,9 +612,9 @@ text was not read.
    copy of the format in `web/src/shared/layer.ts` and the pages that show a layer do not know it.
    Whether the field is wanted in this form, and whether the STAC record of a layer should carry the
    frequency as well, is for the owner to decide.
-3. **The change of the Data part.** `get_layer` now fetches one more file for a phase layer of a
-   GUNW product. When the file cannot be read, the layer is received without a frequency and the
-   tool refuses it. The other choice, to refuse the layer itself, was not taken.
+3. **The change of the Data part.** `get_layer` now fetches one more file for the layer
+   `unwrappedPhase` of a GUNW product. When the file cannot be read, the layer is received without
+   a frequency and the tool refuses it. The other choice, to refuse the layer itself, was not taken.
 4. **The ISO XML file.** No document was found that specifies its content. Its attribute was
    compared with the HDF5 field in twelve products acquired between 27 Sep and 21 Oct 2026 (CRID
    `P05036` and `P05023`); products of the bandwidth 5 MHz, of S-band and of mixed modes were not
