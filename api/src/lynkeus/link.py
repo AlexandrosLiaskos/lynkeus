@@ -95,6 +95,9 @@ READERS = 4
 ANSWER_TRIES = 3
 """The number of times that the program tries to send the answer to a task."""
 
+LEAVE_TIME = 2.0
+"""The longest time that a program that is quit waits for the answer to its leave, in seconds."""
+
 SLOW_DOWN = 5
 """The time that the answer ``slow_down`` adds between two questions about a pairing, in seconds (RFC 8628)."""
 
@@ -666,6 +669,23 @@ class Link:
                 # The program stops: the jobs that it ended are reported once more, when the project server answers.
                 with contextlib.suppress(AwayError, RemovedError):
                     self._report(server, key, due=True)
+                if self._stop.is_set():
+                    self._leave(key)
+
+    def _leave(self, key: str) -> None:
+        """Tell the project server that the program is quit, so that the site shows the server as not connected at once.
+
+        The request is sent once. The program waits at most ``LEAVE_TIME`` seconds for its answer and
+        quits whatever the answer is, also without one.
+        """
+
+        def send() -> None:
+            with contextlib.suppress(AwayError):
+                self._server.ask("/api/link/leave", key=key, wait=LEAVE_TIME)
+
+        sender = threading.Thread(target=send, name="lynkeus-leave", daemon=True)
+        sender.start()
+        sender.join(LEAVE_TIME)
 
     def _others(self, server: str) -> int:
         """Return the space that the layers of earlier pairings use, in bytes."""
