@@ -311,7 +311,7 @@ test("a pane that showed from its tab and is closed no longer shows", async () =
   expect(dockStore.get().revealed.right).toBeNull();
 });
 
-test("a pane that hides to the edge is inert at once, and it ends transparent beside the edge", async () => {
+test("a pane that hides to the edge is inert at once, and it is taken from the page when its motion has ended", async () => {
   render(
     <Dock side="right">
       <Notes id="catalog" title="Catalog" />
@@ -325,10 +325,12 @@ test("a pane that hides to the edge is inert at once, and it ends transparent be
   expect(pane.hasAttribute("inert")).toBe(true);
   await waitFor(() => expect(pane.style.opacity).toBe("0"));
   expect(pane.style.transform).toBe("translateX(12px)");
+  await waitFor(() => expect(pane.style.getPropertyValue("--dock-pane-display")).toBe("none"));
   await userEvent.click(screen.getByRole("button", { name: "Catalog" }));
   expect(pane.hidden).toBe(false);
   expect(pane.hasAttribute("inert")).toBe(false);
   await waitFor(() => expect(pane.style.opacity).toBe("1"));
+  await waitFor(() => expect(pane.style.getPropertyValue("--dock-pane-display")).toBe("flex"));
 });
 
 test("a pane at rest has no transform, so that a menu or a bubble inside it is placed against the window", async () => {

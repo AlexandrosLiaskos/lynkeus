@@ -81,10 +81,12 @@
   box-shadow: 0 0 0.5rem uswds.color("black-transparent-20");
 }
 
-// A pane that hides automatically and does not show stays in its place, transparent, so that it can fade while
-// it moves to the edge of the window (see `DockPane`). It is inert, and the pointer reaches the map through it.
+// A pane that hides automatically and does not show stays on the page while it fades and moves to the edge of
+// the window, inert and out of the way of the pointer. When that motion has ended, `DockPane` sets the variable
+// to none through the Motion library, and the pane is taken from the page. A pane that shows again no longer
+// matches this rule, so it is on the page at once, before it fades in.
 .dock-pane--over[hidden] {
-  display: flex;
+  display: var(--dock-pane-display, flex);
   pointer-events: none;
 }
 

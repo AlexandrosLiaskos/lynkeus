@@ -41,31 +41,47 @@ interface DockPaneProps {
 /** How far a pane that shows from its tab at the edge of the window moves while it enters or leaves, in pixels. */
 const PANE_SHIFT = 12;
 
-/** A pane that is drawn. A pane of the stack only fades in, so that it never reaches outside the window. */
+/**
+ * A pane that is drawn. A pane of the stack only fades in, so that it never reaches outside the window. The
+ * variable `--dock-pane-display` of the styles is set back at once, so that the pane can fade the next time it
+ * hides to the edge of the window.
+ */
 const SHOWN = {
   opacity: 1,
   x: 0,
-  transition: { duration: MOTION_PANE, ease: EASE_ENTER, x: { duration: 0 } },
+  "--dock-pane-display": "flex",
+  transition: {
+    duration: MOTION_PANE,
+    ease: EASE_ENTER,
+    x: { duration: 0 },
+    "--dock-pane-display": { duration: 0 },
+  },
 };
 
 /** A pane that hides automatically moves in from the edge of the window while it fades in. */
-const SHOWN_OVER = { ...SHOWN, transition: { duration: MOTION_PANE, ease: EASE_ENTER } };
+const SHOWN_OVER = {
+  ...SHOWN,
+  transition: { duration: MOTION_PANE, ease: EASE_ENTER, "--dock-pane-display": { duration: 0 } },
+};
 
 /**
  * A pane of the stack that is not in front. The styles take it from the page at once, because the pane in front
- * stands in its place, so it has no motion.
+ * stands in its place, so it has no motion. It carries the variable of the styles from its first drawing, so
+ * that the library never has to read a value for it from the page.
  */
-const BEHIND = { opacity: 0, x: 0, transition: { duration: 0 } };
+const BEHIND = { opacity: 0, x: 0, "--dock-pane-display": "flex", transition: { duration: 0 } };
 
 /**
  * A pane that hides automatically and does not show: it fades while it moves to the edge of the window on its
- * side. It then stays there, transparent and inert.
+ * side. When that motion has ended, the library sets the variable with which the styles take the pane from the
+ * page (see `_dock.scss`).
  */
 function awayAt(side: PaneSide) {
   return {
     opacity: 0,
     x: side === "left" ? -PANE_SHIFT : PANE_SHIFT,
     transition: { duration: MOTION_PANE, ease: EASE_EXIT },
+    transitionEnd: { "--dock-pane-display": "none" },
   };
 }
 
@@ -81,8 +97,9 @@ function awayAt(side: PaneSide) {
  * The pane enters and leaves with the Motion library, on its opacity and its transform only, so that the motion
  * never changes the layout of the page. A pane that opens in the stack, or comes to its front, fades in. A pane
  * that shows from its tab moves in from the edge of the window while it fades in, and it moves back while it
- * fades out when it hides and when its pin sends it to the edge. From the moment a pane starts to leave it is
- * `inert`: it cannot hold the keyboard focus, the Tab key does not reach it and a screen reader does not read it.
+ * fades out when it hides and when its pin sends it to the edge, and it is taken from the page when that motion
+ * has ended. From the moment a pane starts to leave it is `inert`: it cannot hold the keyboard focus, the Tab key
+ * does not reach it and a screen reader does not read it.
  * A pane that closes leaves the page at once. The motion needs the `Dock` around the pane, which loads the part
  * of the library that moves an element.
  *
