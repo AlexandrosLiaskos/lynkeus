@@ -22,11 +22,19 @@ test("the bubble of an i button shows under the pointer and on keyboard focus", 
   await pressTool(page, "Options", "Storage");
   const pane = paneOf(page, "Browser storage");
   const button = pane.getByRole("button", { name: "Information about Browser storage", exact: true });
-  const bubble = pane.locator(`[id="${(await button.getAttribute("aria-describedby")) ?? ""}"]`);
+  // The explanation that describes the button is in the page at all times, in an element that is not shown. The
+  // bubble is the element with the role of a tooltip. It is in the page only while it shows, and it shows the
+  // same explanation.
+  const explanation = pane.locator(`[id="${(await button.getAttribute("aria-describedby")) ?? ""}"]`);
+  await expect(explanation).toBeHidden();
+  const text = (await explanation.textContent()) ?? "";
+  expect(text).not.toBe("");
+  const bubble = pane.getByRole("tooltip");
   await expect(bubble).toBeHidden();
 
   await button.hover();
   await expect(bubble).toBeVisible();
+  await expect(bubble).toHaveText(text);
   await findings.scan("i bubble under the pointer");
   await page.mouse.move(0, 0);
   await expect(bubble).toBeHidden();
@@ -37,4 +45,9 @@ test("the bubble of an i button shows under the pointer and on keyboard focus", 
   await expect(button).toBeFocused();
   await expect(bubble).toBeVisible();
   await findings.scan("i bubble on keyboard focus");
+
+  // The Escape key hides the bubble and leaves the focus on the button.
+  await page.keyboard.press("Escape");
+  await expect(bubble).toBeHidden();
+  await expect(button).toBeFocused();
 });
