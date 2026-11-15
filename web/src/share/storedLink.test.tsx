@@ -17,8 +17,8 @@ afterEach(() => {
 });
 
 /**
- * Open the page as `App` does: the modules are loaded, which restores the stored parts, the map is created and
- * its stored view restored, and then the page is drawn, which reads the link of the address.
+ * Open the page as `Platform` does: the modules are loaded, which restores the stored parts, the map is created
+ * and its stored view restored, and then the page is drawn, which reads the link of the address.
  */
 async function openPage() {
   vi.resetModules();
