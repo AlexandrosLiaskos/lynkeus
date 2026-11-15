@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 /**
  * The short names of the months, in their order. The server writes the titles of the layers that it receives with
  * the same names (`_MONTHS` in `api/src/lynkeus/harmony.py`), and the interface writes every day with them, so a

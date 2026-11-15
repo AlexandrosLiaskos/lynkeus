@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { useEffect, useId } from "react";
 import { useSession, type Session } from "../data/session";
 import { SIGN_IN_PANE } from "../data/SignInPane";

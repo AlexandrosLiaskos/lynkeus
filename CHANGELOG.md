@@ -118,6 +118,12 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 
 ### Changed
 
+- Lynkeus is licensed under the GNU Affero General Public License, version 3, with additional terms under
+  its section 7, in place of the Apache License 2.0. The terms keep the attribution to Alexandros Liaskos
+  and Team Lynkeus in every copy and every work based on Lynkeus, websites included, require a modified
+  version to say that it is modified, and grant no right to the names of the authors, the name Lynkeus or
+  its logo. Copies of the code that were obtained before this change keep the Apache License 2.0 under
+  which they were published.
 - Each tab of the ribbon is declared in its own folder, and the ribbon joins them.
 - The header of the application page shows only the name of the application.
 - The keyboard focus is shown by a line of 2 pixels in the primary colour. The line shows when the

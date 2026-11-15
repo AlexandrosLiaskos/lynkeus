@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """Pack Lynkeus Server for the operating system that runs, and make its download.
 
 Run in ``api/`` with the packages of the group ``pack``::
@@ -8,7 +10,8 @@ Run in ``api/`` with the packages of the group ``pack``::
 PyInstaller packs the program as a folder in ``dist/``. The download is made from that folder: an
 installer for Windows (Inno Setup 6 or 7, whose compiler ``ISCC.exe`` must be installed), a disk image
 with the program for macOS, and a ``.tar.gz`` file for Linux. The file ``dist/packed.json`` names the
-download, its size and the program files, for the check of ``tests/journey.py``.
+download, its size, the program files and the places of LICENSE and NOTICE, which every download
+carries, for the check of ``tests/journey.py``.
 """
 
 import json
@@ -27,6 +30,8 @@ API = Path(__file__).resolve().parent.parent
 DIST = API / "dist"
 NAME = "Lynkeus Server"
 TERMINAL = "lynkeus-server"
+NOTICES = ("LICENSE", "NOTICE")
+"""The licence and the notice of Lynkeus, which every download carries."""
 INNO_SETUP = tuple(
     Path(folder) / f"Inno Setup {version}" / "ISCC.exe"
     for version in (7, 6)
@@ -61,6 +66,14 @@ def pack() -> dict[str, object]:
             str(API / "build"),
         ]
     )
+    # The bundle for macOS keeps the two files among its resources, and the other folders at their top.
+    if sys.platform == "darwin":
+        notices = DIST / f"{NAME}.app" / "Contents" / "Resources"
+    else:
+        notices = DIST / (NAME if sys.platform == "win32" else TERMINAL)
+    missing = [name for name in NOTICES if not (notices / name).is_file()]
+    if missing:
+        raise SystemExit(f"The packed folder lacks {', '.join(missing)} in {notices}.")
     if sys.platform == "win32":
         folder = DIST / NAME
         terminal, window = folder / f"{TERMINAL}.exe", folder / f"{NAME}.exe"
@@ -90,6 +103,7 @@ def pack() -> dict[str, object]:
         "folder_files": files,
         "terminal": str(terminal.relative_to(DIST)),
         "window": str(window.relative_to(DIST)),
+        "notices": [str((notices / name).relative_to(DIST)) for name in NOTICES],
         "packing_time": round(time.monotonic() - started),
     }
     (DIST / "packed.json").write_text(json.dumps(facts, indent=2) + "\n", encoding="utf-8")

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """The run of an analysis tool on layers of Lynkeus.
 
 ``run_tool`` reads the input layers of a tool, calls the function of the tool

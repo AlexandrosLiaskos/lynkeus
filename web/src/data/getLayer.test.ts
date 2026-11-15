@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { afterEach, expect, test, vi } from "vitest";
 // The record of a real product file, which the tests of the server check as well.
 import gcov from "../../../api/tests/data/product-gcov.json";

@@ -6,7 +6,8 @@ abstract: "A web platform for the analysis of surface change with radar data of 
 authors:
   - family-names: Liaskos
     given-names: Alexandros
+  - name: "Team Lynkeus"
 repository-code: "https://github.com/AlexandrosLiaskos/lynkeus"
 url: "https://lynkeus.nkua.cloud/"
-license: Apache-2.0
+license: AGPL-3.0-only
 version: 0.1.0

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """Stand-ins for NASA's services and for an analysis tool, inside the operating-system process of a job.
 
 A job imports the function of its process in a new interpreter, where a change

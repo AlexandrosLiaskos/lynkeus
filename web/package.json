@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "Interface of Lynkeus.",
-  "license": "Apache-2.0",
+  "license": "AGPL-3.0-only",
   "author": "Alexandros Liaskos",
   "type": "module",
   "engines": {

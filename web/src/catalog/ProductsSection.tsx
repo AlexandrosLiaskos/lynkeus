@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { useState } from "react";
 import { SEARCH_PANE, selectedProductStore, type Results } from "../data/state";
 import { openToolPane } from "../shared/dock/dock";
