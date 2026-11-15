@@ -361,7 +361,7 @@ test("the removal of a server says what happens to its layers before it is carri
   await userEvent.click(commandOf("Office computer", "Remove"));
   expect(
     itemOf("Office computer").getByText(
-      'The server "Office computer" leaves your account, and Lynkeus Server on that computer forgets the connection. The files of its 6 layers stay on that computer, and the layers leave the lists and the map of Lynkeus.',
+      'The server "Office computer" leaves your account, and Lynkeus Server on that computer forgets the connection. Its jobs leave the list of jobs. The files of its 6 layers stay on that computer, and the layers leave the lists and the map of Lynkeus.',
     ),
   ).toBeDefined();
   expect(server.sent("DELETE")).toEqual([]);

@@ -30,16 +30,20 @@ export const ABOUT = {
   layer: "The largest size of the files of one layer, in gigabytes of 1000 megabytes.",
 } as const;
 
-/** State what happens to the layers of a server when the server is removed. */
+/**
+ * State what happens to the jobs and the layers of a server when the server is removed. The project server
+ * removes the records of both, so they leave the lists; the files of the layers stay on the computer.
+ */
 export function removalWords(layers: number | null): string {
+  const jobs = "Its jobs leave the list of jobs.";
   if (layers === 0) {
-    return "It keeps no layer.";
+    return `${jobs} It keeps no layer.`;
   }
   if (layers === 1) {
-    return "The files of its layer stay on that computer, and the layer leaves the lists and the map of Lynkeus.";
+    return `${jobs} The files of its layer stay on that computer, and the layer leaves the lists and the map of Lynkeus.`;
   }
   const count = layers === null ? "its layers" : `its ${String(layers)} layers`;
-  return `The files of ${count} stay on that computer, and the layers leave the lists and the map of Lynkeus.`;
+  return `${jobs} The files of ${count} stay on that computer, and the layers leave the lists and the map of Lynkeus.`;
 }
 
 /**
@@ -245,8 +249,9 @@ function LimitsForm({
 }
 
 /**
- * The confirmation of the removal of a server. It says what happens to the layers of the server: their files
- * stay on that computer, and the layers leave the lists and the map of the site.
+ * The confirmation of the removal of a server. It says what happens to the jobs and the layers of the server:
+ * the jobs leave the list of jobs, the files of the layers stay on that computer, and the layers leave the lists
+ * and the map of the site.
  */
 function RemoveForm({ server, onEnd }: FormProps) {
   const [busy, setBusy] = useState(false);

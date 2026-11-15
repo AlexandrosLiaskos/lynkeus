@@ -133,7 +133,7 @@ seconds counts as answered, so that the reports decide about its job.
 |---|---|---|
 | `GET /api/servers` | | 200 `Servers` |
 | `PATCH /api/servers/{id}` | `ServerChange` | 200 `Server` |
-| `DELETE /api/servers/{id}` | | 204; the records of its layers are removed and the server receives `forget` |
+| `DELETE /api/servers/{id}` | | 204; the records of its jobs and of its layers are removed, so both leave the lists of the visitor, and the server receives `forget` |
 | `POST /api/processes/{name}/execution?server={id}` | as before | as before |
 | `GET /api/servers/{id}/files/{layer}/{file}` | `Range` allowed | 200 or 206 with the bytes; 503 when the server is not connected; 504 when it does not answer in time |
 
