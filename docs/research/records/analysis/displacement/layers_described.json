@@ -1,0 +1,447 @@
+{
+ "made": "2026-11-15T10:18:10Z",
+ "numpy": "2.5.4",
+ "rasterio": "1.5.2",
+ "gdal": "3.12.2",
+ "layers": {
+  "azimuth-offset-20261009-20261021": {
+   "file": "gunw-pixeloffsets-hh-alongtrackoffset-20261009-20261021.tif",
+   "sha256": "5374e2b6ec82e671c7df2fb04343e46a577302fee25f368f9bf96e742969f36c",
+   "shape": [
+    496,
+    471
+   ],
+   "dtype_file": "float32",
+   "nodata_file": "nan",
+   "crs": "EPSG:32619",
+   "cell": [
+    80.0,
+    80.0
+   ],
+   "overviews": [],
+   "tags": {
+    "STATISTICS_MAXIMUM": "1.9972424507141113",
+    "STATISTICS_MEAN": "1.1838278917667462",
+    "STATISTICS_MINIMUM": "0.09659607708454132",
+    "STATISTICS_STDDEV": "0.3410639360141213",
+    "STATISTICS_VALID_PERCENT": "95.75243134031916"
+   },
+   "cells": 233616,
+   "nan": 9923,
+   "valued": 223693,
+   "inf": 0,
+   "min": "0.09659607708454132",
+   "max": "1.9972424507141113",
+   "mean": "1.1838278917667462",
+   "median": "1.2568720579147339",
+   "percentiles_2_25_75_98": [
+    "0.49278629422187803",
+    "0.9319050908088684",
+    "1.4363782405853271",
+    "1.6934837245941161"
+   ],
+   "p98_abs": "1.6934837102890015"
+  },
+  "coherence80-20261009-20261021": {
+   "file": "gunw-unwrappedinterferogram-hh-coherencemagnitude-20261009-20261021.tif",
+   "sha256": "e109ab6c68ddf3999db3440d2f9f44e9e196766d0d93274f9c5b6d0318eb1294",
+   "shape": [
+    496,
+    471
+   ],
+   "dtype_file": "float32",
+   "nodata_file": "nan",
+   "crs": "EPSG:32619",
+   "cell": [
+    80.0,
+    80.0
+   ],
+   "overviews": [],
+   "tags": {
+    "STATISTICS_MAXIMUM": "0.9858345985412598",
+    "STATISTICS_MEAN": "0.48806900537554687",
+    "STATISTICS_MINIMUM": "0.008998505771160126",
+    "STATISTICS_STDDEV": "0.19229896639732408",
+    "STATISTICS_VALID_PERCENT": "95.75243134031916"
+   },
+   "cells": 233616,
+   "nan": 9923,
+   "valued": 223693,
+   "inf": 0,
+   "min": "0.008998505771160126",
+   "max": "0.9858345985412598",
+   "mean": "0.48806900537554687",
+   "median": "0.5369837284088135",
+   "percentiles_2_25_75_98": [
+    "0.05575742319226265",
+    "0.42442065477371216",
+    "0.6129746437072754",
+    "0.7832874059677124"
+   ],
+   "p98_abs": "0.7832874059677124"
+  },
+  "components-20260927-20261009": {
+   "file": "gunw-unwrappedinterferogram-hh-connectedcomponents-20260927-20261009.tif",
+   "sha256": "057974486c2c116c5a2aace2e40f16b8ba02fc3919c977d04bd78ec4a2b350fd",
+   "shape": [
+    496,
+    471
+   ],
+   "dtype_file": "float32",
+   "nodata_file": "nan",
+   "crs": "EPSG:32619",
+   "cell": [
+    80.0,
+    80.0
+   ],
+   "overviews": [],
+   "tags": {
+    "STATISTICS_MAXIMUM": "1.0",
+    "STATISTICS_MEAN": "0.6930212389301409",
+    "STATISTICS_MINIMUM": "0.0",
+    "STATISTICS_STDDEV": "0.4612405026901622",
+    "STATISTICS_VALID_PERCENT": "95.75243134031916"
+   },
+   "cells": 233616,
+   "nan": 9923,
+   "valued": 223693,
+   "inf": 0,
+   "min": "0.0",
+   "max": "1.0",
+   "mean": "0.6930212389301409",
+   "median": "1.0",
+   "percentiles_2_25_75_98": [
+    "0.0",
+    "0.0",
+    "1.0",
+    "1.0"
+   ],
+   "p98_abs": "1.0",
+   "labels": {
+    "0.0": 68669,
+    "1.0": 155024
+   }
+  },
+  "components-20261009-20261021": {
+   "file": "gunw-unwrappedinterferogram-hh-connectedcomponents-20261009-20261021.tif",
+   "sha256": "07cb2f746ef6469737e7cf072cc6813cf933425e4d383149e26b417a20aa23ab",
+   "shape": [
+    496,
+    471
+   ],
+   "dtype_file": "float32",
+   "nodata_file": "nan",
+   "crs": "EPSG:32619",
+   "cell": [
+    80.0,
+    80.0
+   ],
+   "overviews": [],
+   "tags": {
+    "STATISTICS_MAXIMUM": "1.0",
+    "STATISTICS_MEAN": "0.8797950762875906",
+    "STATISTICS_MINIMUM": "0.0",
+    "STATISTICS_STDDEV": "0.32520101480115843",
+    "STATISTICS_VALID_PERCENT": "95.75243134031916"
+   },
+   "cells": 233616,
+   "nan": 9923,
+   "valued": 223693,
+   "inf": 0,
+   "min": "0.0",
+   "max": "1.0",
+   "mean": "0.8797950762875906",
+   "median": "1.0",
+   "percentiles_2_25_75_98": [
+    "0.0",
+    "1.0",
+    "1.0",
+    "1.0"
+   ],
+   "p98_abs": "1.0",
+   "labels": {
+    "0.0": 26889,
+    "1.0": 196804
+   }
+  },
+  "ionosphere-20261009-20261021": {
+   "file": "gunw-unwrappedinterferogram-hh-ionospherephasescreen-20261009-20261021.tif",
+   "sha256": "bff50de01110c0e9f736e2b760af5e3b4e8e58db73ad88579ea2de38638b69e8",
+   "shape": [
+    496,
+    471
+   ],
+   "dtype_file": "float32",
+   "nodata_file": "nan",
+   "crs": "EPSG:32619",
+   "cell": [
+    80.0,
+    80.0
+   ],
+   "overviews": [],
+   "tags": {
+    "STATISTICS_MAXIMUM": "32.46390151977539",
+    "STATISTICS_MEAN": "25.07992964085958",
+    "STATISTICS_MINIMUM": "16.571060180664062",
+    "STATISTICS_STDDEV": "4.139114184045811",
+    "STATISTICS_VALID_PERCENT": "95.75243134031916"
+   },
+   "cells": 233616,
+   "nan": 9923,
+   "valued": 223693,
+   "inf": 0,
+   "min": "16.571060180664062",
+   "max": "32.46390151977539",
+   "mean": "25.07992964085958",
+   "median": "25.313508987426758",
+   "percentiles_2_25_75_98": [
+    "17.378223876953125",
+    "21.84712791442871",
+    "28.477027893066406",
+    "31.79916213989258"
+   ],
+   "p98_abs": "31.799161911010742"
+  },
+  "ionosphere-uncertainty-20261009-20261021": {
+   "file": "gunw-unwrappedinterferogram-hh-ionospherephasescreenuncertainty-20261009-20261021.tif",
+   "sha256": "0ae201c62f1d98119318f3fe77ad9bd1344feea846d67a1651d7cc604e4107c4",
+   "shape": [
+    496,
+    471
+   ],
+   "dtype_file": "float32",
+   "nodata_file": "nan",
+   "crs": "EPSG:32619",
+   "cell": [
+    80.0,
+    80.0
+   ],
+   "overviews": [],
+   "tags": {
+    "STATISTICS_MAXIMUM": "1.7222509384155273",
+    "STATISTICS_MEAN": "1.2269962594956059",
+    "STATISTICS_MINIMUM": "0.8676495552062988",
+    "STATISTICS_STDDEV": "0.13168669997539012",
+    "STATISTICS_VALID_PERCENT": "95.75243134031916"
+   },
+   "cells": 233616,
+   "nan": 9923,
+   "valued": 223693,
+   "inf": 0,
+   "min": "0.8676495552062988",
+   "max": "1.7222509384155273",
+   "mean": "1.2269962594956059",
+   "median": "1.2363603115081787",
+   "percentiles_2_25_75_98": [
+    "0.9358734798431396",
+    "1.1531779766082764",
+    "1.300679087638855",
+    "1.5513885736465456"
+   ],
+   "p98_abs": "1.5513886213302612"
+  },
+  "offset-peak-20261009-20261021": {
+   "file": "gunw-pixeloffsets-hh-correlationsurfacepeak-20261009-20261021.tif",
+   "sha256": "9d288755dc42f8c524602fffac82d88bd905c25713d215e1c54be2e902f31155",
+   "shape": [
+    496,
+    471
+   ],
+   "dtype_file": "float32",
+   "nodata_file": "nan",
+   "crs": "EPSG:32619",
+   "cell": [
+    80.0,
+    80.0
+   ],
+   "overviews": [],
+   "tags": {
+    "STATISTICS_MAXIMUM": "0.9789708852767944",
+    "STATISTICS_MEAN": "0.51136099670943",
+    "STATISTICS_MINIMUM": "0.017247578129172325",
+    "STATISTICS_STDDEV": "0.19579159186451614",
+    "STATISTICS_VALID_PERCENT": "95.75243134031916"
+   },
+   "cells": 233616,
+   "nan": 9923,
+   "valued": 223693,
+   "inf": 0,
+   "min": "0.017247578129172325",
+   "max": "0.9789708852767944",
+   "mean": "0.51136099670943",
+   "median": "0.5428192615509033",
+   "percentiles_2_25_75_98": [
+    "0.03954069882631302",
+    "0.44813352823257446",
+    "0.6308913826942444",
+    "0.8319458794593813"
+   ],
+   "p98_abs": "0.8319458961486816"
+  },
+  "phase-20260927-20261009": {
+   "file": "gunw-unwrappedinterferogram-hh-unwrappedphase-20260927-20261009.tif",
+   "sha256": "9e9390b2b46269b3d35b04624e95fa537bf318bc19f400277f77d7967c25f5d4",
+   "shape": [
+    496,
+    471
+   ],
+   "dtype_file": "float32",
+   "nodata_file": "nan",
+   "crs": "EPSG:32619",
+   "cell": [
+    80.0,
+    80.0
+   ],
+   "overviews": [],
+   "tags": {
+    "STATISTICS_MAXIMUM": "7.752892017364502",
+    "STATISTICS_MEAN": "-4.21065056305172",
+    "STATISTICS_MINIMUM": "-15.53519058227539",
+    "STATISTICS_STDDEV": "1.4443546754812517",
+    "STATISTICS_VALID_PERCENT": "95.75243134031916"
+   },
+   "cells": 233616,
+   "nan": 9923,
+   "valued": 223693,
+   "inf": 0,
+   "min": "-15.53519058227539",
+   "max": "7.752892017364502",
+   "mean": "-4.21065056305172",
+   "median": "-4.208395004272461",
+   "percentiles_2_25_75_98": [
+    "-6.881859264373779",
+    "-5.120409965515137",
+    "-3.4007480144500732",
+    "-1.2374693202972407"
+   ],
+   "p98_abs": "6.882211208343506"
+  },
+  "phase-20261009-20261021": {
+   "file": "gunw-unwrappedinterferogram-hh-unwrappedphase-20261009-20261021.tif",
+   "sha256": "99836f4f6892f7c83a82f5a6f538231b5b632b765c6c346ed6e596cdd7fe5534",
+   "shape": [
+    496,
+    471
+   ],
+   "dtype_file": "float32",
+   "nodata_file": "nan",
+   "crs": "EPSG:32619",
+   "cell": [
+    80.0,
+    80.0
+   ],
+   "overviews": [],
+   "tags": {
+    "STATISTICS_MAXIMUM": "9.785455703735352",
+    "STATISTICS_MEAN": "-1.1192002596100343",
+    "STATISTICS_MINIMUM": "-10.02682876586914",
+    "STATISTICS_STDDEV": "1.662673592585251",
+    "STATISTICS_VALID_PERCENT": "95.75243134031916"
+   },
+   "cells": 233616,
+   "nan": 9923,
+   "valued": 223693,
+   "inf": 0,
+   "min": "-10.02682876586914",
+   "max": "9.785455703735352",
+   "mean": "-1.1192002596100343",
+   "median": "-1.0718718767166138",
+   "percentiles_2_25_75_98": [
+    "-4.168946857452393",
+    "-2.401505470275879",
+    "0.22917619347572327",
+    "1.8897683525085451"
+   ],
+   "p98_abs": "4.257588863372803"
+  },
+  "range-offset-20261009-20261021": {
+   "file": "gunw-pixeloffsets-hh-slantrangeoffset-20261009-20261021.tif",
+   "sha256": "98287d637dbd9e4d22b2dbc75af56b12288cb7104477f1e77f04453c52f50b3c",
+   "shape": [
+    496,
+    471
+   ],
+   "dtype_file": "float32",
+   "nodata_file": "nan",
+   "crs": "EPSG:32619",
+   "cell": [
+    80.0,
+    80.0
+   ],
+   "overviews": [],
+   "tags": {
+    "STATISTICS_MAXIMUM": "-0.6676369905471802",
+    "STATISTICS_MEAN": "-0.9842118234935667",
+    "STATISTICS_MINIMUM": "-1.3226752281188965",
+    "STATISTICS_STDDEV": "0.053021533189565595",
+    "STATISTICS_VALID_PERCENT": "95.75243134031916"
+   },
+   "cells": 233616,
+   "nan": 9923,
+   "valued": 223693,
+   "inf": 0,
+   "min": "-1.3226752281188965",
+   "max": "-0.6676369905471802",
+   "mean": "-0.9842118234935667",
+   "median": "-0.9881583452224731",
+   "percentiles_2_25_75_98": [
+    "-1.066510992050171",
+    "-1.014788269996643",
+    "-0.9619454741477966",
+    "-0.8192856192588805"
+   ],
+   "p98_abs": "1.0665110349655151"
+  }
+ },
+ "relation_20261009-20261021": {
+  "phase_nan_and_component_nan": 9923,
+  "phase_nan_component_valued": 0,
+  "phase_valued_component_nan": 0,
+  "phase_valued_component_0": 26889,
+  "phase_valued_component_positive": 196804,
+  "phase_by_component": {
+   "0.0": {
+    "cells": 26889,
+    "min": "-10.02682876586914",
+    "max": "9.785455703735352",
+    "median": "-0.5705891847610474"
+   },
+   "1.0": {
+    "cells": 196804,
+    "min": "-6.3007307052612305",
+    "max": "3.585108995437622",
+    "median": "-1.1514289379119873"
+   }
+  }
+ },
+ "relation_20260927-20261009": {
+  "phase_nan_and_component_nan": 9923,
+  "phase_nan_component_valued": 0,
+  "phase_valued_component_nan": 0,
+  "phase_valued_component_0": 68669,
+  "phase_valued_component_positive": 155024,
+  "phase_by_component": {
+   "0.0": {
+    "cells": 68669,
+    "min": "-15.53519058227539",
+    "max": "7.752892017364502",
+    "median": "-4.113766193389893"
+   },
+   "1.0": {
+    "cells": 155024,
+    "min": "-9.982291221618652",
+    "max": "0.44908881187438965",
+    "median": "-4.258675575256348"
+   }
+  }
+ },
+ "ionosphere_relation": {
+  "both_valued": 223693,
+  "ionosphere_only": 0,
+  "phase_only": 0,
+  "ionosphere_range_over_phase_cells": [
+   "16.571060180664062",
+   "32.46390151977539"
+  ]
+ }
+}

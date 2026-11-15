@@ -1,0 +1,311 @@
+{
+ "made": "2026-11-15T10:34:50Z",
+ "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+ "python": "3.13.18",
+ "numpy": "2.5.4",
+ "rasterio": "1.5.2",
+ "gdal": "3.12.2",
+ "listed": true,
+ "SPEED_OF_LIGHT": "299792458.0",
+ "pairs": {
+  "20261009-20261021": {
+   "phase_file": "gunw-unwrappedinterferogram-hh-unwrappedphase-20261009-20261021.tif",
+   "phase_sha256": "77024532e183d09a578088a47b362f470ef27bfc70066beb21f74ce568247583",
+   "components_file": "gunw-unwrappedinterferogram-hh-connectedcomponents-20261009-20261021.tif",
+   "components_sha256": "07cb2f746ef6469737e7cf072cc6813cf933425e4d383149e26b417a20aa23ab",
+   "product": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+   "frequency_of_the_description": "1239000000.0",
+   "same_grid": true,
+   "shape": [
+    496,
+    471
+   ],
+   "crs": "EPSG:32619",
+   "cell": [
+    80.0,
+    -80.0
+   ],
+   "phase_values_sha256": "0805f9749474e1c31673ef5fc0049721d89290b1d59a7352978b0c70d88b499d",
+   "phase": {
+    "cells": 233616,
+    "nan": 9923,
+    "valued": 223693,
+    "min": "-10.02682876586914",
+    "max": "9.785455703735352",
+    "median": "-1.0718718767166138",
+    "mean": "-1.1192002596100343",
+    "p2_p98": [
+     "-4.168946857452393",
+     "1.8897683525085451"
+    ]
+   },
+   "components_labels": {
+    "0.0": 26889,
+    "1.0": 196804
+   },
+   "components_nan": 9923,
+   "wavelength_m": "0.2419632429378531",
+   "factor_m_per_rad": "-0.01925482308005223",
+   "result": {
+    "cells": 233616,
+    "nan": 36812,
+    "valued": 196804,
+    "min": "-0.06903063505887985",
+    "max": "0.12131945043802261",
+    "median": "0.02217055857181549",
+    "mean": "0.02300208440762146",
+    "p2_p98": [
+     "-0.026392306499183178",
+     "0.07798769235610963"
+    ]
+   },
+   "result_dtype": "float32",
+   "result_sha256": "5e6c37b691f7ceb9d81442dcccc7f9d00f3738c297c4c53e218e2a565b01b311",
+   "legend": [
+    "-0.026392306499183178",
+    "0.07798769235610963"
+   ],
+   "quantity": "Relative displacement along the line of sight",
+   "unit": "m",
+   "colours": "RdBu",
+   "ends": [
+    "away from the radar",
+    "toward the radar"
+   ],
+   "reduction": "mean",
+   "method": "Unwrapped phase times -wavelength/(4*pi), with the wavelength from the centre frequency of the product, in the cells of a connected component above 0; relative values, not corrected for the ionosphere, the troposphere or the solid Earth tides (NISAR L1 and L2 Algorithm Theoretical Basis Document, JPL D-95677 Rev A, sections 5.9 and 5.9.1.7; NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E)",
+   "blank_cells_are_those_without_phase_or_without_component": true,
+   "blank_because": {
+    "phase_nan": 9923,
+    "component_0_with_phase": 26889,
+    "component_nan_with_phase": 0,
+    "phase_infinite": 0
+   },
+   "run_tool": {
+    "description": {
+     "id": "displacement-20261009-20261021",
+     "title": "Displacement along the line of sight, 20261009-20261021",
+     "kind": "result",
+     "url": "/files/displacement-20261009-20261021/displacement-state.tif",
+     "quantity": "Relative displacement along the line of sight",
+     "unit": "m",
+     "range": [
+      -0.026392306499183178,
+      0.07798769235610963
+     ],
+     "colours": "RdBu",
+     "dates": [
+      "2026-10-09",
+      "2026-10-21"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": null,
+     "ends": [
+      "away from the radar",
+      "toward the radar"
+     ],
+     "frequency": null,
+     "program": "Lynkeus 0.1.0",
+     "method": "Unwrapped phase times -wavelength/(4*pi), with the wavelength from the centre frequency of the product, in the cells of a connected component above 0; relative values, not corrected for the ionosphere, the troposphere or the solid Earth tides (NISAR L1 and L2 Algorithm Theoretical Basis Document, JPL D-95677 Rev A, sections 5.9 and 5.9.1.7; NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E)",
+     "record": "/files/displacement-20261009-20261021/displacement-state.json"
+    },
+    "file": "displacement-state.tif",
+    "bytes": 658561,
+    "sha256": "08fc7cef55d8cbd7240310137a56e5fcd925328cbca39c33db570d76319d18d1",
+    "values_equal_the_function": true,
+    "grid_equal_the_inputs": true,
+    "overviews": [],
+    "units": [
+     "m"
+    ],
+    "tags": {
+     "TIFFTAG_IMAGEDESCRIPTION": "Displacement along the line of sight, 20261009-20261021",
+     "TIFFTAG_SOFTWARE": "Lynkeus 0.1.0",
+     "TIFFTAG_DATETIME": "2026:11:15 10:34:51",
+     "dates": "2026-10-09, 2026-10-21",
+     "inputs": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+     "method": "Unwrapped phase times -wavelength/(4*pi), with the wavelength from the centre frequency of the product, in the cells of a connected component above 0; relative values, not corrected for the ionosphere, the troposphere or the solid Earth tides (NISAR L1 and L2 Algorithm Theoretical Basis Document, JPL D-95677 Rev A, sections 5.9 and 5.9.1.7; NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E)",
+     "AREA_OR_POINT": "Area"
+    },
+    "lineage": "Result of the analysis tool displacement-state of Lynkeus 0.1.0 on the layers: Unwrapped phase HH, 9 Oct 2026 to 21 Oct 2026, Connected components HH, 9 Oct 2026 to 21 Oct 2026. Method: Unwrapped phase times -wavelength/(4*pi), with the wavelength from the centre frequency of the product, in the cells of a connected component above 0; relative values, not corrected for the ionosphere, the troposphere or the solid Earth tides (NISAR L1 and L2 Algorithm Theoretical Basis Document, JPL D-95677 Rev A, sections 5.9 and 5.9.1.7; NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E). Reduced copies made by averaging the values.",
+    "steps": [
+     [
+      0,
+      "Reading the layers."
+     ],
+     [
+      40,
+      "Computing the result."
+     ],
+     [
+      70,
+      "Writing the result."
+     ],
+     [
+      100,
+      "The result is ready."
+     ]
+    ]
+   }
+  },
+  "20260927-20261009": {
+   "phase_file": "gunw-unwrappedinterferogram-hh-unwrappedphase-20260927-20261009.tif",
+   "phase_sha256": "9e9390b2b46269b3d35b04624e95fa537bf318bc19f400277f77d7967c25f5d4",
+   "components_file": "gunw-unwrappedinterferogram-hh-connectedcomponents-20260927-20261009.tif",
+   "components_sha256": "057974486c2c116c5a2aace2e40f16b8ba02fc3919c977d04bd78ec4a2b350fd",
+   "product": "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+   "frequency_of_the_description": "1239000000.0",
+   "same_grid": true,
+   "shape": [
+    496,
+    471
+   ],
+   "crs": "EPSG:32619",
+   "cell": [
+    80.0,
+    -80.0
+   ],
+   "phase_values_sha256": "c9216160c03e5d7b59a107bf1e14a3a3fc8c04fb72af43434074df616fbf36f2",
+   "phase": {
+    "cells": 233616,
+    "nan": 9923,
+    "valued": 223693,
+    "min": "-15.53519058227539",
+    "max": "7.752892017364502",
+    "median": "-4.208395004272461",
+    "mean": "-4.21065056305172",
+    "p2_p98": [
+     "-6.881859264373779",
+     "-1.2374693202972407"
+    ]
+   },
+   "components_labels": {
+    "0.0": 68669,
+    "1.0": 155024
+   },
+   "components_nan": 9923,
+   "wavelength_m": "0.2419632429378531",
+   "factor_m_per_rad": "-0.01925482308005223",
+   "result": {
+    "cells": 233616,
+    "nan": 78592,
+    "valued": 155024,
+    "min": "-0.008647125214338303",
+    "max": "0.1922072470188141",
+    "median": "0.08200004696846008",
+    "mean": "0.08168530941791727",
+    "p2_p98": [
+     "0.03276995480060577",
+     "0.12282590895891192"
+    ]
+   },
+   "result_dtype": "float32",
+   "result_sha256": "2cfc62ef3163384b2609674e3b568a9aee3f7f3966ee8409fa1b5a12c361f661",
+   "legend": [
+    "0.03276995480060577",
+    "0.12282590895891192"
+   ],
+   "quantity": "Relative displacement along the line of sight",
+   "unit": "m",
+   "colours": "RdBu",
+   "ends": [
+    "away from the radar",
+    "toward the radar"
+   ],
+   "reduction": "mean",
+   "method": "Unwrapped phase times -wavelength/(4*pi), with the wavelength from the centre frequency of the product, in the cells of a connected component above 0; relative values, not corrected for the ionosphere, the troposphere or the solid Earth tides (NISAR L1 and L2 Algorithm Theoretical Basis Document, JPL D-95677 Rev A, sections 5.9 and 5.9.1.7; NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E)",
+   "blank_cells_are_those_without_phase_or_without_component": true,
+   "blank_because": {
+    "phase_nan": 9923,
+    "component_0_with_phase": 68669,
+    "component_nan_with_phase": 0,
+    "phase_infinite": 0
+   },
+   "run_tool": {
+    "description": {
+     "id": "displacement-20260927-20261009",
+     "title": "Displacement along the line of sight, 20260927-20261009",
+     "kind": "result",
+     "url": "/files/displacement-20260927-20261009/displacement-state.tif",
+     "quantity": "Relative displacement along the line of sight",
+     "unit": "m",
+     "range": [
+      0.03276995480060577,
+      0.12282590895891192
+     ],
+     "colours": "RdBu",
+     "dates": [
+      "2026-09-27",
+      "2026-10-09"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+     ],
+     "layer": null,
+     "ends": [
+      "away from the radar",
+      "toward the radar"
+     ],
+     "frequency": null,
+     "program": "Lynkeus 0.1.0",
+     "method": "Unwrapped phase times -wavelength/(4*pi), with the wavelength from the centre frequency of the product, in the cells of a connected component above 0; relative values, not corrected for the ionosphere, the troposphere or the solid Earth tides (NISAR L1 and L2 Algorithm Theoretical Basis Document, JPL D-95677 Rev A, sections 5.9 and 5.9.1.7; NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E)",
+     "record": "/files/displacement-20260927-20261009/displacement-state.json"
+    },
+    "file": "displacement-state.tif",
+    "bytes": 567475,
+    "sha256": "08e0ae6071c04a2c909fceda2eb8be11f51a859d4cc86eb599cb8f76d0731d3f",
+    "values_equal_the_function": true,
+    "grid_equal_the_inputs": true,
+    "overviews": [],
+    "units": [
+     "m"
+    ],
+    "tags": {
+     "TIFFTAG_IMAGEDESCRIPTION": "Displacement along the line of sight, 20260927-20261009",
+     "TIFFTAG_SOFTWARE": "Lynkeus 0.1.0",
+     "TIFFTAG_DATETIME": "2026:11:15 10:34:51",
+     "dates": "2026-09-27, 2026-10-09",
+     "inputs": "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+     "method": "Unwrapped phase times -wavelength/(4*pi), with the wavelength from the centre frequency of the product, in the cells of a connected component above 0; relative values, not corrected for the ionosphere, the troposphere or the solid Earth tides (NISAR L1 and L2 Algorithm Theoretical Basis Document, JPL D-95677 Rev A, sections 5.9 and 5.9.1.7; NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E)",
+     "AREA_OR_POINT": "Area"
+    },
+    "lineage": "Result of the analysis tool displacement-state of Lynkeus 0.1.0 on the layers: Unwrapped phase HH, 27 Sep 2026 to 9 Oct 2026, Connected components HH, 27 Sep 2026 to 9 Oct 2026. Method: Unwrapped phase times -wavelength/(4*pi), with the wavelength from the centre frequency of the product, in the cells of a connected component above 0; relative values, not corrected for the ionosphere, the troposphere or the solid Earth tides (NISAR L1 and L2 Algorithm Theoretical Basis Document, JPL D-95677 Rev A, sections 5.9 and 5.9.1.7; NASA SDS Product Specification, L2 GUNW, JPL D-102272 Rev E). Reduced copies made by averaging the values.",
+    "steps": [
+     [
+      0,
+      "Reading the layers."
+     ],
+     [
+      40,
+      "Computing the result."
+     ],
+     [
+      70,
+      "Writing the result."
+     ],
+     [
+      100,
+      "The result is ready."
+     ]
+    ]
+   }
+  }
+ },
+ "refusals": {
+  "20261009-20261021: the two layers in the other order": "The layer \"Connected components HH, 9 Oct 2026 to 21 Oct 2026\" is the layer unwrappedInterferogram/HH/connectedComponents of its product, and the tool reads the layer unwrappedPhase.",
+  "20261009-20261021: the phase alone": "The number of input layers must be 2, and it is 1.",
+  "20261009-20261021: a phase stored without its centre frequency": "The layer \"Unwrapped phase HH, 9 Oct 2026 to 21 Oct 2026\" does not record the centre frequency of its radar band; receive it again with Get layer.",
+  "20261009-20261021: unwrappedInterferogram/HH/ionospherePhaseScreen in place of the phase": "The layer \"Ionosphere phase screen HH, 9 Oct 2026 to 21 Oct 2026\" is the layer unwrappedInterferogram/HH/ionospherePhaseScreen of its product, and the tool reads the layer unwrappedPhase.",
+  "20261009-20261021: unwrappedInterferogram/HH/ionospherePhaseScreen in place of the connected components": "The layer \"Ionosphere phase screen HH, 9 Oct 2026 to 21 Oct 2026\" is the layer unwrappedInterferogram/HH/ionospherePhaseScreen of its product, and the tool reads the layer connectedComponents.",
+  "20261009-20261021: unwrappedInterferogram/HH/coherenceMagnitude in place of the phase": "The layer \"Coherence HH, 80 m, 9 Oct 2026 to 21 Oct 2026\" is the layer unwrappedInterferogram/HH/coherenceMagnitude of its product, and the tool reads the layer unwrappedPhase.",
+  "20261009-20261021: unwrappedInterferogram/HH/coherenceMagnitude in place of the connected components": "The layer \"Coherence HH, 80 m, 9 Oct 2026 to 21 Oct 2026\" is the layer unwrappedInterferogram/HH/coherenceMagnitude of its product, and the tool reads the layer connectedComponents.",
+  "20261009-20261021: pixelOffsets/HH/slantRangeOffset in place of the phase": "The layer \"Slant range offset HH, 9 Oct 2026 to 21 Oct 2026\" is the layer pixelOffsets/HH/slantRangeOffset of its product, and the tool reads the layer unwrappedPhase.",
+  "20261009-20261021: pixelOffsets/HH/slantRangeOffset in place of the connected components": "The layer \"Slant range offset HH, 9 Oct 2026 to 21 Oct 2026\" is the layer pixelOffsets/HH/slantRangeOffset of its product, and the tool reads the layer connectedComponents.",
+  "20261009-20261021: the connected components of another pair": "The two layers are not of the same product file.",
+  "20260927-20261009: the two layers in the other order": "The layer \"Connected components HH, 27 Sep 2026 to 9 Oct 2026\" is the layer unwrappedInterferogram/HH/connectedComponents of its product, and the tool reads the layer unwrappedPhase.",
+  "20260927-20261009: the phase alone": "The number of input layers must be 2, and it is 1.",
+  "20260927-20261009: a phase stored without its centre frequency": "The layer \"Unwrapped phase HH, 27 Sep 2026 to 9 Oct 2026\" does not record the centre frequency of its radar band; receive it again with Get layer."
+ }
+}

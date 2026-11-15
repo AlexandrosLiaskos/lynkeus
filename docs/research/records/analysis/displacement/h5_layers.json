@@ -1,0 +1,169 @@
+{
+ "made": "2026-11-15T10:35:08Z",
+ "h5py": "3.16.0",
+ "numpy": "2.5.4",
+ "rasterio": "1.5.2",
+ "layers": {
+  "phase-20261009-20261021": {
+   "sample": "gunw-unwrappedinterferogram-hh-unwrappedphase-20261009-20261021.tif",
+   "sample_sha256": "77024532e183d09a578088a47b362f470ef27bfc70066beb21f74ce568247583",
+   "dataset": "/science/LSAR/GUNW/grids/frequencyA/unwrappedInterferogram/HH/unwrappedPhase",
+   "product_dtype": "float32",
+   "fill": "np.float32(nan)",
+   "attrs": {
+    "_FillValue": "np.float32(nan)",
+    "description": "Unwrapped interferogram between HH layers",
+    "grid_mapping": "projection",
+    "max_value": "np.float32(29.855333)",
+    "mean_value": "np.float32(-0.6703073)",
+    "min_value": "np.float32(-23.088066)",
+    "sample_stddev": "np.float32(7.4397206)",
+    "units": "radians"
+   },
+   "window": {
+    "row": 1613,
+    "col": 1708,
+    "rows": 496,
+    "cols": 471
+   },
+   "x_matches": true,
+   "y_matches": true,
+   "cells": 233616,
+   "valued_in_the_sample": 223693,
+   "valued_in_the_product": 233616,
+   "valued_in_both": 223693,
+   "equal_where_both_hold_a_value": true,
+   "valued_in_the_sample_only": 0,
+   "valued_in_the_product_only": 9923
+  },
+  "components-20261009-20261021": {
+   "sample": "gunw-unwrappedinterferogram-hh-connectedcomponents-20261009-20261021.tif",
+   "sample_sha256": "07cb2f746ef6469737e7cf072cc6813cf933425e4d383149e26b417a20aa23ab",
+   "dataset": "/science/LSAR/GUNW/grids/frequencyA/unwrappedInterferogram/HH/connectedComponents",
+   "product_dtype": "uint16",
+   "fill": "np.int64(65535)",
+   "attrs": {
+    "_FillValue": "np.int64(65535)",
+    "description": "Connected components for HH layer",
+    "grid_mapping": "projection",
+    "units": "1"
+   },
+   "window": {
+    "row": 1613,
+    "col": 1708,
+    "rows": 496,
+    "cols": 471
+   },
+   "x_matches": true,
+   "y_matches": true,
+   "cells": 233616,
+   "valued_in_the_sample": 223693,
+   "valued_in_the_product": 233616,
+   "valued_in_both": 223693,
+   "equal_where_both_hold_a_value": true,
+   "valued_in_the_sample_only": 0,
+   "valued_in_the_product_only": 9923
+  },
+  "ionosphere-20261009-20261021": {
+   "sample": "gunw-unwrappedinterferogram-hh-ionospherephasescreen-20261009-20261021.tif",
+   "sample_sha256": "bff50de01110c0e9f736e2b760af5e3b4e8e58db73ad88579ea2de38638b69e8",
+   "dataset": "/science/LSAR/GUNW/grids/frequencyA/unwrappedInterferogram/HH/ionospherePhaseScreen",
+   "product_dtype": "float32",
+   "fill": "np.float32(nan)",
+   "attrs": {
+    "_FillValue": "np.float32(nan)",
+    "description": "Ionosphere phase screen",
+    "grid_mapping": "projection",
+    "max_value": "np.float32(87.72275)",
+    "mean_value": "np.float32(25.479322)",
+    "min_value": "np.float32(-87.93964)",
+    "sample_stddev": "np.float32(19.885326)",
+    "units": "radians"
+   },
+   "window": {
+    "row": 1613,
+    "col": 1708,
+    "rows": 496,
+    "cols": 471
+   },
+   "x_matches": true,
+   "y_matches": true,
+   "cells": 233616,
+   "valued_in_the_sample": 223693,
+   "valued_in_the_product": 233616,
+   "valued_in_both": 223693,
+   "equal_where_both_hold_a_value": true,
+   "valued_in_the_sample_only": 0,
+   "valued_in_the_product_only": 9923
+  },
+  "phase-20260927-20261009": {
+   "sample": "gunw-unwrappedinterferogram-hh-unwrappedphase-20260927-20261009.tif",
+   "sample_sha256": "9e9390b2b46269b3d35b04624e95fa537bf318bc19f400277f77d7967c25f5d4",
+   "dataset": "/science/LSAR/GUNW/grids/frequencyA/unwrappedInterferogram/HH/unwrappedPhase",
+   "product_dtype": "float32",
+   "fill": "np.float64(nan)",
+   "attrs": {
+    "_FillValue": "np.float64(nan)",
+    "description": "Unwrapped interferogram between HH layers",
+    "grid_mapping": "projection",
+    "max_value": "np.float64(20.93701171875)",
+    "mean_value": "np.float64(-1.3907803297042847)",
+    "min_value": "np.float64(-27.3162784576416)",
+    "sample_stddev": "np.float64(4.715142250061035)",
+    "units": "radians"
+   },
+   "window": {
+    "row": 1613,
+    "col": 1708,
+    "rows": 496,
+    "cols": 471
+   },
+   "x_matches": true,
+   "y_matches": true,
+   "cells": 233616,
+   "valued_in_the_sample": 223693,
+   "valued_in_the_product": 233616,
+   "valued_in_both": 223693,
+   "equal_where_both_hold_a_value": true,
+   "valued_in_the_sample_only": 0,
+   "valued_in_the_product_only": 9923
+  },
+  "components-20260927-20261009": {
+   "sample": "gunw-unwrappedinterferogram-hh-connectedcomponents-20260927-20261009.tif",
+   "sample_sha256": "057974486c2c116c5a2aace2e40f16b8ba02fc3919c977d04bd78ec4a2b350fd",
+   "dataset": "/science/LSAR/GUNW/grids/frequencyA/unwrappedInterferogram/HH/connectedComponents",
+   "product_dtype": "uint16",
+   "fill": "np.int64(65535)",
+   "attrs": {
+    "_FillValue": "np.int64(65535)",
+    "description": "Connected components for HH layer",
+    "grid_mapping": "projection",
+    "units": "1"
+   },
+   "window": {
+    "row": 1613,
+    "col": 1708,
+    "rows": 496,
+    "cols": 471
+   },
+   "x_matches": true,
+   "y_matches": true,
+   "cells": 233616,
+   "valued_in_the_sample": 223693,
+   "valued_in_the_product": 233616,
+   "valued_in_both": 223693,
+   "equal_where_both_hold_a_value": true,
+   "valued_in_the_sample_only": 0,
+   "valued_in_the_product_only": 9923
+  }
+ },
+ "product_grid": {
+  "coordinates_in": "/science/LSAR/GUNW/grids/frequencyA/unwrappedInterferogram",
+  "width": 4509,
+  "height": 4455,
+  "x_first": 182920.0,
+  "x_step": 80.0,
+  "y_first": 4886600.0,
+  "y_step": -80.0
+ }
+}
