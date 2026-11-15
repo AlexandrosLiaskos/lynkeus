@@ -2,17 +2,23 @@ import OlMap from "ol/Map";
 import View from "ol/View";
 import { containsExtent, isEmpty } from "ol/extent";
 import Draw from "ol/interaction/Draw";
+import type { Style } from "ol/style";
 import { expect, test } from "vitest";
 import product from "../../../api/tests/data/product-gcov.json";
 import {
+  CASING_WIDTH,
   createFootprintLayer,
   footprintFeatures,
   isDrawing,
   nextSelection,
+  OUTLINE_SYMBOL,
   outlinesExtent,
+  PRODUCTS_LAYER_ID,
   productsAt,
+  SELECTED_SYMBOL,
   showOutline,
   zoomTo,
+  type FootprintLayer,
 } from "./footprints";
 import { isProduct, type Product } from "./products";
 
@@ -51,8 +57,86 @@ test("a product with two polygons gives one feature with both", () => {
   expect(feature?.getGeometry()?.getPolygons()).toHaveLength(2);
 });
 
-test("the layer of the outlines is drawn above the other layers", () => {
-  expect(createFootprintLayer().getZIndex()).toBe(1000);
+test("the layer of the outlines carries the id of its shape layer, and no place of its own in the drawing order", () => {
+  const layer = createFootprintLayer();
+  expect(PRODUCTS_LAYER_ID).toBe("products");
+  expect(layer.get("id")).toBe("products");
+  expect(layer.getZIndex()).toBeUndefined();
+});
+
+/** A layer with the outlines of two products, "plain" and "other". */
+function twoOutlines(): FootprintLayer {
+  const layer = createFootprintLayer();
+  const products = [
+    { ...gcov(), id: "plain" },
+    { ...gcov(), id: "other" },
+  ];
+  layer.getSource()?.addFeatures(footprintFeatures(products, "EPSG:4326"));
+  return layer;
+}
+
+/** What the layer draws for the outline of a product: the line, the fill and the order of each of its styles. */
+function drawn(layer: FootprintLayer, id: string) {
+  const feature = layer.getSource()?.getFeatureById(id);
+  const styles = feature ? layer.getStyleFunction()?.(feature, 1) : undefined;
+  const list: Style[] = Array.isArray(styles) ? styles : styles ? [styles] : [];
+  return list.map((style) => ({
+    line: style.getStroke()?.getColor(),
+    width: style.getStroke()?.getWidth(),
+    fill: style.getFill()?.getColor(),
+    order: style.getZIndex(),
+  }));
+}
+
+test("a plain outline is a thin line in the primary colour without a visible fill, as its symbol says", () => {
+  expect(OUTLINE_SYMBOL).toEqual({ label: "Outline of a product", line: "#005ea2", width: 1 });
+  expect(drawn(twoOutlines(), "plain")).toEqual([
+    { line: OUTLINE_SYMBOL.line, width: OUTLINE_SYMBOL.width, fill: "rgba(0, 94, 162, 0)", order: undefined },
+  ]);
+});
+
+test("the outline under the pointer keeps the primary colour, with a line of 2 pixels and a light fill", () => {
+  const layer = twoOutlines();
+  layer.set("hovered", "other");
+  expect(drawn(layer, "other")).toEqual([{ line: "#005ea2", width: 2, fill: "rgba(0, 94, 162, 0.1)", order: 1 }]);
+  expect(drawn(layer, "plain")).toHaveLength(1);
+  expect(drawn(layer, "plain")[0]?.width).toBe(1);
+});
+
+test("the selected outline is a cyan line over a dark casing with a cyan fill, above the other outlines", () => {
+  expect(SELECTED_SYMBOL).toEqual({
+    label: "Selected product",
+    line: "#00ffff",
+    width: 3,
+    casing: "#1b1b1b",
+    fill: "rgba(0, 255, 255, 0.2)",
+  });
+  expect(CASING_WIDTH).toBe(5);
+  const layer = twoOutlines();
+  layer.set("selected", "other");
+  // The casing comes first, so that the line is drawn over it.
+  expect(drawn(layer, "other")).toEqual([
+    { line: SELECTED_SYMBOL.casing, width: CASING_WIDTH, fill: undefined, order: 2 },
+    { line: SELECTED_SYMBOL.line, width: SELECTED_SYMBOL.width, fill: SELECTED_SYMBOL.fill, order: 3 },
+  ]);
+  // The selection is drawn also while the pointer rests on its outline.
+  layer.set("hovered", "other");
+  expect(drawn(layer, "other").map(({ line }) => line)).toEqual(["#1b1b1b", "#00ffff"]);
+  expect(drawn(layer, "plain")[0]?.line).toBe("#005ea2");
+});
+
+test("a hidden outline is not drawn, selected or under the pointer or neither", () => {
+  const layer = twoOutlines();
+  layer.set("hidden", new Set(["other"]));
+  expect(drawn(layer, "other")).toEqual([]);
+  expect(drawn(layer, "plain")).toHaveLength(1);
+  layer.set("selected", "other");
+  expect(drawn(layer, "other")).toEqual([]);
+  layer.set("selected", null);
+  layer.set("hovered", "other");
+  expect(drawn(layer, "other")).toEqual([]);
+  layer.set("hidden", new Set());
+  expect(drawn(layer, "other")).toHaveLength(1);
 });
 
 test("the products whose outlines hold a place are found in the order of the list", () => {
@@ -71,6 +155,22 @@ test("the products whose outlines hold a place are found in the order of the lis
   expect(productsAt(layer, [0, 0], "EPSG:4326")).toEqual([]);
   // The same place on the copy of the world one turn to the east.
   expect(productsAt(layer, [(middle[0] ?? 0) + 360, middle[1] ?? 0], "EPSG:4326")).toHaveLength(3);
+});
+
+test("the pointer does not find a hidden outline", () => {
+  const layer = createFootprintLayer();
+  const products = [gcov(), { ...gcov(), id: "second" }, { ...gcov(), id: "third" }];
+  layer.getSource()?.addFeatures(footprintFeatures(products, "EPSG:4326"));
+  const middle = [
+    (Math.min(...longitudes) + Math.max(...longitudes)) / 2,
+    (Math.min(...latitudes) + Math.max(...latitudes)) / 2,
+  ];
+  layer.set("hidden", new Set(["second"]));
+  expect(productsAt(layer, middle, "EPSG:4326")).toEqual(["G4405194348-ASF", "third"]);
+  layer.set("hidden", new Set(["G4405194348-ASF", "second", "third"]));
+  expect(productsAt(layer, middle, "EPSG:4326")).toEqual([]);
+  layer.set("hidden", new Set());
+  expect(productsAt(layer, middle, "EPSG:4326")).toEqual(["G4405194348-ASF", "second", "third"]);
 });
 
 test("a click selects the first product under the pointer, then the next, and ends the selection of an only one", () => {

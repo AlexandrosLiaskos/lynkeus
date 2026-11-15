@@ -6,17 +6,52 @@ import VectorLayer from "ol/layer/Vector";
 import { transformExtent } from "ol/proj";
 import VectorSource from "ol/source/Vector";
 import { Circle, Fill, Stroke, Style } from "ol/style";
-import { dockStore } from "../shared/dock/dock";
 import { useMap } from "../shared/map";
 import { report } from "../shared/messages/messages";
+import {
+  dropShapeLayer,
+  putShapeLayer,
+  setShapeDisplay,
+  shapeDisplayOf,
+  type ShapeLayer,
+  type ShapeSymbol,
+} from "../shared/shapeLayers";
 import { useStore } from "../shared/store";
+import { useShapeLayer } from "../shared/useShapeLayer";
 import type { SearchDraft } from "./search";
-import { areaGeometry, fitRings, rectangleOfExtent, ringsOfGeometry, type SearchArea } from "./searchArea";
-import { drawingStore, GET_LAYER_PANE, SEARCH_PANE, searchDraftStore } from "./state";
+import {
+  areaGeometry,
+  areaKind,
+  areaProperties,
+  fitRings,
+  rectangleOfExtent,
+  ringsOfGeometry,
+  sameArea,
+  type SearchArea,
+} from "./searchArea";
+import { drawingStore, searchDraftStore } from "./state";
 
-// The area of the search is drawn as a broken line in the secondary colour of the U.S. Web Design System, so
-// that it differs from the outlines of the products.
-const AREA_STYLE = new Style({ stroke: new Stroke({ color: "#d83933", width: 2, lineDash: [6, 4] }) });
+/** The id of the shape layer of the area of the search. The layer of the map carries it. */
+export const SEARCH_AREA_LAYER_ID = "search-area";
+
+/**
+ * How the map draws the area of the search, which is also its symbol in the legend of the layer: a broken line
+ * in the secondary colour of the U.S. Web Design System, so that it differs from the outlines of the products.
+ */
+export const SEARCH_AREA_SYMBOL = {
+  label: "Area of the search",
+  line: "#d83933",
+  width: 2,
+  dash: [6, 4],
+} satisfies ShapeSymbol;
+
+const AREA_STYLE = new Style({
+  stroke: new Stroke({
+    color: SEARCH_AREA_SYMBOL.line,
+    width: SEARCH_AREA_SYMBOL.width,
+    lineDash: SEARCH_AREA_SYMBOL.dash,
+  }),
+});
 // While a shape is drawn, a dot marks the place of the pointer.
 const SKETCH_STYLE = new Style({
   stroke: new Stroke({ color: "#d83933", width: 2, lineDash: [6, 4] }),
@@ -63,17 +98,36 @@ export function takeDrawnShape(shape: Geometry, kind: "rectangle" | "polygon", p
   return null;
 }
 
+/** Take the area out of the search, so that the form shows "Whole Earth". The sides of the area stay in the form. */
+function removeArea(): void {
+  const draft = searchDraftStore.get();
+  if (draft) {
+    searchDraftStore.set({ ...draft, limited: false });
+  }
+}
+
 /**
- * The area of the search on the map. It is shown while the search pane or the pane of Get layer, which takes the
- * same area, is open, and while the user draws it: a rectangle with a press, a move and a release, or a polygon
- * with one click for each point and a double click for the last. The Escape key ends the drawing without a shape.
+ * The area of the search on the map. It is one layer of the Contents pane, "Area of the search", whenever the
+ * form of the search holds an area that can be drawn: the pane shows and hides the layer, moves it in the
+ * drawing order and removes it, which takes the area out of the search. The area therefore stays on the map
+ * when the search pane and the pane of Get layer, which takes the same area, close. An area that has just been
+ * set is shown even when the layer was hidden. The user draws the area as a rectangle, with a press, a move and
+ * a release, or as a polygon, with one click for each point and a double click for the last; the Escape key
+ * ends the drawing without a shape.
  */
 export function SearchAreaLayer() {
   const map = useMap();
-  const open = useStore(dockStore).tools.some((tool) => tool === SEARCH_PANE || tool === GET_LAYER_PANE);
   const draft = useStore(searchDraftStore);
   const drawing = useStore(drawingStore);
-  const [layer] = useState(() => new VectorLayer({ source: new VectorSource(), style: AREA_STYLE, zIndex: 1001 }));
+  const [layer] = useState(
+    () =>
+      new VectorLayer({
+        source: new VectorSource(),
+        style: AREA_STYLE,
+        properties: { id: SEARCH_AREA_LAYER_ID },
+      }),
+  );
+  useShapeLayer(layer, SEARCH_AREA_LAYER_ID);
 
   useEffect(() => {
     map.addLayer(layer);
@@ -82,8 +136,14 @@ export function SearchAreaLayer() {
     };
   }, [map, layer]);
 
-  const shown = open || drawing !== null;
-  const area = useMemo(() => (shown ? areaOfDraft(draft) : null), [shown, draft]);
+  // The area is kept while the form changes in its other choices, so that the layer is described again only
+  // when the area itself has changed.
+  const drawn = areaOfDraft(draft);
+  const [area, setArea] = useState(drawn);
+  if (!sameArea(area, drawn)) {
+    setArea(drawn);
+  }
+
   useEffect(() => {
     const source = layer.getSource();
     source?.clear();
@@ -91,6 +151,32 @@ export function SearchAreaLayer() {
       source?.addFeature(new Feature(areaGeometry(area, map.getView().getProjection())));
     }
   }, [map, layer, area]);
+
+  const description = useMemo<ShapeLayer | null>(
+    () =>
+      area && {
+        id: SEARCH_AREA_LAYER_ID,
+        title: "Area of the search",
+        line: areaKind(area),
+        symbols: [SEARCH_AREA_SYMBOL],
+        properties: areaProperties(area),
+        remove: removeArea,
+      },
+    [area],
+  );
+
+  // An area that has just been set is shown, also when the user had hidden the layer of the area before it.
+  useEffect(() => {
+    if (description) {
+      putShapeLayer(description);
+      if (!shapeDisplayOf(SEARCH_AREA_LAYER_ID).visible) {
+        setShapeDisplay(SEARCH_AREA_LAYER_ID, { visible: true });
+      }
+    } else {
+      dropShapeLayer(SEARCH_AREA_LAYER_ID);
+    }
+  }, [description]);
+  useEffect(() => () => dropShapeLayer(SEARCH_AREA_LAYER_ID), []);
 
   useEffect(() => {
     if (!drawing) {
