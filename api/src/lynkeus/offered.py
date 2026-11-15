@@ -84,6 +84,10 @@ class SeriesInputs(Format):
         The point of the series, in degrees of longitude and latitude
         (WGS 84). Without it the series is that of the whole area of the
         layers.
+    reference : Point or None
+        The reference point of a series that is relative to one, in degrees
+        of longitude and latitude (WGS 84). Only the tool
+        ``displacement-series`` takes one, and it needs one.
     """
 
     inputs: tuple[Text, ...] = Field(
@@ -100,6 +104,13 @@ class SeriesInputs(Format):
         description=(
             "The point of the series, in degrees of longitude and latitude (WGS 84). "
             "Without it the series is that of the whole area of the layers."
+        ),
+    )
+    reference: Point | None = Field(
+        default=None,
+        description=(
+            "The reference point of a series that is relative to one, in degrees of longitude and latitude "
+            "(WGS 84). Only the tool displacement-series takes one, and it needs one."
         ),
     )
 
@@ -161,7 +172,7 @@ def run_series_analysis(tool: str, inputs: SeriesInputs, work: Work) -> SeriesDe
     This is the function of the process of such a tool. The series receives the ``id`` that the work gives.
     """
     return run_series(
-        SeriesRun(tool=tool, inputs=inputs.inputs, title=inputs.title, point=inputs.point),
+        SeriesRun(tool=tool, inputs=inputs.inputs, title=inputs.title, point=inputs.point, reference=inputs.reference),
         layers=work.layers,
         series_id=work.layer_id,
         report=work.report,

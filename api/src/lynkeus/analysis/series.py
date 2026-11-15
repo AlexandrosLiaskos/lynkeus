@@ -1,9 +1,11 @@
 """The tools of the kind Series: the value of one quantity on many dates, at a point or for the area.
 
 A tool of this kind receives the arrays of its input layers one after another, with their layer descriptions,
-and the cell of the point of the request, or no cell for the whole area. It returns one value for each layer
-with the number of cells from which the value was made. It reads no file, writes no file and contacts no
+the cell of the point of the request, or no cell for the whole area, and the cell of the reference point of the
+request, or no cell. The two tools of this file return one value for each layer with the number of cells from
+which the value was made, and they take no reference point. It reads no file, writes no file and contacts no
 service. The method sheets are ``docs/methods/backscatter-series.md`` and ``docs/methods/coherence-series.md``.
+The tool Surface displacement, Series, which takes a reference point, is in ``lynkeus.analysis.displacement``.
 """
 
 import math
@@ -53,23 +55,36 @@ _COHERENCE_METHOD = (
 
 
 def _descriptions(
-    layers: Sequence[LayerDescription], *, product: ProductType, names: re.Pattern[str], reads: str, dates: int
+    layers: Sequence[LayerDescription],
+    *,
+    product: ProductType,
+    names: re.Pattern[str],
+    reads: str,
+    dates: int,
+    unit: str = "1",
 ) -> None:
     """Check the descriptions of the layers of a series.
 
     Raises
     ------
     LayerError
-        If the layers are fewer than two; if a layer is not one that the tool reads (see ``check_inputs``); if
-        the layers are not the same layer of their products, are not of the same instrument, track, direction
-        and frame, or are not of the same major release of the processing software; or if two layers have the
-        same date or dates.
+        If the layers are fewer than two; if a layer is not one that the tool reads, with the unit ``unit``
+        (see ``check_inputs``); if the layers are not the same layer of their products, are not of the same
+        instrument, track, direction and frame, or are not of the same major release of the processing
+        software; or if two layers have the same date or dates.
     """
     if len(layers) < LEAST_LAYERS:
         raise LayerError(f"A series needs at least {LEAST_LAYERS} layers, and it has {len(layers)}.")
     # The values are not needed here, so an empty array stands in the place of each.
     acquisitions = check_inputs(
-        [_NO_VALUES] * len(layers), layers, count=len(layers), product=product, names=names, reads=reads, dates=dates
+        [_NO_VALUES] * len(layers),
+        layers,
+        count=len(layers),
+        product=product,
+        names=names,
+        reads=reads,
+        dates=dates,
+        unit=unit,
     )
     first = layers[0]
     for layer in layers[1:]:
@@ -100,6 +115,18 @@ def _descriptions(
         if layer.dates in seen:
             raise LayerError(f'The layers "{seen[layer.dates].title}" and "{layer.title}" have the same dates.')
         seen[layer.dates] = layer
+
+
+def _no_reference(reference: tuple[int, int] | None) -> None:
+    """Refuse the cell of a reference point, which the tools of this file do not take.
+
+    Raises
+    ------
+    LayerError
+        If a cell is given.
+    """
+    if reference is not None:
+        raise LayerError("The tool takes no reference point.")
 
 
 def _series(
@@ -186,6 +213,7 @@ def backscatter_series(
     arrays: Iterable[NDArray[np.float32]],
     layers: Sequence[LayerDescription],
     cell: tuple[int, int] | None = None,
+    reference: tuple[int, int] | None = None,
 ) -> SeriesResult:
     """Give the radar backscatter of many dates, at a point or as the mean of the area, in decibels.
 
@@ -200,6 +228,8 @@ def backscatter_series(
     cell : tuple of int, optional
         Row and column of the cell of the point, counted from 0. Without it the series is that of the whole
         area of the layers.
+    reference : None
+        The tool takes no reference point, so the cell of one is refused.
 
     Returns
     -------
@@ -214,15 +244,16 @@ def backscatter_series(
     Raises
     ------
     LayerError
-        If the layers are fewer than two; if a layer is not one diagonal covariance term of a GCOV product
-        with the unit ``1`` and one date (see ``check_inputs``); if the layers are not the same term, are not
-        of the same instrument, track, direction and frame, or are not of the same major release of the
-        processing software; if two layers have the same date; if the grids differ in size; or if no layer
-        holds a value above zero, at the point or in any cell.
+        If the cell of a reference point is given; if the layers are fewer than two; if a layer is not one
+        diagonal covariance term of a GCOV product with the unit ``1`` and one date (see ``check_inputs``); if
+        the layers are not the same term, are not of the same instrument, track, direction and frame, or are
+        not of the same major release of the processing software; if two layers have the same date; if the
+        grids differ in size; or if no layer holds a value above zero, at the point or in any cell.
     ValueError
         If the arrays and the descriptions differ in number, an array is not two-dimensional 32-bit floating
         point, or the cell lies outside the grid. These are faults of the caller.
     """
+    _no_reference(reference)
     _descriptions(
         layers,
         product="GCOV",
@@ -238,6 +269,7 @@ def coherence_series(
     arrays: Iterable[NDArray[np.float32]],
     layers: Sequence[LayerDescription],
     cell: tuple[int, int] | None = None,
+    reference: tuple[int, int] | None = None,
 ) -> SeriesResult:
     """Give the interferometric coherence of many pairs of dates, at a point or as the mean of the area.
 
@@ -252,6 +284,8 @@ def coherence_series(
     cell : tuple of int, optional
         Row and column of the cell of the point, counted from 0. Without it the series is that of the whole
         area of the layers.
+    reference : None
+        The tool takes no reference point, so the cell of one is refused.
 
     Returns
     -------
@@ -265,16 +299,17 @@ def coherence_series(
     Raises
     ------
     LayerError
-        If the layers are fewer than two; if a layer is not a layer ``coherenceMagnitude`` of a GUNW product
-        with the unit ``1`` and two dates (see ``check_inputs``); if the layers are not the same layer of
-        their products, are not of the same instrument, track, direction and frame, or are not of the same
-        major release of the processing software; if two layers have the same two dates; if the grids differ
-        in size; if a layer holds a value outside 0 to 1; or if no layer holds a value, at the point or in any
-        cell.
+        If the cell of a reference point is given; if the layers are fewer than two; if a layer is not a layer
+        ``coherenceMagnitude`` of a GUNW product with the unit ``1`` and two dates (see ``check_inputs``); if
+        the layers are not the same layer of their products, are not of the same instrument, track, direction
+        and frame, or are not of the same major release of the processing software; if two layers have the
+        same two dates; if the grids differ in size; if a layer holds a value outside 0 to 1; or if no layer
+        holds a value, at the point or in any cell.
     ValueError
         If the arrays and the descriptions differ in number, an array is not two-dimensional 32-bit floating
         point, or the cell lies outside the grid. These are faults of the caller.
     """
+    _no_reference(reference)
     _descriptions(layers, product="GUNW", names=_COHERENCE, reads="the layer coherenceMagnitude", dates=2)
     entries, inputs = _series(arrays, layers, cell, _mean_coherence)
     return _result(
