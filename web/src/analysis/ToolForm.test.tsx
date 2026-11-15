@@ -193,7 +193,7 @@ test("the foot states that a job was cancelled or has left the list", () => {
 test("the explanations of the titles of the form are short", () => {
   expect(ABOUT).toEqual({
     layer: "A layer that this session received with Get layer.",
-    pair: "The same layer of two dates of one track and frame. The earlier date is taken first.",
+    pair: "The same layer of two dates of one track and frame; the earlier date is taken first.",
     pairs:
       "The same coherence layer of two pairs of dates of one track and frame, which span the same number of days; the earlier pair is taken first.",
     phase:
@@ -202,8 +202,10 @@ test("the explanations of the titles of the form are short", () => {
       "The Connected components layer of the same product, channel and area, which marks the cells where the unwrapped phase is unreliable.",
     title: "The name of the result in the Catalog and Contents panes.",
   });
-  // The explanation that Coherence, Change adds is one sentence.
-  expect(ABOUT.pairs).toMatch(/^[A-Z][^.]*\.$/);
+  // Each explanation is one sentence.
+  for (const about of Object.values(ABOUT)) {
+    expect(about).toMatch(/^[A-Z][^.]*\.$/);
+  }
 });
 
 test("the second field is named after what the tool compares: the other date, or the other pair of dates", () => {

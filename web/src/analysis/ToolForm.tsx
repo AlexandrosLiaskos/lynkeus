@@ -44,7 +44,7 @@ import {
 /** The explanations of the titles of the form. Each one shows from the button beside its title. */
 export const ABOUT = {
   layer: "A layer that this session received with Get layer.",
-  pair: "The same layer of two dates of one track and frame. The earlier date is taken first.",
+  pair: "The same layer of two dates of one track and frame; the earlier date is taken first.",
   pairs:
     "The same coherence layer of two pairs of dates of one track and frame, which span the same number of days; the earlier pair is taken first.",
   phase:

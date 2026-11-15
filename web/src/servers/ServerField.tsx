@@ -15,7 +15,7 @@ import { limitRows, storageProblem } from "./words";
 
 /** The explanation of the field. It shows from the button beside its title. */
 export const ABOUT_SERVER =
-  "The server that runs the job and keeps its layer: the project server of Lynkeus, or one of your servers. Automatic takes your connected server with the fewest waiting and running jobs that keeps every input layer, and the project server when there is none. The limits under the field are those of the server chosen.";
+  "The server that runs the job and keeps its layer, either the project server of Lynkeus or one of your servers, with its limits under the field; Automatic takes your connected server with the fewest waiting and running jobs that keeps every input layer, or the project server when there is none.";
 
 /** Return the limits of the project server that a form shows, as names and values. */
 export function projectRows({ limits }: ServiceLimits): Property[] {

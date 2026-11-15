@@ -76,7 +76,7 @@ test("the field offers Automatic, the project server and each own server, and ma
   expect(document.getElementById(field().getAttribute("aria-describedby")?.split(" ")[0] ?? "")?.textContent).toBe(
     ABOUT_SERVER,
   );
-  expect(ABOUT_SERVER.split(". ")).toHaveLength(3);
+  expect(ABOUT_SERVER).toMatch(/^[A-Z][^.]*\.$/);
 });
 
 test("the automatic choice sends no parameter and names the server of this moment with its limits", async () => {
