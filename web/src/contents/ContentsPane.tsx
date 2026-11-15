@@ -111,8 +111,9 @@ function Layers() {
 
 /**
  * The Contents pane, on the left of the map, as in ArcGIS Pro: the map and, under it, its layers in drawing order,
- * with the top layer first and the basemap last. The row of the map folds and unfolds the list. The layers are
- * drawn on the map whether the pane is open or closed.
+ * with the top layer first and the basemap last. The row of the map folds and unfolds the list. The rows reach
+ * the two edges of the pane, so that the selected layer is marked over the whole width. The layers are drawn on
+ * the map whether the pane is open or closed.
  */
 export function ContentsPane() {
   useLayerDrawing();
@@ -120,20 +121,22 @@ export function ContentsPane() {
   const layersId = useId();
   return (
     <Pane id="contents" title="Contents">
-      <button
-        type="button"
-        id={MAP_ROW_ID}
-        className="contents-map"
-        aria-expanded={!folded}
-        aria-controls={layersId}
-        onClick={() => setFolded(!folded)}
-      >
-        <Icon name={folded ? "navigate_next" : "expand_more"} />
-        <Icon name="map" />
-        <span>Map</span>
-      </button>
-      <div className="contents-map-layers" id={layersId} hidden={folded}>
-        <Layers />
+      <div className="pane-bleed">
+        <button
+          type="button"
+          id={MAP_ROW_ID}
+          className="contents-map"
+          aria-expanded={!folded}
+          aria-controls={layersId}
+          onClick={() => setFolded(!folded)}
+        >
+          <Icon name="expand_more" />
+          <Icon name="map" />
+          <span>Map</span>
+        </button>
+        <div id={layersId} hidden={folded}>
+          <Layers />
+        </div>
       </div>
     </Pane>
   );
