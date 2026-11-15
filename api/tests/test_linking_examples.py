@@ -52,6 +52,11 @@ def test_examples_cover_the_states_that_the_interface_shows() -> None:
     servers = Servers.model_validate_json((DATA / "servers.json").read_text(encoding="utf-8")).servers
     assert [server.connected for server in servers] == [True, False, False]
     assert [server.state is None for server in servers] == [False, False, True]
+    # The office computer runs the program that knows the cells of a layer, the laboratory server an older one.
+    assert [server.knows_cells for server in servers] == [True, False, False]
+    for server in servers:
+        carried = server.state is not None and "layer_cells" in server.state.limits.model_fields_set
+        assert server.knows_cells == carried
     full = servers[1].state
     assert full is not None
     assert full.memory is None
@@ -63,10 +68,11 @@ def test_limits_without_the_cells_of_a_layer_are_read_as_25_million() -> None:
     new, old = servers[0].state, servers[1].state
     assert new is not None
     assert old is not None
-    # The first server runs a program that states the limit; the second runs version 0.1.0, which does not.
-    assert new.version != "0.1.0"
+    # The first server runs the program that states the limit; the second runs the older one, which does not.
+    # Both carry the version 0.1.0, so the field alone tells them apart.
+    assert new.version == old.version == "0.1.0"
     assert new.limits.layer_cells == 100_000_000
-    assert old.version == "0.1.0"
+    assert "layer_cells" in new.limits.model_fields_set
     assert "layer_cells" not in old.limits.model_fields_set
     assert old.limits.layer_cells == FIRST_LAYER_CELLS == 25_000_000
     change = ServerChange.model_validate_json((DATA / "server-change-limits.json").read_text(encoding="utf-8"))

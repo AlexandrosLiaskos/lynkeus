@@ -23,6 +23,11 @@ reports again. A job is recorded as failed when its server states that it runs
 and holds no job at all although it confirmed the job earlier, and when the
 project server was restarted before the server took the job.
 
+Every own server has a limit of its own on the cells of a layer (``layer_cells``), which its owner
+sets with its other limits. The number of the project server (``lynkeus.harmony.MOST_CELLS``) is not
+applied to a job of an own server. The program of version ``FIRST_VERSION`` does not know the limit:
+it receives the other limits only, and a change of the cells of a layer for it is refused.
+
 The methods of ``Servers`` whose description says "in the web service" run on
 the event loop of the web service and touch the tasks in memory. Every other
 method reads and writes the record only and may be called from any thread.
@@ -33,6 +38,7 @@ import contextlib
 import hashlib
 import hmac
 import json
+import math
 import re
 import secrets
 import threading
@@ -44,9 +50,11 @@ from http import HTTPStatus
 
 from pydantic import BaseModel, ValidationError
 
+from lynkeus.computer import job_memory
 from lynkeus.layers import LayerDescription
 from lynkeus.linking import (
     CONNECTED_TIME,
+    FIRST_LAYER_CELLS,
     MAX_USER_SERVERS,
     MOST_BYTES,
     PAIRING_INTERVAL,
@@ -117,6 +125,12 @@ MAX_LABEL = 80
 
 SEEN_PAUSE = 10.0
 """The shortest time between two records of the last message of an own server, in seconds."""
+
+FIRST_VERSION = "0.1.0"
+"""The version of Lynkeus Server that does not know the limit on the cells of a layer.
+
+Its formats take no unknown field, so it receives the task ``limits`` without the field ``layer_cells``.
+"""
 
 SENT = "The job waits for your server to take it."
 DISMISSED = "The job was dismissed."
@@ -200,8 +214,66 @@ def _same_work(first: Task, second: Task) -> bool:
 
 
 def state_of(server: ServerRecord) -> ServerState | None:
-    """Return the last state that an own server reported, or None before its first report."""
+    """Return the last state that an own server reported, or None before its first report.
+
+    A state that was recorded before the limit on the cells of a layer existed states
+    ``FIRST_LAYER_CELLS`` cells, because the format gives that number to a message without the field.
+    """
     return None if server.state is None else ServerState.model_validate_json(server.state)
+
+
+def knows_cells(state: ServerState | None) -> bool:
+    """Tell whether the program of an own server knows the limit on the cells of a layer.
+
+    The program of version ``FIRST_VERSION`` does not. A server that has not reported yet counts as
+    such a program, because a program of that version refuses a message with a field that it does not know.
+    """
+    return state is not None and state.version != FIRST_VERSION
+
+
+def layer_cells(server: ServerRecord) -> int:
+    """Return the most cells of a layer that a job of an own server receives, as the server last reported it."""
+    state = state_of(server)
+    return FIRST_LAYER_CELLS if state is None else state.limits.layer_cells
+
+
+def written_tasks(tasks: Tasks, state: ServerState | None) -> str:
+    """Return the tasks of an own server as the JSON text that its program reads.
+
+    Parameters
+    ----------
+    tasks : Tasks
+        The tasks.
+    state : ServerState or None
+        Last state that the server reported, which names the version of its program.
+
+    Returns
+    -------
+    str
+        The tasks in the format ``Tasks``. For a program that does not know the limit on the cells of a
+        layer (``knows_cells``), the limits of a task ``limits`` are written without ``layer_cells``.
+    """
+    if knows_cells(state):
+        return tasks.model_dump_json()
+    return tasks.model_dump_json(exclude={"tasks": {"__all__": {"limits": {"layer_cells"}}}})
+
+
+def _kept_cells(server: ServerRecord, state: ServerState | None) -> int:
+    """Return the limit on the cells of a layer that stays when new limits of an own server do not name it.
+
+    It is the number that the owner set before, or else the number that the server reported, and
+    ``FIRST_LAYER_CELLS`` for a program that does not know the limit.
+    """
+    if state is not None and not knows_cells(state):
+        return FIRST_LAYER_CELLS
+    if server.limits is not None:
+        return ServerLimits.model_validate_json(server.limits).layer_cells
+    return FIRST_LAYER_CELLS if state is None else state.limits.layer_cells
+
+
+def _millions(cells: int) -> str:
+    """Write a number of cells in millions, with one decimal when it is not a whole number of millions."""
+    return f"{cells / 1e6:.1f}".removesuffix(".0")
 
 
 def name_of(server: ServerRecord) -> ServerName:
@@ -457,13 +529,15 @@ class Servers:
     def described(self, server: ServerRecord, now: float) -> Server:
         """Return an own server as the interface receives it."""
         seen = self._seen.get(server.id, server.seen)
+        state = state_of(server)
         return Server(
             id=server.id,
             name=server.name,
             connected=self.connected(server, now),
             paired=server.paired,
             seen=server.paired if seen is None else seen,
-            state=state_of(server),
+            state=state,
+            knows_cells=knows_cells(state),
         )
 
     def place(
@@ -834,6 +908,9 @@ class Servers:
                     self._store.fail_server_job(job.id, LOST, now)
         self._store.keep_latest_server_jobs(server.id, MAX_SERVER_FINISHED_JOBS, MAX_SERVER_DISMISSED_JOBS)
         wanted = None if server.limits is None else ServerLimits.model_validate_json(server.limits)
+        if wanted is not None and not knows_cells(report.state):
+            # Such a program applies FIRST_LAYER_CELLS and states no other number, whatever the record holds.
+            wanted = wanted.model_copy(update={"layer_cells": FIRST_LAYER_CELLS})
         if wanted is not None and wanted != report.state.limits:
             tasks.append(LimitsTask(id=_task_id(), limits=wanted))
         return tuple(tasks)
@@ -990,15 +1067,51 @@ class Servers:
     def change(self, server: ServerRecord, change: ServerChange) -> ServerRecord:
         """Record a new name or new limits of an own server, in the web service.
 
-        The limits are sent to the server at once when it is connected. A report that states other
-        limits makes them be sent again, so a server that is away receives them when it returns.
+        The limits are sent to the server at once when it is connected and has reported its state,
+        which names the version of its program. A report that states other limits makes them be sent
+        again, so a server that is away, or that has not reported yet, receives them after its next report.
+
+        Limits that do not name ``layer_cells`` leave that limit as it is: an interface that does not
+        know the limit must not set it to ``FIRST_LAYER_CELLS`` by leaving it out.
+
+        Raises
+        ------
+        ServerRefusedError
+            With 409 when the limits change ``layer_cells`` and the program of the server does not know
+            that limit, and with 422 when ``running_jobs`` jobs of ``layer_cells`` cells need more than
+            the memory that the server last reported. ``lynkeus.computer.job_memory`` gives the memory
+            of a job, as it does for the first limits of a server. Nothing is recorded then, the name
+            included.
         """
+        limits = change.limits
+        if limits is not None:
+            state = state_of(server)
+            if "layer_cells" not in limits.model_fields_set:
+                limits = limits.model_copy(update={"layer_cells": _kept_cells(server, state)})
+            if state is not None and not knows_cells(state) and limits.layer_cells != FIRST_LAYER_CELLS:
+                sentence = (
+                    f"To change the cells of a layer of your server {server.name}, install the newer version of"
+                    f" Lynkeus Server on that computer: version {state.version} receives at most"
+                    f" {_millions(FIRST_LAYER_CELLS)} million cells."
+                )
+                raise ServerRefusedError(HTTPStatus.CONFLICT, sentence)
+            memory = None if state is None else state.memory
+            needed = limits.running_jobs * job_memory(limits.layer_cells)
+            if memory is not None and needed > memory:
+                one = limits.running_jobs == 1
+                sentence = (
+                    f"{limits.running_jobs} running {'job with a layer' if one else 'jobs with layers'} of"
+                    f" {_millions(limits.layer_cells)} million cells {'needs' if one else 'need'} about"
+                    f" {math.ceil(needed / 1e8) / 10:.1f} gigabytes of memory, and your server {server.name}"
+                    f" has {math.floor(memory / 1e8) / 10:.1f} gigabytes."
+                )
+                raise ServerRefusedError(HTTPStatus.UNPROCESSABLE_CONTENT, sentence)
         if change.name is not None:
             self._store.rename_server(server.id, change.name)
-        if change.limits is not None:
-            self._store.set_server_limits(server.id, change.limits.model_dump_json())
-            if self.connected(server, time.time()):
-                self.send_once(server.id, [LimitsTask(id=_task_id(), limits=change.limits)])
+        if limits is not None:
+            self._store.set_server_limits(server.id, limits.model_dump_json())
+            if state is not None and self.connected(server, time.time()):
+                self.send_once(server.id, [LimitsTask(id=_task_id(), limits=limits)])
         return self._store.server(server.id) or server
 
     def remove(self, server: ServerRecord) -> None:

@@ -25,6 +25,7 @@ from rio_cogeo.cogeo import cog_validate
 from lynkeus import harmony, jobs, offered, server
 from lynkeus.analysis import TOOLS
 from lynkeus.layers import LayerRequest
+from lynkeus.processes import Work
 from lynkeus.routes import install
 from lynkeus.writing import LayerError, read_layer
 from tests import nasa
@@ -217,6 +218,20 @@ def test_job_is_named_by_the_layer_and_the_product() -> None:
     assert offered.layer_job_title(request.model_copy(update={"layer": "other"})) == f"other of {PRODUCT}"
     inputs = offered.ToolInputs(inputs=("a", "b"), title="  Change of backscatter HH ")
     assert offered.result_job_title(inputs) == "Change of backscatter HH"
+
+
+def test_get_layer_is_given_the_limit_of_the_server_on_the_cells_of_a_layer(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    given: list[int | None] = []
+    monkeypatch.setenv("VERBOSE", "TRUE")
+    monkeypatch.setattr(offered, "get_layer", lambda inputs, **values: given.append(values["most_cells"]))
+    work = Work(layer_id="k3v9x2", folder=tmp_path, address="/files/k3v9x2", token=None, layers={}, report=print)
+    request = LayerRequest.model_validate(REQUEST)
+    offered.receive_layer(request, work)
+    offered.receive_layer(request, dataclasses.replace(work, layer_cells=90_000_000))
+    # None leaves the limit of the project server in force.
+    assert given == [None, 90_000_000]
 
 
 def test_job_may_run_longer_than_the_longest_wait_for_harmony() -> None:

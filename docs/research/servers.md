@@ -231,3 +231,104 @@ a person; the connection over the internet and through the front web server of t
 speed of an own server; anything in a browser. Found and not corrected: a program that is quit does not
 tell the project server, so the site shows it as connected for up to 75 s; the web service answers an open
 question for tasks with status 500 and writes an error in its log when it is stopped.
+
+
+## Cells of a layer on an own server
+
+The limit on the cells of a layer of an own server (`layer_cells`, section Cells of a layer of
+`docs/Own_Servers.md`) and the rule of the memory of a job (`lynkeus.computer.job_memory`) were set from two
+jobs that received real layers of more than 25 million cells, on 15 November 2026 between 13:15 and 13:20 UTC.
+
+### Measurements
+
+The two jobs ran on the project machine (2 processors, 7.9 GB of memory, its other sites running), in a
+container of `python:3.13-slim` (Python 3.13.18) limited to 4 GB of memory without swap space and to 1.5
+processors. A script called `lynkeus.harmony.get_layer` of this branch once for each area, with a user token
+of the Earthdata account of the server that stayed in memory, and lifted the limit of the project server
+(`MOST_CELLS`) for the two requests. It timed each step of `get_layer` and read the most memory of its process
+from `/proc/self/status` (`VmHWM`), which includes the interpreter and its libraries; the job ran in the process
+of the script, not in a process of `lynkeus.jobs`. The product was
+`NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001` (GCOV of 21 October
+2026, track 141, frame 67), layer HHHH of frequency A, cells of 10 m. Each request was made once.
+
+| | About 50 million cells | About 100 million cells |
+|---|---|---|
+| Area: west, south, east, north (degrees) | -71.15, 42.25, -70.287, 42.886 | -71.35, 42.05, -70.129, 42.949 |
+| Cells estimated before the request (`cells_of`) | 49,979,838 | 100,063,664 |
+| Grid of the file received, cells of 10 m | 7226 by 7205 | 10237 by 10188 |
+| Cells of the layer | 52,063,330 | 104,294,556 |
+| Questions to Harmony about the job, last state | 27, successful at 100 % | 24, successful at 100 % |
+| File received from Harmony, bytes | 249,380,872 | 500,146,513 |
+| GeoTIFF written by Lynkeus, bytes | 180,307,387 | 361,867,064 |
+| STAC record, bytes | 4,820 | 4,822 |
+| Largest size of the folder of the job, bytes | 474,462,560 | 895,024,084 |
+| Most memory of the process (VmHWM), bytes | 970,264,576 | 1,746,235,392 |
+| Whole time, seconds | 122.0 | 151.9 |
+| Load average of the machine before; after | 4.41 4.71 4.29; 3.06 3.96 4.05 | 3.06 3.94 4.05; 4.04 3.88 3.99 |
+| Memory limit of the container, bytes | 4,294,967,296 | 4,294,967,296 |
+
+The steps of `get_layer`, for about 50 million cells (first four columns of numbers) and for about 100 million
+cells (last four):
+
+| Step | Start, s | Time, s | Memory held after it, bytes | Most memory so far, bytes | Start, s | Time, s | Memory held after it, bytes | Most memory so far, bytes |
+|---|---|---|---|---|---|---|---|---|
+| Finding the product in the catalogue | 0.7 | 0.4 | 107,311,104 | 107,311,104 | 0.6 | 0.4 | 107,552,768 | 107,552,768 |
+| Sending the request to Harmony | 1.1 | 1.3 | 107,339,776 | 107,339,776 | 1.0 | 0.4 | 107,581,440 | 107,581,440 |
+| Wait for Harmony | 2.5 | 87.9 | 107,446,272 | 107,446,272 | 1.4 | 78.4 | 107,683,840 | 107,683,840 |
+| Download of the file | 90.4 | 16.8 | 116,748,288 | 116,748,288 | 79.8 | 37.9 | 108,736,512 | 116,813,824 |
+| Reading the grid of the file | 107.2 | 0.0 | 134,123,520 | 134,123,520 | 117.7 | 0.2 | 125,771,776 | 125,771,776 |
+| Reading the values | 107.2 | 1.6 | 369,299,456 | 564,797,440 | 117.9 | 5.5 | 543,502,336 | 765,165,568 |
+| Writing the layer | 109.0 | 12.9 | 549,756,928 | 970,264,576 | 124.2 | 27.6 | 768,073,728 | 1,746,235,392 |
+
+NASA Harmony accepted both areas and delivered them: its jobs ended as successful after 87.9 and 78.4 seconds,
+and the larger file held 500 megabytes. Both layers were written by `lynkeus.writing` without an error.
+
+### What the measurements decided
+
+| Question | Result | Decision |
+|---|---|---|
+| Memory of a job | The most memory came while the layer was written. Between the two jobs it grew by 14.856 bytes for every cell, from 196,788,099 bytes. The rule of commit 56ee279, 120,000,000 bytes and 16 bytes for every cell, gives 953,013,280 bytes for the smaller layer, less than its job held | `JOB_BASE_MEMORY` 200,000,000 bytes and `CELL_MEMORY` 16 bytes. The rule gives 1,033,013,280 and 1,868,712,896 bytes for the two layers, 6.5 and 7.0 % above the jobs, 439,718,144 bytes for the 15.0 million cells of 14 November (390 MB measured, `docs/research/data.md`) and 600,000,000 bytes for 25 million cells |
+| Wait for Harmony | 87.9 and 78.4 seconds, against 275 seconds for 15.0 million cells on 14 November: it did not grow with the area | `lynkeus.harmony.MOST_WAIT` stays 30 minutes for every server |
+| Time after Harmony: download, reading and writing | 31.6 and 72.1 seconds, which is 0.61 and 0.69 seconds for every million cells. The download ran at 118.8 and 105.6 megabits a second | The longest time of a job grows with `layer_cells` (`lynkeus.computer.job_time`): `JOB_TIME` (40 minutes) for 25 million cells or fewer, and 24 seconds more for every further million cells (`CELL_TIME`). The 24 seconds are the 10 minutes that `JOB_TIME` leaves after the longest wait for Harmony, shared by the 25 million cells of the project server; they are about 35 and 40 times the two rates measured. A larger limit on the cells therefore gives a longer limit of time, and the wait for Harmony keeps its own limit |
+| Folder of a running job | It held at most 9.11 and 8.58 bytes for every cell: besides the layer, the file of Harmony (4.79 and 4.80 bytes a cell) and the temporary files of the writing. The first value of the size of a layer is 5.33 bytes a cell, so a job of a layer near the limit on the cells would have been ended while it wrote, because the folder was checked against the size of a layer | The folder of a running job of an own server may hold the size of a layer and three layers of `layer_cells` cells without compression (`lynkeus.link.WORK_LAYERS`); the layer itself must still keep within the size of a layer. The project server checks the folder against the size of a layer, as before |
+| Size of a layer | The GeoTIFFs held 3.46 and 3.47 bytes for every cell | The first value of the size of a layer, 5.33 bytes a cell (4 bytes without compression and a third more for the reduced copies) and 1 megabyte, holds a layer that does not compress |
+| Estimate before the request | `cells_of` gave 0.960 and 0.959 of the cells of the file received | Not changed. Near the limit the check of the file received decides, after the wait for Harmony and the download, as on the project server |
+
+For the first value of a computer with 16 GB, 237 million cells, a job may run for 7,488 seconds (2 hours 5
+minutes), and by the rule it holds 3,992,000,000 bytes, a quarter of the memory of that computer. At the rate
+measured, the time after Harmony of such a layer is about 164 seconds on the project machine, so a job that
+waits the longest time for Harmony needs about 1,964 seconds. The file of Harmony would hold about 1.1 GB (4.8
+bytes a cell), which a connection of 20 megabits a second downloads in about 455 seconds. These numbers extend
+the two measurements beyond the layers measured.
+
+### Removing and installing the program on Windows
+
+Read, not run. The installer (`api/packing/lynkeus-server.iss`) copies the folder of the program into
+`%LOCALAPPDATA%\Programs\Lynkeus Server` (`[Files]`, `DestDir: "{app}"`) and adds the shortcuts. It has no
+section `[InstallDelete]`, `[UninstallDelete]` or `[Code]`, and its `AppId` is the same for every version. The
+data folder `%LOCALAPPDATA%\Lynkeus` is another folder, which the program makes and writes
+(`lynkeus.computer.data_folder`); Setup knows none of its files. The help of Inno Setup, section
+`[UninstallDelete]` ([documentation.help](https://documentation.help/Inno-Setup/topic_uninstalldeletesection.htm),
+a copy of the help), states that this section names the files that the uninstaller deletes besides those that
+entries of `[Files]` and `[Dirs]` installed, and the FAQ of Inno Setup ([jrsoftware.org](https://jrsoftware.org/isfaq.php))
+gives the section for that purpose. Removing the program therefore leaves the settings file (the pairing:
+server, key and user; the limits), the record, the folder `files` with the layers and the log, and a new
+installation finds them. Installing over the old program writes into the folder of the program only. The
+program should be quit before it is removed.
+
+Proved by a test: a settings file without `layer_cells` keeps its server, key and user and receives the cells
+of a layer by the rule of the first limits (`test_limits_kept_by_an_older_program_receive_the_cells_of_a_layer`).
+On a computer of 16 GB it receives 237 million cells, 13 running jobs are lowered to 2 and a size of a layer of
+500 megabytes is raised to 1,265 megabytes, and no file is set aside as unreadable. The workflow
+`server-program.yml` installs the download into a new folder and runs it; it removes no program and installs
+over none, so it proves nothing about the data folder.
+
+### Not confirmed
+
+1. Each size was measured once, on one product; the time of Harmony differs from one request to the next.
+2. Nothing was measured above 104 million cells, on a computer of 16 GB or on Windows. The first value of 237
+   million cells for such a computer rests on the rule beyond the layers measured.
+3. The job ran in the process of the script. A job of the program runs in a new interpreter that `lynkeus.jobs`
+   starts, which was not measured at these sizes.
+4. The files of the two layers were not checked with `cog_validate`.
+5. Removing and installing the program on Windows was not run.
