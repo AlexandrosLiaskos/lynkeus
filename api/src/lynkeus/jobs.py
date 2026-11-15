@@ -67,7 +67,7 @@ MAX_TOTAL_SIZE = 20_000_000_000
 """The largest total size of the layers of all sessions, in bytes. It is half of the free space of the machine."""
 
 JOB_TIME = 2400.0
-"""The longest time that a job may run, in seconds.
+"""The longest time that a job may run, in seconds, unless the limits of the server give another (``Limits.job_time``).
 
 It is 10 minutes longer than the longest wait for NASA Harmony (``lynkeus.harmony.MOST_WAIT``). A job whose
 wait for Harmony passes that limit therefore ends with the sentence of ``lynkeus.harmony``, and a job that
@@ -109,8 +109,9 @@ class Limits:
 
     A limit that is not given is the constant of this module, as it is when the limits are made: these
     are the limits of the project server. The first four come from its hardware; an own server
-    replaces them by the limits of its owner. The last three protect a server that many visitors
-    share, and None lifts one of them.
+    replaces them by the limits of its owner. The next three protect a server that many visitors
+    share, and None lifts one of them. The last three are those of an own server, whose layers may
+    be larger than those of the project server; without them the project server works as before.
 
     Attributes
     ----------
@@ -128,6 +129,14 @@ class Limits:
         Largest number of jobs of one session that wait or run.
     session_layers : int or None
         Largest number of layers of one session.
+    layer_cells : int or None
+        Largest number of cells of a layer that a job receives. None leaves the limit to the process
+        (``lynkeus.harmony.MOST_CELLS``).
+    work_size : int or None
+        Largest size of the folder of a job while it runs, in bytes. It holds the temporary files of
+        the job besides the files of the layer. None is ``layer_size``.
+    job_time : float
+        Longest time that a job may run, in seconds.
     """
 
     running_jobs: int = field(default_factory=lambda: MAX_RUNNING_JOBS)
@@ -137,13 +146,20 @@ class Limits:
     waiting_jobs: int | None = field(default_factory=lambda: MAX_WAITING_JOBS)
     session_unfinished_jobs: int | None = field(default_factory=lambda: MAX_SESSION_UNFINISHED_JOBS)
     session_layers: int | None = field(default_factory=lambda: MAX_SESSION_LAYERS)
+    layer_cells: int | None = None
+    work_size: int | None = None
+    job_time: float = field(default_factory=lambda: JOB_TIME)
 
     def __post_init__(self) -> None:
         """Check that a job can run and that no limit is negative."""
         if self.running_jobs < 1:
             raise ValueError("at least one job must be able to run")
+        if self.layer_cells is not None and self.layer_cells < 1:
+            raise ValueError("a layer must be able to hold a cell")
+        if self.job_time <= 0:
+            raise ValueError("a job must have time to run")
         counts = (self.waiting_jobs, self.session_unfinished_jobs, self.session_layers)
-        sizes = (self.layer_size, self.session_size, self.total_size)
+        sizes = (self.layer_size, self.session_size, self.total_size, self.work_size)
         if any(limit is not None and limit < 0 for limit in (*sizes, *counts)):
             raise ValueError("a limit cannot be negative")
 
@@ -190,6 +206,7 @@ def _work(
     token: str | None,
     layers: Mapping[str, tuple[LayerDescription, Path]],
     ending: Semaphore,
+    layer_cells: int | None = None,
 ) -> None:
     """Run the function of a process and send its reports and its result to the server.
 
@@ -212,7 +229,15 @@ def _work(
         connection.send(("report", max(0, min(100, int(progress))), shown(str(message))[:MAX_MESSAGE_LENGTH]))
 
     try:
-        work = Work(layer_id=layer, folder=folder, address=address, token=token, layers=layers, report=report)
+        work = Work(
+            layer_id=layer,
+            folder=folder,
+            address=address,
+            token=token,
+            layers=layers,
+            report=report,
+            layer_cells=layer_cells,
+        )
         description = run(inputs_format.model_validate_json(inputs), work)
         if not isinstance(description, LayerDescription):
             raise TypeError("the function of the process did not return a layer description")
@@ -541,6 +566,7 @@ class Jobs:
             token,
             layers,
             ending,
+            self.limits.layer_cells,
         )
         worker = self._spawn.Process(target=_work, args=arguments, name=f"lynkeus-job-{job.id}", daemon=True)
         try:
@@ -569,7 +595,8 @@ class Jobs:
         failure: str | None = None
         report: tuple[int, str] | None = None
         latest = time.monotonic()
-        limit, measured, recorded = latest + JOB_TIME, latest, latest - REPORT_PAUSE
+        job_time = self.limits.job_time
+        limit, measured, recorded = latest + job_time, latest, latest - REPORT_PAUSE
         while not running.ended.is_set():
             if connection.poll(0.2):
                 try:
@@ -587,12 +614,13 @@ class Jobs:
                 self._store.report_job(job.id, report[0], report[1], time.time())
                 report, recorded = None, latest
             if latest > limit:
-                failure = f"The job was ended because it ran for more than {JOB_TIME / 60:g} minutes."
+                failure = f"The job was ended because it ran for more than {job_time / 60:g} minutes."
                 break
             if latest - measured >= SIZE_PAUSE:
                 measured = latest
-                if _size(running.folder) > self.limits.layer_size:
-                    failure = _too_large(self.limits.layer_size)
+                limits = self.limits
+                if _size(running.folder) > (limits.layer_size if limits.work_size is None else limits.work_size):
+                    failure = _too_large(limits.layer_size)
                     break
         _end(running.process, running.ending)
         code = running.process.exitcode

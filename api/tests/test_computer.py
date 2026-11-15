@@ -6,7 +6,7 @@ from pathlib import Path, PurePosixPath, PureWindowsPath
 
 import pytest
 
-from lynkeus import computer, jobs
+from lynkeus import computer, harmony, jobs
 from lynkeus.computer import (
     AlreadyRunningError,
     Settings,
@@ -100,15 +100,15 @@ def test_data_folder_is_held_by_one_program(tmp_path: Path) -> None:
     ("processors", "memory", "free", "limits"),
     [
         # The computer of the owner: 20 processors, 16 gigabytes, 200 gigabytes free.
-        (20, 16_000_000_000, 200_000_000_000, (2, 100_000_000_000, 1_291_666_667, 242_000_000)),
+        (20, 16_000_000_000, 200_000_000_000, (2, 100_000_000_000, 1_265_000_000, 237_000_000)),
         # The project machine: 2 processors, 7.9 gigabytes.
-        (2, 7_940_000_000, 40_000_000_000, (1, 20_000_000_000, 619_666_667, 116_000_000)),
-        (1, 1_000_000_000, 600_000_000, (1, 300_000_000, 43_666_667, 8_000_000)),
+        (2, 7_940_000_000, 40_000_000_000, (1, 20_000_000_000, 593_000_000, 111_000_000)),
+        (1, 1_000_000_000, 600_000_000, (1, 300_000_000, 17_000_000, 3_000_000)),
         (8, None, 0, (2, 0, 0, 25_000_000)),
         (1, None, 10, (1, 5, 5, 25_000_000)),
         (256, 1_000_000_000_000, 10_000_000_000_000, (7, 5_000_000_000_000, 21_334_333_334, 4_000_000_000)),
-        (4, 600_000_000, 1_000_000_000, (2, 500_000_000, 6_333_334, 1_000_000)),
-        (16, 32_000_000_000, 1_000_000_000_000, (2, 500_000_000_000, 2_625_000_000, 492_000_000)),
+        (4, 600_000_000, 1_000_000_000, (1, 500_000_000, 6_333_334, 1_000_000)),
+        (16, 32_000_000_000, 1_000_000_000_000, (2, 500_000_000_000, 2_598_333_334, 487_000_000)),
     ],
 )
 def test_first_limits_follow_the_computer(
@@ -130,16 +130,16 @@ def test_first_limits_without_the_memory_are_those_of_the_project_server() -> No
 
 
 def test_memory_of_a_job_follows_the_cells_of_its_layer() -> None:
-    assert job_memory(0) == computer.JOB_BASE_MEMORY == 120_000_000
-    assert job_memory(25_000_000) == 520_000_000
-    assert job_memory(100_000_000) == 1_720_000_000
+    assert job_memory(0) == computer.JOB_BASE_MEMORY == 200_000_000
+    assert job_memory(25_000_000) == 600_000_000
+    assert job_memory(100_000_000) == 1_800_000_000
     assert job_memory(100_000_000) - job_memory(99_000_000) == computer.CELL_MEMORY * 1_000_000
 
 
 def test_most_cells_of_a_job_that_fits_in_a_memory_are_whole_millions() -> None:
     assert cells_in_memory(job_memory(50_000_000)) == 50_000_000
     assert cells_in_memory(job_memory(50_000_000) - 1) == 49_000_000
-    assert cells_in_memory(4_000_000_000) == 242_000_000
+    assert cells_in_memory(4_000_000_000) == 237_000_000
     # A limit on the cells of a layer lies between 1 million and 4000 million.
     assert cells_in_memory(0) == 1_000_000
     assert cells_in_memory(10**15) == 4_000_000_000
@@ -170,19 +170,19 @@ def test_limits_kept_by_version_0_1_0_receive_the_cells_of_a_layer(
     # not fit in the memory with layers of that size, and its 500 megabytes would end such a job.
     assert (settings.server, settings.key, settings.user) == ("0123456789abcdef", KEY, "a_visitor")
     assert settings.limits == ServerLimits(
-        running_jobs=2, storage=100_000_000_000, layer_size=1_291_666_667, layer_cells=242_000_000
+        running_jobs=2, storage=100_000_000_000, layer_size=1_265_000_000, layer_cells=237_000_000
     )
     assert [path.name for path in tmp_path.iterdir()] == ["settings.json"]
     # What the owner set lower or larger stays, and the size of a layer never passes the storage.
     kept["limits"] = {"running_jobs": 1, "storage": 1_000_000_000, "layer_size": 3_000_000_000}
     (tmp_path / "settings.json").write_text(json.dumps(kept), encoding="utf-8")
     assert read_settings(tmp_path).limits == ServerLimits(
-        running_jobs=1, storage=1_000_000_000, layer_size=3_000_000_000, layer_cells=242_000_000
+        running_jobs=1, storage=1_000_000_000, layer_size=3_000_000_000, layer_cells=237_000_000
     )
     kept["limits"] = {"running_jobs": 2, "storage": 1_000_000_000, "layer_size": 500_000_000}
     (tmp_path / "settings.json").write_text(json.dumps(kept), encoding="utf-8")
     assert read_settings(tmp_path).limits == ServerLimits(
-        running_jobs=2, storage=1_000_000_000, layer_size=1_000_000_000, layer_cells=242_000_000
+        running_jobs=2, storage=1_000_000_000, layer_size=1_000_000_000, layer_cells=237_000_000
     )
 
 
@@ -199,3 +199,20 @@ def test_resources_of_this_computer_are_read(tmp_path: Path) -> None:
     assert computer.free_space(tmp_path) > 0
     assert 0 < len(computer.system_name()) <= 80
     assert 0 < len(computer.computer_name()) <= 80
+
+
+def test_time_of_a_job_grows_with_the_cells_above_those_of_the_project_server() -> None:
+    assert computer.job_time(1_000_000) == jobs.JOB_TIME
+    assert computer.job_time(harmony.MOST_CELLS) == jobs.JOB_TIME
+    # 24 seconds for every further million cells: the 600 seconds that the project server leaves for 25 million.
+    assert computer.CELL_TIME * harmony.MOST_CELLS == pytest.approx(jobs.JOB_TIME - harmony.MOST_WAIT)
+    assert computer.job_time(26_000_000) == pytest.approx(2424)
+    assert computer.job_time(255_000_000) == pytest.approx(7920)
+
+
+def test_rule_of_the_memory_lies_above_every_job_that_was_measured() -> None:
+    # The cells of the layer and the most memory that its job held, in bytes (docs/research/servers.md).
+    measured = [(15_000_000, 390_000_000), (52_063_330, 970_264_576), (104_294_556, 1_746_235_392)]
+    for cells, memory in measured:
+        assert memory < computer.job_memory(cells) < 1.15 * memory
+    assert computer.job_memory(harmony.MOST_CELLS) == 600_000_000

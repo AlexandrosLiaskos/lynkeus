@@ -35,14 +35,24 @@ LOG = "log.txt"
 LOCK = "lock"
 """The name of the file in the data folder that a running program holds locked."""
 
-JOB_BASE_MEMORY = 120_000_000
+JOB_BASE_MEMORY = 200_000_000
 """The memory that a job holds whatever the cells of its layer, in bytes: the interpreter and its libraries."""
 
 CELL_MEMORY = 16
 """The memory that a job holds for every cell of the layer that it receives, in bytes.
 
-``job_memory`` gives the memory of a job from these two numbers. They are set from the jobs measured
-on real layers (``docs/research/servers.md``) and are rounded up.
+``job_memory`` gives the memory of a job from these two numbers. They come from two jobs that received
+real layers of 52 and 104 million cells in a container of 4 GB (``docs/research/servers.md``): the jobs
+held 970 MB and 1,746 MB at most, which is 197 MB and 14.9 bytes for every cell. Both numbers are
+rounded up, and the rule lies 6 to 7 % above the two jobs. For 25 million cells it gives 600 MB.
+"""
+
+CELL_TIME = 24e-6
+"""The time that a job has for every cell of its layer above 25 million, in seconds.
+
+It is the time that a job of the project server has after the longest wait for NASA Harmony, for every
+cell of its largest layer: 600 seconds for 25 million cells. ``job_time`` gives the longest time of a job
+from it.
 """
 
 MILLION = 1_000_000
@@ -242,6 +252,25 @@ def job_memory(cells: int) -> int:
         tell whether the running jobs of an own server fit in its memory (``docs/Own_Servers.md``).
     """
     return JOB_BASE_MEMORY + CELL_MEMORY * max(cells, 0)
+
+
+def job_time(cells: int) -> float:
+    """Return the longest time that a job may run on a server that receives layers of a number of cells.
+
+    Parameters
+    ----------
+    cells : int
+        Largest number of cells of a layer of the server.
+
+    Returns
+    -------
+    float
+        The time in seconds: ``lynkeus.jobs.JOB_TIME`` for a layer of 25 million cells or fewer, and
+        ``CELL_TIME`` more for every further cell. The wait for NASA Harmony did not grow with the
+        cells of the layers measured, so the further time is for the transfer, the reading and the
+        writing of the layer, which grow with its cells.
+    """
+    return jobs.JOB_TIME + max(cells - FIRST_LAYER_CELLS, 0) * CELL_TIME
 
 
 def cells_in_memory(memory: int) -> int:

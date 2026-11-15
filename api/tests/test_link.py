@@ -606,5 +606,21 @@ def test_limits_of_the_jobs_are_those_of_the_owner() -> None:
         waiting_jobs=None,
         session_unfinished_jobs=None,
         session_layers=None,
+        layer_cells=25_000_000,
+        work_size=400 + 3 * computer.layer_size(25_000_000),
+        job_time=jobs.JOB_TIME,
     )
     assert job_limits(ServerLimits(running_jobs=1, storage=10, layer_size=10), others=30).session_size == 0
+
+
+def test_cells_of_a_layer_of_the_owner_set_the_time_and_the_folder_of_a_job() -> None:
+    size = computer.layer_size(255_000_000)
+    owner = ServerLimits(running_jobs=2, storage=10**11, layer_size=size, layer_cells=255_000_000)
+    limits = job_limits(owner, others=0)
+    assert limits.layer_cells == 255_000_000
+    # The folder of a running job holds the layer and its temporary files: 64/3 bytes for a cell.
+    assert limits.work_size == 4 * size
+    assert limits.work_size >= 255_000_000 * 64 // 3
+    # 24 seconds for every million cells above 25 million.
+    assert limits.job_time == pytest.approx(2400 + 230 * 24)
+    assert job_limits(owner.model_copy(update={"layer_cells": 1_000_000}), others=0).job_time == jobs.JOB_TIME
