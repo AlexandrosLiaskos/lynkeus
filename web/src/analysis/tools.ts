@@ -53,6 +53,14 @@ const COMPONENTS_LAYER = /^unwrappedInterferogram\/(HH|VV)\/connectedComponents$
 export const SOIL_MOISTURE_LAYER = "soilMoisture";
 export const SOIL_MOISTURE_UNIT = "m3 m-3";
 
+/**
+ * The name of the layer of an SME2 product whose lowest bit marks the cells where the mission does not recommend
+ * the retrieval of the soil moisture (`docs/methods/soil-moisture-state.md`, section Input layers). The soil
+ * moisture tools take it beside each layer of the soil moisture and leave those cells out. The server reads the same
+ * name, in `api/src/lynkeus/analysis/soil_moisture.py`.
+ */
+export const QUALITY_FLAG_LAYER = "retrievalQualityFlag";
+
 /** The largest length of the name of a result, in characters, as the server takes it (`MAX_TITLE_LENGTH`). */
 export const MOST_TITLE = 200;
 
@@ -77,6 +85,11 @@ interface Reads extends Kind {
    * two inputs without it compares the same layer of two dates or of two pairs of dates.
    */
   beside?: Kind;
+  /**
+   * The layer of the same product file that the tool takes after each input layer, which the form finds by itself:
+   * the retrieval quality flag of an SME2 product. `count` does not count it.
+   */
+  quality?: Kind;
 }
 
 function isTerm(name: string): boolean {
@@ -90,6 +103,13 @@ function isCoherence(name: string): boolean {
 function isSoilMoisture(name: string): boolean {
   return name === SOIL_MOISTURE_LAYER;
 }
+
+function isQualityFlag(name: string): boolean {
+  return name === QUALITY_FLAG_LAYER;
+}
+
+/** The retrieval quality flag that the soil moisture tools take beside each layer of the soil moisture. */
+const QUALITY: Kind = { unit: "1", names: isQualityFlag };
 
 function isPhase(name: string): boolean {
   return PHASE_LAYER.test(name);
@@ -113,8 +133,22 @@ export const READS: Record<FinishedTool, Reads> = {
     names: isPhase,
     beside: { unit: "1", names: isComponents },
   },
-  "soil-moisture-state": { product: "SME2", count: 1, dates: 1, unit: SOIL_MOISTURE_UNIT, names: isSoilMoisture },
-  "soil-moisture-change": { product: "SME2", count: 2, dates: 1, unit: SOIL_MOISTURE_UNIT, names: isSoilMoisture },
+  "soil-moisture-state": {
+    product: "SME2",
+    count: 1,
+    dates: 1,
+    unit: SOIL_MOISTURE_UNIT,
+    names: isSoilMoisture,
+    quality: QUALITY,
+  },
+  "soil-moisture-change": {
+    product: "SME2",
+    count: 2,
+    dates: 1,
+    unit: SOIL_MOISTURE_UNIT,
+    names: isSoilMoisture,
+    quality: QUALITY,
+  },
 };
 
 /**
@@ -300,6 +334,23 @@ export function besideOf(
   layers: readonly LayerDescription[],
 ): LayerDescription[] {
   return READS[tool].beside ? componentsOf(first, layers) : partners(tool, first, layers);
+}
+
+/**
+ * Return the layer that a tool takes after an input layer, which the form finds by itself: the retrieval quality
+ * flag of the same product file, or null when the session holds none or the tool takes none. When the session holds
+ * more than one, the form takes the first of the list, which is the one received last. The server refuses a flag of
+ * another product file, in `api/src/lynkeus/analysis/soil_moisture.py`.
+ */
+export function qualityOf(
+  tool: FinishedTool,
+  layer: LayerDescription,
+  layers: readonly LayerDescription[],
+): LayerDescription | null {
+  const kind = READS[tool].quality;
+  return kind === undefined
+    ? null
+    : (layers.find((other) => unfitAs(tool, kind, other) === null && other.inputs[0] === layer.inputs[0]) ?? null);
 }
 
 /**
@@ -502,6 +553,9 @@ export const NO_COMPONENTS = "The Connected components layer of this product is 
 /** The fault of the second field of Surface displacement, One pair while a layer can be chosen and none is. */
 export const CHOOSE_COMPONENTS = "Choose the Connected components layer.";
 
+/** The fault of a field of a soil moisture tool when the session holds no retrieval quality flag of its product. */
+export const NO_QUALITY = "The Retrieval Quality Flag layer of this product is not in the session.";
+
 /** What the form of a tool holds at one moment. */
 export interface Choices {
   tool: FinishedTool;
@@ -545,8 +599,9 @@ export interface Checked {
  * tool reads. For a tool that compares, the second layer must stand beside the first and the tool must be able
  * to compare the two (`compared`), and the layer of the earlier date or pair is put first. For Surface
  * displacement, One pair the first layer must record the centre frequency of its radar band, and the second must
- * be the layer `connectedComponents` of the same product file and channel. The name of the result must have 1 to
- * 200 characters.
+ * be the layer `connectedComponents` of the same product file and channel. A soil moisture tool needs the
+ * retrieval quality flag of the product of each chosen layer (`qualityOf`), and the form sends each flag after its
+ * layer. The name of the result must have 1 to 200 characters.
  */
 export function check({ tool, layers, first, second, title }: Choices): Checked {
   const comparison = comparisonOf(tool);
@@ -585,6 +640,19 @@ export function check({ tool, layers, first, second, title }: Choices): Checked 
       chosen = ordered;
     }
   }
+  // The flag of the product of each chosen layer, in the same order, for a tool that takes one.
+  const flags = chosen.map((layer) => qualityOf(tool, layer, layers));
+  if (READS[tool].quality) {
+    chosen.forEach((layer, index) => {
+      if (flags[index] === null) {
+        if (layer.id === first) {
+          faults.first = NO_QUALITY;
+        } else {
+          faults.second = NO_QUALITY;
+        }
+      }
+    });
+  }
   const name = title.trim();
   if (name === "") {
     faults.title = "Give a name.";
@@ -592,7 +660,11 @@ export function check({ tool, layers, first, second, title }: Choices): Checked 
     faults.title = `The name is longer than ${String(MOST_TITLE)} characters.`;
   }
   const sound = faults.first === null && faults.second === null && faults.title === null;
-  return { layers: chosen, faults, inputs: sound ? { inputs: chosen.map((layer) => layer.id), title: name } : null };
+  const sent = chosen.flatMap((layer, index) => {
+    const flag = flags[index];
+    return flag ? [layer.id, flag.id] : [layer.id];
+  });
+  return { layers: chosen, faults, inputs: sound ? { inputs: sent, title: name } : null };
 }
 
 /** Return the first fault of the form in the order of its fields, or null when the tool can run. */

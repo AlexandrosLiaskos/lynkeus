@@ -44,6 +44,7 @@ def test_layer_description_is_read_and_written_in_the_same_form() -> None:
         **LAYER,
         "ends": None,
         "frequency": None,
+        "note": None,
         "statistics": None,
         "range": [-25.0, 0.0],
     }
@@ -58,6 +59,7 @@ def test_layer_stored_without_the_name_of_its_layer_is_read() -> None:
         "layer": None,
         "ends": None,
         "frequency": None,
+        "note": None,
         "statistics": None,
         "range": [-25.0, 0.0],
     }
@@ -223,3 +225,26 @@ def test_result_of_a_tool_has_no_centre_frequency() -> None:
     assert LayerDescription.model_validate(RESULT).frequency is None
     with pytest.raises(ValidationError, match="it has no centre frequency of a radar band"):
         LayerDescription.model_validate({**RESULT, "frequency": 1239000000.0})
+
+
+def test_result_may_carry_the_note_of_its_tool_and_a_layer_received_from_nasa_none() -> None:
+    assert "note" not in RESULT
+    assert LayerDescription.model_validate(RESULT).note is None
+    sentence = (
+        "2 of the 5 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended."
+    )
+    result = LayerDescription.model_validate({**RESULT, "note": sentence})
+    assert result.note == sentence
+    assert LayerDescription.model_validate_json(result.model_dump_json()) == result
+    with pytest.raises(ValidationError, match="only a result has a note of its tool"):
+        LayerDescription.model_validate({**LAYER, "note": sentence})
+    with pytest.raises(ValidationError):
+        LayerDescription.model_validate({**RESULT, "note": ""})
+
+
+def test_result_of_a_tool_has_no_note_unless_it_gives_one() -> None:
+    values = np.zeros((1, 1), np.float32)
+    assert AnalysisResult(values, "Quantity", "1", (0.0, 1.0), "grey", "Method").note is None
+    assert (
+        AnalysisResult(values, "Quantity", "1", (0.0, 1.0), "grey", "Method", note="A sentence.").note == "A sentence."
+    )
