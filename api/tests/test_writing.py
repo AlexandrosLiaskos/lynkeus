@@ -226,6 +226,91 @@ def test_layer_carries_its_name_inside_the_product_and_a_result_carries_none(tmp
         write(tmp_path, values, grid, kind="result", method="Reference of the method")
 
 
+def test_reduced_copy_of_decibels_is_the_decibels_of_the_mean_power(tmp_path: Path) -> None:
+    power, grid = read_layer(BACKSCATTER)
+    decibels = (10 * np.log10(power)).astype(np.float32)
+    (tmp_path / "power").mkdir()
+    (tmp_path / "decibels").mkdir()
+    write(tmp_path / "power", power, grid)
+    description = write(
+        tmp_path / "decibels",
+        decibels,
+        grid,
+        kind="result",
+        unit="dB",
+        legend=(-20.0, 0.0),
+        layer=None,
+        method="Reference of the method",
+        decibels=True,
+    )
+    file = tmp_path / "decibels" / "gcov-hhhh-20261021.tif"
+    assert sorted(path.name for path in file.parent.iterdir()) == ["gcov-hhhh-20261021.json", "gcov-hhhh-20261021.tif"]
+    assert cog_validate(str(file), strict=True, quiet=True) == (True, [], [])
+    # The values at full resolution are those given, bit for bit.
+    written, profile = as_delivered(file)
+    assert written.tobytes() == decibels.tobytes()
+    assert np.isnan(profile["nodata"])
+    # The reduced copy is the decibels of the reduced copy of the power, and not the mean of the decibels.
+    of_power = reduced_copy(tmp_path / "power" / "gcov-hhhh-20261021.tif")
+    of_decibels = reduced_copy(file)
+    assert of_decibels.shape == of_power.shape == (280, 300)
+    np.testing.assert_allclose(of_decibels, 10 * np.log10(of_power), rtol=0, atol=2e-5)
+    mean_of_decibels = blocks(decibels).mean(axis=2, dtype=np.float64)
+    assert float((of_decibels - mean_of_decibels).min()) > -2e-5
+    assert float((of_decibels - mean_of_decibels).mean()) > 0.1
+    # The metadata of the file and its record are those of any result.
+    with rasterio.open(file) as source:
+        assert source.overviews(1) == [2]
+        assert source.units == ("dB",)
+        assert source.descriptions == ("Radar backscatter gamma nought, HH, linear power",)
+        assert source.tags()["method"] == "Reference of the method"
+        assert source.tags()["dates"] == "2026-10-21"
+        assert float(source.tags(1)["STATISTICS_MINIMUM"]) == float(decibels.min())
+        assert source.profile["blockxsize"] == 512
+    assert description.unit == "dB"
+    record = json.loads((file.parent / "gcov-hhhh-20261021.json").read_text(encoding="utf-8"))
+    assert stac_faults(record) == []
+
+
+def test_cells_without_data_stay_without_data_in_a_reduced_copy_of_decibels(tmp_path: Path) -> None:
+    power, grid = read_layer(BACKSCATTER)
+    decibels = (10 * np.log10(power)).astype(np.float32)
+    decibels[:200, :300] = np.nan
+    decibels[300, 301] = np.nan
+    write(
+        tmp_path, decibels, grid, kind="result", unit="dB", legend=(-20.0, 0.0), layer=None, method="M", decibels=True
+    )
+    copy = reduced_copy(tmp_path / "gcov-hhhh-20261021.tif")
+    assert np.isnan(copy[:100, :150]).all()
+    assert not np.isnan(copy[100:, :]).any()
+    assert not np.isnan(copy[:, 150:]).any()
+    # A block with one cell without data holds the decibels of the mean power of its three other cells.
+    three = np.array([power[300, 300], power[301, 300], power[301, 301]], dtype=np.float64)
+    assert copy[150, 150] == pytest.approx(10 * np.log10(three.mean()), abs=2e-5)
+
+
+def test_small_layer_in_decibels_has_no_reduced_copy(tmp_path: Path) -> None:
+    power, grid = read_layer(LAYERS / "gcov-hhhh-20261021-small.tif")
+    decibels = (10 * np.log10(power)).astype(np.float32)
+    write(
+        tmp_path, decibels, grid, kind="result", unit="dB", legend=(-20.0, 0.0), layer=None, method="M", decibels=True
+    )
+    file = tmp_path / "gcov-hhhh-20261021.tif"
+    assert sorted(path.name for path in tmp_path.iterdir()) == ["gcov-hhhh-20261021.json", "gcov-hhhh-20261021.tif"]
+    assert cog_validate(str(file), strict=True, quiet=True) == (True, [], [])
+    written, _ = as_delivered(file)
+    assert written.tobytes() == decibels.tobytes()
+    with rasterio.open(file) as source:
+        assert source.overviews(1) == []
+
+
+def test_classes_are_not_written_as_decibels(tmp_path: Path) -> None:
+    values, grid = read_layer(BACKSCATTER)
+    with pytest.raises(ValueError, match="reduced by averaging their power"):
+        write(tmp_path, values, grid, averaged=False, decibels=True)
+    assert list(tmp_path.iterdir()) == []
+
+
 def test_record_is_a_valid_stac_item(tmp_path: Path) -> None:
     write(tmp_path, *read_layer(BACKSCATTER))
     record = json.loads((tmp_path / "gcov-hhhh-20261021.json").read_text(encoding="utf-8"))

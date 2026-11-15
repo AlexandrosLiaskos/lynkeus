@@ -3,10 +3,11 @@
 from datetime import date
 from typing import Any
 
+import numpy as np
 import pytest
 from pydantic import ValidationError
 
-from lynkeus.layers import Area, LayerDescription, LayerRequest, ToolRun
+from lynkeus.layers import AnalysisResult, Area, LayerDescription, LayerRequest, ToolRun
 
 LAYER: dict[str, Any] = {
     "id": "gcov-hhhh-20261020",
@@ -132,6 +133,13 @@ def test_layer_request_is_read() -> None:
 def test_wrong_layer_request_is_rejected(change: dict[str, Any]) -> None:
     with pytest.raises(ValidationError):
         LayerRequest.model_validate({**REQUEST, **change})
+
+
+def test_result_of_a_tool_is_reduced_by_the_mean_of_its_values_unless_it_says_otherwise() -> None:
+    values = np.zeros((2, 2), dtype=np.float32)
+    assert AnalysisResult(values, "Quantity", "1", (0.0, 1.0), "grey", "Method").reduction == "mean"
+    result = AnalysisResult(values, "Quantity", "dB", (0.0, 1.0), "grey", "Method", "mean-power")
+    assert result.reduction == "mean-power"
 
 
 def test_tool_run_is_read() -> None:
