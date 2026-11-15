@@ -14,7 +14,7 @@ import { messagesStore } from "../shared/messages/messages";
 import { resetPanes } from "../shared/panes";
 import { AnalysisDialogs } from "./AnalysisDialogs";
 import { plain } from "./Marked";
-import { readingOf, referenceOf, summaryOf } from "./methods";
+import { copiesOf, readingOf, referenceOf, summaryOf } from "./methods";
 import { METHODS } from "./methodSheets";
 import { coherence, GCOV_NOV, laterTerm, term } from "./testLayers";
 import { ABOUT, RECEIVE, runOf, ToolForm, unnamedSentence, type Started } from "./ToolForm";
@@ -416,7 +416,7 @@ test("the check box of the form decides whether the result is added to the map w
 });
 
 test.each(FINISHED_TOOLS)(
-  "the form of %s shows the result, the reference and the mask statement of its sheet",
+  "the form of %s shows the result, the reference, the mask and the reduced copies of its sheet",
   (tool) => {
     show(tool);
     const method = METHODS[tool];
@@ -424,6 +424,8 @@ test.each(FINISHED_TOOLS)(
     expect(valueOf(section, "Result")).toBe(plain(summaryOf(method, "Result")));
     expect(valueOf(section, "Reference")).toBe(plain(referenceOf(method)));
     expect(valueOf(section, "Mask")).toBe(plain(method.mask));
+    expect(valueOf(section, "Reduced copies")).toBe(plain(copiesOf(method)));
+    expect(copiesOf(method).startsWith("For the reader: when the map is zoomed out,")).toBe(true);
     expect(section.textContent).toContain(plain(readingOf(method)));
     expect(within(section).getByRole("button", { name: "Information about Result" })).toBeDefined();
   },

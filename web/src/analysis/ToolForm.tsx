@@ -21,7 +21,7 @@ import { Section } from "../shared/section/Section";
 import { useStore } from "../shared/store";
 import { ToolPane, type ToolPaneRun } from "../shared/toolpane/ToolPane";
 import { Marked, plain } from "./Marked";
-import { readingOf, referenceOf, summaryOf } from "./methods";
+import { copiesOf, readingOf, referenceOf, summaryOf } from "./methods";
 import { METHODS } from "./methodSheets";
 import {
   accepted,
@@ -196,7 +196,8 @@ function showSheet(tool: FinishedTool): void {
 
 /**
  * What the method sheet of a tool states, in the form of the tool: the result, with the first sentences on how
- * to read it behind the "i", the reference of the method, and what the tool does with the mask of the product.
+ * to read it behind the "i", the reference of the method, what the tool does with the mask of the product, and
+ * what the map shows of the result when it is zoomed out.
  */
 export function MethodSummary({ tool }: { tool: FinishedTool }) {
   const method = METHODS[tool];
@@ -213,6 +214,7 @@ export function MethodSummary({ tool }: { tool: FinishedTool }) {
               },
               { name: "Reference", value: <Marked text={referenceOf(method)} /> },
               { name: "Mask", value: <Marked text={method.mask} /> },
+              { name: "Reduced copies", value: <Marked text={copiesOf(method)} /> },
             ],
           },
         ]}
