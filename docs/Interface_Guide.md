@@ -10,7 +10,7 @@ the rules, so that a part of the interface applies a rule by using a block and n
 | Rule | Source |
 |---|---|
 | The ribbon stands on top, the Contents pane on the left, the Catalog pane and the tool panes on the right, the status bar below. Panes of one side are stacked, with their tabs under the stack. | [P1] |
-| The pin in the title bar of a pane makes its side hide its panes automatically: the panes become tabs in a strip at the edge of the window. A click on a tab shows its pane over the map, and the pane hides again when the user works in the map or in the ribbon. A pane of each side can show at the same time. The pin of a pane that shows in this way keeps the side open again. | [P1] |
+| The pin in the title bar of a pane makes that pane hide automatically: it leaves the stack and becomes a tab in a strip at the edge of the window, and the other panes stay in the stack. A click on the tab shows the pane over the stack and the map, and the pane hides again when the user works in the map or opens a pane of the stack. The pin of a pane that shows in this way returns it to the stack. A new tool pane opens in the stack. | [P1] |
 | The form of a tool opens in a docked tool pane, never in a centred dialog. A dialog is only for a confirmation or for the details of an outcome. | Project, after [P2] |
 | An element never looks selected because it has the focus. A blue fill means "chosen", and nothing else. | Project |
 

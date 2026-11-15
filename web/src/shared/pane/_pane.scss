@@ -46,8 +46,8 @@
   margin-left: auto;
 }
 
-// The pin stands upright while the panes of the side stay open, and lies on its side while the side hides its
-// panes, as the pin of a pane does in ArcGIS Pro.
+// The pin stands upright while the pane stays in the stack, and lies on its side while the pane hides
+// automatically, as the pin of a pane does in ArcGIS Pro.
 .pane--auto .pane-buttons .icon-button .usa-icon {
   transform: rotate(90deg);
 }

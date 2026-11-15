@@ -1,38 +1,52 @@
 @use "uswds-core" as uswds;
 @use "../tokens/tokens";
 
-// The place of the panes on one side of the map. The component sets its width.
+// The place of the panes on one side of the map: the strip of the panes that hide automatically, at the edge of
+// the window, and beside it the stack of the other panes. A pane that shows from the strip is as wide as the
+// stack, and leaves a part of the map in view.
 .dock {
+  --dock-flyout: min(var(--dock-width), calc(100vw - 5.5rem));
+
   position: relative;
+  display: flex;
+  flex: none;
+  min-height: 0;
+  font-size: tokens.$text;
+}
+
+// The stack of the panes. The component sets its width, and the map keeps a part of the window between the two
+// sides.
+.dock-stack {
   display: flex;
   flex: none;
   flex-direction: column;
   width: var(--dock-width);
-  // The map keeps a part of the window between the two sides.
-  max-width: calc(50% - 2rem);
+  max-width: calc(50vw - 2rem);
   min-height: 0;
   background: uswds.color("white");
-  font-size: tokens.$text;
 }
 
-.dock--left {
+.dock--left .dock-stack {
   border-right: 1px solid uswds.color("base-light");
 }
 
-.dock--right {
+.dock--right .dock-stack {
   border-left: 1px solid uswds.color("base-light");
-}
-
-// A side without a pane takes no room. The dialogs that are declared inside it are still drawn over the page.
-.dock--empty,
-.dock--empty > .dock-panes {
-  display: contents;
 }
 
 .dock-panes {
   display: flex;
   flex: 1;
   min-height: 0;
+}
+
+// A side without a pane, and a side whose panes all hide automatically, have no stack, and its place takes no
+// room. The panes keep their state, and the dialogs that are declared inside the side are still drawn over the
+// page.
+.dock--empty,
+:is(.dock--empty, .dock--bare) > .dock-stack,
+:is(.dock--empty, .dock--bare) > .dock-stack > .dock-panes {
+  display: contents;
 }
 
 .dock-pane {
@@ -44,6 +58,28 @@
 
 .dock-pane[hidden] {
   display: none;
+}
+
+// A pane that hides automatically shows beside the strip, over the stack and the map.
+.dock-pane--over {
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  bottom: 0;
+  flex: none;
+  width: var(--dock-flyout);
+  background: uswds.color("white");
+  box-shadow: 0 0 0.5rem uswds.color("black-transparent-20");
+}
+
+.dock--left .dock-pane--over {
+  left: tokens.$row;
+  border-right: 1px solid uswds.color("base-light");
+}
+
+.dock--right .dock-pane--over {
+  right: tokens.$row;
+  border-left: 1px solid uswds.color("base-light");
 }
 
 // The tabs of the stacked panes stand under the stack, as in ArcGIS Pro. The row is darker than a pane and than
@@ -84,72 +120,11 @@
   background: tokens.$selected;
 }
 
-// The edge that changes the width lies over the border between the side and the map.
-.dock-edge {
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  bottom: 0;
-  width: 0.375rem;
-  cursor: col-resize;
-  touch-action: none;
-}
-
-.dock--left .dock-edge {
-  right: -0.1875rem;
-}
-
-.dock--right .dock-edge {
-  left: -0.1875rem;
-}
-
-.dock-edge:hover,
-.dock-edge:focus-visible {
-  background: uswds.color("primary-light");
-}
-
-// In a narrow window a side covers the map, and its close button returns to the map.
-@include uswds.at-media-max("tablet") {
-  .dock--left,
-  .dock--right {
-    position: absolute;
-    z-index: 20;
-    inset: 0;
-    width: auto;
-    max-width: none;
-    border: 0;
-  }
-
-  .dock-edge {
-    display: none;
-  }
-}
-
-// A side that hides its panes automatically is a strip at the edge of the window, as wide as a row of the frame
-// is high, also in a narrow window. A pane that shows over the map is as wide as the side was, and leaves a part
-// of the map in view.
-.dock.dock--auto {
-  --dock-flyout: min(var(--dock-width), calc(100vw - 5.5rem));
-
-  position: relative;
-  z-index: auto;
-  inset: auto;
-  width: auto;
-  max-width: none;
-}
-
-.dock--left.dock--auto {
-  border-right: 1px solid uswds.color("base-light");
-}
-
-.dock--right.dock--auto {
-  border-left: 1px solid uswds.color("base-light");
-}
-
-// The strip has the grey of the row of tabs under a stack, so that it reads as tabs too.
+// The strip of the panes that hide automatically stands at the edge of the window, as wide as a row of the frame
+// is high. It has the grey of the row of tabs under a stack, so that it reads as tabs too.
 .dock-rail {
   display: flex;
-  flex: 1;
+  flex: none;
   flex-direction: column;
   width: tokens.$row;
   min-height: 0;
@@ -158,8 +133,17 @@
   background: uswds.color("base-lighter");
 }
 
-// The tab of a hidden pane: its icon and, under it, its name written from top to bottom. A bar stands at the
-// edge of the window, and it takes the colour of a chosen element while the pane of the tab shows over the map.
+.dock--left .dock-rail {
+  border-right: 1px solid uswds.color("base-light");
+}
+
+.dock--right .dock-rail {
+  order: 1;
+  border-left: 1px solid uswds.color("base-light");
+}
+
+// The tab of a pane that hides automatically: its icon and, under it, its name written from top to bottom. A bar
+// stands at the edge of the window, and it takes the colour of a chosen element while the pane of the tab shows.
 .dock-rail button {
   --dock-bar: #{uswds.color("base-light")};
 
@@ -216,43 +200,65 @@
   writing-mode: vertical-rl;
 }
 
-// While no pane shows, the place of the panes takes no room. The panes keep their state, and the dialogs that
-// are declared inside the side are still drawn over the page.
-.dock--auto > .dock-panes {
-  display: contents;
-}
-
-// The pane that shows stands over the map, beside the strip.
-.dock--out > .dock-panes {
+// The edge that changes the width lies over the border between the side and the map.
+.dock-edge {
   position: absolute;
-  z-index: 10;
+  z-index: 11;
   top: 0;
   bottom: 0;
-  display: flex;
-  width: var(--dock-flyout);
-  background: uswds.color("white");
-  box-shadow: 0 0 0.5rem uswds.color("black-transparent-20");
+  width: 0.375rem;
+  cursor: col-resize;
+  touch-action: none;
 }
 
-.dock--left.dock--out > .dock-panes {
-  left: 100%;
-  border-right: 1px solid uswds.color("base-light");
+.dock--left .dock-edge {
+  right: -0.1875rem;
 }
 
-.dock--right.dock--out > .dock-panes {
-  right: 100%;
-  border-left: 1px solid uswds.color("base-light");
+.dock--right .dock-edge {
+  left: -0.1875rem;
 }
 
-// The edge that changes the width lies over the border between the pane that shows and the map.
-.dock--left.dock--out .dock-edge {
-  z-index: 11;
+// On a side without a stack, the edge lies over the border between the pane that shows and the map.
+.dock--left.dock--bare .dock-edge {
   right: auto;
-  left: calc(100% + var(--dock-flyout) - 0.1875rem);
+  left: calc(#{tokens.$row} + var(--dock-flyout) - 0.1875rem);
 }
 
-.dock--right.dock--out .dock-edge {
-  z-index: 11;
-  right: calc(100% + var(--dock-flyout) - 0.1875rem);
+.dock--right.dock--bare .dock-edge {
+  right: calc(#{tokens.$row} + var(--dock-flyout) - 0.1875rem);
   left: auto;
+}
+
+.dock-edge:hover,
+.dock-edge:focus-visible {
+  background: uswds.color("primary-light");
+}
+
+// In a narrow window a side with a stack covers the map, and the close button of its pane returns to the map. A
+// side whose panes all hide automatically stays a strip at the edge of the window.
+@include uswds.at-media-max("tablet") {
+  .dock--left,
+  .dock--right {
+    position: absolute;
+    z-index: 20;
+    inset: 0;
+  }
+
+  .dock.dock--bare {
+    position: relative;
+    z-index: auto;
+    inset: auto;
+  }
+
+  .dock .dock-stack {
+    flex: 1;
+    width: auto;
+    max-width: none;
+    border: 0;
+  }
+
+  .dock-edge {
+    display: none;
+  }
 }
