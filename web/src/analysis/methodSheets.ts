@@ -400,7 +400,7 @@ export const METHODS: Record<Sheet, Method> = {
       },
       {
         name: "How to read",
-        text: "Each value is the movement of the point since the first date minus that of the reference point, so choose the reference on ground that you take as stable, near the point and at a similar height. A pair in which the point has no reliable phase, or lies in another connected component than the reference, is left out at the point, and the pairs used are listed with the series.",
+        text: "Each value is the movement of the point since the first date minus that of the reference point, so choose the reference on ground that you take as stable, near the point and at a similar height. A pair in which the point has no reliable phase, or lies in another connected component than the reference, is left out at the point, and the pairs used are listed with the series. In the test area the values at the five points change by up to 0.094 m between two dates, which the tool cannot tell from a delay of the atmosphere or the ionosphere.",
       },
       {
         name: "Limits",
