@@ -4,9 +4,10 @@ import WebGLTileLayer from "ol/layer/WebGLTile";
 import { beforeEach, expect, test, vi } from "vitest";
 import type { LayerDescription } from "../shared/layer";
 import { messagesStore } from "../shared/messages/messages";
+import { FIRST_Z_INDEX } from "../shared/shapeLayers";
 import { CogSource } from "./CogSource";
 import { extentOf, findLayer } from "./display";
-import { FIRST_Z_INDEX, LayerDrawing, layerProblemsStore } from "./drawing";
+import { LayerDrawing, layerProblemsStore } from "./drawing";
 import { firstDisplay } from "./state";
 import { openTestFile } from "./testdata/files";
 
@@ -74,6 +75,27 @@ test("a new order changes the places and keeps the layers", () => {
   expect(layerOf(map, "coherence")).toBe(coherence);
   expect(coherence.getZIndex()).toBe(FIRST_Z_INDEX + 1);
   expect(layerOf(map, "backscatter").getZIndex()).toBe(FIRST_Z_INDEX);
+});
+
+test("a layer is drawn at its place in the drawing order of all the layers, which holds the shape layers too", () => {
+  const { map, drawing } = start();
+  drawing.update([COHERENCE, BACKSCATTER], {}, ["coherence", "area", "backscatter"]);
+  expect(layerOf(map, "coherence").getZIndex()).toBe(FIRST_Z_INDEX);
+  expect(layerOf(map, "backscatter").getZIndex()).toBe(FIRST_Z_INDEX + 2);
+  // The shape layer moves to the bottom: the two layers keep their order and are drawn one place higher or as before.
+  drawing.update([COHERENCE, BACKSCATTER], {}, ["area", "coherence", "backscatter"]);
+  expect(layerOf(map, "coherence").getZIndex()).toBe(FIRST_Z_INDEX + 1);
+  expect(layerOf(map, "backscatter").getZIndex()).toBe(FIRST_Z_INDEX + 2);
+  drawing.update([COHERENCE, BACKSCATTER], {}, ["coherence", "backscatter", "area", "products"]);
+  expect(layerOf(map, "coherence").getZIndex()).toBe(FIRST_Z_INDEX);
+  expect(layerOf(map, "backscatter").getZIndex()).toBe(FIRST_Z_INDEX + 1);
+});
+
+test("a layer that the drawing order does not name is drawn above the layers that it names", () => {
+  const { map, drawing } = start();
+  drawing.update([COHERENCE, BACKSCATTER], {}, ["area", "coherence"]);
+  expect(layerOf(map, "coherence").getZIndex()).toBe(FIRST_Z_INDEX + 1);
+  expect(layerOf(map, "backscatter").getZIndex()).toBe(FIRST_Z_INDEX + 3);
 });
 
 test("a layer that leaves the pane leaves the map", () => {

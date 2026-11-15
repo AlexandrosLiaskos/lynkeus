@@ -7,7 +7,7 @@ import { MenuButton } from "../shared/menu/MenuButton";
 import { Notice } from "../shared/notice/Notice";
 import { useStore } from "../shared/store";
 import { formatDates } from "./dates";
-import { extentOf } from "./display";
+import { fitLayer } from "./display";
 import { layerProblemsStore } from "./drawing";
 import { Legend } from "./Legend";
 import { Menu, type MenuItem } from "./Menu";
@@ -28,11 +28,8 @@ import {
   SYMBOLOGY_PANE,
 } from "./state";
 
-/** The space kept around a layer when the map zooms to it, in pixels. */
-const SPACE_AROUND = 24;
-
-interface LayerItemProps {
-  layer: LayerDescription;
+/** What the list of the Contents pane gives to the row of a layer of either kind. */
+export interface LayerRowProps {
   /** Place of the layer in the list, from 0 for the top layer, and the number of layers. */
   place: number;
   count: number;
@@ -46,6 +43,10 @@ interface LayerItemProps {
   onMoved: (id: string) => void;
   /** Called after the layer was removed. */
   onRemoved: (place: number) => void;
+}
+
+interface LayerItemProps extends LayerRowProps {
+  layer: LayerDescription;
 }
 
 /** Return the id of the button that carries the name of a layer, for moving the focus to it. */
@@ -79,11 +80,7 @@ export function LayerItem({ layer, place, count, drop, onMoved, onRemoved, ...dr
   };
 
   const zoom = () => {
-    void extentOf(map, layer.id).then((extent) => {
-      if (extent) {
-        map.getView().fit(extent, { padding: Array<number>(4).fill(SPACE_AROUND), duration: 250 });
-      }
-    });
+    void fitLayer(map, layer.id);
   };
 
   const remove = () => {
