@@ -3,7 +3,7 @@ import { isArea, type Area } from "../shared/area";
 import type { LayerRequest, ProductType } from "../shared/layer";
 import { createStore } from "../shared/store";
 import type { SearchDraft } from "./search";
-import { rectangleAround } from "./searchArea";
+import { densify, fitRings, rectangleAround } from "./searchArea";
 import { call } from "./service";
 
 /** A layer of a product that Lynkeus receives, as the server lists it with the product. */
@@ -115,8 +115,24 @@ export function formatSurface(squareMetres: number): string {
 type Point = readonly [number, number];
 type Edge = readonly [Point, Point];
 
+/**
+ * How far a point may lie from a line of a polygon and still count as lying on it, in degrees: about one metre,
+ * the precision in which Lynkeus writes the points of an area.
+ */
+const ON_LINE = 1e-5;
+
 function edgesOf(ring: Ring): Edge[] {
   return ring.map((point, index) => [point, ring[(index + 1) % ring.length] ?? point]);
+}
+
+/** Return the corners of a rectangle as a ring. */
+function cornersOf({ west, south, east, north }: Area): Ring {
+  return [
+    [west, south],
+    [east, south],
+    [east, north],
+    [west, north],
+  ];
 }
 
 // A point lies inside a ring when a line from it to the east crosses an odd number of edges.
@@ -134,35 +150,76 @@ function turn(a: Point, b: Point, c: Point): number {
   return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
 }
 
-function cross([a, b]: Edge, [c, d]: Edge): boolean {
-  return turn(a, b, c) * turn(a, b, d) < 0 && turn(c, d, a) * turn(c, d, b) < 0;
+// The distance from a point to an edge, in degrees.
+function distance([x, y]: Point, [[x1, y1], [x2, y2]]: Edge): number {
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  const length = dx * dx + dy * dy;
+  const share = length === 0 ? 0 : Math.min(1, Math.max(0, ((x - x1) * dx + (y - y1) * dy) / length));
+  return Math.hypot(x - x1 - share * dx, y - y1 - share * dy);
+}
+
+function isOnLine(point: Point, edges: readonly Edge[]): boolean {
+  return edges.some((edge) => distance(point, edge) <= ON_LINE);
+}
+
+// A point lies within a ring when it lies inside the ring and not on its line.
+function isWithin(point: Point, edges: readonly Edge[]): boolean {
+  return !isOnLine(point, edges) && isInside(point, edges);
+}
+
+// Two edges cross when each one passes from one side of the other to its other side. Edges that touch, or that
+// run along each other, do not cross.
+function cross(one: Edge, other: Edge): boolean {
+  const [a, b] = one;
+  const [c, d] = other;
+  return (
+    turn(a, b, c) * turn(a, b, d) < 0 &&
+    turn(c, d, a) * turn(c, d, b) < 0 &&
+    [a, b].every((point) => distance(point, other) > ON_LINE) &&
+    [c, d].every((point) => distance(point, one) > ON_LINE)
+  );
+}
+
+// The points that tell where a polygon lies: its corners and the middle of each of its sides.
+function pointsOf(edges: readonly Edge[]): Point[] {
+  return edges.flatMap(([a, b]) => [a, [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2] as const]);
+}
+
+// A polygon holds another when no point of the other lies outside it, no sides of the two cross, and no point of
+// its own lies within the other.
+function holds(outline: readonly Edge[], shape: readonly Edge[]): boolean {
+  return (
+    pointsOf(shape).every((point) => isOnLine(point, outline) || isInside(point, outline)) &&
+    !shape.some((side) => outline.some((edge) => cross(side, edge))) &&
+    !pointsOf(outline).some((point) => isWithin(point, shape))
+  );
+}
+
+// Two polygons meet when they have more in common than points of their lines.
+function meets(outline: readonly Edge[], shape: readonly Edge[]): boolean {
+  return (
+    pointsOf(shape).some((point) => isWithin(point, outline)) ||
+    pointsOf(outline).some((point) => isWithin(point, shape)) ||
+    shape.some((side) => outline.some((edge) => cross(side, edge)))
+  );
 }
 
 /**
  * Tell how an area lies to the outline of a product: inside one polygon of the outline, partly inside the
- * outline, or outside it. The server refuses a request whose area lies outside the product.
+ * outline, or outside it. The area is a rectangle or polygons, and an area of polygons is compared by its
+ * polygons, not by the rectangle around them. The outline takes the points that an area taken from it holds,
+ * which lie on the line that the map draws, so that the outline of a product, taken as the area, lies inside
+ * that outline. A point within about one metre of a line counts as lying on it. The server refuses a request
+ * whose area lies outside the product.
  */
-export function coverage(area: Area, footprint: readonly Ring[]): Coverage {
-  const { west, south, east, north } = area;
-  const corners: Point[] = [
-    [west, south],
-    [east, south],
-    [east, north],
-    [west, north],
-  ];
-  const sides = edgesOf(corners);
-  let overlaps = false;
-  for (const ring of footprint) {
-    const edges = edgesOf(ring);
-    const crosses = edges.some((edge) => sides.some((side) => cross(edge, side)));
-    const holdsCorners = corners.map((corner) => isInside(corner, edges));
-    const pointInArea = ring.some(([x, y]) => west <= x && x <= east && south <= y && y <= north);
-    if (holdsCorners.every(Boolean) && !crosses && !pointInArea) {
-      return "inside";
-    }
-    overlaps ||= crosses || pointInArea || holdsCorners.some(Boolean);
+export function coverage(area: Area | readonly Ring[], footprint: readonly Ring[]): Coverage {
+  const shapes = ("west" in area ? [cornersOf(area)] : area).map(edgesOf);
+  const outline = (fitRings(footprint) ?? footprint.map((ring) => densify(ring))).map(edgesOf);
+  if (shapes.length > 0 && shapes.every((shape) => outline.some((edges) => holds(edges, shape)))) {
+    return "inside";
   }
-  return overlaps ? "partly" : "outside";
+  return shapes.some((shape) => outline.some((edges) => meets(edges, shape))) ? "partly" : "outside";
 }
 
 const NO_NUMBERS = "Give the four sides of the area as numbers.";

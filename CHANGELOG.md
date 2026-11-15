@@ -186,6 +186,9 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 
 ### Fixed
 
+- Get layer warned that a part of the area lies outside the outline of the product when the area was taken from
+  that outline. It compared the outline with the rectangle around an area of polygons; it now compares the
+  polygons themselves, so a polygon inside the outline gives no warning and a polygon wholly outside it is refused.
 - Lynkeus Server writes a layer on a computer where PostGIS, QGIS or another program names its own map data in the
   variables PROJ_DATA, PROJ_LIB or GDAL_DATA. It used that data, PROJ refused the database of another version, and
   every job of Get layer ended with an internal error. The program now uses the map data that came with it.
