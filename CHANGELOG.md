@@ -103,12 +103,12 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   satellite with the mark and the name of the platform, the team, and the event with the logos of NASA, the NASA
   Space Apps Challenge and the universities of the team. The visitor slides it up to enter.
 - The mark of Lynkeus, a drawing of the NISAR satellite, in black in the title bar and in white on the welcome
+  screen.
 - The analysis tools Coherence, Change and Soil moisture, One date and Change, with their method sheets and research notes.
 - The forms of the analysis tools Coherence, Change and Soil moisture, One date and Change, in the tool pane,
   and the section In brief of their method sheets in the dialog Methods of the Help tab. The form of
   Coherence, Change says in one sentence why it does not compare two pairs of dates.
 - The sources of these three tools in the dialog Sources of the Help tab.
-  screen.
 - The analysis tool Surface displacement, One pair, on the server and in the tool pane, with its method sheet,
   its research note and the section In brief of the sheet in the dialog Methods of the Help tab.
 - The centre frequency of the radar band in the description of a layer Unwrapped phase, which Get layer reads
