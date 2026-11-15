@@ -90,7 +90,7 @@ export function CoherencePane() {
 | `onRun` | Called by the run button and by the Enter key in a field, never during a run |
 | `ready` | `false` while the tool lacks what it needs; the run button is then inactive |
 | `missing` | The first thing that the tool still lacks, in one sentence. The foot shows it beside the inactive run button while `ready` is `false` |
-| `run` | `null` before the first run. During a run `{ state: "running", progress?, text? }`, where `progress` is the share of the work done from 0 to 1. After it `{ state: "success" \| "warning" \| "error", text, action?, details? }`; `action` is `{ label, onClick }`, the link to the next step, and `details` opens in a dialog from the link View details |
+| `run` | `null` before the first run. During a run `{ state: "running", progress?, text? }`, where `progress` is the share of the work done from 0 to 1. After it `{ state: "success" \| "warning" \| "error", text, action?, details? }`; `action` is `{ label, onClick }`, the link to the next step, and `details` opens in a dialog from the link View details. The X of the outcome closes it until the next run |
 | `secondary` | `{ label, onClick, info? }`: one secondary command of the tool, such as "Restore defaults", shown as a link at the left end of the foot; `info` is its explanation, behind an "i" beside the link |
 | `onCancel` | Called by the Cancel button, which shows during a run only when this is given |
 | `onClose` | Called after the user has closed the pane |

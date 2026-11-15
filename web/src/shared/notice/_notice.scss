@@ -52,3 +52,43 @@
   padding: 0 tokens.$space-2;
   font-size: tokens.$text-small;
 }
+
+// A notice that can be closed keeps its text and its button clear of the X at its upper right corner.
+.notice--closable {
+  position: relative;
+  padding-right: tokens.$target + tokens.$space-2;
+}
+
+// The X that closes a notice or the outcome at the foot of a tool pane. It looks as the close button of a pane: a
+// target of 24 pixels with an icon of 16 pixels in the muted colour, shaded under the pointer, and the line of the
+// keyboard focus that every button has.
+.notice-close {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: tokens.$target;
+  height: tokens.$target;
+  padding: 0;
+  border: 0;
+  border-radius: 0.125rem;
+  background: none;
+  color: tokens.$muted;
+  cursor: pointer;
+}
+
+.notice-close .usa-icon {
+  width: tokens.$icon;
+  height: tokens.$icon;
+}
+
+.notice-close:hover {
+  background: uswds.color("base-lighter");
+  color: tokens.$ink;
+}
+
+// In a notice the X stands level with the first line of the text, and its icon 8 pixels from the right edge.
+.notice > .notice-close {
+  top: 0;
+  right: tokens.$space-1;
+}

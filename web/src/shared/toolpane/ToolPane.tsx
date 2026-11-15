@@ -1,16 +1,17 @@
-import { useId, useState, type ReactNode, type SyntheticEvent } from "react";
+import { useId, useState, type MouseEvent, type ReactNode, type SyntheticEvent } from "react";
 import { Dialog } from "../dialog/Dialog";
 import { closeToolPane, dockStore } from "../dock/dock";
 import { DockPane } from "../dock/DockPane";
 import { Icon } from "../icon/Icon";
 import { Info } from "../info/Info";
+import { CloseButton } from "../notice/Notice";
 import { useStore } from "../store";
 
 /**
  * What the foot of a tool pane shows about a run of the tool. While the tool runs, `progress` is the share of the
  * work done, from 0 to 1; without it the bar shows that the work goes on, with no share. After the run, `text`
  * states the outcome in one sentence, `action` is the link to the next step, and `details` holds whatever else
- * the tool reports.
+ * the tool reports. The foot shows the outcome with an X that closes it.
  */
 export type ToolPaneRun =
   | { state: "running"; progress?: number; text?: string }
@@ -20,6 +21,9 @@ export type ToolPaneRun =
       action?: { label: string; onClick: () => void };
       details?: ReactNode;
     };
+
+/** The outcome of a run: what the foot shows after the run, until the user closes it. */
+type Outcome = Exclude<ToolPaneRun, { state: "running" }>;
 
 interface ToolPaneProps {
   /** Unique name of the pane: the name of the ribbon button that opens it with `openToolPane`. */
@@ -59,6 +63,10 @@ const STATE_ICONS = { success: "check_circle", warning: "warning", error: "error
  * with a Cancel button or the outcome with a link to the next step and a link to its details. While the tool is
  * not ready, the foot states beside the inactive run button what is still missing. One secondary command of the
  * tool stands as a link at the left end of the foot. The pane is not modal, so the map and the ribbon stay in use.
+ *
+ * The X at the right end of the outcome closes it, as the X of a banner at the foot of a pane of ArcGIS Pro does.
+ * The foot then shows what it shows before a run, until the run button is pressed again or the outcome changes.
+ * The X stops no run and removes no layer or result, and the progress of a run has none.
  *
  * A ribbon button opens the pane with `openToolPane(id)`, and the tool closes it with `closeToolPane(id)`. The
  * content is drawn only while the pane is open, so a component inside the pane starts again each time the pane
@@ -105,6 +113,14 @@ export function ToolPane({
   const [detailsOpen, setDetailsOpen] = useState(false);
   const missingId = useId();
   const secondaryInfoId = useId();
+  // The outcome of the last run, and the words that name it: its state and its text.
+  const outcome: Outcome | null = run !== null && run.state !== "running" ? run : null;
+  const outcomeWords = outcome ? `${outcome.state}: ${outcome.text}` : null;
+  // The words of the outcome that the user has closed, or null. Another outcome, or a run, opens the foot again.
+  const [closed, setClosed] = useState<string | null>(null);
+  if (closed !== null && closed !== outcomeWords) {
+    setClosed(null);
+  }
 
   if (!open) {
     return null;
@@ -113,10 +129,13 @@ export function ToolPane({
   const running = run?.state === "running";
   const inactive = !ready || running;
   const lacking = !ready && !running ? missing : undefined;
+  const shown = closed === outcomeWords ? null : outcome;
 
   const onSubmit = (event: SyntheticEvent) => {
     event.preventDefault();
     if (!inactive) {
+      // The next run shows its outcome, also when that outcome states the same as the one that was closed.
+      setClosed(null);
       onRun();
     }
   };
@@ -124,6 +143,15 @@ export function ToolPane({
   const close = () => {
     closeToolPane(id);
     onClose?.();
+  };
+
+  // The X leaves the foot with the outcome. When it had the keyboard focus, the focus moves to the run button.
+  const closeOutcome = (event: MouseEvent<HTMLButtonElement>) => {
+    const button = event.currentTarget;
+    if (document.activeElement === button) {
+      button.closest(".tool-pane-foot")?.querySelector<HTMLElement>(".tool-pane-actions > [type='submit']")?.focus();
+    }
+    setClosed(outcomeWords);
   };
 
   return (
@@ -182,29 +210,30 @@ export function ToolPane({
                 </button>
               ) : null}
             </div>
-          ) : run ? (
-            <div className={`tool-pane-status tool-pane-status--${run.state}`}>
-              <Icon name={STATE_ICONS[run.state]} />
-              <span className="tool-pane-status-text" role={run.state === "error" ? "alert" : "status"}>
-                {run.text}
+          ) : shown ? (
+            <div className={`tool-pane-status tool-pane-status--${shown.state} tool-pane-status--closable`}>
+              <Icon name={STATE_ICONS[shown.state]} />
+              <span className="tool-pane-status-text" role={shown.state === "error" ? "alert" : "status"}>
+                {shown.text}
               </span>
-              {run.action ? (
-                <button type="button" className="usa-button usa-button--unstyled" onClick={run.action.onClick}>
-                  {run.action.label}
+              {shown.action ? (
+                <button type="button" className="usa-button usa-button--unstyled" onClick={shown.action.onClick}>
+                  {shown.action.label}
                 </button>
               ) : null}
-              {run.details ? (
+              {shown.details ? (
                 <button type="button" className="usa-button usa-button--unstyled" onClick={() => setDetailsOpen(true)}>
                   View details
                 </button>
               ) : null}
+              <CloseButton onClick={closeOutcome} />
             </div>
           ) : null}
         </div>
       </form>
-      {run && run.state !== "running" && run.details ? (
+      {shown?.details ? (
         <Dialog title={`${title}: details`} open={detailsOpen} onClose={() => setDetailsOpen(false)}>
-          {run.details}
+          {shown.details}
         </Dialog>
       ) : null}
     </DockPane>

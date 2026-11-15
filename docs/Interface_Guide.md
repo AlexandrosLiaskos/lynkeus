@@ -58,10 +58,10 @@ The test `web/src/shared/tokens/tokens.test.ts` computes these values at every r
 | Rule | Source |
 |---|---|
 | Empty state: a pane or a section with nothing to show states in one bold line what is missing and in one sentence how to get it, and offers one button that leads to the next step. | [N1] no. 6 and 10 |
-| Notice: a message inside a pane is one compact block with an icon, a bar at the left and at most one button. It replaces loose paragraphs. An error is announced with the role `alert`, every other notice with the role `status`. | [U3] |
+| Notice: a message inside a pane is one compact block with an icon, a bar at the left, at most one button and an X at the right that closes it. It replaces loose paragraphs. An error is announced with the role `alert`, every other notice with the role `status`. A closed notice returns when its text changes or its pane opens again. A notice that a field names in `aria-describedby` belongs to that field and has no X. | [U3]; the X is a decision of the project |
 | An explanation stands behind the "i" beside a title, never as text under the title. A unit stands in the label, for example "Distance (m)". | [P2] |
 | The error of a field is written in text under that field and is linked to it with `aria-describedby`. It appears after the field is left or the run button is pressed. Every part writes it with the shared `FieldError`, and the field carries `aria-invalid` while the error shows. | [W3] for the text; place and moment are decisions of the project |
-| While the run button is inactive, the foot of a tool pane states the first thing that is missing. After a run it states the outcome and offers the link to the next step. | [P2], [N1] no. 1 |
+| While the run button is inactive, the foot of a tool pane states the first thing that is missing. After a run it states the outcome and offers the link to the next step, and an X at the right end of the outcome closes it until the next run. A run in progress has no X. | [P2], [N1] no. 1; the X is a decision of the project |
 | A tool pane that shows an empty state and has an inactive run button says each thing once: the empty state names the next step and offers its button, and the line of the foot says why the run button is inactive. | Project |
 | Work that lasts longer than one second shows that it goes on. Work that may last longer than ten seconds shows the share done and can be cancelled. | [N2] |
 
@@ -212,7 +212,7 @@ The blocks are in `web/src/shared/`. The import paths below are written from a f
 | Property | Meaning |
 |---|---|
 | `kind` | `"info"`, `"success"`, `"warning"` or `"error"`; an error is announced as an alert, the others as a status |
-| `id` | The id of the element that holds the text. A field that the notice is about carries it in `aria-describedby` |
+| `id` | The id of the element that holds the text. A field that the notice is about carries it in `aria-describedby`. Such a notice belongs to its field and has no X |
 | `action` | `{ label, onClick }`: the one button of the notice |
 | `children` | What happened and what to do next, in at most two sentences |
 
@@ -223,6 +223,10 @@ The blocks are in `web/src/shared/`. The import paths below are written from a f
   </Notice>
 )}
 ```
+
+Every other notice has an X at its right end, with the name "Close this message" that the close button of a message
+over the map also has. The X hides the notice until its text changes or its pane opens again. When the X had the
+keyboard focus, the focus moves to the title of the pane.
 
 ### PropertyList
 
@@ -356,16 +360,18 @@ A toolbar is for three or more buttons. One or two icon buttons stand without it
 ```
 
 The error is announced as an alert when it appears. A message that concerns the whole form, such as an answer of
-the server, is a `Notice` under the field; its `id` then stands in `aria-describedby` in the same way.
+the server, is a `Notice` under the field; its `id` then stands in `aria-describedby` in the same way, and the
+notice has no X, because it belongs to the field.
 
 ### ToolPane
 
 `import { ToolPane, ToolPaneGroup, type ToolPaneRun } from "../shared/toolpane/ToolPane";` The properties are
-listed in [CONTRIBUTING.md](../CONTRIBUTING.md). Three carry rules of parts C and D:
+listed in [CONTRIBUTING.md](../CONTRIBUTING.md). Four carry rules of parts C and D:
 
 | Property | Meaning |
 |---|---|
 | `missing` | The first thing that the tool still lacks, in one sentence. The foot shows it beside the inactive run button while `ready` is `false` |
+| `run` | After a run, the outcome, with an X named "Close this message" at its right end. The X returns the foot to what it shows before a run until the run button is pressed again or the outcome changes. It stops no run and removes no layer or result, and a run in progress has no X |
 | `run.action` | `{ label, onClick }` in an outcome: the link to the next step, shown after the text of the outcome |
 | `secondary` | `{ label, onClick, info? }`: the one secondary command of the tool, a link at the left end of the foot. `info` is its explanation, behind an "i" beside the link |
 
