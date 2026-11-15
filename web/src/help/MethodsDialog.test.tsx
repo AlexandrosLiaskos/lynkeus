@@ -91,6 +91,7 @@ test("the section of the tool that a form asked for is open, and the others are 
     "false",
     "false",
     "false",
+    "false",
   ]);
 });
 
