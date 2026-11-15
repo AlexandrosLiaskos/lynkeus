@@ -63,7 +63,7 @@ test("the pane has the body of a pane and no form, no run button and no foot", (
       .map((button) => button.getAttribute("aria-label")),
   ).toEqual([
     "Information about Getting started",
-    "Auto-hide the panes of this side",
+    "Auto-hide the Getting started pane",
     "Close the Getting started pane",
   ]);
 });
