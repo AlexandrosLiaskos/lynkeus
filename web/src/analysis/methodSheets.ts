@@ -181,7 +181,7 @@ export const METHODS: Record<SheetTool, Method> = {
       },
       {
         name: "Limits",
-        text: "The values are not corrected for the atmosphere or the solid Earth tides: on the two test pairs, over ground with no known movement, 96 % of the cells span 0.10 m and 0.09 m. The sign was derived from the software of the mission and was not checked on ground with a known movement. Cells where the unwrapping is unreliable are left empty.",
+        text: "The values are not corrected for the atmosphere or the solid Earth tides; 96 % of the cells of the two test pairs span 0.10 m and 0.09 m, and the test area has no ground movement known to compare with. The sign was derived from the software of the mission and was not checked on ground with a known movement. Cells where the unwrapping is unreliable are left empty.",
       },
       {
         name: "Checked",

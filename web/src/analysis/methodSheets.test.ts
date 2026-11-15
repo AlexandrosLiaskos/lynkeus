@@ -100,6 +100,7 @@ test("the summary of the displacement says what a user must know before reading 
   );
   expect(rowOf(method, "How to read")).toContain("The value of one cell alone is not a measurement");
   expect(rowOf(method, "Limits")).toContain("not corrected for the atmosphere");
+  expect(rowOf(method, "Limits")).toContain("the test area has no ground movement known to compare with");
   expect(rowOf(method, "Limits")).toContain(
     "The sign was derived from the software of the mission and was not checked on ground with a known movement.",
   );
@@ -119,7 +120,7 @@ test("the spans of the two test pairs in the row Limits are those of the records
   });
   expect(spans).toEqual(["0.10", "0.09"]);
   expect(rowOf(METHODS["displacement-state"], "Limits")).toContain(
-    `96 % of the cells span ${spans[0] ?? ""} m and ${spans[1] ?? ""} m`,
+    `96 % of the cells of the two test pairs span ${spans[0] ?? ""} m and ${spans[1] ?? ""} m`,
   );
   const writing = readFileSync("../api/src/lynkeus/writing.py", "utf8");
   expect(writing).toMatch(/^LOWEST_PERCENT = 2(\.0)?$/m);
