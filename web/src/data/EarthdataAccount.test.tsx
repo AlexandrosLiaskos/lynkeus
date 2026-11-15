@@ -46,6 +46,10 @@ test("while nobody is signed in the title bar says so, and a press opens the pan
   sessionStore.set({ state: "signed-out" });
   render(<Bar />);
   const button = account("Earthdata: not signed in");
+  // The button shows the picture of an account alone, and its name stands in its tooltip.
+  expect(button.textContent).toBe("");
+  expect(button.querySelectorAll("svg")).toHaveLength(1);
+  expect(screen.getByRole("tooltip", { hidden: true }).textContent).toBe("Earthdata: not signed in");
   expect(button.getAttribute("aria-expanded")).toBeNull();
   await userEvent.click(button);
   expect(dockStore.get().tools).toEqual(["sign-in"]);
@@ -64,6 +68,8 @@ test("while the visitor is signed in the title bar shows the user name, and a pr
   sessionStore.set({ state: "signed-in", user: "a_user" });
   render(<Bar />);
   const button = account("Earthdata: a_user");
+  expect(button.textContent).toBe("");
+  expect(button.querySelectorAll("svg")).toHaveLength(1);
   expect(button.getAttribute("aria-expanded")).toBe("false");
   expect(screen.queryByRole("button", { name: "Sign out" })).toBeNull();
   await userEvent.click(button);

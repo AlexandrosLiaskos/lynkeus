@@ -26,7 +26,7 @@
   line-height: tokens.$target;
 }
 
-// The account stands at the right end of the title bar.
+// The account stands at the right end of the title bar, which is dark: a white picture in a round button.
 .account {
   position: relative;
   display: flex;
@@ -36,36 +36,33 @@
 
 .account-button {
   display: flex;
+  flex: none;
   align-items: center;
-  gap: tokens.$space-1;
-  min-width: 0;
+  justify-content: center;
+  width: tokens.$row;
   height: tokens.$row;
-  padding: 0 tokens.$space-2;
+  padding: 0;
   border: 0;
-  border-radius: 0.125rem;
+  border-radius: 50%;
   background: none;
-  color: tokens.$ink;
-  font: inherit;
-  font-size: tokens.$text;
+  color: uswds.color("white");
   cursor: pointer;
 }
 
 .account-button:hover,
 .account-button[aria-expanded="true"] {
-  background: uswds.color("base-lighter");
+  background: rgb(255 255 255 / 16%);
 }
 
 .account-button .usa-icon {
   flex: none;
-  width: 1.125rem;
-  height: 1.125rem;
+  width: 1.375rem;
+  height: 1.375rem;
 }
 
-// A long user name is cut at the end, so that the title bar keeps one line in a narrow window.
-.account-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+// The name of the button does not show over the open menu, which states the user name itself.
+.account-button[aria-expanded="true"] + .tooltip {
+  display: none;
 }
 
 // The menu opens under the button, over the ribbon and the panes.
@@ -79,6 +76,7 @@
   padding: tokens.$space-1 0;
   border: 1px solid uswds.color("base");
   background: uswds.color("white");
+  color: tokens.$ink;
   font-size: tokens.$text;
 }
 
