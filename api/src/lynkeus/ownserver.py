@@ -9,6 +9,7 @@ pairing, whether the computer is connected, the jobs and the space used. Started
 """
 
 import argparse
+import io
 import logging
 import multiprocessing
 import signal
@@ -144,6 +145,10 @@ def _terminal(link: Link) -> int:
     for name in ("SIGINT", "SIGTERM", "SIGBREAK"):
         if hasattr(signal, name):
             signal.signal(getattr(signal, name), lambda number, frame: stop.set())
+    # A terminal that cannot show a character of a title or of a folder name shows a question mark for it.
+    for stream in (sys.stdout, sys.stderr):
+        if isinstance(stream, io.TextIOWrapper):
+            stream.reconfigure(errors="replace")
     print(f"{NAME} runs. Press Ctrl+C to quit.", flush=True)
     link.start()
     try:
