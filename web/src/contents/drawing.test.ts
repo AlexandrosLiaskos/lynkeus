@@ -192,7 +192,7 @@ const OWN: LayerDescription = {
   record: "/api/servers/3f9a1c0b7e24d658/files/fedcba9876543210fedcba9876543210/coherence.json",
 };
 const AWAY: LayerProblem = {
-  text: "Your own server, which keeps this layer, is not connected. Start Lynkeus Server on that computer and try again.",
+  text: "Your server, which keeps this layer, is not connected. Start Lynkeus Server on that computer and try again.",
   again: true,
 };
 

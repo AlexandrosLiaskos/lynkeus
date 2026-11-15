@@ -17,7 +17,7 @@ import { serversSentence } from "./words";
 
 /** What an own server is for, in the words of the empty list. */
 export const PURPOSE =
-  "An own server is a computer of yours that runs the program Lynkeus Server. Your jobs then run on it and their layers are kept on its disk, so the processors, the memory and the disk of the project server no longer limit them. The computer needs no public address, because the program itself connects to Lynkeus.";
+  "Connect your own computer to run your jobs and keep their layers on its disk, without the limits of the project server. It needs only the program Lynkeus Server, and no network settings.";
 
 /**
  * The list of the servers of the visitor: for each one its name, whether it is connected and since when it is
@@ -49,7 +49,7 @@ function ServerList() {
     return (
       <>
         {notice}
-        <EmptyState title="No own server" text={PURPOSE} action={{ label: "Add a server", onClick: add }} />
+        <EmptyState title="No server connected" text={PURPOSE} action={{ label: "Add a server", onClick: add }} />
       </>
     );
   }
@@ -108,7 +108,7 @@ function SignedOut({ session, shown }: SignedOutProps) {
   const state =
     session === "unreachable"
       ? "The server of Lynkeus did not answer, so it is not known whether you are signed in to Earthdata."
-      : "You are not signed in to Earthdata, and an own server belongs to an Earthdata account.";
+      : "You are not signed in to Earthdata, and your servers belong to your Earthdata account.";
   const after =
     shown.view === "add" && shown.code
       ? `Sign in first: this pane then shows again with the code ${shown.code}.`

@@ -139,7 +139,7 @@ test("a visitor who is not signed in is told so, with what an own server is for 
   show();
   act(() => openServers());
   expect(within(pane()).getByRole("status").textContent).toBe(
-    "You are not signed in to Earthdata, and an own server belongs to an Earthdata account. Sign in first: this pane then shows again.",
+    "You are not signed in to Earthdata, and your servers belong to your Earthdata account. Sign in first: this pane then shows again.",
   );
   expect(within(pane()).getByText(PURPOSE)).toBeDefined();
   expect(server.sent("GET", "/api/servers")).toEqual([]);
@@ -173,13 +173,13 @@ test("when the server does not answer about the sign-in, the pane says that the 
   );
 });
 
-test("without a server the list says what an own server is for and offers to add one", async () => {
+test("without a server the list says what a server is for and offers to add one", async () => {
   server.servers = [];
   show();
   act(() => openServers());
-  expect(await screen.findByText("No own server")).toBeDefined();
+  expect(await screen.findByText("No server connected")).toBeDefined();
   expect(screen.getByText(PURPOSE)).toBeDefined();
-  expect(PURPOSE.split(". ")).toHaveLength(3);
+  expect(PURPOSE.split(". ")).toHaveLength(2);
   await userEvent.click(screen.getByRole("button", { name: "Add a server" }));
   expect(pane("Add a server")).toBeDefined();
   expect(document.activeElement).toBe(screen.getByRole("heading", { name: "Add a server" }));
@@ -598,7 +598,7 @@ test("a visitor who is not signed in signs in first and returns to the same code
   server.servers = [];
   show();
   expect(within(pane("Add a server")).getByRole("status").textContent).toBe(
-    "You are not signed in to Earthdata, and an own server belongs to an Earthdata account. Sign in first: this pane then shows again with the code WDJB-MJHT.",
+    "You are not signed in to Earthdata, and your servers belong to your Earthdata account. Sign in first: this pane then shows again with the code WDJB-MJHT.",
   );
   expect(server.sent("GET", "/api/servers")).toEqual([]);
   await userEvent.click(screen.getByRole("button", { name: "Sign in" }));
