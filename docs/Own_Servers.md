@@ -49,8 +49,9 @@ The pairing follows the device authorization grant of OAuth 2.0 (RFC 8628).
 
 `verification_uri` is `https://lynkeus.nkua.cloud/?connect` and `verification_uri_complete` adds
 `=WDJB-MJHT`. The interface opens the dialog of the servers when the address carries `connect`.
-The program keeps `server` and `key` in its settings file. The project server keeps the SHA-256 digest
-of the key only.
+A `PairingKey` also carries `user`, the Earthdata user name of the owner, which the program shows on the
+computer. The program keeps `server`, `key` and `user` in its settings file. The project server keeps the
+SHA-256 digest of the key only.
 
 ## Connection of a paired server
 
@@ -74,7 +75,7 @@ last message. A report names a job until the project server has answered it with
 |---|---|---|
 | `start` | Records the job and starts it when a place is free | `done` |
 | `dismiss` | Ends the job | `done` |
-| `rename` | Changes the title in the description and in the two files | `done` |
+| `rename` | Changes the title in the description and in the STAC record | `done` |
 | `remove` | Deletes the files of the layer | `done` |
 | `read` | Sends at most `MOST_BYTES` bytes of a file | `bytes` or `failure`, within `READ_TIME` seconds |
 | `limits` | Applies the limits and keeps them in its settings file | `done` |
@@ -82,6 +83,14 @@ last message. A report names a job until the project server has answered it with
 
 The description of a layer of an own server carries the addresses
 `/api/servers/{server}/files/{layer}/{file}` in `url` and `record`.
+
+The task `rename` leaves the GeoTIFF as it is, as the project server does for its own layers: writing the
+file again would move its parts, and a map that is reading the file would receive wrong ones. The file keeps
+the title of its creation in its tag `ImageDescription`.
+
+A report may name a job that an earlier report already named: after a start of the program, its first
+reports name every job of the pairing whose record it keeps. An answer `done` with `ok` false carries one
+sentence for the visitor, for example when the storage of the server is full.
 
 ## Addresses for the interface
 
@@ -117,7 +126,47 @@ The front web server of the machine is not changed.
 |---|---|---|---|
 | Data folder | `%LOCALAPPDATA%\Lynkeus` | `~/Library/Application Support/Lynkeus` | `$XDG_DATA_HOME/lynkeus`, by default `~/.local/share/lynkeus` |
 
-The data folder holds the settings file (`settings.json`: server, key, limits), the record
-(`lynkeus.sqlite3`) and the folder `files` with the two files of every layer. The program shows the
-code of the pairing, whether it is connected, and the commands Open Lynkeus, Open the data folder and
-Quit. Started with `--no-window` it writes the same on the terminal, for a server without a screen.
+The data folder holds the settings file (`settings.json`: server, key, user, limits), the record
+(`lynkeus.sqlite3`), the folder `files` with the two files of every layer, the log of the program
+(`log.txt`) and the file `lock`, which a running program holds so that a second one on the same folder is
+refused. The program shows the code of the pairing, whether it is connected and to which Earthdata user,
+the jobs that run and wait, the space used, and the commands Open Lynkeus, Open the data folder and Quit.
+Started with `--no-window` it writes the same on the terminal, for a server without a screen. The options
+`--server` and `--data-folder` give another project server and another data folder; an address that does
+not start with `https://` is taken only when it names the computer itself, for tests.
+
+### First limits
+
+A new own server derives its first limits from the computer, and its owner changes them on the site.
+
+| Limit | First value |
+|---|---|
+| Running jobs | One for every processor but one, which stays for the other programs of the computer, and at most as many as fit in half of the memory at 600 megabytes each (a job that writes a layer of the largest size holds about 510). Always from 1 to 64; 2 at most when the memory cannot be read |
+| Storage | Half of the free space of the disk that holds the data folder |
+| Size of a layer | 500 megabytes, as on the project server, or the storage when that is smaller |
+
+The storage counts every layer in the data folder. The layers of an earlier pairing stay in the folder
+`files` after the owner removed the server, and they count until the user of the computer deletes their
+folders. The numbers of waiting jobs, of unfinished jobs and of layers have no limit on an own server.
+
+### Ending a job
+
+On Linux and macOS a job is ended as on the project server: its process group receives the signal SIGTERM,
+and SIGKILL after 5 seconds. A job that waits for NASA Harmony cancels its request there on SIGTERM. Windows
+has neither signal for a process. There the program sets an event of the job, on which a thread of the job
+raises SIGTERM inside the job, so the request at Harmony is cancelled in the same way; after 5 seconds the
+job is ended with `TerminateProcess`. When a job is ended without those 5 seconds, because the program or
+the computer stopped at once, Harmony finishes the request and keeps its result until it expires.
+
+### The downloads
+
+| System | Download | Installation |
+|---|---|---|
+| Windows | `Lynkeus-Server-<version>-Windows.exe`, an installer made with Inno Setup | Asks for no administrator rights; installs for the present user and adds an entry to the start menu |
+| macOS | `Lynkeus-Server-<version>-macOS.dmg`, which holds `Lynkeus Server.app` | The user drags the program to the folder Applications |
+| Linux | `Lynkeus-Server-<version>-Linux.tar.gz` | The user unpacks the folder and starts `lynkeus-server` in it |
+
+The files are built by the workflow `.github/workflows/server-program.yml` and attached to the release of a
+version tag. The folder of the program on Windows also holds `lynkeus-server.exe`, which writes on the
+terminal: a program with a window has no terminal on Windows. The files in `api/packing/` describe the
+packing.
