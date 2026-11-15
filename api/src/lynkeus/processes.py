@@ -1,7 +1,7 @@
 """The processes of the server, in the form of OGC API - Processes, Part 1 (OGC 18-062r2).
 
-A process is a function that produces one layer. The server runs it as a
-job, in an operating-system process of its own. The inputs of a process are
+A process is a function that produces one layer or one series. The server
+runs it as a job, in an operating-system process of its own. The inputs of a process are
 declared as a pydantic format, and the description that the standard asks
 for is derived from that format, so the description and the check of the
 inputs of a request cannot differ.
@@ -18,11 +18,17 @@ from typing import Annotated, Any, Literal
 from pydantic import Base64Bytes, BaseModel, Field, ValidationError, WithJsonSchema
 
 from lynkeus import __version__
-from lynkeus.layers import Format, LayerDescription
+from lynkeus.layers import Format, LayerDescription, SeriesDescription
 from lynkeus.references import Reader
 
-OUTPUT = "layer"
-"""The name of the one output of every process, which is the description of the layer produced."""
+type OutputName = Literal["layer", "series"]
+"""The name of the one output of a process. It tells which of the two kinds of result the process produces."""
+
+OUTPUT: OutputName = "layer"
+"""The name of the one output of a process that produces a layer, which is the description of the layer."""
+
+SERIES_OUTPUT: OutputName = "series"
+"""The name of the one output of a process that produces a series, which is the description of the series."""
 
 MAX_REFERENCES = 8
 """The largest number of input values that one request may give by reference."""
@@ -94,9 +100,11 @@ class Work:
     Attributes
     ----------
     layer_id : str
-        The ``id`` that the layer description of the result must carry.
+        The ``id`` that the description of the result must carry, whether
+        the result is a layer or a series.
     folder : pathlib.Path
-        Existing empty folder for the two files of the result.
+        Existing empty folder for the two files of a layer. A series has no
+        files and leaves the folder empty.
     address : str
         Address of that folder for the browser, for example ``/files/<layer_id>``.
     token : str or None
@@ -132,8 +140,10 @@ class Process[Inputs: BaseModel]:
         Format of the inputs. Every field is one input of the process.
     run : callable
         Function of the process. It receives the inputs and the work of the
-        job, writes the files of the layer in the folder of the work and
-        returns the layer description. It must be defined at the top level
+        job. A process whose output is ``layer`` writes the files of the
+        layer in the folder of the work and returns the layer description;
+        a process whose output is ``series`` writes no file and returns the
+        series description. The function must be defined at the top level
         of a module, because the job imports it in another operating-system
         process.
     job_title : callable
@@ -150,18 +160,24 @@ class Process[Inputs: BaseModel]:
         Further facts about the process, each a name with its values, for
         example a limit on the inputs. The description gives them in the
         field ``additionalParameters`` of the standard.
+    output : {"layer", "series"}
+        Name of the one output of the process: ``layer`` when the function
+        returns a layer description, ``series`` when it returns a series
+        description. The description of the process gives the schema of
+        that output (OGC 18-062r2, requirements 52 and 53).
     """
 
     id: str
     title: str
     description: str
     inputs: type[Inputs]
-    run: Callable[[Inputs, Work], LayerDescription]
+    run: Callable[[Inputs, Work], LayerDescription | SeriesDescription]
     job_title: Callable[[Inputs], str]
     needs_earthdata: bool = False
     errors: tuple[type[Exception], ...] = (ProcessError,)
     version: str = __version__
     parameters: Mapping[str, Sequence[object]] = field(default_factory=dict)
+    output: OutputName = OUTPUT
     _inputs_description: dict[str, Any] = field(init=False, repr=False, compare=False)
 
     def __post_init__(self) -> None:
@@ -195,7 +211,11 @@ class Process[Inputs: BaseModel]:
 
     def describe(self) -> dict[str, Any]:
         """Return the description of the process (process.yaml), without links."""
-        return {**self.summary(), "inputs": self._inputs_description, "outputs": {OUTPUT: _OUTPUT_DESCRIPTION}}
+        return {
+            **self.summary(),
+            "inputs": self._inputs_description,
+            "outputs": {self.output: _OUTPUT_DESCRIPTIONS[self.output]},
+        }
 
     def read_inputs(self, given: object, read: Reader) -> Inputs:
         """Return the inputs of an execute request in the format of the process.
@@ -326,10 +346,21 @@ def _described_inputs(inputs: type[BaseModel]) -> dict[str, Any]:
     return described
 
 
-_OUTPUT_DESCRIPTION: dict[str, Any] = {
-    "title": "Layer",
-    "description": "The description of the layer that the job produced, with the addresses of its two files.",
-    "schema": _schema(
-        _without_name(LayerDescription.model_json_schema()), LayerDescription.model_json_schema().get("$defs", {})
-    ),
+_OUTPUT_DESCRIPTIONS: dict[OutputName, dict[str, Any]] = {
+    OUTPUT: {
+        "title": "Layer",
+        "description": "The description of the layer that the job produced, with the addresses of its two files.",
+        "schema": _schema(
+            _without_name(LayerDescription.model_json_schema()), LayerDescription.model_json_schema().get("$defs", {})
+        ),
+    },
+    SERIES_OUTPUT: {
+        "title": "Series",
+        "description": "The description of the series that the job produced, with the value of every date.",
+        "schema": _schema(
+            _without_name(SeriesDescription.model_json_schema()),
+            SeriesDescription.model_json_schema().get("$defs", {}),
+        ),
+    },
 }
+"""The description of the one output of a process (outputDescription.yaml), by the name of the output."""

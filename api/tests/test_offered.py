@@ -23,7 +23,7 @@ from fastapi.testclient import TestClient
 from rio_cogeo.cogeo import cog_validate
 
 from lynkeus import harmony, jobs, offered, server
-from lynkeus.analysis import TOOLS
+from lynkeus.analysis import SERIES_TOOLS, TOOLS
 from lynkeus.layers import LayerRequest
 from lynkeus.routes import install
 from lynkeus.writing import LayerError, read_layer
@@ -118,10 +118,10 @@ def site(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[Site]:
 
 def test_server_offers_get_layer_and_one_process_for_every_tool(monkeypatch: pytest.MonkeyPatch) -> None:
     assert nasa.TOOL not in TOOLS
-    assert [process.id for process in offered.processes()] == ["get-layer", *TOOLS]
+    assert [process.id for process in offered.processes()] == ["get-layer", *TOOLS, *SERIES_TOOLS]
     with TestClient(server.create_app(), base_url="https://testserver") as client:
         summaries = client.get("/api/processes").json()["processes"]
-        assert [summary["id"] for summary in summaries] == ["get-layer", *TOOLS]
+        assert [summary["id"] for summary in summaries] == ["get-layer", *TOOLS, *SERIES_TOOLS]
         assert client.get(f"/api/processes/{nasa.TOOL}").status_code == 404
     first = summaries[0]
     assert (first["title"], first["version"]) == ("Get layer", "0.1.0")
@@ -133,9 +133,10 @@ def test_server_offers_get_layer_and_one_process_for_every_tool(monkeypatch: pyt
     monkeypatch.setitem(TOOLS, nasa.TOOL, nasa.ratio)
     with TestClient(server.create_app(), base_url="https://testserver") as client:
         summaries = client.get("/api/processes").json()["processes"]
-        assert [summary["id"] for summary in summaries] == ["get-layer", *TOOLS]
+        assert [summary["id"] for summary in summaries] == ["get-layer", *TOOLS, *SERIES_TOOLS]
         described = client.get(f"/api/processes/{nasa.TOOL}").json()
-    assert (summaries[-1]["id"], summaries[-1]["title"]) == (nasa.TOOL, "Stand in ratio")
+    added = summaries[len(TOOLS)]
+    assert (added["id"], added["title"]) == (nasa.TOOL, "Stand in ratio")
     assert described["description"] == "Compute the ratio of the second layer to the first, in decibels."
     assert list(described["inputs"]) == ["inputs", "title"]
 
