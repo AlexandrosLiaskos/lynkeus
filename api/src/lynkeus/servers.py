@@ -50,6 +50,7 @@ from http import HTTPStatus
 
 from pydantic import BaseModel, ValidationError
 
+from lynkeus.computer import job_memory
 from lynkeus.layers import LayerDescription
 from lynkeus.linking import (
     CONNECTED_TIME,
@@ -234,16 +235,6 @@ def layer_cells(server: ServerRecord) -> int:
     """Return the most cells of a layer that a job of an own server receives, as the server last reported it."""
     state = state_of(server)
     return FIRST_LAYER_CELLS if state is None else state.limits.layer_cells
-
-
-def job_memory(cells: int) -> int:
-    """Return the memory that a job holds while it receives a layer of so many cells, in bytes.
-
-    It is the straight line through the two values that were measured on the project server: 353
-    megabytes for 15.0 million cells and 508 megabytes for 25 million (``docs/Own_Servers.md``, Cells
-    of a layer). This function is the one place of the project server that holds the rule.
-    """
-    return 120_500_000 + cells * 31 // 2
 
 
 def written_tasks(tasks: Tasks, state: ServerState | None) -> str:
@@ -1086,7 +1077,9 @@ class Servers:
         ServerRefusedError
             With 409 when the limits change ``layer_cells`` and the program of the server does not know
             that limit, and with 422 when ``running_jobs`` jobs of ``layer_cells`` cells need more than
-            the memory that the server last reported. Nothing is recorded then, the name included.
+            the memory that the server last reported. ``lynkeus.computer.job_memory`` gives the memory
+            of a job, as it does for the first limits of a server. Nothing is recorded then, the name
+            included.
         """
         limits = change.limits
         if limits is not None:

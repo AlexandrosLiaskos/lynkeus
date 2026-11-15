@@ -7,6 +7,7 @@ backscatter, written by ``lynkeus.writing``.
 
 import hashlib
 import json
+import math
 import signal
 import socket
 import subprocess
@@ -23,7 +24,7 @@ import pytest
 import uvicorn
 from fastapi import FastAPI
 
-from lynkeus import harmony, jobs, server_routes, servers
+from lynkeus import computer, harmony, jobs, server_routes, servers
 from lynkeus.layers import Area
 from lynkeus.linking import (
     MAX_USER_SERVERS,
@@ -1298,29 +1299,32 @@ def test_limits_that_need_more_memory_than_the_server_reported_are_refused(site:
     # A server that has not reported yet states no memory, and its limits wait for its first report.
     assert visitor.patch(address, json={"limits": large}).status_code == 200
     assert machine.step() == []
-    machine.memory = 8 * 10**9
+    # The server reports the memory that 2 jobs of 250 million cells hold, and not a byte more.
+    job = computer.job_memory(250_000_000)
+    machine.memory = 2 * job
     assert machine.report().status_code == 204
     assert [task.kind for task in machine.step()] == ["limits"]
     assert machine.received[-1]["limits"] == large
     assert listed(visitor)[0]["state"]["limits"] == large
-    # 4 jobs of 250 million cells hold 4 times 3995.5 megabytes, and the server reported 8 gigabytes.
     refused = visitor.patch(address, json={"limits": {**large, "storage": 1}, "name": "Other name"})
-    problem(
-        refused,
-        422,
-        "4 running jobs with layers of 250 million cells need about 16.0 gigabytes of memory,"
-        " and your server Field laptop has 8.0 gigabytes.",
+    problem(refused, 422)
+    needed, has = math.ceil(4 * job / 1e8) / 10, math.floor(2 * job / 1e8) / 10
+    assert refused.json()["detail"] == (
+        f"4 running jobs with layers of 250 million cells need about {needed:.1f} gigabytes of memory,"
+        f" and your server Field laptop has {has:.1f} gigabytes."
     )
+    assert needed >= 2 * has > 0
     one = visitor.patch(address, json={"limits": {**large, "running_jobs": 1, "layer_cells": 600_500_000}})
-    problem(one, 422, "1 running job with a layer of 600.5 million cells needs about 9.5 gigabytes of memory,")
+    problem(one, 422, "1 running job with a layer of 600.5 million cells needs about ")
     [found] = listed(visitor)
     assert (found["name"], found["state"]["limits"]) == ("Field laptop", large)
     assert machine.report().status_code == 204
     assert machine.step() == []
-    # Limits without the cells keep 250 million, so more jobs of that size are refused as well.
+    # Limits without the cells keep 250 million, so 3 jobs of that size are refused as well.
     problem(visitor.patch(address, json={"limits": {"running_jobs": 3, "storage": 1, "layer_size": 1}}), 422)
-    # 2 jobs of 250 million cells hold 7991 megabytes, which the 8 gigabytes hold.
+    # 2 jobs of that size fit, and one cell more for each does not.
     fits = {**large, "running_jobs": 2}
+    problem(visitor.patch(address, json={"limits": {**fits, "layer_cells": 250_000_001}}), 422)
     assert visitor.patch(address, json={"limits": fits}).status_code == 200
     assert [task.kind for task in machine.step()] == ["limits"]
     assert listed(visitor)[0]["state"]["limits"] == fits
@@ -1328,11 +1332,6 @@ def test_limits_that_need_more_memory_than_the_server_reported_are_refused(site:
     machine.memory = None
     assert machine.report().status_code == 204
     assert visitor.patch(address, json={"limits": {**large, "running_jobs": 64}}).status_code == 200
-
-
-def test_memory_of_a_job_passes_through_the_two_measured_values() -> None:
-    assert servers.job_memory(15_000_000) == 353_000_000
-    assert servers.job_memory(25_000_000) == 508_000_000
 
 
 def test_tasks_are_written_without_the_cells_for_a_program_that_does_not_know_them() -> None:
