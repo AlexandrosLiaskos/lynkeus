@@ -203,12 +203,12 @@ test("the slider sets the opacity of the layer", () => {
 test("the menu of a layer opens with the keyboard, and the arrow keys move between its commands", async () => {
   [OCTOBER, COHERENCE].forEach(addToMap);
   show();
-  const button = screen.getByRole("button", { name: "Commands of Coherence HH, 20 m" });
+  const button = screen.getByRole("button", { name: "More commands of Coherence HH, 20 m" });
   expect(button.getAttribute("aria-haspopup")).toBe("menu");
   button.focus();
   await userEvent.keyboard("{Enter}");
   expect(button.getAttribute("aria-expanded")).toBe("true");
-  const menu = screen.getByRole("menu", { name: "Commands of Coherence HH, 20 m" });
+  const menu = screen.getByRole("menu", { name: "More commands of Coherence HH, 20 m" });
   const commands = within(menu).getAllByRole("menuitem");
   expect(commands.map((command) => command.textContent)).toEqual([
     "Zoom to layer",
@@ -241,7 +241,7 @@ test("the menu of a layer opens with the keyboard, and the arrow keys move betwe
 test("the Escape key closes the menu and returns the focus to the button that opened it", async () => {
   addToMap(COHERENCE);
   show();
-  const button = screen.getByRole("button", { name: "Commands of Coherence HH, 20 m" });
+  const button = screen.getByRole("button", { name: "More commands of Coherence HH, 20 m" });
   button.focus();
   await userEvent.keyboard("{ArrowUp}");
   expect(document.activeElement?.textContent).toBe("Properties");
@@ -253,7 +253,7 @@ test("the Escape key closes the menu and returns the focus to the button that op
 test("the commands of the top layer that cannot move it are inactive", async () => {
   [OCTOBER, COHERENCE].forEach(addToMap);
   show();
-  await userEvent.click(screen.getByRole("button", { name: "Commands of Coherence HH, 20 m" }));
+  await userEvent.click(screen.getByRole("button", { name: "More commands of Coherence HH, 20 m" }));
   const state = (name: string) => screen.getByRole("menuitem", { name }).getAttribute("aria-disabled");
   expect(state("Move up")).toBe("true");
   expect(state("Move to top")).toBe("true");
@@ -266,7 +266,7 @@ test("the commands of the top layer that cannot move it are inactive", async () 
 test("a command of the menu moves the layer and states its new place", async () => {
   [OCTOBER, NOVEMBER, COHERENCE].forEach(addToMap);
   show();
-  await userEvent.click(screen.getByRole("button", { name: "Commands of Coherence HH, 20 m" }));
+  await userEvent.click(screen.getByRole("button", { name: "More commands of Coherence HH, 20 m" }));
   await userEvent.click(screen.getByRole("menuitem", { name: "Move to bottom" }));
   expect(mapLayersStore.get().map(({ id }) => id)).toEqual(["coherence", "october", "november"]);
   expect(screen.queryByRole("menu")).toBeNull();
@@ -291,7 +291,7 @@ test("the Remove command takes the layer off the map and moves the focus to the 
   [OCTOBER, COHERENCE].forEach(addToMap);
   selectedLayerStore.set("coherence");
   show();
-  await userEvent.click(screen.getByRole("button", { name: "Commands of Coherence HH, 20 m" }));
+  await userEvent.click(screen.getByRole("button", { name: "More commands of Coherence HH, 20 m" }));
   await userEvent.click(screen.getByRole("menuitem", { name: "Remove" }));
   expect(mapLayersStore.get().map(({ id }) => id)).toEqual(["october"]);
   expect(selectedLayerStore.get()).toBeNull();
@@ -325,7 +325,7 @@ test("the F2 key on the name opens a field, and Enter gives the layer the name t
 test("the Rename command opens the same field, and Escape keeps the old name", async () => {
   addToMap(COHERENCE);
   show();
-  await userEvent.click(screen.getByRole("button", { name: "Commands of Coherence HH, 20 m" }));
+  await userEvent.click(screen.getByRole("button", { name: "More commands of Coherence HH, 20 m" }));
   await userEvent.click(screen.getByRole("menuitem", { name: "Rename" }));
   const field = screen.getByRole("textbox", { name: "New name of Coherence HH, 20 m" });
   await userEvent.type(field, "Another name{Escape}");
@@ -338,7 +338,7 @@ test("the display of one layer is copied to another, which keeps its own visibil
   setDisplay(OCTOBER, { range: [0.2, 0.8], colours: "viridis", inverted: true, opacity: 0.5 });
   setDisplay(NOVEMBER, { visible: false });
   show();
-  const [november, october] = screen.getAllByRole("button", { name: "Commands of Backscatter HH" });
+  const [november, october] = screen.getAllByRole("button", { name: "More commands of Backscatter HH" });
   await userEvent.click(november as HTMLElement);
   expect(screen.getByRole("menuitem", { name: "Paste display" }).getAttribute("aria-disabled")).toBe("true");
   await userEvent.keyboard("{Escape}");
@@ -364,24 +364,24 @@ test("a power has the command Show in decibels, which is switched on at the star
   addToMap(power);
   show();
   expect(screen.getByText("Shown in decibels (dB).")).toBeTruthy();
-  await userEvent.click(screen.getByRole("button", { name: "Commands of Backscatter HH" }));
+  await userEvent.click(screen.getByRole("button", { name: "More commands of Backscatter HH" }));
   const command = screen.getByRole("menuitemcheckbox", { name: "Show in decibels" });
   expect(command.getAttribute("aria-checked")).toBe("true");
   await userEvent.click(command);
   expect(displayOf(power).decibels).toBe(false);
   expect(screen.queryByText("Shown in decibels (dB).")).toBeNull();
-  await userEvent.click(screen.getByRole("button", { name: "Commands of Backscatter HH" }));
+  await userEvent.click(screen.getByRole("button", { name: "More commands of Backscatter HH" }));
   expect(screen.getByRole("menuitemcheckbox", { name: "Show in decibels" }).getAttribute("aria-checked")).toBe("false");
 });
 
 test("the commands Symbology and Properties open the pane and the window of the layer", async () => {
   addToMap(COHERENCE);
   show();
-  await userEvent.click(screen.getByRole("button", { name: "Commands of Coherence HH, 20 m" }));
+  await userEvent.click(screen.getByRole("button", { name: "More commands of Coherence HH, 20 m" }));
   await userEvent.click(screen.getByRole("menuitem", { name: "Symbology" }));
   expect(symbologyStore.get()?.id).toBe("coherence");
   expect(dockStore.get().tools).toContain("symbology");
-  await userEvent.click(screen.getByRole("button", { name: "Commands of Coherence HH, 20 m" }));
+  await userEvent.click(screen.getByRole("button", { name: "More commands of Coherence HH, 20 m" }));
   await userEvent.click(screen.getByRole("menuitem", { name: "Properties" }));
   expect(propertiesStore.get()?.id).toBe("coherence");
 });
@@ -390,13 +390,13 @@ test("the menu opens at the pointer with the right mouse button", () => {
   addToMap(COHERENCE);
   show();
   fireEvent.contextMenu(nameOf("Coherence HH, 20 m 9 Oct 2026 and 21 Oct 2026"), { clientX: 40, clientY: 60 });
-  expect(screen.getByRole("menu", { name: "Commands of Coherence HH, 20 m" })).toBeTruthy();
+  expect(screen.getByRole("menu", { name: "More commands of Coherence HH, 20 m" })).toBeTruthy();
 });
 
 test("the menu at the pointer has the commands of the menu button, and Escape returns the focus to the name", async () => {
   [OCTOBER, COHERENCE].forEach(addToMap);
   show();
-  await userEvent.click(screen.getByRole("button", { name: "Commands of Coherence HH, 20 m" }));
+  await userEvent.click(screen.getByRole("button", { name: "More commands of Coherence HH, 20 m" }));
   const ofButton = screen.getAllByRole("menuitem").map((command) => command.textContent);
   await userEvent.keyboard("{Escape}");
   fireEvent.contextMenu(nameOf("Coherence HH, 20 m 9 Oct 2026 and 21 Oct 2026"), { clientX: 40, clientY: 60 });
@@ -409,7 +409,7 @@ test("the menu at the pointer has the commands of the menu button, and Escape re
 test("only one menu of a layer is open at a time", async () => {
   addToMap(COHERENCE);
   show();
-  await userEvent.click(screen.getByRole("button", { name: "Commands of Coherence HH, 20 m" }));
+  await userEvent.click(screen.getByRole("button", { name: "More commands of Coherence HH, 20 m" }));
   expect(screen.getAllByRole("menu")).toHaveLength(1);
   // A press of the right mouse button outside the open menu closes it, and the menu at the pointer opens.
   fireEvent.pointerDown(nameOf("Coherence HH, 20 m 9 Oct 2026 and 21 Oct 2026"), { button: 2 });
@@ -449,7 +449,7 @@ test("the box of the basemap hides and shows it, and a basemap chosen on the Map
 
 test("the Remove command of the basemap takes it off the map and out of the list", async () => {
   show();
-  await userEvent.click(screen.getByRole("button", { name: "Commands of Blue Marble" }));
+  await userEvent.click(screen.getByRole("button", { name: "More commands of Blue Marble" }));
   await userEvent.click(screen.getByRole("menuitem", { name: "Remove" }));
   expect(baseMapStore.get()).toBeNull();
   expect(screen.queryByRole("checkbox", { name: "Show Blue Marble" })).toBeNull();
@@ -480,9 +480,9 @@ test("the notice of a layer that could not be read offers to remove the layer", 
 test("the basemap has its menu at the pointer too, and Escape returns the focus to its menu button", async () => {
   show();
   fireEvent.contextMenu(screen.getByText("Blue Marble", { selector: ".item-title" }), { clientX: 40, clientY: 60 });
-  expect(within(screen.getByRole("menu", { name: "Commands of Blue Marble" })).getAllByRole("menuitem")).toHaveLength(
-    1,
-  );
+  expect(
+    within(screen.getByRole("menu", { name: "More commands of Blue Marble" })).getAllByRole("menuitem"),
+  ).toHaveLength(1);
   await userEvent.keyboard("{Escape}");
-  expect(document.activeElement).toBe(screen.getByRole("button", { name: "Commands of Blue Marble" }));
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: "More commands of Blue Marble" }));
 });
