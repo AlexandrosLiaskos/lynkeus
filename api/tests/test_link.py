@@ -12,6 +12,7 @@ import secrets
 import ssl
 import sys
 import threading
+import time
 from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path
@@ -457,6 +458,13 @@ def test_one_question_for_tasks_is_open_at_all_times(server: Link, site: Project
     gaps = [later - earlier for earlier, later in zip(site.questions[2:], site.questions[3:], strict=False)]
     # A question follows the answer to the one before at once.
     assert max(gaps) < 0.3 + 0.25
+    assert site.most_open_questions == 1
+    # A question is also open while tasks are carried out: each answer arrives while the next question waits.
+    site.wait = 25.0
+    time.sleep(0.5)
+    for _ in range(3):
+        start(site, seconds=0.2)
+    assert site.open_at_answers == [1, 1, 1]
     assert site.most_open_questions == 1
 
 

@@ -69,6 +69,7 @@ class Project(ThreadingHTTPServer):
         self.questions: list[float] = []
         self.open_questions = 0
         self.most_open_questions = 0
+        self.open_at_answers: list[int] = []
         self.asked: list[str] = []
         self.faults: list[str] = []
         self.wait = float(MOST_WAIT)
@@ -261,13 +262,15 @@ class _Handler(BaseHTTPRequestHandler):
             return self._fault("the question for tasks has no body and the parameter wait of MOST_WAIT seconds")
         limit = time.monotonic() + project.wait
         with project.changed:
+            # A question belongs to the pairing whose key it carried: it receives no task of a later pairing.
+            key = project.key
             project.questions.append(time.monotonic())
             project.open_questions += 1
             project.most_open_questions = max(project.most_open_questions, project.open_questions)
             try:
-                while not project.waiting and project.key is not None and (left := limit - time.monotonic()) > 0:
+                while not project.waiting and project.key == key and (left := limit - time.monotonic()) > 0:
                     project.changed.wait(min(left, 0.1))
-                if project.key is None:
+                if project.key != key:
                     tasks = None
                 else:
                     tasks = Tasks(tasks=tuple(project.waiting))
@@ -302,6 +305,7 @@ class _Handler(BaseHTTPRequestHandler):
             return self._fault(f"the answer {kind} does not suit a task of the kind {task.kind}")
         with project.changed:
             project.answers[name] = answer
+            project.open_at_answers.append(project.open_questions)
             project.changed.notify_all()
         return self._answer(HTTPStatus.NO_CONTENT)
 

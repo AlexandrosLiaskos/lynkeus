@@ -640,15 +640,19 @@ class Link:
         reporter = threading.Thread(
             target=self._report_changes, args=(server, key), name="lynkeus-reports", daemon=True
         )
+        # The tasks are carried out beside the question for tasks, so that a question is open at all times:
+        # those that read a file several at once, and the others one after the other, in their order.
         readers = ThreadPoolExecutor(READERS, thread_name_prefix="lynkeus-read")
+        worker = ThreadPoolExecutor(1, thread_name_prefix="lynkeus-task")
         reporter.start()
         removed = False
         try:
-            self._follow_tasks(server, key, readers)
+            self._follow_tasks(server, key, readers, worker)
         except RemovedError:
             removed = True
         finally:
             self._removed.set()
+            worker.shutdown(wait=True, cancel_futures=True)
             readers.shutdown(wait=True, cancel_futures=True)
             reporter.join()
             # The connections of the threads that have ended are closed.
@@ -667,8 +671,8 @@ class Link:
         """Return the space that the layers of earlier pairings use, in bytes."""
         return self._store.size_of_layers() - self._store.size_of_layers(server)
 
-    def _follow_tasks(self, server: str, key: str, readers: ThreadPoolExecutor) -> None:
-        """Keep one question for tasks open, and carry out the tasks of every answer."""
+    def _follow_tasks(self, server: str, key: str, readers: ThreadPoolExecutor, worker: ThreadPoolExecutor) -> None:
+        """Keep one question for tasks open, and hand the tasks of every answer to the threads that carry them out."""
         retry = FIRST_RETRY
         while True:
             if self._stop.is_set():
@@ -706,10 +710,17 @@ class Link:
             for task in tasks:
                 if isinstance(task, ReadTask):
                     readers.submit(self._read, server, key, task)
-                    continue
-                self._answer(key, task.id, "done", self._carry_out(server, task))
-                if isinstance(task, ForgetTask):
-                    raise RemovedError
+                else:
+                    worker.submit(self._carry_out_and_answer, server, key, task)
+
+    def _carry_out_and_answer(self, server: str, key: str, task: Task) -> None:
+        """Carry out a task other than reading and send its answer. After the task ``forget`` the pairing ends."""
+        if self._removed.is_set():
+            return
+        self._answer(key, task.id, "done", self._carry_out(server, task))
+        if isinstance(task, ForgetTask):
+            self._removed.set()
+            self._server.interrupt()
 
     def _answer(self, key: str, task: str, kind: str, answer: Format | bytes, size: int | None = None) -> None:
         """Send the answer to a task. An answer that the project server no longer waits for is dropped."""
