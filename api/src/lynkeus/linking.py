@@ -51,6 +51,9 @@ MOST_BYTES = 524_288
 READ_TIME = 30
 """The time within which an own server must answer a task that reads a file, in seconds."""
 
+MOST_REPORT_JOBS = 100
+"""The largest number of jobs that one report may name. The program names at most ``link.MOST_REPORTED_JOBS``."""
+
 MAX_USER_SERVERS = 8
 """The most own servers of one Earthdata user."""
 
@@ -274,7 +277,7 @@ class Report(Format):
     """A report of an own server: its state and the jobs whose state changed since the last report."""
 
     state: ServerState
-    jobs: tuple[JobState, ...] = ()
+    jobs: tuple[JobState, ...] = Field(default=(), max_length=MOST_REPORT_JOBS)
 
 
 class StartTask(Format):

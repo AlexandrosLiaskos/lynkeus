@@ -450,11 +450,15 @@ class Store:
         return [str(session) for [session] in self._rows("SELECT id FROM sessions WHERE used < ?", (time,))]
 
     def sessions_without_content(self) -> list[str]:
-        """Return the sessions that hold no layer, no series and no job, the one unused for the longest time first."""
+        """Return the sessions that hold no layer, no series and no job that waits, runs or ended successfully.
+
+        A failed or a dismissed job is no content. Otherwise requests that only start jobs that fail would
+        fill the server with sessions that never make place. The session unused for the longest time is first.
+        """
         rows = self._rows(
             "SELECT id FROM sessions WHERE id NOT IN (SELECT session FROM layers)"
             " AND id NOT IN (SELECT session FROM series)"
-            " AND id NOT IN (SELECT session FROM jobs WHERE status != 'dismissed') ORDER BY used"
+            " AND id NOT IN (SELECT session FROM jobs WHERE status NOT IN ('failed', 'dismissed')) ORDER BY used"
         )
         return [str(session) for [session] in rows]
 

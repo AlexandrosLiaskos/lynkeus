@@ -82,7 +82,9 @@ removed the server; the program then forgets the pairing and starts a new one.
 The program keeps one question for tasks open at all times and asks again as soon as it is answered.
 It sends a report when it starts, whenever the state of a job changes (at most once a second) and at
 least every `REPORT_PAUSE` seconds. A server counts as connected for `CONNECTED_TIME` seconds after its
-last message. A report names a job until the project server has answered it with 204.
+last message. A report names a job until the project server has answered it with 204. A report names at
+most `MOST_REPORT_JOBS` jobs, and the project server answers a longer one with 422; the program names at
+most 20 in one report.
 
 The program sends `POST /api/link/leave` when it is quit. The project server then counts that server as not
 connected at once, until its next message: the list of the servers, the automatic choice, a request for a
