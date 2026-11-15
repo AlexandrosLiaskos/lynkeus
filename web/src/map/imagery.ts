@@ -1,5 +1,6 @@
 import XYZ from "ol/source/XYZ";
 import { createStore } from "../shared/store";
+import { formatDate } from "./day";
 
 const GIBS = "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best";
 
@@ -33,9 +34,9 @@ export function dayBefore(date: Date): string {
 }
 
 export const IMAGERY_FAULTS = {
-  noDay: "Give the day as year, month and day.",
-  future: "The day lies after the present day.",
-  early: (title: string, first: string) => `The images of ${title} start on ${first}.`,
+  noDay: "Enter the day as year, month and day.",
+  future: "The day lies after the present day. Enter an earlier day.",
+  early: (title: string, first: string) => `The images of ${title} start on ${formatDate(first)}. Enter a later day.`,
 } as const;
 
 /** Return the sentence that says why an image cannot be shown, or null when it can. */

@@ -33,10 +33,10 @@ test("a day is accepted from the first day of the layer to the present day", () 
   expect(imageryFault({ layer: TERRA, date: "2000-02-24" }, today)).toBeNull();
   expect(imageryFault({ layer: TERRA, date: today }, today)).toBeNull();
   expect(imageryFault({ layer: TERRA, date: "2000-02-23" }, today)).toBe(
-    "The images of MODIS, Terra start on 2000-02-24.",
+    "The images of MODIS, Terra start on 24 Feb 2000. Enter a later day.",
   );
   expect(imageryFault({ layer: "VIIRS_NOAA21_CorrectedReflectance_TrueColor", date: "2023-02-09" }, today)).toBe(
-    "The images of VIIRS, NOAA-21 start on 2023-02-10.",
+    "The images of VIIRS, NOAA-21 start on 10 Feb 2023. Enter a later day.",
   );
   expect(imageryFault({ layer: TERRA, date: "2026-11-15" }, today)).toBe(IMAGERY_FAULTS.future);
 });

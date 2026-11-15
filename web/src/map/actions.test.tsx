@@ -7,7 +7,7 @@ import { dockStore, resetDock } from "../shared/dock/dock";
 import { MapContext } from "../shared/map";
 import { mapLayersStore } from "../shared/mapLayers";
 import { messagesStore } from "../shared/messages/messages";
-import { useMapActions } from "./actions";
+import { MISSING, useMapActions } from "./actions";
 import { baseMapStore } from "./baseMaps";
 import { createMap } from "./map";
 import { NOTICES } from "./commands";
@@ -125,6 +125,28 @@ test("the Swipe button needs a selected layer, and then starts and ends the swip
   act(() => result.current.swipe?.run());
   expect(swipeStore.get().on).toBe(false);
   expect(dockStore.get().tools).toEqual([]);
+});
+
+test("a button that acts on the selected layer or on the area says what it needs while there is none", () => {
+  const { result } = start();
+  expect(result.current["zoom-to-layer"]?.missing).toBe(MISSING.layer);
+  expect(result.current.swipe?.missing).toBe(MISSING.layer);
+  expect(result.current["zoom-to-area"]?.missing).toBe(MISSING.area);
+  expect(result.current["area-clear"]?.missing).toBe(MISSING.noArea);
+  act(() => {
+    mapLayersStore.set([testLayer("october", "Backscatter HH, 21 Oct 2026")]);
+    selectedLayerStore.set("october");
+    areaStore.set({ west: -71.2, south: 42.6, east: -70.75, north: 42.95 });
+  });
+  for (const id of ["zoom-to-layer", "swipe", "zoom-to-area", "area-clear"] as const) {
+    expect(result.current[id]?.missing).toBeUndefined();
+  }
+  // The button that ends a swipe stays active after its layer has left the selection.
+  act(() => result.current.swipe?.run());
+  act(() => selectedLayerStore.set(null));
+  expect(result.current.swipe?.pressed).toBe(true);
+  expect(result.current.swipe?.missing).toBeUndefined();
+  expect(result.current["zoom-to-layer"]?.missing).toBe(MISSING.layer);
 });
 
 test("the Graticule and Rectangle buttons switch on and off and are marked as pressed", () => {
