@@ -203,6 +203,9 @@ def test_program_runs_on_the_terminal_until_it_is_asked_to_end(tmp_path: Path, s
         code_of_end = program.end()
     assert code_of_end == 0
     assert program.written[-1] == "Ending the jobs and quitting."
+    # The program that was asked to end told the project server, once and as its last request.
+    assert site.asked.count("/api/link/leave") == 1
+    assert site.asked[-1] == "/api/link/leave"
     assert sorted(path.name for path in tmp_path.iterdir()) == [
         "files",
         "lock",
@@ -219,7 +222,7 @@ def test_program_receives_a_layer_and_follows_every_task_from_its_start_to_the_e
     tmp_path: Path,
 ) -> None:
     measured = journey([sys.executable, "-m", "lynkeus.ownserver", "--no-window"], tmp_path)
-    assert set(measured) == {"start", "system", "job", "layer", "cancel"}
+    assert set(measured) == {"start", "system", "job", "layer", "cancel", "leave"}
     assert measured["system"] == computer.system_name()
     # The request at Harmony is cancelled within the time that an ended job is given.
     assert measured["cancel"] < jobs.END_TIME + 5

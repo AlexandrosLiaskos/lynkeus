@@ -164,10 +164,56 @@ def test_program_starts_a_new_pairing_when_its_key_is_no_longer_known(server: Li
     site.remove()
     code = site.code()
     assert read_settings(server.folder) == Settings(limits=LIMITS)
+    # A program whose server was removed does not leave: the project server no longer knows it.
+    assert site.leaves == []
     name = site.confirm(code)
     site.report(lambda report: True, "the first report of the new pairing")
     assert name != SERVER
     assert read_settings(server.folder).server == name
+
+
+def test_program_that_is_quit_tells_the_project_server_once(tmp_path: Path, site: Project) -> None:
+    pair(tmp_path, site)
+    with running(tmp_path, site):
+        site.report(lambda report: True, "the first report")
+        assert site.leaves == []
+    # The leave follows the last report, so that no later message shows the server as connected again.
+    assert site.asked.count("/api/link/leave") == 1
+    assert site.asked[-1] == "/api/link/leave"
+    assert len(site.leaves) == 1
+    assert site.leaves[0] >= site.report_times[-1]
+    assert site.faults == []
+
+
+def test_program_that_is_quit_while_a_pairing_waits_does_not_leave(tmp_path: Path, site: Project) -> None:
+    with running(tmp_path, site):
+        site.code()
+    assert site.leaves == []
+    assert "/api/link/leave" not in site.asked
+
+
+def test_program_that_is_quit_waits_two_seconds_at_most_for_the_answer_to_its_leave(
+    tmp_path: Path, site: Project
+) -> None:
+    assert link.LEAVE_TIME == 2.0
+    pair(tmp_path, site)
+    site.leave_time = 6.0
+    with running(tmp_path, site):
+        site.report(lambda report: True, "the first report")
+        quit_at = time.monotonic()
+    assert len(site.leaves) == 1
+    assert link.LEAVE_TIME - 0.1 <= time.monotonic() - quit_at < link.LEAVE_TIME + 2
+
+
+def test_program_is_quit_also_when_the_project_server_is_away(tmp_path: Path, site: Project) -> None:
+    pair(tmp_path, site)
+    with running(tmp_path, site) as own:
+        site.report(lambda report: True, "the first report")
+        site.end()
+        site.until(lambda: not own.view().connected or None, "the program to notice")
+        quit_at = time.monotonic()
+    assert time.monotonic() - quit_at < link.LEAVE_TIME + 2
+    assert site.leaves == []
 
 
 def test_second_program_on_the_same_data_folder_is_refused(server: Link, site: Project) -> None:
@@ -420,6 +466,8 @@ def test_forgotten_pairing_leaves_the_files_and_a_new_pairing_follows(server: Li
     assert site.give(ForgetTask(id=task_name())) == Done(ok=True)
     code = site.code()
     assert read_settings(server.folder) == Settings(limits=LIMITS)
+    # A program that was told to forget its pairing does not leave.
+    assert site.leaves == []
     files = server.folder / "files"
     assert sorted(path.name for path in (files / layer).iterdir()) == ["a.json", "a.tif"]
     name = site.confirm(code)

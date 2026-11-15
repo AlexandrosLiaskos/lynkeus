@@ -3,7 +3,7 @@
 It answers the addresses under ``/api/link/`` as ``docs/Own_Servers.md`` rules them, on a port of this
 computer, and reads every message with the formats of ``lynkeus.linking``: a message of the program
 that does not follow the rules is answered with 422 and noted in ``faults``. A test plays the visitor
-(``confirm``), gives tasks (``give``) and reads what the program reported.
+(``confirm``), gives tasks (``give``) and reads what the program reported, and when it left (``leaves``).
 """
 
 import secrets
@@ -70,6 +70,8 @@ class Project(ThreadingHTTPServer):
         self.open_questions = 0
         self.most_open_questions = 0
         self.open_at_answers: list[int] = []
+        self.leaves: list[float] = []
+        self.leave_time = 0.0
         self.asked: list[str] = []
         self.faults: list[str] = []
         self.wait = float(MOST_WAIT)
@@ -203,10 +205,14 @@ class _Handler(BaseHTTPRequestHandler):
             elif address.path == "/api/link/report":
                 report = Report.model_validate_json(body)
                 with project.changed:
-                    project.reports.append(report)
-                    project.report_times.append(time.monotonic())
+                    # A report that was on its way when the visitor confirmed a new pairing is not one of that pairing.
+                    if self.headers.get("Authorization") == f"Bearer {project.key}":
+                        project.reports.append(report)
+                        project.report_times.append(time.monotonic())
                     project.changed.notify_all()
                 self._answer(HTTPStatus.NO_CONTENT)
+            elif address.path == "/api/link/leave":
+                self._leave(body)
             elif address.path.startswith("/api/link/tasks/"):
                 self._task_answer(address.path.removeprefix("/api/link/tasks/"), body)
             else:
@@ -279,6 +285,17 @@ class _Handler(BaseHTTPRequestHandler):
             finally:
                 project.open_questions -= 1
         return self._answer(HTTPStatus.UNAUTHORIZED) if tasks is None else self._answer(HTTPStatus.OK, tasks)
+
+    def _leave(self, body: bytes) -> None:
+        project = self.server
+        if body:
+            return self._fault("the leave of a program that is quit has no body")
+        with project.changed:
+            project.leaves.append(time.monotonic())
+            project.changed.notify_all()
+        # A test may let the answer wait, as a project server that is slow or away does.
+        time.sleep(project.leave_time)
+        return self._answer(HTTPStatus.NO_CONTENT)
 
     def _task_answer(self, rest: str, body: bytes) -> None:
         project = self.server

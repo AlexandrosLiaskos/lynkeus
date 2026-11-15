@@ -1,4 +1,4 @@
-"""The journey of Lynkeus Server from its start to the end of its pairing, as a check of the whole program.
+"""The journey of Lynkeus Server from its start to its quit, as a check of the whole program.
 
 The program is started as its user starts it, in a process of its own: with the interpreter
 (``python -m lynkeus.ownserver``) or as the packed program of a download. It runs against the
@@ -16,6 +16,7 @@ import argparse
 import json
 import os
 import secrets
+import signal
 import subprocess
 import sys
 import tempfile
@@ -54,6 +55,12 @@ REQUEST = {
 VARIABLE = "/science/LSAR/GCOV/grids/frequencyA/HHHH"
 FILE = LAYERS / "gcov-hhhh-20261021.tif"
 TOKEN = "a-token-of-the-journey-that-no-file-may-hold"  # noqa: S105 - it protects nothing
+QUIT_TIME = 15.0
+"""The longest time that the check waits for the leave of a program that is quit, in seconds.
+
+It is shorter than the time for which a question for tasks stays open (``lynkeus.linking.MOST_WAIT``): a
+program that is quit must not wait for the answer to its open question before it leaves.
+"""
 START_TIME = 180.0
 """The longest time that the check waits for a start of the program or of a job, in seconds."""
 
@@ -78,7 +85,23 @@ def _start(site: Project, title: str) -> str:
     return job
 
 
-def journey(command: Sequence[str], folder: Path, whole: bool = True) -> dict[str, Any]:
+def _quit(program: subprocess.Popen[bytes], window: bool) -> None:
+    """Ask the program to end, as its user does when he quits it.
+
+    Linux and macOS send the signal SIGTERM, which the program takes as Quit. Windows has no such
+    signal for another program: the window is closed with the system program ``taskkill``, and the
+    program on the terminal receives the key Ctrl+Break.
+    """
+    if sys.platform == "win32":
+        if window:
+            subprocess.run(["taskkill", "/PID", str(program.pid)], check=True, capture_output=True)  # noqa: S603, S607 - a program of Windows
+        else:
+            program.send_signal(signal.CTRL_BREAK_EVENT)
+    else:
+        program.terminate()
+
+
+def journey(command: Sequence[str], folder: Path, whole: bool = True, window: bool = False) -> dict[str, Any]:
     """Run Lynkeus Server through its journey, and return what was measured.
 
     Parameters
@@ -88,8 +111,10 @@ def journey(command: Sequence[str], folder: Path, whole: bool = True) -> dict[st
     folder : pathlib.Path
         An empty folder for the data folder of the program and for its output.
     whole : bool
-        False ends the journey after the pairing and the first report, which is what a check of the
-        window needs.
+        False leaves out the jobs and the layers, which is what a check of the window needs: the program
+        is paired, reports and is quit.
+    window : bool
+        Whether the command starts the program with its window. Windows quits such a program in another way.
 
     Returns
     -------
@@ -98,7 +123,8 @@ def journey(command: Sequence[str], folder: Path, whole: bool = True) -> dict[st
         ``job``: the time from the task that starts a job to the report of its layer, in seconds.
         ``layer``: the size of the files of the layer, in bytes. ``cancel``: the time from the task
         that dismisses a job to the request that cancels it at the stand-in for Harmony, in seconds.
-        ``system``: the operating system that the program reported.
+        ``leave``: the time from the request to end the program to its leave at the stand-in for the
+        project server, in seconds. ``system``: the operating system that the program reported.
 
     Raises
     ------
@@ -110,6 +136,10 @@ def journey(command: Sequence[str], folder: Path, whole: bool = True) -> dict[st
     measured: dict[str, Any] = {}
     with project() as site, nasa(FILE) as web, output.open("wb") as written:
         environment = {**os.environ, **web.environment(), "PYTHONUNBUFFERED": "1"}
+        group = 0
+        if sys.platform == "win32":
+            # Windows sends the key Ctrl+Break to a program that leads a group of its own.
+            group = subprocess.CREATE_NEW_PROCESS_GROUP
         started = time.monotonic()
         program = subprocess.Popen(  # noqa: S603 - the command is the program under check
             [*command, "--server", site.address, "--data-folder", str(data)],
@@ -117,6 +147,7 @@ def journey(command: Sequence[str], folder: Path, whole: bool = True) -> dict[st
             stderr=subprocess.STDOUT,
             stdin=subprocess.DEVNULL,
             env=environment,
+            creationflags=group,
         )
         try:
             code = site.until(lambda: next(iter(site.codes.values()), None), "a request for a pairing", START_TIME)
@@ -127,8 +158,24 @@ def journey(command: Sequence[str], folder: Path, whole: bool = True) -> dict[st
             assert first.state.limits == computer.read_settings(data).limits
             if whole:
                 _jobs_and_layers(site, web, data, server, measured)
+                # The pairing was forgotten, and a program that forgot its pairing does not leave. The new
+                # pairing that it asked for is confirmed, so that the program that is quit is a paired one.
+                assert site.leaves == []
+                again = site.code()
+                site.confirm(again)
+                site.until(lambda: again not in site.codes.values() or None, "the key of the new pairing to be fetched")
+                site.report(lambda report: True, "the first report of the new pairing")
             assert site.faults == [], site.faults
             assert program.poll() is None, "the program ended by itself"
+            # The program is quit: it tells the project server once, as its last request, and ends.
+            assert site.leaves == []
+            asked = time.monotonic()
+            _quit(program, window)
+            site.until(lambda: site.leaves or None, "the leave of the program that is quit", QUIT_TIME)
+            measured["leave"] = round(time.monotonic() - asked, 1)
+            assert program.wait(START_TIME) == 0
+            assert (len(site.leaves), site.asked[-1]) == (1, "/api/link/leave")
+            assert site.faults == [], site.faults
         except BaseException:
             written.flush()
             sys.stderr.write(f"Output of the program:\n{output.read_text(encoding='utf-8', errors='replace')}\n")
@@ -136,10 +183,12 @@ def journey(command: Sequence[str], folder: Path, whole: bool = True) -> dict[st
             if log.is_file():
                 sys.stderr.write(f"Log of the program:\n{log.read_text(encoding='utf-8', errors='replace')}\n")
             sys.stderr.write(f"Events of the stand-in for NASA:\n{json.dumps(web.events, indent=1)}\n")
+            sys.stderr.write(f"Last requests to the stand-in for the project server:\n{site.asked[-20:]}\n")
             raise
         finally:
-            program.terminate()
-            program.wait(60)
+            if program.poll() is None:
+                program.kill()
+                program.wait(60)
     return measured
 
 
@@ -232,7 +281,7 @@ def main(given: Sequence[str] | None = None) -> int:
         measured["terminal"] = journey([str(arguments.program), "--no-window"], Path(folder))
     if arguments.window is not None:
         with tempfile.TemporaryDirectory() as folder:
-            measured["window"] = journey([str(arguments.window)], Path(folder), whole=False)
+            measured["window"] = journey([str(arguments.window)], Path(folder), whole=False, window=True)
     text = json.dumps(measured, indent=2)
     sys.stdout.write(text + "\n")
     if arguments.result is not None:
