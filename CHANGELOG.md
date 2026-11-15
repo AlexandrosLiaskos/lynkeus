@@ -118,6 +118,12 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 
 ### Changed
 
+- Lynkeus is licensed under the GNU Affero General Public License, version 3, with additional terms under
+  its section 7, in place of the Apache License 2.0. The terms keep the attribution to Alexandros Liaskos
+  and Team Lynkeus in every copy and every work based on Lynkeus, websites included, require a modified
+  version to say that it is modified, and grant no right to the names of the authors, the name Lynkeus or
+  its logo. Copies of the code that were obtained before this change keep the Apache License 2.0 under
+  which they were published.
 - Each layer that Get layer offers bears the name that NASA's catalogue gives it, for example Frequency A HHHH,
   Frequency A RTC Gamma to Sigma Factor and Frequency A HH Unwrapped Interferogram Coherence Magnitude. Layers
   received earlier keep their names.

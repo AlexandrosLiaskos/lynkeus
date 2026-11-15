@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 // What the tests of the search share: products made from the record of a real product file, and a map.
 import OlMap from "ol/Map";
 import View from "ol/View";

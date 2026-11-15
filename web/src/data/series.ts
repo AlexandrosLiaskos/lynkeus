@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { openToolPane } from "../shared/dock/dock";
 import { isSeriesDescription, type SeriesDescription } from "../shared/series";
 import { createStore } from "../shared/store";

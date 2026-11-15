@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """The record of the sessions, jobs, layers and series, and of the own servers, kept in one SQLite file.
 
 The file outlives a restart of the server, so a visitor keeps the layers, the

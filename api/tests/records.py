@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """Checks of the files of a layer, shared by the tests of several modules.
 
 The schemas in ``tests/data/stac`` are the published JSON schemas of a STAC

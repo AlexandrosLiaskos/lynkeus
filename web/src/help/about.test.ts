@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { readdirSync, readFileSync } from "node:fs";
 import { expect, test } from "vitest";
 import { version } from "../../package.json";
@@ -18,6 +20,18 @@ function field(name: string): string | undefined {
   return new RegExp(`^[ -]*${name}: "?([^"\\n]+)"?$`, "m").exec(readFileSync("../CITATION.cff", "utf8"))?.[1];
 }
 
+/** The authors of CITATION.cff, in their order: a person by the given and the family names, an entity by its name. */
+function authors(): string[] {
+  const list = /^authors:\n((?: .*\n)+)/m.exec(readFileSync("../CITATION.cff", "utf8"))?.[1] ?? "";
+  return list
+    .split(/^ {2}- /m)
+    .filter((author) => author !== "")
+    .map((author) => {
+      const value = (name: string) => new RegExp(`^ *${name}: "?([^"\\n]+)"?$`, "m").exec(author)?.[1];
+      return value("name") ?? `${value("given-names") ?? ""} ${value("family-names") ?? ""}`;
+    });
+}
+
 test("the statements taken from README.md stand in README.md", () => {
   const readme = text("README.md");
   expect(readme).toContain(ABOUT.purpose);
@@ -25,17 +39,29 @@ test("the statements taken from README.md stand in README.md", () => {
   expect(readme).toContain(`It is developed by ${ABOUT.team}`);
   expect(readme).toContain(`Team log, with every decision and its reasons: <${ABOUT.teamLog}>`);
   expect(readme).toContain(ABOUT.cite);
+  expect(readme).toContain(ABOUT.terms);
 });
 
-test("the statements taken from NOTICE stand in NOTICE", () => {
+test("the notices of the licence are those of NOTICE, word for word and in its order", () => {
   const notice = text("NOTICE");
-  expect(notice).toContain(ABOUT.copyright);
-  expect(notice).toContain(ABOUT.licence);
+  // NOTICE opens with the name, the copyright, the licence and the warranty.
+  expect(notice.startsWith(`Lynkeus ${ABOUT.copyright} ${ABOUT.licence} ${ABOUT.warranty} `)).toBe(true);
+  // The attribution is the whole of its section: the two lines between its heading and the additional terms.
+  expect(notice).toContain(` Attribution ${ABOUT.attribution.join(" ")} Additional terms under section 7 `);
+  // The first additional term names the dialog About as the place of the attribution in Lynkeus.
+  expect(notice).toContain("in its Appropriate Legal Notices (in Lynkeus, the About dialog)");
+});
+
+test("the dialog links to the files LICENSE and NOTICE of the repository", () => {
+  expect(ABOUT.licenceFile).toBe(`${ABOUT.citation.repository}/blob/main/LICENSE`);
+  expect(ABOUT.noticeFile).toBe(`${ABOUT.citation.repository}/blob/main/NOTICE`);
+  expect(text("LICENSE").startsWith(" GNU AFFERO GENERAL PUBLIC LICENSE Version 3, 19 November 2007 ")).toBe(true);
+  expect(text("NOTICE")).toContain("in the file LICENSE.");
 });
 
 test("the citation shows the fields of CITATION.cff", () => {
   expect(field("title")).toBe(ABOUT.citation.title);
-  expect(`${field("given-names") ?? ""} ${field("family-names") ?? ""}`).toBe(ABOUT.citation.author);
+  expect(authors()).toEqual(ABOUT.citation.authors);
   expect(field("url")).toBe(ABOUT.citation.site);
   expect(field("repository-code")).toBe(ABOUT.citation.repository);
   expect(field("license")).toBe(ABOUT.citation.licence);

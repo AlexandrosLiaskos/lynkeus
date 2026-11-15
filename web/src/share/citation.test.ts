@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { readFileSync } from "node:fs";
 import { expect, test, vi } from "vitest";
 import type { LayerDescription } from "../shared/layer";
@@ -151,8 +153,9 @@ test("Lynkeus is cited with the values of the file CITATION.cff", () => {
   expect(citationFile).toContain(`repository-code: "${LYNKEUS.address}"\n`);
   expect(citationFile).toContain("family-names: Liaskos\n");
   expect(citationFile).toContain("given-names: Alexandros\n");
+  expect(citationFile).toContain('  - name: "Team Lynkeus"\n');
   expect(softwareCitation()).toBe(
-    `Liaskos, A. Lynkeus (Version ${LYNKEUS.version}) [Computer software]. https://github.com/AlexandrosLiaskos/lynkeus`,
+    `Liaskos, A., and Team Lynkeus. Lynkeus (Version ${LYNKEUS.version}) [Computer software]. https://github.com/AlexandrosLiaskos/lynkeus`,
   );
 });
 

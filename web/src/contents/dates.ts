@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { utcDay } from "../shared/days";
 
 /** Write the dates of a layer, each given as year-month-day, in the form "9 Oct 2026 and 21 Oct 2026". */

@@ -3,6 +3,11 @@
 Contributions are welcome through pull requests. The branch `main` receives a change only through a
 pull request whose checks have passed.
 
+## Licence
+
+Contributions are accepted under the licence of Lynkeus, the GNU Affero General Public License, version 3,
+with the additional terms in [NOTICE](NOTICE).
+
 ## Code
 
 - Python follows PEP 8. Ruff formats and checks the code; its settings are in `api/pyproject.toml`.
