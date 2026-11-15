@@ -126,6 +126,9 @@ test("the free space is said only where the server could read it", () => {
     "A job is refused when it would leave less than 2 GB free on the disk of the server, so that the disk does not fill.",
   );
   expect(freeSpaceSentence(SAMPLE).endsWith(" At present 18 GB are free.")).toBe(true);
+  expect(freeSpaceSentence(sampleWith({ free_space_reserve: 0 }, { free_space: 1500000000 }))).toBe(
+    "A job is refused when it would fill the disk of the server. At present 1.5 GB are free.",
+  );
 });
 
 test("the times of the token are said in the numbers of the answer", () => {

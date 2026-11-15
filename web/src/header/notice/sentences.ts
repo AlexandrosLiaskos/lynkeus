@@ -61,11 +61,15 @@ export function tokenTimeWords(limits: Limits): string {
 
 /**
  * Say how much free space the web service leaves on its disk, and how much is free now where the server could
- * read it.
+ * read it. A server that leaves no reserve refuses a job only when the job would fill the disk.
  */
 export function freeSpaceSentence({ resources, limits }: Pick<ServiceLimits, "resources" | "limits">): string {
   const free = resources.free_space === null ? "" : ` At present ${sizeWords(resources.free_space)} are free.`;
-  return `A job is refused when it would leave less than ${sizeWords(limits.free_space_reserve)} free on the disk of the server, so that the disk does not fill.${free}`;
+  const refused =
+    limits.free_space_reserve === 0
+      ? "A job is refused when it would fill the disk of the server."
+      : `A job is refused when it would leave less than ${sizeWords(limits.free_space_reserve)} free on the disk of the server, so that the disk does not fill.`;
+  return `${refused}${free}`;
 }
 
 /** Say each limit of the server with its reason, one limit or one group of limits in each entry. */

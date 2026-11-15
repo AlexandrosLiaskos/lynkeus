@@ -51,7 +51,7 @@ export interface Limits {
    * ends after this time without use.
    */
   keep_time: number;
-  /** The free space that the web service leaves on its disk: a job that would leave less is refused. */
+  /** The free space that the web service leaves on its disk: a job that would leave less is refused. It may be zero. */
   free_space_reserve: number;
   /** Time without use after which the web service forgets the Earthdata user token. */
   earthdata_idle_time: number;
@@ -89,7 +89,6 @@ export const AMOUNTS = [
   "total_size",
   "search_products",
   "keep_time",
-  "free_space_reserve",
   "earthdata_idle_time",
   "earthdata_time",
 ] as const satisfies readonly (keyof Limits)[];
@@ -102,7 +101,7 @@ function isAmount(value: unknown): value is number {
   return typeof value === "number" && Number.isFinite(value) && value > 0;
 }
 
-/** Tell whether a value is a free space: a number of bytes, which is zero on a full disk. */
+/** Tell whether a value is a space of a disk: a number of bytes, which may be zero. */
 function isSpace(value: unknown): value is number {
   return typeof value === "number" && Number.isFinite(value) && value >= 0;
 }
@@ -121,6 +120,7 @@ export function isServiceLimits(value: unknown): value is ServiceLimits {
     (resources.memory === null || isAmount(resources.memory)) &&
     (resources.free_space === null || isSpace(resources.free_space)) &&
     (limits.larger_layer === "refused" || limits.larger_layer === "coarser") &&
+    isSpace(limits.free_space_reserve) &&
     AMOUNTS.every((name) => isAmount(limits[name]))
   );
 }

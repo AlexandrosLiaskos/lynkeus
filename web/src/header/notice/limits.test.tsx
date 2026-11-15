@@ -32,6 +32,8 @@ test("the answer of the server is accepted, with resources that are known or not
   expect(isServiceLimits(sampleWith({}, { processors: null, memory: null, free_space: null }))).toBe(true);
   // A full disk has no free space, and the answer says so with zero.
   expect(isServiceLimits(sampleWith({}, { free_space: 0 }))).toBe(true);
+  // A server may leave no reserve of free space.
+  expect(isServiceLimits(sampleWith({ free_space_reserve: 0 }))).toBe(true);
 });
 
 test.each([
@@ -55,7 +57,8 @@ test.each([
   ["a limit is zero", sampleWith({ layer_cells: 0 })],
   ["a limit is a text", { ...SAMPLE, limits: { ...SAMPLE.limits, account_layers: "50" } }],
   ["the keeping time is absent", { ...SAMPLE, limits: { ...SAMPLE.limits, keep_time: undefined } }],
-  ["the reserve of free space is zero", sampleWith({ free_space_reserve: 0 })],
+  ["the reserve of free space is negative", sampleWith({ free_space_reserve: -1 })],
+  ["the reserve of free space is absent", { ...SAMPLE, limits: { ...SAMPLE.limits, free_space_reserve: undefined } }],
   [
     "the limits are those of a session and not of an account",
     {
@@ -157,7 +160,7 @@ test("a component asks for the limits once while none is known, and not at all w
 
 test("the server names every limit that the interface reads, as docs/Storage.md lists them", () => {
   const server = readFileSync("../api/src/lynkeus/limits.py", "utf8");
-  for (const name of [...AMOUNTS, "larger_layer"]) {
+  for (const name of [...AMOUNTS, "larger_layer", "free_space_reserve"]) {
     expect(server, name).toMatch(new RegExp(`^ {4}${name}: `, "m"));
   }
   expect(server).toMatch(/^ {4}free_space: /m);
