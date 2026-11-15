@@ -29,6 +29,7 @@ import { ShareDialogs } from "./share/ShareDialogs";
 import { StatusBar } from "./statusbar/StatusBar";
 import { useViewActions } from "./view/actions";
 import { ViewDialogs } from "./view/ViewDialogs";
+import { Welcome } from "./welcome/Welcome";
 
 /**
  * The icon of each pane on its tab at the edge of the window, where a side that hides its panes shows them. A
@@ -45,7 +46,7 @@ const PANE_ICONS: Readonly<Record<string, string>> = {
 
 /**
  * The elements of the page, in their places: the header, the ribbon, the map between the panes of its two sides,
- * and the status bar. The credits that must stand on the map itself are drawn over its lower right corner. Each
+ * and the status bar. The welcome window opens over them when the page opens. The credits that must stand on the map itself are drawn over its lower right corner. Each
  * element comes from the folder of its owner, and the ribbon receives the actions of every tab. The dialogs and
  * the tool panes of every tab are declared inside the right side, where a tool pane is drawn; a dialog is drawn
  * over the page wherever it is declared.
@@ -88,6 +89,7 @@ function Page() {
         </Dock>
       </div>
       <StatusBar />
+      <Welcome />
     </>
   );
 }

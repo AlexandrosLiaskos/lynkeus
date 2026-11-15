@@ -67,6 +67,7 @@ test("the page of the application keeps in the browser the parts of the work tha
     "map/storedView.ts",
     "shared/area.ts",
     "view/storedPanes.ts",
+    "welcome/visits.ts",
   ]);
   const keys = owners.map((name) => /"(lynkeus\.[a-z]+)"/.exec(read(name))?.[1]);
   expect(keys).toEqual([
@@ -76,8 +77,17 @@ test("the page of the application keeps in the browser the parts of the work tha
     "lynkeus.view",
     "lynkeus.area",
     "lynkeus.panes",
+    "lynkeus.visit",
   ]);
-  for (const part of ["bookmarks", "view of the map", "panes", "area", "form of the search", "layers of the map"]) {
+  for (const part of [
+    "bookmarks",
+    "view of the map",
+    "panes",
+    "area",
+    "form of the search",
+    "layers of the map",
+    "marker of a counted visit",
+  ]) {
     expect(ABOUT.applicationStores).toContain(`the ${part}`);
   }
   expect(readFileSync("index.html", "utf8")).not.toContain("visits.js");
