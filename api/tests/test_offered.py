@@ -28,7 +28,7 @@ from lynkeus import __version__, harmony, jobs, offered, server
 from lynkeus.analysis import SERIES_TOOLS, TOOLS
 from lynkeus.layers import LayerRequest
 from lynkeus.processes import Work
-from lynkeus.routes import install
+from lynkeus.routes import Service, install
 from lynkeus.writing import LayerError, read_layer
 from tests import nasa
 from tests.records import LAYERS, stac_faults
@@ -391,10 +391,22 @@ def test_tool_runs_on_two_layers_of_the_session(site: Site) -> None:
     # A tool asks nothing of NASA and needs no sign-in.
     assert len(site.seen("client")) == 2
     site.client.delete("/api/session/earthdata")
-    # A layer that the session does not hold is reported in one sentence, and the job leaves no folder.
-    failed = site.wait(site.start(nasa.TOOL, inputs=[first["id"], "0" * 32], title=title)["jobID"])
-    assert (failed["status"], failed["message"]) == ("failed", "A layer of the analysis no longer exists.")
+    # A layer that the session does not hold is refused in one sentence, and no job is recorded for it.
+    recorded = len(site.client.get("/api/jobs").json()["jobs"])
+    body = {"inputs": {"inputs": [first["id"], "0" * 32], "title": title}}
+    refused = site.client.post(f"/api/processes/{nasa.TOOL}/execution", json=body)
+    assert refused.status_code == 400, refused.text
+    assert refused.json()["detail"] == "A layer of the analysis no longer exists."
+    assert len(site.client.get("/api/jobs").json()["jobs"]) == recorded
     assert site.folders(3) == sorted([first["id"], second["id"], name])
+    # A request without a session cannot name a layer of another session, and it leaves no session.
+    service: Service = site.client.app.state.lynkeus  # type: ignore[attr-defined]
+    held = service.store.count_sessions()
+    stranger = TestClient(site.client.app, base_url="https://testserver")
+    answer = stranger.post(f"/api/processes/{nasa.TOOL}/execution", json=body)
+    assert answer.status_code == 400, answer.text
+    assert "set-cookie" not in answer.headers
+    assert service.store.count_sessions() == held
 
 
 def test_sentence_of_a_layer_that_harmony_does_not_give_reaches_the_visitor(site: Site) -> None:
