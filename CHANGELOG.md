@@ -103,6 +103,7 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   satellite with the mark and the name of the platform, the team, and the event with the logos of NASA, the NASA
   Space Apps Challenge and the universities of the team. The visitor slides it up to enter.
 - The mark of Lynkeus, a drawing of the NISAR satellite, in black in the title bar and in white on the welcome
+- The analysis tools Coherence, Change and Soil moisture, One date and Change, with their method sheets and research notes.
   screen.
 
 ### Changed
