@@ -44,6 +44,11 @@ def test_examples_cover_the_states_that_the_interface_shows() -> None:
     servers = Servers.model_validate_json((DATA / "servers.json").read_text(encoding="utf-8")).servers
     assert [server.connected for server in servers] == [True, False, False]
     assert [server.state is None for server in servers] == [False, False, True]
+    # The office computer runs the program that knows the cells of a layer, the laboratory server an older one.
+    assert [server.knows_cells for server in servers] == [True, False, False]
+    for server in servers:
+        carried = server.state is not None and "layer_cells" in server.state.limits.model_fields_set
+        assert server.knows_cells == carried
     full = servers[1].state
     assert full is not None
     assert full.memory is None

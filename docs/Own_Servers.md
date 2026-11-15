@@ -141,8 +141,8 @@ seconds counts as answered, so that the reports decide about its job.
 
 | Request | Body | Answer |
 |---|---|---|
-| `GET /api/servers` | | 200 `Servers` |
-| `PATCH /api/servers/{id}` | `ServerChange` | 200 `Server` |
+| `GET /api/servers` | | 200 `Servers`; every `Server` carries `knows_cells` (section Cells of a layer, rule 4) |
+| `PATCH /api/servers/{id}` | `ServerChange` | 200 `Server`, with `knows_cells` |
 | `DELETE /api/servers/{id}` | | 204; the records of its jobs and of its layers are removed, so both leave the lists of the visitor, and the server receives `forget` |
 | `POST /api/processes/{name}/execution?server={id}` | as before | as before |
 | `GET /api/processes/{name}?server={id}` | | as before; the parameter `most-cells` of the description is the limit `layer_cells` that the server last reported, and 25 million before its first report |
@@ -237,7 +237,11 @@ apply to a job of an own server.
    which then counts as 25 million (`FIRST_LAYER_CELLS`). A server counts as such a program when the limits
    of its last report lack the field. The project server sends such a server the task `limits` without the
    field, and it refuses a change of `layer_cells` for it with 409 and one sentence that asks to install the
-   newer version of Lynkeus Server on that computer.
+   newer version of Lynkeus Server on that computer. A server that has not reported yet receives nothing
+   with the field either. Every `Server` in an answer of the project server carries the member
+   `knows_cells`: true when the limits of the last report of the server carried the field, and false when
+   they lacked it and before the first report (`state` is then `null`). The interface shows that a server
+   needs the newer program only when `state` is not `null` and `knows_cells` is false.
 5. The interface checks the area of a form against the limit of the server on which the job would run, and
    its sentence names that server.
 

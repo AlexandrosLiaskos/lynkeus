@@ -529,13 +529,15 @@ class Servers:
     def described(self, server: ServerRecord, now: float) -> Server:
         """Return an own server as the interface receives it."""
         seen = self._seen.get(server.id, server.seen)
+        state = state_of(server)
         return Server(
             id=server.id,
             name=server.name,
             connected=self.connected(server, now),
             paired=server.paired,
             seen=server.paired if seen is None else seen,
-            state=state_of(server),
+            state=state,
+            knows_cells=knows_cells(state),
         )
 
     def place(

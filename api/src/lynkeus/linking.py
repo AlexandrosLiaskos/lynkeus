@@ -430,6 +430,11 @@ class Server(Format):
         Times of the pairing and of the last message, in seconds since 1 January 1970 (UTC).
     state : ServerState or None
         Last state that the server reported, or None before its first report.
+    knows_cells : bool
+        Whether the program of the server knows the limit on the cells of a layer: true when the limits of
+        its last report carried the field ``layer_cells``, and false when they lacked it and before the first
+        report. The interface states that the server needs the newer program only when ``state`` is not None
+        and this is false.
     """
 
     id: ServerId
@@ -438,6 +443,7 @@ class Server(Format):
     paired: float
     seen: float
     state: ServerState | None
+    knows_cells: bool
 
 
 class Servers(Format):
