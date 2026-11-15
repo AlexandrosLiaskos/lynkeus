@@ -20,6 +20,7 @@ section 3.5).
 """
 
 import asyncio
+import contextlib
 import json
 import re
 import time
@@ -367,7 +368,12 @@ def install_servers(app: FastAPI) -> None:
             end = first + MOST_BYTES if last is None else min(first + MOST_BYTES, last + 1)
             part = await read(record, layer, file, first, end)
         except ServerRefusedError as error:
-            raise refusal_of(error) from None
+            refusal = refusal_of(error)
+            if error.status == HTTPStatus.RANGE_NOT_SATISFIABLE:
+                # The answer states the size of the file (RFC 9110, section 15.5.17), which a first byte gives.
+                with contextlib.suppress(ServerRefusedError):
+                    refusal.headers["Content-Range"] = f"bytes */{(await read(record, layer, file, 0, 1)).size}"
+            raise refusal from None
         size = part.size
         stop = size if last is None else min(last + 1, size)
 
