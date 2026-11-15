@@ -1,0 +1,97 @@
+{
+ "read": "2026-11-15",
+ "documents": [
+  {
+   "document": "NASA SDS Product Specification, Level-3 Soil Moisture (L3_SME2), JPL D-107677, Rev C, version 1.0.0, 8 November 2024",
+   "address": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR-SAMPLE-DATA/DOCS/NISAR_D-107677_RevC_NASA_SDS_Product_Specification_L3_SME2_Nov8_2024_w-sigs.pdf",
+   "sha256": "88e68ce6552e6915289d5b4968f3c5e46f316d3021d6bd96a75c221ba38e1667",
+   "pages": 43
+  },
+  {
+   "document": "NISAR L3 Soil Moisture Data Product, Algorithm Theoretical Basis Document (ATBD), JPL D-107679, Release 3.3, 28 April 2023",
+   "address": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR-SAMPLE-DATA/DOCS/NISAR_D-107679_L3SM_ATBD_R3.3_20230428_w-sigs.pdf",
+   "sha256": "bb5aa207d4f47c471ed3d830d16e25d14df4947de3087fb174e9e995dd99d969",
+   "pages": 83
+  },
+  {
+   "document": "NISAR Data User Guide, page Product Specifications",
+   "address": "https://nisar-docs.asf.alaska.edu/product-specification/",
+   "sha256": "f864450e9114eb75e742158556eefc2a133013a598891e69beae659f80163bb5"
+  },
+  {
+   "document": "NISAR Data User Guide, page Data Processing Algorithms",
+   "address": "https://nisar-docs.asf.alaska.edu/atbd/",
+   "sha256": "96256378ee6f84d9b2c59f359f6da301e0501f3dc83ae7f3d958867c5997de0a"
+  },
+  {
+   "document": "GIBS Colormap XML Documents (v1.3), SMAP_Soil_Moisture.xml",
+   "address": "https://gibs.earthdata.nasa.gov/colormaps/v1.3/SMAP_Soil_Moisture.xml",
+   "sha256": "a23540da50a6e2449b8269b8dee54bf4d0c9f554e562e3eb19e0074bbf7a5926"
+  },
+  {
+   "document": "Singh, A. (1989). Digital change detection techniques using remotely-sensed data. International Journal of Remote Sensing, 10(6), 989-1003",
+   "address": "https://doi.org/10.1080/01431168908903939",
+   "sha256": "237d0cda5288cc61bf9a59fb5090da658cfade0594f3f6f1c9f05dad4988781c",
+   "pages": 16
+  },
+  {
+   "document": "GDAL documentation, gdal raster calc",
+   "address": "https://gdal.org/en/stable/programs/gdal_raster_calc.html",
+   "sha256": "d7a566cc26ea3f8a59331b9abd2853d7cbbf16d59067e3404ac0ef87256fdf73"
+  },
+  {
+   "document": "ArcGIS Pro documentation 3.7, Compute Change Raster (Image Analyst Tools)",
+   "address": "https://doc.esri.com/en/arcgis-pro/latest/tool-reference/image-analyst/compute-change-raster.html",
+   "sha256": "4beedad820803184dcc8f4d7307bd01589ba12b1317f5372388cecdab78b3477"
+  },
+  {
+   "document": "ArcGIS Pro documentation 3.7, Minus (Spatial Analyst Tools)",
+   "address": "https://doc.esri.com/en/arcgis-pro/latest/tool-reference/spatial-analyst/minus.html",
+   "sha256": "91f8be4be4415f60784068a06be46ca20e31b9632aff3dc4f8dc1382935853c5"
+  },
+  {
+   "document": "ArcGIS Pro documentation 3.7, Change the symbology of imagery",
+   "address": "https://doc.esri.com/en/arcgis-pro/latest/help/data/imagery/symbology-pane.html",
+   "sha256": "ca0b3cd3594a7ca3a953f5d37c2f315f92f21f0199329deb4a404f60da581abc"
+  },
+  {
+   "document": "QGIS User Guide 3.44, 13.2 Raster Analysis",
+   "address": "https://docs.qgis.org/3.44/en/docs/user_manual/working_with_raster/raster_analysis.html",
+   "sha256": "179252b7c5981c92d45fc2111755c7f6328ca8687b08a98687bcf4ce9f4e6c27"
+  },
+  {
+   "document": "QGIS User Guide 3.44, 13.1 Raster Properties Dialog",
+   "address": "https://docs.qgis.org/3.44/en/docs/user_manual/working_with_raster/raster_properties.html",
+   "sha256": "507ba51aa3d685c52eb25c11fccdec307ff0e9d34060ab87d8bde97d450511ef"
+  }
+ ],
+ "source_program": {
+  "program": "gdal raster calc of GDAL 3.12.2 \"Chicoutimi\", released 2026/02/03",
+  "image": "ghcr.io/osgeo/gdal:alpine-small-3.12.2",
+  "image_digest": "sha256:3775c7530eb68f95b8c67853da1e1e99a607e32a87f3d433440b8b562079f645"
+ },
+ "harmony_variables_of_NISAR_L3_SME2_PROVISIONAL_V1": {
+  "collection": "NISAR_L3_SME2_PROVISIONAL_V1",
+  "concept": "C2854344945-ASF",
+  "capabilities_version": "3",
+  "saved": "2026-11-14",
+  "service": [
+   "nasa/harmony-gdal-adapter"
+  ],
+  "variables": [
+   "/science/LSAR/SME2/grids/ancillaryData/localIncidenceAngle",
+   "/science/LSAR/SME2/grids/radarData/frequencyA/sigma0HH",
+   "/science/LSAR/SME2/grids/radarData/frequencyA/sigma0HV",
+   "/science/LSAR/SME2/grids/radarData/frequencyA/sigma0VH",
+   "/science/LSAR/SME2/grids/radarData/frequencyA/sigma0VV",
+   "/science/LSAR/SME2/grids/radarData/frequencyB/sigma0HH",
+   "/science/LSAR/SME2/grids/radarData/frequencyB/sigma0HV",
+   "/science/LSAR/SME2/grids/radarData/frequencyB/sigma0VH",
+   "/science/LSAR/SME2/grids/radarData/frequencyB/sigma0VV",
+   "/science/LSAR/SME2/grids/retrievalQualityFlag",
+   "/science/LSAR/SME2/grids/soilMoisture",
+   "/science/LSAR/SME2/grids/soilMoistureUncertainty",
+   "/science/LSAR/SME2/grids/surfaceQualityFlag"
+  ]
+ }
+}
