@@ -11,8 +11,14 @@ from pathlib import Path
 import numpy as np
 
 from lynkeus.analysis import TOOLS
-from lynkeus.layers import LayerDescription, ToolRun
+from lynkeus.layers import LayerDescription, Reduction, ToolRun
 from lynkeus.writing import PROGRAM, LayerError, read_layer, write_layer
+
+_REDUCED: dict[Reduction, str] = {
+    "mean": "by averaging the values",
+    "mean-power": "as the decibels of the mean of the linear power",
+}
+"""How the reduced copies of a result are made, in the words of its record."""
 
 
 def run_tool(
@@ -47,7 +53,8 @@ def run_tool(
     LayerDescription
         The description of the result. Its quantity, unit, legend, colour
         scale and method are those that the function of the tool returns. Its
-        dates and input files are those of the input layers.
+        dates and input files are those of the input layers. The reduced
+        copies of its file are made as the function of the tool declares.
 
     Raises
     ------
@@ -108,8 +115,12 @@ def _run_tool(
         colours=result.colours,
         dates=sorted({day for description in descriptions for day in description.dates}),
         inputs=list(dict.fromkeys(name for description in descriptions for name in description.inputs)),
-        lineage=f"Result of the analysis tool {run.tool} of {PROGRAM} on the layers: {names}. Method: {result.method}",
+        lineage=(
+            f"Result of the analysis tool {run.tool} of {PROGRAM} on the layers: {names}. Method: {result.method}. "
+            f"Reduced copies made {_REDUCED[result.reduction]}."
+        ),
         method=result.method,
+        decibels=result.reduction == "mean-power",
         links=[
             {"rel": "derived_from", "href": description.record, "type": "application/geo+json"}
             for description in descriptions

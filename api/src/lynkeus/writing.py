@@ -8,8 +8,9 @@ description, and ``read_layer`` reads the array and the grid of a GeoTIFF.
 
 The values are 32-bit real numbers, and a cell without data holds ``nan``.
 The file has tiles of 512 cells and reduced copies (overviews) made by
-Lynkeus from the values at full resolution: by averaging for a quantity, and
-by the most frequent value for classes.
+Lynkeus from the values at full resolution: by averaging for a quantity, by
+the most frequent value for classes, and, for decibels of a power, as the
+decibels of the mean of the linear power.
 """
 
 import json
@@ -246,10 +247,12 @@ def write_layer(
     dates: Sequence[date],
     inputs: Sequence[str],
     lineage: str,
+    layer: str | None = None,
     method: str | None = None,
     level: str | None = None,
     links: Sequence[Mapping[str, str]] = (),
     averaged: bool = True,
+    decibels: bool = False,
 ) -> LayerDescription:
     """Write the two files of a layer and return its description.
 
@@ -290,6 +293,10 @@ def write_layer(
         Names of the product files used.
     lineage : str
         How the values were produced, for the record.
+    layer : str, optional
+        Name of the layer inside the product, as the layer request gave it,
+        for example ``HHHH``. A layer received from NASA has one, and a
+        result has none. The record carries it as the name of the band.
     method : str, optional
         Reference of the method. A result has one, and a layer has none.
     level : str, optional
@@ -302,6 +309,11 @@ def write_layer(
         quantity; for a power, the values averaged must be linear, not in
         decibels. ``False`` suits classes: a cell of a reduced copy then takes
         the most frequent value.
+    decibels : bool, optional
+        Whether the values are decibels of a power. The reduced copies are
+        then the decibels of the mean of the linear power, so that a reduced
+        copy equals the conversion to decibels of the reduced copy of the
+        power. It needs ``averaged``.
 
     Returns
     -------
@@ -314,10 +326,15 @@ def write_layer(
         If no cell holds data, a cell holds an infinite value, or the files
         cannot be written.
     ValueError
-        If the array does not fit the grid, or ``name`` has another form.
+        If the array does not fit the grid, ``name`` has another form,
+        ``decibels`` is asked without ``averaged``, or the fields do not make
+        a layer description, for example when a result is given the name of
+        a layer.
     """
     if values.shape != (grid.height, grid.width):
         raise ValueError("the array does not fit the grid")
+    if decibels and not averaged:
+        raise ValueError("values in decibels are reduced by averaging their power")
     if not _NAME.fullmatch(name):
         raise ValueError("the name of the files must hold lower-case letters, digits and hyphens")
     values = np.asarray(values, dtype=np.float32)
@@ -334,6 +351,7 @@ def write_layer(
         colours=colours,
         dates=tuple(dates),
         inputs=tuple(inputs),
+        layer=layer,
         program=PROGRAM,
         method=method,
         record=f"{address}/{name}.json",
@@ -341,7 +359,7 @@ def write_layer(
     created = datetime.now(UTC).replace(microsecond=0)
     record = _record(description, grid, statistics, created, name, lineage, level, links)
     try:
-        _write_geotiff(values, grid, folder / f"{name}.tif", description, statistics, created, averaged)
+        _write_geotiff(values, grid, folder / f"{name}.tif", description, statistics, created, averaged, decibels)
         (folder / f"{name}.json").write_text(json.dumps(record, indent=2, allow_nan=False) + "\n", encoding="utf-8")
     except (RasterioError, OSError) as error:
         raise LayerError("The files of the layer could not be written.") from error
@@ -364,26 +382,14 @@ def _write_geotiff(
     statistics: Statistics,
     created: datetime,
     averaged: bool,
+    decibels: bool,
 ) -> None:
     """Write the values as a Cloud Optimized GeoTIFF with the metadata that a GIS program reads."""
     # The COG driver of GDAL writes a file only as a copy of another one, so the values pass through a plain file.
     plain = path.with_name(f".{path.name}")
+    others: list[Path] = []
     try:
-        with rasterio.open(
-            plain,
-            "w",
-            driver="GTiff",
-            width=grid.width,
-            height=grid.height,
-            count=1,
-            dtype="float32",
-            nodata=math.nan,
-            crs=CRS.from_string(grid.crs),
-            transform=Affine(*grid.transform),
-            tiled=True,
-            blockxsize=BLOCK,
-            blockysize=BLOCK,
-        ) as target:
+        with rasterio.open(plain, "w", **_plain(grid)) as target:
             target.write(values, 1)
             target.set_band_description(1, description.quantity)
             target.units = (description.unit,)
@@ -403,18 +409,98 @@ def _write_geotiff(
                 inputs=", ".join(description.inputs),
                 **({} if description.method is None else {"method": description.method}),
             )
-        copy(
-            plain,
-            path,
-            driver="COG",
-            BLOCKSIZE=str(BLOCK),
-            COMPRESS="DEFLATE",
-            PREDICTOR="3",
-            OVERVIEWS="IGNORE_EXISTING",
-            OVERVIEW_RESAMPLING="AVERAGE" if averaged else "MODE",
-        )
+        source = _with_copies_of_the_mean_power(values, grid, plain, others) if decibels else None
+        if source is None:
+            resampling = "AVERAGE" if averaged else "MODE"
+            _copy_as_cog(plain, path, OVERVIEWS="IGNORE_EXISTING", OVERVIEW_RESAMPLING=resampling)
+        else:
+            _copy_as_cog(source, path, OVERVIEWS="FORCE_USE_EXISTING")
     finally:
-        plain.unlink(missing_ok=True)
+        for file in (plain, *others):
+            file.unlink(missing_ok=True)
+
+
+def _plain(grid: Grid) -> dict[str, Any]:
+    """Return the settings of a plain GeoTIFF of 32-bit real numbers on a grid, with ``nan`` for no data."""
+    return {
+        "driver": "GTiff",
+        "width": grid.width,
+        "height": grid.height,
+        "count": 1,
+        "dtype": "float32",
+        "nodata": math.nan,
+        "crs": CRS.from_string(grid.crs),
+        "transform": Affine(*grid.transform),
+        "tiled": True,
+        "blockxsize": BLOCK,
+        "blockysize": BLOCK,
+    }
+
+
+def _copy_as_cog(source: Path, path: Path, **overviews: str) -> None:
+    """Copy a file as a Cloud Optimized GeoTIFF, with the reduced copies that ``overviews`` asks of the COG driver."""
+    copy(source, path, driver="COG", BLOCKSIZE=str(BLOCK), COMPRESS="DEFLATE", PREDICTOR="3", **overviews)
+
+
+def _with_copies_of_the_mean_power(
+    values: NDArray[np.float32], grid: Grid, plain: Path, others: list[Path]
+) -> Path | None:
+    """Prepare the reduced copies of values in decibels of a power as the decibels of the mean power.
+
+    The linear power of the values is written as a file of its own, and the COG driver reduces it by
+    averaging, as it reduces a layer of linear power. Each reduced copy is then turned into decibels and
+    joined to the plain file of the values through a virtual file (VRT), which names it as an overview.
+
+    Parameters
+    ----------
+    values : numpy.ndarray
+        The values in decibels. A cell without data holds ``nan``.
+    grid : Grid
+        The grid of the values.
+    plain : pathlib.Path
+        The plain file that holds the values and the metadata.
+    others : list of pathlib.Path
+        Receives every file that this function makes, so that the caller removes them.
+
+    Returns
+    -------
+    pathlib.Path or None
+        The virtual file from which the COG driver copies the values with these reduced copies, or None
+        when the grid is so small that the file has no reduced copy.
+    """
+    linear, reduced, virtual = (plain.with_name(f"{plain.name}.{part}") for part in ("power.tif", "mean.tif", "vrt"))
+    others += [linear, reduced, virtual]
+    with np.errstate(over="ignore"):
+        power = np.power(np.float32(10), values / np.float32(10))
+    with rasterio.open(linear, "w", **_plain(grid)) as target:
+        target.write(power, 1)
+    _copy_as_cog(linear, reduced, OVERVIEWS="IGNORE_EXISTING", OVERVIEW_RESAMPLING="AVERAGE")
+    with rasterio.open(reduced) as source:
+        levels = len(source.overviews(1))
+    if levels == 0:
+        return None
+    overviews = ""
+    for level in range(levels):
+        with rasterio.open(reduced, overview_level=level) as source:
+            mean: NDArray[np.float32] = source.read(1)
+            size = _grid(source)
+        copy_in_decibels = np.full(mean.shape, np.nan, np.float32)
+        np.log10(mean, out=copy_in_decibels, where=(mean > 0) & (mean < np.inf))
+        copy_in_decibels *= 10
+        file = plain.with_name(f"{plain.name}.{level}.tif")
+        others.append(file)
+        with rasterio.open(file, "w", **_plain(size)) as target:
+            target.write(copy_in_decibels, 1)
+        overviews += (
+            f'<Overview><SourceFilename relativeToVRT="1">{file.name}</SourceFilename>'
+            "<SourceBand>1</SourceBand></Overview>"
+        )
+    copy(plain, virtual, driver="VRT")
+    text = virtual.read_text(encoding="utf-8")
+    if text.count("</VRTRasterBand>") != 1:
+        raise RasterioError("the virtual file of the layer does not hold one band")
+    virtual.write_text(text.replace("</VRTRasterBand>", f"{overviews}</VRTRasterBand>"), encoding="utf-8")
+    return virtual
 
 
 def _record(
@@ -475,6 +561,9 @@ def _record(
     system = CRS.from_string(grid.crs)
     if system.is_projected and system.linear_units_factor[1] == 1.0:
         band["raster:spatial_resolution"] = math.sqrt(abs(a * e - b * d))
+    if description.layer is not None:
+        # The name of a band is the name that the data provider uses for it (STAC 1.1.0, common metadata, Band Object).
+        band = {"name": description.layer, **band}
     return {
         "type": "Feature",
         "stac_version": STAC_VERSION,

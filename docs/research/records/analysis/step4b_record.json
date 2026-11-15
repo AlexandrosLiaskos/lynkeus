@@ -1,0 +1,108 @@
+{
+ "packages": {
+  "numpy": "2.5.4",
+  "rasterio": "1.5.2",
+  "gdal": "3.12.2",
+  "proj": "9.8.1"
+ },
+ "files": {
+  "gcov-hhhh-20261021.tif": {
+   "cells": 14982384,
+   "centre_inside_the_box": 14316440,
+   "centre_outside_the_box": 665944,
+   "no_data_in_sample_where_product_holds_a_value": 665942,
+   "of_these_with_centre_outside_the_box": 665942,
+   "of_these_with_centre_inside_the_box": 0,
+   "centre_outside_the_box_and_value_kept_in_sample": 0,
+   "largest_distance_outside_the_box_of_a_kept_cell_deg": 0.0021604560948063067
+  },
+  "gcov-mask-20261021.tif": {
+   "dtype": "uint8",
+   "nodata": 255.0,
+   "shape": [
+    3972,
+    3772
+   ],
+   "counts_in_the_file_of_Harmony": {
+    "0": 27,
+    "1": 14316413,
+    "255": 665944
+   },
+   "cells_255_in_the_file_where_the_product_holds_0_or_1": 665944,
+   "of_these_product_mask_0": 2,
+   "cells_not_255_that_differ_from_the_product": 0,
+   "cells_255_with_centre_inside_the_box": 0,
+   "cells_not_255_with_centre_outside_the_box": 0,
+   "cells_255_equal_cells_without_data_added_in_HHHH_sample": true,
+   "HHHH_sample_nan_equals_mask_file_0_or_255": true
+  },
+  "gcov-hhhh-20261102.tif": {
+   "cells": 14982384,
+   "centre_inside_the_box": 14316440,
+   "centre_outside_the_box": 665944,
+   "no_data_in_sample_where_product_holds_a_value": 665942,
+   "of_these_with_centre_outside_the_box": 665942,
+   "of_these_with_centre_inside_the_box": 0,
+   "centre_outside_the_box_and_value_kept_in_sample": 0,
+   "largest_distance_outside_the_box_of_a_kept_cell_deg": 0.0019804407077117503
+  },
+  "gcov-mask-20261102.tif": {
+   "dtype": "uint8",
+   "nodata": 255.0,
+   "shape": [
+    3972,
+    3772
+   ],
+   "counts_in_the_file_of_Harmony": {
+    "0": 24,
+    "1": 14316416,
+    "255": 665944
+   },
+   "cells_255_in_the_file_where_the_product_holds_0_or_1": 665944,
+   "of_these_product_mask_0": 2,
+   "cells_not_255_that_differ_from_the_product": 0,
+   "cells_255_with_centre_inside_the_box": 0,
+   "cells_not_255_with_centre_outside_the_box": 0,
+   "cells_255_equal_cells_without_data_added_in_HHHH_sample": true,
+   "HHHH_sample_nan_equals_mask_file_0_or_255": true
+  },
+  "gunw-coherence-20261009-20261021.tif": {
+   "cells": 3743710,
+   "centre_inside_the_box": 3579092,
+   "centre_outside_the_box": 164618,
+   "no_data_in_sample_where_product_holds_a_value": 164618,
+   "of_these_with_centre_outside_the_box": 164618,
+   "of_these_with_centre_inside_the_box": 0,
+   "centre_outside_the_box_and_value_kept_in_sample": 0
+  }
+ },
+ "mask_files_of_Harmony_pairs": {
+  "pairs": {
+   "0,0": {
+    "cells": 16,
+    "with_a_value_of_the_change": 0
+   },
+   "0,1": {
+    "cells": 11,
+    "with_a_value_of_the_change": 0
+   },
+   "1,0": {
+    "cells": 8,
+    "with_a_value_of_the_change": 0
+   },
+   "1,1": {
+    "cells": 14316405,
+    "with_a_value_of_the_change": 14316405
+   },
+   "255,255": {
+    "cells": 665944,
+    "with_a_value_of_the_change": 0
+   }
+  },
+  "cells_where_the_masks_differ": 19
+ },
+ "mask_files_of_Harmony_sha256": {
+  "gcov-mask-20261021.tif": "63513f354b619e6fd3378861c6833a46b2b3ae9bf594e5c7cbd16797fd707acf",
+  "gcov-mask-20261102.tif": "b97a766ebeb92ecdc564989f285b261c5ef6210ecefc66bf3f08c1eb121f9224"
+ }
+}
