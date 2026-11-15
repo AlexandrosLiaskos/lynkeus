@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, expect, test, vi } from "vitest";
-import { SLIDE_TIME, Welcome } from "./Welcome";
+import { SETTLE_TIME, SLIDE_TIME, Welcome } from "./Welcome";
 import { WELCOME } from "./welcome";
 
 const NAME = `${WELCOME.name}: ${WELCOME.subtitle}`;
@@ -123,4 +123,35 @@ test("a key that writes a character opens the page, and the Tab key or a command
   expect(dialog.classList.contains("welcome-leaving")).toBe(false);
   fireEvent.keyDown(dialog, { key: "a" });
   expect(dialog.classList.contains("welcome-leaving")).toBe(true);
+});
+
+test("the screen takes the place of the dark ground of the first paint", () => {
+  const ground = document.createElement("div");
+  ground.id = "cover";
+  document.body.append(ground);
+  render(<Welcome count={silent} />);
+  expect(screen.getByRole<HTMLDialogElement>("dialog", { name: NAME }).open).toBe(true);
+  expect(document.getElementById("cover")).toBeNull();
+});
+
+test("the owner is told when the screen has appeared in full", () => {
+  vi.useFakeTimers();
+  const onSettled = vi.fn();
+  render(<Welcome count={silent} onSettled={onSettled} />);
+  expect(onSettled).not.toHaveBeenCalled();
+  // The entrance starts at once or, where the image and the typeface cannot be asked for, a moment later.
+  act(() => {
+    vi.advanceTimersByTime(1200);
+  });
+  act(() => {
+    vi.advanceTimersByTime(SETTLE_TIME);
+  });
+  expect(onSettled).toHaveBeenCalledTimes(1);
+});
+
+test("the owner is told at once when the visitor enters before the screen has appeared in full", () => {
+  const onSettled = vi.fn();
+  render(<Welcome count={silent} onSettled={onSettled} />);
+  fireEvent.click(screen.getByRole("button", { name: "Enter the Platform" }));
+  expect(onSettled).toHaveBeenCalledTimes(1);
 });

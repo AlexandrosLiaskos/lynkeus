@@ -6,10 +6,12 @@
     <title>Lynkeus</title>
     <meta name="description" content="Analysis of surface change with radar data of the NISAR mission." />
     <link rel="icon" href="/assets/lynkeus-mark.png" />
-    <link rel="preload" as="image" href="/assets/welcome/nisar.webp" />
+    <link rel="preload" as="image" href="/assets/welcome/nisar.webp" fetchpriority="high" />
+    <link rel="stylesheet" href="/assets/cover.css" />
   </head>
   <body>
     <noscript>Lynkeus needs JavaScript to show the map.</noscript>
+    <div id="cover"></div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
