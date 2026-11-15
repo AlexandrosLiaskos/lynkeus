@@ -1,10 +1,12 @@
 import type { ToolActions } from "../ribbon/types";
-import { aboutDialogStore, sourcesDialogStore } from "./state";
+import { openToolPane } from "../shared/dock/dock";
+import { aboutDialogStore, GETTING_STARTED_PANE, sourcesDialogStore } from "./state";
 import type { HelpToolId } from "./tab";
 
 /** What the finished buttons of the Help tab do. A button enters this list when its function is finished. */
 export function useHelpActions(): ToolActions<HelpToolId> {
   return {
+    [GETTING_STARTED_PANE]: { run: () => openToolPane(GETTING_STARTED_PANE) },
     "help-sources": { run: () => sourcesDialogStore.set(true) },
     "help-about": { run: () => aboutDialogStore.set(true) },
   };

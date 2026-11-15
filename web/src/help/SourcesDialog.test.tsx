@@ -2,7 +2,7 @@ import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, expect, test } from "vitest";
 import { SOURCE_PARTS, type SourcePart } from "./sources";
-import { SourcesDialog, SourcesList } from "./SourcesDialog";
+import { PART_INFO, SourcesDialog, SourcesList } from "./SourcesDialog";
 import { sourcesDialogStore } from "./state";
 
 const PARTS: readonly SourcePart[] = [
@@ -27,9 +27,10 @@ beforeEach(() => {
   sourcesDialogStore.set(false);
 });
 
-test("a part with sources is a table that carries the name of the part, with one row for each source", () => {
+test("a part with sources is a section with the number of its sources and a table with one row for each source", () => {
   render(<SourcesList parts={PARTS} />);
-  expect(screen.getByRole("heading", { level: 3, name: "First" })).toBeDefined();
+  expect(screen.getByRole("heading", { level: 3, name: "First (2)" })).toBeDefined();
+  expect(screen.getByRole("button", { name: "First (2)" }).getAttribute("aria-expanded")).toBe("true");
   expect(rows(screen.getByRole("table", { name: "First" }))).toEqual([
     ["Name", "Version", "Licence", "Use", "Address"],
     ["Program", "1.2.3", "MIT", "Draws", "https://example.org/program"],
@@ -72,9 +73,17 @@ test("the frame of a table can take the keyboard focus and carries the name of t
 
 test("a part that lists nothing says so and has no table", () => {
   render(<SourcesList parts={PARTS} />);
-  const heading = screen.getByRole("heading", { level: 3, name: "Second" });
-  expect(heading.nextElementSibling?.textContent).toBe("This part lists nothing yet.");
+  const part = screen.getByRole("heading", { level: 3, name: "Second (0)" }).closest(".section");
+  expect(part?.querySelector(".empty-state-title")?.textContent).toBe("No sources");
+  expect(part?.querySelector(".empty-state-text")?.textContent).toBe("This part has listed no source yet.");
   expect(screen.queryByRole("table", { name: "Second" })).toBeNull();
+});
+
+test("what the list of a part holds is said behind the i beside its name, and not in a paragraph", () => {
+  const { container } = render(<SourcesList parts={PARTS} />);
+  const info = screen.getByRole("button", { name: "Information about First" });
+  expect(document.getElementById(info.getAttribute("aria-describedby") ?? "")?.textContent).toBe(PART_INFO);
+  expect(container.querySelector(".sources > p")).toBeNull();
 });
 
 test("the dialog starts closed, opens with its name as its heading and shows the three parts", () => {
@@ -87,12 +96,11 @@ test("the dialog starts closed, opens with its name as its heading and shows the
     within(dialog)
       .getAllByRole("heading", { level: 3 })
       .map((heading) => heading.textContent),
-  ).toEqual(["Map", "Data", "Analysis"]);
+  ).toEqual(SOURCE_PARTS.map(({ name, sources }) => `${name} (${String(sources.length)})`));
+  expect(SOURCE_PARTS.map(({ name }) => name)).toEqual(["Map", "Data", "Analysis"]);
   for (const { name, sources } of SOURCE_PARTS) {
     const table = within(dialog).queryByRole("table", { name });
     expect(table ? rows(table).length - 1 : 0).toBe(sources.length);
-    const heading = within(dialog).getByRole("heading", { level: 3, name });
-    expect(heading.nextElementSibling?.textContent === "This part lists nothing yet.").toBe(sources.length === 0);
   }
 });
 
