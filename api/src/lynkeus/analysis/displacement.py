@@ -17,7 +17,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 from lynkeus.analysis.inputs import check_inputs
-from lynkeus.analysis.series import LEAST_LAYERS, _descriptions
+from lynkeus.analysis.series import LEAST_LAYERS, Place, _descriptions
 from lynkeus.layers import AnalysisResult, LayerDescription, SeriesEntry, SeriesResult
 from lynkeus.writing import HIGHEST_PERCENT, LOWEST_PERCENT, LayerError
 
@@ -226,7 +226,7 @@ def _invert(days: Sequence[date], pairs: Sequence[tuple[date, date]], phases: Se
 def displacement_series(
     arrays: Iterable[NDArray[np.float32]],
     layers: Sequence[LayerDescription],
-    cell: tuple[int, int] | None = None,
+    cell: Place = None,
     reference: tuple[int, int] | None = None,
 ) -> SeriesResult:
     """Give the movement of the ground at a point on many dates, relative to a reference point, from GUNW pairs.
@@ -242,7 +242,8 @@ def displacement_series(
         The descriptions of the layers, in the same order. The description of each phase carries the centre
         frequency of the radar band of its product, in hertz (field ``frequency``).
     cell : tuple of int
-        Row and column of the cell of the point, counted from 0.
+        Row and column of the cell of the point, counted from 0. The cells of an area drawn on the map are
+        refused, because the tool gives the series of a point.
     reference : tuple of int
         Row and column of the cell of the reference point, counted from 0.
 
@@ -282,6 +283,8 @@ def displacement_series(
     """
     if cell is None:
         raise LayerError("The tool gives the series of a point, and no point was given.")
+    if not isinstance(cell, tuple):
+        raise LayerError("The tool gives the series of a point, not of an area drawn on the map.")
     if reference is None:
         raise LayerError("The tool gives the series relative to a reference point, and no reference point was given.")
     if cell == reference:

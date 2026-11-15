@@ -16,9 +16,16 @@ a job, in its main thread.
 import inspect
 import os
 from functools import partial
-from typing import Annotated, Any
+from typing import Annotated, Any, Self
 
-from pydantic import Field, StringConstraints, field_validator
+from pydantic import (
+    Field,
+    SerializerFunctionWrapHandler,
+    StringConstraints,
+    field_validator,
+    model_serializer,
+    model_validator,
+)
 
 from lynkeus.analysis import SERIES_TOOLS, TOOLS, AnalysisFunction, SeriesFunction
 from lynkeus.harmony import MOST_CELLS, get_layer, layers_of
@@ -30,6 +37,7 @@ from lynkeus.layers import (
     Point,
     SeriesDescription,
     SeriesRun,
+    Shape,
     Text,
     ToolRun,
 )
@@ -41,6 +49,23 @@ from lynkeus.writing import LayerError
 _CHANNELS = ("HH", "HV", "VH", "VV")
 """The polarisation channels for which ``lynkeus.harmony.layers_of`` lists layers."""
 
+_AREA = (
+    "An area drawn on the map, in the coordinates of the map: a rectangle or a polygon of at most 250 corners "
+    "whose sides do not cross."
+)
+
+
+def _without_no_area(handler: SerializerFunctionWrapHandler, inputs: Format, area: Shape | None) -> dict[str, Any]:
+    """Return the inputs as a dictionary, without the field ``area`` when no area is given.
+
+    A server of a visitor whose program is older than this field refuses inputs that name it, even with no value,
+    so the inputs of a job without an area stay as they were before.
+    """
+    values: dict[str, Any] = handler(inputs)
+    if area is None:
+        values.pop("area", None)
+    return values
+
 
 class ToolInputs(Format):
     """The inputs of the process of an analysis tool.
@@ -51,6 +76,9 @@ class ToolInputs(Format):
         The ``id`` of each input layer, in the order that the method sheet of the tool gives.
     title : str
         Name of the result.
+    area : Shape or None
+        An area drawn on the map. The description of the result then holds the statistics of the result inside
+        it.
     """
 
     inputs: tuple[Text, ...] = Field(
@@ -64,6 +92,11 @@ class ToolInputs(Format):
     title: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=MAX_TITLE_LENGTH)] = Field(
         description="Name of the result."
     )
+    area: Shape | None = Field(
+        default=None,
+        title="Statistics in an area",
+        description=f"{_AREA} The description of the result then holds the statistics of its cells inside the area.",
+    )
 
     @field_validator("inputs")
     @classmethod
@@ -71,6 +104,10 @@ class ToolInputs(Format):
         if len(set(inputs)) != len(inputs):
             raise ValueError("a layer is given more than once")
         return inputs
+
+    @model_serializer(mode="wrap")
+    def _serialized(self, handler: SerializerFunctionWrapHandler) -> dict[str, Any]:
+        return _without_no_area(handler, self, self.area)
 
 
 class SeriesInputs(Format):
@@ -84,8 +121,11 @@ class SeriesInputs(Format):
         Name of the series.
     point : Point or None
         The point of the series, in degrees of longitude and latitude
-        (WGS 84). Without it the series is that of the whole area of the
-        layers.
+        (WGS 84). Without it the series is that of an area.
+    area : Shape or None
+        An area drawn on the map, for a series of the cells inside it. It
+        cannot be given with a point. Without a point and an area the series
+        is that of the whole area of the layers.
     reference : Point or None
         The reference point of a series that is relative to one, in degrees
         of longitude and latitude (WGS 84). Only the tool
@@ -105,7 +145,15 @@ class SeriesInputs(Format):
         default=None,
         description=(
             "The point of the series, in degrees of longitude and latitude (WGS 84). "
-            "Without it the series is that of the whole area of the layers."
+            "Without it the series is that of an area."
+        ),
+    )
+    area: Shape | None = Field(
+        default=None,
+        title="Area",
+        description=(
+            f"{_AREA} The series is then that of the cells inside the area. It cannot be given with a point, "
+            "and without both the series is that of the whole area of the layers."
         ),
     )
     reference: Point | None = Field(
@@ -122,6 +170,19 @@ class SeriesInputs(Format):
         if len(set(inputs)) != len(inputs):
             raise ValueError("a layer is given more than once")
         return inputs
+
+    @model_validator(mode="after")
+    def _has_one_place(self) -> Self:
+        if self.point is not None and self.area is not None:
+            raise ValueError("a series is made at a point or for an area, not for both")
+        return self
+
+    @model_serializer(mode="wrap")
+    def _serialized(self, handler: SerializerFunctionWrapHandler) -> dict[str, Any]:
+        values = _without_no_area(handler, self, self.area)
+        if self.reference is None:
+            values.pop("reference", None)
+        return values
 
 
 def receive_layer(inputs: LayerRequest, work: Work) -> LayerDescription:
@@ -149,7 +210,7 @@ def layer_job_title(inputs: LayerRequest) -> str:
 def run_analysis(tool: str, inputs: ToolInputs, work: Work) -> LayerDescription:
     """Run an analysis tool on layers of the session for a job. This is the function of the process of a tool."""
     return run_tool(
-        ToolRun(tool=tool, inputs=inputs.inputs, title=inputs.title),
+        ToolRun(tool=tool, inputs=inputs.inputs, title=inputs.title, area=inputs.area),
         layers=work.layers,
         layer_id=work.layer_id,
         folder=work.folder,
@@ -174,7 +235,14 @@ def run_series_analysis(tool: str, inputs: SeriesInputs, work: Work) -> SeriesDe
     This is the function of the process of such a tool. The series receives the ``id`` that the work gives.
     """
     return run_series(
-        SeriesRun(tool=tool, inputs=inputs.inputs, title=inputs.title, point=inputs.point, reference=inputs.reference),
+        SeriesRun(
+            tool=tool,
+            inputs=inputs.inputs,
+            title=inputs.title,
+            point=inputs.point,
+            area=inputs.area,
+            reference=inputs.reference,
+        ),
         layers=work.layers,
         series_id=work.layer_id,
         report=work.report,

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { isArea, type Area } from "./area";
+import { isShape, type Shape } from "./layer";
 
 /** A point on the Earth, in degrees of longitude and latitude (WGS 84). */
 export interface Point {
@@ -60,7 +61,7 @@ export interface SeriesDescription {
   reduction: Reduction;
   /** Lowest and highest value of the axis of the values, when the quantity has fixed limits, or null. */
   range: readonly [number, number] | null;
-  /** The point of the request, for a series at a point, or null for a series of the whole area of the layers. */
+  /** The point of the request, for a series at a point, or null for a series of an area. */
   point: Point | null;
   /** The cell of the grid of the layers that holds the point. It is given when, and only when, `point` is. */
   cell: Cell | null;
@@ -69,6 +70,11 @@ export interface SeriesDescription {
    * series at a point, and it gives the product files of the pairs from which its values were computed.
    */
   reference: Reference | null;
+  /**
+   * The area drawn on the map, for a series of the cells inside it. A series at a point and a series of the whole
+   * area of the layers have null or no field, and so has a description stored before this field existed.
+   */
+  shape?: Shape | null;
   /** The smallest rectangle in longitude and latitude that holds the grid of the input layers. */
   area: Area;
   /** The dates of the series with their values, the earliest first. */
@@ -93,8 +99,10 @@ export interface SeriesInputs {
   inputs: readonly string[];
   /** Name of the series. */
   title: string;
-  /** The point of the series, or no field for the whole area of the layers. */
+  /** The point of the series, or no field for a series of an area. */
   point?: Point;
+  /** The area drawn on the map, for a series of the cells inside it, or no field for the whole area of the layers. */
+  area?: Shape;
   /** The reference point of a series that is relative to one. Only Surface displacement, Series takes one. */
   reference?: Point;
 }
@@ -175,6 +183,7 @@ export function isSeriesDescription(value: unknown): value is SeriesDescription 
   const point = value.point ?? null;
   const cell = value.cell ?? null;
   const reference = value.reference ?? null;
+  const shape = value.shape ?? null;
   if (
     typeof id !== "string" ||
     !ID.test(id) ||
@@ -201,6 +210,9 @@ export function isSeriesDescription(value: unknown): value is SeriesDescription 
     return false;
   }
   if (reference !== null && (point === null || !isReference(reference))) {
+    return false;
+  }
+  if (shape !== null && (point !== null || !isShape(shape))) {
     return false;
   }
   const keys = entries.map(datesKey);

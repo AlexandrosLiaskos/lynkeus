@@ -17,7 +17,9 @@ import { report } from "../shared/messages/messages";
 import { Notice } from "../shared/notice/Notice";
 import { setPaneOpen } from "../shared/panes";
 import { useStore } from "../shared/store";
-import { ToolPane, type ToolPaneRun } from "../shared/toolpane/ToolPane";
+import { ToolPane, ToolPaneGroup, type ToolPaneRun } from "../shared/toolpane/ToolPane";
+import { analysisAreaStore } from "./analysisArea";
+import { AreaField } from "./AreaField";
 import { rowOf } from "./methods";
 import { METHODS } from "./methodSheets";
 import {
@@ -41,7 +43,7 @@ export const ABOUT_SERIES = {
   group:
     "The layer of the product, with the track, the frame, the direction of the orbit and the release of its products.",
   layers: "The same layer of two or more dates, received with Get layer and kept on the project server.",
-  place: "The series gives the mean of the whole area of the layers, or the value of the cell that holds a point.",
+  place: "The series gives the mean of an area, or the value of the cell that holds a point.",
   latitude: "The latitude of the point in degrees, as 42.8 or 42.8 N or 42° 48′ 30″ N.",
   longitude: "The longitude of the point in degrees, as -70.9 or 70.9 W or 70° 54′ 00″ W.",
   title: "The name of the series in the Catalog pane.",
@@ -143,8 +145,8 @@ function openGetLayer(): void {
 
 /**
  * The form of a finished tool of the kind Series, in the tool pane: one form for the three tools. It shows the
- * layers that the tool can read together, each with a box, the choice between the whole area and a point, the
- * latitude and the longitude of the point, typed in degrees as in the pane Go to coordinates, and the name of
+ * layers that the tool can read together, each with a box, the choice between an area and a point, the area
+ * drawn on the map in a group that is closed while no area is drawn, the latitude and the longitude of the point, typed in degrees as in the pane Go to coordinates, and the name of
  * the series, for which the form proposes one. When the session holds more than one group of layers that can
  * stand in one series, the field Layer chooses the group. The form has no field Server and no box that adds the
  * result to the map: a series is computed on the project server, from layers that the project server keeps, and
@@ -181,6 +183,7 @@ export function SeriesForm({ tool }: { tool: SeriesTool }) {
     title: false,
   });
   const [started, setStarted] = useState<Started | null>(null);
+  const area = useStore(analysisAreaStore);
 
   const method = METHODS[tool];
   const relative = isRelative(tool);
@@ -205,6 +208,7 @@ export function SeriesForm({ tool }: { tool: SeriesTool }) {
     place,
     latitude,
     longitude,
+    area,
     title,
     ...(relative ? { relative: { session: kept, latitude: baseLatitude, longitude: baseLongitude } } : {}),
   });
@@ -378,6 +382,12 @@ export function SeriesForm({ tool }: { tool: SeriesTool }) {
               ))}
             </fieldset>
           )}
+
+          {!relative && place === "area" ? (
+            <ToolPaneGroup title="Area drawn on the map" open={area !== null}>
+              <AreaField use="series" />
+            </ToolPaneGroup>
+          ) : null}
 
           {relative || place === "point"
             ? [...angles, ...(relative ? bases : [])].map(({ axis, title: name, value, set, about }) => {

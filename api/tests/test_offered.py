@@ -141,7 +141,7 @@ def test_server_offers_get_layer_and_one_process_for_every_tool(monkeypatch: pyt
     added = summaries[len(TOOLS)]
     assert (added["id"], added["title"]) == (nasa.TOOL, "Stand in ratio")
     assert described["description"] == "Compute the ratio of the second layer to the first, in decibels."
-    assert list(described["inputs"]) == ["inputs", "title"]
+    assert list(described["inputs"]) == ["inputs", "title", "area"]
 
 
 def test_get_layer_is_described_by_the_format_of_a_layer_request() -> None:
@@ -172,6 +172,15 @@ def test_process_of_a_tool_takes_its_name_and_the_first_paragraph_of_its_documen
     assert process.errors == (LayerError,)
     described = process.describe()
     assert "additionalParameters" not in described
+    area = described["inputs"].pop("area")
+    assert (area["title"], area["minOccurs"], area["maxOccurs"]) == ("Statistics in an area", 0, 1)
+    assert area["description"].startswith("An area drawn on the map, in the coordinates of the map")
+    assert area["schema"]["required"] == ["crs", "kind", "points"]
+    assert area["schema"]["properties"]["kind"] == {"enum": ["rectangle", "polygon"], "title": "Kind", "type": "string"}
+    assert (area["schema"]["properties"]["points"]["minItems"], area["schema"]["properties"]["points"]["maxItems"]) == (
+        4,
+        251,
+    )
     assert described["inputs"] == {
         "inputs": {
             "title": "Input layers",
@@ -221,6 +230,28 @@ def test_job_is_named_by_the_layer_and_the_product() -> None:
     assert offered.layer_job_title(request.model_copy(update={"layer": "other"})) == f"other of {PRODUCT}"
     inputs = offered.ToolInputs(inputs=("a", "b"), title="  Change of backscatter HH ")
     assert offered.result_job_title(inputs) == "Change of backscatter HH"
+
+
+def test_inputs_of_a_job_name_an_area_only_when_one_is_given() -> None:
+    # A server of a visitor with an older program refuses inputs that name a field which it does not know.
+    plain = offered.ToolInputs(inputs=("a",), title="Backscatter HH")
+    assert json.loads(plain.model_dump_json()) == {"inputs": ["a"], "title": "Backscatter HH"}
+    area = {"crs": "EPSG:3857", "kind": "polygon", "points": [[0, 0], [10, 0], [10, 10], [0, 0]]}
+    given = offered.ToolInputs.model_validate({"inputs": ["a"], "title": "Backscatter HH", "area": area})
+    assert json.loads(given.model_dump_json())["area"] == {
+        "crs": "EPSG:3857",
+        "kind": "polygon",
+        "points": [[0.0, 0.0], [10.0, 0.0], [10.0, 10.0], [0.0, 0.0]],
+    }
+    assert offered.ToolInputs.model_validate_json(given.model_dump_json()) == given
+    series = offered.SeriesInputs(inputs=("a", "b"), title="Series")
+    assert json.loads(series.model_dump_json()) == {"inputs": ["a", "b"], "title": "Series", "point": None}
+    point = {"longitude": -70.9, "latitude": 42.8}
+    with pytest.raises(ValueError, match="at a point or for an area, not for both"):
+        offered.SeriesInputs.model_validate({"inputs": ["a", "b"], "title": "Series", "point": point, "area": area})
+    crossing = {**area, "points": [[0, 0], [10, 10], [10, 0], [0, 10], [0, 0]]}
+    with pytest.raises(ValueError, match="the sides of the area cross or overlap each other"):
+        offered.ToolInputs.model_validate({"inputs": ["a"], "title": "Backscatter HH", "area": crossing})
 
 
 def test_get_layer_is_given_the_limit_of_the_server_on_the_cells_of_a_layer(

@@ -2,7 +2,7 @@
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { formatDay } from "../data/products";
 import { parseAngle } from "../map/coordinates";
-import type { LayerDescription } from "../shared/layer";
+import type { LayerDescription, Shape } from "../shared/layer";
 import type { SeriesInputs } from "../shared/series";
 import {
   accepted,
@@ -13,6 +13,7 @@ import {
   FINISHED_TOOLS,
   hasFrequency,
   MOST_TITLE,
+  READS,
   type FinishedTool,
 } from "./tools";
 
@@ -177,15 +178,21 @@ export function seriesTitle(tool: SeriesTool, layers: readonly LayerDescription[
   if (!first || !last) {
     return "";
   }
-  const one = defaultTitle(READS_AS[tool], [first]);
+  // The title of the tool that the series reads as, from the first layer: One pair reads two layers of one product,
+  // and its title names the channel and the dates of the first.
+  const reads = READS_AS[tool];
+  const one = defaultTitle(reads, Array.from({ length: READS[reads].count }, () => first));
   const head = one.slice(0, one.length - daysWords(first.dates).length - 2);
   const from = formatDay(first.dates[0] ?? "");
   const to = formatDay(last.dates.at(-1) ?? "");
   return `Series of ${head.charAt(0).toLowerCase()}${head.slice(1)}, ${from} to ${to}`;
 }
 
-/** Where a series is computed: the mean of the whole area of the layers, or the cell that holds a point. */
-export const PLACES = { area: "Whole area", point: "At a point" } as const;
+/**
+ * Where a series is computed: the mean of an area, which is the area drawn on the map or, without one, the whole
+ * area of the layers, or the cell that holds a point.
+ */
+export const PLACES = { area: "For the area", point: "At a point" } as const;
 export type Place = keyof typeof PLACES;
 
 /**
@@ -233,6 +240,8 @@ export interface SeriesChoices {
   /** The latitude and the longitude of the point, as the fields hold them. */
   latitude: string;
   longitude: string;
+  /** The area drawn on the map, which a series for the area takes, or null for the whole area of the layers. */
+  area: Shape | null;
   /** The name of the series, as the field holds it. */
   title: string;
   /**
@@ -291,9 +300,9 @@ function relativeFault(layers: readonly LayerDescription[], session: readonly La
  * Check the choices of the form of a Series tool. A series takes 2 to 50 layers of the group, each of other
  * dates. At a point, the latitude and the longitude must be angles in degrees. The name of the series must have
  * 1 to 200 characters. Whether the point lies inside the area of the layers is checked by the server. A series
- * relative to a reference point is a series at a point, and it needs the reference point as well; its layers must
- * pass the checks of `relativeFault`, and the form sends beside each chosen layer the layer `connectedComponents`
- * of its product.
+ * for the area sends the area drawn on the map, when there is one. A series relative to a reference point is a
+ * series at a point, and it needs the reference point as well; its layers must pass the checks of `relativeFault`,
+ * and the form sends beside each chosen layer the layer `connectedComponents` of its product.
  */
 export function checkSeries({
   group,
@@ -301,6 +310,7 @@ export function checkSeries({
   place,
   latitude,
   longitude,
+  area,
   title,
   relative,
 }: SeriesChoices): SeriesChecked {
@@ -350,6 +360,7 @@ export function checkSeries({
         title: name,
         ...(north !== null && east !== null ? { point: { longitude: east, latitude: north } } : {}),
         ...(baseNorth !== null && baseEast !== null ? { reference: { longitude: baseEast, latitude: baseNorth } } : {}),
+        ...(!atPoint && place === "area" && area ? { area } : {}),
       }
     : null;
   return { layers, faults, inputs };

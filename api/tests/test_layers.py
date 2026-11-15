@@ -40,7 +40,13 @@ def test_layer_description_is_read_and_written_in_the_same_form() -> None:
     layer = LayerDescription.model_validate(LAYER)
     assert layer.dates == (date(2026, 10, 20),)
     assert layer.range == (-25.0, 0.0)
-    assert layer.model_dump(mode="json") == {**LAYER, "ends": None, "frequency": None, "range": [-25.0, 0.0]}
+    assert layer.model_dump(mode="json") == {
+        **LAYER,
+        "ends": None,
+        "frequency": None,
+        "statistics": None,
+        "range": [-25.0, 0.0],
+    }
 
 
 def test_layer_stored_without_the_name_of_its_layer_is_read() -> None:
@@ -52,6 +58,7 @@ def test_layer_stored_without_the_name_of_its_layer_is_read() -> None:
         "layer": None,
         "ends": None,
         "frequency": None,
+        "statistics": None,
         "range": [-25.0, 0.0],
     }
     assert LayerDescription.model_validate_json(layer.model_dump_json()) == layer

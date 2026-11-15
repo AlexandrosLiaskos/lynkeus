@@ -117,6 +117,16 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The analysis tools Backscatter, Series and Coherence, Series: the values of many dates against time, at a point or for the area, shown as a chart with a table in the pane Series and listed under Series in the Catalog pane.
 - The analysis tool Surface displacement, Series: the movement of the ground at a point over many dates, relative to a reference point that the visitor gives, from a network of GUNW pairs, with its form in the tool pane, its method sheet and its research note.
 - The workflow that measures the loading of the running site with Lighthouse on a machine of GitHub.
+- Statistics in an area: the last field of the form of every analysis tool that maps takes a rectangle or a
+  polygon drawn on the map, and the Properties of the result give the number of its cells with data inside
+  it, with their mean, standard deviation, lowest value, median and highest value. A Series tool takes the
+  same area for a series of its cells.
+- The check of the style files with Stylelint, which refuses the animation of a property other than transform
+  and opacity.
+- The workflow Browser checks, which opens the built site, or a running site, in Chromium, Firefox and WebKit
+  with Playwright, scans each state with axe-core and measures the loading with Lighthouse.
+- The motion of a pane that shows from the strip at the edge or hides to it, of a pane that opens, of the
+  messages and of the notices, drawn with the Motion library on position and opacity only.
 
 ### Changed
 
@@ -192,6 +202,12 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The web server compresses the text files more strongly, and a browser keeps the files that the build names
   after their content for a year without asking for them again. The logos and the photos of the welcome screen
   are stored at four times the size at which the screen shows them.
+- The welcome screen loads from a first script of 232 kB instead of 1,575 kB. The map and the panes load from
+  a second file after the screen has painted; they are drawn when the entrance animations end, or just before
+  the slide when the visitor enters earlier, and never during a motion of the screen.
+- The descriptions of the buttons and the bubbles of the "i" buttons are placed, shown and hidden by React
+  Aria Components. They enter and leave with a short motion, a description stays for half a second after the
+  pointer leaves, and the Escape key hides it.
 
 ### Removed
 

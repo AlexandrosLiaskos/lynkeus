@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { Marked } from "../analysis/Marked";
+import { SHEETS, type Sheet } from "../analysis/methods";
 import { METHODS } from "../analysis/methodSheets";
-import { SHEET_TOOLS, type SheetTool } from "../analysis/series";
 import { Dialog } from "../shared/dialog/Dialog";
 import { PropertyList } from "../shared/properties/PropertyList";
 import { Section } from "../shared/section/Section";
@@ -14,7 +14,7 @@ import { methodsStore } from "./state";
 export const SHEET_INFO = "A summary of the method. The full sheet is in the repository.";
 
 /** Return the address of the method sheet of a tool in the repository. */
-export function sheetAddress(tool: SheetTool): string {
+export function sheetAddress(tool: Sheet): string {
   return `${ABOUT.citation.repository}/blob/main/docs/methods/${tool}.md`;
 }
 
@@ -22,7 +22,7 @@ export function sheetAddress(tool: SheetTool): string {
  * The summary of the method of one tool, as one list of names and values: the rows of the section In brief of
  * its method sheet, in their order, and the address of the full sheet in the repository.
  */
-export function MethodSheet({ tool }: { tool: SheetTool }) {
+export function MethodSheet({ tool }: { tool: Sheet }) {
   const address = sheetAddress(tool);
   return (
     <PropertyList
@@ -47,12 +47,13 @@ export function MethodSheet({ tool }: { tool: SheetTool }) {
 
 /**
  * The summaries of the methods of the finished tools, each in a section that opens and closes under the name of
- * its tool. When the method of one tool was asked for, its section is open and the others are closed.
+ * its tool, and after them the summary of the statistics in an area. When the method of one tool was asked for,
+ * its section is open and the others are closed.
  */
-export function MethodsList({ asked }: { asked: SheetTool | null }) {
+export function MethodsList({ asked }: { asked: Sheet | null }) {
   return (
     <div className="methods">
-      {SHEET_TOOLS.map((tool) => (
+      {SHEETS.map((tool) => (
         <Section
           key={tool}
           title={METHODS[tool].title}

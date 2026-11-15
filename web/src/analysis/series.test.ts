@@ -82,6 +82,7 @@ function choices(change: Partial<SeriesChoices> = {}): SeriesChoices {
     place: "area",
     latitude: "",
     longitude: "",
+    area: null,
     title: "Backscatter of the estuary",
     ...change,
   };
@@ -232,7 +233,7 @@ test("each field states its fault, and the foot states the first of them", () =>
 });
 
 test("the words of the form are short, and the faults of the point are those of the pane Go to coordinates", () => {
-  expect(PLACES).toEqual({ area: "Whole area", point: "At a point" });
+  expect(PLACES).toEqual({ area: "For the area", point: "At a point" });
   expect(NO_LAYERS).toBe("No two layers of this session can be used together by the tool.");
   expect(ANGLE_FAULTS).toEqual({
     latitude: "Enter the latitude in degrees, from 90 S to 90 N, for example 42.8 N or 42° 48′ 30″ N.",
