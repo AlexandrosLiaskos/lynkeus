@@ -276,7 +276,10 @@ def test_layer_is_received_and_written(visit: Visit) -> None:
 
 def test_harmony_is_asked_for_the_layer_of_the_product_in_the_area(visit: Visit) -> None:
     visit.get()
-    assert visit.catalogue.asked == {"concept_id": ["C3622241360-ASF", "C2854338529-ASF"], "granule_name": BACKSCATTER}
+    assert visit.catalogue.asked == {
+        "concept_id": ["C3622241360-ASF", "C2854338529-ASF", "C3622214170-ASF"],
+        "granule_name": BACKSCATTER,
+    }
     assert visit.tokens == [TOKEN]
     (request,) = visit.client.requests
     assert request.is_valid()
