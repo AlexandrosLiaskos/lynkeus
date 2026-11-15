@@ -13,12 +13,14 @@ import {
   GUNW_SEP,
   laterPair,
   laterSoil,
+  laterSoilFlag,
   laterTerm,
   longPair,
   phase,
   SME2_OCT,
   SME2_SEP,
   soil,
+  soilFlag,
   term,
 } from "./testLayers";
 import {
@@ -47,9 +49,12 @@ import {
   NO_FREQUENCY,
   NO_OTHER_PAIR,
   NO_PARTNER,
+  NO_QUALITY,
   OVERLAP,
   pairsInOrder,
   partners,
+  QUALITY_FLAG_LAYER,
+  qualityOf,
   READS,
   SAME_DATE,
   SOIL_MOISTURE_LAYER,
@@ -151,12 +156,16 @@ test("the layers that the tools read are the layers that the server accepts", ()
   );
   expect(server("soil_moisture")).toContain(`_LAYER = re.compile(r"${SOIL_MOISTURE_LAYER}")`);
   expect(server("soil_moisture")).toContain(`_UNIT = "${SOIL_MOISTURE_UNIT}"`);
+  expect(server("soil_moisture")).toContain(`_FLAG = re.compile(r"${QUALITY_FLAG_LAYER}")`);
   expect(server("soil_moisture")).toContain(
-    'check_inputs(arrays, layers, count=1, product="SME2", names=_LAYER, reads=_READS, dates=1, unit=_UNIT)',
+    'arrays[0::2], layers[0::2], count=count, product="SME2", names=_LAYER, reads=_READS, dates=1, unit=_UNIT\n',
   );
   expect(server("soil_moisture")).toContain(
-    'arrays, layers, count=2, product="SME2", names=_LAYER, reads=_READS, dates=1, unit=_UNIT\n',
+    'check_inputs(arrays[1::2], layers[1::2], count=count, product="SME2", names=_FLAG, reads=_READS_FLAG, dates=1)',
   );
+  expect(server("soil_moisture")).toContain("if flag.inputs != moisture.inputs:");
+  expect(server("soil_moisture")).toContain("check_dates(arrays, layers, count=1)");
+  expect(server("soil_moisture")).toContain("earlier, later = check_dates(arrays, layers, count=2)");
   expect(server("inputs")).toContain('    unit: str = "1",\n');
   expect(server("inputs")).toContain("if layer.unit != unit:");
 });
@@ -180,7 +189,7 @@ test("the comparisons that the form refuses are refusals of the server, made in 
   expect(coherenceTools).toContain("days = (max(layer.dates) - min(layer.dates)).days");
   const change = soilTools.slice(soilTools.indexOf("def soil_moisture_change"));
   expect(change.indexOf("if earlier != later:")).toBeGreaterThan(0);
-  expect(change.indexOf("if not layers[0].dates[0] < layers[1].dates[0]:")).toBeGreaterThan(
+  expect(change.indexOf("if not layers[0].dates[0] < layers[2].dates[0]:")).toBeGreaterThan(
     change.indexOf("if earlier != later:"),
   );
 });
@@ -571,12 +580,12 @@ test("Backscatter, Change sends the layer of the earlier date first, whichever f
   ).toEqual(sent);
 });
 
-test("Soil moisture, One date runs with the layer of the soil moisture and a name", () => {
-  const layers = [term(), soil(), soil({ id: "uncertainty", layer: "soilMoistureUncertainty" })];
+test("Soil moisture, One date runs with the layer of the soil moisture, the flag of its product and a name", () => {
+  const layers = [term(), soil(), soil({ id: "uncertainty", layer: "soilMoistureUncertainty" }), soilFlag()];
   expect(check({ tool: "soil-moisture-state", layers, first: "soil-sep", second: null, title: "Moisture" })).toEqual({
     layers: [soil()],
     faults: SOUND,
-    inputs: { inputs: ["soil-sep"], title: "Moisture" },
+    inputs: { inputs: ["soil-sep", "flag-sep"], title: "Moisture" },
   });
   expect(
     check({ tool: "soil-moisture-state", layers, first: "uncertainty", second: null, title: "Moisture" }).faults.first,
@@ -587,11 +596,66 @@ test.each([
   ["soil-sep", "soil-oct"],
   ["soil-oct", "soil-sep"],
 ])("Soil moisture, Change sends the layer of the earlier date first (fields %s and %s)", (first, second) => {
-  const layers = [laterSoil(), soil()];
+  const layers = [laterSoil(), soil(), laterSoilFlag(), soilFlag()];
   expect(check({ tool: "soil-moisture-change", layers, first, second, title: "Change" }).inputs).toEqual({
-    inputs: ["soil-sep", "soil-oct"],
+    inputs: ["soil-sep", "flag-sep", "soil-oct", "flag-oct"],
     title: "Change",
   });
+});
+
+test("the soil moisture tools take the retrieval quality flag of the product of each layer, which the form finds", () => {
+  expect(QUALITY_FLAG_LAYER).toBe("retrievalQualityFlag");
+  expect(FINISHED_TOOLS.filter((tool) => READS[tool].quality !== undefined)).toEqual([
+    "soil-moisture-state",
+    "soil-moisture-change",
+  ]);
+  const other = laterSoilFlag({ id: "flag-oct-again" });
+  const layers = [
+    soil(),
+    laterSoil(),
+    laterSoilFlag(),
+    other,
+    soilFlag({ unit: "m3 m-3" }),
+    soilFlag({ id: "flag-sep-2" }),
+  ];
+  // The flag of the same product file, with the unit 1; of two, the first of the list, which was received last.
+  expect(qualityOf("soil-moisture-state", soil(), layers)?.id).toBe("flag-sep-2");
+  expect(qualityOf("soil-moisture-change", laterSoil(), layers)?.id).toBe("flag-oct");
+  expect(qualityOf("soil-moisture-state", soil(), [soil(), laterSoilFlag()])).toBeNull();
+  expect(qualityOf("backscatter-state", term(), [term(), soilFlag()])).toBeNull();
+  // The layer of the uncertainty and a received layer of a result are not flags.
+  expect(
+    qualityOf("soil-moisture-state", soil(), [soil({ id: "u", layer: "soilMoistureUncertainty", unit: "1" })]),
+  ).toBeNull();
+  // The flag is not offered as a layer of the soil moisture.
+  expect(accepted("soil-moisture-state", layers).map(({ id }) => id)).toEqual(["soil-sep", "soil-oct"]);
+});
+
+test("a soil moisture tool without the flag of the product of a chosen layer states it at the field of that layer", () => {
+  const state = check({
+    tool: "soil-moisture-state",
+    layers: [soil()],
+    first: "soil-sep",
+    second: null,
+    title: "Name",
+  });
+  expect(state.faults).toEqual({ ...SOUND, first: NO_QUALITY });
+  expect(state.layers).toEqual([soil()]);
+  expect(state.inputs).toBeNull();
+  expect(NO_QUALITY).toBe("The Retrieval quality flag layer of this product is not in the session.");
+  const change = { tool: "soil-moisture-change", title: "Name" } as const;
+  const later = check({ ...change, layers: [soil(), laterSoil(), soilFlag()], first: "soil-sep", second: "soil-oct" });
+  expect(later.faults).toEqual({ ...SOUND, second: NO_QUALITY });
+  const earlier = check({
+    ...change,
+    layers: [soil(), laterSoil(), laterSoilFlag()],
+    first: "soil-oct",
+    second: "soil-sep",
+  });
+  expect(earlier.faults).toEqual({ ...SOUND, second: NO_QUALITY });
+  const neither = check({ ...change, layers: [soil(), laterSoil()], first: "soil-sep", second: "soil-oct" });
+  expect(neither.faults).toEqual({ ...SOUND, first: NO_QUALITY, second: NO_QUALITY });
+  expect(neither.inputs).toBeNull();
 });
 
 test.each([

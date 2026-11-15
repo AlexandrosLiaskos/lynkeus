@@ -1,0 +1,88 @@
+{
+ "queried_utc": "2026-11-15T18:42:57Z",
+ "queries": [
+  {
+   "url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?short_name=NISAR_L3_SME2_V1&readable_granule_name%5B%5D=%2ASME2_%2A_141_D_067_%2A&options%5Breadable_granule_name%5D%5Bpattern%5D=true&page_size=200&sort_key=start_date",
+   "hits": 0,
+   "items": []
+  },
+  {
+   "url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?short_name=NISAR_L3_SME2_PROVISIONAL_V1&readable_granule_name%5B%5D=%2ASME2_%2A_141_D_067_%2A&options%5Breadable_granule_name%5D%5Bpattern%5D=true&page_size=200&sort_key=start_date",
+   "hits": 9,
+   "items": [
+    {
+     "granule": "NISAR_L3_PR_SME2_023_141_D_067_4005_DHDH_A_20260623T234333_20260623T234408_P05023_N_F_J_001",
+     "concept_id": "G4249745130-ASF",
+     "collection": "C2854344945-ASF",
+     "revision_date": "2026-07-16T18:44:47.078Z"
+    },
+    {
+     "granule": "NISAR_L3_PR_SME2_024_141_D_067_4005_DHDH_A_20260705T234333_20260705T234408_P05023_N_F_J_001",
+     "concept_id": "G4254093072-ASF",
+     "collection": "C2854344945-ASF",
+     "revision_date": "2026-07-20T16:53:44.912Z"
+    },
+    {
+     "granule": "NISAR_L3_PR_SME2_025_141_D_067_4005_DHDH_A_20260717T234332_20260717T234407_P05023_N_F_J_001",
+     "concept_id": "G4263203106-ASF",
+     "collection": "C2854344945-ASF",
+     "revision_date": "2026-07-28T16:20:52.593Z"
+    },
+    {
+     "granule": "NISAR_L3_PR_SME2_027_141_D_067_4005_DHDH_A_20260810T234331_20260810T234406_P05023_N_F_J_001",
+     "concept_id": "G4279643830-ASF",
+     "collection": "C2854344945-ASF",
+     "revision_date": "2026-08-14T21:17:50.301Z"
+    },
+    {
+     "granule": "NISAR_L3_PR_SME2_028_141_D_067_4005_DHDH_A_20260822T234330_20260822T234405_P05023_N_F_J_001",
+     "concept_id": "G4288948384-ASF",
+     "collection": "C2854344945-ASF",
+     "revision_date": "2026-08-26T23:07:42.265Z"
+    },
+    {
+     "granule": "NISAR_L3_PR_SME2_029_141_D_067_4005_DHDH_A_20260903T234330_20260903T234405_P05023_N_F_J_001",
+     "concept_id": "G4304107461-ASF",
+     "collection": "C2854344945-ASF",
+     "revision_date": "2026-09-09T20:38:43.939Z"
+    },
+    {
+     "granule": "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001",
+     "concept_id": "G4314760500-ASF",
+     "collection": "C2854344945-ASF",
+     "revision_date": "2026-09-17T21:58:51.966Z"
+    },
+    {
+     "granule": "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001",
+     "concept_id": "G4328574868-ASF",
+     "collection": "C2854344945-ASF",
+     "revision_date": "2026-09-29T22:58:59.563Z"
+    },
+    {
+     "granule": "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001",
+     "concept_id": "G4359373353-ASF",
+     "collection": "C2854344945-ASF",
+     "revision_date": "2026-10-12T05:46:47.382Z"
+    }
+   ]
+  },
+  {
+   "url": "https://cmr.earthdata.nasa.gov/search/granules.umm_json?short_name=NISAR_L3_SME2_BETA_V1&readable_granule_name%5B%5D=%2ASME2_%2A_141_D_067_%2A&options%5Breadable_granule_name%5D%5Bpattern%5D=true&page_size=200&sort_key=start_date",
+   "hits": 2,
+   "items": [
+    {
+     "granule": "NISAR_L3_PR_SME2_007_141_D_067_4005_DHDH_A_20251213T234332_20251213T234407_X05010_N_F_J_001",
+     "concept_id": "G4058441365-ASF",
+     "collection": "C2850265000-ASF",
+     "revision_date": "2026-02-28T09:44:12.263Z"
+    },
+    {
+     "granule": "NISAR_L3_PR_SME2_008_141_D_067_4005_DHDH_A_20251225T234333_20251225T234408_X05010_N_F_J_001",
+     "concept_id": "G4058528737-ASF",
+     "collection": "C2850265000-ASF",
+     "revision_date": "2026-02-28T10:29:13.974Z"
+    }
+   ]
+  }
+ ]
+}

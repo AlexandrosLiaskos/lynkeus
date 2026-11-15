@@ -20,10 +20,13 @@ import { useStore } from "../shared/store";
 import { ToolPane, type ToolPaneRun } from "../shared/toolpane/ToolPane";
 import { rowOf } from "./methods";
 import { METHODS } from "./methodSheets";
+import type { LayerDescription } from "../shared/layer";
+import type { SeriesDescription } from "../shared/series";
 import {
   checkSeries,
   firstChoice,
   missingOfSeries,
+  mostDatesOf,
   NO_LAYERS,
   PLACES,
   READS_AS,
@@ -33,7 +36,7 @@ import {
   type SeriesTool,
 } from "./series";
 import type { Started } from "./ToolForm";
-import { accepted, MOST_TITLE } from "./tools";
+import { accepted, MOST_TITLE, qualityOf, READS } from "./tools";
 
 /** The explanations of the titles of the form. Each one is one sentence and shows from the button beside its title. */
 export const ABOUT_SERIES = {
@@ -50,7 +53,12 @@ export const ABOUT_SERIES = {
 export const RECEIVE_SERIES: Record<SeriesTool, string> = {
   "backscatter-series": "Get the same Backscatter layer of two or more GCOV products of one track and frame.",
   "coherence-series": "Get the same Coherence layer of two or more GUNW products of one track and frame.",
+  "soil-moisture-series":
+    "Get the Soil moisture layer and the Retrieval quality flag layer of two or more SME2 products of one track and frame, for the same area.",
 };
+
+/** What the form states when the session holds no retrieval quality flag of the product of some chosen layers. */
+export const GET_FLAGS = "Get the Retrieval quality flag layer of the product of each date, for the same area.";
 
 /**
  * State that layers which an own server of the visitor keeps cannot be used, and how they become usable. The
@@ -69,14 +77,15 @@ function showCatalog(): void {
 
 /**
  * Return what the foot of the pane shows about the job that the form started: its progress while it waits or
- * runs, and afterwards that the series is ready, with the link that shows it. A refusal of the server, of the
- * request or of the job, is shown in the sentence of the server. `listed` holds the names of the series of the
- * session that the page has read.
+ * runs, and afterwards that the series is ready, with the note that the tool gives about it and the link that
+ * shows it. A refusal of the server, of the request or of the job, is shown in the sentence of the server.
+ * `listed` holds the names of the series of the session that the page has read, and `known` the series.
  */
 export function seriesRunOf(
   started: Started | null,
   jobs: readonly Job[],
   listed: ReadonlySet<string> = new Set(),
+  known: readonly SeriesDescription[] = [],
 ): ToolPaneRun | null {
   if (!started) {
     return null;
@@ -102,19 +111,14 @@ export function seriesRunOf(
     return { state: "error", text: job.message, details };
   }
   const { series } = job;
+  const note = known.find((item) => item.id === series)?.note;
+  const text =
+    typeof note === "string"
+      ? `The series is ready. ${note} It is under Series in the Catalog pane.`
+      : "The series is ready. It is under Series in the Catalog pane.";
   return typeof series === "string" && listed.has(series)
-    ? {
-        state: "success",
-        text: "The series is ready. It is under Series in the Catalog pane.",
-        action: { label: "Show the series", onClick: () => showSeries(series) },
-        details,
-      }
-    : {
-        state: "success",
-        text: "The series is ready. It is under Series in the Catalog pane.",
-        action: { label: "Show the Catalog pane", onClick: showCatalog },
-        details,
-      };
+    ? { state: "success", text, action: { label: "Show the series", onClick: () => showSeries(series) }, details }
+    : { state: "success", text, action: { label: "Show the Catalog pane", onClick: showCatalog }, details };
 }
 
 /** Open the page Methods of the Help tab at a tool. */
@@ -128,7 +132,7 @@ function openGetLayer(): void {
 }
 
 /**
- * The form of a finished tool of the kind Series, in the tool pane: one form for the two tools. It shows the
+ * The form of a finished tool of the kind Series, in the tool pane: one form for all of them. It shows the
  * layers that the tool can read together, each with a box, the choice between the whole area and a point, the
  * latitude and the longitude of the point, typed in degrees as in the pane Go to coordinates, and the name of
  * the series, for which the form proposes one. When the session holds more than one group of layers that can
@@ -136,8 +140,10 @@ function openGetLayer(): void {
  * result to the map: a series is computed on the project server, from layers that the project server keeps, and
  * it is a chart and not a layer. The "i" of the pane states what the tool shows, and the link Method at the foot
  * opens the page Methods at the tool. While a choice is missing, the foot of the pane states the first fault,
- * and a field that was left states its own. The run button starts the tool as a job, and the foot shows the
- * progress and the outcome, with the link that shows the series.
+ * and a field that was left states its own. Soil moisture, Series takes the Retrieval quality flag layer of the
+ * product of each chosen layer without a field of its own, and the pane states what to get when it is missing. The
+ * run button starts the tool as a job, and the foot shows the progress and the outcome, with the link that shows
+ * the series.
  */
 export function SeriesForm({ tool }: { tool: SeriesTool }) {
   const id = useId();
@@ -165,15 +171,20 @@ export function SeriesForm({ tool }: { tool: SeriesTool }) {
   const groups = seriesGroups(tool, kept);
   const group = groups.find((candidate) => candidate.key === wanted) ?? groups[0];
   const members = group?.layers ?? [];
-  const chosen = picked ?? (group ? firstChoice(group) : []);
+  const most = mostDatesOf(tool);
+  const chosen = picked ?? (group ? firstChoice(group, most) : []);
+  // The retrieval quality flag of the product of each layer, for a tool that takes it; it must be on the project server.
+  const reads = READS_AS[tool];
+  const flagOf = READS[reads].quality ? (layer: LayerDescription) => qualityOf(reads, layer, kept) : undefined;
 
   const proposed = seriesTitle(
     tool,
     members.filter((layer) => chosen.includes(layer.id)),
   );
   const title = own ?? proposed;
-  const { faults, inputs } = checkSeries({ group: members, chosen, place, latitude, longitude, title });
+  const { faults, inputs } = checkSeries({ group: members, chosen, place, latitude, longitude, title, flagOf, most });
   const missing = group ? missingOfSeries(faults) : NO_LAYERS;
+  const flagless = flagOf !== undefined && members.some((layer) => chosen.includes(layer.id) && flagOf(layer) === null);
 
   const start = () => {
     if (!inputs) {
@@ -232,7 +243,12 @@ export function SeriesForm({ tool }: { tool: SeriesTool }) {
       onRun={start}
       ready={inputs !== null}
       missing={missing ?? undefined}
-      run={seriesRunOf(started, jobs, new Set(series.map((item) => item.series.id)))}
+      run={seriesRunOf(
+        started,
+        jobs,
+        new Set(series.map((item) => item.series.id)),
+        series.map((item) => item.series),
+      )}
       onCancel={started && started.id !== null ? cancel : undefined}
     >
       {!group ? (
@@ -295,6 +311,11 @@ export function SeriesForm({ tool }: { tool: SeriesTool }) {
             ))}
           </fieldset>
           <FieldError id={`${id}-layers-error`}>{shown.layers}</FieldError>
+          {flagless ? (
+            <Notice kind="info" action={{ label: "Get layer", onClick: openGetLayer }}>
+              {GET_FLAGS}
+            </Notice>
+          ) : null}
 
           <fieldset
             className="usa-fieldset"

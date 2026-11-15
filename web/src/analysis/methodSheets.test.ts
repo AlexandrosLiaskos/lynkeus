@@ -162,21 +162,30 @@ function oneLine(text: string): string {
 test("the rows Limits of the soil moisture tools carry the share of cells that the products do not recommend", () => {
   // The research note gives the share for the cells of the pilot box that hold a value, and names the bit.
   expect(oneLine(SOIL_NOTE)).toContain(
-    "The products mark 97.9 % to 98.6 % of the cells of the pilot box that hold a value as not recommended",
+    "The products mark 97.9 % to 98.7 % of the cells of the pilot box that hold a value as not recommended",
   );
   expect(oneLine(SOIL_NOTE)).toContain("The least significant bit indicates whether the retrieval is recommended");
+  for (const tool of ["soil-moisture-state", "soil-moisture-change", "soil-moisture-series"] as const) {
+    expect(rowOf(METHODS[tool], "Limits")).toContain("97.9 % to 98.7 % of the cells with a");
+    expect(rowOf(METHODS[tool], "Input")).toContain("with the layer `retrievalQualityFlag` of");
+  }
   for (const tool of ["soil-moisture-state", "soil-moisture-change"] as const) {
     const limits = rowOf(METHODS[tool], "Limits");
-    expect(limits).toContain("The products themselves mark most cells as not recommended: 97.9 % to 98.6 %");
+    expect(limits).toContain("The products themselves mark most cells as not recommended: 97.9 % to 98.7 %");
     expect(limits).toContain("lowest bit of the layer `retrievalQualityFlag`");
-    expect(limits).toContain("maps every cell and does not read that flag");
-    expect(limits).toContain("nly provisional products existed for the test area on 15 Nov 2026");
-    // The sheet states the collection of the products and the day of the search of the catalogue.
-    expect(oneLine(sheet("soil-moisture-state"))).toContain(
-      "The products are provisional (collection `NISAR_L3_SME2_PROVISIONAL_V1`); a search of the NASA catalogue for the short name `NISAR_L3_SME2_V1` gave no product for the pilot area on that day",
-    );
-    expect(oneLine(sheet(tool))).toContain("The tool maps");
+    expect(limits).toContain("so the tool leaves most of that area empty");
+    expect(rowOf(METHODS[tool], "Result").toLowerCase()).toContain("the result states how many cells were left out");
+    expect(oneLine(sheet(tool))).toContain("are left out because NISAR marks their retrieval as not recommended");
   }
+  for (const tool of ["soil-moisture-state", "soil-moisture-series"] as const) {
+    expect(rowOf(METHODS[tool], "Limits")).toContain(
+      "nly provisional and beta products existed for the test area on 15 Nov 2026",
+    );
+  }
+  // The sheet states the collections of the products and the day of the search of the catalogue.
+  expect(oneLine(sheet("soil-moisture-state"))).toContain(
+    "The products are provisional (collection `NISAR_L3_SME2_PROVISIONAL_V1`) and beta (collection `NISAR_L3_SME2_BETA_V1`); a search of the NASA catalogue for the short name `NISAR_L3_SME2_V1` gave no product for the pilot area on that day",
+  );
 });
 
 test("the row Limits of Soil moisture, Change states that two dates are not independent measurements", () => {
@@ -216,7 +225,7 @@ test("the numbers of the summaries of the three new tools are those of their she
   expect(change).toContain("it is 0.200");
   expect(change).toContain("it is -0.242");
   expect(rowOf(METHODS["coherence-change"], "How to read")).toContain("between −0.242 and 0.200 (20 m layers)");
-  for (const tool of ["coherence-change", "soil-moisture-change"] as const) {
+  for (const tool of ["coherence-change", "soil-moisture-state", "soil-moisture-change"] as const) {
     expect(oneLine(sheet(tool))).toContain('GDAL 3.12.2 "Chicoutimi"');
     expect(rowOf(METHODS[tool], "Checked")).toContain("the program `gdal raster calc` of GDAL 3.12.2");
   }
@@ -229,10 +238,12 @@ test("the numbers of the summaries of the three new tools are those of their she
   expect(rowOf(METHODS["soil-moisture-state"], "How to read")).toContain(
     "the soil layer from 0 to 5 cm and an accuracy goal of 0.06 m3 m-3",
   );
-  expect(oneLine(sheet("soil-moisture-change"))).toContain(
-    "The pairs of 15 Sep to 27 Sep 2026 and of 15 Sep to 9 Oct 2026 gave the same result, in the box and in the whole frame",
-  );
-  expect(rowOf(METHODS["soil-moisture-change"], "Checked")).toContain(
-    "three pairs of dates (15 Sep, 27 Sep and 9 Oct 2026)",
+  expect(rowOf(METHODS["soil-moisture-state"], "Checked")).toContain("on nine dates of the test area");
+  expect(rowOf(METHODS["soil-moisture-change"], "Checked")).toContain("for ten pairs of dates of the test area");
+  const series = rowOf(METHODS["soil-moisture-series"], "Checked");
+  expect(series).toContain("differ by less than 0.00000003 m3 m-3 from the mean");
+  expect(series).toContain("at three points with a value on every date the values are equal");
+  expect(oneLine(sheet("soil-moisture-series"))).toContain(
+    "computed in 64-bit numbers from the same cube, the two means are equal on every date",
   );
 });

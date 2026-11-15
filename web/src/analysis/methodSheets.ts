@@ -200,19 +200,19 @@ export const METHODS: Record<SheetTool, Method> = {
     rows: [
       {
         name: "What it shows",
-        text: "The soil moisture of one date, as the mission retrieved it from the radar backscatter: the volume of water in a volume of soil.",
+        text: "The soil moisture of one date, as the mission retrieved it from the radar backscatter, in the cells whose retrieval NISAR recommends: the volume of water in a volume of soil.",
       },
       {
         name: "Input",
-        text: "The layer `soilMoisture` of an SME2 product, on a grid of 200 m.",
+        text: "The layer `soilMoisture` of an SME2 product, on a grid of 200 m, with the layer `retrievalQualityFlag` of the same product, which the form takes by itself.",
       },
       {
         name: "Formula",
-        text: "The layer of the product, unchanged. The mission computes it as the mean of the retrievals of up to three algorithms.",
+        text: "The layer of the product in the cells whose flag has the lowest bit 0; every other cell is left out. The mission computes the soil moisture as the mean of the retrievals of up to three algorithms.",
       },
       {
         name: "Result",
-        text: "Cubic metres of water in a cubic metre of soil (m3 m-3). The legend runs from 0.02 to 0.60 m3 m-3 for every date, from light yellow to dark blue.",
+        text: "Cubic metres of water in a cubic metre of soil (m3 m-3). The legend runs from 0.02 to 0.60 m3 m-3 for every date, from light yellow to dark blue. The result states how many cells were left out.",
       },
       {
         name: "How to read",
@@ -220,11 +220,11 @@ export const METHODS: Record<SheetTool, Method> = {
       },
       {
         name: "Limits",
-        text: "The products themselves mark most cells as not recommended: 97.9 % to 98.6 % of the cells with a value in the test area (lowest bit of the layer `retrievalQualityFlag`). The tool maps every cell and does not read that flag. Only provisional products existed for the test area on 15 Nov 2026.",
+        text: "The products themselves mark most cells as not recommended: 97.9 % to 98.7 % of the cells with a value in the test area (lowest bit of the layer `retrievalQualityFlag`), so the tool leaves most of that area empty. The flag does not say why a retrieval is not recommended. Only provisional and beta products existed for the test area on 15 Nov 2026.",
       },
       {
         name: "Checked",
-        text: "The result equals the layer `soilMoisture` of the product file in every cell of the test area (lower Merrimack River, 27 Sep and 9 Oct 2026).",
+        text: "The result equals that of the program `gdal raster calc` of GDAL 3.12.2 with the rule of the flag in every cell, on nine dates of the test area (lower Merrimack River, 23 Jun to 9 Oct 2026), two beta dates and three whole frames. The received layers equal the product files.",
       },
       {
         name: "References",
@@ -237,19 +237,19 @@ export const METHODS: Record<SheetTool, Method> = {
     rows: [
       {
         name: "What it shows",
-        text: "The change of the soil moisture between two dates, in cubic metres of water in a cubic metre of soil.",
+        text: "The change of the soil moisture between two dates, in cubic metres of water in a cubic metre of soil, in the cells whose retrieval NISAR recommends on both dates.",
       },
       {
         name: "Input",
-        text: "The layer `soilMoisture` of two SME2 products of one track, direction and frame.",
+        text: "The layer `soilMoisture` of two SME2 products of one track, direction and frame, each with the layer `retrievalQualityFlag` of its product, which the form takes by itself.",
       },
       {
         name: "Formula",
-        text: "`soil_moisture_later - soil_moisture_earlier`",
+        text: "`soil_moisture_later - soil_moisture_earlier`, in the cells whose flag has the lowest bit 0 on both dates",
       },
       {
         name: "Result",
-        text: "Cubic metres of water in a cubic metre of soil (m3 m-3). The legend runs from −r to +r, where r is the 99th percentile of the absolute change. Red is a decrease and blue an increase.",
+        text: "Cubic metres of water in a cubic metre of soil (m3 m-3). The legend runs from −r to +r, where r is the 99th percentile of the absolute change. Red is a decrease and blue an increase; the result states how many cells were left out.",
       },
       {
         name: "How to read",
@@ -257,11 +257,11 @@ export const METHODS: Record<SheetTool, Method> = {
       },
       {
         name: "Limits",
-        text: "The products themselves mark most cells as not recommended: 97.9 % to 98.6 % of the cells with a value in the test area (lowest bit of the layer `retrievalQualityFlag`). The tool maps every cell and does not read that flag, and only provisional products existed for the test area on 15 Nov 2026. The product of a date names earlier products of the same track among its inputs, so two dates are not independent measurements.",
+        text: "The products themselves mark most cells as not recommended: 97.9 % to 98.7 % of the cells with a value in the test area (lowest bit of the layer `retrievalQualityFlag`), so the tool leaves most of that area empty. The product of a date names earlier products of the same track among its inputs, so two dates are not independent measurements.",
       },
       {
         name: "Checked",
-        text: "The result equals that of the program `gdal raster calc` of GDAL 3.12.2 in every cell, for three pairs of dates (15 Sep, 27 Sep and 9 Oct 2026), in the test area (lower Merrimack River) and in the whole frames. Both programs read the same GeoTIFF files, not the product files themselves. The range of the legend was compared with no other program.",
+        text: "The result equals that of the program `gdal raster calc` of GDAL 3.12.2 with the rule of the flag in every cell, for ten pairs of dates of the test area (lower Merrimack River, 23 Jun to 9 Oct 2026, and the two beta dates) and three pairs of whole frames. Both programs read the same GeoTIFF files, not the product files themselves. The range of the legend was compared with no other program.",
       },
       {
         name: "References",
@@ -340,6 +340,43 @@ export const METHODS: Record<SheetTool, Method> = {
       {
         name: "References",
         text: "[Touzi et al. (1999)](https://doi.org/10.1109/36.739146), of which the abstract was read. [NISAR L2 GUNW Product Specification, JPL D-102272 Rev E](https://nisar-docs.asf.alaska.edu/product-specification/). [ASF NISAR Cookbook](https://github.com/ASFOpenSARlab/NISAR_Cookbook).",
+      },
+    ],
+  },
+  "soil-moisture-series": {
+    title: "Soil moisture, Series",
+    rows: [
+      {
+        name: "What it shows",
+        text: "The soil moisture of many dates against time, at a point or as the mean of the area, in the cells whose retrieval NISAR recommends on each date.",
+      },
+      {
+        name: "Input",
+        text: "The layer `soilMoisture` of 2 to 25 SME2 products of one track, direction and frame, each with the layer `retrievalQualityFlag` of its product, which the form takes by itself. A point is given by its latitude and longitude.",
+      },
+      {
+        name: "Formula",
+        text: "On each date, the mean of the soil moisture of the cells whose flag has the lowest bit 0. At a point it is the one cell that holds the point, when NISAR recommends its retrieval.",
+      },
+      {
+        name: "Result",
+        text: "A series in cubic metres of water in a cubic metre of soil (m3 m-3): one value for each date, with the number of cells behind it. It is shown as a chart and a table, has no file, and states which cells were left out.",
+      },
+      {
+        name: "How to read",
+        text: "A higher value is a wetter soil. A date without a value has no recommended cell at the point, or in the area. The mean of the area is that of the recommended cells of each date, which may lie in other places on other dates.",
+      },
+      {
+        name: "Limits",
+        text: "In the test area NISAR marks 97.9 % to 98.7 % of the cells with a soil moisture as not recommended on each date, so a series of the area rests on few cells and a series at a point mostly has no value. The ASF NISAR Cookbook holds no notebook of SME2 products, so the statements of its backscatter notebook were applied to the soil moisture. Only provisional and beta products existed for the test area on 15 Nov 2026.",
+      },
+      {
+        name: "Checked",
+        text: "For the mean of the area, the values differ by less than 0.00000003 m3 m-3 from the mean that the code of a notebook of the ASF NISAR Cookbook gives on the same layers with the rule of the flag; at three points with a value on every date the values are equal, and at five points neither gives a value (lower Merrimack River, nine dates from 23 Jun to 9 Oct 2026, and two beta dates).",
+      },
+      {
+        name: "References",
+        text: "[NISAR L3 SME2 Product Specification, JPL D-107677 Rev C](https://nisar-docs.asf.alaska.edu/product-specification/). [NISAR L3 Soil Moisture ATBD, JPL D-107679 Release 3.3](https://nisar-docs.asf.alaska.edu/atbd/). [ASF NISAR Cookbook](https://github.com/ASFOpenSARlab/NISAR_Cookbook).",
       },
     ],
   },

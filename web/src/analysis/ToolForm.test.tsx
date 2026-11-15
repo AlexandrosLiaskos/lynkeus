@@ -30,11 +30,13 @@ import {
   GUNW_SEP,
   laterPair,
   laterSoil,
+  laterSoilFlag,
   laterTerm,
   longPair,
   phase,
   SME2_OCT,
   soil,
+  soilFlag,
   term,
 } from "./testLayers";
 import {
@@ -42,6 +44,7 @@ import {
   GET_COMPONENTS,
   GET_OTHER_PAIR,
   GET_PARTNER,
+  GET_QUALITY,
   OF_ONE_PRODUCT,
   RECEIVE,
   runOf,
@@ -161,6 +164,26 @@ test("the foot shows the progress and the sentence of a job that waits or runs",
   });
 });
 
+test("the foot states the note that the tool gives about its result", () => {
+  const done = job({
+    jobID: "job-1",
+    status: "successful",
+    message: "The result is ready.",
+    progress: 100,
+    layer: "soil-1",
+  });
+  const note =
+    "28,638 of the 29,238 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended.";
+  const result = soil({ id: "soil-1", kind: "result", layer: null, method: "Layer soilMoisture of the product", note });
+  expect(runOf(STARTED, [done], new Set(), [result])).toMatchObject({
+    state: "success",
+    text: `The result is ready. ${note} It is under Layers in the Catalog pane.`,
+  });
+  expect(runOf(STARTED, [done], new Set(), [soil({ id: "soil-1" })])).toMatchObject({
+    text: "The result is ready. It is under Layers in the Catalog pane.",
+  });
+});
+
 test("the foot states that the result is ready, and where it is", () => {
   const done = job({
     jobID: "job-1",
@@ -262,8 +285,10 @@ test("the layer to get is named as the Get layer form names it", () => {
     "coherence-change": "Get the same Coherence layer of two GUNW products of one track and frame.",
     "displacement-state":
       "Get the Unwrapped phase layer and the Connected components layer of one GUNW product, for the same area.",
-    "soil-moisture-state": "Get the Soil moisture layer of an SME2 product.",
-    "soil-moisture-change": "Get the Soil moisture layer of two SME2 products of one track and frame.",
+    "soil-moisture-state":
+      "Get the Soil moisture layer and the Retrieval quality flag layer of an SME2 product, for the same area.",
+    "soil-moisture-change":
+      "Get the Soil moisture layer and the Retrieval quality flag layer of two SME2 products of one track and frame, for the same area.",
   });
   for (const sentence of Object.values(RECEIVE)) {
     expect(sentence).toMatch(/^Get [^.]*\.$/);
@@ -372,8 +397,10 @@ test("Coherence, One pair starts as a job of its process", async () => {
   ]);
 });
 
-test("Soil moisture, One date starts as a job of its process", async () => {
-  show("soil-moisture-state", [soil()]);
+test("Soil moisture, One date starts as a job of its process, with the flag of the product after the layer", async () => {
+  show("soil-moisture-state", [soil(), laterSoilFlag(), soilFlag()]);
+  // The flag is not a layer of the field: the form takes it by itself.
+  expect(options("Layer")).toEqual(["Select a layer", "Soil moisture, 27 Sep 2026 (track 141, frame 67, descending)"]);
   await userEvent.selectOptions(screen.getByLabelText("Layer"), "soil-sep");
   expect(document.querySelector(".tool-pane-body .property-row")).toBeNull();
   await userEvent.click(runButton());
@@ -381,9 +408,22 @@ test("Soil moisture, One date starts as a job of its process", async () => {
     {
       method: "POST",
       address: "/api/processes/soil-moisture-state/execution",
-      content: { inputs: { inputs: ["soil-sep"], title: "Volumetric soil moisture, 27 Sep 2026" } },
+      content: { inputs: { inputs: ["soil-sep", "flag-sep"], title: "Volumetric soil moisture, 27 Sep 2026" } },
     },
   ]);
+});
+
+test("Soil moisture, One date states in one sentence what to get when the flag of the product is missing", async () => {
+  show("soil-moisture-state", [soil(), laterSoilFlag()]);
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "soil-sep");
+  expect(GET_QUALITY).toBe(
+    "The Retrieval quality flag layer of this product is not in the session. Get the Retrieval quality flag layer of the same product, for the same area.",
+  );
+  expect(screen.getByText(GET_QUALITY)).toBeDefined();
+  expect(missing()).toBe("The Retrieval quality flag layer of this product is not in the session.");
+  expect(runButton().getAttribute("aria-disabled")).toBe("true");
+  await userEvent.click(screen.getByRole("button", { name: "Get layer" }));
+  expect(dockStore.get().tools).toContain(GET_LAYER_PANE);
 });
 
 test.each([
@@ -395,6 +435,8 @@ test.each([
     soil(),
     laterSoil({ id: "track-104", inputs: [SME2_OCT.replace("_141_D_067_", "_104_A_067_")] }),
     term(),
+    laterSoilFlag(),
+    soilFlag(),
   ]);
   expect(screen.getByLabelText<HTMLSelectElement>("Layer of the other date").disabled).toBe(true);
   await userEvent.selectOptions(screen.getByLabelText("Layer"), first);
@@ -409,7 +451,10 @@ test.each([
       method: "POST",
       address: "/api/processes/soil-moisture-change/execution",
       content: {
-        inputs: { inputs: ["soil-sep", "soil-oct"], title: "Change of soil moisture, 27 Sep 2026 to 9 Oct 2026" },
+        inputs: {
+          inputs: ["soil-sep", "flag-sep", "soil-oct", "flag-oct"],
+          title: "Change of soil moisture, 27 Sep 2026 to 9 Oct 2026",
+        },
       },
     },
   ]);
@@ -813,7 +858,12 @@ test("a form with a layer shows its fields in their order, and nothing else", as
 
 test.each([
   ["coherence-change", [earlierPair(), laterPair()], ["pair-sep", "pair-oct"], "Layer of the other pair"],
-  ["soil-moisture-change", [soil(), laterSoil()], ["soil-sep", "soil-oct"], "Layer of the other date"],
+  [
+    "soil-moisture-change",
+    [soil(), laterSoil(), soilFlag(), laterSoilFlag()],
+    ["soil-sep", "soil-oct"],
+    "Layer of the other date",
+  ],
 ] as const)(
   "the form of %s shows the fields of a tool that compares, and nothing else",
   async (tool, layers, ids, other) => {
@@ -833,7 +883,7 @@ test.each([
 );
 
 test("the form of Soil moisture, One date shows the fields of a tool of one input, and nothing else", async () => {
-  show("soil-moisture-state", [soil()]);
+  show("soil-moisture-state", [soil(), soilFlag()]);
   await userEvent.selectOptions(screen.getByLabelText("Layer"), "soil-sep");
   const body = document.querySelector(".tool-pane-body");
   expect(Array.from(body?.querySelectorAll("label") ?? [], (label) => label.textContent)).toEqual([

@@ -139,7 +139,7 @@ test("every article of the list is cited by its address in a method sheet or in 
     "https://doi.org/10.1080/01431168908903939",
     "https://doi.org/10.1038/s41467-020-19160-7",
   ]);
-  expect(SOURCES.filter(({ url }) => url.startsWith("https://doi.org/10.5067/"))).toHaveLength(4);
+  expect(SOURCES.filter(({ url }) => url.startsWith("https://doi.org/10.5067/"))).toHaveLength(5);
   for (const { url } of articles) {
     expect(`${SHEETS}\n${NOTES}`).toContain(url);
   }
@@ -182,6 +182,20 @@ test("the two provisional collections are those that the notes of the new tools 
   const moisture = source("NISAR Provisional Soil Moisture");
   expect(moisture.version).toBe("Collection NISAR_L3_SME2_PROVISIONAL_V1");
   expect(moisture.url).toBe("https://doi.org/10.5067/NIL3SME2-P1");
+  // The beta products of the pilot frame, which the soil moisture tools were compared on as well.
+  expect(SOIL_MOISTURE_NOTE).toContain("`NISAR_L3_SME2_BETA_V1` (DOI 10.5067/NIL3SME2-B1)");
+  const beta = source("NISAR Beta Soil Moisture");
+  expect(beta.version).toBe("Collection NISAR_L3_SME2_BETA_V1");
+  expect(beta.url).toBe("https://doi.org/10.5067/NIL3SME2-B1");
+});
+
+test("the source program of Soil moisture, Series is the Cookbook, applied to the soil moisture as its note states", () => {
+  const sheet = oneLine(readFileSync("../docs/methods/soil-moisture-series.md", "utf8"));
+  expect(sheet).toContain("The ASF NISAR Cookbook holds no notebook of SME2 products");
+  expect(source("ASF NISAR Cookbook").use).toContain(
+    "for Soil moisture, Series their statements are applied to the soil moisture",
+  );
+  expect(oneLine(SOIL_MOISTURE_NOTE)).toContain("The ASF NISAR Cookbook holds no notebook of SME2 products");
 });
 
 test("the sources of the Series tools are those that their method sheets cite", () => {

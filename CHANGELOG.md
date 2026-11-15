@@ -115,6 +115,9 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   from the ISO XML file of the product.
 - The sources of Surface displacement, One pair in the dialog Sources of the Help tab.
 - The analysis tools Backscatter, Series and Coherence, Series: the values of many dates against time, at a point or for the area, shown as a chart with a table in the pane Series and listed under Series in the Catalog pane.
+- The analysis tool Soil moisture, Series: the soil moisture of many dates, at a point or for the area, in the
+  cells whose retrieval NISAR recommends, with its method sheet and its sources.
+- The layer Retrieval quality flag of SME2 products in Get layer.
 
 ### Changed
 
@@ -184,6 +187,9 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - A notice in a pane and the outcome at the foot of a tool pane, such as those of Get layer and Search products,
   have an X that closes them. A closed notice returns when its text changes or its pane opens again, and a closed
   outcome with the next run.
+- Soil moisture, One date and Change leave out the cells that the product marks as not recommended. Their forms
+  take the Retrieval quality flag layer of each product by themselves, and a result says how many cells were left
+  out.
 
 ### Removed
 

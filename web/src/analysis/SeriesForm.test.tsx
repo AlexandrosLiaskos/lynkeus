@@ -18,8 +18,8 @@ import type { ServerName } from "../shared/servers";
 import { rowOf } from "./methods";
 import { METHODS } from "./methodSheets";
 import { ANGLE_FAULTS, NO_LAYERS, SERIES_TOOLS, type SeriesTool } from "./series";
-import { ABOUT_SERIES, ownServerSentence, RECEIVE_SERIES, SeriesForm, seriesRunOf } from "./SeriesForm";
-import { coherence, laterTerm, term } from "./testLayers";
+import { ABOUT_SERIES, GET_FLAGS, ownServerSentence, RECEIVE_SERIES, SeriesForm, seriesRunOf } from "./SeriesForm";
+import { coherence, laterSoil, laterSoilFlag, laterTerm, soil, soilFlag, term } from "./testLayers";
 import type { Started } from "./ToolForm";
 
 let server: StandIn;
@@ -314,4 +314,59 @@ test("a job that the form started is followed to its end, and the foot offers th
   expect(screen.getByText("The series is ready. It is under Series in the Catalog pane.")).toBeDefined();
   await userEvent.click(screen.getByRole("button", { name: "Show the series" }));
   expect(shownSeriesStore.get()).toBe(series().id);
+});
+
+test("Soil moisture, Series offers the soil moisture layers and sends the flag of the product of each after it", async () => {
+  show("soil-moisture-series", [laterSoil(), soil(), laterSoilFlag(), soilFlag()]);
+  expect(boxes()).toEqual([
+    ["Soil moisture, 27 Sep 2026", true],
+    ["Soil moisture, 9 Oct 2026", true],
+  ]);
+  expect(screen.getByLabelText<HTMLInputElement>("Series name").value).toBe(
+    "Series of volumetric soil moisture, 27 Sep 2026 to 9 Oct 2026",
+  );
+  expect(missing()).toBeNull();
+  await userEvent.click(runButton());
+  expect(server.sent("POST")).toEqual([
+    {
+      method: "POST",
+      address: "/api/processes/soil-moisture-series/execution",
+      content: {
+        inputs: {
+          inputs: ["soil-sep", "flag-sep", "soil-oct", "flag-oct"],
+          title: "Series of volumetric soil moisture, 27 Sep 2026 to 9 Oct 2026",
+        },
+      },
+    },
+  ]);
+});
+
+test("Soil moisture, Series states what to get when the flag of the product of a chosen date is missing", async () => {
+  show("soil-moisture-series", [laterSoil(), soil(), soilFlag()]);
+  expect(missing()).toBe("The Retrieval quality flag layer of the product of 9 Oct 2026 is not in the session.");
+  expect(GET_FLAGS).toBe("Get the Retrieval quality flag layer of the product of each date, for the same area.");
+  expect(screen.getByText(GET_FLAGS)).toBeDefined();
+  expect(runButton().getAttribute("aria-disabled")).toBe("true");
+  await userEvent.click(screen.getByRole("button", { name: "Get layer" }));
+  expect(dockStore.get().tools).toContain(GET_LAYER_PANE);
+});
+
+test("the foot states the note that the tool gives about the series", () => {
+  const done = job({
+    jobID: "job-1",
+    status: "successful",
+    message: "The series is ready.",
+    progress: 100,
+    series: "series-1",
+  });
+  const note =
+    "On each date the cells whose retrieval NISAR marks as not recommended are left out: from 97.9 % to 98.6 % of the cells with a soil moisture.";
+  const known = [{ ...series(), id: "series-1", note }];
+  expect(seriesRunOf(STARTED, [done], new Set(["series-1"]), known)).toMatchObject({
+    state: "success",
+    text: `The series is ready. ${note} It is under Series in the Catalog pane.`,
+  });
+  expect(seriesRunOf(STARTED, [done], new Set(["series-1"]))).toMatchObject({
+    text: "The series is ready. It is under Series in the Catalog pane.",
+  });
 });
