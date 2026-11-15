@@ -1,7 +1,6 @@
 import { useEffect, useId, useMemo, useState } from "react";
 import { EmptyState } from "../shared/empty/EmptyState";
 import { FieldTitle, infoId } from "../shared/field/FieldTitle";
-import { Info } from "../shared/info/Info";
 import type { LayerDescription } from "../shared/layer";
 import { mapLayersStore } from "../shared/mapLayers";
 import { Notice } from "../shared/notice/Notice";
@@ -284,6 +283,11 @@ function SymbologyOf({ layer }: { layer: LayerDescription }) {
       runLabel="Apply"
       onRun={apply}
       run={run}
+      secondary={{
+        label: "Reset display",
+        onClick: reset,
+        info: "The layer returns at once to the display with which it was added to the map.",
+      }}
     >
       <div className="symbology-layer">
         <p className="item-title">{layer.title}</p>
@@ -544,20 +548,6 @@ function SymbologyOf({ layer }: { layer: LayerDescription }) {
         {message("maskLowest")}
         {message("maskHighest")}
       </Section>
-
-      <div className="info-title">
-        <button
-          type="button"
-          className="usa-button usa-button--unstyled"
-          aria-describedby={`${id}-reset-info`}
-          onClick={reset}
-        >
-          Reset display
-        </button>
-        <Info id={`${id}-reset-info`} about="Reset display">
-          The layer returns at once to the display with which it was added to the map.
-        </Info>
-      </div>
     </ToolPane>
   );
 }

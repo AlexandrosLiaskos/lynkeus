@@ -33,6 +33,14 @@
   padding: tokens.$space-2 tokens.$pane-padding;
 }
 
+// The secondary command of the tool, a link at the left end of the foot, with the button of its explanation.
+.tool-pane-secondary {
+  display: flex;
+  flex: none;
+  align-items: center;
+  margin-right: auto;
+}
+
 // What the tool still lacks, beside the inactive run button.
 .tool-pane-missing {
   flex: 1;

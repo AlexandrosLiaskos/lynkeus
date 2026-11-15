@@ -409,9 +409,10 @@ test("the button Restore defaults returns the first choices with the view of the
   await searchNow();
   expect(screen.getByRole("alert")).toBeDefined();
   const restore = screen.getByRole("button", { name: "Restore defaults" });
-  // The link stands at the foot of the form, after every field and group.
-  expect(restore.closest(".search-foot")?.nextElementSibling).toBeNull();
-  expect(restore.closest("details")).toBeNull();
+  // The link stands in the foot of the pane, before the run button.
+  expect(restore.closest(".tool-pane-foot")).not.toBeNull();
+  expect(restore.className).toContain("usa-button--unstyled");
+  expect(restore.closest(".tool-pane-secondary")?.nextElementSibling?.textContent).toBe("Search");
   await userEvent.click(restore);
   expect(group("Orbit").open).toBe(false);
   expect(screen.queryByRole("alert")).toBeNull();
