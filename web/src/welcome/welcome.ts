@@ -28,10 +28,10 @@ export const WELCOME = {
   image: { file: "nisar.webp", credit: "Image: NASA/JPL-Caltech, artist's concept" },
   team: [
     {
-      name: "Alexandros Liaskos",
+      name: "Alex Liaskos",
       photo: "alexandros-liaskos.webp",
       address: "https://liaskos.eu/",
-      label: "Site of Alexandros Liaskos",
+      label: "Site of Alex Liaskos",
     },
     {
       name: "Stelios Simiakos",
