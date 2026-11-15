@@ -93,10 +93,10 @@ class LayerDescription(Format):
         before this field existed has none.
     frequency : float or None
         Centre frequency of the radar band of the layer, in hertz, as the
-        product states it. A layer received from NASA has one when its values
-        are a phase and the product states the frequency. Every other layer
-        has none, a result has none, and a description stored before this
-        field existed has none.
+        product states it. The layer ``unwrappedPhase`` of a GUNW product has
+        one when it was received from NASA and the product states the
+        frequency. Every other layer has none, a result has none, and a
+        description stored before this field existed has none.
     program : str
         Program and version that produced the file.
     method : str or None
