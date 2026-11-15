@@ -2,8 +2,10 @@ import type { Source } from "../shared/sources";
 
 /**
  * The methods, programs and datasets that the Analysis and Help tabs use. The entries are those of part 6 of
- * `docs/research/analysis.md`. NumPy, Rasterio and harmony-py stand in the list of the Data part, which the page
- * Sources shows beside this one, because a name stands in the lists once.
+ * `docs/research/analysis.md` and, for the tools Coherence, Change and Soil moisture, One date and Change, the
+ * references, the source programs and the data of part 6 of `docs/research/analysis-coherence-change.md` and of
+ * `docs/research/analysis-soil-moisture.md`. NumPy, Rasterio and harmony-py stand in the list of the Data part,
+ * which the page Sources shows beside this one, because a name stands in the lists once.
  */
 export const SOURCES: readonly Source[] = [
   {
@@ -18,7 +20,22 @@ export const SOURCES: readonly Source[] = [
     version: "Rev E, version 1.2.1, 8 November 2024",
     licence: "Copyright 2024 California Institute of Technology. Government sponsorship acknowledged",
     url: "https://nisar-docs.asf.alaska.edu/product-specification/",
-    use: "The layers coherenceMagnitude of a GUNW product, for Coherence, One pair.",
+    use: "The layers coherenceMagnitude of a GUNW product, for the two coherence tools.",
+  },
+  {
+    name: "NASA SDS Product Specification, Level-3 Soil Moisture (L3 SME2), JPL D-107677",
+    version: "Rev C, version 1.0.0, 8 November 2024",
+    licence: "Copyright 2024 California Institute of Technology. Government sponsorship acknowledged",
+    url: "https://nisar-docs.asf.alaska.edu/product-specification/",
+    use: "The layer soilMoisture of an SME2 product, its unit, its grid and its quality flags, for the two soil moisture tools.",
+  },
+  {
+    name: "NISAR L3 Soil Moisture Data Product, Algorithm Theoretical Basis Document (ATBD), JPL D-107679",
+    version: "Release 3.3, 28 April 2023",
+    licence:
+      "Cleared for unlimited release (CL#23-2417, page 3 of the document); no licence is stated on its first five pages",
+    url: "https://nisar-docs.asf.alaska.edu/atbd/",
+    use: "The retrieval algorithms of the soil moisture, its quality flags and the accuracy goal of the mission.",
   },
   {
     name: "NISAR product specification files nisar_L2_GCOV.xml and nisar_L2_GUNW.xml",
@@ -32,7 +49,7 @@ export const SOURCES: readonly Source[] = [
     version: "Rev C, 19 October 2025",
     licence: "All rights reserved (section 1.5 of the document)",
     url: "https://nisar-docs.asf.alaska.edu/naming-conventions/",
-    use: "The fields of the name of a product file from which the tools and their forms read the instrument, the product type, the track, the direction and the frame.",
+    use: "The fields of the name of a product file from which the tools and their forms read the instrument, the product type, the track, the direction, the frame and, for a pair of dates, the bandwidth mode.",
   },
   {
     name: "ASF NISAR Cookbook",
@@ -56,6 +73,13 @@ export const SOURCES: readonly Source[] = [
     use: "The legends of the backscatter in decibels and of the coherence.",
   },
   {
+    name: "GDAL",
+    version: "3.12.2",
+    licence: "MIT style licence (file LICENSE.TXT at the tag v3.12.2)",
+    url: "https://github.com/OSGeo/gdal",
+    use: "Source program of the comparison of Coherence, Change and of Soil moisture, Change (program gdal raster calc). The tools do not use it.",
+  },
+  {
     name: "Rignot and van Zyl (1993), Change detection techniques for ERS-1 SAR data",
     licence: "IEEE licence for its publications, named in the Crossref record of the article",
     url: "https://doi.org/10.1109/36.239913",
@@ -71,13 +95,37 @@ export const SOURCES: readonly Source[] = [
     name: "Touzi, Lopes, Bruniquel and Vachon (1999), Coherence estimation for SAR imagery",
     licence: "IEEE licence for its publications, named in the Crossref record of the article",
     url: "https://doi.org/10.1109/36.739146",
-    use: "How to read the coherence.",
+    use: "How to read the coherence, and why Coherence, Change compares layers of one spacing.",
   },
   {
     name: "Zebker and Villasenor (1992), Decorrelation in interferometric radar echoes",
     licence: "IEEE licence for its publications, named in the Crossref record of the article",
     url: "https://doi.org/10.1109/36.175330",
     use: "How to read the coherence.",
+  },
+  {
+    name: "Fielding et al. (2005), Surface ruptures and building damage of the 2003 Bam, Iran, earthquake mapped by satellite synthetic aperture radar interferometric correlation",
+    licence: "Terms and conditions of Wiley Online Library, named in the Crossref record of the article",
+    url: "https://doi.org/10.1029/2004JB003299",
+    use: "Method of Coherence, Change. Its abstract was read.",
+  },
+  {
+    name: "Stephenson et al. (2022), Deep Learning-Based Damage Mapping With InSAR Coherence Time Series",
+    licence: "IEEE licence for its publications, named in the Crossref record of the article",
+    url: "https://doi.org/10.1109/TGRS.2021.3084209",
+    use: "Method of Coherence, Change, and the effect of the time between the two dates of a pair. It was read as the accepted manuscript, arXiv:2105.11544.",
+  },
+  {
+    name: "Plank (2014), Rapid Damage Assessment by Means of Multi-Temporal SAR — A Comprehensive Review and Outlook to Sentinel-1",
+    licence: "CC-BY-3.0",
+    url: "https://doi.org/10.3390/rs6064870",
+    use: "Which two pairs of dates Coherence, Change compares.",
+  },
+  {
+    name: "Singh (1989), Digital change detection techniques using remotely-sensed data",
+    licence: "No licence is named in the Crossref record of the article (publisher Informa UK Limited)",
+    url: "https://doi.org/10.1080/01431168908903939",
+    use: "Method of Soil moisture, Change: the difference of the images of two dates. Its section 4.1 was read.",
   },
   {
     name: "Crameri, Shephard and Heron (2020), The misuse of colour in science communication",
@@ -97,7 +145,21 @@ export const SOURCES: readonly Source[] = [
     version: "Collection NISAR_L2_GUNW_V1",
     licence: "NASA ESDIS Data Use and Citation Guidance; free and open data",
     url: "https://doi.org/10.5067/NIL2GUNW-V1",
-    use: "The GUNW product of the pilot area on which Coherence, One pair was measured and compared.",
+    use: "The GUNW product of the pilot area on which Coherence, One pair was measured and compared, and one of the five products of the comparison of Coherence, Change.",
+  },
+  {
+    name: "NISAR Provisional Geocoded Unwrapped Interferogram Product (Version 1)",
+    version: "Collection NISAR_L2_GUNW_PROVISIONAL_V1",
+    licence: "NASA ESDIS Data Use and Citation Guidance; free and open data",
+    url: "https://doi.org/10.5067/NIL2GUNW-P1",
+    use: "Four of the five GUNW products of the pilot area on which Coherence, Change was measured and compared.",
+  },
+  {
+    name: "NISAR Provisional Soil Moisture (Version 1)",
+    version: "Collection NISAR_L3_SME2_PROVISIONAL_V1",
+    licence: "NASA ESDIS Data Use and Citation Guidance; free and open data",
+    url: "https://doi.org/10.5067/NIL3SME2-P1",
+    use: "The SME2 products of the pilot area on which the two soil moisture tools were measured and compared.",
   },
   {
     name: "Environment of the source program in the comparison: numpy, xarray, dask, rioxarray and rasterio",

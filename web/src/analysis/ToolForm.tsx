@@ -3,7 +3,6 @@ import { addWhenReadyStore } from "../data/follow";
 import { JobFields } from "../data/JobFields";
 import { dismissJob, isUnfinished, jobsStore, startJob, STATUS_WORDS, type Job } from "../data/jobs";
 import { layersStore } from "../data/layers";
-import { formatDay } from "../data/products";
 import { wordsOf } from "../data/service";
 import { GET_LAYER_PANE } from "../data/state";
 import { methodsStore } from "../help/state";
@@ -25,15 +24,18 @@ import { METHODS } from "./methodSheets";
 import {
   accepted,
   check,
+  comparisonOf,
+  datesWords,
   defaultTitle,
   layerOption,
   missingOf,
   MOST_TITLE,
   NO_INPUT,
+  NO_OTHER_PAIR,
   NO_PARTNER,
   partners,
-  READS,
   unnamed,
+  type Comparison,
   type FinishedTool,
 } from "./tools";
 
@@ -41,6 +43,8 @@ import {
 export const ABOUT = {
   layer: "A layer that this session received with Get layer.",
   pair: "The same layer of two dates of one track and frame. The earlier date is taken first.",
+  pairs:
+    "The same coherence layer of two pairs of dates of one track and frame, which span the same number of days; the earlier pair is taken first.",
   title: "The name of the result in the Catalog and Contents panes.",
 } as const;
 
@@ -49,10 +53,22 @@ export const RECEIVE: Record<FinishedTool, string> = {
   "backscatter-state": "Get a Backscatter layer of a GCOV product.",
   "backscatter-change": "Get the same Backscatter layer of two GCOV products of one track and frame.",
   "coherence-state": "Get a Coherence layer of a GUNW product.",
+  "coherence-change": "Get the same Coherence layer of two GUNW products of one track and frame.",
+  "soil-moisture-state": "Get the Soil moisture layer of an SME2 product.",
+  "soil-moisture-change": "Get the Soil moisture layer of two SME2 products of one track and frame.",
 };
 
-/** What the form states when no layer of the session can stand beside the first layer of Backscatter, Change. */
+/** What the form states when no layer of the session can stand beside the first layer of a tool of two dates. */
 export const GET_PARTNER = `${NO_PARTNER} Get the same layer of another date of the same track and frame.`;
+
+/** The same statement for Coherence, Change, which compares two pairs of dates. */
+export const GET_OTHER_PAIR = `${NO_OTHER_PAIR} Get the same layer of another pair of dates of the same track and frame.`;
+
+/** The words of the second field of a tool that compares, by what the tool compares. */
+export const SECOND: Record<Comparison, { title: string; about: string; get: string }> = {
+  dates: { title: "Layer of the other date", about: ABOUT.pair, get: GET_PARTNER },
+  pairs: { title: "Layer of the other pair", about: ABOUT.pairs, get: GET_OTHER_PAIR },
+};
 
 /**
  * State that layers of the session cannot be used, and how they become usable. They are the layers whose
@@ -186,8 +202,10 @@ function showMethod(tool: FinishedTool): void {
 
 /**
  * The form of a finished analysis tool, in the tool pane: one form for all tools. It shows the field of the
- * layer, or the two fields of Backscatter, Change with the two dates in their order, the name of the result,
- * for which the form proposes one, and the box that adds the result to the map. The "i" of the pane states what
+ * layer, or the two fields of a tool that compares two dates or two pairs of dates, with the dates in their
+ * order, the name of the result, for which the form proposes one, and the box that adds the result to the map.
+ * The second field offers the layers that can stand beside the first, and states in one sentence why the tool
+ * does not compare the two layers that are chosen. The "i" of the pane states what
  * the tool shows, and the link Method at the foot opens the page Methods at the tool. While a choice is missing
  * or impossible, the foot of the pane states the first fault, and a field that was left states its own, with the
  * shared `FieldError`. Without a layer that the tool reads, the pane names the layer to get and offers the Get
@@ -209,11 +227,12 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
   const [started, setStarted] = useState<Started | null>(null);
 
   const method = METHODS[tool];
-  const two = READS[tool].count === 2;
+  const comparison = comparisonOf(tool);
+  const words = comparison === null ? null : SECOND[comparison];
   const layers = entries.map((entry) => entry.layer);
   const offered = accepted(tool, layers);
   const one = offered.find((layer) => layer.id === first);
-  const beside = one && two ? partners(one, layers) : [];
+  const beside = one && words ? partners(tool, one, layers) : [];
   const without = unnamed(tool, layers);
 
   // The layers are put in the order of the tool before the name is proposed from them.
@@ -283,17 +302,17 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
           <LayerField
             id={`${id}-first`}
             title="Layer"
-            about={two ? ABOUT.pair : ABOUT.layer}
+            about={words ? words.about : ABOUT.layer}
             layers={offered}
             chosen={first}
             fault={faults.first}
             onChoose={setFirst}
           />
-          {two ? (
+          {words ? (
             <LayerField
               id={`${id}-second`}
-              title="Layer of the other date"
-              about={ABOUT.pair}
+              title={words.title}
+              about={words.about}
               layers={beside}
               chosen={second}
               fault={faults.second}
@@ -301,27 +320,13 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
               onChoose={setSecond}
             />
           ) : null}
-          {one && two && beside.length === 0 ? (
+          {one && words && beside.length === 0 ? (
             <Notice kind="info" action={{ label: "Get layer", onClick: openGetLayer }}>
-              {GET_PARTNER}
+              {words.get}
             </Notice>
           ) : null}
           {chosen.length === 2 ? (
-            <PropertyList
-              groups={[
-                {
-                  rows: [
-                    {
-                      name: "Dates",
-                      value: chosen
-                        .flatMap((layer) => layer.dates)
-                        .map(formatDay)
-                        .join(" to "),
-                    },
-                  ],
-                },
-              ]}
-            />
+            <PropertyList groups={[{ rows: [{ name: "Dates", value: datesWords(tool, chosen) }] }]} />
           ) : null}
 
           <FieldTitle field={`${id}-title`} title="Result name">

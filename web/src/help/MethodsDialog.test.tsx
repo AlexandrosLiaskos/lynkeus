@@ -57,6 +57,9 @@ test("the page shows one section for each finished tool, under the title of its 
     "Backscatter, One date",
     "Backscatter, Change",
     "Coherence, One pair",
+    "Coherence, Change",
+    "Soil moisture, One date",
+    "Soil moisture, Change",
   ]);
   expect(screen.getAllByRole("heading", { level: 3 }).map((heading) => heading.textContent)).toEqual(
     FINISHED_TOOLS.map((tool) => METHODS[tool].title),
@@ -69,8 +72,20 @@ test("the section of the tool that a form asked for is open, and the others are 
   const expanded = FINISHED_TOOLS.map((tool) =>
     screen.getByRole("button", { name: METHODS[tool].title, hidden: true }).getAttribute("aria-expanded"),
   );
-  expect(expanded).toEqual(["false", "true", "false"]);
+  expect(expanded).toEqual(["false", "true", "false", "false", "false", "false"]);
 });
+
+test.each(["coherence-change", "soil-moisture-state", "soil-moisture-change"] as const)(
+  "the link Method of %s opens its section alone",
+  (asked) => {
+    render(<MethodsDialog />);
+    act(() => methodsStore.set({ open: true, tool: asked }));
+    for (const tool of FINISHED_TOOLS) {
+      const toggle = screen.getByRole("button", { name: METHODS[tool].title, hidden: true });
+      expect(toggle.getAttribute("aria-expanded")).toBe(tool === asked ? "true" : "false");
+    }
+  },
+);
 
 test("the dialog closes, and keeps no section drawn while it is closed", () => {
   render(<MethodsDialog />);

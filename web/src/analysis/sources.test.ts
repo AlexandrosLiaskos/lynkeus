@@ -4,9 +4,16 @@ import { sourceFaults } from "../help/sources";
 import { SOURCES } from "./sources";
 import { FINISHED_TOOLS } from "./tools";
 
-/** The texts of the three method sheets and of the research note of the part, as the repository holds them. */
+/**
+ * The texts of the method sheets of the finished tools and of the research notes of the part, as the repository
+ * holds them. The first note holds the tools of level 1; the tools Coherence, Change and Soil moisture, One date
+ * and Change have their own notes.
+ */
 const SHEETS = FINISHED_TOOLS.map((tool) => readFileSync(`../docs/methods/${tool}.md`, "utf8")).join("\n");
 const NOTE = readFileSync("../docs/research/analysis.md", "utf8");
+const COHERENCE_CHANGE_NOTE = readFileSync("../docs/research/analysis-coherence-change.md", "utf8");
+const SOIL_MOISTURE_NOTE = readFileSync("../docs/research/analysis-soil-moisture.md", "utf8");
+const NOTES = [NOTE, COHERENCE_CHANGE_NOTE, SOIL_MOISTURE_NOTE].join("\n");
 
 /** A text with every run of white space as one space. */
 function oneLine(text: string): string {
@@ -40,6 +47,20 @@ test("the specifications carry the revision, the version and the date that the m
   expect(source("Science Data Systems (SDS) L-SAR Product File Naming Conventions").version).toBe(
     "Rev C, 19 October 2025",
   );
+  expect(sheets).toContain("JPL D-107677, Rev C, version 1.0.0, 8 November 2024");
+  expect(source("NASA SDS Product Specification, Level-3 Soil Moisture").version).toBe(
+    "Rev C, version 1.0.0, 8 November 2024",
+  );
+  expect(sheets).toContain("JPL D-107679, Release 3.3, 28 April 2023");
+  expect(source("NISAR L3 Soil Moisture Data Product, Algorithm Theoretical Basis Document").version).toBe(
+    "Release 3.3, 28 April 2023",
+  );
+  expect(oneLine(SOIL_MOISTURE_NOTE)).toContain(
+    "NASA SDS Product Specification, Level-3 Soil Moisture (L3_SME2), JPL D-107677, Rev C, version 1.0.0, 8 November 2024",
+  );
+  expect(oneLine(SOIL_MOISTURE_NOTE)).toContain(
+    "NISAR L3 Soil Moisture Data Product, ATBD, JPL D-107679, Release 3.3, 28 April 2023",
+  );
 });
 
 test("the source programs carry the versions that the method sheets cite", () => {
@@ -60,18 +81,59 @@ test("the source programs carry the versions that the method sheets cite", () =>
   expect(source("Matplotlib").version).toBe("3.11.2");
 });
 
+test("the source program of the comparisons of the two new change tools is the one that their notes name", () => {
+  const sheets = oneLine(SHEETS);
+  expect(sheets).toContain('`GDAL 3.12.2 "Chicoutimi", released 2026/02/03`');
+  expect(sheets).toContain('GDAL 3.12.2 "Chicoutimi", released 2026/02/03, in the image');
+  expect(source("GDAL").version).toBe("3.12.2");
+  expect(COHERENCE_CHANGE_NOTE).toContain(
+    '| [GDAL](https://github.com/OSGeo/gdal) | 3.12.2 (`GDAL 3.12.2 "Chicoutimi", released 2026/02/03`) | MIT style (`LICENSE.TXT` at the tag v3.12.2) | Source program of the comparison |',
+  );
+  expect(source("GDAL").url).toBe("https://github.com/OSGeo/gdal");
+  expect(source("GDAL").licence).toBe("MIT style licence (file LICENSE.TXT at the tag v3.12.2)");
+  expect(SOIL_MOISTURE_NOTE).toContain("| GDAL 3.12.2 | The image `ghcr.io/osgeo/gdal:alpine-small-3.12.2`");
+});
+
 test("every article of the list is cited by its address in a method sheet or in the research note", () => {
-  const articles = SOURCES.filter(({ url }) => url.startsWith("https://doi.org/10.1"));
+  // An address of the DOI resolver names an article, or a dataset of NASA under the prefix 10.5067.
+  const articles = SOURCES.filter(
+    ({ url }) => url.startsWith("https://doi.org/10.") && !url.startsWith("https://doi.org/10.5067/"),
+  );
   expect(articles.map(({ url }) => url)).toEqual([
     "https://doi.org/10.1109/36.239913",
     "https://doi.org/10.1109/TGRS.2022.3147472",
     "https://doi.org/10.1109/36.739146",
     "https://doi.org/10.1109/36.175330",
+    "https://doi.org/10.1029/2004JB003299",
+    "https://doi.org/10.1109/TGRS.2021.3084209",
+    "https://doi.org/10.3390/rs6064870",
+    "https://doi.org/10.1080/01431168908903939",
     "https://doi.org/10.1038/s41467-020-19160-7",
   ]);
+  expect(SOURCES.filter(({ url }) => url.startsWith("https://doi.org/10.5067/"))).toHaveLength(4);
   for (const { url } of articles) {
-    expect(`${SHEETS}\n${NOTE}`).toContain(url);
+    expect(`${SHEETS}\n${NOTES}`).toContain(url);
   }
+});
+
+test("the articles of the three new tools are sources of their own research notes", () => {
+  // Part 6 of each note lists its sources; an article of a new tool is cited there and in the sheet of its tool.
+  const sheetOf = (tool: string) => readFileSync(`../docs/methods/${tool}.md`, "utf8");
+  for (const url of [
+    "https://doi.org/10.1029/2004JB003299",
+    "https://doi.org/10.1109/TGRS.2021.3084209",
+    "https://doi.org/10.3390/rs6064870",
+  ]) {
+    expect(COHERENCE_CHANGE_NOTE).toContain(`<${url}>`);
+    expect(sheetOf("coherence-change")).toContain(`<${url}>`);
+    expect(NOTE).not.toContain(url);
+  }
+  expect(COHERENCE_CHANGE_NOTE).toContain("manuscript <https://arxiv.org/abs/2105.11544>");
+  expect(source("Stephenson et al. (2022)").use).toContain("arXiv:2105.11544");
+  const singh = "https://doi.org/10.1080/01431168908903939";
+  expect(SOIL_MOISTURE_NOTE).toContain(`<${singh}>`);
+  expect(sheetOf("soil-moisture-change")).toContain(`<${singh}>`);
+  expect(NOTE).not.toContain(singh);
 });
 
 test("the two collections of the data are those that the research note names", () => {
@@ -79,4 +141,16 @@ test("the two collections of the data are those that the research note names", (
   expect(NOTE).toContain("NISAR_L2_GUNW_V1");
   expect(source("NISAR Validated Geocoded Polarimetric").version).toBe("Collection NISAR_L2_GCOV_V1");
   expect(source("NISAR Validated Geocoded Unwrapped").version).toBe("Collection NISAR_L2_GUNW_V1");
+});
+
+test("the two provisional collections are those that the notes of the new tools name, with their addresses", () => {
+  expect(COHERENCE_CHANGE_NOTE).toContain("`NISAR_L2_GUNW_PROVISIONAL_V1`");
+  expect(COHERENCE_CHANGE_NOTE).toContain("<https://doi.org/10.5067/NIL2GUNW-P1>");
+  const interferograms = source("NISAR Provisional Geocoded Unwrapped");
+  expect(interferograms.version).toBe("Collection NISAR_L2_GUNW_PROVISIONAL_V1");
+  expect(interferograms.url).toBe("https://doi.org/10.5067/NIL2GUNW-P1");
+  expect(SOIL_MOISTURE_NOTE).toContain("`NISAR_L3_SME2_PROVISIONAL_V1` (DOI 10.5067/NIL3SME2-P1)");
+  const moisture = source("NISAR Provisional Soil Moisture");
+  expect(moisture.version).toBe("Collection NISAR_L3_SME2_PROVISIONAL_V1");
+  expect(moisture.url).toBe("https://doi.org/10.5067/NIL3SME2-P1");
 });
