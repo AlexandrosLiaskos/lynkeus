@@ -24,7 +24,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from rio_cogeo.cogeo import cog_validate
 
-from lynkeus import __version__, harmony, jobs, offered, server
+from lynkeus import __version__, harmony, jobs, offered, server, sessions
 from lynkeus.analysis import SERIES_TOOLS, TOOLS
 from lynkeus.layers import LayerRequest
 from lynkeus.processes import Work
@@ -327,7 +327,7 @@ def test_layer_is_received_in_a_job_and_listed_in_the_session(site: Site) -> Non
     assert site.token not in site.client.get("/api/jobs").text + json.dumps(record) + json.dumps(description)
 
 
-def test_tool_runs_on_two_layers_of_the_session(site: Site) -> None:
+def test_tool_runs_on_two_layers_of_the_account(site: Site) -> None:
     site.sign_in()
     jobs_of_layers = [site.start("get-layer", **{**REQUEST, "layer": layer})["jobID"] for layer in ("HHHH", "HVHV")]
     first, second = (site.result(job) for job in jobs_of_layers)
@@ -357,10 +357,13 @@ def test_tool_runs_on_two_layers_of_the_session(site: Site) -> None:
         first["record"],
         second["record"],
     ]
-    # A tool asks nothing of NASA and needs no sign-in.
+    # A tool asks nothing of NASA, so it starts while the web service does not hold the token of the visitor.
     assert len(site.seen("client")) == 2
-    site.client.delete("/api/session/earthdata")
-    # A layer that the session does not hold is reported in one sentence, and the job leaves no folder.
+    with pytest.MonkeyPatch.context() as patch:
+        patch.setattr(sessions, "EARTHDATA_TIME", -1.0)
+        site.client.app.state.lynkeus.sessions.remove_unused()  # type: ignore[attr-defined]
+    assert site.client.get("/api/session").json() == {"earthdata": {"user": "a_visitor", "token": False}}
+    # A layer that the account does not hold is reported in one sentence, and the job leaves no folder.
     failed = site.wait(site.start(nasa.TOOL, inputs=[first["id"], "0" * 32], title=title)["jobID"])
     assert (failed["status"], failed["message"]) == ("failed", "A layer of the analysis no longer exists.")
     assert site.folders(3) == sorted([first["id"], second["id"], name])

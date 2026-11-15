@@ -181,6 +181,22 @@ def listed(visitor: httpx2.Client) -> list[dict[str, Any]]:
     return servers
 
 
+def test_addresses_of_the_program_are_those_that_the_released_program_calls(site: Site) -> None:
+    # Lynkeus Server v0.1.0 calls these eight addresses (docs/Own_Servers.md), and docs/Storage.md keeps them.
+    paths = site.app.openapi()["paths"]
+    found = sorted((path, sorted(methods)) for path, methods in paths.items() if path.startswith("/api/link"))
+    assert found == [
+        ("/api/link/leave", ["post"]),
+        ("/api/link/pairings", ["post"]),
+        ("/api/link/pairings/token", ["post"]),
+        ("/api/link/report", ["post"]),
+        ("/api/link/tasks", ["post"]),
+        ("/api/link/tasks/{task}/bytes", ["post"]),
+        ("/api/link/tasks/{task}/done", ["post"]),
+        ("/api/link/tasks/{task}/failure", ["post"]),
+    ]
+
+
 # The pairing
 
 
@@ -251,6 +267,11 @@ def test_every_address_of_the_servers_needs_a_signed_in_session(site: Site) -> N
         assert response.headers["www-authenticate"] == 'Bearer realm="Earthdata Login"'
     owner.delete("/api/session/earthdata")
     problem(owner.get("/api/servers"), 401)
+    # A key that names no session is answered in the same way, and the answer removes the cookie.
+    stale = visitor.get("/api/servers", headers={"Cookie": f"lynkeus_session={'x' * 43}"})
+    problem(stale, 401, "Sign in to Earthdata")
+    assert stale.headers["set-cookie"].startswith('lynkeus_session="";')
+    assert "Max-Age=0" in stale.headers["set-cookie"]
     assert [server_["name"] for server_ in listed(site.visit("a_user"))] == ["Field laptop"]
 
 
@@ -720,7 +741,7 @@ def test_job_runs_on_the_own_server_and_its_layer_is_read_through_the_project_se
             machine.file(layer["id"], "gcov-hhhh-20261021.tif"),
             machine.file(layer["id"], "gcov-hhhh-20261021.json"),
         )
-        assert set(entry) == {"layer", "size", "created", "server"}
+        assert set(entry) == {"layer", "size", "created", "server", "kept_until", "source"}
         assert (entry["layer"], entry["size"], entry["server"]) == (layer, len(image) + len(record), info["server"])
         assert [job_["jobID"] for job_ in visitor.get("/api/jobs").json()["jobs"]] == [job]
         # The project server keeps no file of the layer, and no record or answer holds the token.
@@ -1002,7 +1023,7 @@ def test_layer_of_an_own_server_is_renamed_and_removed_by_tasks(site: Site, monk
         renamed = visitor.patch(address, json={"title": "  Backscatter HH of the estuary "})
         assert renamed.status_code == 200
         entry = renamed.json()
-        assert set(entry) == {"layer", "size", "created", "server"}
+        assert set(entry) == {"layer", "size", "created", "server", "kept_until", "source"}
         assert (entry["layer"]["title"], entry["server"]["id"]) == ("Backscatter HH of the estuary", server)
         assert entry["layer"] == {**layer, "title": "Backscatter HH of the estuary"}
         assert visitor.get("/api/layers").json()["layers"] == [entry]

@@ -226,9 +226,6 @@ def test_key_that_names_no_session_is_answered_as_not_signed_in_and_the_answer_r
         )
         _problem(refused, 401, "Sign in to Earthdata to start this job.")
         assert _removes_cookie(refused)
-        servers = visitor.get("/api/servers", headers=_cookie(wrong))
-        _problem(servers, 401, "Sign in to Earthdata to connect and use servers of your own.")
-        assert _removes_cookie(servers)
         # An address that asks for no session leaves the cookie as it is.
         assert "set-cookie" not in visitor.get("/api/processes", headers=_cookie(wrong)).headers
     assert _service(visitor).store.count_sessions() == 0
@@ -297,12 +294,12 @@ def test_visitor_stays_signed_in_when_the_token_is_forgotten_and_only_a_request_
         patch.setattr(sessions, "EARTHDATA_IDLE_TIME", 0.05)
         time.sleep(0.1)
         assert client.get("/api/session").json() == {"earthdata": {"user": "test_user", "token": False}}
-    # The lists, renaming, extending, the servers of the account and a job that sends no request to NASA work.
+    # The lists, renaming, extending and a job that sends no request to NASA work.
+    # (The servers of the account: tests/test_server_routes.py.)
     assert _layers(client) == [layer]
     assert client.patch(f"/api/layers/{layer['id']}", json={"title": "New"}).json()["layer"]["title"] == "New"
     assert client.post(f"/api/layers/{layer['id']}/extension").status_code == 200
     assert client.post("/api/storage/extension").status_code == 204
-    assert client.get("/api/servers").json()["servers"] == []
     assert client.get("/api/jobs").status_code == 200
     tool = _wait(client, _start(client, name="b", uses=[layer["id"]])["jobID"])
     assert tool["status"] == "successful"
@@ -550,17 +547,18 @@ def test_content_of_a_session_of_an_earlier_version_stays_with_it_and_passes_to_
         _problem(refused, 401, "Sign in to Earthdata to start this job.")
         assert elsewhere.get("/api/layers").json() == {"layers": []}
         # The sign-in records the account and gives it the content. Every browser of the account then holds it.
-        signed = browser.post("/api/session/earthdata", json={"token": token("a_user")}, headers=held)
-        assert signed.json() == {"earthdata": {"user": "a_user", "token": True}}
+        # (The record file holds a server of the user a_user, so another user signs in here.)
+        signed = browser.post("/api/session/earthdata", json={"token": token("b_user")}, headers=held)
+        assert signed.json() == {"earthdata": {"user": "b_user", "token": True}}
         assert browser.cookies["lynkeus_session"] != key
         assert _service(browser).sessions.find(key) is None
         assert browser.get("/api/layers").json()["layers"] == entries
         assert browser.get("/api/series").json()["series"] == [series]
         assert len(browser.get("/api/jobs").json()["jobs"]) == 3
-        assert _sign_in(elsewhere, "a_user").get("/api/layers").json()["layers"] == entries
-        assert _sign_in(other, "b_user").get("/api/layers").json() == {"layers": []}
+        assert _sign_in(elsewhere, "b_user").get("/api/layers").json()["layers"] == entries
+        assert _sign_in(other, "c_user").get("/api/layers").json() == {"layers": []}
         store = _service(browser).store
-        assert len(store.layers_of(Holder(account="a_user"))) == 2
+        assert len(store.layers_of(Holder(account="b_user"))) == 2
         # The sign-out no longer removes it.
         browser.delete("/api/session/earthdata")
         assert elsewhere.get("/api/layers").json()["layers"] == entries

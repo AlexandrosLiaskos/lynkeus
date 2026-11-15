@@ -10,7 +10,7 @@ import json
 import math
 import time
 from collections.abc import Iterator
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any, Literal
 
@@ -491,8 +491,11 @@ def test_job_of_a_series_ends_with_a_series_and_no_layer(client: TestClient, tmp
     assert (series["id"], series["kind"], series["title"]) == (done["series"], "series", "a")
     assert client.get("/api/layers").json() == {"layers": []}
     listed = client.get("/api/series").json()["series"]
-    assert [set(entry) for entry in listed] == [{"series", "created"}]
+    assert [set(entry) for entry in listed] == [{"series", "created", "kept_until"}]
     assert listed[0]["series"] == series
+    # The series is kept for the keeping time from its creation.
+    kept = datetime.fromisoformat(listed[0]["kept_until"]) - datetime.fromisoformat(listed[0]["created"])
+    assert (listed[0]["kept_until"].endswith("Z"), kept.total_seconds()) == (True, jobs.KEEP_TIME)
     listed_jobs = client.get("/api/jobs").json()["jobs"]
     assert [entry["series"] for entry in listed_jobs] == [series["id"]]
     # A series has no file: the folder of the job is removed.
@@ -564,6 +567,40 @@ def test_process_of_a_series_that_returns_something_else_fails(client: TestClien
     assert "series" not in done
     assert client.get("/api/series").json() == {"series": []}
     assert client.get("/api/layers").json() == {"layers": []}
+
+
+def test_series_is_extended_and_removed_after_the_moment_until_which_it_is_kept(client: TestClient) -> None:
+    done = wait(client, start(client)["jobID"])
+    name = done["series"]
+    service = client.app.state.lynkeus  # type: ignore[attr-defined]
+    soon = time.time() + 3 * 24 * 3600
+    service.store.keep_series(name, soon)
+    [entry] = client.get("/api/series").json()["series"]
+    assert datetime.fromisoformat(entry["kept_until"]).timestamp() == int(soon)
+    before = time.time()
+    response = client.post(f"/api/series/{name}/extension")
+    assert response.status_code == 200
+    extended = response.json()
+    until = datetime.fromisoformat(extended["kept_until"]).timestamp()
+    assert int(before) + jobs.KEEP_TIME <= until <= time.time() + jobs.KEEP_TIME
+    assert extended == {**entry, "kept_until": extended["kept_until"]}
+    assert client.get("/api/series").json() == {"series": [extended]}
+    missing = client.post("/api/series/unknown/extension")
+    assert (missing.status_code, missing.json()["detail"]) == (404, "You have no series of this name.")
+    # Everything of the account is extended at once, the series too.
+    service.store.keep_series(name, soon)
+    assert client.post("/api/storage/extension").status_code == 204
+    assert client.get("/api/series").json()["series"][0]["kept_until"] >= extended["kept_until"]
+    # A removal run after the moment removes the series and the record of its job.
+    service.store.keep_series(name, time.time() - 1)
+    service.remove_passed()
+    assert client.get("/api/series").json() == {"series": []}
+    assert client.get(f"/api/jobs/{done['jobID']}").status_code == 404
+    # The removal of everything of the account removes a series too.
+    again = wait(client, start(client)["jobID"])
+    assert client.delete("/api/storage").status_code == 204
+    assert client.get("/api/series").json() == {"series": []}
+    assert client.get(f"/api/jobs/{again['jobID']}").status_code == 404
 
 
 def test_account_holds_a_limited_number_of_series(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
