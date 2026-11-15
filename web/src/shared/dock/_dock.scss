@@ -46,14 +46,16 @@
   display: none;
 }
 
-// The tabs of the stacked panes stand under the stack, as in ArcGIS Pro.
+// The tabs of the stacked panes stand under the stack, as in ArcGIS Pro. The row is darker than a pane and than
+// its title bar, and a line stands between two tabs, so that the row reads as tabs. No tab is white: the tab of
+// the pane in front carries the tint and the bar of a chosen element.
 .dock-tabs {
   display: flex;
   flex: none;
   overflow-x: auto;
   scrollbar-width: thin;
-  border-top: 1px solid tokens.$border;
-  background: uswds.color("base-lightest");
+  border-top: 1px solid uswds.color("base-light");
+  background: uswds.color("base-lighter");
 }
 
 .dock-tabs button {
@@ -64,6 +66,7 @@
   overflow: hidden;
   border: 0;
   border-top: 0.125rem solid transparent;
+  border-right: 1px solid uswds.color("base-light");
   background: none;
   color: tokens.$ink;
   font: inherit;
@@ -73,13 +76,12 @@
 }
 
 .dock-tabs button:hover {
-  background: uswds.color("base-lighter");
+  background: uswds.color("base-light");
 }
 
 .dock-tabs button[aria-selected="true"] {
-  border-top-color: uswds.color("primary");
-  background: uswds.color("white");
-  color: uswds.color("primary");
+  border-top-color: tokens.$selected-bar;
+  background: tokens.$selected;
 }
 
 // The edge that changes the width lies over the border between the side and the map.
