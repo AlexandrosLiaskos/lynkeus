@@ -123,12 +123,15 @@ test("a server is renamed with the change that the format of the server describe
   expect(names()).toEqual(["Field laptop", "Laboratory server", "DESKTOP-7Q2LM4K"]);
 });
 
-test("the limits of a server are sent in bytes, and the answer replaces the server in the list", async () => {
+test("the limits of a server are sent in bytes, and the list shows them once the server reports them", async () => {
   await loadServers();
   await renameServer(OFFICE.id, CHANGE_NAME.name);
   const limited = await setServerLimits(OFFICE.id, CHANGE_LIMITS.limits);
   expect(server.sent("PATCH").at(-1)?.content).toEqual(CHANGE_LIMITS);
-  expect(limited).toEqual(CHANGED);
+  expect(limited).toEqual({ ...OFFICE, name: "Field laptop" });
+  expect(serversStore.get()?.servers[0]).toEqual(limited);
+  server.apply(OFFICE.id);
+  await loadServers();
   expect(serversStore.get()?.servers[0]).toEqual(CHANGED);
 });
 

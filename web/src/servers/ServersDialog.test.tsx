@@ -11,7 +11,7 @@ import { mapLayersStore } from "../shared/mapLayers";
 import { messagesStore } from "../shared/messages/messages";
 import { serversStore } from "../shared/servers";
 import { tooManyServers, unknownCode, WRONG_FORM } from "./AddServer";
-import { resetServers } from "./requests";
+import { loadServers, resetServers } from "./requests";
 import { PURPOSE, ServersDialog } from "./ServersDialog";
 import { openAddServer, openServers, resetServersState, returnStore, serversDialogStore } from "./state";
 import {
@@ -291,8 +291,19 @@ test("the limits of a server are shown and set in jobs and in gigabytes", async 
     content: CHANGE_LIMITS,
   });
   await vi.waitFor(() =>
-    expect(messages()).toEqual([["info", 'The limits of the server "Office computer" were set.']]),
+    expect(messages()).toEqual([["info", 'The new limits were sent to the server "Office computer".']]),
   );
+  // The server has not applied the limits yet: the list says so and still shows the limits in force.
+  const pending =
+    "The server has not applied its new limits yet: 2 jobs at the same time, 250 GB for layers and 20 GB for one layer. The list shows them once the server reports them.";
+  expect(itemOf("Office computer").getByText(pending)).toBeDefined();
+  expect(rowsOf("Office computer")).toContain("Running: 1 of at most 4");
+  await userEvent.click(commandOf("Office computer", "Set limits"));
+  expect(screen.getByLabelText<HTMLInputElement>("Jobs at the same time").value).toBe("2");
+  await userEvent.click(formButton("Cancel"));
+  server.apply(OFFICE.id);
+  await act(() => loadServers());
+  expect(itemOf("Office computer").queryByText(pending)).toBeNull();
   expect(rowsOf("Office computer")).toContain("Running: 1 of at most 2");
   expect(rowsOf("Office computer")).toContain("Space used by layers: 1.3 GB of at most 250 GB");
   expect(rowsOf("Office computer")).toContain("Largest layer allowed: 20 GB");
@@ -314,6 +325,26 @@ test("a limit that is no sound number is stated under its field, and nothing is 
     "Enter the size in gigabytes, as a number of zero or more.",
   ]);
   expect(server.sent("PATCH")).toEqual([]);
+});
+
+test("limits for a server that is not connected are kept for it, and the visitor is told so", async () => {
+  await showList();
+  await userEvent.click(commandOf("Laboratory server", "Set limits"));
+  const jobs = screen.getByLabelText("Jobs at the same time");
+  await userEvent.clear(jobs);
+  await userEvent.type(jobs, "6{Enter}");
+  await vi.waitFor(() =>
+    expect(messages()).toEqual([
+      [
+        "info",
+        'The new limits are kept for the server "Laboratory server", which receives them when it connects again.',
+      ],
+    ]),
+  );
+  expect(server.sent("PATCH")[0]?.content).toEqual({
+    limits: { running_jobs: 6, storage: 50_000_000_000, layer_size: 5_000_000_000 },
+  });
+  expect(itemOf("Laboratory server").getByText(/^The server has not applied its new limits yet: 6 jobs/)).toBeDefined();
 });
 
 test("limits that the server refuses are stated, and the fields stay", async () => {

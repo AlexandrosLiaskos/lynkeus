@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState, type SyntheticEvent } from "react";
 import { wordsOf } from "../data/service";
+import { sizeWords } from "../header/notice/numbers";
 import { describedBy, FieldError } from "../shared/field/FieldError";
 import { FieldTitle, infoId } from "../shared/field/FieldTitle";
 import { Icon } from "../shared/icon/Icon";
@@ -39,6 +40,28 @@ export function removalWords(layers: number | null): string {
   }
   const count = layers === null ? "its layers" : `its ${String(layers)} layers`;
   return `The files of ${count} stay on that computer, and the layers leave the lists and the map of Lynkeus.`;
+}
+
+/**
+ * State where new limits of a server are after the project server took them: on their way to a server that is
+ * connected, or kept for a server that is not, which receives them when it connects again.
+ */
+export function sentWords(server: Server): string {
+  return server.connected
+    ? `The new limits were sent to the server "${server.name}".`
+    : `The new limits are kept for the server "${server.name}", which receives them when it connects again.`;
+}
+
+/** Tell whether two sets of limits are the same. */
+function sameLimits(one: ServerLimits, other: ServerLimits): boolean {
+  return (
+    one.running_jobs === other.running_jobs && one.storage === other.storage && one.layer_size === other.layer_size
+  );
+}
+
+/** State the limits that a server has not applied yet. */
+export function pendingWords(limits: ServerLimits): string {
+  return `The server has not applied its new limits yet: ${String(limits.running_jobs)} ${limits.running_jobs === 1 ? "job" : "jobs"} at the same time, ${sizeWords(limits.storage)} for layers and ${sizeWords(limits.layer_size)} for one layer. The list shows them once the server reports them.`;
 }
 
 interface FormProps {
@@ -148,9 +171,15 @@ const LIMIT_FIELDS = [
 /**
  * The fields that set the limits of a server: the jobs that run at the same time, the space for its layers and
  * the largest size of one layer, with the sizes in gigabytes. The error of a field shows after the field is
- * left or the button is pressed.
+ * left or the button is pressed. The project server keeps the new limits and passes them to the server, which
+ * applies them; `onSet` receives them, so that the list can say that they are on their way.
  */
-function LimitsForm({ server, limits, onEnd }: FormProps & { limits: ServerLimits }) {
+function LimitsForm({
+  server,
+  limits,
+  onEnd,
+  onSet,
+}: FormProps & { limits: ServerLimits; onSet: (limits: ServerLimits) => void }) {
   const id = useId();
   const [draft, setDraft] = useState<LimitsDraft>(() => draftOf(limits));
   const [left, setLeft] = useState<readonly string[]>([]);
@@ -172,7 +201,8 @@ function LimitsForm({ server, limits, onEnd }: FormProps & { limits: ServerLimit
     setBusy(true);
     setServerLimits(server.id, next).then(
       () => {
-        report("info", `The limits of the server "${server.name}" were set.`);
+        report("info", sentWords(server));
+        onSet(next);
         onEnd();
       },
       (error: unknown) => {
@@ -254,7 +284,7 @@ function RemoveForm({ server, onEnd }: FormProps) {
  * One server of the list: its name, whether it is connected and since when it is not, and what it reports about
  * itself. Its three commands stand in a toolbar: Rename, Set limits and Remove. Each one shows its form in the
  * place of the report, and the form ends with its button or with Cancel. A server whose layers use the space
- * that its limit allows says so.
+ * that its limit allows says so, and so does a server that does not report yet the limits that were set here.
  */
 export function ServerItem({ server }: { server: Server }) {
   const item = useRef<HTMLLIElement>(null);
@@ -262,14 +292,18 @@ export function ServerItem({ server }: { server: Server }) {
   const [mode, setMode] = useState<"shown" | "rename" | "limits" | "remove">("shown");
   const limits = server.state?.limits ?? null;
   const problem = storageProblem(server.name, server.state);
+  // The limits that the visitor set here and that the server does not report yet.
+  const [set, setSet] = useState<ServerLimits | null>(null);
+  const pending = set !== null && !(limits && sameLimits(set, limits)) ? set : null;
+  const shown = mode === "limits" && limits === null ? "shown" : mode;
 
   // The focus returns to the commands of the server after a form has closed.
   useEffect(() => {
-    if (mode === "shown" && refocus.current) {
+    if (shown === "shown" && refocus.current) {
       refocus.current = false;
       item.current?.querySelector<HTMLElement>(".item-actions .icon-button")?.focus();
     }
-  }, [mode]);
+  }, [shown]);
 
   const end = () => {
     refocus.current = true;
@@ -283,12 +317,15 @@ export function ServerItem({ server }: { server: Server }) {
           <Icon name={server.connected ? "link" : "link_off"} /> {server.name}
         </p>
         <p className="item-line">{connectionWords(server)}</p>
-        {mode === "rename" ? <RenameForm server={server} onEnd={end} /> : null}
-        {mode === "limits" && limits ? <LimitsForm server={server} limits={limits} onEnd={end} /> : null}
-        {mode === "remove" ? <RemoveForm server={server} onEnd={end} /> : null}
-        {mode === "shown" ? (
+        {shown === "rename" ? <RenameForm server={server} onEnd={end} /> : null}
+        {shown === "limits" && limits ? (
+          <LimitsForm server={server} limits={pending ?? limits} onEnd={end} onSet={setSet} />
+        ) : null}
+        {shown === "remove" ? <RemoveForm server={server} onEnd={end} /> : null}
+        {shown === "shown" ? (
           <>
             {problem === null ? null : <Notice kind="warning">{problem}</Notice>}
+            {pending === null ? null : <Notice kind="info">{pendingWords(pending)}</Notice>}
             {server.state === null ? <Notice kind="info">The server has not reported its state yet.</Notice> : null}
             <PropertyList groups={serverGroups(server)} />
           </>

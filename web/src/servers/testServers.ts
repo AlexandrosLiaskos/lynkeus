@@ -119,6 +119,8 @@ export class Site {
   /** The jobs and the layers that the lists of the session hold. */
   jobs: Job[] = [];
   layers: SentLayer[] = [];
+  /** The limits that the owner set and that a server has not applied yet, by the name of the server. */
+  wanted: Record<string, ServerLimits> = {};
   /** The answer of GitHub about the latest release, or null for no answer at all. */
   release: Reply | null = { status: 404, content: NO_RELEASE };
   /** The requests received, in their order. */
@@ -134,6 +136,14 @@ export class Site {
   /** Stop refusing. */
   accept(): void {
     this.refusals.length = 0;
+  }
+
+  /** Let a server apply the limits that its owner set, and report them, as the program does. */
+  apply(id: string): void {
+    const limits = this.wanted[id];
+    this.servers = this.servers.map((server) =>
+      server.id === id && server.state && limits ? { ...server, state: { ...server.state, limits } } : server,
+    );
   }
 
   /** The requests of one method whose address starts with the given text. */
@@ -217,12 +227,12 @@ export class Site {
       this.layers = this.layers.filter((entry) => entry.server?.id !== id);
       return { status: 204 };
     }
+    // The project server keeps new limits and passes them on. The state shows them once the server reports them.
     const change = content as { name?: string; limits?: ServerLimits };
-    const next: Server = {
-      ...found,
-      name: change.name ?? found.name,
-      state: found.state && change.limits ? { ...found.state, limits: change.limits } : found.state,
-    };
+    if (change.limits) {
+      this.wanted = { ...this.wanted, [id]: change.limits };
+    }
+    const next: Server = { ...found, name: change.name ?? found.name };
     this.servers = this.servers.map((server) => (server === found ? next : server));
     return { status: 200, content: next };
   }
