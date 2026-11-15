@@ -136,6 +136,7 @@ export function Footprints() {
       ],
       remove: () => outlinesStore.set(false),
       members: {
+        name: "Products",
         items,
         selected,
         hidden,

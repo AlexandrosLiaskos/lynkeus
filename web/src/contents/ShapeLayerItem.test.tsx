@@ -552,3 +552,9 @@ test("the command Properties opens the window of the shape layer", async () => {
   await userEvent.click(command("Properties"));
   expect(propertiesStore.get()?.id).toBe("area");
 });
+
+test("the header of the members takes the name that the group gives them", () => {
+  putShapeLayer(shape("products", "Products found", { members: members({ name: "Products" }) }));
+  show();
+  expect(screen.getByRole("button", { name: "Products (3)" })).toBeTruthy();
+});

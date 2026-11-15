@@ -326,7 +326,7 @@ export function ShapeLayerItem({ layer, place, count, drop, onMoved, onRemoved, 
           <span aria-hidden="true">{percent} %</span>
         </div>
         {members === undefined ? null : (
-          <Section title="Shapes" count={members.items.length} open={open} onToggle={setOpen}>
+          <Section title={members.name ?? "Shapes"} count={members.items.length} open={open} onToggle={setOpen}>
             {open && !folded ? <MemberList layer={layer.id} members={members} /> : null}
           </Section>
         )}

@@ -150,7 +150,7 @@ test("the outlines are listed as the layer Products found, with its legend, its 
     { id: "G1-ASF", title: "9 Oct 2026", line: "Track 141, frame 67, descending" },
     { id: "G-2026-10-09-ASF", title: "9 Oct 2026 and 21 Oct 2026", line: "Track 141, frame 67, descending" },
   ]);
-  expect(layer?.members).toMatchObject({ selected: null, hidden: [] });
+  expect(layer?.members).toMatchObject({ name: "Products", selected: null, hidden: [] });
 });
 
 test("the line of the layer states how many products are listed, and how many the catalogue holds when it holds more", () => {

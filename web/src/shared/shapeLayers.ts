@@ -31,6 +31,8 @@ export interface ShapeMember {
 
 /** The members of a group, with what the Contents pane can do with one of them. */
 export interface ShapeMembers {
+  /** What the members are, for the header of their list, for example "Products". Without it the header says "Shapes". */
+  name?: string;
   /** The members, in the order of their list. */
   items: readonly ShapeMember[];
   /** The id of the selected member, or null. Its shape is drawn in the colour of the selection. */
