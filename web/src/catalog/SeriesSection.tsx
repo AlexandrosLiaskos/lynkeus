@@ -5,6 +5,7 @@ import { loadJobs } from "../data/jobs";
 import { unitWords } from "../data/layers";
 import { formatDay } from "../data/products";
 import {
+  extendSeries,
   loadSeries,
   removeSeries,
   renameSeries,
@@ -15,7 +16,9 @@ import {
   type SeriesItem,
 } from "../data/series";
 import { wordsOf } from "../data/service";
+import { useLimits } from "../header/notice/limits";
 import { Dialog } from "../shared/dialog/Dialog";
+import { Icon } from "../shared/icon/Icon";
 import { MenuButton, type MenuButtonItem } from "../shared/menu/MenuButton";
 import { report } from "../shared/messages/messages";
 import { Notice } from "../shared/notice/Notice";
@@ -23,11 +26,12 @@ import { Section } from "../shared/section/Section";
 import type { SeriesDescription } from "../shared/series";
 import { useStore } from "../shared/store";
 import { IconButton } from "../shared/toolbar/IconButton";
+import { extendedWords, isNear, keepLabel, NEAR_WORDS, seriesUntilWords, useNow } from "./keeping";
 import { keepFocus, SECTIONS, titleOf } from "./state";
 
 /** The explanation of the section. It shows from the "i" beside its title. */
 export const ABOUT_SERIES_LIST =
-  "The series of this session, which the Series tools of the Analysis tab compute. A series holds the values of many dates, at a point or for the area of its layers. The server keeps a series until it is removed or the session ends.";
+  "The series of your Earthdata account, which the Series tools of the Analysis tab compute. A series holds the values of many dates, at a point or for the area of its layers. The project server keeps a series until the date that the series states, or until you remove it.";
 
 /** The largest length of the name of a series, in characters, as the server takes it. */
 const MOST_TITLE = 200;
@@ -52,16 +56,21 @@ export function seriesRemovalWords(series: SeriesDescription): string {
 
 interface SeriesRowProps {
   item: SeriesItem;
+  /** Whether the project server removes the series within the days of the warning. */
+  near: boolean;
+  /** The name of the command that keeps the series for the keeping time from now. */
+  keep: string;
   shown: boolean;
   onRemove: () => void;
 }
 
 /**
- * One series of the list: its name, its quantity with the unit, and the number of its dates with its period
- * and its place. The item shows the command Show, which opens the series in the pane Series; Rename and Remove
- * stand in the menu "More". The series is renamed in a field that takes the place of its text, as a layer is.
+ * One series of the list: its name, its quantity with the unit, and the number of its dates with its period,
+ * its place and the date until which the project server keeps it. A series that is removed within the days of
+ * the warning says so. The item shows the command Show, which opens the series in the pane Series; the command
+ * that keeps the series longer, Rename and Remove stand in the menu "More". The series is renamed in a field that takes the place of its text, as a layer is.
  */
-function SeriesRow({ item, shown, onRemove }: SeriesRowProps) {
+function SeriesRow({ item, near, keep, shown, onRemove }: SeriesRowProps) {
   const id = useId();
   const row = useRef<HTMLLIElement>(null);
   const [renaming, setRenaming] = useState(false);
@@ -69,6 +78,7 @@ function SeriesRow({ item, shown, onRemove }: SeriesRowProps) {
   const [busy, setBusy] = useState(false);
   const [fault, setFault] = useState<string | null>(null);
   const { series } = item;
+  const until = seriesUntilWords(item);
 
   // The field leaves the item, and the keyboard focus returns to the text of the series.
   const endRenaming = () => {
@@ -100,7 +110,14 @@ function SeriesRow({ item, shown, onRemove }: SeriesRowProps) {
       .finally(() => setBusy(false));
   };
 
+  const extend = () => {
+    extendSeries(series.id)
+      .then((extended) => report("info", extendedWords("series", extended.series.title, extended.kept_until)))
+      .catch((error: unknown) => report("error", wordsOf(error, "The series could not be kept longer.")));
+  };
+
   const more: MenuButtonItem[] = [
+    { label: keep, onSelect: extend },
     {
       label: "Rename",
       onSelect: () => {
@@ -152,7 +169,18 @@ function SeriesRow({ item, shown, onRemove }: SeriesRowProps) {
               <span className="item-line">
                 {series.quantity} ({unitWords(series.unit)})
               </span>
-              <span className="item-line">{seriesLine(series)}</span>
+              <span className="item-line">
+                {[seriesLine(series), near ? null : until].filter(Boolean).join(" · ")}
+                {near && until !== null ? (
+                  <>
+                    {" · "}
+                    <span className="catalog-near">
+                      <Icon name="warning" />
+                      {until}, {NEAR_WORDS}
+                    </span>
+                  </>
+                ) : null}
+              </span>
             </button>
           </div>
           <div
@@ -172,7 +200,7 @@ function SeriesRow({ item, shown, onRemove }: SeriesRowProps) {
 }
 
 /**
- * The section "Series" of the Catalog pane: the series of the session, which the Series tools compute. A
+ * The section "Series" of the Catalog pane: the series of the account, which the Series tools compute. A
  * series is shown in the pane Series, renamed or removed. It is built with the blocks of the section "Layers":
  * the section, the list of items, the menu "More", the field that renames and the dialog that confirms a
  * removal. Without a series the section says how it fills.
@@ -181,6 +209,9 @@ export function SeriesSection() {
   const items = useStore(seriesStore);
   const fault = useStore(seriesFaultStore);
   const shown = useStore(shownSeriesStore);
+  // The command that keeps a series longer names the keeping time, which the limits of the server state.
+  const limits = useLimits(items.length > 0);
+  const now = useNow();
   const [doomed, setDoomed] = useState<string | null>(null);
   const [asking, setAsking] = useState(false);
   const [removing, setRemoving] = useState(false);
@@ -236,6 +267,8 @@ export function SeriesSection() {
               <SeriesRow
                 key={item.series.id}
                 item={item}
+                near={isNear(item.kept_until, now)}
+                keep={keepLabel(limits)}
                 shown={item.series.id === shown}
                 onRemove={() => {
                   setDoomed(item.series.id);

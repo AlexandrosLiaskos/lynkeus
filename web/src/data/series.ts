@@ -6,10 +6,14 @@ import { createStore } from "../shared/store";
 import { isMoment } from "./jobs";
 import { call, checked, Refusal, wordsOf } from "./service";
 
-/** A series of the session: its description, and when it was made, as a date-time of RFC 3339. */
+/**
+ * A series of the account: its description, when it was made and, where the server states it, the moment until
+ * which the project server keeps it (`docs/Storage.md`), both as a date-time of RFC 3339.
+ */
 export interface SeriesItem {
   series: SeriesDescription;
   created: string;
+  kept_until?: string | null;
 }
 
 const SERIES = "/api/series";
@@ -18,9 +22,14 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-/** Tell whether a value is an entry of the list of series of the server: a series description and its time. */
+/** Tell whether a value is an entry of the list of series of the server: a series description and its times. */
 export function isSeriesItem(value: unknown): value is SeriesItem {
-  return isRecord(value) && isSeriesDescription(value.series) && isMoment(value.created);
+  return (
+    isRecord(value) &&
+    isSeriesDescription(value.series) &&
+    isMoment(value.created) &&
+    (value.kept_until === undefined || value.kept_until === null || isMoment(value.kept_until))
+  );
 }
 
 function isSeriesList(value: unknown): value is { series: SeriesItem[] } {
@@ -78,6 +87,16 @@ export function loadSeries(): Promise<void> {
   return reading;
 }
 
+/**
+ * Read the series again after a change that the server made to several of them at once. The answer of a
+ * reading that is still on its way is dropped, because it may state the series as they were before the change.
+ */
+export function refreshSeries(): Promise<void> {
+  changes += 1;
+  reading = null;
+  return loadSeries();
+}
+
 /** Ask the server for the series description that a successful job of a Series tool produced. */
 export async function seriesResult(job: string): Promise<SeriesDescription> {
   const answer = await call(`/api/jobs/${encodeURIComponent(job)}/results`, {
@@ -115,6 +134,20 @@ export async function renameSeries(id: string, title: string): Promise<SeriesIte
   changes += 1;
   seriesStore.set(seriesStore.get().map((item) => (item.series.id === id ? renamed : item)));
   return renamed;
+}
+
+/** Keep a series for the keeping time from now (`docs/Storage.md`), and return it as the server holds it afterwards. */
+export async function extendSeries(id: string): Promise<SeriesItem> {
+  const extended = checked(
+    await call(`${SERIES}/${encodeURIComponent(id)}/extension`, {
+      method: "POST",
+      failure: "The series could not be kept longer",
+    }),
+    isSeriesItem,
+  );
+  changes += 1;
+  seriesStore.set(seriesStore.get().map((item) => (item.series.id === id ? extended : item)));
+  return extended;
 }
 
 /** Forget the series and the readings on their way. The tests start from this state. */

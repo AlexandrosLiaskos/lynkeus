@@ -11,13 +11,15 @@ import { useStore } from "../shared/store";
 import { JobsSection } from "./JobsSection";
 import { LayersSection } from "./LayersSection";
 import { ProductsSection } from "./ProductsSection";
+import { RemovalNotice } from "./RemovalNotice";
 import { SeriesSection } from "./SeriesSection";
 
 /**
  * The Catalog pane, on the right of the map. Before the first search, the first job and the first layer it
  * states what is missing and leads to the search. Afterwards it holds four sections, in the order of the work:
- * the products that the last search found, the jobs of the session, the layers of the session and the series
- * that the Series tools of the Analysis tab computed. The pane has
+ * the products that the last search found, the jobs of the account, the layers of the account and the series
+ * that the Series tools of the Analysis tab computed. Over the sections one notice says how many layers and
+ * series the project server removes soon. The pane has
  * one body that scrolls, and the header of a section stays in view while the pane scrolls over the section.
  */
 export function CatalogPane() {
@@ -46,12 +48,15 @@ export function CatalogPane() {
           action={{ label: "Search products", onClick: () => openToolPane(SEARCH_PANE) }}
         />
       ) : (
-        <div className="catalog">
-          <ProductsSection results={results} />
-          <JobsSection />
-          <LayersSection />
-          <SeriesSection />
-        </div>
+        <>
+          <RemovalNotice />
+          <div className="catalog">
+            <ProductsSection results={results} />
+            <JobsSection />
+            <LayersSection />
+            <SeriesSection />
+          </div>
+        </>
       )}
     </Pane>
   );

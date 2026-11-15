@@ -5,6 +5,7 @@ import { useEffect, useId, useRef, useState, type SyntheticEvent } from "react";
 import { loadJobs } from "../data/jobs";
 import { zoomTo } from "../data/footprints";
 import {
+  extendLayer,
   groupLayers,
   LAYER_GROUPINGS,
   LAYER_SORTS,
@@ -22,7 +23,9 @@ import {
 } from "../data/layers";
 import { formatDay, formatSize } from "../data/products";
 import { wordsOf } from "../data/service";
+import { useLimits } from "../header/notice/limits";
 import { Dialog } from "../shared/dialog/Dialog";
+import { Icon } from "../shared/icon/Icon";
 import { useMap } from "../shared/map";
 import { addToMap, mapLayersStore, removeFromMap } from "../shared/mapLayers";
 import { MenuButton, type MenuButtonItem } from "../shared/menu/MenuButton";
@@ -35,11 +38,12 @@ import { useStore } from "../shared/store";
 import { IconButton } from "../shared/toolbar/IconButton";
 import { Toolbar } from "../shared/toolbar/Toolbar";
 import { layerGroups } from "./details";
+import { extendedWords, isNear, keepLabel, NEAR_WORDS, untilWords, useNow } from "./keeping";
 import { keepFocus, layersOpenStore, markedLayerStore, SECTIONS, titleOf } from "./state";
 
 /** The explanation of the section. It shows from the "i" beside its title. */
 export const ABOUT_LAYERS =
-  "The layers of this session: those received from NASA and those computed by the analysis tools. The server keeps the files of a layer until the layer is removed or the session ends. A layer is added to the map from here, and the Contents pane then lists it.";
+  "The layers of your Earthdata account: those received from NASA and those computed by the analysis tools. The project server keeps the files of a layer until the date that the layer states, and a server of yours keeps them until you remove the layer. A layer is added to the map from here, and the Contents pane then lists it.";
 
 /** The largest length of the name of a layer, in characters, as the server takes it. */
 const MOST_TITLE = 200;
@@ -91,6 +95,12 @@ interface LayerItemProps {
   entry: LayerEntry;
   /** Where the layer is kept, in words, or null where the list does not say it. */
   kept: string | null;
+  /** Until when the layer is kept, in words, or null where the server does not state it. */
+  until: string | null;
+  /** Whether the project server removes the layer within the days of the warning. */
+  near: boolean;
+  /** The name of the command that keeps the layer longer, or null for a layer that no date removes. */
+  keep: string | null;
   marked: boolean;
   onMap: boolean;
   onDetails: () => void;
@@ -98,14 +108,16 @@ interface LayerItemProps {
 }
 
 /**
- * One layer of the list: its name, its quantity with the unit, and the dates of its data with its size and, for
- * a visitor who has an own server, the server that keeps it. A click
+ * One layer of the list: its name, its quantity with the unit, and the dates of its data with its size, for
+ * a visitor who has an own server the server that keeps it, and until when it is kept. A layer that the project
+ * server removes within the days of the warning says so, and the menu "More" of a layer of the project server
+ * holds the command that keeps it for the keeping time from now. A click
  * marks the layer, as the command Show layer of a job does, and a second click ends the mark. The item shows the
  * one command that fits the state of the layer: Add to the map, or Zoom to for a layer that is on the map. Its
  * other commands stand in the menu "More"; they are the commands of an item of the Catalog pane of ArcGIS Pro
  * and of the Browser panel of QGIS. The layer is renamed in a field that takes the place of its text.
  */
-function LayerItem({ entry, kept, marked, onMap, onDetails, onRemove }: LayerItemProps) {
+function LayerItem({ entry, kept, until, near, keep, marked, onMap, onDetails, onRemove }: LayerItemProps) {
   const map = useMap();
   const id = useId();
   const item = useRef<HTMLLIElement>(null);
@@ -158,12 +170,19 @@ function LayerItem({ entry, kept, marked, onMap, onDetails, onRemove }: LayerIte
       .finally(() => setBusy(false));
   };
 
+  const extend = () => {
+    extendLayer(layer.id)
+      .then((extended) => report("info", extendedWords("layer", extended.layer.title, extended.keptUntil)))
+      .catch((error: unknown) => report("error", wordsOf(error, "The layer could not be kept longer.")));
+  };
+
   const more: MenuButtonItem[] = [
     onMap
       ? { label: "Remove from the map", onSelect: () => removeFromMap(layer.id) }
       : { label: "Zoom to", onSelect: zoom },
     { label: "Details", onSelect: onDetails },
     { label: "Download GeoTIFF", onSelect: () => download(layer.url) },
+    ...(keep === null ? [] : [{ label: keep, onSelect: extend }]),
     {
       label: "Rename",
       onSelect: () => {
@@ -226,9 +245,19 @@ function LayerItem({ entry, kept, marked, onMap, onDetails, onRemove }: LayerIte
                   size === null ? null : formatSize(size),
                   onMap ? "On the map" : null,
                   kept,
+                  near ? null : until,
                 ]
                   .filter(Boolean)
                   .join(" · ")}
+                {near && until !== null ? (
+                  <>
+                    {" · "}
+                    <span className="catalog-near">
+                      <Icon name="warning" />
+                      {until}, {NEAR_WORDS}
+                    </span>
+                  </>
+                ) : null}
               </span>
             </button>
           </div>
@@ -253,7 +282,7 @@ function LayerItem({ entry, kept, marked, onMap, onDetails, onRemove }: LayerIte
 }
 
 /**
- * The section "Layers" of the Catalog pane: the layers of the session, received from NASA and computed by the
+ * The section "Layers" of the Catalog pane: the layers of the account, received from NASA and computed by the
  * analysis tools. A layer is added to the map and taken off it, the map moves to it, its description is shown
  * in full, its GeoTIFF file is downloaded, and the layer is renamed or removed. The commands of the list stand
  * in the header of the section: its order, its groups and a new reading from the server. Without a layer the
@@ -266,6 +295,9 @@ export function LayersSection() {
   const marked = useStore(markedLayerStore);
   const open = useStore(layersOpenStore);
   const servers = useStore(serversStore)?.servers ?? [];
+  // The command that keeps a layer longer names the keeping time, which the limits of the server state.
+  const limits = useLimits(entries.some((entry) => entry.server === null));
+  const now = useNow();
   const [sort, setSort] = useState<LayerSort>("newest");
   const [grouping, setGrouping] = useState<LayerGrouping>("none");
   const [details, setDetails] = useState<string | null>(null);
@@ -363,6 +395,9 @@ export function LayersSection() {
                       key={entry.layer.id}
                       entry={entry}
                       kept={keptWords(entry, servers)}
+                      until={untilWords(entry)}
+                      near={entry.server === null && isNear(entry.keptUntil, now)}
+                      keep={entry.server === null ? keepLabel(limits) : null}
                       marked={entry.layer.id === marked}
                       onMap={isOnMap(entry)}
                       onDetails={() => setDetails(entry.layer.id)}

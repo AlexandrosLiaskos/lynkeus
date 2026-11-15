@@ -8,7 +8,7 @@ import type { ServiceLimits } from "./limits";
  */
 export const SAMPLE: ServiceLimits = {
   version: "0.1.0",
-  resources: { processors: 2, memory: 2147483648 },
+  resources: { processors: 2, memory: 2147483648, free_space: 18000000000 },
   limits: {
     layer_cells: 25000000,
     larger_layer: "refused",
@@ -16,12 +16,14 @@ export const SAMPLE: ServiceLimits = {
     running_jobs: 2,
     waiting_jobs: 20,
     job_time: 2400,
-    session_unfinished_jobs: 4,
-    session_layers: 50,
-    session_size: 2000000000,
+    account_unfinished_jobs: 4,
+    account_layers: 50,
+    account_series: 20,
+    account_size: 2000000000,
     total_size: 20000000000,
     search_products: 200,
-    session_idle_time: 604800,
+    keep_time: 1209600,
+    free_space_reserve: 2000000000,
     earthdata_idle_time: 1800,
     earthdata_time: 28800,
   },

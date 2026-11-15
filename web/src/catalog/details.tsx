@@ -4,6 +4,7 @@ import { jobRows } from "../data/JobFields";
 import { formatMoment, type Job } from "../data/jobs";
 import { KIND_WORDS, unitWords, type LayerEntry } from "../data/layers";
 import { formatDay, formatSize } from "../data/products";
+import { statementOf } from "../options/kept";
 import type { Property, PropertyGroup } from "../shared/properties/PropertyList";
 import { PROJECT_SERVER_WORDS } from "../shared/servers";
 
@@ -34,11 +35,15 @@ function fileName(address: string): string {
 
 /**
  * Return every field of the description of a layer in groups, with the size and the time that the server
- * records, the server that keeps its files and the links to its two files. A field that the server does not
- * state has no row. `kept` says where the layer is kept, as the list of layers says it; without it the row
+ * records, the server that keeps its files, until when they are kept and the links to its two files. The
+ * explanation of the GeoTIFF file says who reads the file at its address (`docs/Storage.md`). A field that the
+ * server does not state has no row. `kept` says where the layer is kept, as the list of layers says it; without it the row
  * names the server alone.
  */
-export function layerGroups({ layer, size, created, server }: LayerEntry, kept: string | null = null): PropertyGroup[] {
+export function layerGroups(
+  { layer, size, created, server, keptUntil }: LayerEntry,
+  kept: string | null = null,
+): PropertyGroup[] {
   const stated = (name: string, value: string | null): Property[] => (value === null ? [] : [{ name, value }]);
   return [
     {
@@ -86,8 +91,13 @@ export function layerGroups({ layer, size, created, server }: LayerEntry, kept: 
         ...stated("Size", size === null ? null : formatSize(size)),
         ...stated("Made", created === null ? null : formatMoment(created)),
         { name: "Kept", value: kept ?? `On ${server ? server.name : `the ${PROJECT_SERVER_WORDS.toLowerCase()}`}` },
+        ...stated(
+          "Kept until",
+          server ? "You remove the layer" : keptUntil === undefined ? null : formatMoment(keptUntil),
+        ),
         {
           name: "GeoTIFF file",
+          info: statementOf("files"),
           value: (
             <a href={layer.url} download>
               {fileName(layer.url)}

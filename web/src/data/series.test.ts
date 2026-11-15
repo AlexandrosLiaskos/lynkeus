@@ -3,8 +3,10 @@
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { dockStore, resetDock } from "../shared/dock/dock";
 import {
+  extendSeries,
   isSeriesItem,
   loadSeries,
+  refreshSeries,
   removeSeries,
   renameSeries,
   resetSeries,
@@ -18,6 +20,7 @@ import {
 import { UNREADABLE } from "./service";
 import { pairSeries, series, seriesItem } from "./testSeries";
 import { job, standIn, type StandIn } from "./testSession";
+import { keeper, keptSeries } from "./testStorage";
 
 let server: StandIn;
 
@@ -110,4 +113,37 @@ test("showing a series names it for the pane Series and opens that pane", () => 
   showSeries("series-1");
   expect(shownSeriesStore.get()).toBe("series-1");
   expect(dockStore.get().tools).toContain(SERIES_PANE);
+});
+
+test("an entry may state until when the series is kept, as a date-time or as null", () => {
+  expect(isSeriesItem(keptSeries(seriesItem(), "2026-11-28T16:25:00Z"))).toBe(true);
+  expect(isSeriesItem(keptSeries(seriesItem(), null))).toBe(true);
+  expect(isSeriesItem({ ...seriesItem(), kept_until: "in 14 days" })).toBe(false);
+  expect(isSeriesItem({ ...seriesItem(), kept_until: 1794735612 })).toBe(false);
+});
+
+test("a series is kept for the keeping time from now, and the list takes the entry that the server answers", async () => {
+  const stand = keeper();
+  stand.server.series = [keptSeries(seriesItem(), "2026-11-17T09:00:00Z"), keptSeries(seriesItem(pairSeries()), null)];
+  await loadSeries();
+  const extended = await extendSeries(series().id);
+  expect(stand.server.sent("POST")).toEqual([
+    { method: "POST", address: `/api/series/${series().id}/extension`, content: undefined },
+  ]);
+  expect(extended.kept_until).toBe(stand.until);
+  expect(seriesStore.get().map((item) => item.kept_until)).toEqual([stand.until, null]);
+  stand.refuse("POST", "/api/series/", 500, null);
+  await expect(extendSeries(pairSeries().id)).rejects.toThrow(
+    "The series could not be kept longer (the server answered 500).",
+  );
+});
+
+test("a new reading of the series after a change of the server drops the answer of the reading that was on its way", async () => {
+  server.series = [seriesItem()];
+  const first = loadSeries();
+  server.series = [];
+  await refreshSeries();
+  await first;
+  expect(server.sent("GET", "/api/series")).toHaveLength(2);
+  expect(seriesStore.get()).toEqual([]);
 });

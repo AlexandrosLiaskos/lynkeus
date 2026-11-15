@@ -27,7 +27,7 @@ export function projectRows({ limits }: ServiceLimits): Property[] {
     { name: "Most cells of a layer", value: countWords(limits.layer_cells) },
     {
       name: "Space for layers",
-      value: `${sizeWords(limits.session_size)} and ${amount(limits.session_layers, "layer", "layers")} for one session`,
+      value: `${sizeWords(limits.account_size)} and ${amount(limits.account_layers, "layer", "layers")} for one account`,
     },
   ];
 }

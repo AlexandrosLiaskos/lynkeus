@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { version } from "../../package.json";
+import { statementOf } from "../options/kept";
 import { Dialog } from "../shared/dialog/Dialog";
 import { PropertyList } from "../shared/properties/PropertyList";
 import { Section } from "../shared/section/Section";
@@ -22,7 +23,8 @@ function AddressLink({ address }: { address: string }) {
 
 /**
  * The dialog of the button About: what Lynkeus is, its facts as a list of names and values, and three sections
- * that open and close: the licence, the entry of the citation and the data that Lynkeus stores about a visitor.
+ * that open and close: the licence, the entry of the citation and what Lynkeus keeps for a visitor, in the
+ * statements of `docs/Storage.md`.
  * The section Licence holds the notices that the licence asks every copy of Lynkeus to keep, also a copy that runs
  * as a website: the copyright, the licence, the warranty and the attribution of NOTICE, and the addresses of the
  * source code, of LICENSE and of NOTICE. It is therefore the first section, and it starts open. The statements of
@@ -91,18 +93,22 @@ export function AboutDialog() {
           />
         </Section>
 
-        <Section
-          title="Stored data"
-          info="The data that Lynkeus stores about a visitor, in the browser and on its server."
-          defaultOpen={false}
-        >
+        <Section title="Stored data" info={ABOUT.pane} defaultOpen={false}>
           <ul className="about-statements">
-            <li>{ABOUT.applicationStores}</li>
             <li>
-              {ABOUT.sessionStarts} {ABOUT.session} {ABOUT.sessionEnds}
+              {statementOf("browser")} {ABOUT.parts}
             </li>
+            <li>{statementOf("cookie")}</li>
+            <li>{statementOf("token")}</li>
+            <li>
+              {statementOf("projectServer")} {statementOf("files")}
+            </li>
+            <li>
+              {statementOf("log")} {ABOUT.searchRequest}
+            </li>
+            <li>{statementOf("computer")}</li>
+            <li>{statementOf("nasa")}</li>
             <li>{ABOUT.teamLogStores}</li>
-            <li>{ABOUT.serverStores}</li>
           </ul>
         </Section>
       </div>

@@ -864,7 +864,7 @@ test("the choice of the project server shows the limits of the project server an
       "Jobs at the same time: 2 for all visitors",
       "Largest layer: 500 MB",
       "Most cells of a layer: 25 million",
-      "Space for layers: 2 GB and 50 layers for one session",
+      "Space for layers: 2 GB and 50 layers for one account",
     ]),
   );
   await userEvent.click(layerBox("Frequency A HHHH"));

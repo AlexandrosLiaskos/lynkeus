@@ -3,9 +3,9 @@
 import { expect, test } from "vitest";
 import { OPTIONS_TAB } from "./tab";
 
-test("the Options tab holds the group Browser, with the button Storage", () => {
+test("the Options tab holds the group Stored data, with the button Storage", () => {
   expect(OPTIONS_TAB.groups.map(({ label, tools }) => [label, tools.map((tool) => tool.label)])).toEqual([
-    ["Browser", ["Storage"]],
+    ["Stored data", ["Storage"]],
   ]);
 });
 

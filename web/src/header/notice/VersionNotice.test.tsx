@@ -107,7 +107,7 @@ test("the notice follows other numbers and another choice of the server", async 
     ),
   ).toBeDefined();
   expect(within(dialog).getByText(/A job may run for at most 1 hour/)).toBeDefined();
-  expect(within(dialog).queryByText(/is refused/)).toBeNull();
+  expect(within(dialog).queryByText(/needs more cells is refused/)).toBeNull();
 });
 
 test("resources that the server could not read are said to be unread", async () => {
@@ -119,7 +119,7 @@ test("resources that the server could not read are said to be unread", async () 
       "The processors and the memory that Lynkeus may use on its server could not be read.",
     ),
   ).toBeDefined();
-  expect(within(dialog).getAllByRole("listitem")).toHaveLength(7);
+  expect(within(dialog).getAllByRole("listitem")).toHaveLength(9);
 });
 
 test("the notice names the version of the server when it differs from the version of the page", async () => {

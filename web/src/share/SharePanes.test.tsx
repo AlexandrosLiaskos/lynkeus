@@ -21,7 +21,10 @@ import { FIRST_LAYOUT_FORM } from "./layout";
 import { pictureLegend } from "./legend";
 import { makePicture, pictureFile } from "./mapImage";
 import type { Picture } from "./picture";
+import { statementOf } from "../options/kept";
 import { printLayout } from "./printLayout";
+import { provenanceText } from "./record";
+import { FILE_ADDRESS } from "./RecordFields";
 import received from "./testdata/record-gcov-20261021.json";
 import { SharePanes } from "./SharePanes";
 
@@ -427,6 +430,26 @@ test("the STAC record of the selected layer is saved beside the name of its data
   const saved = JSON.parse((await content?.text()) ?? "null") as typeof received;
   expect(saved.assets.data.href).toBe("./backscatter-hh-20261021.tif");
   expect(saved.properties).toEqual(received.properties);
+});
+
+test("the pane of the record says who reads the file of the layer at the address that the record holds", () => {
+  mapLayersStore.set([BACKSCATTER]);
+  selectedLayerStore.set(BACKSCATTER.id);
+  open("export-record");
+  const notice = screen.getByText(FILE_ADDRESS);
+  expect(notice.getAttribute("role")).toBe("status");
+  // The sentence about the file is the statement of docs/Storage.md.
+  expect(FILE_ADDRESS).toBe(
+    "The saved record holds the address of the layer on this site. The file of a layer is read by whoever holds its address, until the layer is removed.",
+  );
+  expect(FILE_ADDRESS.endsWith(` ${statementOf("files")}`)).toBe(true);
+  // The provenance record writes the address of the file, with the name of the site.
+  expect(provenanceText(BACKSCATTER, null, "https://lynkeus.nkua.cloud/")).toContain(
+    `File: https://lynkeus.nkua.cloud${BACKSCATTER.url}\n`,
+  );
+  // Without a selected layer the pane shows no record, and so no such sentence.
+  act(() => selectedLayerStore.set(null));
+  expect(screen.queryByText(FILE_ADDRESS)).toBeNull();
 });
 
 test("the provenance record is saved as text, also when the STAC record cannot be read", async () => {

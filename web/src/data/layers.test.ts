@@ -4,11 +4,13 @@ import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { addToMap, mapLayersStore } from "../shared/mapLayers";
 import {
   groupLayers,
+  extendLayer,
   layerEntry,
   layerExtent,
   layersFaultStore,
   layersStore,
   loadLayers,
+  refreshLayers,
   removeLayer,
   renameLayer,
   resetLayers,
@@ -18,6 +20,7 @@ import {
 } from "./layers";
 import { formatDay } from "./products";
 import { layer, standIn } from "./testSession";
+import { keeper, keptLayer } from "./testStorage";
 
 beforeEach(() => {
   resetLayers();
@@ -54,6 +57,8 @@ test.each([
   ["the size is negative", { layer: layer(), size: -1 }],
   ["the size is a text", { layer: layer(), size: "4 MB" }],
   ["the time is not a date-time", { layer: layer(), created: "today" }],
+  ["the moment until which it is kept is not a date-time", { layer: layer(), kept_until: "in 14 days" }],
+  ["the moment until which it is kept is a number", { layer: layer(), kept_until: 1794735612 }],
   ["the entry is a text", "layer"],
 ])("an entry is rejected when %s", (_reason, value) => {
   expect(layerEntry(value)).toBeNull();
@@ -269,4 +274,55 @@ test("the list of the server names the own server of each layer", async () => {
   ];
   await loadLayers();
   expect(layersStore.get().map((entry) => entry.server)).toEqual([office, null]);
+});
+
+test("an entry of the project server states until when the layer is kept, and an entry without the moment states none", () => {
+  expect(layerEntry({ layer: layer(), kept_until: "2026-11-28T16:25:00Z" })).toEqual({
+    layer: layer(),
+    size: null,
+    created: null,
+    server: null,
+    keptUntil: "2026-11-28T16:25:00Z",
+  });
+  // A layer of a server of the visitor carries null: that computer keeps it until he removes it.
+  const own = layerEntry({
+    layer: layer(),
+    server: { id: "3f9a1c0b7e24d658", name: "Office computer" },
+    kept_until: null,
+  });
+  expect(own).not.toBeNull();
+  expect(own && "keptUntil" in own).toBe(false);
+  expect("keptUntil" in (layerEntry({ layer: layer() }) ?? {})).toBe(false);
+});
+
+test("a layer is kept for the keeping time from now, and the list takes the entry that the server answers", async () => {
+  const stand = keeper();
+  stand.server.layers = [
+    keptLayer({ layer: layer({ id: "a" }), size: 1000 }, "2026-11-17T09:00:00Z"),
+    keptLayer({ layer: layer({ id: "b" }), size: 2000 }, "2026-11-20T09:00:00Z"),
+  ];
+  await loadLayers();
+  const extended = await extendLayer("a");
+  expect(stand.server.sent("POST")).toEqual([
+    { method: "POST", address: "/api/layers/a/extension", content: undefined },
+  ]);
+  expect(extended.keptUntil).toBe(stand.until);
+  expect(layersStore.get().map((entry) => entry.keptUntil)).toEqual([stand.until, "2026-11-20T09:00:00Z"]);
+  stand.refuse("POST", "/api/layers/", 404, "Your account has no layer of this name on the project server.");
+  await expect(extendLayer("b")).rejects.toThrow("Your account has no layer of this name on the project server.");
+  stand.accept();
+  stand.refuse("POST", "/api/layers/", 500, null);
+  await expect(extendLayer("b")).rejects.toThrow("The layer could not be kept longer (the server answered 500).");
+  expect(layersStore.get()[1]?.keptUntil).toBe("2026-11-20T09:00:00Z");
+});
+
+test("a new reading after a change of the server drops the answer of the reading that was on its way", async () => {
+  const server = standIn();
+  server.layers = [{ layer: layer({ id: "a" }) }];
+  const first = loadLayers();
+  server.layers = [];
+  await refreshLayers();
+  await first;
+  expect(server.sent("GET", "/api/layers")).toHaveLength(2);
+  expect(layersStore.get()).toEqual([]);
 });

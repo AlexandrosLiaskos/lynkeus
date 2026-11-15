@@ -248,3 +248,18 @@
 .catalog-files-size {
   color: tokens.$secondary;
 }
+
+// A layer or a series that the project server removes within the days of the warning: its date stands on the
+// tint of a warning, after the icon of a warning. The words say the same, so the colour is not the only sign.
+.catalog-near {
+  padding: 0 tokens.$space-1;
+  background: uswds.color("warning-lighter");
+  color: tokens.$ink;
+}
+
+.catalog-near .usa-icon {
+  width: tokens.$icon;
+  height: tokens.$icon;
+  margin-right: 0.125rem;
+  vertical-align: text-bottom;
+}

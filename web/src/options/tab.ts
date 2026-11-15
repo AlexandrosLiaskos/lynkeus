@@ -8,13 +8,14 @@ export const OPTIONS_TAB = {
   label: "Options",
   groups: [
     {
-      label: "Browser",
+      label: "Stored data",
       tools: [
         {
           id: "options-storage",
           label: "Storage",
           icon: "settings",
-          description: "Opens the options of what Lynkeus keeps in this browser.",
+          description:
+            "Opens the pane of everything that Lynkeus keeps for you, in this browser, on the project server, on your servers and at NASA.",
         },
       ],
     },

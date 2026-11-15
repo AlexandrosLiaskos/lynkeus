@@ -64,7 +64,7 @@ test("without a series the section says how it fills", () => {
 
 test("the explanation of the section has three sentences", () => {
   expect(ABOUT_SERIES_LIST).toBe(
-    "The series of this session, which the Series tools of the Analysis tab compute. A series holds the values of many dates, at a point or for the area of its layers. The server keeps a series until it is removed or the session ends.",
+    "The series of your Earthdata account, which the Series tools of the Analysis tab compute. A series holds the values of many dates, at a point or for the area of its layers. The project server keeps a series until the date that the series states, or until you remove it.",
   );
 });
 
@@ -85,7 +85,7 @@ test("the item of a series shows the command Show, and its menu holds Rename and
     .getAllByRole("button")
     .map((button) => button.getAttribute("aria-label") ?? button.textContent);
   expect(shown).toEqual(["Show", `More commands of ${BACKSCATTER}`]);
-  expect(await moreOf(BACKSCATTER)).toEqual(["Rename", "Remove"]);
+  expect(await moreOf(BACKSCATTER)).toEqual(["Keep longer", "Rename", "Remove"]);
   await userEvent.keyboard("{Escape}");
   await userEvent.click(commandsOf(BACKSCATTER).getByRole("button", { name: "Show" }));
   expect(shownSeriesStore.get()).toBe(series().id);

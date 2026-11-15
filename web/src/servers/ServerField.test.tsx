@@ -128,7 +128,7 @@ test("the choice of the project server is sent as the word project, with the lim
       "Jobs at the same time: 2 for all visitors",
       "Largest layer: 500 MB",
       "Most cells of a layer: 25 million",
-      "Space for layers: 2 GB and 50 layers for one session",
+      "Space for layers: 2 GB and 50 layers for one account",
     ]),
   );
   expect(projectRows(SAMPLE)).toHaveLength(4);
