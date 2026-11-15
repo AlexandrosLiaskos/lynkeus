@@ -1,3 +1,4 @@
+import { MONTHS } from "../shared/days";
 import type { SeriesDescription, SeriesEntry } from "../shared/series";
 
 /** The number of milliseconds of one day. */
@@ -34,8 +35,6 @@ export function markWords(value: number, marks: readonly number[]): string {
   const digits = Math.max(0, -Math.floor(Math.log10(step) + 1e-9));
   return value.toFixed(digits).replace("-", "−");
 }
-
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"] as const;
 
 /** Write a date as its day and its month, as "27 Sep". The year stands in the title of the time axis. */
 export function dayWords(date: string): string {

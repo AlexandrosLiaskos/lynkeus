@@ -160,11 +160,11 @@ test("the form chooses every layer of a group at first, and of two layers of one
 
 test("the name of a series is proposed from the quantity, the channel and the first and the last date", () => {
   expect(seriesTitle("backscatter-series", [SEP, OCT_9, OCT_21, NOV])).toBe(
-    "Series of backscatter HH in dB, 27 Sept 2026 to 2 Nov 2026",
+    "Series of backscatter HH in dB, 27 Sep 2026 to 2 Nov 2026",
   );
   const [pairs] = seriesGroups("coherence-series", PAIRS);
   expect(seriesTitle("coherence-series", pairs?.layers ?? [])).toBe(
-    "Series of coherence magnitude HH, 20 m, 15 Sept 2026 to 21 Oct 2026",
+    "Series of coherence magnitude HH, 20 m, 15 Sep 2026 to 21 Oct 2026",
   );
   expect(seriesTitle("backscatter-series", [])).toBe("");
 });

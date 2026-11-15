@@ -56,14 +56,14 @@ test("a value is written with its decimals, a missing one as no value, and a num
 
 test("the table of a series gives the date, the value and the number of cells of every entry", () => {
   expect(tableRows(series())).toEqual([
-    ["27 Sept 2026", "−4.32", "14,316,415"],
+    ["27 Sep 2026", "−4.32", "14,316,415"],
     ["9 Oct 2026", "−4.83", "14,316,411"],
     ["21 Oct 2026", "−4.83", "14,316,413"],
     ["2 Nov 2026", "−4.74", "14,316,416"],
   ]);
   expect(tableRows(pairSeries())).toEqual([
-    ["15 Sept 2026 to 27 Sept 2026", "0.370", "1"],
-    ["27 Sept 2026 to 9 Oct 2026", "0.322", "1"],
+    ["15 Sep 2026 to 27 Sep 2026", "0.370", "1"],
+    ["27 Sep 2026 to 9 Oct 2026", "0.322", "1"],
     ["9 Oct 2026 to 21 Oct 2026", "0.648", "1"],
   ]);
   expect([ofPairs(series()), ofPairs(pairSeries())]).toEqual([false, true]);
@@ -106,7 +106,7 @@ test("a series of dates is shown as a chart with the unit on its value axis and 
   expect(valueOf("Cell")).toBeNull();
   expect(valueOf("Value of a date")).toBe("The mean of the power of the cells, given in decibels");
   expect(valueOf("Layer of the product")).toBe("HHHH");
-  expect(valueOf("27 Sept 2026")).toBe(series().inputs[0]);
+  expect(valueOf("27 Sep 2026")).toBe(series().inputs[0]);
 });
 
 test("a date without a value is not drawn, and the table says no value", () => {

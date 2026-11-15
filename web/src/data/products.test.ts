@@ -131,8 +131,10 @@ test("the days between the two dates of a pair are counted", () => {
 test("a day, a moment, a size and a count are written for reading", () => {
   expect(formatDay("2026-10-21")).toBe("21 Oct 2026");
   expect(formatDay("2026-01-05")).toBe("5 Jan 2026");
+  expect(formatDay("2026-09-27")).toBe("27 Sep 2026");
   expect(formatMoment("2026-10-21T23:43:30Z")).toBe("21 Oct 2026, 23:43:30 UTC");
   expect(formatMoment("2026-11-08T02:47:46.417000Z")).toBe("8 Nov 2026, 02:47:46 UTC");
+  expect(formatMoment("2026-09-27T23:43:30Z")).toBe("27 Sep 2026, 23:43:30 UTC");
   expect(formatSize(5758779392)).toBe("5.8 GB");
   expect(formatSize(96468992)).toBe("96 MB");
   expect(formatSize(113240)).toBe("113 kB");

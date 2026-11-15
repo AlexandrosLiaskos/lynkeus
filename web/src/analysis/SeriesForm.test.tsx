@@ -111,7 +111,7 @@ test("the form offers the layers of the series by date, chooses them all and pro
     ["Backscatter HH, 2 Nov 2026", true],
   ]);
   expect(screen.getByLabelText<HTMLInputElement>("Series name").value).toBe(
-    "Series of backscatter HH in dB, 27 Sept 2026 to 2 Nov 2026",
+    "Series of backscatter HH in dB, 27 Sep 2026 to 2 Nov 2026",
   );
   expect(screen.getByLabelText<HTMLInputElement>("Whole area").checked).toBe(true);
   expect(screen.getByLabelText<HTMLInputElement>("At a point").checked).toBe(false);
@@ -133,7 +133,7 @@ test("a series of the whole area is started as a job with the layers in the orde
       content: {
         inputs: {
           inputs: ["hh-sep", "hh-oct", "hh-nov"],
-          title: "Series of backscatter HH in dB, 27 Sept 2026 to 2 Nov 2026",
+          title: "Series of backscatter HH in dB, 27 Sep 2026 to 2 Nov 2026",
         },
       },
     },
@@ -176,7 +176,7 @@ test("a series at a point takes its latitude and longitude in degrees and sends 
   expect(server.sent("POST")[0]?.content).toEqual({
     inputs: {
       inputs: ["hh-sep", "hh-oct", "hh-nov"],
-      title: "Series of backscatter HH in dB, 27 Sept 2026 to 2 Nov 2026",
+      title: "Series of backscatter HH in dB, 27 Sep 2026 to 2 Nov 2026",
       point: { longitude: -70.9, latitude: 42.8 },
     },
   });

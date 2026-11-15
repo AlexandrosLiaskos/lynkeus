@@ -1,3 +1,4 @@
+import { utcDay } from "../shared/days";
 import { isLayerDescription, type LayerDescription } from "../shared/layer";
 import { isServerName, type ServerName } from "../shared/servers";
 import { createStore } from "../shared/store";
@@ -174,13 +175,6 @@ export function formatRunTime(seconds: number): string {
   return `${String(Math.floor(seconds / 3600))} h ${String(Math.floor((seconds % 3600) / 60))} min`;
 }
 
-const DAY_FORMAT = new Intl.DateTimeFormat("en-GB", {
-  day: "numeric",
-  month: "short",
-  year: "numeric",
-  timeZone: "UTC",
-});
-
 const TIME_FORMAT = new Intl.DateTimeFormat("en-GB", {
   hour: "2-digit",
   minute: "2-digit",
@@ -192,7 +186,7 @@ const TIME_FORMAT = new Intl.DateTimeFormat("en-GB", {
 /** Write a date-time in Coordinated Universal Time, in the form "14 Nov 2026, 16:20:05 UTC". */
 export function formatMoment(moment: string): string {
   const date = new Date(moment);
-  return `${DAY_FORMAT.format(date)}, ${TIME_FORMAT.format(date)} UTC`;
+  return `${utcDay(date)}, ${TIME_FORMAT.format(date)} UTC`;
 }
 
 /** Return the jobs in the order asked. Jobs that are equal in that order keep the order of the list. */

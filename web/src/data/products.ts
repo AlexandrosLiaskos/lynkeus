@@ -1,3 +1,4 @@
+import { utcDay } from "../shared/days";
 import { PRODUCT_TYPES, type ProductType } from "../shared/layer";
 
 /** NASA's names of the product types, from the titles of their collections in NASA's catalogue. */
@@ -310,13 +311,6 @@ export function pairDays({ dates }: Product): number | null {
   return Math.round((Date.parse(`${second}T00:00:00Z`) - Date.parse(`${first}T00:00:00Z`)) / 86_400_000);
 }
 
-const DAY_FORMAT = new Intl.DateTimeFormat("en-GB", {
-  day: "numeric",
-  month: "short",
-  year: "numeric",
-  timeZone: "UTC",
-});
-
 const TIME_FORMAT = new Intl.DateTimeFormat("en-GB", {
   hour: "2-digit",
   minute: "2-digit",
@@ -327,13 +321,13 @@ const TIME_FORMAT = new Intl.DateTimeFormat("en-GB", {
 
 /** Write a day given as year-month-day in the form "21 Oct 2026". */
 export function formatDay(day: string): string {
-  return DAY_FORMAT.format(new Date(`${day}T00:00:00Z`));
+  return utcDay(new Date(`${day}T00:00:00Z`));
 }
 
 /** Write a moment of Coordinated Universal Time in the form "21 Oct 2026, 23:43:30 UTC". */
 export function formatMoment(moment: string): string {
   const date = new Date(moment);
-  return `${DAY_FORMAT.format(date)}, ${TIME_FORMAT.format(date)} UTC`;
+  return `${utcDay(date)}, ${TIME_FORMAT.format(date)} UTC`;
 }
 
 /** Write a size in bytes in kilobytes, megabytes or gigabytes (1 GB is 1000 MB). */

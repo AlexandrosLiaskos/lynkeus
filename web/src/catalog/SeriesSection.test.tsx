@@ -70,11 +70,11 @@ test("each series shows its name, its quantity with the unit, and its dates with
   await show();
   expect(screen.getByRole("button", { name: "Series (2)", expanded: true })).toBeDefined();
   expect([...document.querySelectorAll(".layer .catalog-pick")].map((text) => text.textContent)).toEqual([
-    "Coherence HH at p1Interferometric coherence (magnitude) (no unit)3 pairs · 15 Sept 2026 to 21 Oct 2026 · At a point",
-    "Backscatter HH, mean of the areaRadar backscatter gamma0 (dB)4 dates · 27 Sept 2026 to 2 Nov 2026 · Whole area",
+    "Coherence HH at p1Interferometric coherence (magnitude) (no unit)3 pairs · 15 Sep 2026 to 21 Oct 2026 · At a point",
+    "Backscatter HH, mean of the areaRadar backscatter gamma0 (dB)4 dates · 27 Sep 2026 to 2 Nov 2026 · Whole area",
   ]);
-  expect(seriesLine(series())).toBe("4 dates · 27 Sept 2026 to 2 Nov 2026 · Whole area");
-  expect(seriesLine(pairSeries())).toBe("3 pairs · 15 Sept 2026 to 21 Oct 2026 · At a point");
+  expect(seriesLine(series())).toBe("4 dates · 27 Sep 2026 to 2 Nov 2026 · Whole area");
+  expect(seriesLine(pairSeries())).toBe("3 pairs · 15 Sep 2026 to 21 Oct 2026 · At a point");
 });
 
 test("the item of a series shows the command Show, and its menu holds Rename and Remove", async () => {

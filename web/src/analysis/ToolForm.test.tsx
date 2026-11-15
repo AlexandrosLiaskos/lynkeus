@@ -379,7 +379,7 @@ test("Soil moisture, One date starts as a job of its process", async () => {
     {
       method: "POST",
       address: "/api/processes/soil-moisture-state/execution",
-      content: { inputs: { inputs: ["soil-sep"], title: "Volumetric soil moisture, 27 Sept 2026" } },
+      content: { inputs: { inputs: ["soil-sep"], title: "Volumetric soil moisture, 27 Sep 2026" } },
     },
   ]);
 });
@@ -400,14 +400,14 @@ test.each([
   expect(options("Layer")).toHaveLength(3);
   expect(options("Layer of the other date")).toHaveLength(2);
   await userEvent.selectOptions(screen.getByLabelText("Layer of the other date"), second);
-  expect(valueOf(document.body, "Dates")).toBe("27 Sept 2026 to 9 Oct 2026");
+  expect(valueOf(document.body, "Dates")).toBe("27 Sep 2026 to 9 Oct 2026");
   await userEvent.click(runButton());
   expect(server.sent("POST")).toEqual([
     {
       method: "POST",
       address: "/api/processes/soil-moisture-change/execution",
       content: {
-        inputs: { inputs: ["soil-sep", "soil-oct"], title: "Change of soil moisture, 27 Sept 2026 to 9 Oct 2026" },
+        inputs: { inputs: ["soil-sep", "soil-oct"], title: "Change of soil moisture, 27 Sep 2026 to 9 Oct 2026" },
       },
     },
   ]);
@@ -430,9 +430,9 @@ test.each([
   await userEvent.selectOptions(screen.getByLabelText("Layer"), first);
   expect(screen.getByText("Choose the layer of the other pair.")).toBeDefined();
   await userEvent.selectOptions(screen.getByLabelText("Layer of the other pair"), second);
-  expect(valueOf(document.body, "Dates")).toBe("27 Sept 2026 to 9 Oct 2026, then 9 Oct 2026 to 21 Oct 2026");
-  // The interface writes a day with `formatDay`, which shortens September to "Sept".
-  const title = "Change of coherence magnitude HH, 20 m, 27 Sept 2026 to 9 Oct 2026, then 9 Oct 2026 to 21 Oct 2026";
+  expect(valueOf(document.body, "Dates")).toBe("27 Sep 2026 to 9 Oct 2026, then 9 Oct 2026 to 21 Oct 2026");
+  // The interface writes a day with `formatDay`, which shortens September to "Sep", as the server does.
+  const title = "Change of coherence magnitude HH, 20 m, 27 Sep 2026 to 9 Oct 2026, then 9 Oct 2026 to 21 Oct 2026";
   expect(screen.getByLabelText<HTMLInputElement>("Result name").value).toBe(title);
   await userEvent.click(runButton());
   expect(server.sent("POST")).toEqual([

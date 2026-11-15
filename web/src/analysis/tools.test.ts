@@ -466,11 +466,11 @@ test("two pairs that the server would refuse are refused in one sentence that sa
 test("the dates of the inputs are written in the order of the tool", () => {
   expect(datesWords("backscatter-state", [term()])).toBe("21 Oct 2026");
   expect(datesWords("backscatter-change", [term(), laterTerm()])).toBe("21 Oct 2026 to 2 Nov 2026");
-  // The interface writes a day with `formatDay`, which shortens September to "Sept".
-  expect(datesWords("soil-moisture-change", [soil(), laterSoil()])).toBe("27 Sept 2026 to 9 Oct 2026");
+  // The interface writes a day with `formatDay`, which shortens September to "Sep", as the server does.
+  expect(datesWords("soil-moisture-change", [soil(), laterSoil()])).toBe("27 Sep 2026 to 9 Oct 2026");
   expect(datesWords("coherence-state", [coherence()])).toBe("9 Oct 2026 to 21 Oct 2026");
   expect(datesWords("coherence-change", [earlierPair(), laterPair()])).toBe(
-    "27 Sept 2026 to 9 Oct 2026, then 9 Oct 2026 to 21 Oct 2026",
+    "27 Sep 2026 to 9 Oct 2026, then 9 Oct 2026 to 21 Oct 2026",
   );
 });
 
@@ -510,11 +510,11 @@ test("the proposed name of a result states the quantity, the channel and the dat
     "Coherence magnitude VV, 20 m, 9 Oct 2026 to 21 Oct 2026",
   );
   expect(defaultTitle("coherence-change", [earlierPair(), laterPair()])).toBe(
-    "Change of coherence magnitude HH, 20 m, 27 Sept 2026 to 9 Oct 2026, then 9 Oct 2026 to 21 Oct 2026",
+    "Change of coherence magnitude HH, 20 m, 27 Sep 2026 to 9 Oct 2026, then 9 Oct 2026 to 21 Oct 2026",
   );
-  expect(defaultTitle("soil-moisture-state", [soil()])).toBe("Volumetric soil moisture, 27 Sept 2026");
+  expect(defaultTitle("soil-moisture-state", [soil()])).toBe("Volumetric soil moisture, 27 Sep 2026");
   expect(defaultTitle("soil-moisture-change", [soil(), laterSoil()])).toBe(
-    "Change of soil moisture, 27 Sept 2026 to 9 Oct 2026",
+    "Change of soil moisture, 27 Sep 2026 to 9 Oct 2026",
   );
 });
 
