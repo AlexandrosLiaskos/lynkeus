@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
+import { AnimatePresence, m, useIsPresent } from "motion/react";
 import { Children, isValidElement, useState, type MouseEvent, type ReactNode } from "react";
 import { Icon } from "../icon/Icon";
+import { MotionRoot } from "../motion/MotionRoot";
+import { EASE_ENTER, EASE_EXIT, MOTION_ENTER, MOTION_EXIT } from "../tokens/motion";
 
 /** The kinds of notice, as in the alert of the U.S. Web Design System. */
 export type NoticeKind = "info" | "success" | "warning" | "error";
@@ -52,12 +55,55 @@ export function CloseButton({ onClick }: CloseButtonProps) {
   );
 }
 
+/** How far a notice moves while it enters, in pixels. */
+const NOTICE_SHIFT = 4;
+
+const ENTERED = { opacity: 1, y: 0, transition: { duration: MOTION_ENTER, ease: EASE_ENTER } };
+const BEFORE = { opacity: 0, y: -NOTICE_SHIFT };
+const LEFT = { opacity: 0, transition: { duration: MOTION_EXIT, ease: EASE_EXIT } };
+
+interface NoticeBlockProps extends NoticeProps {
+  /** Called by the X of the notice. A notice without it has no X. */
+  onClose?: (event: MouseEvent<HTMLButtonElement>) => void;
+}
+
+/**
+ * The block of a notice. It fades in while it settles in its place, and it fades out when it is closed. From the
+ * moment it starts to leave it is `inert` and hidden from a screen reader, so its buttons cannot hold the keyboard
+ * focus.
+ */
+function NoticeBlock({ kind, id, action, onClose, children }: NoticeBlockProps) {
+  const present = useIsPresent();
+  return (
+    <m.div
+      className={onClose ? `notice notice--${kind} notice--closable` : `notice notice--${kind}`}
+      inert={!present}
+      aria-hidden={present ? undefined : true}
+      initial={BEFORE}
+      animate={ENTERED}
+      exit={LEFT}
+    >
+      <Icon name={ICONS[kind]} />
+      <div className="notice-text" id={id} role={kind === "error" ? "alert" : "status"}>
+        {children}
+      </div>
+      {action ? (
+        <button type="button" className="usa-button usa-button--outline" onClick={action.onClick}>
+          {action.label}
+        </button>
+      ) : null}
+      {onClose ? <CloseButton onClick={onClose} /> : null}
+    </m.div>
+  );
+}
+
 /**
  * A message inside a pane: one compact block with an icon, a bar at its left, the text, at most one button and, at
  * its right end, the X that closes it. It takes the place of a loose paragraph. The text is announced as a status,
  * and the text of an error as an alert, the two roles that the alert of the U.S. Web Design System names for them.
  *
- * A closed notice stays closed until its text changes or its pane opens again. A notice with an `id` belongs to the
+ * The notice enters and leaves with the Motion library. A closed notice stays closed until its text changes or its
+ * pane opens again. A notice with an `id` belongs to the
  * field that names it in `aria-describedby`, so it has no X.
  *
  *     <Notice kind="warning" action={{ label: "Sign in", onClick: () => openToolPane("sign-in") }}>
@@ -73,10 +119,6 @@ export function Notice({ kind, id, action, children }: NoticeProps) {
   }
   const closable = id === undefined;
 
-  if (closable && closed === words) {
-    return null;
-  }
-
   // The X leaves the page with the notice. When it had the keyboard focus, the focus moves to the title of the pane
   // or of the dialog, where it also stands when the pane opens.
   const close = (event: MouseEvent<HTMLButtonElement>) => {
@@ -88,17 +130,14 @@ export function Notice({ kind, id, action, children }: NoticeProps) {
   };
 
   return (
-    <div className={closable ? `notice notice--${kind} notice--closable` : `notice notice--${kind}`}>
-      <Icon name={ICONS[kind]} />
-      <div className="notice-text" id={id} role={kind === "error" ? "alert" : "status"}>
-        {children}
-      </div>
-      {action ? (
-        <button type="button" className="usa-button usa-button--outline" onClick={action.onClick}>
-          {action.label}
-        </button>
-      ) : null}
-      {closable ? <CloseButton onClick={close} /> : null}
-    </div>
+    <MotionRoot>
+      <AnimatePresence>
+        {closable && closed === words ? null : (
+          <NoticeBlock key="notice" kind={kind} id={id} action={action} onClose={closable ? close : undefined}>
+            {children}
+          </NoticeBlock>
+        )}
+      </AnimatePresence>
+    </MotionRoot>
   );
 }

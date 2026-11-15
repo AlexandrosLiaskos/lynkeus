@@ -74,6 +74,13 @@
   box-shadow: 0 0 0.5rem uswds.color("black-transparent-20");
 }
 
+// A pane that hides automatically and does not show stays in its place, transparent, so that it can fade while
+// it moves to the edge of the window (see `DockPane`). It is inert, and the pointer reaches the map through it.
+.dock-pane--over[hidden] {
+  display: flex;
+  pointer-events: none;
+}
+
 .dock--left .dock-pane--over {
   left: tokens.$row;
   border-right: 1px solid uswds.color("base-light");

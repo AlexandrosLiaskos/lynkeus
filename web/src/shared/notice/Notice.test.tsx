@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
-import { act, render, screen } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, test, vi } from "vitest";
 import { closeToolPane, openToolPane, resetDock } from "../dock/dock";
@@ -106,4 +106,14 @@ test("the X gives the keyboard focus to the title of the pane, and the notice re
   act(() => closeToolPane("servers"));
   act(() => openToolPane("servers"));
   expect(screen.getByRole("status").textContent).toBe("Reading your servers.");
+});
+
+test("a notice that leaves is inert at once, and it is taken from the page when its motion has ended", async () => {
+  const { container } = render(<Notice kind="info">Reading your servers.</Notice>);
+  const notice = container.firstElementChild as HTMLElement;
+  expect(notice.hasAttribute("inert")).toBe(false);
+  await userEvent.click(screen.getByRole("button", { name: "Close this message" }));
+  expect(notice.hasAttribute("inert")).toBe(true);
+  await waitFor(() => expect(notice.isConnected).toBe(false));
+  expect(container.firstElementChild).toBeNull();
 });
