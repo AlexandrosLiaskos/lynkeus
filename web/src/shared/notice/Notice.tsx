@@ -6,6 +6,11 @@ export type NoticeKind = "info" | "success" | "warning" | "error";
 
 interface NoticeProps {
   kind: NoticeKind;
+  /**
+   * The id of the element that holds the text. A field that the notice is about carries it in `aria-describedby`,
+   * so that a screen reader reads the notice with the field.
+   */
+  id?: string;
   /** The button of the notice, when the user can do something about what it states. */
   action?: { label: string; onClick: () => void };
   /** What happened and what to do next, in at most two sentences. */
@@ -23,11 +28,11 @@ const ICONS = { info: "info", success: "check_circle", warning: "warning", error
  *       You are not signed in to Earthdata. A layer is requested with your Earthdata account.
  *     </Notice>
  */
-export function Notice({ kind, action, children }: NoticeProps) {
+export function Notice({ kind, id, action, children }: NoticeProps) {
   return (
     <div className={`notice notice--${kind}`}>
       <Icon name={ICONS[kind]} />
-      <div className="notice-text" role={kind === "error" ? "alert" : "status"}>
+      <div className="notice-text" id={id} role={kind === "error" ? "alert" : "status"}>
         {children}
       </div>
       {action ? (

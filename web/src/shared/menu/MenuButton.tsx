@@ -16,8 +16,14 @@ export interface MenuButtonItem {
 }
 
 interface MenuButtonProps {
-  /** Name of the button and of its menu, for example "More" or "Save as". */
+  /** Name of the button, for example "More" or "Save as": the text that it shows, or the text of its tooltip. */
   label: string;
+  /**
+   * The accessible name of the button and of its menu, where the page holds several buttons of one label: the
+   * "More" button of an item of a list is named after its item, for example "More commands of Athens", and its
+   * tooltip stays "More". It begins with the label. Without it the label names the button and the menu.
+   */
+  name?: string;
   /**
    * Name of an icon in the icon set of the U.S. Web Design System. With it the button shows the icon alone, as an
    * `IconButton` does, and its name shows in a tooltip. Without it the button shows its name and an arrow.
@@ -40,9 +46,14 @@ interface MenuButtonProps {
  *         { label: "GeoJSON", onSelect: saveGeoJson },
  *       ]}
  *     />
- *     <MenuButton icon="more_vert" label="More" items={[{ label: "Remove", onSelect: remove }]} />
+ *     <MenuButton
+ *       icon="more_vert"
+ *       label="More"
+ *       name={`More commands of ${layer.title}`}
+ *       items={[{ label: "Remove", onSelect: remove }]}
+ *     />
  */
-export function MenuButton({ label, icon, items }: MenuButtonProps) {
+export function MenuButton({ label, name, icon, items }: MenuButtonProps) {
   const button = useRef<HTMLButtonElement>(null);
   const menuId = useId();
   // Whether the press that is going on has closed the menu: the menu closes before the click arrives.
@@ -78,9 +89,9 @@ export function MenuButton({ label, icon, items }: MenuButtonProps) {
     }
   };
 
-  const commands: MenuItem[] = items.map(({ label: name, onSelect, disabled, checked, separated }, index) => ({
+  const commands: MenuItem[] = items.map(({ label: command, onSelect, disabled, checked, separated }, index) => ({
     id: String(index),
-    label: name,
+    label: command,
     disabled,
     checked,
     separated,
@@ -101,7 +112,7 @@ export function MenuButton({ label, icon, items }: MenuButtonProps) {
               ref={button}
               type="button"
               className="icon-button"
-              aria-label={label}
+              aria-label={name ?? label}
               aria-haspopup="menu"
               aria-expanded={opened ? true : undefined}
               aria-controls={opened ? menuId : undefined}
@@ -118,6 +129,7 @@ export function MenuButton({ label, icon, items }: MenuButtonProps) {
           ref={button}
           type="button"
           className="usa-button usa-button--outline menu-button"
+          aria-label={name}
           aria-haspopup="menu"
           aria-expanded={opened ? true : undefined}
           aria-controls={opened ? menuId : undefined}
@@ -130,7 +142,7 @@ export function MenuButton({ label, icon, items }: MenuButtonProps) {
         </button>
       )}
       {opened ? (
-        <Menu id={menuId} label={label} items={commands} at={opened.at} focus={opened.focus} onClose={close} />
+        <Menu id={menuId} label={name ?? label} items={commands} at={opened.at} focus={opened.focus} onClose={close} />
       ) : null}
     </>
   );

@@ -119,3 +119,36 @@ test("a command that switches something on and off states whether it is on", asy
     "true",
   );
 });
+
+test("a button with a name of its own is named by it, and so is its menu, while its tooltip shows the label", async () => {
+  render(
+    <>
+      <MenuButton
+        icon="more_vert"
+        label="More"
+        name="More commands of Athens"
+        items={[{ label: "Remove", onSelect: vi.fn() }]}
+      />
+      <MenuButton
+        icon="more_vert"
+        label="More"
+        name="More commands of Patras"
+        items={[{ label: "Remove", onSelect: vi.fn() }]}
+      />
+    </>,
+  );
+  expect(screen.queryByRole("button", { name: "More" })).toBeNull();
+  expect(screen.getAllByRole("tooltip", { hidden: true }).map((tooltip) => tooltip.textContent)).toEqual([
+    "More",
+    "More",
+  ]);
+  await userEvent.click(button("More commands of Patras"));
+  expect(screen.getByRole("menu", { name: "More commands of Patras" })).toBeDefined();
+});
+
+test("a button that shows its label takes the name of its own as its accessible name", () => {
+  render(
+    <MenuButton label="Save as" name="Save as: products of the search" items={[{ label: "CSV", onSelect: vi.fn() }]} />,
+  );
+  expect(button("Save as: products of the search").textContent).toBe("Save as");
+});

@@ -177,7 +177,7 @@ token of that account, which Earthdata Login generates on its page Generate Toke
 Login and keeps the token in its memory only. It forgets the token when the visitor signs out, after 30
 minutes without use and after 8 hours.
 
-The background maps of the application come from two services.
+The basemaps of the application come from two services.
 
 - Blue Marble: we acknowledge the use of imagery provided by services from NASA's Global Imagery
   Browse Services (GIBS), part of NASA's Earth Science Data and Information System (ESDIS).

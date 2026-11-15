@@ -223,9 +223,9 @@ export function SignInPane() {
         </p>
       ) : null}
       {fault?.from === "server" ? (
-        <div id={`${id}-fault`}>
-          <Notice kind="error">{fault.text}</Notice>
-        </div>
+        <Notice kind="error" id={`${id}-fault`}>
+          {fault.text}
+        </Notice>
       ) : null}
     </ToolPane>
   );
