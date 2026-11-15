@@ -250,6 +250,7 @@ def write_layer(
     layer: str | None = None,
     method: str | None = None,
     ends: tuple[str, str] | None = None,
+    frequency: float | None = None,
     level: str | None = None,
     links: Sequence[Mapping[str, str]] = (),
     averaged: bool = True,
@@ -304,6 +305,10 @@ def write_layer(
         Words that name the lowest and the highest end of the legend, for
         example ``("decrease", "increase")``. Only a result may have them.
         They stand in the description only, not in the two files.
+    frequency : float, optional
+        Centre frequency of the radar band of the layer, in hertz, as the
+        product states it. Only a layer received from NASA may have one. It
+        stands in the description only, not in the two files.
     level : str, optional
         Processing level of the values, for example ``L2``.
     links : sequence of Mapping, optional
@@ -358,6 +363,7 @@ def write_layer(
         inputs=tuple(inputs),
         layer=layer,
         ends=ends,
+        frequency=frequency,
         program=PROGRAM,
         method=method,
         record=f"{address}/{name}.json",

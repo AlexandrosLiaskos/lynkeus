@@ -1,0 +1,58 @@
+{
+ "started": "2026-11-15T10:18:19Z",
+ "area": {
+  "west": -71.2,
+  "south": 42.6,
+  "east": -70.75,
+  "north": 42.95
+ },
+ "layers": {
+  "phase-20261009-20261021": {
+   "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+   "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+   "seconds": 60.0,
+   "files": {
+    "gunw-unwrappedinterferogram-hh-unwrappedphase-20261009-20261021.json": {
+     "bytes": 4987,
+     "sha256": "1dca7d65eed918f9a5be479ef8ff6b18697c4d15ffa6dce6824569d9f1634431"
+    },
+    "gunw-unwrappedinterferogram-hh-unwrappedphase-20261009-20261021.tif": {
+     "bytes": 739189,
+     "sha256": "77024532e183d09a578088a47b362f470ef27bfc70066beb21f74ce568247583"
+    }
+   },
+   "description": {
+    "id": "phase-20261009-20261021",
+    "title": "Unwrapped phase HH, 9 Oct 2026 to 21 Oct 2026",
+    "kind": "layer",
+    "url": "/files/phase-20261009-20261021/gunw-unwrappedinterferogram-hh-unwrappedphase-20261009-20261021.tif",
+    "quantity": "Unwrapped interferometric phase, HH",
+    "unit": "rad",
+    "range": [
+     -4.257588863372803,
+     4.257588863372803
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-10-09",
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "ends": null,
+    "frequency": 1239000000.0,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/phase-20261009-20261021/gunw-unwrappedinterferogram-hh-unwrappedphase-20261009-20261021.json"
+   },
+   "last_step": [
+    60.0,
+    100,
+    "The layer is ready."
+   ]
+  }
+ },
+ "ended": "2026-11-15T10:19:22Z"
+}

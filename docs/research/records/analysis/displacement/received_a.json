@@ -1,0 +1,237 @@
+{
+ "started": "2026-11-15T09:57:08Z",
+ "area": {
+  "west": -71.2,
+  "south": 42.6,
+  "east": -70.75,
+  "north": 42.95
+ },
+ "layers": {
+  "ionosphere-uncertainty-20261009-20261021": {
+   "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+   "layer": "unwrappedInterferogram/HH/ionospherePhaseScreenUncertainty",
+   "seconds": 41.2,
+   "files": {
+    "gunw-unwrappedinterferogram-hh-ionospherephasescreenuncertainty-20261009-20261021.json": {
+     "bytes": 5134,
+     "sha256": "6ff2640ffd94eabbbf971b42e830c536e902e2a6264db2d1baa56931f65b71b3"
+    },
+    "gunw-unwrappedinterferogram-hh-ionospherephasescreenuncertainty-20261009-20261021.tif": {
+     "bytes": 504327,
+     "sha256": "0ae201c62f1d98119318f3fe77ad9bd1344feea846d67a1651d7cc604e4107c4"
+    }
+   },
+   "description": {
+    "id": "ionosphere-uncertainty-20261009-20261021",
+    "title": "Uncertainty of the ionosphere phase screen HH, 9 Oct 2026 to 21 Oct 2026",
+    "kind": "layer",
+    "url": "/files/ionosphere-uncertainty-20261009-20261021/gunw-unwrappedinterferogram-hh-ionospherephasescreenuncertainty-20261009-20261021.tif",
+    "quantity": "Uncertainty of the ionosphere phase screen HH",
+    "unit": "rad",
+    "range": [
+     0.9358734798431396,
+     1.5513885736465456
+    ],
+    "colours": "viridis",
+    "dates": [
+     "2026-10-09",
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/ionospherePhaseScreenUncertainty",
+    "ends": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/ionosphere-uncertainty-20261009-20261021/gunw-unwrappedinterferogram-hh-ionospherephasescreenuncertainty-20261009-20261021.json"
+   },
+   "last_step": [
+    41.2,
+    100,
+    "The layer is ready."
+   ]
+  },
+  "ionosphere-20261009-20261021": {
+   "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+   "layer": "unwrappedInterferogram/HH/ionospherePhaseScreen",
+   "seconds": 46.4,
+   "files": {
+    "gunw-unwrappedinterferogram-hh-ionospherephasescreen-20261009-20261021.json": {
+     "bytes": 5009,
+     "sha256": "f3cbb7ddb2a6a032dcc1f31e1af13d623fb650ce4eae06784aeba08c37f7b6d5"
+    },
+    "gunw-unwrappedinterferogram-hh-ionospherephasescreen-20261009-20261021.tif": {
+     "bytes": 481234,
+     "sha256": "bff50de01110c0e9f736e2b760af5e3b4e8e58db73ad88579ea2de38638b69e8"
+    }
+   },
+   "description": {
+    "id": "ionosphere-20261009-20261021",
+    "title": "Ionosphere phase screen HH, 9 Oct 2026 to 21 Oct 2026",
+    "kind": "layer",
+    "url": "/files/ionosphere-20261009-20261021/gunw-unwrappedinterferogram-hh-ionospherephasescreen-20261009-20261021.tif",
+    "quantity": "Ionosphere phase screen HH",
+    "unit": "rad",
+    "range": [
+     17.378223876953125,
+     31.79916213989258
+    ],
+    "colours": "viridis",
+    "dates": [
+     "2026-10-09",
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/ionospherePhaseScreen",
+    "ends": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/ionosphere-20261009-20261021/gunw-unwrappedinterferogram-hh-ionospherephasescreen-20261009-20261021.json"
+   },
+   "last_step": [
+    46.4,
+    100,
+    "The layer is ready."
+   ]
+  },
+  "phase-20261009-20261021": {
+   "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+   "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+   "seconds": 70.3,
+   "files": {
+    "gunw-unwrappedinterferogram-hh-unwrappedphase-20261009-20261021.json": {
+     "bytes": 4987,
+     "sha256": "b8fabc07b067bd1bf6688b176a65fbbcfd6136ffd8220d673d060ec415f519f3"
+    },
+    "gunw-unwrappedinterferogram-hh-unwrappedphase-20261009-20261021.tif": {
+     "bytes": 739189,
+     "sha256": "99836f4f6892f7c83a82f5a6f538231b5b632b765c6c346ed6e596cdd7fe5534"
+    }
+   },
+   "description": {
+    "id": "phase-20261009-20261021",
+    "title": "Unwrapped phase HH, 9 Oct 2026 to 21 Oct 2026",
+    "kind": "layer",
+    "url": "/files/phase-20261009-20261021/gunw-unwrappedinterferogram-hh-unwrappedphase-20261009-20261021.tif",
+    "quantity": "Unwrapped interferometric phase, HH",
+    "unit": "rad",
+    "range": [
+     -4.257588863372803,
+     4.257588863372803
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-10-09",
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/unwrappedPhase",
+    "ends": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/phase-20261009-20261021/gunw-unwrappedinterferogram-hh-unwrappedphase-20261009-20261021.json"
+   },
+   "last_step": [
+    70.3,
+    100,
+    "The layer is ready."
+   ]
+  },
+  "components-20261009-20261021": {
+   "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+   "layer": "unwrappedInterferogram/HH/connectedComponents",
+   "seconds": 72.8,
+   "files": {
+    "gunw-unwrappedinterferogram-hh-connectedcomponents-20261009-20261021.json": {
+     "bytes": 5032,
+     "sha256": "2fe3a54f80253f8a2cca93f721589021e36553ffd8d63934bbbb90ca701dc3aa"
+    },
+    "gunw-unwrappedinterferogram-hh-connectedcomponents-20261009-20261021.tif": {
+     "bytes": 16447,
+     "sha256": "07cb2f746ef6469737e7cf072cc6813cf933425e4d383149e26b417a20aa23ab"
+    }
+   },
+   "description": {
+    "id": "components-20261009-20261021",
+    "title": "Connected components HH, 9 Oct 2026 to 21 Oct 2026",
+    "kind": "layer",
+    "url": "/files/components-20261009-20261021/gunw-unwrappedinterferogram-hh-connectedcomponents-20261009-20261021.tif",
+    "quantity": "Connected component of the phase unwrapping, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "tab10",
+    "dates": [
+     "2026-10-09",
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/connectedComponents",
+    "ends": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/components-20261009-20261021/gunw-unwrappedinterferogram-hh-connectedcomponents-20261009-20261021.json"
+   },
+   "last_step": [
+    72.7,
+    100,
+    "The layer is ready."
+   ]
+  },
+  "coherence80-20261009-20261021": {
+   "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+   "layer": "unwrappedInterferogram/HH/coherenceMagnitude",
+   "seconds": 100.8,
+   "files": {
+    "gunw-unwrappedinterferogram-hh-coherencemagnitude-20261009-20261021.json": {
+     "bytes": 5016,
+     "sha256": "17f9e4ed93b3c8f15ed377e17a04caf91929761c235eb8d8f77e5ddc348114ab"
+    },
+    "gunw-unwrappedinterferogram-hh-coherencemagnitude-20261009-20261021.tif": {
+     "bytes": 734902,
+     "sha256": "e109ab6c68ddf3999db3440d2f9f44e9e196766d0d93274f9c5b6d0318eb1294"
+    }
+   },
+   "description": {
+    "id": "coherence80-20261009-20261021",
+    "title": "Coherence HH, 80 m, 9 Oct 2026 to 21 Oct 2026",
+    "kind": "layer",
+    "url": "/files/coherence80-20261009-20261021/gunw-unwrappedinterferogram-hh-coherencemagnitude-20261009-20261021.tif",
+    "quantity": "Interferometric coherence magnitude, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-10-09",
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/coherenceMagnitude",
+    "ends": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/coherence80-20261009-20261021/gunw-unwrappedinterferogram-hh-coherencemagnitude-20261009-20261021.json"
+   },
+   "last_step": [
+    100.8,
+    100,
+    "The layer is ready."
+   ]
+  }
+ },
+ "ended": "2026-11-15T09:59:06Z"
+}

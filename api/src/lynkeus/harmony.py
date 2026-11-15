@@ -10,6 +10,12 @@ of the layer.
 The names, the quantities and the units of the layers follow the NISAR
 product specifications: JPL D-102274 (GCOV), JPL D-102272 (GUNW),
 JPL D-105010 (GOFF) and JPL D-107677 (SME2).
+
+A layer of a GUNW product whose values are a phase needs the centre frequency
+of its radar band to be read as a distance. Harmony does not deliver the
+field ``centerFrequency`` of the product, so ``get_layer`` reads the same
+value from the ISO XML file that accompanies the product in NASA's archive
+(``docs/research/analysis-displacement.md``, part 2.3).
 """
 
 import itertools
@@ -25,6 +31,7 @@ from datetime import date
 from pathlib import Path
 from types import FrameType
 from typing import Any
+from urllib.parse import urlsplit
 
 import earthaccess
 import numpy as np
@@ -63,6 +70,11 @@ _RECORD = "https://cmr.earthdata.nasa.gov/search/concepts/{identifier}.umm_json"
 _MONTHS = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 _LEVELS: dict[ProductType, str] = {"GCOV": "L2", "GUNW": "L2", "GOFF": "L2", "SME2": "L3"}
 _WAITING = ("accepted", "running", "running_with_errors")
+
+# The additional attributes of the ISO XML file of a product, and the description of the one that holds the
+# centre frequency of the group ``frequencyA``, in hertz, the group whose layers Lynkeus receives.
+_ATTRIBUTE = re.compile(r"<eos:EOS_AdditionalAttribute>.*?</eos:EOS_AdditionalAttribute>", re.DOTALL)
+_FREQUENCY_A = "center frequency of the processed image - frequency A"
 
 type Report = Callable[[int, str], None]
 
@@ -185,7 +197,10 @@ def get_layer(
     LayerDescription
         The description of the layer. Its values are those of the product, in
         the unit and on the grid of the product. Its field ``layer`` holds the
-        name of the layer as the request gave it.
+        name of the layer as the request gave it. Its field ``frequency``
+        holds the centre frequency of the radar band, in hertz, when the
+        layer is a phase of a GUNW product (unit ``rad``) and the ISO XML file
+        of the product states the frequency; otherwise it holds None.
 
     Raises
     ------
@@ -206,7 +221,7 @@ def _get_layer(
 ) -> LayerDescription:
     """Receive a layer and write its files."""
     report(0, "Finding the product in NASA's catalogue.")
-    product, collection = _find(request.product, request.granule)
+    product, collection, metadata = _find(request.product, request.granule)
     layer = next((layer for layer in _layers(product.product, product.channels) if layer.name == request.layer), None)
     if layer is None:
         raise LayerError("The product does not hold this layer.")
@@ -218,11 +233,14 @@ def _get_layer(
     variable = _GROUPS[product.product] + layer.name
     with tempfile.TemporaryDirectory(dir=folder, prefix=".harmony-") as received:
         report(5, "Asking NASA Harmony for the layer.")
-        file, job = _receive(_client(token), collection, product.id, variable, area, Path(received), report)
+        client = _client(token)
+        file, job = _receive(client, collection, product.id, variable, area, Path(received), report)
         grid = grid_of(file)
         if grid.width * grid.height > MOST_CELLS:
             raise LayerError(_too_large(grid.width * grid.height))
         values, grid = read_layer(file)
+        phase = product.product == "GUNW" and layer.unit == "rad"
+        frequency = _centre_frequency(client, metadata, Path(received)) if phase else None
     if np.isnan(values).all():
         raise LayerError("The product holds no data in the area.")
     report(90, "Writing the layer.")
@@ -244,6 +262,7 @@ def _get_layer(
         dates=product.dates,
         inputs=(f"{product.name}.h5",),
         layer=request.layer,
+        frequency=frequency,
         lineage=(
             f"Layer {variable} of the NISAR product {product.name} ({product.maturity.lower()}), clipped to the area "
             f"{area.west}, {area.south}, {area.east}, {area.north} (west, south, east and north, in degrees) "
@@ -392,8 +411,13 @@ def _offsets(group: str, of: str) -> list[_Layer]:
     ]
 
 
-def _find(product: ProductType, name: str) -> tuple[Product, str]:
-    """Find a product by its name, and return it with the identifier of its collection."""
+def _find(product: ProductType, name: str) -> tuple[Product, str, str | None]:
+    """Find a product by its name.
+
+    Returns the product, the identifier of its collection and the address of
+    its ISO XML file, which is None when the record of the product names no
+    such file.
+    """
     name = name.removesuffix(".h5")
     # The catalogue reads * and ? in a name as wildcards, and a product name holds neither.
     if not re.fullmatch(r"[A-Za-z0-9_]+", name):
@@ -409,13 +433,76 @@ def _find(product: ProductType, name: str) -> tuple[Product, str]:
         found = [record for record in records if record["umm"]["GranuleUR"] == name]
         if not found:
             raise LayerError("NASA's catalogue does not hold this product.")
-        return product_from_record(found[0]), found[0]["meta"]["collection-concept-id"]
+        return product_from_record(found[0]), found[0]["meta"]["collection-concept-id"], _metadata_file(found[0])
     except LayerError:
         raise
     except CatalogueError as error:
         raise LayerError("The record of the product in NASA's catalogue could not be read.") from error
     except Exception as error:  # the library raises errors of several kinds, of itself and of the network
         raise LayerError("NASA's catalogue did not answer.") from error
+
+
+def _metadata_file(record: Any) -> str | None:
+    """Return the address of the ISO XML file of a product, from its record in the catalogue, or None.
+
+    The file is fetched with the credentials of the request, so only an address
+    that begins with ``https://`` and whose host is under ``nasa.gov`` is returned.
+    """
+    for link in record["umm"].get("RelatedUrls", []):
+        address = str(link.get("URL", ""))
+        host = urlsplit(address).hostname or ""
+        if address.startswith("https://") and address.endswith(".h5.iso.xml") and host.endswith(".nasa.gov"):
+            return address
+    return None
+
+
+def _centre_frequency(client: Any, address: str | None, folder: Path) -> float | None:
+    """Read the centre frequency of the radar band of a product from its ISO XML file.
+
+    Parameters
+    ----------
+    client : harmony.Client
+        The client of Harmony, which fetches the file with the credentials of the request.
+    address : str or None
+        The address of the ISO XML file of the product.
+    folder : pathlib.Path
+        The folder that receives the file.
+
+    Returns
+    -------
+    float or None
+        The value of the additional attribute ``center frequency`` of the file whose description is
+        "center frequency of the processed image - frequency A" and whose unit is ``Hz``: the centre
+        frequency of the group ``frequencyA`` of the product, in hertz. None when the product has no such
+        file, when the file cannot be fetched or read, and when it does not hold exactly one such attribute
+        with a finite value above zero. The layer is then received without a centre frequency.
+    """
+    if address is None:
+        return None
+    try:
+        text = Path(client.download(address, directory=str(folder), overwrite=True).result()).read_text("utf-8")
+    except Exception:  # a failure of the network or of Earthdata Login, or a file that is not text
+        return None
+    values = [
+        _field(attribute, "value")
+        for attribute in _ATTRIBUTE.findall(text)
+        if _field(attribute, "name") == "center frequency"
+        and _field(attribute, "description") == _FREQUENCY_A
+        and _field(attribute, "parameterUnitsOfMeasure") == "Hz"
+    ]
+    if len(values) != 1 or values[0] is None:
+        return None
+    try:
+        frequency = float(values[0])
+    except ValueError:
+        return None
+    return frequency if math.isfinite(frequency) and frequency > 0 else None
+
+
+def _field(attribute: str, name: str) -> str | None:
+    """Return the text of a field of an additional attribute of an ISO XML file, or None when it has none."""
+    found = re.search(rf"<eos:{name}>\s*<eos:CharacterString>([^<]*)</eos:CharacterString>", attribute)
+    return found[1].strip() if found else None
 
 
 def _overlaps(area: Area, footprint: Sequence[Sequence[tuple[float, float]]]) -> bool:
