@@ -420,3 +420,14 @@ test("the button Restore defaults returns the first choices with the view of the
   expect(field("Track").value).toBe("");
   expect(Number(field("West").value)).toBeCloseTo(-71.4493, 3);
 });
+
+test("the form is filled when the pane first opens, so that the area of the search is not on the map at the start", () => {
+  render(
+    <MapContext value={testMap()}>
+      <SearchPane />
+    </MapContext>,
+  );
+  expect(searchDraftStore.get()).toBeNull();
+  act(() => openToolPane(SEARCH_PANE));
+  expect(searchDraftStore.get()?.limited).toBe(true);
+});

@@ -1,6 +1,6 @@
 import { useEffect, useId, useState } from "react";
 import { areaStore } from "../shared/area";
-import { openToolPane } from "../shared/dock/dock";
+import { dockStore, openToolPane } from "../shared/dock/dock";
 import { Info } from "../shared/info/Info";
 import { PRODUCT_TYPES, type ProductType } from "../shared/layer";
 import { useMap } from "../shared/map";
@@ -153,11 +153,14 @@ function SearchFields() {
         stored.joint !== ""),
   );
 
+  // The form is first filled when the pane is first opened, so that the area of the search is not on the map
+  // before the user has asked for the search.
+  const open = useStore(dockStore).tools.includes(SEARCH_PANE);
   useEffect(() => {
-    if (searchDraftStore.get() === null) {
+    if (open && searchDraftStore.get() === null) {
       searchDraftStore.set(firstDraft(rectangleText(areaStore.get() ?? viewArea(map))));
     }
-  }, [map]);
+  }, [map, open]);
 
   if (!stored) {
     return null;

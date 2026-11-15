@@ -142,6 +142,8 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   layers of the Contents pane, where they are hidden or removed.
 - The Contents pane and the map keep one drawing order for all layers, so that a layer of shapes can stand
   under a layer of data.
+- The form of the search is filled when its pane, or the pane of Get layer, first opens. The area of the
+  search is therefore not on the map, nor in the Contents pane, when the page loads.
 
 ### Removed
 
