@@ -198,6 +198,11 @@ For the reader: when the map is zoomed out, a cell shows the mean of the changes
 it covers, which can differ by more than a decibel from the change of their mean backscatter. The
 values at full zoom, and the values of the file at full resolution, are those of the formula.
 
+The reduced copies of a result of Backscatter, One date are made otherwise, as the decibels of the
+mean power (`docs/methods/backscatter-state.md`). The function of each tool declares how its result
+is reduced, and the record of a result of this tool says: "Reduced copies made by averaging the
+values."
+
 ## Legend
 
 | Field of the layer description | Value |
