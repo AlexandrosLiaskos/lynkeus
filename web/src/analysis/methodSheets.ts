@@ -297,7 +297,7 @@ export const METHODS: Record<Sheet, Method> = {
       },
       {
         name: "Checked",
-        text: "For the mean of the area and at five points, the values differ from those of the notebooks of the ASF NISAR Cookbook by less than 0.00001 dB (lower Merrimack River, 27 Sep to 2 Nov 2026).",
+        text: "For the mean of the area and at five points, the values differ from those of the notebooks of the ASF NISAR Cookbook by less than 0.00001 dB (lower Merrimack River, 27 Sep to 2 Nov 2026). For a polygon drawn on the map, the value and the number of cells of every date equal those that the mean of `gdal raster zonal-stats` of GDAL 3.12.2 gives.",
       },
       {
         name: "References",
@@ -334,7 +334,7 @@ export const METHODS: Record<Sheet, Method> = {
       },
       {
         name: "Checked",
-        text: "For the mean of the area, the values differ by less than 0.0000001 from the mean that the code of a notebook of the ASF NISAR Cookbook gives on the same layers, and at five points they are equal (lower Merrimack River, 15 Sep to 21 Oct 2026).",
+        text: "For the mean of the area, the values differ by less than 0.0000001 from the mean that the code of a notebook of the ASF NISAR Cookbook gives on the same layers, and at five points they are equal (lower Merrimack River, 15 Sep to 21 Oct 2026). For a polygon drawn on the map, the value and the number of cells of every date equal those that the mean of `gdal raster zonal-stats` of GDAL 3.12.2 gives.",
       },
       {
         name: "References",
@@ -371,7 +371,7 @@ export const METHODS: Record<Sheet, Method> = {
       },
       {
         name: "Checked",
-        text: "The comparison with `gdal raster zonal-stats` of GDAL 3.12.2 on results of the test area is under way.",
+        text: "With three areas on a backscatter result and a coherence result of the pilot area, `gdal raster zonal-stats` of GDAL 3.12.2 counts the same cells and gives the same lowest value, median and highest value, and the mean and the standard deviation agree to 12 decimal places (lower Merrimack River, Oct 2026).",
       },
       {
         name: "References",

@@ -17,7 +17,7 @@
 | Result | A series in decibels (dB): one value for each date, with the number of cells behind it. It is shown as a chart and a table, and it has no file. |
 | How to read | Each value is one date. A higher value means that the surface returned more of the radar signal on that date. The cause of a change is for the user to establish. |
 | Limits | The values may come from products of two processing releases, provisional and validated, and it is not confirmed that they compare without a correction. Over an area the value is the mean of the power, given in decibels. One area and four dates were compared. |
-| Checked | For the mean of the area and at five points, the values differ from those of the notebooks of the ASF NISAR Cookbook by less than 0.00001 dB (lower Merrimack River, 27 Sep to 2 Nov 2026). |
+| Checked | For the mean of the area and at five points, the values differ from those of the notebooks of the ASF NISAR Cookbook by less than 0.00001 dB (lower Merrimack River, 27 Sep to 2 Nov 2026). For a polygon drawn on the map, the value and the number of cells of every date equal those that the mean of `gdal raster zonal-stats` of GDAL 3.12.2 gives. |
 | References | [ASF NISAR Cookbook](https://github.com/ASFOpenSARlab/NISAR_Cookbook). [NISAR L2 GCOV Product Specification, JPL D-102274 Rev F](https://nisar-docs.asf.alaska.edu/product-specification/). [SDS Product File Naming Conventions, JPL D-102255 Rev C](https://nisar-docs.asf.alaska.edu/naming-conventions/). |
 
 ## Reference
