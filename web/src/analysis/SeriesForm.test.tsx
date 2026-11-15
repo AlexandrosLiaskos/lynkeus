@@ -26,8 +26,27 @@ import {
   SERIES_TOOLS,
   type SeriesTool,
 } from "./series";
-import { ABOUT_RELATIVE, ABOUT_SERIES, ownServerSentence, RECEIVE_SERIES, SeriesForm, seriesRunOf } from "./SeriesForm";
-import { coherence, components, GUNW_SEP, laterTerm, phase, term } from "./testLayers";
+import {
+  ABOUT_RELATIVE,
+  ABOUT_SERIES,
+  GET_FLAGS,
+  ownServerSentence,
+  RECEIVE_SERIES,
+  SeriesForm,
+  seriesRunOf,
+} from "./SeriesForm";
+import {
+  coherence,
+  components,
+  GUNW_SEP,
+  laterSoil,
+  laterSoilFlag,
+  laterTerm,
+  phase,
+  soil,
+  soilFlag,
+  term,
+} from "./testLayers";
 import type { Started } from "./ToolForm";
 
 let server: StandIn;
@@ -326,6 +345,90 @@ test("a job that the form started is followed to its end, and the foot offers th
   expect(shownSeriesStore.get()).toBe(series().id);
 });
 
+test("Soil moisture, Series offers the soil moisture layers and sends the flag of the product of each after it", async () => {
+  show("soil-moisture-series", [laterSoil(), soil(), laterSoilFlag(), soilFlag()]);
+  expect(boxes()).toEqual([
+    ["Soil moisture, 27 Sep 2026", true],
+    ["Soil moisture, 9 Oct 2026", true],
+  ]);
+  expect(screen.getByLabelText<HTMLInputElement>("Series name").value).toBe(
+    "Series of volumetric soil moisture, 27 Sep 2026 to 9 Oct 2026",
+  );
+  expect(missing()).toBeNull();
+  await userEvent.click(runButton());
+  expect(server.sent("POST")).toEqual([
+    {
+      method: "POST",
+      address: "/api/processes/soil-moisture-series/execution",
+      content: {
+        inputs: {
+          inputs: ["soil-sep", "flag-sep", "soil-oct", "flag-oct"],
+          title: "Series of volumetric soil moisture, 27 Sep 2026 to 9 Oct 2026",
+        },
+      },
+    },
+  ]);
+});
+
+test("Soil moisture, Series states what to get when the flag of the product of a chosen date is missing", async () => {
+  show("soil-moisture-series", [laterSoil(), soil(), soilFlag()]);
+  expect(missing()).toBe("The Retrieval Quality Flag layer of the product of 9 Oct 2026 is not in the session.");
+  expect(GET_FLAGS).toBe("Get the Retrieval Quality Flag layer of the product of each date, for the same area.");
+  expect(screen.getByText(GET_FLAGS)).toBeDefined();
+  expect(runButton().getAttribute("aria-disabled")).toBe("true");
+  await userEvent.click(screen.getByRole("button", { name: "Get layer" }));
+  expect(dockStore.get().tools).toContain(GET_LAYER_PANE);
+});
+
+test("the foot states the note that the tool gives about the series", () => {
+  const done = job({
+    jobID: "job-1",
+    status: "successful",
+    message: "The series is ready.",
+    progress: 100,
+    series: "series-1",
+  });
+  const note =
+    "On each date the cells whose retrieval NISAR marks as not recommended are left out: from 97.9 % to 98.6 % of the cells with a soil moisture.";
+  const known = [{ ...series(), id: "series-1", note }];
+  expect(seriesRunOf(STARTED, [done], new Set(["series-1"]), known)).toMatchObject({
+    state: "success",
+    text: `The series is ready. ${note} It is under Series in the Catalog pane.`,
+  });
+  expect(seriesRunOf(STARTED, [done], new Set(["series-1"]))).toMatchObject({
+    text: "The series is ready. It is under Series in the Catalog pane.",
+  });
+});
+
+test("a series for the area takes the area drawn on the map, in a group that is closed while there is none", async () => {
+  show("backscatter-series", THREE);
+  const summary = Array.from(document.querySelectorAll(".tool-pane-group > summary")).find(
+    (element) => element.textContent === "Area drawn on the map",
+  );
+  const group = summary?.parentElement as HTMLDetailsElement | undefined;
+  expect(group?.open).toBe(false);
+  const area = {
+    crs: "EPSG:3857",
+    kind: "polygon",
+    points: [
+      [-7900000, 5270000],
+      [-7890000, 5271000],
+      [-7895000, 5280000],
+      [-7900000, 5270000],
+    ],
+  } as const;
+  act(() => analysisAreaStore.set(area));
+  expect(group?.open).toBe(true);
+  expect(screen.getByLabelText<HTMLSelectElement>("Area").selectedOptions[0]?.textContent).toBe(
+    "The polygon of 3 corners drawn on the map",
+  );
+  await userEvent.click(runButton());
+  expect(server.sent("POST")[0]?.content).toMatchObject({ inputs: { area } });
+  // A series at a point takes no area, and the group stands only under the choice of the area.
+  await userEvent.click(screen.getByLabelText("At a point"));
+  expect(document.querySelector(".tool-pane-group")).toBeNull();
+});
+
 /** The layers Unwrapped phase and Connected components of two pairs of the pilot area. */
 const PHASE_SEP = phase({
   id: "phase-sep",
@@ -389,33 +492,4 @@ test("the form of Surface displacement, Series states a pair whose Connected com
   show("displacement-series", [phase(), PHASE_SEP, LABELS_SEP]);
   expect(missing()).toBe(noComponentsSentence(phase()));
   expect(runButton().getAttribute("aria-disabled")).toBe("true");
-});
-
-test("a series for the area takes the area drawn on the map, in a group that is closed while there is none", async () => {
-  show("backscatter-series", THREE);
-  const summary = Array.from(document.querySelectorAll(".tool-pane-group > summary")).find(
-    (element) => element.textContent === "Area drawn on the map",
-  );
-  const group = summary?.parentElement as HTMLDetailsElement | undefined;
-  expect(group?.open).toBe(false);
-  const area = {
-    crs: "EPSG:3857",
-    kind: "polygon",
-    points: [
-      [-7900000, 5270000],
-      [-7890000, 5271000],
-      [-7895000, 5280000],
-      [-7900000, 5270000],
-    ],
-  } as const;
-  act(() => analysisAreaStore.set(area));
-  expect(group?.open).toBe(true);
-  expect(screen.getByLabelText<HTMLSelectElement>("Area").selectedOptions[0]?.textContent).toBe(
-    "The polygon of 3 corners drawn on the map",
-  );
-  await userEvent.click(runButton());
-  expect(server.sent("POST")[0]?.content).toMatchObject({ inputs: { area } });
-  // A series at a point takes no area, and the group stands only under the choice of the area.
-  await userEvent.click(screen.getByLabelText("At a point"));
-  expect(document.querySelector(".tool-pane-group")).toBeNull();
 });

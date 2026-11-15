@@ -15,7 +15,7 @@ from numpy.typing import NDArray
 from lynkeus.analysis import SERIES_TOOLS, TOOLS
 from lynkeus.analysis.backscatter import backscatter_state
 from lynkeus.analysis.displacement import displacement_series
-from lynkeus.analysis.series import LEAST_LAYERS, backscatter_series, coherence_series
+from lynkeus.analysis.series import LEAST_LAYERS, backscatter_series, coherence_series, soil_moisture_series
 from lynkeus.layers import Area, Cell, LayerDescription, Point, Reference, SeriesDescription
 from lynkeus.writing import LayerError
 
@@ -36,6 +36,28 @@ GUNW_15_27_SEP = (
     "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_"
     "20260927T234330_20260927T234405_P05023_N_F_J_001"
 )
+
+# The names of three SME2 product files of the pilot area, track 141, frame 67, descending.
+SME2_15_SEP = "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001"
+SME2_27_SEP = "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001"
+SME2_9_OCT = "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001"
+
+
+def moisture(granule: str, day: str, **changes: Any) -> LayerDescription:
+    """Describe a layer ``soilMoisture`` received from an SME2 product file, unless ``changes`` say otherwise."""
+    return layer(granule, day, **{"layer": "soilMoisture", "unit": "m3 m-3", **changes})
+
+
+def flag(granule: str, day: str, **changes: Any) -> LayerDescription:
+    """Describe a layer ``retrievalQualityFlag`` of an SME2 product file, unless ``changes`` say otherwise."""
+    name = day.replace("-", "")
+    described = {"id": f"flag-{name}", "title": f"Flag of {day}", "layer": "retrievalQualityFlag", "unit": "1"}
+    return layer(granule, day, **{**described, **changes})
+
+
+MOISTURE_1, FLAG_1 = moisture(SME2_15_SEP, "2026-09-15"), flag(SME2_15_SEP, "2026-09-15")
+MOISTURE_2, FLAG_2 = moisture(SME2_27_SEP, "2026-09-27"), flag(SME2_27_SEP, "2026-09-27")
+MOISTURE_3, FLAG_3 = moisture(SME2_9_OCT, "2026-10-09"), flag(SME2_9_OCT, "2026-10-09")
 
 FIRST = layer(GCOV_9_OCT, "2026-10-09")
 SECOND = layer(GCOV_21_OCT, "2026-10-21")
@@ -90,15 +112,18 @@ def test_the_series_tools_are_listed() -> None:
     assert SERIES_TOOLS["backscatter-series"] is backscatter_series
     assert SERIES_TOOLS["coherence-series"] is coherence_series
     assert SERIES_TOOLS["displacement-series"] is displacement_series
+    assert SERIES_TOOLS["soil-moisture-series"] is soil_moisture_series
 
 
 def test_result_of_every_series_tool_fits_a_series_description() -> None:
     power, coherence = grid([1, 10], [100, 1000]), grid([0.2, 0.4], [0.6, 0.8])
     phase, labels = grid([1, 2], [3, 4]), grid([1, 1], [1, 1])
+    wet, marks = grid([0.2, 0.4], [0.3, NAN]), grid([14, 15], [14, NAN])
     runs: dict[str, tuple[list[NDArray[np.float32]], list[LayerDescription]]] = {
         "backscatter-series": ([power, grid([2, 20], [200, 2000])], [SECOND, THIRD]),
         "coherence-series": ([coherence, grid([0.1, 0.2], [0.3, 0.4])], [PAIR_2, PAIR_3]),
         "displacement-series": ([phase, labels, phase, labels], [*PHASE_2, *PHASE_3]),
+        "soil-moisture-series": ([wet, marks, wet, marks], [MOISTURE_1, FLAG_1, MOISTURE_2, FLAG_2]),
     }
     assert set(runs) == set(SERIES_TOOLS)
     for name, (arrays, layers) in runs.items():
@@ -124,12 +149,14 @@ def test_result_of_every_series_tool_fits_a_series_description() -> None:
             layer=result.layer,
             program="Lynkeus 0.1.0",
             method=result.method,
+            note=result.note,
         )
         if name == "displacement-series":
             days = sorted({day for layer in layers for day in layer.dates})
             assert [entry.dates for entry in description.entries] == [(day,) for day in days]
         else:
-            assert [entry.dates for entry in description.entries] == [layer.dates for layer in layers]
+            dated = layers[0::2] if name == "soil-moisture-series" else layers
+            assert [entry.dates for entry in description.entries] == [layer.dates for layer in dated]
 
 
 # Backscatter, Series
@@ -462,3 +489,188 @@ def test_mean_of_a_large_area_is_computed_in_64_bit_numbers() -> None:
     expected = (float(np.float32(0.1)) * (coherence.size - 1) + 1.0) / coherence.size
     assert result.entries[0].value == pytest.approx(expected, rel=1e-12)
     assert result.entries[0].cells == coherence.size
+
+
+# Soil moisture, Series
+
+
+def test_soil_moisture_series_of_an_area_is_the_mean_of_the_cells_recommended_on_each_date() -> None:
+    # The dates stand in another order than their order in time; the flag 14 recommends, 15 and 13 do not.
+    arrays = [
+        grid([0.25, 0.5], [NAN, 0.75]),
+        grid([14, 15], [NAN, 14]),
+        grid([0.125, 0.375], [0.5, 0.25]),
+        grid([14, 14], [13, 14]),
+        grid([0.5, 0.5], [0.5, 0.5]),
+        grid([14, 14], [14, 14]),
+    ]
+    result = soil_moisture_series(arrays, [MOISTURE_3, FLAG_3, MOISTURE_1, FLAG_1, MOISTURE_2, FLAG_2])
+    assert values_of(result) == [
+        ((date(2026, 9, 15),), pytest.approx(0.25, abs=1e-15), 3),
+        ((date(2026, 9, 27),), pytest.approx(0.5, abs=1e-15), 4),
+        ((date(2026, 10, 9),), pytest.approx(0.5, abs=1e-15), 2),
+    ]
+    assert result.inputs == (f"{SME2_15_SEP}.h5", f"{SME2_27_SEP}.h5", f"{SME2_9_OCT}.h5")
+    assert (result.layer, result.quantity, result.unit) == ("soilMoisture", "Soil moisture", "m3 m-3")
+    assert (result.reduction, result.range) == ("mean", None)
+    assert "NISAR_GCOV_Time_Series_Example" in result.method
+    assert "retrievalQualityFlag" in result.method
+    assert result.note == (
+        "On each date the cells whose retrieval NISAR marks as not recommended are left out: "
+        "from 0.0 % to 33.3 % of the cells with a soil moisture."
+    )
+
+
+def test_soil_moisture_series_at_a_point_is_the_value_of_the_cell_where_it_is_recommended() -> None:
+    arrays = [
+        grid([0.25, 0.5]),
+        grid([14, 15]),
+        grid([0.125, 0.375]),
+        grid([15, 14]),
+        grid([NAN, 0.5]),
+        grid([NAN, 14]),
+    ]
+    layers = [MOISTURE_1, FLAG_1, MOISTURE_2, FLAG_2, MOISTURE_3, FLAG_3]
+    result = soil_moisture_series(arrays, layers, (0, 0))
+    assert values_of(result) == [
+        ((date(2026, 9, 15),), 0.25, 1),
+        ((date(2026, 9, 27),), None, 0),
+        ((date(2026, 10, 9),), None, 0),
+    ]
+    assert (
+        result.note
+        == "NISAR marks the retrieval at the point as not recommended on 1 of the 3 dates, which has no value."
+    )
+    other = soil_moisture_series(arrays, layers, (0, 1))
+    assert values_of(other) == [
+        ((date(2026, 9, 15),), None, 0),
+        ((date(2026, 9, 27),), 0.375, 1),
+        ((date(2026, 10, 9),), 0.5, 1),
+    ]
+    assert (
+        other.note
+        == "NISAR marks the retrieval at the point as not recommended on 1 of the 3 dates, which has no value."
+    )
+
+
+def test_soil_moisture_series_states_when_no_cell_is_left_out() -> None:
+    arrays = [grid([0.25, 0.5]), grid([14, 4]), grid([0.125, 0.375]), grid([8, 0])]
+    layers = [MOISTURE_1, FLAG_1, MOISTURE_2, FLAG_2]
+    assert soil_moisture_series(arrays, layers).note == (
+        "NISAR marks the retrieval of every cell with a soil moisture as recommended on every date."
+    )
+    assert soil_moisture_series(arrays, layers, (0, 1)).note == (
+        "NISAR marks the retrieval at the point as recommended on every date that holds a soil moisture."
+    )
+    marked = [grid([0.25, 0.5]), grid([15, 4]), grid([0.125, 0.375]), grid([8, 1])]
+    assert soil_moisture_series(marked, layers).note == (
+        "On each date the cells whose retrieval NISAR marks as not recommended are left out: "
+        "50.0 % of the cells with a soil moisture."
+    )
+
+
+def test_soil_moisture_series_where_every_retrieval_is_not_recommended_is_refused() -> None:
+    layers = [MOISTURE_1, FLAG_1, MOISTURE_2, FLAG_2]
+    with pytest.raises(LayerError) as refusal:
+        soil_moisture_series([grid([0.25, 0.5]), grid([15, 1]), grid([0.125, NAN]), grid([3, NAN])], layers)
+    assert str(refusal.value) == (
+        "NISAR marks the retrieval of every cell as not recommended on every date, so the series has no value."
+    )
+    with pytest.raises(LayerError) as refusal:
+        soil_moisture_series([grid([0.25, 0.5]), grid([15, 14]), grid([0.125, 0.5]), grid([15, 14])], layers, (0, 0))
+    assert str(refusal.value) == (
+        "NISAR marks the retrieval at the point as not recommended on every date that holds a soil moisture, "
+        "so the series has no value."
+    )
+    with pytest.raises(LayerError) as refusal:
+        soil_moisture_series([grid([NAN, 0.5]), grid([NAN, 14]), grid([NAN, 0.5]), grid([NAN, 14])], layers, (0, 0))
+    assert str(refusal.value) == "No layer of the series holds a value at the point."
+
+
+def soil_refusal(layers: list[LayerDescription], arrays: list[Any] | None = None, **more: Any) -> str:
+    with pytest.raises(LayerError) as refusal:
+        soil_moisture_series(arrays or [grid([0.25]) for _ in layers], layers, **more)
+    return str(refusal.value)
+
+
+def test_soil_moisture_series_refuses_what_it_does_not_read() -> None:
+    assert soil_refusal([MOISTURE_1, FLAG_1, MOISTURE_2]) == (
+        "The number of input layers must be even, two for each date, and it is 3."
+    )
+    assert soil_refusal([MOISTURE_1, FLAG_1]) == "A series needs at least 2 layers, and it has 1."
+    assert soil_refusal([MOISTURE_1, FLAG_1, SECOND, FLAG_2]) == (
+        'The layer "Layer of 2026-10-21" is not a layer received from one NISAR SME2 product.'
+    )
+    assert soil_refusal([FLAG_1, MOISTURE_1, MOISTURE_2, FLAG_2]) == (
+        'The layer "Flag of 2026-09-15" is the layer retrievalQualityFlag of its product, '
+        "and the tool reads the layer soilMoisture."
+    )
+    assert soil_refusal([MOISTURE_1, MOISTURE_1, MOISTURE_2, FLAG_2]) == (
+        'The layer "Layer of 2026-09-15" is the layer soilMoisture of its product, '
+        "and the tool reads the layer retrievalQualityFlag."
+    )
+    assert soil_refusal([MOISTURE_1, FLAG_2, MOISTURE_2, FLAG_1]) == (
+        'The layers "Layer of 2026-09-15" and "Flag of 2026-09-27" are not of the same product file.'
+    )
+    assert soil_refusal([MOISTURE_1, FLAG_1, moisture(SME2_27_SEP, "2026-09-27", unit="1"), FLAG_2]) == (
+        'The layer "Layer of 2026-09-27" has the unit 1, and the tool reads the unit m3 m-3.'
+    )
+    other_track = SME2_27_SEP.replace("_141_", "_069_")
+    assert soil_refusal([MOISTURE_1, FLAG_1, moisture(other_track, "2026-09-27"), flag(other_track, "2026-09-27")]) == (
+        "The layers are not of the same instrument, track, direction and frame."
+    )
+    other_release = SME2_27_SEP.replace("P05023", "X05010")
+    assert soil_refusal(
+        [MOISTURE_1, FLAG_1, moisture(other_release, "2026-09-27"), flag(other_release, "2026-09-27")]
+    ).startswith("The layers are not of the same major release of the processing software:")
+    again = moisture(SME2_15_SEP, "2026-09-15", title="The same date again")
+    assert soil_refusal([MOISTURE_1, FLAG_1, MOISTURE_2, FLAG_2, again, FLAG_1]) == (
+        'The layers "Layer of 2026-09-15" and "The same date again" have the same dates.'
+    )
+
+
+def test_soil_moisture_series_refuses_values_that_are_not_a_soil_moisture_or_a_flag() -> None:
+    layers = [MOISTURE_1, FLAG_1, MOISTURE_2, FLAG_2]
+    clear = grid([14, 14])
+    assert soil_refusal(layers, [grid([0.25, 0.5]), clear, grid([0.25, 1.5]), clear]) == (
+        'The layer "Layer of 2026-09-27" holds values outside 0 to 1, so it is not a volumetric soil moisture.'
+    )
+    assert soil_refusal(layers, [grid([0.25, 0.5]), clear, grid([NAN, NAN]), clear]) == (
+        'The layer "Layer of 2026-09-27" holds no value in any cell.'
+    )
+    assert soil_refusal(layers, [grid([0.25, 0.5]), grid([14, 0.5]), grid([0.25, 0.5]), clear]) == (
+        'The layer "Flag of 2026-09-15" holds values that are not whole numbers from 0 to 32767, '
+        "so it is not a retrieval quality flag."
+    )
+    assert soil_refusal(layers, [grid([0.25, 0.5]), grid([14]), grid([0.25, 0.5]), clear]) == (
+        "The input layers do not have the same grid."
+    )
+    assert soil_refusal(layers, [grid([0.25, 0.5]), clear, grid([0.25]), grid([14])]) == (
+        "The input layers do not have the same grid."
+    )
+
+
+def test_soil_moisture_series_faults_of_the_caller_are_not_refusals_for_the_visitor() -> None:
+    layers = [MOISTURE_1, FLAG_1, MOISTURE_2, FLAG_2]
+    with pytest.raises(ValueError, match="differ in number"):
+        soil_moisture_series([grid([0.25]), grid([14]), grid([0.25])], layers)
+    with pytest.raises(ValueError, match="differ in number"):
+        soil_moisture_series([grid([0.25]), grid([14])] * 3, layers)
+    with pytest.raises(ValueError, match="two-dimensional 32-bit"):
+        wide: Any = [np.ones((1, 2)), np.ones((1, 2)), np.ones((1, 2)), np.ones((1, 2))]
+        soil_moisture_series(wide, layers)
+    with pytest.raises(ValueError, match="outside the grid"):
+        soil_moisture_series([grid([0.25]), grid([14])] * 2, layers, (0, 1))
+
+
+def test_soil_moisture_series_keeps_the_arrays_of_one_date_at_a_time() -> None:
+    taken: list[int] = []
+
+    def arrays() -> Iterator[NDArray[np.float32]]:
+        for number in range(6):
+            taken.append(number)
+            yield grid([0.25]) if number % 2 == 0 else grid([14])
+
+    result = soil_moisture_series(arrays(), [MOISTURE_3, FLAG_3, MOISTURE_1, FLAG_1, MOISTURE_2, FLAG_2])
+    assert taken == [0, 1, 2, 3, 4, 5]
+    assert [entry.cells for entry in result.entries] == [1, 1, 1]

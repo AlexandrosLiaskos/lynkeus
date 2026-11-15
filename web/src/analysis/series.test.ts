@@ -10,11 +10,13 @@ import {
   daysWords,
   FEWEST_LAYERS,
   firstChoice,
+  flaglessSentence,
   FREQUENCIES,
   isRelative,
   linksAllDates,
   majorRelease,
   missingOfSeries,
+  mostDatesOf,
   MOST_LAYERS,
   NO_LAYERS,
   noComponentsSentence,
@@ -30,8 +32,21 @@ import {
   UNLINKED,
   type SeriesChoices,
 } from "./series";
-import { coherence, components, GUNW_JUL, GUNW_PAIR, GUNW_SEP, laterTerm, phase, term } from "./testLayers";
-import { FINISHED_TOOLS } from "./tools";
+import {
+  coherence,
+  components,
+  GUNW_JUL,
+  GUNW_PAIR,
+  GUNW_SEP,
+  laterSoil,
+  laterSoilFlag,
+  laterTerm,
+  phase,
+  soil,
+  soilFlag,
+  term,
+} from "./testLayers";
+import { FINISHED_TOOLS, qualityOf } from "./tools";
 
 const read = (file: string) => readFileSync(`../api/src/lynkeus/${file}`, "utf8");
 
@@ -88,11 +103,16 @@ function choices(change: Partial<SeriesChoices> = {}): SeriesChoices {
   };
 }
 
-test("the Series tools are the three that the server offers, and each has a method sheet", () => {
-  expect(SERIES_TOOLS).toEqual(["backscatter-series", "coherence-series", "displacement-series"]);
+test("the Series tools are the four that the server offers, and each has a method sheet", () => {
+  expect(SERIES_TOOLS).toEqual([
+    "backscatter-series",
+    "coherence-series",
+    "displacement-series",
+    "soil-moisture-series",
+  ]);
   expect(SHEET_TOOLS).toEqual([...FINISHED_TOOLS, ...SERIES_TOOLS]);
   expect(read("analysis/__init__.py")).toContain(
-    'SERIES_TOOLS: dict[str, SeriesFunction] = {\n    "backscatter-series": backscatter_series,\n    "coherence-series": coherence_series,\n    "displacement-series": displacement_series,\n}',
+    'SERIES_TOOLS: dict[str, SeriesFunction] = {\n    "backscatter-series": backscatter_series,\n    "coherence-series": coherence_series,\n    "displacement-series": displacement_series,\n    "soil-moisture-series": soil_moisture_series,\n}',
   );
   for (const tool of SERIES_TOOLS) {
     expect(readFileSync(`../docs/methods/${tool}.md`, "utf8")).toContain(`| Tool | \`${tool}\` `);
@@ -104,6 +124,7 @@ test("a Series tool reads the layers of the tool of one date, and the limits of 
     "backscatter-series": "backscatter-state",
     "coherence-series": "coherence-state",
     "displacement-series": "displacement-state",
+    "soil-moisture-series": "soil-moisture-state",
   });
   const server = read("analysis/series.py");
   expect(server).toContain('_TERMS = re.compile(r"HHHH|HVHV|VHVH|VVVV|RHRH|RVRV")');
@@ -269,6 +290,7 @@ function relative(change: Partial<SeriesChoices> = {}, session = SESSION): Serie
     place: "area",
     latitude: "42.8",
     longitude: "-71.0",
+    area: null,
     title: "Displacement at the bridge",
     relative: { session, latitude: "42.7761", longitude: "71.0772 W" },
     ...change,
@@ -365,4 +387,42 @@ test("the dates of a pair are read from the name of its file, and pairs link the
       ["a", "d"],
     ]),
   ).toBe(true);
+});
+
+test("Soil moisture, Series sends the flag of the product of each date after its layer, for at most 25 dates", () => {
+  expect(mostDatesOf("soil-moisture-series")).toBe(25);
+  expect(mostDatesOf("backscatter-series")).toBe(50);
+  const session = [laterSoil(), soil(), soilFlag(), laterSoilFlag()];
+  const groups = seriesGroups("soil-moisture-series", session);
+  expect(groups.map(({ name, layers }) => [name, layers.map(({ id }) => id)])).toEqual([
+    ["soilMoisture, track 141, frame 67, descending, release P05", ["soil-sep", "soil-oct"]],
+  ]);
+  const flagOf = (layer: LayerDescription) => qualityOf("soil-moisture-state", layer, session);
+  const group = groups[0]?.layers ?? [];
+  const sound = checkSeries({ ...choices(), group, chosen: ["soil-oct", "soil-sep"], flagOf, most: 25 });
+  expect(sound.faults).toEqual({ layers: null, latitude: null, longitude: null, title: null });
+  expect(sound.inputs?.inputs).toEqual(["soil-sep", "flag-sep", "soil-oct", "flag-oct"]);
+  const many = Array.from({ length: 26 }, (_, day) =>
+    soil({ id: `soil-${String(day)}`, dates: [`2026-07-${String(day + 1).padStart(2, "0")}`] }),
+  );
+  expect(firstChoice({ key: "k", name: "n", layers: many }, 25)).toHaveLength(25);
+  expect(
+    checkSeries({ ...choices(), group: many, chosen: many.map(({ id }) => id), flagOf: () => soilFlag(), most: 25 })
+      .faults.layers,
+  ).toBe("Choose at most 25 layers.");
+});
+
+test("Soil moisture, Series states which flags are missing at the field of the layers", () => {
+  const session = [laterSoil(), soil(), soilFlag()];
+  const flagOf = (layer: LayerDescription) => qualityOf("soil-moisture-state", layer, session);
+  const checked = checkSeries({ ...choices(), group: [soil(), laterSoil()], chosen: ["soil-sep", "soil-oct"], flagOf });
+  expect(checked.faults.layers).toBe(
+    "The Retrieval Quality Flag layer of the product of 9 Oct 2026 is not in the session.",
+  );
+  expect(checked.inputs).toBeNull();
+  expect(flaglessSentence([soil(), laterSoil()])).toBe(
+    "The Retrieval Quality Flag layers of the products of 2 chosen dates are not in the session.",
+  );
+  // Without flags to find, a tool that takes none sends its layers alone.
+  expect(checkSeries(choices()).inputs?.inputs).toEqual(["hh-sep", "hh-oct-9", "hh-oct", "hh-nov"]);
 });

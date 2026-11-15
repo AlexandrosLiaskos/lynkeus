@@ -1,0 +1,417 @@
+{
+ "notebooks": {
+  "NISAR_GCOV_Time_Series_Example.ipynb": {
+   "sha256": "b5250ef5c9e9b644a39e4b6c394c7a2ee7b13faabaf5b29b7910e52f3fd25101",
+   "cells": 61
+  },
+  "NISAR_Pixel_Conversion.ipynb": {
+   "sha256": "95211d791f2bd6e2b314e1cb9c512704d915dec411cf21fc7312ffa0c7a47ae2",
+   "cells": 26
+  }
+ },
+ "executed": [
+  {
+   "notebook": "NISAR_GCOV_Time_Series_Example.ipynb",
+   "cell": 14,
+   "statement": "import re\nfrom urllib.parse import urlparse\nfrom datetime import datetime\nfrom pathlib import PurePosixPath\n\nNISAR_TS_RE = re.compile(r\"_(\\d{8}T\\d{6})_\")\n\ndef nisar_start_time_from_url(url: str) -> datetime:\n    path = urlparse(url).path\n    name = PurePosixPath(path).name\n    \n    m = NISAR_TS_RE.search(name)\n    if not m:\n        raise ValueError(f\"No NISAR timestamp found in: {url}\")\n    \n    return datetime.strptime(m.group(1), \"%Y%m%dT%H%M%S\")\n\ndts = [nisar_start_time_from_url(url) for url in hdf5_urls]\ndts"
+  },
+  {
+   "notebook": "NISAR_GCOV_Time_Series_Example.ipynb",
+   "cell": 16,
+   "statement": "dataarrays = [\n    tree.ds.assign_coords(time=dt).expand_dims(time=1)\n    for dt, tree in zip(dts, datatrees)\n]"
+  },
+  {
+   "notebook": "NISAR_GCOV_Time_Series_Example.ipynb",
+   "cell": 19,
+   "statement": "ts = xr.concat(hhhh_subset, dim=\"time\")"
+  },
+  {
+   "notebook": "NISAR_GCOV_Time_Series_Example.ipynb",
+   "cell": 47,
+   "statement": "means_pwr = np.mean(ts_pwr, axis=(1, 2))"
+  },
+  {
+   "notebook": "NISAR_Pixel_Conversion.ipynb",
+   "cell": 20,
+   "statement": "from pyproj import Transformer\nimport numpy as np\n\n#use transformer to convert ground truth data (EPSG 4326) coordinate system to GCOV coordinate system (EPSG 32637)\ntransformer = Transformer.from_crs(\n    \"EPSG:4326\",\n    f\"EPSG:{epsg}\",\n    always_xy=True\n)\n\nsite_pixels = {}\n\nfor name, (lat, lon) in sites.items():\n    #convert the site location into GCOV map coordinates\n    x_site, y_site = transformer.transform(lon, lat)\n\n    #find the nearest GCOV pixel by comparing with the grid coordinates\n    col = int(np.argmin(np.abs(x - x_site)))\n    row = int(np.argmin(np.abs(y - y_site)))\n\n    #store the GCOV pixel index for this site\n    site_pixels[name] = (row, col)\n\n#GCOV pixel indices corresponding to each site\nsite_pixels"
+  }
+ ],
+ "replaced_statements": [
+  {
+   "notebook": "NISAR_GCOV_Time_Series_Example.ipynb",
+   "cell": 12,
+   "as_written": "datatrees = [xr.open_datatree(f, engine=\"h5netcdf\", ..., group=group_path) for f in files]",
+   "executed": "rioxarray.open_rasterio(<GeoTIFF of the layer>, masked=False), band dropped, dimensions renamed to yCoordinates and xCoordinates, as one variable of a dataset",
+   "reason": "the inputs are the layers that Lynkeus received through NASA Harmony, not HDF5 product files"
+  },
+  {
+   "notebook": "NISAR_GCOV_Time_Series_Example.ipynb",
+   "cell": 14,
+   "as_written": "hdf5_urls (addresses of the product files)",
+   "executed": "addresses made of the names of the product files of the layers",
+   "reason": "cell 14 reads the time from the name of the product file"
+  },
+  {
+   "notebook": "NISAR_GCOV_Time_Series_Example.ipynb",
+   "cell": 18,
+   "as_written": "hhhh = [da.HHHH.rio.write_crs(...) for da in dataarrays]; hhhh_subset = [da.rio.clip_box(**bbox4326) for da in hhhh]",
+   "executed": "hhhh_subset = [da[<variable>] for da in dataarrays], for the soil moisture and for the flag",
+   "reason": "NASA Harmony clipped the layers to the box of the pilot area already"
+  },
+  {
+   "notebook": "NISAR_GCOV_Time_Series_Example.ipynb",
+   "cell": 47,
+   "as_written": "means_pwr = np.mean(ts_pwr, axis=(1, 2))",
+   "executed": "means = np.mean(ts, axis=(1, 2)), on the cube of the soil moisture",
+   "reason": "the Cookbook has no notebook of SME2 products; the same statement is applied to the soil moisture, which needs no conversion"
+  },
+  {
+   "notebook": "NISAR_Pixel_Conversion.ipynb",
+   "cell": 15,
+   "as_written": "epsg, x, y read from the datasets projection, xCoordinates and yCoordinates of the HDF5 product file",
+   "executed": "epsg from the projection of the GeoTIFF; x and y from the coordinates of the centres of its cells",
+   "reason": "the inputs are GeoTIFF layers"
+  },
+  {
+   "notebook": "NISAR_Pixel_Conversion.ipynb",
+   "cell": 18,
+   "as_written": "sites = {... seven places at Lake Afrera ...}",
+   "executed": "sites = the points of the comparison, each as (latitude, longitude)",
+   "reason": "points of the pilot area"
+  }
+ ],
+ "added_statements": [
+  {
+   "statement": "ts = ts.where(flags_ts % 2 == 0)",
+   "purpose": "the rule of the product specification: a cell whose retrieval quality flag has bit 0 set (an odd value) holds no value; a cell whose flag holds no value holds none either"
+  },
+  {
+   "statement": "int(np.isfinite(ts.isel(time=i).values).sum())",
+   "purpose": "number of cells that enter the mean of each date"
+  },
+  {
+   "statement": "ts.isel(time=i).values[row, col]",
+   "purpose": "value at the pixel that cell 20 of the pixel notebook gives"
+  },
+  {
+   "statement": "np.nanmean of each date as 64-bit numbers",
+   "purpose": "to show what part of a difference is 32-bit arithmetic"
+  }
+ ],
+ "series": {
+  "provisional": {
+   "granules": [
+    "NISAR_L3_PR_SME2_023_141_D_067_4005_DHDH_A_20260623T234333_20260623T234408_P05023_N_F_J_001",
+    "NISAR_L3_PR_SME2_024_141_D_067_4005_DHDH_A_20260705T234333_20260705T234408_P05023_N_F_J_001",
+    "NISAR_L3_PR_SME2_025_141_D_067_4005_DHDH_A_20260717T234332_20260717T234407_P05023_N_F_J_001",
+    "NISAR_L3_PR_SME2_027_141_D_067_4005_DHDH_A_20260810T234331_20260810T234406_P05023_N_F_J_001",
+    "NISAR_L3_PR_SME2_028_141_D_067_4005_DHDH_A_20260822T234330_20260822T234405_P05023_N_F_J_001",
+    "NISAR_L3_PR_SME2_029_141_D_067_4005_DHDH_A_20260903T234330_20260903T234405_P05023_N_F_J_001",
+    "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001",
+    "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001",
+    "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001"
+   ],
+   "times": [
+    "2026-06-23T23:43:33.000000",
+    "2026-07-05T23:43:33.000000",
+    "2026-07-17T23:43:32.000000",
+    "2026-08-10T23:43:31.000000",
+    "2026-08-22T23:43:30.000000",
+    "2026-09-03T23:43:30.000000",
+    "2026-09-15T23:43:30.000000",
+    "2026-09-27T23:43:30.000000",
+    "2026-10-09T23:43:30.000000"
+   ],
+   "epsg": 6933,
+   "ts_dtype": "float32",
+   "means_dtype": "float32",
+   "means": [
+    "0.30964091420173645",
+    "0.295915424823761",
+    "0.30459803342819214",
+    "0.21334730088710785",
+    "0.21438412368297577",
+    "0.22533851861953735",
+    "0.22151613235473633",
+    "0.253335177898407",
+    "0.2145174890756607"
+   ],
+   "cells": [
+    402,
+    385,
+    389,
+    394,
+    400,
+    402,
+    422,
+    479,
+    600
+   ],
+   "cells_with_a_soil_moisture_before_the_rule": [
+    27411,
+    27411,
+    29238,
+    29238,
+    29238,
+    29238,
+    29238,
+    29238,
+    29238
+   ],
+   "flags_and_soil_moisture_on_the_same_coordinates": true,
+   "pixels": {
+    "p1": [
+     70,
+     96
+    ],
+    "p2": [
+     117,
+     144
+    ],
+    "p3": [
+     141,
+     47
+    ],
+    "p4": [
+     23,
+     192
+    ],
+    "p5": [
+     64,
+     157
+    ],
+    "r1": [
+     6,
+     93
+    ],
+    "r2": [
+     6,
+     153
+    ],
+    "r3": [
+     6,
+     175
+    ]
+   },
+   "at_points": {
+    "p1": [
+     "nan",
+     "nan",
+     "nan",
+     "nan",
+     "nan",
+     "nan",
+     "nan",
+     "nan",
+     "nan"
+    ],
+    "p2": [
+     "nan",
+     "nan",
+     "nan",
+     "nan",
+     "nan",
+     "nan",
+     "nan",
+     "nan",
+     "nan"
+    ],
+    "p3": [
+     "nan",
+     "nan",
+     "nan",
+     "nan",
+     "nan",
+     "nan",
+     "nan",
+     "nan",
+     "nan"
+    ],
+    "p4": [
+     "nan",
+     "nan",
+     "nan",
+     "nan",
+     "nan",
+     "nan",
+     "nan",
+     "nan",
+     "nan"
+    ],
+    "p5": [
+     "nan",
+     "nan",
+     "nan",
+     "nan",
+     "nan",
+     "nan",
+     "nan",
+     "nan",
+     "nan"
+    ],
+    "r1": [
+     "0.3324244022369385",
+     "0.33191606402397156",
+     "0.348480224609375",
+     "0.20254668593406677",
+     "0.23046861588954926",
+     "0.19952228665351868",
+     "0.2159479856491089",
+     "0.26072826981544495",
+     "0.240587055683136"
+    ],
+    "r2": [
+     "0.34162595868110657",
+     "0.3678450584411621",
+     "0.3499976098537445",
+     "0.2109522521495819",
+     "0.23216605186462402",
+     "0.2504729628562927",
+     "0.226142019033432",
+     "0.24765948951244354",
+     "0.2116403728723526"
+    ],
+    "r3": [
+     "0.37407228350639343",
+     "0.365277498960495",
+     "0.32962164282798767",
+     "0.23115655779838562",
+     "0.23685167729854584",
+     "0.23005720973014832",
+     "0.2732848823070526",
+     "0.24582302570343018",
+     "0.23584367334842682"
+    ]
+   },
+   "means_in_64_bit_numbers": [
+    "0.30964088599331935",
+    "0.29591542056628634",
+    "0.30459804894225456",
+    "0.2133473136514274",
+    "0.21438413817435503",
+    "0.22533851949062514",
+    "0.22151612525726383",
+    "0.25333518813323375",
+    "0.21451748485366504"
+   ]
+  },
+  "beta": {
+   "granules": [
+    "NISAR_L3_PR_SME2_007_141_D_067_4005_DHDH_A_20251213T234332_20251213T234407_X05010_N_F_J_001",
+    "NISAR_L3_PR_SME2_008_141_D_067_4005_DHDH_A_20251225T234333_20251225T234408_X05010_N_F_J_001"
+   ],
+   "times": [
+    "2025-12-13T23:43:32.000000",
+    "2025-12-25T23:43:33.000000"
+   ],
+   "epsg": 6933,
+   "ts_dtype": "float32",
+   "means_dtype": "float32",
+   "means": [
+    "0.27626529335975647",
+    "0.26549017429351807"
+   ],
+   "cells": [
+    682,
+    326
+   ],
+   "cells_with_a_soil_moisture_before_the_rule": [
+    682,
+    326
+   ],
+   "flags_and_soil_moisture_on_the_same_coordinates": true,
+   "pixels": {
+    "p1": [
+     70,
+     96
+    ],
+    "p2": [
+     117,
+     144
+    ],
+    "p3": [
+     141,
+     47
+    ],
+    "p4": [
+     23,
+     192
+    ],
+    "p5": [
+     64,
+     157
+    ],
+    "r1": [
+     6,
+     93
+    ],
+    "r2": [
+     6,
+     153
+    ],
+    "r3": [
+     6,
+     175
+    ]
+   },
+   "at_points": {
+    "p1": [
+     "nan",
+     "nan"
+    ],
+    "p2": [
+     "nan",
+     "nan"
+    ],
+    "p3": [
+     "nan",
+     "nan"
+    ],
+    "p4": [
+     "nan",
+     "nan"
+    ],
+    "p5": [
+     "nan",
+     "nan"
+    ],
+    "r1": [
+     "nan",
+     "nan"
+    ],
+    "r2": [
+     "nan",
+     "nan"
+    ],
+    "r3": [
+     "nan",
+     "nan"
+    ]
+   },
+   "means_in_64_bit_numbers": [
+    "0.2762652840738422",
+    "0.2654901544100668"
+   ]
+  }
+ },
+ "cookbook_commit": null,
+ "warnings": [
+  "DeprecationWarning: Setting the shape on a NumPy array has been deprecated in NumPy 2.5.\nAs an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+  "PendingDeprecationWarning: Use `@` matmul instead of `*` mul operator for matrix multiplication"
+ ],
+ "environment": {
+  "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+  "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+  "packages": {
+   "numpy": "2.5.3",
+   "xarray": "2026.7.0",
+   "dask": "2025.12.0",
+   "rioxarray": "0.22.0",
+   "rasterio": "1.4.4",
+   "pyproj": "3.8.0",
+   "pandas": "3.1.1"
+  },
+  "gdal_in_rasterio": "3.10.3",
+  "proj_in_pyproj": "9.8.1"
+ }
+}

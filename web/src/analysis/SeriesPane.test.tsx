@@ -51,6 +51,7 @@ function valueOf(name: string): string | null {
 test("a value is written with its decimals, a missing one as no value, and a number of cells with its thousands apart", () => {
   expect(valueWords(-4.315111978395169, "dB")).toBe("−4.32");
   expect(valueWords(0.36974722146987915, "1")).toBe("0.370");
+  expect(valueWords(0.2471, "m3 m-3")).toBe("0.247");
   expect(valueWords(null, "dB")).toBe("no value");
   expect(NO_VALUE).toBe("no value");
   expect(cellsWords(14316415)).toBe("14,316,415");
