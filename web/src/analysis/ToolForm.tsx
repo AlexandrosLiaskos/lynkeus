@@ -7,6 +7,7 @@ import { formatDay } from "../data/products";
 import { wordsOf } from "../data/service";
 import { GET_LAYER_PANE } from "../data/state";
 import { methodsStore } from "../help/state";
+import { ServerField, useServerChoice } from "../servers/ServerField";
 import { dockStore, openToolPane, showPane } from "../shared/dock/dock";
 import { EmptyState } from "../shared/empty/EmptyState";
 import { describedBy, FieldError } from "../shared/field/FieldError";
@@ -190,8 +191,9 @@ function showMethod(tool: FinishedTool): void {
  * the tool shows, and the link Method at the foot opens the page Methods at the tool. While a choice is missing
  * or impossible, the foot of the pane states the first fault, and a field that was left states its own, with the
  * shared `FieldError`. Without a layer that the tool reads, the pane names the layer to get and offers the Get
- * layer form. The run button starts the tool as a job of the server, and the foot shows the progress and the
- * outcome.
+ * layer form. A visitor who has an own server chooses the server of the job in the field Server, which stands
+ * before the box and knows on which server the chosen layers are kept. The run button starts the tool as a job
+ * of that server, and the foot shows the progress and the outcome.
  */
 export function ToolForm({ tool }: { tool: FinishedTool }) {
   const id = useId();
@@ -218,14 +220,17 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
   const proposed = defaultTitle(tool, check({ tool, layers, first, second, title: "" }).layers);
   const title = own ?? proposed;
   const { layers: chosen, faults, inputs } = check({ tool, layers, first, second, title });
-  const missing = offered.length === 0 ? NO_INPUT : missingOf(faults);
+  // The server is the last thing that the form asks for, so what it lacks is stated last.
+  const ids = chosen.map((layer) => layer.id);
+  const server = useServerChoice(ids);
+  const missing = offered.length === 0 ? NO_INPUT : (missingOf(faults) ?? server.missing);
 
   const start = () => {
-    if (!inputs) {
+    if (!inputs || server.missing !== null) {
       return;
     }
     setStarted({ id: null, sending: true, fault: null, cancelled: false });
-    startJob(tool, { ...inputs }).then(
+    startJob(tool, { ...inputs }, server.parameter).then(
       (job) => {
         setStarted({ id: job.jobID, sending: false, fault: null, cancelled: false });
         // The form stays in front when the Catalog pane appears with the first job of the session.
@@ -262,7 +267,7 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
       info={rowOf(method, "What it shows")}
       secondary={{ label: "Method", onClick: () => showMethod(tool) }}
       onRun={start}
-      ready={inputs !== null}
+      ready={inputs !== null && server.missing === null}
       missing={missing ?? undefined}
       run={runOf(started, jobs, new Set(mapLayers.map((layer) => layer.id)))}
       onCancel={started && started.id !== null ? cancel : undefined}
@@ -334,6 +339,8 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
             onChange={(event) => setOwn(event.target.value)}
           />
           <FieldError id={`${id}-title-error`}>{titleFault}</FieldError>
+
+          <ServerField inputs={ids} />
 
           <div className="usa-checkbox analysis-option">
             <input
