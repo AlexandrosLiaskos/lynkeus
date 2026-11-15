@@ -85,11 +85,12 @@ export function BasemapItem() {
         <span className="contents-basemap-name item-title">{name}</span>
         <MenuButton
           icon="more_vert"
-          label={`Commands of ${name}`}
+          label="More"
+          name={`More commands of ${name}`}
           items={items.map(({ label, run }) => ({ label, onSelect: run }))}
         />
       </div>
-      {menu && <Menu label={`Commands of ${name}`} items={items} at={menu} focus="first" onClose={closeMenu} />}
+      {menu && <Menu label={`More commands of ${name}`} items={items} at={menu} focus="first" onClose={closeMenu} />}
     </li>
   );
 }

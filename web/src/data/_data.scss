@@ -58,12 +58,3 @@
   opacity: 0;
   pointer-events: none;
 }
-
-// The foot of the form of the search: a line parts the link that restores the first choices from the fields.
-.search-foot {
-  margin: tokens.$group-gap 0 0;
-  padding-top: tokens.$space-2;
-  border-top: 1px solid tokens.$border;
-  font-size: tokens.$text-small;
-  line-height: tokens.$line-small;
-}

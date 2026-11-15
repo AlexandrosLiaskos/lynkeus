@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { copyText } from "../clipboard";
 import { messagesStore } from "../messages/messages";
-import { COPIED_TIME, PropertyList, type PropertyGroup } from "./PropertyList";
+import { COPIED_TIME, PropertyList, stableKeys, type PropertyGroup } from "./PropertyList";
 
 vi.mock("../clipboard", () => ({ copyText: vi.fn() }));
 
@@ -96,4 +96,80 @@ test("the explanation of a property stands behind the button beside its name", (
     "The field GranuleUR of the record.",
   );
   expect(screen.queryByRole("button", { name: "Information about Track" })).toBeNull();
+});
+
+test("an element is known by its id or, without one, by its name and its position among equals", () => {
+  const keys = stableKeys([
+    { name: "Coherence" },
+    { name: "Backscatter" },
+    { name: "Coherence" },
+    { id: "b", name: "Coherence" },
+  ]);
+  expect(new Set(keys).size).toBe(4);
+  // An element that enters before the others leaves their keys as they are.
+  expect(stableKeys([{ name: "File" }, { name: "Coherence" }, { name: "Backscatter" }]).slice(1)).toEqual(
+    keys.slice(0, 2),
+  );
+  expect(stableKeys([{ id: "b", name: "Other title" }])).toEqual(keys.slice(3));
+});
+
+test("a group that enters before the others leaves their rows in place, with the mark of a copy", async () => {
+  const { rerender } = render(<PropertyList groups={GROUPS} />);
+  await userEvent.click(screen.getByRole("button", { name: "Copy Identifier" }));
+  const button = screen.getByRole("button", { name: "Copy Identifier" });
+  const mark = await screen.findByRole("status");
+  rerender(<PropertyList groups={[{ title: "File", rows: [{ name: "Format", value: "GeoTIFF" }] }, ...GROUPS]} />);
+  expect(screen.getByRole("button", { name: "Copy Identifier" })).toBe(button);
+  expect(screen.getByRole("status")).toBe(mark);
+  expect(button.closest("dd")?.contains(mark)).toBe(true);
+  // A row that enters before the others of its group leaves them in place as well.
+  const [orbit, record] = GROUPS;
+  rerender(
+    <PropertyList
+      groups={[orbit ?? { rows: [] }, { rows: [{ name: "Version", value: "1.0" }, ...(record?.rows ?? [])] }]}
+    />,
+  );
+  expect(screen.getByRole("button", { name: "Copy Identifier" })).toBe(button);
+  expect(screen.getByRole("status")).toBe(mark);
+});
+
+test("two groups of one title are both listed, and each copies and marks its own row", async () => {
+  const errors = vi.spyOn(console, "error").mockImplementation(() => undefined);
+  const layer = (value: string): PropertyGroup => ({
+    title: "Coherence",
+    rows: [{ name: "Value", value, copy: true }],
+  });
+  render(<PropertyList groups={[layer("0.5"), layer("0.7")]} />);
+  expect(screen.getAllByRole("heading", { name: "Coherence" })).toHaveLength(2);
+  const [, second] = screen.getAllByRole("button", { name: "Copy Value" });
+  await userEvent.click(second ?? document.body);
+  expect(copyText).toHaveBeenLastCalledWith("0.7");
+  expect(await screen.findAllByRole("status")).toHaveLength(1);
+  expect(second?.closest("dd")?.contains(screen.getByRole("status"))).toBe(true);
+  // React reports two children of one key as an error.
+  expect(errors).not.toHaveBeenCalled();
+  errors.mockRestore();
+});
+
+test("groups and rows with an id keep their elements when their order changes", () => {
+  const first: PropertyGroup = {
+    id: "a",
+    title: "Coherence",
+    rows: [{ id: "x", name: "Value", value: "0.5", copy: true }],
+  };
+  const second: PropertyGroup = {
+    id: "b",
+    title: "Coherence",
+    rows: [{ id: "x", name: "Value", value: "0.7", copy: true }],
+  };
+  const { rerender } = render(<PropertyList groups={[first, second]} />);
+  const buttons = screen.getAllByRole("button", { name: "Copy Value" });
+  rerender(<PropertyList groups={[second, first]} />);
+  const moved = screen.getAllByRole("button", { name: "Copy Value" });
+  expect(moved[0]).toBe(buttons[1]);
+  expect(moved[1]).toBe(buttons[0]);
+  expect(screen.getAllByRole("definition").map((value) => value.firstElementChild?.textContent)).toEqual([
+    "0.7",
+    "0.5",
+  ]);
 });

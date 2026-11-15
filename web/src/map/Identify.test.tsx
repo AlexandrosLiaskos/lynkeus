@@ -120,7 +120,7 @@ test("a map without layers gives the place and says how to get a visible layer",
   ).toBeDefined();
 });
 
-test("each layer has a group of rows under its title, and a second layer of one title takes a number", () => {
+test("each layer has a group of rows under its title and with its id, also a second layer of one title", () => {
   const layer = { quantity: "Coherence", unit: "", dates: ["2026-10-21", "2026-11-02"] };
   expect(
     layerGroups([
@@ -129,6 +129,7 @@ test("each layer has a group of rows under its title, and a second layer of one 
     ]),
   ).toEqual([
     {
+      id: "a",
       title: "Coherence",
       rows: [
         { name: "Coherence", value: "0.5", copy: true },
@@ -136,7 +137,8 @@ test("each layer has a group of rows under its title, and a second layer of one 
       ],
     },
     {
-      title: "Coherence (2)",
+      id: "b",
+      title: "Coherence",
       rows: [
         { name: "Coherence", value: "No data at this place" },
         { name: "Dates", value: "21 Oct 2026 and 2 Nov 2026" },

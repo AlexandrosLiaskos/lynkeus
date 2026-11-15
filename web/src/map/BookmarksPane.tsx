@@ -196,6 +196,7 @@ export function BookmarksPane() {
                       <MenuButton
                         icon="more_vert"
                         label="More"
+                        name={`More commands of ${bookmark.name}`}
                         items={[
                           {
                             label: "Rename",

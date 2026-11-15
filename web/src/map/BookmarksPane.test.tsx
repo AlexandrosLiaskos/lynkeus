@@ -27,7 +27,7 @@ async function choose(view: string, command: string) {
   if (!item) {
     throw new Error(`the view ${view} is not listed`);
   }
-  await userEvent.click(within(item).getByRole("button", { name: "More" }));
+  await userEvent.click(within(item).getByRole("button", { name: `More commands of ${view}` }));
   await userEvent.click(screen.getByRole("menuitem", { name: command }));
 }
 

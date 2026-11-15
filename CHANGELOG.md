@@ -12,7 +12,7 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The service that counts page visits and stores only their total.
 - The files that deploy Lynkeus in containers and publish the team log whenever its file changes.
 - The automatic checks of style, types and tests.
-- The page of the application, with the ribbon of tools, the map and a choice between two background maps.
+- The page of the application, with the ribbon of tools, the map and a choice between two basemaps.
 - The tabs View, Share and Help of the ribbon, and the buttons of the first functions of every tab.
 - The description of each button of the ribbon, shown when the pointer or the keyboard focus rests on it.
 - The dialog, the frame of a pane and the messages that every part of the interface uses.
@@ -62,6 +62,10 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The sections Jobs and Layers of the Catalog pane, with the jobs and the layers of the session: a job is
   cancelled, run again and removed, and a layer is added to the map, shown in full, downloaded, renamed and
   removed.
+- The pane Getting started of the Help tab, with the steps of the work in order and the button that opens
+  the tool of each step. A finished button of the ribbon that lacks something, such as a selected layer, is
+  inactive, and its description says what it needs. Every item of the status bar has one form and carries
+  its name, and the dialogs About and Sources use the shared sections and lists of names and values.
 - The address `GET /api/limits` of the web service, which reports the version of Lynkeus, the processors
   and the memory that the service may use, and the limits of the service.
 - The version of Lynkeus beside the name in the title bar. A press on it opens a notice, written from the
@@ -84,6 +88,18 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The messages show over the foot of the map.
 - A job may run for 40 minutes, and the container of the web service may use 2 gigabytes of memory.
 - The lines of latitude and longitude have a white edge of half a pixel, and their values one of 1 pixel.
+- The tool panes of the Data tab guide the user. Get layer shows an empty state before a search has found a
+  product, a field Product with the products found, and at its foot the first thing that is missing. Search
+  products shows the choices that most searches need first, and Sign in has three numbered steps.
+- The rows of the Contents pane take the shared sizes, distances and colours. The Symbology pane stands in
+  five sections, with every explanation behind an "i", and the Properties window lists the properties in
+  four groups, with buttons that copy the addresses.
+- The tool panes of the Map tab show their results as lists of names and values in sections, name the next
+  step while they have nothing to show, and state a value that is refused under its field.
+- The link Restore defaults of the search and the link Reset display of Symbology stand at the left end of
+  the foot of their tool panes. The description of a button shows above the button at the lower edge of the
+  window. A list of names and values keeps its rows in place while it grows, and the "More" button of an
+  item of a list is named after its item.
 - The credits of the layers stand at the right end of the status bar. The credit of OpenStreetMap stays
   in the corner of the map, where its tile service asks for it.
 - The dialog and the close button of a pane take the sizes of the frame, and the pressed and the
