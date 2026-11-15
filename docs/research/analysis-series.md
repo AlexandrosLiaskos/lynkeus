@@ -141,11 +141,8 @@ A series job and an own server of the visitor (`docs/Own_Servers.md`):
 
 ### 1.6 Limits of the extension
 
-1. The interface does not know the series. It offers no button for the two tools, and it does not
-   list or draw a series. If a job of a series tool were started in a session, the present interface
-   would report at its end that the layer of the job could not be read (`announce` in
-   `web/src/data/follow.ts`), because the state of the job has no field `layer` and its result is
-   not a layer description. Nothing was tried in a browser.
+1. The interface offers the two tools, lists the series and draws one as a chart with a table
+   (part 8). It was run in the tests of the interface and was not seen in a browser.
 2. A series has no STAC record and no file to download. The description is the record: it holds the
    product files, the program and the method, as a result layer does.
 3. The area of a series is the whole grid of its layers. A series of a part of the area, of a line or
@@ -616,10 +613,8 @@ its address, its size, its SHA-256 and the time of the reading.
    read, and the tool applies none.
 3. **The time of a pair in a chart.** An entry of a coherence series has two dates. Which of them, or
    their middle, is the place of the entry on the time axis is left to the interface.
-4. **The interface.** The series formats have no TypeScript types yet, and `web/` was not changed.
-   The interface needs the types of part 1.3, a list of the series (`GET /api/series`), a chart, a
-   way to give the point, and a reading of the field `series` in the state of a job (part 1.6,
-   point 1).
+4. **The interface.** It is built (part 8) and was not seen in a browser. The owner decides the
+   points that part 8 leaves open.
 5. **The limit of the series of a session.** 50, the number of the limit of the layers
    (`MAX_SESSION_SERIES` in `api/src/lynkeus/jobs.py`). It is a choice of this work; no measurement
    stands behind it.
@@ -642,3 +637,45 @@ its address, its size, its SHA-256 and the time of the reading.
     a published rule for the mean of soil moisture over an area and layers of two dates were not
     researched or received in this work. `displacement-series` was not built, because it depends on
     work of another part. No thematic map was built.
+
+## 8. The interface of the two tools
+
+Nothing of this part was seen in a browser, and no picture of it was made. Every statement below
+was run in the tests of the interface (`npm test` in `web/`).
+
+| Part | Where | What it does |
+|---|---|---|
+| Types | `web/src/shared/series.ts` | `SeriesDescription`, `SeriesEntry`, `Point`, `Cell` and `SeriesInputs`, with `isSeriesDescription`, which makes the checks of the format of the server. A test reads `api/src/lynkeus/layers.py` and compares the fields line for line |
+| The list of the session | `web/src/data/series.ts` | Reads `GET /api/series`, renames with `PATCH` and removes with `DELETE /api/series/{id}` |
+| The forms | `web/src/analysis/SeriesForm.tsx`, `series.ts` | One form for the two tools, in the docked tool pane, opened by the buttons Series of the groups Backscatter and Coherence |
+| The end of a job | `web/src/data/follow.ts` | A successful job that names a series reads the list of series and tells the visitor that the series is ready. The warning about a layer that could not be read is not given |
+| The result | `web/src/analysis/SeriesPane.tsx`, `SeriesChart.tsx`, `chart.ts` | The docked pane Series, without a foot (Interface guide, part B): a chart drawn as SVG and, under it, a table and the facts of the series |
+| The list | `web/src/catalog/SeriesSection.tsx` | The section Series of the Catalog pane, built with the blocks of the section Layers |
+| The summaries | `docs/methods/*-series.md`, `web/src/analysis/methodSheets.ts` | The section In brief of each sheet, shown in Help, Methods and behind the link Method of a form |
+
+Decisions of this part, each of which the owner may change:
+
+1. **The layers of a form.** The form offers the layers that the server accepts together: the same
+   layer of products of one instrument, track, direction, frame and major release, each of other
+   dates. When the session holds more than one such group, the field Layer chooses the group. At
+   first every layer of the group is chosen.
+2. **Layers of an own server.** They are not offered, because a series job runs on the project
+   server only (part 1.4). The form says how many such layers there are and that they must be
+   received on the project server.
+3. **The point.** It is typed as a latitude and a longitude, in the forms that the pane Go to
+   coordinates reads. No shared block picks a point on the map for a form, so the map is not used.
+   Whether the point lies inside the area of the layers is checked by the server.
+4. **The time of a pair in the chart.** A pair is a horizontal line from its first to its second
+   date, at the height of its value. The lines of the pairs are not joined.
+5. **A date without a value.** It is left out of the chart, the line joins the dates before and
+   after it, and the table says "no value".
+6. **The value axis.** It carries the unit ("dB" or "no unit") and round values. For a coherence it
+   runs from 0 to 1, the range of the series; for a backscatter it follows the values.
+7. **The level of validation.** The table does not name it. A layer description has no field for
+   the level of validation of its product, in the server or in the interface, at the commit
+   `14ea838` and on `main` at the commit `6a17496`, so the level of an entry cannot be named without
+   new work on the server. The names of the product files, which carry the release, are listed under
+   the table.
+8. **Sources.** The page Sources names the series tools in the entries that were there. The guide
+   of the ASF DAAC, the HyP3 documentation and the provisional collections are not added, because
+   their licences were not read.

@@ -5,7 +5,20 @@
 | Tool | `coherence-series` (Analysis tab, group Coherence, button Series) |
 | NISAR product | GUNW, Level-2 Geocoded Unwrapped Interferogram |
 | Result | Magnitude of the interferometric coherence of many pairs of dates against time, at a point or as the mean of the area of the layers, without unit. The result is a series, not a layer |
-| State | The comparison (D-17) was made on 15 Nov 2026 on three layers `coherenceMagnitude` of the pilot area (the pairs 15 and 27 Sep, 27 Sep and 9 Oct, 9 and 21 Oct 2026; channel HH, 20 m), for the mean of the area and at five points. On the same day the tool ran as jobs of a private copy of the web service. The interface does not show a series yet |
+| State | The comparison (D-17) was made on 15 Nov 2026 on three layers `coherenceMagnitude` of the pilot area (the pairs 15 and 27 Sep, 27 Sep and 9 Oct, 9 and 21 Oct 2026; channel HH, 20 m), for the mean of the area and at five points. On the same day the tool ran as jobs of a private copy of the web service. The interface offers the tool and shows a series as a chart with a table; this was run in the tests of the interface and was not seen in a browser |
+
+## In brief
+
+| | |
+|---|---|
+| What it shows | The interferometric coherence of many pairs of dates against time, at a point or as the mean of the area, from 0 to 1. |
+| Input | The same coherence layer (`coherenceMagnitude`) of 2 to 50 GUNW products of one track, direction and frame, one for each pair. A point is given by its latitude and longitude. |
+| Formula | The mean of the layer of the product over the cells of each pair. At a point it is the one cell that holds the point. |
+| Result | A series without unit, from 0 to 1: one value for each pair, with the number of cells behind it. It is shown as a chart and a table, and it has no file. |
+| How to read | Each value is one pair, drawn from its first to its second date. Near 1, the radar echoes of the two dates are alike, and near 0 they differ. Pairs of different spans can stand in one series. |
+| Limits | The values may come from products of two processing releases, provisional and validated, and it is not confirmed that they compare without a correction. The mean coherence of an area is biased toward higher values (Touzi et al., 1999, abstract), and the tool applies no correction. One area and three pairs were compared. |
+| Checked | For the mean of the area, the values differ from the mean statement of the ASF NISAR Cookbook by less than 0.0000001, and at five points they are equal (lower Merrimack River, 15 Sep to 21 Oct 2026). |
+| References | [Touzi et al. (1999)](https://doi.org/10.1109/36.739146), of which the abstract was read. [NISAR L2 GUNW Product Specification, JPL D-102272 Rev E](https://nisar-docs.asf.alaska.edu/product-specification/). [ASF NISAR Cookbook](https://github.com/ASFOpenSARlab/NISAR_Cookbook). |
 
 ## Reference
 
@@ -158,5 +171,6 @@ The exact numbers of the comparison are in `docs/research/analysis-series.md`, p
 3. The layers `coherenceMagnitude` of the channel VV and of the unwrapped interferogram (80 m): the
    tool accepts them by their names, and only layers of the channel HH of the wrapped interferogram
    (20 m) were received and computed.
-4. How the interface draws a series, and which of the two dates of a pair it takes as the time of an
-   entry. The interface does not know the series yet (`docs/research/analysis-series.md`, part 1.6).
+4. How the chart of a series looks on a screen. The interface draws each pair as a horizontal line
+   from its first to its second date, with a table under the chart, and this was run in the tests of
+   the interface only; it was not seen in a browser (`docs/research/analysis-series.md`, part 8).

@@ -5,7 +5,20 @@
 | Tool | `backscatter-series` (Analysis tab, group Backscatter, button Series) |
 | NISAR product | GCOV, Level-2 Geocoded Polarimetric Covariance |
 | Result | Radar backscatter gamma0 of many dates against time, at a point or as the mean of the area of the layers, in decibels (dB). The result is a series, not a layer |
-| State | The comparison (D-17) was made on 15 Nov 2026 on four layers `HHHH` of the pilot area (27 Sep, 9 Oct, 21 Oct and 2 Nov 2026), for the mean of the area and at five points, against statements of the ASF NISAR Cookbook. On the same day the tool ran as jobs of a private copy of the web service. The interface does not show a series yet |
+| State | The comparison (D-17) was made on 15 Nov 2026 on four layers `HHHH` of the pilot area (27 Sep, 9 Oct, 21 Oct and 2 Nov 2026), for the mean of the area and at five points, against statements of the ASF NISAR Cookbook. On the same day the tool ran as jobs of a private copy of the web service. The interface offers the tool and shows a series as a chart with a table; this was run in the tests of the interface and was not seen in a browser |
+
+## In brief
+
+| | |
+|---|---|
+| What it shows | The radar backscatter (gamma0) of many dates against time, at a point or as the mean of the area, in decibels. |
+| Input | The same backscatter layer of 2 to 50 GCOV products of one track, direction and frame, one for each date. A point is given by its latitude and longitude. |
+| Formula | `10 * log10(mean(gamma0))` over the cells of each date. At a point it is the one cell that holds the point. |
+| Result | A series in decibels (dB): one value for each date, with the number of cells behind it. It is shown as a chart and a table, and it has no file. |
+| How to read | Each value is one date. A higher value means that the surface returned more of the radar signal on that date. The cause of a change is for the user to establish. |
+| Limits | The values may come from products of two processing releases, provisional and validated, and it is not confirmed that they compare without a correction. Over an area the value is the mean of the power, given in decibels. One area and four dates were compared. |
+| Checked | For the mean of the area and at five points, the values differ from those of the notebooks of the ASF NISAR Cookbook by less than 0.00001 dB (lower Merrimack River, 27 Sep to 2 Nov 2026). |
+| References | [ASF NISAR Cookbook](https://github.com/ASFOpenSARlab/NISAR_Cookbook). [NISAR L2 GCOV Product Specification, JPL D-102274 Rev F](https://nisar-docs.asf.alaska.edu/product-specification/). [SDS Product File Naming Conventions, JPL D-102255 Rev C](https://nisar-docs.asf.alaska.edu/naming-conventions/). |
 
 ## Reference
 
@@ -160,7 +173,8 @@ The exact numbers of the comparison are in `docs/research/analysis-series.md`, p
    they are of the same major release.
 2. The terms `HVHV`, `VHVH`, `VVVV`, `RHRH` and `RVRV`: the tool accepts them by their names, and
    only layers `HHHH` were received and computed.
-3. How the interface draws a series. The interface does not know the series yet
-   (`docs/research/analysis-series.md`, part 1.6).
+3. How the chart of a series looks on a screen. The interface draws the values against time, with a
+   table under the chart, and this was run in the tests of the interface only; it was not seen in a
+   browser (`docs/research/analysis-series.md`, part 8).
 4. A point exactly on the line between two cells, for which the rule of the tool and the rule of the
    source program can give different cells. No such point was compared.

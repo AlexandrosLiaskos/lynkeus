@@ -61,3 +61,23 @@ test("a job of an own server of the visitor names that server", () => {
   const rows = jobRows(job({ server: { id: "3f9a1c0b7e24d658", name: "Office computer" } }));
   expect(rows).toContainEqual(["Server", "Office computer"]);
 });
+
+test("a job of a Series tool names its point in words and carries the identifier of its series", () => {
+  const rows = jobRows(
+    job({
+      processID: "backscatter-series",
+      status: "successful",
+      inputs: { inputs: ["first", "second"], title: "Series of backscatter", point: { longitude: -70.9, latitude: 42.8 } },
+      series: "5b0a52ffe356b487a469c1b2c7989d7e",
+    }),
+  );
+  expect(rows).toContainEqual(["Input layers", "first, second"]);
+  expect(rows).toContainEqual(["Point", "Longitude -70.9, latitude 42.8 (degrees)"]);
+  expect(rows.slice(-2)).toEqual([
+    ["Identifier of the series", "5b0a52ffe356b487a469c1b2c7989d7e"],
+    ["Identifier of the job", "0123456789abcdef0123456789abcdef"],
+  ]);
+  // A series of the whole area was started without a point.
+  const whole = jobRows(job({ inputs: { inputs: ["first", "second"], title: "Series", point: null } }));
+  expect(whole).toContainEqual(["Point", "None"]);
+});

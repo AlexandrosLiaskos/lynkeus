@@ -13,7 +13,7 @@ import { PROJECT_SERVER_WORDS } from "../shared/servers";
 export function jobGroups(job: Job): PropertyGroup[] {
   const rows = jobRows(job);
   const inputs = Object.keys(job.inputs ?? {}).length;
-  const identifiers = job.layer ? 2 : 1;
+  const identifiers = job.layer || job.series ? 2 : 1;
   const state = rows.length - inputs - identifiers;
   const group = (title: string, part: [string, string][], copy = false): PropertyGroup => ({
     title,

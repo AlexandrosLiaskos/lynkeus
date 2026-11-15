@@ -7,3 +7,51 @@
 .analysis-option {
   margin-top: tokens.$field-gap;
 }
+
+// The chart of a series. Its texts have the small size of a pane at every width of the pane, and its lines take
+// the colours of the tokens.
+.series-chart {
+  margin-top: tokens.$space-2;
+}
+
+.series-chart svg {
+  display: block;
+}
+
+.series-chart-text {
+  fill: tokens.$secondary;
+  font-size: tokens.$text-small;
+}
+
+.series-chart-grid {
+  stroke: tokens.$border;
+  stroke-width: 1;
+}
+
+.series-chart-axis {
+  stroke: tokens.$muted;
+  stroke-width: 1;
+}
+
+.series-chart-line {
+  fill: none;
+  stroke: tokens.$link;
+  stroke-width: 2;
+}
+
+.series-chart-point {
+  fill: tokens.$link;
+}
+
+// The table of a series: the date or the pair, the value and the number of cells of each entry.
+.series-table {
+  width: 100%;
+  margin: tokens.$space-2 0 tokens.$space-3;
+  font-size: tokens.$text;
+  line-height: tokens.$line;
+}
+
+.series-table th {
+  color: tokens.$secondary;
+  font-weight: normal;
+}
