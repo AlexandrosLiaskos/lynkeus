@@ -101,6 +101,9 @@ function layerRows(layer: LayerDescription): Property[] {
             info: "The method sheet of the analysis tool that computed the result.",
           },
         ]),
+    ...(typeof layer.note === "string"
+      ? [{ name: "Note", value: layer.note, info: "What the analysis tool says about the result." }]
+      : []),
   ];
 }
 
