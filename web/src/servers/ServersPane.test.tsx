@@ -12,6 +12,7 @@ import { mapLayersStore } from "../shared/mapLayers";
 import { messagesStore } from "../shared/messages/messages";
 import { serversStore } from "../shared/servers";
 import { tooManyServers, unknownCode, WRONG_FORM } from "./AddServer";
+import { latestReleaseAddress, REPOSITORY, resetRelease } from "./downloads";
 import { loadServers, resetServers } from "./requests";
 import { PURPOSE, ServersPane } from "./ServersPane";
 import { openAddServer, openServers, resetServersState, returnStore, SERVERS_PANE, serversViewStore } from "./state";
@@ -29,6 +30,7 @@ import {
   VIEW,
   type Site,
 } from "./testServers";
+import { cellsMemoryWords, OLDER_PROGRAM } from "./words";
 
 let server: Site;
 const SIGNED_IN = { state: "signed-in", user: "a_user" } as const;
@@ -37,6 +39,7 @@ const CODE = VIEW.user_code;
 beforeEach(() => {
   resetServers();
   resetServersState();
+  resetRelease();
   resetSession();
   resetJobs();
   resetLayers();
@@ -212,6 +215,7 @@ test("a server shows its system, processors, memory, disk, jobs and layers", asy
     "Layers kept: 6",
     "Space used by layers: 1.3 GB of at most 100 GB",
     "Largest layer allowed: 10 GB",
+    "Most cells of a layer: 100 million",
     "Free disk space: 412 GB",
     "Connected to your account: 15 Nov 2026, 08:00:00 UTC",
     "Last message: 15 Nov 2026, 09:40:12 UTC",
@@ -286,21 +290,31 @@ test("a new name that the server refuses is stated under the field", async () =>
   expect(screen.getByLabelText("New name")).toBeDefined();
 });
 
-test("the limits of a server are shown and set in jobs and in gigabytes", async () => {
+test("the limits of a server are shown and set in jobs, in gigabytes and in million cells", async () => {
   await showList();
   await userEvent.click(commandOf("Office computer", "Set limits"));
   const jobs = screen.getByLabelText<HTMLInputElement>("Jobs at the same time");
   const storage = screen.getByLabelText<HTMLInputElement>("Space for layers (GB)");
   const size = screen.getByLabelText<HTMLInputElement>("Largest layer (GB)");
-  expect([jobs.value, storage.value, size.value]).toEqual(["4", "100", "10"]);
+  const cells = screen.getByLabelText<HTMLInputElement>("Most cells of a layer (million)");
+  expect([jobs.value, storage.value, size.value, cells.value]).toEqual(["4", "100", "10", "100"]);
+  // Under the cells one line says what memory a job of that size needs and how many the computer allows.
+  const memory = () => document.querySelector(".server-memory")?.textContent;
+  expect(memory()).toBe(cellsMemoryWords(100_000_000, OFFICE.state?.memory ?? null));
+  expect(cells.getAttribute("aria-describedby")).toContain(document.querySelector(".server-memory")?.id);
   for (const [field, value] of [
     [jobs, "2"],
     [storage, "250"],
     [size, "20"],
+    [cells, "150"],
   ] as const) {
     await userEvent.clear(field);
     await userEvent.type(field, value);
   }
+  expect(memory()).toBe(cellsMemoryWords(150_000_000, OFFICE.state?.memory ?? null));
+  expect(memory()).toMatch(
+    /^A job that receives a layer of 150 million cells needs about .+ of memory\. The 16 GB of this computer allow \d+ such jobs at the same time\.$/,
+  );
   await userEvent.click(formButton("Set limits"));
   await vi.waitFor(() => expect(server.sent("PATCH")).toHaveLength(1));
   expect(server.sent("PATCH")[0]).toEqual({
@@ -308,12 +322,13 @@ test("the limits of a server are shown and set in jobs and in gigabytes", async 
     address: `/api/servers/${OFFICE.id}`,
     content: CHANGE_LIMITS,
   });
+  expect(CHANGE_LIMITS.limits.layer_cells).toBe(150_000_000);
   await vi.waitFor(() =>
     expect(messages()).toEqual([["info", 'The new limits were sent to the server "Office computer".']]),
   );
   // The server has not applied the limits yet: the list says so and still shows the limits in force.
   const pending =
-    "The server has not applied its new limits yet: 2 jobs at the same time, 250 GB for layers and 20 GB for one layer. The list shows them once the server reports them.";
+    "The server has not applied its new limits yet: 2 jobs at the same time, 250 GB for layers, 20 GB for one layer and 150 million cells of one layer. The list shows them once the server reports them.";
   expect(itemOf("Office computer").getByText(pending)).toBeDefined();
   expect(rowsOf("Office computer")).toContain("Running: 1 of at most 4");
   await userEvent.click(commandOf("Office computer", "Set limits"));
@@ -325,6 +340,122 @@ test("the limits of a server are shown and set in jobs and in gigabytes", async 
   expect(rowsOf("Office computer")).toContain("Running: 1 of at most 2");
   expect(rowsOf("Office computer")).toContain("Space used by layers: 1.3 GB of at most 250 GB");
   expect(rowsOf("Office computer")).toContain("Largest layer allowed: 20 GB");
+  expect(rowsOf("Office computer")).toContain("Most cells of a layer: 150 million");
+});
+
+test("the cells of a layer that are no sound number are stated under their field, without the line of the memory", async () => {
+  await showList();
+  await userEvent.click(commandOf("Office computer", "Set limits"));
+  const cells = screen.getByLabelText("Most cells of a layer (million)");
+  await userEvent.clear(cells);
+  await userEvent.type(cells, "5000");
+  await userEvent.tab();
+  expect(alerts()).toEqual(["Enter the cells in millions, as a number from 1 to 4,000."]);
+  expect(document.querySelector(".server-memory")).toBeNull();
+  await userEvent.click(formButton("Set limits"));
+  expect(server.sent("PATCH")).toEqual([]);
+});
+
+test("limits that need more memory than the computer has are refused in the sentence of the project server", async () => {
+  await showList();
+  // The sentence of the project server for 4 jobs of 1000 million cells and the 16 GB of the Office computer.
+  const refusal =
+    "4 running jobs with layers of 1000 million cells need about 64.8 gigabytes of memory, and your server Office computer has 17.1 gigabytes.";
+  server.refuse("PATCH", "/api/servers", 422, refusal);
+  await userEvent.click(commandOf("Office computer", "Set limits"));
+  const cells = screen.getByLabelText("Most cells of a layer (million)");
+  await userEvent.clear(cells);
+  await userEvent.type(cells, "1000");
+  await userEvent.click(formButton("Set limits"));
+  expect(await screen.findByText(refusal)).toBeDefined();
+  expect(alerts()).toEqual([refusal]);
+  expect(screen.getByLabelText<HTMLInputElement>("Most cells of a layer (million)").value).toBe("1000");
+});
+
+test("a change of the cells for a server with the older program is refused in the sentence of the project server", async () => {
+  await showList();
+  const refusal =
+    "To change the cells of a layer of your server Laboratory server, install the newer version of Lynkeus Server on that computer: version 0.1.0 receives at most 25 million cells.";
+  server.refuse("PATCH", "/api/servers", 409, refusal);
+  await userEvent.click(commandOf("Laboratory server", "Set limits"));
+  const cells = screen.getByLabelText<HTMLInputElement>("Most cells of a layer (million)");
+  // Its limits do not state the cells of a layer, so the field holds the 25 million that hold for it.
+  expect(cells.value).toBe("25");
+  await userEvent.clear(cells);
+  await userEvent.type(cells, "60");
+  await userEvent.click(formButton("Set limits"));
+  expect(await screen.findByText(refusal)).toBeDefined();
+  expect(server.sent("PATCH")[0]?.content).toEqual({
+    limits: { running_jobs: 8, storage: 50_000_000_000, layer_size: 5_000_000_000, layer_cells: 60_000_000 },
+  });
+});
+
+test("limits of a server with the older program whose cells stay at 25 million are sent without the cells", async () => {
+  await showList();
+  await userEvent.click(commandOf("Laboratory server", "Set limits"));
+  const jobs = screen.getByLabelText("Jobs at the same time");
+  await userEvent.clear(jobs);
+  await userEvent.type(jobs, "6");
+  await userEvent.click(formButton("Set limits"));
+  await vi.waitFor(() => expect(server.sent("PATCH")).toHaveLength(1));
+  expect(server.sent("PATCH")[0]?.content).toEqual({
+    limits: { running_jobs: 6, storage: 50_000_000_000, layer_size: 5_000_000_000 },
+  });
+});
+
+const WINDOWS_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36";
+
+test("a server whose last report lacked the cells of a layer says that it runs an older Lynkeus Server, with the download for its computer", async () => {
+  server.release = { status: 200, content: RELEASE };
+  vi.spyOn(navigator, "userAgent", "get").mockReturnValue(WINDOWS_AGENT);
+  await showList();
+  const notice = await itemOf("Laboratory server").findByText(OLDER_PROGRAM, { exact: false });
+  // The Laboratory server runs Ubuntu, so the download is the one for Linux, although the visitor reads the page
+  // on Windows.
+  const link = await within(notice).findByRole<HTMLAnchorElement>("link");
+  expect(link.textContent).toBe("Download Lynkeus-Server-0.2.0-Linux.tar.gz (81.2 MB)");
+  expect(link.getAttribute("href")).toBe(
+    "https://github.com/AlexandrosLiaskos/lynkeus/releases/download/v0.2.0/Lynkeus-Server-0.2.0-Linux.tar.gz",
+  );
+  expect(notice.textContent).toBe(`${OLDER_PROGRAM} Download Lynkeus-Server-0.2.0-Linux.tar.gz (81.2 MB)`);
+  // The Office computer reported the cells, and the new server has not reported yet: neither is told anything.
+  expect(itemOf("Office computer").queryByText(OLDER_PROGRAM, { exact: false })).toBeNull();
+  expect(itemOf("DESKTOP-7Q2LM4K").queryByText(OLDER_PROGRAM, { exact: false })).toBeNull();
+  // GitHub is asked once, however often the list is read again.
+  await act(() => loadServers());
+  await act(() => loadServers());
+  expect(server.sent("GET", latestReleaseAddress(REPOSITORY))).toHaveLength(1);
+});
+
+test("while no release is published, a server with the older program says so in plain words", async () => {
+  await showList();
+  const notice = await itemOf("Laboratory server").findByText(
+    `${OLDER_PROGRAM} No version of Lynkeus Server is published yet, so there is nothing to download.`,
+  );
+  expect(within(notice).queryByRole("link")).toBeNull();
+  expect(server.sent("GET", latestReleaseAddress(REPOSITORY))).toHaveLength(1);
+});
+
+test("when GitHub gives no answer, a server with the older program leads to the page of the releases", async () => {
+  server.release = null;
+  await showList();
+  const link = await itemOf("Laboratory server").findByRole<HTMLAnchorElement>("link", {
+    name: "the releases of Lynkeus on GitHub",
+  });
+  expect(link.getAttribute("href")).toBe("https://github.com/AlexandrosLiaskos/lynkeus/releases");
+  expect(link.target).toBe("_blank");
+  expect(link.closest("[role=status]")?.textContent).toBe(
+    `${OLDER_PROGRAM} Download the newer Lynkeus Server from the releases of Lynkeus on GitHub (opens in a new tab).`,
+  );
+});
+
+test("GitHub is not asked for a list without a server of the older program", async () => {
+  // The new server has not reported yet, so it is not said to run the older program.
+  server.servers = [OFFICE, NEW];
+  await showList();
+  expect(itemOf("Office computer").getByText("Connected")).toBeDefined();
+  expect(server.sent("GET", latestReleaseAddress(REPOSITORY))).toEqual([]);
+  expect(screen.queryByText(OLDER_PROGRAM, { exact: false })).toBeNull();
 });
 
 test("a limit that is no sound number is stated under its field, and nothing is sent", async () => {
@@ -385,7 +516,7 @@ test("the removal of a server says what happens to its layers before it is carri
   expect(server.sent("DELETE")).toEqual([]);
   await userEvent.click(formButton("Cancel"));
   expect(server.sent("DELETE")).toEqual([]);
-  expect(rowsOf("Office computer")).toHaveLength(13);
+  expect(rowsOf("Office computer")).toHaveLength(14);
 });
 
 test("a removed server leaves the list, and its layers leave the lists and the map", async () => {

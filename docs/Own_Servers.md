@@ -141,15 +141,18 @@ seconds counts as answered, so that the reports decide about its job.
 
 | Request | Body | Answer |
 |---|---|---|
-| `GET /api/servers` | | 200 `Servers` |
-| `PATCH /api/servers/{id}` | `ServerChange` | 200 `Server` |
+| `GET /api/servers` | | 200 `Servers`; every `Server` carries `knows_cells` (section Cells of a layer, rule 4) |
+| `PATCH /api/servers/{id}` | `ServerChange` | 200 `Server`, with `knows_cells` |
 | `DELETE /api/servers/{id}` | | 204; the records of its jobs and of its layers are removed, so both leave the lists of the visitor, and the server receives `forget` |
 | `POST /api/processes/{name}/execution?server={id}` | as before | as before |
+| `GET /api/processes/{name}?server={id}` | | as before; the parameter `most-cells` of the description is the limit `layer_cells` that the server last reported, and 25 million before its first report |
 | `GET /api/servers/{id}/files/{layer}/{file}` | `Range` allowed | 200 or 206 with the bytes; 503 when the server is not connected; 504 when it does not answer in time |
 
 The parameter `server` of an execution is the name of an own server, the word `project`, or absent. When
 it is absent, the job goes to the connected own server of the visitor with the fewest unfinished jobs
-that holds every input layer, and to the project server when there is none.
+that holds every input layer, and to the project server when there is none. The description of a process
+takes the same parameter. Without it, and with the word `project`, `most-cells` is the number of the
+project server.
 
 The state of a job (`statusInfo`) and every entry of `GET /api/layers` carry the member `server`: `null`
 for the project server and otherwise a `ServerName`.
@@ -163,7 +166,8 @@ reaches them. The addresses answer for an own server as follows.
 | `POST /api/processes/{name}/execution` | 404 when the visitor has no server of the name in `server`; 422 when the input layers are not all kept on the server of the job; 503 when that server is not connected; 429 when it has 100 jobs that wait or run; 507 when the record holds 1000 layers of it |
 | `DELETE /api/jobs/{id}` | As before, at once. The server receives `dismiss`, unless it has not received the job yet |
 | `PATCH /api/layers/{id}`, `DELETE /api/layers/{id}` | As before, after the server has answered the task `rename` or `remove`; 503 when the server is not connected; 504 when it does not answer within `READ_TIME` seconds; 409 with the sentence of the server when it answers with `ok` false |
-| `PATCH /api/servers/{id}` | The name changes at once. The limits are recorded, and the server receives `limits` at once when it is connected and otherwise after its next report. `state.limits` shows the limits that the server applies |
+| `GET /api/processes/{name}` | 404 when the visitor has no server of the name in `server` |
+| `PATCH /api/servers/{id}` | The name changes at once. The limits are recorded, and the server receives `limits` at once when it is connected and has reported its state, and otherwise after its next report. Limits without the field `layer_cells` leave that limit as it is. 422 and 409 as the section Cells of a layer gives them; nothing is recorded then, the name included. `state.limits` shows the limits that the server applies |
 | `GET /api/servers/{id}/files/{layer}/{file}` | 404 when the server keeps no such file; 416 when the range starts after the end of the file; 502 when the server could not read the file. A request for several ranges receives the whole file. When a part fails after the answer has begun, the answer ends before the length that it stated |
 
 ## Web servers
@@ -204,13 +208,22 @@ A new own server derives its first limits from the computer, and its owner chang
 
 | Limit | First value |
 |---|---|
-| Running jobs | One for every processor but one, which stays for the other programs of the computer, and at most as many as fit in half of the memory at 600 megabytes each (a job that writes a layer of the largest size holds about 510). Always from 1 to 64; 2 at most when the memory cannot be read |
+| Cells of a layer | Those of a job that fits in a quarter of the memory, in whole millions (section Cells of a layer); 25 million when the memory cannot be read |
+| Running jobs | One for every processor but one, which stays for the other programs of the computer, and at most as many jobs of that many cells as fit in half of the memory (`lynkeus.computer.job_memory`). Always from 1 to 64; 2 at most when the memory cannot be read |
 | Storage | Half of the free space of the disk that holds the data folder |
-| Size of a layer | 500 megabytes, as on the project server, or the storage when that is smaller |
+| Size of a layer | The size of a file of that many cells without compression, or the storage when that is smaller |
+
+A computer of 16 GB with 20 processors and 200 GB free starts with 237 million cells, 2 running jobs, 100 GB
+of storage and 1,265 megabytes for a layer.
 
 The storage counts every layer in the data folder. The layers of an earlier pairing stay in the folder
 `files` after the owner removed the server, and they count until the user of the computer deletes their
 folders. The numbers of waiting jobs, of unfinished jobs and of layers have no limit on an own server.
+
+A settings file of a program that does not know the limit on the cells of a layer holds no `layer_cells`. The
+program that reads it gives the cells their first value, lowers the running jobs to their first value when
+they are more, and raises the size of a layer to the size of a file of those cells when it is smaller, never
+above the storage. The pairing and the storage stay as they were (`lynkeus.computer.limits_with_cells`).
 
 ### Cells of a layer
 
@@ -218,10 +231,11 @@ The limit `layer_cells` of a server is the largest number of cells of a layer th
 receives. The project server keeps its own number (`lynkeus.harmony.MOST_CELLS`, 25 million), which does not
 apply to a job of an own server.
 
-1. A job that receives a layer holds memory in proportion to the cells of the layer: 353 megabytes for 15.0
-   million cells and 508 megabytes for 25 million were measured on the project server
-   (`docs/research/data.md`). `lynkeus.computer` holds the rule that gives the memory of a job from its
-   cells, set from measurements that include layers of more than 25 million cells.
+1. A job that receives a layer holds memory in proportion to the cells of the layer.
+   `lynkeus.computer.job_memory` gives it as 200 megabytes (`JOB_BASE_MEMORY`) and 16 bytes for every cell
+   (`CELL_MEMORY`), 600 megabytes for 25 million cells. Jobs that received real layers of 15.0, 52.1 and
+   104.3 million cells held 390, 970 and 1,746 megabytes at most (`docs/research/data.md`,
+   `docs/research/servers.md`), less than the rule gives.
 2. First value of `layer_cells`: the cells of a job that fits in a quarter of the memory of the computer, in
    whole millions, and 25 million when the memory cannot be read. The first value of the running jobs is
    then as many jobs of that size as fit in half of the memory, at most one for every processor but one.
@@ -229,12 +243,30 @@ apply to a job of an own server.
    bytes a cell, and a third more for the reduced copies), or the storage when that is smaller.
 3. The project server refuses a change of the limits with 422 and one sentence when `running_jobs` jobs of
    `layer_cells` cells need more than the memory that the server last reported.
-4. A program of version 0.1.0 does not know this limit and receives at most 25 million cells. Its messages
-   lack the field, which then counts as 25 million (`FIRST_LAYER_CELLS`). The project server sends such a
-   server the task `limits` without the field, and it refuses a change of `layer_cells` for it with 409 and
-   one sentence that asks to install the newer version of Lynkeus Server on that computer.
+4. A program that does not know this limit receives at most 25 million cells. Its messages lack the field,
+   which then counts as 25 million (`FIRST_LAYER_CELLS`). A server counts as such a program when the limits
+   of its last report lack the field. The project server sends such a server the task `limits` without the
+   field, and it refuses a change of `layer_cells` for it with 409 and one sentence that asks to install the
+   newer version of Lynkeus Server on that computer. A server that has not reported yet receives nothing
+   with the field either. Every `Server` in an answer of the project server carries the member
+   `knows_cells`: true when the limits of the last report of the server carried the field, and false when
+   they lacked it and before the first report (`state` is then `null`). The interface shows that a server
+   needs the newer program only when `state` is not `null` and `knows_cells` is false.
 5. The interface checks the area of a form against the limit of the server on which the job would run, and
    its sentence names that server.
+
+### Limits of a job that follow from the cells of a layer
+
+The program sets two more limits for every job from `layer_cells`; the owner does not set them.
+
+| Limit | Value | Reason |
+|---|---|---|
+| Longest time of a job | `lynkeus.jobs.JOB_TIME`, 40 minutes, for 25 million cells or fewer, and 24 seconds more for every further million cells (`lynkeus.computer.job_time`, `CELL_TIME`); 2 hours 5 minutes for 237 million cells | The wait for NASA Harmony did not grow with the cells of the layers measured, while the download, the reading and the writing grow with them. `JOB_TIME` leaves 10 minutes after the longest wait for Harmony (`lynkeus.harmony.MOST_WAIT`, 30 minutes) for the 25 million cells of the project server, and that time grows with the cells |
+| Size of the folder of a running job | The size of a layer and three layers of `layer_cells` cells without compression (`lynkeus.link.WORK_LAYERS`) | Besides the layer, the folder holds the file of Harmony and the temporary files of the writing: 9.1 and 8.6 bytes for every cell at most in the two jobs measured, more than the first value of the size of a layer (5.3 bytes a cell). The layer itself must still keep within the size of a layer |
+
+A job whose layer would have more cells than the limit of its server ends with a sentence that names that
+limit, for example "The area is too large: the layer would have about 91 million cells, and this server
+receives at most 90 million." A job of the project server names Lynkeus in the same sentence.
 
 ### Ending a job
 

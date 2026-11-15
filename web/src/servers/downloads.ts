@@ -5,8 +5,11 @@
  * its size and its address, which has the form
  * `https://github.com/{owner}/{repo}/releases/download/{tag}/{name}`. A repository without a release answers
  * 404. The API accepts requests from any site, and it accepts 60 requests an hour from one address without a
- * sign-in, so the page asks only when the visitor opens the steps that connect a server.
+ * sign-in, so the page asks only when the visitor opens the steps that connect a server, and once for a list of
+ * servers that holds a server with the older Lynkeus Server.
  */
+
+import { createStore } from "../shared/store";
 
 /** The repository of Lynkeus on GitHub, as owner and name. */
 export const REPOSITORY = "AlexandrosLiaskos/lynkeus";
@@ -95,6 +98,21 @@ export function systemOfAgent(agent: string): System | null {
 }
 
 /**
+ * Return the system of the computer of a server, from the name of the system that the server reports
+ * (`lynkeus.computer.system_name`: "Windows 11", "macOS 15.1", or the name of a Linux system), or null when the
+ * server could not name its system.
+ */
+export function systemOfServer(system: string): System | null {
+  if (system === "Unknown system") {
+    return null;
+  }
+  if (system.startsWith("Windows")) {
+    return "windows";
+  }
+  return system.startsWith("macOS") ? "macos" : "linux";
+}
+
+/**
  * Read the latest release of a repository from the answer of the REST API of GitHub, or return null for an
  * answer of another form. Only a file whose address is one of the release files of that repository is kept, so
  * that a link of the page leads nowhere else.
@@ -156,4 +174,31 @@ export async function latestRelease(repository = REPOSITORY): Promise<Downloads>
   } catch {
     return { state: "unknown" };
   }
+}
+
+/** The latest release as the list of the servers knows it, or null before GitHub was asked. */
+export const releaseStore = createStore<Downloads | null>(null);
+
+let asked: Promise<void> | null = null;
+
+/**
+ * Ask GitHub for the latest release once for the list of the servers, which offers its file to a server that
+ * runs the older Lynkeus Server. The list is read again every few seconds and GitHub accepts 60 requests an
+ * hour, so an answer that could be read is kept until the page is loaded again.
+ */
+export function loadRelease(): Promise<void> {
+  // An answer that could not be read is asked for again the next time that the list opens.
+  if (releaseStore.get()?.state === "unknown") {
+    asked = null;
+  }
+  asked ??= latestRelease().then((downloads) => {
+    releaseStore.set(downloads);
+  });
+  return asked;
+}
+
+/** Forget the latest release. The tests start from this state. */
+export function resetRelease(): void {
+  asked = null;
+  releaseStore.set(null);
 }

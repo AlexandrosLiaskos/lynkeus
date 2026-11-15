@@ -64,6 +64,7 @@ class Project(ThreadingHTTPServer):
         self.given: dict[str, Task] = {}
         self.answers: dict[str, Answer] = {}
         self.reports: list[Report] = []
+        self.report_bodies: list[bytes] = []
         self.report_times: list[float] = []
         self.connections: list[Any] = []
         self.questions: list[float] = []
@@ -204,10 +205,15 @@ class _Handler(BaseHTTPRequestHandler):
                 self._tasks(parse_qs(address.query), body)
             elif address.path == "/api/link/report":
                 report = Report.model_validate_json(body)
+                if "layer_cells" not in report.state.limits.model_fields_set:
+                    # The project server would take this program for one that does not know the limit.
+                    self._fault("the limits of a report do not state the cells of a layer")
+                    return
                 with project.changed:
                     # A report that was on its way when the visitor confirmed a new pairing is not one of that pairing.
                     if self.headers.get("Authorization") == f"Bearer {project.key}":
                         project.reports.append(report)
+                        project.report_bodies.append(body)
                         project.report_times.append(time.monotonic())
                     project.changed.notify_all()
                 self._answer(HTTPStatus.NO_CONTENT)

@@ -1,24 +1,41 @@
 import { useEffect, useId, useRef, useState, type SyntheticEvent } from "react";
 import { wordsOf } from "../data/service";
-import { sizeWords } from "../header/notice/numbers";
+import { countWords, sizeWords } from "../header/notice/numbers";
 import { describedBy, FieldError } from "../shared/field/FieldError";
 import { FieldTitle, infoId } from "../shared/field/FieldTitle";
 import { Icon } from "../shared/icon/Icon";
 import { report } from "../shared/messages/messages";
 import { Notice } from "../shared/notice/Notice";
 import { PropertyList } from "../shared/properties/PropertyList";
-import { MOST_NAME, MOST_RUNNING_JOBS, type Server, type ServerLimits } from "../shared/servers";
+import {
+  FIRST_LAYER_CELLS,
+  layerCells,
+  LEAST_LAYER_CELLS,
+  MOST_LAYER_CELLS,
+  MOST_NAME,
+  MOST_RUNNING_JOBS,
+  runsOlderProgram,
+  type Server,
+  type ServerLimits,
+} from "../shared/servers";
 import { IconButton } from "../shared/toolbar/IconButton";
 import { Toolbar } from "../shared/toolbar/Toolbar";
+import { releasesPage, REPOSITORY } from "./downloads";
 import { removeServer, renameServer, setServerLimits } from "./requests";
 import {
+  cellsMemoryWords,
+  cellsOf,
   connectionWords,
   draftOf,
   limitsFaults,
   limitsOf,
+  MILLION,
+  OLDER_PROGRAM,
   serverGroups,
   storageProblem,
+  upgradeWords,
   type LimitsDraft,
+  type Upgrade,
 } from "./words";
 
 /** The explanations of the fields of a server, one for each title. Each one shows from the button beside its title. */
@@ -28,6 +45,7 @@ export const ABOUT = {
   storage:
     "The most space that the layers of this server may use on its disk, in gigabytes of 1000 megabytes. The server keeps the layers that it already has.",
   layer: "The largest size of the files of one layer, in gigabytes of 1000 megabytes.",
+  cells: `The most cells of one layer that a job of this server receives, in millions, from ${countWords(LEAST_LAYER_CELLS / MILLION)} to ${countWords(MOST_LAYER_CELLS / MILLION)}. A form refuses an area whose layer would hold more. A job holds memory in proportion to the cells of its layer, so the memory of the computer limits this number and the jobs at the same time together.`,
 } as const;
 
 /**
@@ -59,13 +77,16 @@ export function sentWords(server: Server): string {
 /** Tell whether two sets of limits are the same. */
 function sameLimits(one: ServerLimits, other: ServerLimits): boolean {
   return (
-    one.running_jobs === other.running_jobs && one.storage === other.storage && one.layer_size === other.layer_size
+    one.running_jobs === other.running_jobs &&
+    one.storage === other.storage &&
+    one.layer_size === other.layer_size &&
+    layerCells(one) === layerCells(other)
   );
 }
 
 /** State the limits that a server has not applied yet. */
 export function pendingWords(limits: ServerLimits): string {
-  return `The server has not applied its new limits yet: ${String(limits.running_jobs)} ${limits.running_jobs === 1 ? "job" : "jobs"} at the same time, ${sizeWords(limits.storage)} for layers and ${sizeWords(limits.layer_size)} for one layer. The list shows them once the server reports them.`;
+  return `The server has not applied its new limits yet: ${String(limits.running_jobs)} ${limits.running_jobs === 1 ? "job" : "jobs"} at the same time, ${sizeWords(limits.storage)} for layers, ${sizeWords(limits.layer_size)} for one layer and ${countWords(layerCells(limits))} cells of one layer. The list shows them once the server reports them.`;
 }
 
 interface FormProps {
@@ -170,13 +191,18 @@ const LIMIT_FIELDS = [
   { key: "jobs", title: "Jobs at the same time", about: ABOUT.jobs, mode: "numeric" },
   { key: "storage", title: "Space for layers (GB)", about: ABOUT.storage, mode: "decimal" },
   { key: "layer", title: "Largest layer (GB)", about: ABOUT.layer, mode: "decimal" },
+  { key: "cells", title: "Most cells of a layer (million)", about: ABOUT.cells, mode: "decimal" },
 ] as const;
 
 /**
- * The fields that set the limits of a server: the jobs that run at the same time, the space for its layers and
- * the largest size of one layer, with the sizes in gigabytes. The error of a field shows after the field is
- * left or the button is pressed. The project server keeps the new limits and passes them to the server, which
- * applies them; `onSet` receives them, so that the list can say that they are on their way.
+ * The fields that set the limits of a server: the jobs that run at the same time, the space for its layers,
+ * the largest size of one layer and the most cells of one layer, with the sizes in gigabytes and the cells in
+ * millions. Under the field of the cells one line says how much memory a job of that size needs and how many
+ * such jobs the memory of the computer allows. The error of a field shows after the field is left or the button
+ * is pressed. The project server keeps the new limits and passes them to the server, which applies them;
+ * `onSet` receives them, so that the list can say that they are on their way. A change that the project server
+ * refuses, because the jobs would need more memory than the computer has or because the server runs the older
+ * program, which does not know the cells of a layer, is stated in the sentence of the project server.
  */
 function LimitsForm({
   server,
@@ -190,6 +216,7 @@ function LimitsForm({
   const [busy, setBusy] = useState(false);
   const [refusal, setRefusal] = useState<string | null>(null);
   const faults = limitsFaults(draft);
+  const cells = cellsOf(draft.cells);
 
   const submit = (event: SyntheticEvent) => {
     event.preventDefault();
@@ -200,6 +227,11 @@ function LimitsForm({
     const next = limitsOf(draft);
     if (next === null) {
       return;
+    }
+    // The older program does not know the cells of a layer: while the field holds its 25 million, the change
+    // does not name them, so that the project server keeps the limit that holds for that program.
+    if (runsOlderProgram(server) && next.layer_cells === FIRST_LAYER_CELLS) {
+      delete next.layer_cells;
     }
     setRefusal(null);
     setBusy(true);
@@ -221,6 +253,7 @@ function LimitsForm({
       {LIMIT_FIELDS.map(({ key, title, about, mode }, index) => {
         const field = `${id}-${key}`;
         const fault = left.includes(key) ? faults[key] : null;
+        const memory = key === "cells" && cells !== null ? cellsMemoryWords(cells, server.state?.memory ?? null) : null;
         return (
           <div key={key} className="server-field">
             <FieldTitle field={field} title={title}>
@@ -234,11 +267,16 @@ function LimitsForm({
               autoComplete="off"
               autoFocus={index === 0}
               aria-invalid={fault ? true : undefined}
-              aria-describedby={describedBy(infoId(field), fault && `${field}-fault`)}
+              aria-describedby={describedBy(infoId(field), memory && `${field}-memory`, fault && `${field}-fault`)}
               onChange={(event) => setDraft({ ...draft, [key]: event.target.value })}
               onBlur={() => setLeft(left.includes(key) ? left : [...left, key])}
             />
             <FieldError id={`${field}-fault`}>{fault}</FieldError>
+            {memory ? (
+              <p className="servers-note server-memory" id={`${field}-memory`}>
+                {memory}
+              </p>
+            ) : null}
           </div>
         );
       })}
@@ -286,12 +324,43 @@ function RemoveForm({ server, onEnd }: FormProps) {
 }
 
 /**
+ * The notice of a server that runs the older Lynkeus Server: the sentence that says so, and the file of the latest
+ * release for the computer of the server, or for that of the visitor when the server names no system of the
+ * three. While no release is published it says so; when GitHub could not be read or the release holds no file
+ * for that system, it leads to the page of the releases.
+ */
+function UpgradeNotice({ upgrade }: { upgrade: Upgrade }) {
+  return (
+    <Notice kind="info">
+      {OLDER_PROGRAM}{" "}
+      {upgrade.state === "download" ? (
+        <a href={upgrade.download.address}>
+          Download {upgrade.download.name} ({sizeWords(upgrade.download.size)})
+        </a>
+      ) : upgrade.state === "page" ? (
+        <>
+          Download the newer Lynkeus Server from{" "}
+          <a href={releasesPage(REPOSITORY)} target="_blank" rel="noopener noreferrer">
+            the releases of Lynkeus on GitHub
+          </a>{" "}
+          (opens in a new tab).
+        </>
+      ) : (
+        upgradeWords(upgrade)
+      )}
+    </Notice>
+  );
+}
+
+/**
  * One server of the list: its name, whether it is connected and since when it is not, and what it reports about
  * itself. Its three commands stand in a toolbar: Rename, Set limits and Remove. Each one shows its form in the
  * place of the report, and the form ends with its button or with Cancel. A server whose layers use the space
  * that its limit allows says so, and so does a server that does not report yet the limits that were set here.
+ * A server that runs the older Lynkeus Server, whose last report lacked the limit on the cells of a layer, says
+ * so in one sentence and offers the file of the latest release for its computer (`upgrade`).
  */
-export function ServerItem({ server }: { server: Server }) {
+export function ServerItem({ server, upgrade = null }: { server: Server; upgrade?: Upgrade | null }) {
   const item = useRef<HTMLLIElement>(null);
   const refocus = useRef(false);
   const [mode, setMode] = useState<"shown" | "rename" | "limits" | "remove">("shown");
@@ -329,6 +398,7 @@ export function ServerItem({ server }: { server: Server }) {
         {shown === "remove" ? <RemoveForm server={server} onEnd={end} /> : null}
         {shown === "shown" ? (
           <>
+            {upgrade === null ? null : <UpgradeNotice upgrade={upgrade} />}
             {problem === null ? null : <Notice kind="warning">{problem}</Notice>}
             {pending === null ? null : <Notice kind="info">{pendingWords(pending)}</Notice>}
             {server.state === null ? <Notice kind="info">The server has not reported its state yet.</Notice> : null}

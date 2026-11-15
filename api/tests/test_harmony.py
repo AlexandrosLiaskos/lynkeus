@@ -130,6 +130,7 @@ class Visit:
         return self.client
 
     def get(self, **changes: Any) -> Any:
+        most_cells = changes.pop("most_cells", None)
         fields = {"product": "GCOV", "granule": BACKSCATTER, "layer": "HHHH", "area": AREA, **changes}
         return get_layer(
             LayerRequest(**fields),
@@ -138,6 +139,7 @@ class Visit:
             folder=self.folder,
             address="/files/k3v9x2",
             report=lambda progress, message: self.reports.append((progress, message)),
+            most_cells=most_cells,
         )
 
 
@@ -410,6 +412,38 @@ def test_area_that_gives_too_many_cells_is_refused(visit: Visit) -> None:
     ):
         visit.get(area=Area(west=-71.5, south=42.4, east=-70.5, north=43.4))
     assert visit.client.requests == []
+
+
+def test_limit_of_the_server_decides_which_area_gives_too_many_cells(
+    visit: Visit, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # One degree in each direction at 10 m gives about 91 million cells.
+    large = Area(west=-71.5, south=42.4, east=-70.5, north=43.4)
+    with pytest.raises(
+        LayerError,
+        match=r"too large: the layer would have about 91 million cells, and this server receives at most 90 million\.",
+    ):
+        visit.get(area=large, most_cells=90_000_000)
+    assert visit.client.requests == []
+    # A server that receives more cells sends the request for the same area, whatever the project server receives.
+    visit.get(area=large, most_cells=91_000_000)
+    assert len(visit.client.requests) == 1
+    # The limit of the server also replaces a larger limit of the project server.
+    monkeypatch.setattr(harmony, "MOST_CELLS", 10**9)
+    with pytest.raises(LayerError, match="this server receives at most 2 million"):
+        visit.get(area=large, most_cells=2_000_000)
+    assert len(visit.client.requests) == 1
+
+
+def test_file_with_more_cells_than_the_limit_of_the_server_is_refused(
+    visit: Visit, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # The file of the stand-in has 336,000 cells, more than the area was estimated to give.
+    monkeypatch.setattr(harmony, "cells_of", lambda area, spacing: 1000.0)
+    with pytest.raises(LayerError, match=r"about 1 million cells, and this server receives at most 0 million"):
+        visit.get(most_cells=335_999)
+    assert list(visit.folder.iterdir()) == []
+    assert visit.get(most_cells=336_000).id == "k3v9x2"
 
 
 def test_file_with_too_many_cells_is_refused(visit: Visit, monkeypatch: pytest.MonkeyPatch) -> None:

@@ -497,6 +497,7 @@ test("a tool is started on the server that the visitor chose, with the limits of
   expect(serverRows()).toEqual([
     "Jobs at the same time: 4 (1 running, 2 waiting)",
     "Largest layer: 10 GB",
+    "Most cells of a layer: 100 million",
     "Space for layers: 1.3 GB of 100 GB used",
     "Free disk space: 412 GB",
   ]);

@@ -1,12 +1,27 @@
 import { formatMoment } from "../data/jobs";
 import { amount, countWords, memoryWords, sizeWords } from "../header/notice/numbers";
 import type { PropertyGroup } from "../shared/properties/PropertyList";
-import { MOST_RUNNING_JOBS, type Server, type ServerLimits, type ServerState } from "../shared/servers";
+import {
+  FIRST_LAYER_CELLS,
+  layerCells,
+  LEAST_LAYER_CELLS,
+  MOST_LAYER_CELLS,
+  MOST_RUNNING_JOBS,
+  runsOlderProgram,
+  type Server,
+  type ServerLimits,
+  type ServerState,
+} from "../shared/servers";
+import { systemOfAgent, systemOfServer, type Download, type Downloads } from "./downloads";
+import { jobMemory, jobsInMemory } from "./memory";
 
 /** What the interface writes about an own server, in the words and the units that a person reads. */
 
 /** The number of bytes of one gigabyte. The limits of a server are typed in gigabytes of 1000 megabytes. */
 export const GIGABYTE = 1e9;
+
+/** The number of cells of one million. The limit on the cells of a layer is typed in millions. */
+export const MILLION = 1e6;
 
 /** Write a time given in seconds since 1 January 1970 (UTC) in the form "15 Nov 2026, 09:40:12 UTC". */
 export function momentWords(seconds: number): string {
@@ -101,6 +116,7 @@ export function serverGroups(server: Server): PropertyGroup[] {
           value: `${sizeWords(state.disk_used)} of at most ${sizeWords(limits.storage)}`,
         },
         { name: "Largest layer allowed", value: sizeWords(limits.layer_size) },
+        { name: "Most cells of a layer", value: countWords(layerCells(limits)) },
         { name: "Free disk space", value: sizeWords(state.disk_free) },
       ],
     },
@@ -117,24 +133,30 @@ export function limitRows(state: ServerState): { name: string; value: string }[]
       value: `${countWords(limits.running_jobs)} (${countWords(state.running)} running, ${countWords(state.waiting)} waiting)`,
     },
     { name: "Largest layer", value: sizeWords(limits.layer_size) },
+    { name: "Most cells of a layer", value: countWords(layerCells(limits)) },
     { name: "Space for layers", value: `${sizeWords(state.disk_used)} of ${sizeWords(limits.storage)} used` },
     { name: "Free disk space", value: sizeWords(state.disk_free) },
   ];
 }
 
-/** The limits of a server as the fields of the form hold them: the sizes in gigabytes. */
+/** The limits of a server as the fields of the form hold them: the sizes in gigabytes, the cells in millions. */
 export interface LimitsDraft {
   jobs: string;
   storage: string;
   layer: string;
+  cells: string;
 }
 
-/** Return the limits of a server as texts for the fields of the form, with the sizes in gigabytes. */
+/**
+ * Return the limits of a server as texts for the fields of the form, with the sizes in gigabytes and the cells
+ * in millions.
+ */
 export function draftOf(limits: ServerLimits): LimitsDraft {
   return {
     jobs: String(limits.running_jobs),
     storage: String(limits.storage / GIGABYTE),
     layer: String(limits.layer_size / GIGABYTE),
+    cells: String(layerCells(limits) / MILLION),
   };
 }
 
@@ -143,6 +165,30 @@ export interface LimitsFaults {
   jobs: string | null;
   storage: string | null;
   layer: string | null;
+  cells: string | null;
+}
+
+/** Return the cells that the field of the form holds in millions, or null for a text that is no such number. */
+export function cellsOf(text: string): number | null {
+  const value = text.trim() === "" ? Number.NaN : Number(text);
+  const cells = Math.round(value * MILLION);
+  return Number.isFinite(value) && cells >= LEAST_LAYER_CELLS && cells <= MOST_LAYER_CELLS ? cells : null;
+}
+
+/**
+ * State how much memory a job needs that receives a layer of that many cells, and how many such jobs the
+ * memory of the computer allows at the same time. `memory` is the memory that the server reported, in bytes,
+ * or null when the computer does not state it.
+ */
+export function cellsMemoryWords(cells: number, memory: number | null): string {
+  const needs = `A job that receives a layer of ${countWords(cells)} cells needs about ${memoryWords(jobMemory(cells))} of memory.`;
+  if (memory === null) {
+    return `${needs} The memory of this computer is not known.`;
+  }
+  const jobs = jobsInMemory(cells, memory);
+  return jobs === 0
+    ? `${needs} The ${memoryWords(memory)} of this computer do not allow such a job.`
+    : `${needs} The ${memoryWords(memory)} of this computer allow ${amount(jobs, "such job", "such jobs")} at the same time.`;
 }
 
 function sizeOf(text: string): number | null {
@@ -160,6 +206,10 @@ export function limitsFaults(draft: LimitsDraft): LimitsFaults {
         : `Enter a whole number of jobs from 1 to ${String(MOST_RUNNING_JOBS)}.`,
     storage: sizeOf(draft.storage) === null ? "Enter the space in gigabytes, as a number of zero or more." : null,
     layer: sizeOf(draft.layer) === null ? "Enter the size in gigabytes, as a number of zero or more." : null,
+    cells:
+      cellsOf(draft.cells) === null
+        ? `Enter the cells in millions, as a number from ${countWords(LEAST_LAYER_CELLS / MILLION)} to ${countWords(MOST_LAYER_CELLS / MILLION)}.`
+        : null,
   };
 }
 
@@ -168,8 +218,56 @@ export function limitsOf(draft: LimitsDraft): ServerLimits | null {
   const faults = limitsFaults(draft);
   const storage = sizeOf(draft.storage);
   const layer = sizeOf(draft.layer);
-  if (faults.jobs !== null || storage === null || layer === null) {
+  const cells = cellsOf(draft.cells);
+  if (faults.jobs !== null || storage === null || layer === null || cells === null) {
     return null;
   }
-  return { running_jobs: Number(draft.jobs), storage, layer_size: layer };
+  return { running_jobs: Number(draft.jobs), storage, layer_size: layer, layer_cells: cells };
+}
+
+/** The sentence of a server that runs the older Lynkeus Server. */
+export const OLDER_PROGRAM = `This server runs an older Lynkeus Server, which receives at most ${countWords(FIRST_LAYER_CELLS)} cells of one layer.`;
+
+/** What the pane offers to a server that runs the older Lynkeus Server, as far as GitHub tells it. */
+export type Upgrade =
+  /** The file of the latest release for the system of the computer of the server. */
+  | { state: "download"; download: Download }
+  /** GitHub has not answered yet. */
+  | { state: "asking" }
+  /** No release is published, so there is nothing to download. */
+  | { state: "none" }
+  /**
+   * GitHub gave no answer that could be read, or the latest release holds no file for that system: the pane leads
+   * to the page of the releases.
+   */
+  | { state: "page" };
+
+/**
+ * Return what the pane offers to a server that runs the older Lynkeus Server, or null for a server that does
+ * not run it (`runsOlderProgram`). The download is the file of the latest release for the system that the
+ * server reports, because the program is installed on that computer. Only when the server names no system of
+ * the three is it the file for the system of the visitor (`agent`, as the browser names itself).
+ */
+export function upgradeOf(server: Server, downloads: Downloads | null, agent: string): Upgrade | null {
+  const { state } = server;
+  if (state === null || !runsOlderProgram(server)) {
+    return null;
+  }
+  if (downloads === null) {
+    return { state: "asking" };
+  }
+  if (downloads.state === "none") {
+    return { state: "none" };
+  }
+  const system = systemOfServer(state.system) ?? systemOfAgent(agent);
+  const files = downloads.state === "published" ? downloads.release.downloads : [];
+  const download = files.find((file) => file.system === system);
+  return download ? { state: "download", download } : { state: "page" };
+}
+
+/** Return the sentence that follows the one of the older program while the pane has no file and no page to offer. */
+export function upgradeWords(upgrade: { state: "asking" } | { state: "none" }): string {
+  return upgrade.state === "asking"
+    ? "Asking GitHub for the latest version of Lynkeus Server."
+    : "No version of Lynkeus Server is published yet, so there is nothing to download.";
 }

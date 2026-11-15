@@ -37,6 +37,7 @@ from lynkeus.linking import (
     MOST_BYTES,
     MOST_WAIT,
     Done,
+    LimitsTask,
     Machine,
     PairingKey,
     PairingQuestion,
@@ -48,7 +49,7 @@ from lynkeus.linking import (
 )
 from lynkeus.linking import Servers as ServerList
 from lynkeus.routes import RefusedError, Service, refusal_of
-from lynkeus.servers import Part, ServerRefusedError, layer_files
+from lynkeus.servers import Part, ServerRefusedError, layer_files, state_of, written_tasks
 from lynkeus.sessions import COOKIE
 from lynkeus.store import ServerRecord
 
@@ -265,9 +266,14 @@ def install_servers(app: FastAPI) -> None:
             # connection of this question has ended, so this answer would hand them to nobody.
             return _answer(Tasks())
         handed, unanswered = servers.take(server.id)
+        store = _service(request).store
         for job in unanswered:
-            await asyncio.to_thread(_service(request).store.take_server_job, job, time.time())
-        return _answer(handed)
+            await asyncio.to_thread(store.take_server_job, job, time.time())
+        if not any(isinstance(task, LimitsTask) for task in handed.tasks):
+            return _answer(handed)
+        # The limits are written as the version of the program reads them, which its last report names.
+        latest = await asyncio.to_thread(store.server, server.id)
+        return Response(written_tasks(handed, state_of(latest or server)), HTTPStatus.OK, media_type=JSON)
 
     @router.post("/link/leave")
     async def leave(request: Request) -> Response:
@@ -335,11 +341,19 @@ def install_servers(app: FastAPI) -> None:
 
     @router.patch("/servers/{server}")
     async def server_change(request: Request, server: str) -> Response:
-        """Give an own server another name, or other limits, which the server receives as a task."""
+        """Give an own server another name, or other limits, which the server receives as a task.
+
+        Limits that need more memory than the server reported are refused with 422, and a change of the
+        cells of a layer for a program that does not know that limit with 409 (``Servers.change``).
+        """
         record = _owned(request, server)
         change = await _message(request, ServerChange, MAX_LINK_BODY, HTTPStatus.BAD_REQUEST)
         servers = _service(request).servers
-        return _answer(servers.described(servers.change(record, change), time.time()))
+        try:
+            changed = servers.change(record, change)
+        except ServerRefusedError as error:
+            raise refusal_of(error) from None
+        return _answer(servers.described(changed, time.time()))
 
     @router.delete("/servers/{server}")
     async def server_removal(request: Request, server: str) -> Response:

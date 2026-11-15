@@ -1,16 +1,28 @@
 import { expect, test } from "vitest";
+import type { Server } from "../shared/servers";
+import { REPOSITORY, type Downloads } from "./downloads";
 import { CHANGE_LIMITS, LABORATORY, NEW, OFFICE, SERVERS } from "./testServers";
 import {
+  cellsMemoryWords,
+  cellsOf,
   connectionWords,
   draftOf,
   limitRows,
   limitsFaults,
   limitsOf,
   momentWords,
+  OLDER_PROGRAM,
   serverGroups,
   serversSentence,
   storageProblem,
+  upgradeOf,
+  upgradeWords,
 } from "./words";
+
+const FILES = `https://github.com/${REPOSITORY}/releases/download/v0.1.0`;
+/** The line of the memory for the 100 million cells and the 16 GB of the Office computer. */
+const MEMORY_100 =
+  "A job that receives a layer of 100 million cells needs about 1.7 GB of memory. The 16 GB of this computer allow 9 such jobs at the same time.";
 
 function rows(groups: ReturnType<typeof serverGroups>): Record<string, string[]> {
   return Object.fromEntries(
@@ -53,6 +65,7 @@ test("a server reports its computer, its jobs, its layers and disk, and its conn
       "Layers kept: 6",
       "Space used by layers: 1.3 GB of at most 100 GB",
       "Largest layer allowed: 10 GB",
+      "Most cells of a layer: 100 million",
       "Free disk space: 412 GB",
     ],
     Connection: [
@@ -89,38 +102,151 @@ test("a form shows the limits of a server with its present use", () => {
   expect(OFFICE.state && limitRows(OFFICE.state)).toEqual([
     { name: "Jobs at the same time", value: "4 (1 running, 2 waiting)" },
     { name: "Largest layer", value: "10 GB" },
+    { name: "Most cells of a layer", value: "100 million" },
     { name: "Space for layers", value: "1.3 GB of 100 GB used" },
     { name: "Free disk space", value: "412 GB" },
   ]);
+  // The older program does not state the cells of a layer: they count as 25 million.
+  expect(LABORATORY.state && limitRows(LABORATORY.state)[2]).toEqual({
+    name: "Most cells of a layer",
+    value: "25 million",
+  });
 });
 
-test("the limits are typed in gigabytes and sent in bytes", () => {
+test("the limits are typed in gigabytes and in million cells, and sent in bytes and in cells", () => {
   const limits = OFFICE.state?.limits;
-  expect(limits && draftOf(limits)).toEqual({ jobs: "4", storage: "100", layer: "10" });
-  expect(limitsOf({ jobs: "2", storage: "250", layer: "20" })).toEqual(CHANGE_LIMITS.limits);
-  expect(limitsOf({ jobs: " 1 ", storage: "0.5", layer: "0" })).toEqual({
+  expect(limits && draftOf(limits)).toEqual({ jobs: "4", storage: "100", layer: "10", cells: "100" });
+  expect(limitsOf({ jobs: "2", storage: "250", layer: "20", cells: "150" })).toEqual(CHANGE_LIMITS.limits);
+  expect(limitsOf({ jobs: " 1 ", storage: "0.5", layer: "0", cells: " 37.5 " })).toEqual({
     running_jobs: 1,
     storage: 500_000_000,
     layer_size: 0,
+    layer_cells: 37_500_000,
   });
+  // Limits that do not state the cells of a layer show the 25 million that hold for them.
   expect(draftOf({ running_jobs: 1, storage: 500_000_000, layer_size: 0 })).toEqual({
     jobs: "1",
     storage: "0.5",
     layer: "0",
+    cells: "25",
   });
 });
 
+const SOUND = { jobs: "4", storage: "100", layer: "10", cells: "100" };
+
 test("a field of the limits that holds no sound number says what to enter", () => {
-  expect(limitsFaults({ jobs: "4", storage: "100", layer: "10" })).toEqual({ jobs: null, storage: null, layer: null });
-  expect(limitsFaults({ jobs: "0", storage: "-1", layer: "" })).toEqual({
+  expect(limitsFaults(SOUND)).toEqual({ jobs: null, storage: null, layer: null, cells: null });
+  expect(limitsFaults({ jobs: "0", storage: "-1", layer: "", cells: "0.5" })).toEqual({
     jobs: "Enter a whole number of jobs from 1 to 64.",
     storage: "Enter the space in gigabytes, as a number of zero or more.",
     layer: "Enter the size in gigabytes, as a number of zero or more.",
+    cells: "Enter the cells in millions, as a number from 1 to 4,000.",
   });
   for (const jobs of ["65", "1.5", "", "four"]) {
-    expect(limitsFaults({ jobs, storage: "1", layer: "1" }).jobs).not.toBeNull();
-    expect(limitsOf({ jobs, storage: "1", layer: "1" })).toBeNull();
+    expect(limitsFaults({ ...SOUND, jobs }).jobs).not.toBeNull();
+    expect(limitsOf({ ...SOUND, jobs })).toBeNull();
   }
-  expect(limitsOf({ jobs: "4", storage: "much", layer: "1" })).toBeNull();
-  expect(limitsOf({ jobs: "4", storage: "1", layer: "Infinity" })).toBeNull();
+  expect(limitsOf({ ...SOUND, storage: "much" })).toBeNull();
+  expect(limitsOf({ ...SOUND, layer: "Infinity" })).toBeNull();
+  for (const cells of ["", "many", "0", "0.9", "4001", "-25"]) {
+    expect(limitsFaults({ ...SOUND, cells }).cells).not.toBeNull();
+    expect(limitsOf({ ...SOUND, cells })).toBeNull();
+  }
+  expect(cellsOf("1")).toBe(1_000_000);
+  expect(cellsOf("4000")).toBe(4_000_000_000);
+  expect(cellsOf("25.4")).toBe(25_400_000);
+});
+
+test("the line under the cells says what memory a job of that size needs and how many the computer allows", () => {
+  expect(cellsMemoryWords(100_000_000, 17_179_869_184)).toBe(MEMORY_100);
+  expect(cellsMemoryWords(25_000_000, null)).toBe(
+    "A job that receives a layer of 25 million cells needs about 572.2 MB of memory. The memory of this computer is not known.",
+  );
+  expect(cellsMemoryWords(4_000_000_000, 17_179_869_184)).toBe(
+    "A job that receives a layer of 4 billion cells needs about 59.8 GB of memory. The 16 GB of this computer do not allow such a job.",
+  );
+  expect(cellsMemoryWords(1_000_000_000, 17_179_869_184)).toMatch(/allow 1 such job at the same time\.$/);
+});
+
+const RELEASE: Downloads = {
+  state: "published",
+  release: {
+    version: "v0.1.0",
+    published: "2026-11-15T12:00:00Z",
+    downloads: [
+      {
+        system: "windows",
+        name: "Lynkeus-Server-0.1.0-Windows.exe",
+        address: `${FILES}/Lynkeus-Server-0.1.0-Windows.exe`,
+        size: 83_300_000,
+      },
+      {
+        system: "linux",
+        name: "Lynkeus-Server-0.1.0-Linux.tar.gz",
+        address: `${FILES}/Lynkeus-Server-0.1.0-Linux.tar.gz`,
+        size: 121_900_000,
+      },
+    ],
+  },
+};
+const WINDOWS_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36";
+const MAC_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 15_1) AppleWebKit/605.1.15";
+
+/** The Laboratory server, which runs the older program, with another system in its last report. */
+function laboratoryOn(system: string): Server {
+  if (LABORATORY.state === null) {
+    throw new Error("The Laboratory server of the example reports its state.");
+  }
+  return { ...LABORATORY, state: { ...LABORATORY.state, system } };
+}
+
+test("a server with the older program is offered the file for the system of its own computer", () => {
+  expect(OLDER_PROGRAM).toBe(
+    "This server runs an older Lynkeus Server, which receives at most 25 million cells of one layer.",
+  );
+  // The Laboratory server runs the older program on Ubuntu, and the visitor reads the page on Windows.
+  expect(upgradeOf(LABORATORY, RELEASE, WINDOWS_AGENT)).toEqual({
+    state: "download",
+    download: RELEASE.release.downloads[1],
+  });
+  // A server on Windows, seen from a Mac, is offered the file for Windows.
+  expect(upgradeOf(laboratoryOn("Windows 11"), RELEASE, MAC_AGENT)).toEqual({
+    state: "download",
+    download: RELEASE.release.downloads[0],
+  });
+  // A server on macOS is led to the page of the releases when the release holds no file for macOS, whatever the
+  // system of the visitor, and so is every server when GitHub gave no answer that could be read.
+  expect(upgradeOf(laboratoryOn("macOS 15.1"), RELEASE, WINDOWS_AGENT)).toEqual({ state: "page" });
+  expect(upgradeOf(LABORATORY, { state: "unknown" }, WINDOWS_AGENT)).toEqual({ state: "page" });
+});
+
+test("a server with the older program that names no system is offered the file for the system of the visitor", () => {
+  const unnamed = laboratoryOn("Unknown system");
+  expect(upgradeOf(unnamed, RELEASE, WINDOWS_AGENT)).toEqual({
+    state: "download",
+    download: RELEASE.release.downloads[0],
+  });
+  // Without a file for the system of the visitor either, the pane leads to the page of the releases.
+  expect(upgradeOf(unnamed, RELEASE, MAC_AGENT)).toEqual({ state: "page" });
+});
+
+test("without a published release the notice of the older program says so in plain words", () => {
+  expect(upgradeOf(LABORATORY, { state: "none" }, WINDOWS_AGENT)).toEqual({ state: "none" });
+  expect(upgradeWords({ state: "none" })).toBe(
+    "No version of Lynkeus Server is published yet, so there is nothing to download.",
+  );
+  expect(upgradeOf(LABORATORY, null, WINDOWS_AGENT)).toEqual({ state: "asking" });
+  expect(upgradeWords({ state: "asking" })).toBe("Asking GitHub for the latest version of Lynkeus Server.");
+});
+
+test("a server that knows the cells of a layer, or that has not reported yet, is offered nothing, whatever its version", () => {
+  // The older and the newer program carry the same version.
+  expect(OFFICE.state?.version).toBe(LABORATORY.state?.version);
+  expect(upgradeOf(OFFICE, RELEASE, WINDOWS_AGENT)).toBeNull();
+  // Before its first report the project server says that a server does not know the cells; the pane says nothing.
+  expect(NEW.knows_cells).toBe(false);
+  expect(upgradeOf(NEW, RELEASE, WINDOWS_AGENT)).toBeNull();
+  // The member of the project server decides, and not the limits that the report shows.
+  expect(upgradeOf({ ...LABORATORY, knows_cells: true }, RELEASE, WINDOWS_AGENT)).toBeNull();
+  expect(upgradeOf({ ...OFFICE, knows_cells: false }, RELEASE, WINDOWS_AGENT)?.state).toBe("download");
 });
