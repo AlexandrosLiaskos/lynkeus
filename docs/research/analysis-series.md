@@ -545,6 +545,28 @@ only.
 Not measured: a series of the largest number of layers (50), the display of a series in a browser,
 and the series jobs beside jobs of `get-layer` in one container.
 
+### 4.6 The jobs again, on the branch with the raster tools and the own servers
+
+On 15 Nov 2026, from 13:01 to 13:03 UTC, the fourteen jobs and the eight refused requests of part
+4.5 were run again. The private copy of the web service was a container of the image built from
+`api/` of the commit `a8ef229`, which holds the series tools on the base of the six raster tools and
+of the own servers, with the same settings and the same data folder as in part 4.5. The record file
+of that folder was of version 1 and held the 13 series of the first run; the service opened it,
+brought it to version 3 and kept every series. The records are in
+`docs/research/records/analysis/series/refit/` (`jobs_series.json`, `compare.json`, `service.json`).
+
+| What was compared with the records of part 4.5 | Outcome |
+|---|---|
+| The fourteen jobs | Each ended as `successful`, in 6 to 13 seconds from its start |
+| The series description of each job, every field but its `id` | Equal in all fourteen: every value, every number of cells, every cell of a point |
+| The state of each job | The field `series` names the series, no field `layer`, and `server` is `null` |
+| The eight refused requests | The same status and the same sentence in all eight |
+| The processes that the service lists | `get-layer`, the six raster tools, `backscatter-series`, `coherence-series` |
+| Peak memory of the container | 645,763,072 bytes |
+
+No own server was connected to this copy. What a series job does when the visitor has an own server
+was run in the tests only (part 1.4).
+
 ## 5. How GIS programs offer a series
 
 The table follows the row layout of `docs/research/data.md`. A statement is made only where the
