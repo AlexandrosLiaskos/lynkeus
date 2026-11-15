@@ -14,9 +14,11 @@ JPL D-105010 (GOFF) and JPL D-107677 (SME2).
 
 import itertools
 import math
+import os
 import re
+import secrets
+import shutil
 import signal
-import tempfile
 import time
 from collections.abc import Callable, Iterator, Sequence
 from contextlib import contextmanager
@@ -44,6 +46,20 @@ MOST_WAIT = 1800.0
 
 PAUSE = 3.0
 """The time between two questions about the state of a job of Harmony, in seconds."""
+
+STEP = 0.2
+"""The longest part of a pause that passes at once, in seconds.
+
+A request to end the process is acted on between two parts. On Windows a pause is not interrupted by
+that request, and a job has ``lynkeus.jobs.END_TIME`` seconds to cancel its request at Harmony.
+"""
+
+REMOVAL_TRIES = 5
+"""The number of times that the removal of the folder of the received file is tried.
+
+Windows refuses to remove a file for the moment in which another program reads it, for example a
+virus scanner that looks at a new file.
+"""
 
 MOST_FAILURES = 3
 """The number of questions in a row that Harmony may leave without an answer."""
@@ -215,9 +231,9 @@ def _get_layer(
     if cells_of(area, layer.spacing) > MOST_CELLS:
         raise LayerError(_too_large(cells_of(area, layer.spacing)))
     variable = _GROUPS[product.product] + layer.name
-    with tempfile.TemporaryDirectory(dir=folder, prefix=".harmony-") as received:
+    with _folder_for_received_file(folder) as received:
         report(5, "Asking NASA Harmony for the layer.")
-        file, job = _receive(_client(token), collection, product.id, variable, area, Path(received), report)
+        file, job = _receive(_client(token), collection, product.id, variable, area, received, report)
         grid = grid_of(file)
         if grid.width * grid.height > MOST_CELLS:
             raise LayerError(_too_large(grid.width * grid.height))
@@ -260,6 +276,34 @@ def _get_layer(
     )
     report(100, "The layer is ready.")
     return description
+
+
+@contextmanager
+def _folder_for_received_file(folder: Path) -> Iterator[Path]:
+    """Make a folder inside the folder of a layer for the file that Harmony hands over, and remove it after the block.
+
+    The folder is made with ``Path.mkdir`` and so takes the permissions of the folder of the layer.
+    ``tempfile`` would give it to the present user alone, and on Windows a program that runs with
+    reduced rights, as inside a sandbox, could then not write into it.
+    """
+    received = folder / f".harmony-{secrets.token_hex(8)}"
+    received.mkdir()
+    try:
+        yield received
+    finally:
+        for attempt in range(REMOVAL_TRIES):
+            shutil.rmtree(received, ignore_errors=True)
+            if not received.exists():
+                break
+            if attempt + 1 < REMOVAL_TRIES:
+                time.sleep(STEP * (attempt + 1))
+
+
+def _pause(seconds: float) -> None:
+    """Wait for a time in parts of at most ``STEP`` seconds, so that a request to end the process is acted on soon."""
+    end = time.monotonic() + seconds
+    while (left := end - time.monotonic()) > 0:
+        time.sleep(min(left, STEP))
 
 
 def _layers(product: ProductType, channels: Sequence[str]) -> tuple[_Layer, ...]:
@@ -481,12 +525,28 @@ def _day(day: date) -> str:
 def _client(token: str | None) -> Any:
     """Return a client of Harmony that signs its requests with the token, or with the credentials of the environment."""
     try:
-        return Client() if token is None else Client(token=token)
+        client = Client() if token is None else Client(token=token)
+        _check_certificates_as_the_environment_asks(client)
+        return client
     except BadAuthentication:
         refusal = LayerError("Earthdata Login did not accept the credentials of the server.")
     except Exception:
         refusal = LayerError("Earthdata Login did not answer.")
     raise refusal
+
+
+def _check_certificates_as_the_environment_asks(client: Any) -> None:
+    """Let every request of a client of Harmony check certificates against the file that the environment names.
+
+    ``requests`` reads the environment variables ``REQUESTS_CA_BUNDLE`` and ``CURL_CA_BUNDLE`` for a
+    request that it prepares itself. harmony-py prepares the request that submits a job on its own,
+    and that request would be checked against the list of ``certifi`` alone: on a network whose proxy
+    shows certificates of an authority of its own, it would fail while every other request passes.
+    """
+    bundle = os.environ.get("REQUESTS_CA_BUNDLE") or os.environ.get("CURL_CA_BUNDLE")
+    session = getattr(client, "session", None)
+    if bundle and session is not None:
+        session.verify = bundle
 
 
 def _ask[Answer](question: Callable[[], Answer]) -> Answer:
@@ -567,7 +627,7 @@ def _follow(client: Any, job: str, report: Report) -> None:
         if state["progress"] is not None:
             # The job of Harmony takes the part of the progress from 5 to 80.
             report(5 + round(0.75 * min(max(int(state["progress"]), 0), 100)), "NASA Harmony is preparing the layer.")
-        time.sleep(PAUSE)
+        _pause(PAUSE)
 
 
 def _fetch(client: Any, job: str, folder: Path) -> Path:

@@ -13,10 +13,12 @@ import json
 import os
 import shutil
 import signal
+import time
 from collections.abc import Iterator
 from concurrent.futures import Future
 from datetime import date
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any
 
 import earthaccess
@@ -521,6 +523,61 @@ def test_job_of_harmony_is_cancelled_when_the_process_is_asked_to_end(visit: Vis
     assert list(visit.folder.iterdir()) == []
 
 
+def test_received_file_is_kept_in_a_plain_folder_of_the_layer_that_is_removed(
+    visit: Visit, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    folders: list[tuple[Path, int]] = []
+    download = visit.client.download
+
+    def noted(address: str, directory: str, overwrite: bool) -> "Future[str]":
+        folders.append((Path(directory), Path(directory).stat().st_mode & 0o777))
+        return download(address, directory, overwrite)
+
+    monkeypatch.setattr(visit.client, "download", noted)
+    plain = visit.folder / "plain"
+    plain.mkdir()
+    visit.get()
+    [(received, mode)] = folders
+    assert (received.parent, received.name[:9], len(received.name)) == (visit.folder, ".harmony-", 25)
+    # The folder has the permissions of any new folder, and not those of ``tempfile``, for the present user alone.
+    assert mode == plain.stat().st_mode & 0o777
+    assert not received.exists()
+    assert sorted(path.suffix for path in visit.folder.iterdir()) == ["", ".json", ".tif"]
+
+
+def test_folder_of_the_received_file_is_removed_at_a_later_try(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    tries: list[Path] = []
+    remove = shutil.rmtree
+
+    def refused_twice(folder: Path, ignore_errors: bool) -> None:
+        tries.append(folder)
+        if len(tries) > 2:
+            remove(folder, ignore_errors=ignore_errors)
+
+    monkeypatch.setattr(harmony, "STEP", 0.01)
+    monkeypatch.setattr(shutil, "rmtree", refused_twice)
+    with harmony._folder_for_received_file(tmp_path) as received:
+        (received / "1_layer.tif").write_bytes(b"a file")
+    assert len(tries) == 3
+    assert list(tmp_path.iterdir()) == []
+
+
+def test_pause_passes_in_short_parts(monkeypatch: pytest.MonkeyPatch) -> None:
+    parts: list[float] = []
+    sleep = time.sleep
+
+    def noted(seconds: float) -> None:
+        parts.append(seconds)
+        sleep(seconds)
+
+    monkeypatch.setattr(time, "sleep", noted)
+    start = time.monotonic()
+    harmony._pause(0.5)
+    assert 0.5 <= time.monotonic() - start < 2
+    assert len(parts) >= 3
+    assert max(parts) <= harmony.STEP
+
+
 def test_fault_of_lynkeus_is_reported_as_one(visit: Visit) -> None:
     visit.client.states = [{"progress": 40}]
     with pytest.raises(LayerError, match="internal error") as caught:
@@ -555,3 +612,22 @@ def test_client_signs_with_the_token_or_with_the_credentials_of_the_environment(
     Signed.refusal = ConnectionError("no network")
     with pytest.raises(LayerError, match="Earthdata Login did not answer"):
         harmony._client(None)
+
+
+def test_client_checks_certificates_against_the_file_that_the_environment_names(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class Sending:
+        """A stand-in for the class of the client, with the session that sends its requests."""
+
+        def __init__(self, **choices: Any) -> None:
+            self.session = SimpleNamespace(verify=True)
+
+    monkeypatch.setattr(harmony, "Client", Sending)
+    monkeypatch.delenv("REQUESTS_CA_BUNDLE", raising=False)
+    monkeypatch.delenv("CURL_CA_BUNDLE", raising=False)
+    assert harmony._client(TOKEN).session.verify is True
+    monkeypatch.setenv("CURL_CA_BUNDLE", "/etc/authority-of-curl.pem")
+    assert harmony._client(TOKEN).session.verify == "/etc/authority-of-curl.pem"
+    monkeypatch.setenv("REQUESTS_CA_BUNDLE", "/etc/authority.pem")
+    assert harmony._client(None).session.verify == "/etc/authority.pem"

@@ -5,6 +5,10 @@ own, so that it can be ended at any moment and a fault in it cannot stop the
 server. A fixed number of jobs run at once and the others wait in the order
 in which they were started. The record of a job is kept in the store. The
 Earthdata token of a job is kept in memory only, until the job starts.
+
+The limits of the jobs are those of ``Limits``. Their default values are the
+constants of this module, which suit the project server. An own server
+(``lynkeus.link``) gives the limits that its owner set.
 """
 
 import json
@@ -22,6 +26,7 @@ from dataclasses import dataclass, field
 from http import HTTPStatus
 from multiprocessing.connection import Connection
 from multiprocessing.process import BaseProcess
+from multiprocessing.synchronize import Semaphore
 from pathlib import Path
 from typing import Any
 
@@ -70,7 +75,12 @@ receives its layer near the limit still has the time to fetch it and to write it
 """
 
 END_TIME = 5.0
-"""The time that a job has to end after the signal SIGTERM, in seconds. It is then ended with SIGKILL."""
+"""The time that a job has to end after it is asked to, in seconds. It is then ended at once.
+
+A job is asked to end with the signal SIGTERM, and ended at once with SIGKILL. Windows has neither for
+a process: there the server releases the semaphore ``ending`` of the job, on which a thread of the job
+raises SIGTERM inside the job, and it ends the job at once with ``TerminateProcess``.
+"""
 
 MAX_MESSAGE_LENGTH = 500
 """The largest length of a message of a job, in characters."""
@@ -91,6 +101,51 @@ FAULT = "The job failed because of an error in Lynkeus. The error was recorded."
 _HIDDEN = "[Earthdata token]"
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class Limits:
+    """The limits of the jobs and of the layers of a server.
+
+    A limit that is not given is the constant of this module, as it is when the limits are made: these
+    are the limits of the project server. The first four come from its hardware; an own server
+    replaces them by the limits of its owner. The last three protect a server that many visitors
+    share, and None lifts one of them.
+
+    Attributes
+    ----------
+    running_jobs : int
+        Largest number of jobs that run at once.
+    layer_size : int
+        Largest size of the files of one layer, in bytes.
+    session_size : int
+        Largest total size of the layers of one session, in bytes.
+    total_size : int
+        Largest total size of the layers of all sessions, in bytes.
+    waiting_jobs : int or None
+        Largest number of jobs of all sessions that wait.
+    session_unfinished_jobs : int or None
+        Largest number of jobs of one session that wait or run.
+    session_layers : int or None
+        Largest number of layers of one session.
+    """
+
+    running_jobs: int = field(default_factory=lambda: MAX_RUNNING_JOBS)
+    layer_size: int = field(default_factory=lambda: MAX_LAYER_SIZE)
+    session_size: int = field(default_factory=lambda: MAX_SESSION_SIZE)
+    total_size: int = field(default_factory=lambda: MAX_TOTAL_SIZE)
+    waiting_jobs: int | None = field(default_factory=lambda: MAX_WAITING_JOBS)
+    session_unfinished_jobs: int | None = field(default_factory=lambda: MAX_SESSION_UNFINISHED_JOBS)
+    session_layers: int | None = field(default_factory=lambda: MAX_SESSION_LAYERS)
+
+    def __post_init__(self) -> None:
+        """Check that a job can run and that no limit is negative."""
+        if self.running_jobs < 1:
+            raise ValueError("at least one job must be able to run")
+        counts = (self.waiting_jobs, self.session_unfinished_jobs, self.session_layers)
+        sizes = (self.layer_size, self.session_size, self.total_size)
+        if any(limit is not None and limit < 0 for limit in (*sizes, *counts)):
+            raise ValueError("a limit cannot be negative")
 
 
 class LimitError(Exception):
@@ -117,6 +172,7 @@ class _Running:
     folder: Path
     process: BaseProcess
     connection: Connection
+    ending: Semaphore
     watcher: threading.Thread | None = None
     dismissed: bool = False
     ended: threading.Event = field(default_factory=threading.Event)
@@ -133,6 +189,7 @@ def _work(
     address: str,
     token: str | None,
     layers: Mapping[str, tuple[LayerDescription, Path]],
+    ending: Semaphore,
 ) -> None:
     """Run the function of a process and send its reports and its result to the server.
 
@@ -140,9 +197,13 @@ def _work(
     process group of its own, so that the server can end it together with
     every program that it started. The function runs in the main thread of
     the process, so it can set a handler for the signal that ends the job.
+    Where the operating system has no process groups, a thread of the job
+    raises that signal when the server releases ``ending``.
     """
     if hasattr(os, "setsid"):
         os.setsid()
+    if not hasattr(os, "killpg"):
+        threading.Thread(target=_raise_when_asked, args=(ending,), name="lynkeus-ending", daemon=True).start()
 
     def shown(text: str) -> str:
         return text.replace(token, _HIDDEN) if token else text
@@ -161,6 +222,19 @@ def _work(
         connection.send(("error", sentence, shown(traceback.format_exc())))
     finally:
         connection.close()
+
+
+def _raise_when_asked(ending: Semaphore) -> None:
+    """Wait until the server asks the job to end, and raise the signal SIGTERM inside the job.
+
+    A handler that the function of the process set then runs in the main thread, as it does for a
+    signal of the server. Without a handler the signal ends the operating-system process.
+
+    The server asks by releasing a semaphore, which never waits for the job. An event would: the
+    server would wait for ever on a job that had ended by itself a moment before.
+    """
+    ending.acquire()
+    signal.raise_signal(signal.SIGTERM)
 
 
 def _size(folder: Path) -> int:
@@ -189,9 +263,16 @@ def _signal(process: BaseProcess, sign: signal.Signals) -> None:
         process.kill()
 
 
-def _end(process: BaseProcess) -> None:
-    """End the operating-system process of a job and every program that it started."""
-    _signal(process, signal.SIGTERM)
+def _end(process: BaseProcess, ending: Semaphore) -> None:
+    """End the operating-system process of a job and every program that it started.
+
+    Where the operating system has no process groups, the job is asked to end through ``ending``, and
+    after ``END_TIME`` the job alone is ended: a program that it started is not.
+    """
+    if hasattr(os, "killpg"):
+        _signal(process, signal.SIGTERM)
+    else:
+        ending.release()
     process.join(END_TIME)
     _signal(process, getattr(signal, "SIGKILL", signal.SIGTERM))
     process.join()
@@ -210,15 +291,24 @@ class Jobs:
         The processes that the server offers, by name.
     address : str
         Address of ``files`` for the browser.
+    limits : Limits, optional
+        The limits of the jobs and of the layers, which ``set_limits`` replaces later. Without them the
+        constants of this module apply, as they are at each moment.
     """
 
     def __init__(
-        self, store: Store, files: Path, processes: Mapping[str, Process[Any]], address: str = "/files"
+        self,
+        store: Store,
+        files: Path,
+        processes: Mapping[str, Process[Any]],
+        address: str = "/files",
+        limits: Limits | None = None,
     ) -> None:
         self._store = store
         self._files = files
         self._processes = processes
         self._address = address
+        self._given = limits
         self._lock = threading.RLock()
         self._running: dict[str, _Running] = {}
         self._tokens: dict[str, str | None] = {}
@@ -245,8 +335,29 @@ class Jobs:
             if job.watcher is not None:
                 job.watcher.join()
 
+    @property
+    def limits(self) -> Limits:
+        """The limits in force."""
+        return Limits() if self._given is None else self._given
+
+    def set_limits(self, limits: Limits) -> None:
+        """Replace the limits, and start waiting jobs when more jobs may now run.
+
+        A job that runs is not ended when fewer jobs may run; the next one starts when a place is free.
+        """
+        with self._lock:
+            self._given = limits
+            self._start_waiting()
+
     def submit[Inputs: BaseModel](
-        self, session: str, process: Process[Inputs], inputs: Inputs, response: str, token: str | None
+        self,
+        session: str,
+        process: Process[Inputs],
+        inputs: Inputs,
+        response: str,
+        token: str | None,
+        job: str | None = None,
+        title: str | None = None,
     ) -> JobRecord:
         """Record a new job of a session and start it when a place is free.
 
@@ -262,6 +373,10 @@ class Jobs:
             Form of the results that the request chose.
         token : str or None
             Earthdata token of the visitor.
+        job : str, optional
+            Name of the job, when another server gave it. Without it the job receives a new name.
+        title : str, optional
+            Name of the job for the visitor. Without it the process names the job from the inputs.
 
         Raises
         ------
@@ -269,35 +384,36 @@ class Jobs:
             When a limit on jobs or on storage does not allow the job.
         """
         with self._lock:
+            limits = self.limits
             unfinished = self._store.count_unfinished_jobs(session)
             layers = len(self._store.layers_of(session))
-            if unfinished >= MAX_SESSION_UNFINISHED_JOBS:
+            if limits.session_unfinished_jobs is not None and unfinished >= limits.session_unfinished_jobs:
                 sentence = (
                     f"You have {unfinished} jobs that wait or run, which is the most allowed. Wait for one to finish."
                 )
                 raise LimitError(HTTPStatus.TOO_MANY_REQUESTS, sentence)
-            if self._store.count_waiting_jobs() >= MAX_WAITING_JOBS:
+            if limits.waiting_jobs is not None and self._store.count_waiting_jobs() >= limits.waiting_jobs:
                 raise LimitError(
                     HTTPStatus.SERVICE_UNAVAILABLE, "Too many jobs wait at present. Try again in a few minutes.", 120
                 )
-            if layers + unfinished >= MAX_SESSION_LAYERS:
-                sentence = f"A session holds at most {MAX_SESSION_LAYERS} layers. Remove a layer and try again."
+            if limits.session_layers is not None and layers + unfinished >= limits.session_layers:
+                sentence = f"A session holds at most {limits.session_layers} layers. Remove a layer and try again."
                 raise LimitError(HTTPStatus.INSUFFICIENT_STORAGE, sentence)
-            if self._store.size_of_layers(session) >= MAX_SESSION_SIZE:
-                size = f"{MAX_SESSION_SIZE / 1e9:g} gigabytes"
+            if self._store.size_of_layers(session) >= limits.session_size:
+                size = f"{limits.session_size / 1e9:g} gigabytes"
                 sentence = f"Your layers use the {size} that a session may hold. Remove a layer and try again."
                 raise LimitError(HTTPStatus.INSUFFICIENT_STORAGE, sentence)
-            if self._store.size_of_layers() >= MAX_TOTAL_SIZE:
+            if self._store.size_of_layers() >= limits.total_size:
                 raise LimitError(
                     HTTPStatus.INSUFFICIENT_STORAGE,
                     "The server has no space for more layers at present. Try again later.",
                 )
             now = time.time()
-            job = JobRecord(
-                id=secrets.token_hex(16),
+            record = JobRecord(
+                id=job or secrets.token_hex(16),
                 session=session,
                 process=process.id,
-                title=process.job_title(inputs),
+                title=title or process.job_title(inputs),
                 inputs=inputs.model_dump_json(),
                 response=response,
                 status="accepted",
@@ -309,11 +425,11 @@ class Jobs:
                 updated=now,
                 layer=None,
             )
-            self._store.add_job(job)
+            self._store.add_job(record)
             self._store.keep_latest_jobs(session, MAX_SESSION_FINISHED_JOBS, MAX_SESSION_DISMISSED_JOBS)
-            self._tokens[job.id] = token
+            self._tokens[record.id] = token
             self._start_waiting()
-            return job
+            return record
 
     def dismiss(self, job: JobRecord) -> JobRecord:
         """End a job that waits or runs, and remove the record of a finished job.
@@ -390,7 +506,7 @@ class Jobs:
     def _start_waiting(self) -> None:
         """Start waiting jobs, the one that has waited longest first, while a place is free."""
         with self._lock:
-            while not self._stopping and len(self._running) < MAX_RUNNING_JOBS:
+            while not self._stopping and len(self._running) < self.limits.running_jobs:
                 job = self._store.next_waiting_job()
                 if job is None:
                     return
@@ -411,6 +527,7 @@ class Jobs:
             for description in [LayerDescription.model_validate_json(record.description)]
         }
         receiving, sending = self._spawn.Pipe(duplex=False)
+        ending = self._spawn.Semaphore(0)
         address = f"{self._address}/{layer}"
         arguments = (
             sending,
@@ -423,6 +540,7 @@ class Jobs:
             address,
             token,
             layers,
+            ending,
         )
         worker = self._spawn.Process(target=_work, args=arguments, name=f"lynkeus-job-{job.id}", daemon=True)
         try:
@@ -437,7 +555,7 @@ class Jobs:
             return
         sending.close()
         self._store.start_job(job.id, STARTED, time.time())
-        running = _Running(job=job, layer=layer, folder=folder, process=worker, connection=receiving)
+        running = _Running(job=job, layer=layer, folder=folder, process=worker, connection=receiving, ending=ending)
         running.watcher = threading.Thread(
             target=self._watch, args=(running,), name=f"lynkeus-watch-{job.id}", daemon=True
         )
@@ -473,10 +591,10 @@ class Jobs:
                 break
             if latest - measured >= SIZE_PAUSE:
                 measured = latest
-                if _size(running.folder) > MAX_LAYER_SIZE:
-                    failure = _too_large()
+                if _size(running.folder) > self.limits.layer_size:
+                    failure = _too_large(self.limits.layer_size)
                     break
-        _end(running.process)
+        _end(running.process, running.ending)
         code = running.process.exitcode
         connection.close()
         try:
@@ -540,9 +658,10 @@ class Jobs:
             else:
                 path.unlink()
         size = _size(running.folder)
-        if size > MAX_LAYER_SIZE:
-            return _too_large()
-        if self._store.size_of_layers(job.session) + size > MAX_SESSION_SIZE:
+        limits = self.limits
+        if size > limits.layer_size:
+            return _too_large(limits.layer_size)
+        if self._store.size_of_layers(job.session) + size > limits.session_size:
             return "The layer does not fit in the space that is left for your layers. Remove a layer and start again."
         layer = LayerRecord(
             id=running.layer, session=job.session, description=description.model_dump_json(), size=size, created=now
@@ -551,5 +670,5 @@ class Jobs:
         return None
 
 
-def _too_large() -> str:
-    return f"The job was ended because its layer is larger than {MAX_LAYER_SIZE / 1e6:g} megabytes."
+def _too_large(limit: int) -> str:
+    return f"The job was ended because its layer is larger than {limit / 1e6:g} megabytes."

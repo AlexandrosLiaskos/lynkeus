@@ -206,9 +206,9 @@ folders. The numbers of waiting jobs, of unfinished jobs and of layers have no l
 
 On Linux and macOS a job is ended as on the project server: its process group receives the signal SIGTERM,
 and SIGKILL after 5 seconds. A job that waits for NASA Harmony cancels its request there on SIGTERM. Windows
-has neither signal for a process. There the program sets an event of the job, on which a thread of the job
-raises SIGTERM inside the job, so the request at Harmony is cancelled in the same way; after 5 seconds the
-job is ended with `TerminateProcess`. When a job is ended without those 5 seconds, because the program or
+has neither signal for a process. There the program releases a semaphore of the job, on which a thread of the
+job raises SIGTERM inside the job, so the request at Harmony is cancelled in the same way; after 5 seconds
+the job is ended with `TerminateProcess`. When a job is ended without those 5 seconds, because the program or
 the computer stopped at once, Harmony finishes the request and keeps its result until it expires.
 
 ### The downloads
