@@ -14,7 +14,8 @@ export const VIEW_TAB = {
           id: "view-reset-panes",
           label: "Reset panes",
           icon: "undo",
-          description: "Opens the Contents pane and the Catalog pane at their first width and closes the tool panes.",
+          description:
+            "Opens the Contents pane and the Catalog pane at their first width, pinned open, and closes the tool panes.",
         },
         {
           id: "view-full-screen",

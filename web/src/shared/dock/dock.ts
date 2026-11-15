@@ -13,19 +13,34 @@ export interface DockPaneEntry {
 /**
  * The panes beside the map. The panes of one side stand in one stack, as stacked panes do in ArcGIS Pro: one of
  * them is in front, and a row of tabs under the stack brings another one to the front.
+ *
+ * A side can hide its panes automatically, as Auto-Hide does in ArcGIS Pro. The panes of the side are then tabs
+ * in a strip at the edge of the window. A click on a tab shows its pane over the map, and the pane hides again
+ * when the user works elsewhere.
  */
 export interface DockState {
   /** The panes that are shown, in the order in which they appeared. The tabs of a side follow this order. */
   panes: readonly DockPaneEntry[];
   /** The pane that was last brought to the front of each side, or null. */
   front: Readonly<Record<PaneSide, string | null>>;
+  /** Whether each side hides its panes automatically. */
+  autoHide: Readonly<Record<PaneSide, boolean>>;
+  /** For a side that hides its panes: whether its pane in front shows over the map now. */
+  revealed: Readonly<Record<PaneSide, boolean>>;
   /** The names of the tool panes that are open. */
   tools: readonly string[];
   /** The last request to move the keyboard focus to the title of a tool pane. Every request is a new object. */
   focus: { readonly id: string } | null;
 }
 
-const EMPTY: DockState = { panes: [], front: { left: null, right: null }, tools: [], focus: null };
+const EMPTY: DockState = {
+  panes: [],
+  front: { left: null, right: null },
+  autoHide: { left: false, right: false },
+  revealed: { left: false, right: false },
+  tools: [],
+  focus: null,
+};
 
 export const dockStore = createStore<DockState>(EMPTY);
 
@@ -49,7 +64,15 @@ export function frontOf(state: DockState, side: PaneSide): string | null {
   return panes.some(({ id }) => id === asked) ? asked : (panes.at(-1)?.id ?? null);
 }
 
-/** The id of the element of a pane, and of its tab in the row of tabs. */
+/**
+ * Return the name of the pane that is visible on one side, or null. A side that hides its panes shows its pane
+ * in front only while that pane is revealed.
+ */
+export function shownOf(state: DockState, side: PaneSide): string | null {
+  return state.autoHide[side] && !state.revealed[side] ? null : frontOf(state, side);
+}
+
+/** The id of the element of a pane, and of its tab in the row of tabs or in the strip at the edge of the window. */
 export function paneElementId(id: string): string {
   return `dock-pane-${id}`;
 }
@@ -87,11 +110,53 @@ export function leaveDock(id: string): void {
   });
 }
 
-/** Bring a pane to the front of its side. */
+/** Bring a pane to the front of its side. On a side that hides its panes, the pane shows over the map. */
 export function showPane(id: string): void {
   const state = dockStore.get();
-  if (state.front[sideOf(id)] !== id) {
-    dockStore.set({ ...state, front: { ...state.front, [sideOf(id)]: id } });
+  const side = sideOf(id);
+  const reveal = state.autoHide[side] && !state.revealed[side];
+  if (state.front[side] !== id || reveal) {
+    dockStore.set({
+      ...state,
+      front: { ...state.front, [side]: id },
+      revealed: reveal ? { ...state.revealed, [side]: true } : state.revealed,
+    });
+  }
+}
+
+/**
+ * Make a side hide its panes automatically, or keep them open beside the map. A side that starts to hide its
+ * panes hides them at once.
+ */
+export function setAutoHide(side: PaneSide, autoHide: boolean): void {
+  const state = dockStore.get();
+  if (state.autoHide[side] !== autoHide || state.revealed[side]) {
+    dockStore.set({
+      ...state,
+      autoHide: { ...state.autoHide, [side]: autoHide },
+      revealed: { ...state.revealed, [side]: false },
+    });
+  }
+}
+
+/** Hide the pane that a side which hides its panes shows over the map. */
+export function concealPanes(side: PaneSide): void {
+  const state = dockStore.get();
+  if (state.revealed[side]) {
+    dockStore.set({ ...state, revealed: { ...state.revealed, [side]: false } });
+  }
+}
+
+/**
+ * What a click on the tab of a hidden pane does: it shows the pane over the map, or hides the pane when it is
+ * the one that shows.
+ */
+export function togglePane(id: string): void {
+  const side = sideOf(id);
+  if (shownOf(dockStore.get(), side) === id) {
+    concealPanes(side);
+  } else {
+    showPane(id);
   }
 }
 
@@ -115,13 +180,15 @@ export function passFocus(to?: Element): void {
  */
 export function openToolPane(id: string): void {
   const state = dockStore.get();
+  const side = sideOf(id);
   if (document.activeElement && !paneHoldsFocus(id)) {
     openers.set(id, document.activeElement);
   }
   dockStore.set({
     ...state,
     tools: state.tools.includes(id) ? state.tools : [...state.tools, id],
-    front: { ...state.front, [sideOf(id)]: id },
+    front: { ...state.front, [side]: id },
+    revealed: state.autoHide[side] ? { ...state.revealed, [side]: true } : state.revealed,
     focus: { id },
   });
 }
@@ -143,7 +210,7 @@ export function closeToolPane(id: string): void {
   openers.delete(id);
 }
 
-/** Close every tool pane and forget the order of the panes. The tests start from this state. */
+/** Close every tool pane, forget the order of the panes and keep both sides open. The tests start from this state. */
 export function resetDock(): void {
   openers.clear();
   dockStore.set(EMPTY);
