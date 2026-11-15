@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """Tests of the connection of an own server with the project server.
 
 The program runs on a folder of the test against ``tests/project.py``, a stand-in for the project

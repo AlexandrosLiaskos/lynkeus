@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """Tests of the series: their formats, their run, their record and their addresses.
 
 The stand-in process of this file returns a series as the processes of the tools of the kind Series do. The

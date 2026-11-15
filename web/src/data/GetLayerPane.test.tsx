@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
@@ -171,8 +173,8 @@ test("the pane names the product and offers its layers, none chosen", () => {
       .getAllByRole<HTMLInputElement>("checkbox")
       .map((box) => box.checked),
   ).toEqual([false, false, false]);
-  expect(layerBox("Backscatter HH")).toBeDefined();
-  expect(layerBox("Mask of valid samples")).toBeDefined();
+  expect(layerBox("Frequency A HHHH")).toBeDefined();
+  expect(layerBox("Frequency A Mask")).toBeDefined();
   expect(missing()).toBe("Choose a layer.");
   expect(isActive(runButton())).toBe(false);
   expect(runButton().getAttribute("aria-describedby")).toBe(document.querySelector(".tool-pane-missing")?.id);
@@ -278,7 +280,7 @@ test("a visitor who is not signed in is told so and offered the form of Sign in"
   expect(
     screen.getByText("You are not signed in to Earthdata. A layer is requested from NASA with your Earthdata account."),
   ).toBeDefined();
-  await userEvent.click(layerBox("Backscatter HH"));
+  await userEvent.click(layerBox("Frequency A HHHH"));
   await typeArea();
   expect(missing()).toBe("Sign in to Earthdata.");
   expect(isActive(runButton())).toBe(false);
@@ -322,7 +324,7 @@ test("each explanation stands behind the button beside its title, and none stand
   for (const title of ["Product", "Layers", "Area", "Estimate"]) {
     expect(screen.getByRole("button", { name: `Information about ${title}` })).toBeDefined();
   }
-  await userEvent.click(layerBox("Backscatter HH"));
+  await userEvent.click(layerBox("Frequency A HHHH"));
   await typeArea();
   expect(document.querySelector(".usa-hint")).toBeNull();
   expect(document.querySelector(".tool-pane-body > p")).toBeNull();
@@ -381,7 +383,7 @@ test("an area of polygons gives the rectangle around them, and the outline of th
 
 test("an area of polygons is compared with the outline of the product by its polygons", async () => {
   show();
-  await userEvent.click(layerBox("Backscatter HH"));
+  await userEvent.click(layerBox("Frequency A HHHH"));
   const takePolygons = (rings: Ring[]) => {
     const draft = searchDraftStore.get();
     act(() => searchDraftStore.set(draft && { ...draft, limited: true, area: { kind: "polygons", rings } }));
@@ -424,7 +426,7 @@ test("an area of polygons is compared with the outline of the product by its pol
 
 test("no layer is received for the whole Earth", async () => {
   show();
-  await userEvent.click(layerBox("Backscatter HH"));
+  await userEvent.click(layerBox("Frequency A HHHH"));
   await userEvent.selectOptions(areaChoice(), "earth");
   const alert = screen.getByRole("alert");
   expect(alert.textContent).toBe("A layer is not received for the whole Earth. Choose an area.");
@@ -436,7 +438,7 @@ test("no layer is received for the whole Earth", async () => {
 
 test("a wrong area is named and nothing is sent", async () => {
   show();
-  await userEvent.click(layerBox("Backscatter HH"));
+  await userEvent.click(layerBox("Frequency A HHHH"));
   await typeArea({ ...AREA, west: -70 });
   expect(screen.getByRole("alert").textContent).toBe(
     "A layer is not received for an area that crosses the meridian of 180 degrees. Choose an area on one side of it.",
@@ -452,7 +454,7 @@ test("a wrong area is named and nothing is sent", async () => {
 
 test("an area outside the product is refused before anything is sent", async () => {
   show();
-  await userEvent.click(layerBox("Backscatter HH"));
+  await userEvent.click(layerBox("Frequency A HHHH"));
   await typeArea({ west: -60, south: 42.6, east: -59, north: 42.95 });
   expect(screen.getByRole("alert").textContent).toBe("The area lies outside the outline of the product.");
   expect(missing()).toBe("Choose an area inside the outline of the product.");
@@ -466,11 +468,11 @@ test("the estimate states the cells and the size of each chosen layer that has a
   show();
   await typeArea();
   expect(estimateRows()).toEqual([["Surface", "1,429 km²"]]);
-  await userEvent.click(layerBox("Backscatter HH"));
-  await userEvent.click(layerBox("Mask of valid samples"));
+  await userEvent.click(layerBox("Frequency A HHHH"));
+  await userEvent.click(layerBox("Frequency A Mask"));
   expect(estimateRows()).toEqual([
     ["Surface", "1,429 km²"],
-    ["Backscatter HH", "Up to 14 million cells, 57 MB"],
+    ["Frequency A HHHH", "Up to 14 million cells, 57 MB"],
   ]);
   expect(missing()).toBeNull();
   expect(isActive(runButton("Get 2 layers"))).toBe(true);
@@ -483,10 +485,10 @@ test("a layer above the limit of the server is refused in the form", async () =>
   };
   show();
   await vi.waitFor(() => expect(cellLimitStore.get()).toBe(10_000_000));
-  await userEvent.click(layerBox("Backscatter HH"));
+  await userEvent.click(layerBox("Frequency A HHHH"));
   await typeArea();
   expect(screen.getByRole("alert").textContent).toBe(
-    'The area is too large for the layer "Backscatter HH": the layer would have about 14 million cells, and Lynkeus receives at most 10 million. Choose a smaller area.',
+    'The area is too large for the layer "Frequency A HHHH": the layer would have about 14 million cells, and Lynkeus receives at most 10 million. Choose a smaller area.',
   );
   expect(missing()).toBe("Choose a smaller area.");
   expect(isActive(runButton())).toBe(false);
@@ -497,7 +499,7 @@ test("a layer above the limit of the server is refused in the form", async () =>
 
 test("a request starts one job, and the foot shows its progress and its outcome", async () => {
   show();
-  await userEvent.click(layerBox("Backscatter HH"));
+  await userEvent.click(layerBox("Frequency A HHHH"));
   await typeArea();
   expect(missing()).toBeNull();
   await userEvent.click(runButton());
@@ -542,12 +544,12 @@ test("each layer of each product is one job", async () => {
   show({ products: [product(), second] });
   const groups = screen.getAllByRole("group", { name: /^Layers of GCOV/ });
   expect(groups).toHaveLength(2);
-  await userEvent.click(within(groups[0] as HTMLElement).getByRole("checkbox", { name: "Backscatter HH" }));
-  await userEvent.click(layerBox("Backscatter HV"));
-  await userEvent.click(within(groups[1] as HTMLElement).getByRole("checkbox", { name: "Backscatter HH" }));
+  await userEvent.click(within(groups[0] as HTMLElement).getByRole("checkbox", { name: "Frequency A HHHH" }));
+  await userEvent.click(layerBox("Frequency A HVHV"));
+  await userEvent.click(within(groups[1] as HTMLElement).getByRole("checkbox", { name: "Frequency A HHHH" }));
   await typeArea();
   expect(estimateRows()).toContainEqual([
-    "Backscatter HH, GCOV, 2 Nov 2026, track 141, frame 67",
+    "Frequency A HHHH, GCOV, 2 Nov 2026, track 141, frame 67",
     "Up to 14 million cells, 57 MB",
   ]);
   await userEvent.click(runButton("Get 3 layers"));
@@ -580,7 +582,7 @@ test("the form stays in front when the Catalog pane appears with the first job",
   setPaneOpen("catalog", true);
   show();
   render(<Catalog />);
-  await userEvent.click(layerBox("Backscatter HH"));
+  await userEvent.click(layerBox("Frequency A HHHH"));
   await typeArea();
   await userEvent.click(runButton());
   await screen.findByText("Waiting. The job waits for its turn. (0 %)");
@@ -596,7 +598,7 @@ test("a limit of the server is stated in its words", async () => {
     "You have 4 jobs that wait or run, which is the most allowed. Wait for one to finish.",
   );
   show();
-  await userEvent.click(layerBox("Backscatter HH"));
+  await userEvent.click(layerBox("Frequency A HHHH"));
   await typeArea();
   await userEvent.click(runButton());
   expect((await screen.findByRole("alert")).textContent).toBe(
@@ -608,9 +610,9 @@ test("a limit of the server is stated in its words", async () => {
 
 test("a limit that is met after some jobs were started says how many were started", async () => {
   show();
-  await userEvent.click(layerBox("Backscatter HH"));
-  await userEvent.click(layerBox("Backscatter HV"));
-  await userEvent.click(layerBox("Mask of valid samples"));
+  await userEvent.click(layerBox("Frequency A HHHH"));
+  await userEvent.click(layerBox("Frequency A HVHV"));
+  await userEvent.click(layerBox("Frequency A Mask"));
   await typeArea();
   server.refuse("POST", "/api/processes", 507, "A session holds at most 50 layers. Remove a layer and try again.", 1);
   await userEvent.click(runButton("Get 3 layers"));
@@ -626,7 +628,7 @@ test("the answer 401 records the end of the sign-in and is shown in the words of
   onSignInEnded(ended);
   server.refuse("POST", "/api/processes", 401, "Sign in to Earthdata to start this job.");
   show();
-  await userEvent.click(layerBox("Backscatter HH"));
+  await userEvent.click(layerBox("Frequency A HHHH"));
   await typeArea();
   await userEvent.click(runButton());
   expect((await screen.findByRole("alert")).textContent).toBe("Sign in to Earthdata to start this job.");
@@ -637,7 +639,7 @@ test("the Cancel button ends the jobs that the form started", async () => {
   server.jobs = [job({ jobID: "other" })];
   await loadJobs();
   show();
-  await userEvent.click(layerBox("Backscatter HH"));
+  await userEvent.click(layerBox("Frequency A HHHH"));
   await typeArea();
   await userEvent.click(runButton());
   await screen.findByText("Waiting. The job waits for its turn. (0 %)");
@@ -649,7 +651,7 @@ test("the Cancel button ends the jobs that the form started", async () => {
 
 test("a failed job is shown in the words of the server", async () => {
   show();
-  await userEvent.click(layerBox("Backscatter HH"));
+  await userEvent.click(layerBox("Frequency A HHHH"));
   await typeArea();
   await userEvent.click(runButton());
   await screen.findByText("Waiting. The job waits for its turn. (0 %)");
@@ -716,11 +718,11 @@ test("the visitor chooses whether a layer goes on the map when it is ready", asy
 test("the form is used with the keyboard alone", async () => {
   areaStore.set(AREA);
   show();
-  layerBox("Backscatter HH").focus();
+  layerBox("Frequency A HHHH").focus();
   await userEvent.keyboard(" ");
-  expect(layerBox("Backscatter HH").checked).toBe(true);
+  expect(layerBox("Frequency A HHHH").checked).toBe(true);
   await userEvent.tab();
-  expect(document.activeElement).toBe(layerBox("Backscatter HV"));
+  expect(document.activeElement).toBe(layerBox("Frequency A HVHV"));
   side("West").focus();
   await userEvent.keyboard("{Enter}");
   expect(await screen.findByText("Waiting. The job waits for its turn. (0 %)")).toBeDefined();
@@ -814,7 +816,7 @@ function withServers() {
 test("a visitor without an own server has no field Server, and the job names no server", async () => {
   show();
   expect(screen.queryByLabelText("Server")).toBeNull();
-  await userEvent.click(layerBox("Backscatter HH"));
+  await userEvent.click(layerBox("Frequency A HHHH"));
   await typeArea();
   await userEvent.click(runButton());
   await vi.waitFor(() => expect(server.sent("POST")).toHaveLength(1));
@@ -826,7 +828,7 @@ test("a visitor with an own server chooses the server, Automatic at first, and t
   show();
   expect(serverChoice().value).toBe("automatic");
   expect(serverRows()[0]).toBe("At present: Office computer");
-  await userEvent.click(layerBox("Backscatter HH"));
+  await userEvent.click(layerBox("Frequency A HHHH"));
   await typeArea();
   expect(missing()).toBeNull();
   await userEvent.click(runButton());
@@ -845,7 +847,7 @@ test("the job is started on the server that the visitor chose, and the limits sh
     "Space for layers: 1.3 GB of 100 GB used",
     "Free disk space: 412 GB",
   ]);
-  await userEvent.click(layerBox("Backscatter HH"));
+  await userEvent.click(layerBox("Frequency A HHHH"));
   await typeArea();
   await userEvent.click(runButton());
   await vi.waitFor(() => expect(server.sent("POST")).toHaveLength(1));
@@ -865,7 +867,7 @@ test("the choice of the project server shows the limits of the project server an
       "Space for layers: 2 GB and 50 layers for one session",
     ]),
   );
-  await userEvent.click(layerBox("Backscatter HH"));
+  await userEvent.click(layerBox("Frequency A HHHH"));
   await typeArea();
   await userEvent.click(runButton());
   await vi.waitFor(() => expect(server.sent("POST")).toHaveLength(1));
@@ -878,7 +880,7 @@ test("a chosen server that is not connected is the last thing that the foot name
   show();
   await userEvent.selectOptions(serverChoice(), LABORATORY.id);
   expect(missing()).toBe("Choose a layer.");
-  await userEvent.click(layerBox("Backscatter HH"));
+  await userEvent.click(layerBox("Frequency A HHHH"));
   await typeArea();
   expect(missing()).toBe('Choose a server that is connected: "Laboratory server" is not.');
   expect(isActive(runButton())).toBe(false);
@@ -914,7 +916,7 @@ test("the area is checked against the limit of the server that Automatic names, 
   withServers();
   show();
   await vi.waitFor(() => expect(cellLimitStore.get()).toBe(10_000_000));
-  await userEvent.click(layerBox("Backscatter HH"));
+  await userEvent.click(layerBox("Frequency A HHHH"));
   await typeArea();
   // Automatic names the Office computer, which receives 100 million cells: the 14 million of the layer pass.
   expect(serverRows()[0]).toBe("At present: Office computer");
@@ -929,10 +931,10 @@ test("on the project server the area is refused with the limit of the project se
   show();
   await vi.waitFor(() => expect(cellLimitStore.get()).toBe(10_000_000));
   await userEvent.selectOptions(serverChoice(), "project");
-  await userEvent.click(layerBox("Backscatter HH"));
+  await userEvent.click(layerBox("Frequency A HHHH"));
   await typeArea();
   expect(screen.getByRole("alert").textContent).toBe(
-    'The area is too large for the layer "Backscatter HH" on the project server: the layer would have about 14 million cells, and the project server receives at most 10 million. Choose a smaller area, or your server "Office computer", which receives at most 100 million.',
+    'The area is too large for the layer "Frequency A HHHH" on the project server: the layer would have about 14 million cells, and the project server receives at most 10 million. Choose a smaller area, or your server "Office computer", which receives at most 100 million.',
   );
   expect(missing()).toBe("Choose a smaller area.");
   expect(isActive(runButton())).toBe(false);
@@ -948,10 +950,10 @@ test("on a server of the visitor the area is refused with the name and the limit
   serversStore.set(servers);
   show();
   await userEvent.selectOptions(serverChoice(), OFFICE.id);
-  await userEvent.click(layerBox("Backscatter HH"));
+  await userEvent.click(layerBox("Frequency A HHHH"));
   await typeArea();
   expect(screen.getByRole("alert").textContent).toBe(
-    'The area is too large for the layer "Backscatter HH" on your server "Office computer": the layer would have about 14 million cells, and that server receives at most 12 million. Choose a smaller area.',
+    'The area is too large for the layer "Frequency A HHHH" on your server "Office computer": the layer would have about 14 million cells, and that server receives at most 12 million. Choose a smaller area.',
   );
   expect(serverRows()).toContain("Most cells of a layer: 12 million");
   expect(isActive(runButton())).toBe(false);
@@ -964,7 +966,7 @@ test("an execution that the server refuses is stated in the words of the server"
   server.refuse("POST", "/api/processes", 422, sentence);
   show();
   await userEvent.selectOptions(serverChoice(), OFFICE.id);
-  await userEvent.click(layerBox("Backscatter HH"));
+  await userEvent.click(layerBox("Frequency A HHHH"));
   await typeArea();
   await userEvent.click(runButton());
   expect((await screen.findByRole("alert")).textContent).toBe(sentence);

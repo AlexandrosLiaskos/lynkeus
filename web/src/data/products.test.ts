@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { afterEach, expect, test, vi } from "vitest";
 // What the server reads from the record of a real product file. The tests of the server check the same files,
 // so the interface and the server cannot drift apart.
@@ -27,7 +29,7 @@ afterEach(() => {
 
 test("the product that the server sends for a real record is accepted", () => {
   expect(isProduct(product)).toBe(true);
-  expect(product.layers[0]).toEqual({ name: "HHHH", title: "Backscatter HH", spacing: 10 });
+  expect(product.layers[0]).toEqual({ name: "HHHH", title: "Frequency A HHHH", spacing: 10 });
   expect(product.layers).toHaveLength(5);
   expect(isProductsFound({ found: 1, products: [product] })).toBe(true);
 });
@@ -49,7 +51,7 @@ test.each([
   ["a point of the outline has one number", { footprint: [[[1]]] }],
   ["the layers are missing", { layers: undefined }],
   ["a layer has no title", { layers: [{ name: "HHHH", spacing: 10 }] }],
-  ["the cell size of a layer is zero", { layers: [{ name: "HHHH", title: "Backscatter HH", spacing: 0 }] }],
+  ["the cell size of a layer is zero", { layers: [{ name: "HHHH", title: "Frequency A HHHH", spacing: 0 }] }],
 ])("a product is rejected when %s", (_reason, change) => {
   expect(isProduct({ ...product, ...change })).toBe(false);
 });

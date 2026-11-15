@@ -1,0 +1,630 @@
+{
+ "read_utc": "2026-11-15T09:54:33.400620+00:00",
+ "collections": {
+  "C2854338529-ASF": {
+   "short_name": "NISAR_L2_GCOV_PROVISIONAL_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Provisional Geocoded Polarimetric Covariance Product (Version 1)",
+   "granules": null,
+   "level": "2",
+   "doi": "10.5067/NIL2GCOV-P1"
+  },
+  "C2854332392-ASF": {
+   "short_name": "NISAR_L2_GSLC_PROVISIONAL_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Provisional Geocoded Single Look Complex Product (Version 1)",
+   "granules": null,
+   "level": "2",
+   "doi": "10.5067/NIL2GSLC-P1"
+  },
+  "C2854335566-ASF": {
+   "short_name": "NISAR_L2_GUNW_PROVISIONAL_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Provisional Geocoded Unwrapped Interferogram Product (Version 1)",
+   "granules": null,
+   "level": "2",
+   "doi": "10.5067/NIL1GUNW-P1"
+  },
+  "C2853145197-ASF": {
+   "short_name": "NISAR_L1_RSLC_PROVISIONAL_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Provisional Range Doppler Single Look Complex Product (Version 1) ",
+   "granules": null,
+   "level": "1",
+   "doi": "10.5067/NIL1RSLC-P1"
+  },
+  "C2854344945-ASF": {
+   "short_name": "NISAR_L3_SME2_PROVISIONAL_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Provisional Soil Moisture (Version 1)",
+   "granules": null,
+   "level": "3",
+   "doi": "10.5067/NIL3SME2-P1"
+  },
+  "C2854341702-ASF": {
+   "short_name": "NISAR_L2_GOFF_PROVISIONAL_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Provisional Geocoded Pixel Offsets (Version 1)",
+   "granules": null,
+   "level": "2",
+   "doi": "10.5067/NIL2GOFF-P1"
+  },
+  "C2850225585-ASF": {
+   "short_name": "NISAR_L1_RSLC_BETA_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Beta Range Doppler Single Look Complex Product (Version 1) ",
+   "granules": null,
+   "level": "1",
+   "doi": "10.5067/NIL1RSLC-B1"
+  },
+  "C2853153429-ASF": {
+   "short_name": "NISAR_L1_RUNW_PROVISIONAL_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Provisional Range Doppler Unwrapped Interferogram Product (Version 1)",
+   "granules": null,
+   "level": "1",
+   "doi": "10.5067/NIL1RUNW-P1"
+  },
+  "C3622214170-ASF": {
+   "short_name": "NISAR_L2_GCOV_BETA_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Beta Geocoded Polarimetric Covariance Product (Version 1)",
+   "granules": null,
+   "level": "2",
+   "doi": "10.5067/NIL2GCOV-B1"
+  },
+  "C2853147928-ASF": {
+   "short_name": "NISAR_L1_RIFG_PROVISIONAL_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Provisional Range Doppler Wrapped Interferogram Product (Version 1)",
+   "granules": null,
+   "level": "1",
+   "doi": "10.5067/NIL1RIFG-P1"
+  },
+  "C2853156054-ASF": {
+   "short_name": "NISAR_L1_ROFF_PROVISIONAL_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Provisional Range Doppler Pixel Offsets (Version 1)",
+   "granules": null,
+   "level": "1",
+   "doi": "10.5067/NIL1ROFF-P1"
+  },
+  "C2850259510-ASF": {
+   "short_name": "NISAR_L2_GSLC_BETA_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Beta Geocoded Single Look Complex Product (Version 1)",
+   "granules": null,
+   "level": "2",
+   "doi": "10.5067/NIL2GSLC-B1"
+  },
+  "C2850261892-ASF": {
+   "short_name": "NISAR_L2_GUNW_BETA_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Beta Geocoded Unwrapped Interferogram Product (Version 1)",
+   "granules": null,
+   "level": "2",
+   "doi": "10.5067/NIL1GUNW-B1"
+  },
+  "C2887502657-ASF": {
+   "short_name": "NISAR_UR_L2",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Urgent Response Level 2 Product",
+   "granules": null,
+   "level": "2",
+   "doi": null
+  },
+  "C2850263910-ASF": {
+   "short_name": "NISAR_L2_GOFF_BETA_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Beta Geocoded Pixel Offsets (Version 1)",
+   "granules": null,
+   "level": "2",
+   "doi": "10.5067/NIL2GOFF-B1"
+  },
+  "C2853089814-ASF": {
+   "short_name": "NISAR_L0B_RRSD_PROVISIONAL_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Provisional Radar Raw Signal Science Data (Version 1)",
+   "granules": null,
+   "level": "0",
+   "doi": "10.5067/NIL0BRRSD-P1"
+  },
+  "C2850265000-ASF": {
+   "short_name": "NISAR_L3_SME2_BETA_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Beta Soil Moisture (Version 1)",
+   "granules": null,
+   "level": "3",
+   "doi": "10.5067/NIL3SME2-B1"
+  },
+  "C2727908375-ASF": {
+   "short_name": "NISAR_OE",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Orbit Ephemeris",
+   "granules": null,
+   "level": "1A",
+   "doi": null
+  },
+  "C2850234202-ASF": {
+   "short_name": "NISAR_L1_RIFG_BETA_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Beta Range Doppler Wrapped Interferogram Product (Version 1)",
+   "granules": null,
+   "level": "1",
+   "doi": "10.5067/NIL1RIFG-B1"
+  },
+  "C2850237619-ASF": {
+   "short_name": "NISAR_L1_ROFF_BETA_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Beta Range Doppler Pixel Offsets (Version 1)",
+   "granules": null,
+   "level": "1",
+   "doi": "10.5067/NIL1ROFF-B1"
+  },
+  "C2850235455-ASF": {
+   "short_name": "NISAR_L1_RUNW_BETA_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Beta Range Doppler Unwrapped Interferogram Product (Version 1)",
+   "granules": null,
+   "level": "1",
+   "doi": "10.5067/NIL1RUNW-B1"
+  },
+  "C2887499907-ASF": {
+   "short_name": "NISAR_UR_L1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Urgent Response Level 1 Product",
+   "granules": null,
+   "level": "1",
+   "doi": null
+  },
+  "C3622241360-ASF": {
+   "short_name": "NISAR_L2_GCOV_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Validated Geocoded Polarimetric Covariance Product (Version 1)",
+   "granules": null,
+   "level": "2",
+   "doi": "10.5067/NIL2GCOV-V1"
+  },
+  "C3622250865-ASF": {
+   "short_name": "NISAR_L2_GOFF_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Validated Geocoded Pixel Offsets (Version 1)",
+   "granules": null,
+   "level": "2",
+   "doi": "10.5067/NIL2GOFF-V1"
+  },
+  "C3622244601-ASF": {
+   "short_name": "NISAR_L2_GSLC_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Validated Geocoded Single Look Complex Product (Version 1)",
+   "granules": null,
+   "level": "2",
+   "doi": "10.5067/NIL2GSLC-V1"
+  },
+  "C3622247503-ASF": {
+   "short_name": "NISAR_L2_GUNW_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Validated Geocoded Unwrapped Interferogram Product (Version 1)",
+   "granules": null,
+   "level": "2",
+   "doi": "10.5067/NIL2GUNW-V1"
+  },
+  "C2727912431-ASF": {
+   "short_name": "NISAR_RP",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Radar Pointing",
+   "granules": null,
+   "level": "1A",
+   "doi": null
+  },
+  "C3622219145-ASF": {
+   "short_name": "NISAR_TEC",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Total Electron Content",
+   "granules": null,
+   "level": "1A",
+   "doi": null
+  },
+  "C3622229381-ASF": {
+   "short_name": "NISAR_L1_RIFG_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Validated Range Doppler Wrapped Interferogram Product (Version 1)",
+   "granules": null,
+   "level": "1",
+   "doi": "10.5067/NIL1RIFG-V1"
+  },
+  "C3622241997-ASF": {
+   "short_name": "NISAR_L1_ROFF_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Validated Range Doppler Pixel Offsets (Version 1)",
+   "granules": null,
+   "level": "1",
+   "doi": "10.5067/NIL1ROFF-V1"
+  },
+  "C3622236985-ASF": {
+   "short_name": "NISAR_L1_RSLC_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Validated Range Doppler Single Look Complex Product (Version 1) ",
+   "granules": null,
+   "level": "1",
+   "doi": "10.5067/NIL1RSLC-V1"
+  },
+  "C3622237369-ASF": {
+   "short_name": "NISAR_L1_RUNW_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Validated Range Doppler Unwrapped Interferogram Product (Version 1)",
+   "granules": null,
+   "level": "1",
+   "doi": "10.5067/NIL1RUNW-V1"
+  },
+  "C2853091612-ASF": {
+   "short_name": "NISAR_L0B_CRSD_PROVISIONAL_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Provisional Radar Raw Signal Calibration Data (Version 1)",
+   "granules": null,
+   "level": "0",
+   "doi": null
+  },
+  "C3622254588-ASF": {
+   "short_name": "NISAR_L0B_CRSD_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Validated Radar Raw Signal Calibration Data (Version 1)",
+   "granules": null,
+   "level": "0",
+   "doi": null
+  },
+  "C3622265756-ASF": {
+   "short_name": "NISAR_L0B_RRSD_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Validated Radar Raw Signal Science Data (Version 1)",
+   "granules": null,
+   "level": "0",
+   "doi": "10.5067/NIL0BRRSD-V1"
+  },
+  "C2887469134-ASF": {
+   "short_name": "NISAR_UR_L0B_RRSD",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Urgent Response Radar Raw Signal Science Data",
+   "granules": null,
+   "level": "0",
+   "doi": null
+  },
+  "C3622222871-ASF": {
+   "short_name": "NISAR_ANC_AUX",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Ancillary and Auxiliary Data",
+   "granules": null,
+   "level": "Not Provided",
+   "doi": null
+  },
+  "C2727904608-ASF": {
+   "short_name": "NISAR_COP",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Coordinated Observation Plan",
+   "granules": null,
+   "level": "Not Provided",
+   "doi": null
+  },
+  "C3632501432-ASF": {
+   "short_name": "NISAR_LRCLK_UTC",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR L-SAR Radar Clock to UTC Conversion File",
+   "granules": null,
+   "level": "Not Provided",
+   "doi": null
+  },
+  "C2727911748-ASF": {
+   "short_name": "NISAR_OROST",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Observation Radar Observation Sequence Table",
+   "granules": null,
+   "level": "Not Provided",
+   "doi": null
+  },
+  "C3622233495-ASF": {
+   "short_name": "NISAR_STUF",
+   "version": "1",
+   "provider": "ASF",
+   "title": "NISAR Spacecraft Trajectory Utility File",
+   "granules": null,
+   "level": "Not Provided",
+   "doi": null
+  },
+  "C3803703055-ASF": {
+   "short_name": "NISAR_DEM",
+   "version": "1",
+   "provider": "ASF",
+   "title": "Modified Copernicus Digital Elevation Models used by the NASA-ISRO Synthetic Aperture Radar (NISAR) Mission",
+   "granules": null,
+   "level": "3",
+   "doi": "10.5067/NIDEM-1"
+  },
+  "C3807638962-ASF": {
+   "short_name": "NISAR_WATERMASK",
+   "version": "1",
+   "provider": "ASF",
+   "title": "Derived Water Mask Tiles used by the NASA-ISRO Synthetic Aperture Radar (NISAR) Mission",
+   "granules": null,
+   "level": "3",
+   "doi": null
+  },
+  "C4066106685-ASF": {
+   "short_name": "NISAR_VWC",
+   "version": "1",
+   "provider": "ASF",
+   "title": "Derived Vegetation Water Content used by the NASA-ISRO Synthetic Aperture Radar (NISAR) Mission",
+   "granules": null,
+   "level": "3",
+   "doi": "10.5067/NIVWC-1"
+  },
+  "C2734261393-ORNL_CLOUD": {
+   "short_name": "Polarimetric_CT_1601",
+   "version": "1",
+   "provider": "ORNL_CLOUD",
+   "title": "AfriSAR: Canopy Structure Derived from PolInSAR and Coherence TomoSAR NISAR tools",
+   "granules": null,
+   "level": "3",
+   "doi": "10.3334/ORNLDAAC/1601"
+  },
+  "C2949811996-POCLOUD": {
+   "short_name": "OPERA_L3_DSWX-S1_V1",
+   "version": "1.0",
+   "provider": "POCLOUD",
+   "title": "OPERA Dynamic Surface Water Extent from Sentinel-1 (Version 1)",
+   "granules": null,
+   "level": "3",
+   "doi": "10.5067/OPDSWS1-L3V1"
+  },
+  "C3294057315-ASF": {
+   "short_name": "OPERA_L3_DISP-S1_V1",
+   "version": "1",
+   "provider": "ASF",
+   "title": "OPERA Surface Displacement from Sentinel-1 validated product (Version 1)",
+   "granules": null,
+   "level": "3",
+   "doi": "10.5067/SNWG/OPL3DISPS1-V1"
+  },
+  "C4180397885-NSIDC_CPRD": {
+   "short_name": "NIVAL_MCS_Lidar",
+   "version": "1",
+   "provider": "NSIDC_CPRD",
+   "title": "NIVAL Mores Creek Summit Snow Depth, Canopy Height, and DTM from Airborne LiDAR V001",
+   "granules": null,
+   "level": "3",
+   "doi": "10.5067/DPFDH2M49DQG"
+  },
+  "C3653529349-ASF": {
+   "short_name": "ASF_ECMWF_SMST",
+   "version": "1",
+   "provider": "ASF",
+   "title": "ECMWF SMST Data",
+   "granules": null,
+   "level": "4",
+   "doi": null
+  },
+  "C3653531162-ASF": {
+   "short_name": "ASF_ECMWF_TROP",
+   "version": "1",
+   "provider": "ASF",
+   "title": "ECMWF TROPO Data",
+   "granules": null,
+   "level": "4",
+   "doi": null
+  },
+  "C3730677272-ORNL_CLOUD": {
+   "short_name": "UAVSAR_Wetland_Peace-Athabasca_2442",
+   "version": "1",
+   "provider": "ORNL_CLOUD",
+   "title": "UAVSAR Polarimetric Products for ABoVE Wetland Sites, Peace-Athabasca Delta, Canada",
+   "granules": null,
+   "level": "2",
+   "doi": "10.3334/ORNLDAAC/2442"
+  },
+  "C3235172460-ORNL_CLOUD": {
+   "short_name": "AGB_Great_Slave_Lake_NWT_2365",
+   "version": "1",
+   "provider": "ORNL_CLOUD",
+   "title": "Aboveground Biomass from SAR, Great Slave Lake Region, NWT, 2019",
+   "granules": null,
+   "level": "4",
+   "doi": "10.3334/ORNLDAAC/2365"
+  }
+ },
+ "derived": {
+  "C2887502657-ASF": {
+   "short_name": "NISAR_UR_L2",
+   "all": 6867,
+   "pilot_box": 0,
+   "first": [],
+   "last": []
+  },
+  "C2727908375-ASF": {
+   "short_name": "NISAR_OE",
+   "all": 13544,
+   "pilot_box": 0,
+   "first": [],
+   "last": []
+  },
+  "C2887499907-ASF": {
+   "short_name": "NISAR_UR_L1",
+   "all": 5980,
+   "pilot_box": 0,
+   "first": [],
+   "last": []
+  },
+  "C2727912431-ASF": {
+   "short_name": "NISAR_RP",
+   "all": 23959,
+   "pilot_box": 0,
+   "first": [],
+   "last": []
+  },
+  "C3622219145-ASF": {
+   "short_name": "NISAR_TEC",
+   "all": 499,
+   "pilot_box": 0,
+   "first": [],
+   "last": []
+  },
+  "C2887469134-ASF": {
+   "short_name": "NISAR_UR_L0B_RRSD",
+   "all": 537,
+   "pilot_box": 0,
+   "first": [],
+   "last": []
+  },
+  "C3622222871-ASF": {
+   "short_name": "NISAR_ANC_AUX",
+   "all": 31,
+   "pilot_box": 0,
+   "first": [],
+   "last": []
+  },
+  "C2727904608-ASF": {
+   "short_name": "NISAR_COP",
+   "all": 481,
+   "pilot_box": 0,
+   "first": [],
+   "last": []
+  },
+  "C3632501432-ASF": {
+   "short_name": "NISAR_LRCLK_UTC",
+   "all": 5565,
+   "pilot_box": 0,
+   "first": [],
+   "last": []
+  },
+  "C2727911748-ASF": {
+   "short_name": "NISAR_OROST",
+   "all": 481,
+   "pilot_box": 0,
+   "first": [],
+   "last": []
+  },
+  "C3622233495-ASF": {
+   "short_name": "NISAR_STUF",
+   "all": 474,
+   "pilot_box": 0,
+   "first": [],
+   "last": []
+  },
+  "C3803703055-ASF": {
+   "short_name": "NISAR_DEM",
+   "all": 71939,
+   "pilot_box": 7,
+   "first": [
+    "v1-2-EPSG4326-N40-N40_W080-DEM_N42_00_W072_00_C01-tif",
+    "v1-2-EPSG4326-N40-N40_W080-DEM_N42_00_W071_00_C01-tif"
+   ],
+   "last": [
+    "v1-2-EPSG4326-quarter_spheres-EPSG4326_NW-vrt",
+    "v1-2-EPSG4326-EPSG4326_quarter_spheres-vrt"
+   ]
+  },
+  "C3807638962-ASF": {
+   "short_name": "NISAR_WATERMASK",
+   "all": 58288,
+   "pilot_box": 5,
+   "first": [
+    "WATER_MASK-v0-5-EPSG4326-vrt",
+    "WATER_MASK-v0-5-EPSG4326-N40_50-W080_070-block-vrt"
+   ],
+   "last": [
+    "WATER_MASK-v0-5-EPSG4326-N40_50-W080_070-NISAR_water_mask_N42_N43_W72_W71_30m_v0-5-0-tif",
+    "WATER_MASK-v0-5-EPSG4326-N40_50-W080_070-NISAR_water_mask_N42_N43_W71_W70_30m_v0-5-0-tif"
+   ]
+  },
+  "C4066106685-ASF": {
+   "short_name": "NISAR_VWC",
+   "all": 366,
+   "pilot_box": 366,
+   "first": [
+    "vwc-v2-0-NISAR_VWC_M01_366_200m_002-h5",
+    "vwc-v2-0-NISAR_VWC_M01_358_200m_002-h5"
+   ],
+   "last": [
+    "vwc-v2-0-NISAR_VWC_M01_329_200m_002-h5",
+    "vwc-v2-0-NISAR_VWC_M01_320_200m_002-h5"
+   ]
+  },
+  "C2734261393-ORNL_CLOUD": {
+   "short_name": "Polarimetric_CT_1601",
+   "all": 51,
+   "pilot_box": 0,
+   "first": [],
+   "last": []
+  }
+ },
+ "goff_v1": {
+  "hits": 32,
+  "tracks": {
+   "T139 D": 4,
+   "T140 A": 1,
+   "T140 D": 7,
+   "T141 A": 12,
+   "T141 D": 8
+  },
+  "lat": [
+   -82.80896,
+   76.15719
+  ],
+  "lon": [
+   -76.07607,
+   93.49628
+  ],
+  "first": "NISAR_L2_PR_GOFF_032_139_D_126_033_4000_SH_20261009T205710_20261009T205743_20261021T205708_20261021T205743_P05036_N_F_J_001",
+  "last": "NISAR_L2_PR_GOFF_032_141_D_055_033_7700_SH_20261009T233633_20261009T233713_20261021T233633_20261021T233713_P05036_N_P_J_001"
+ },
+ "goff_prov_boxes": {
+  "NISAR_L2_GOFF_PROVISIONAL_V1 | conterminous US (-125,24,-66,50)": 392,
+  "NISAR_L2_GOFF_V1 | conterminous US (-125,24,-66,50)": 0,
+  "NISAR_L2_GOFF_PROVISIONAL_V1 | New England (-74,41,-66.9,47.5)": 0,
+  "NISAR_L2_GOFF_V1 | New England (-74,41,-66.9,47.5)": 0,
+  "NISAR_L2_GOFF_PROVISIONAL_V1 | Greenland (-75,59,-10,84)": 3386,
+  "NISAR_L2_GOFF_V1 | Greenland (-75,59,-10,84)": 10,
+  "NISAR_L2_GOFF_PROVISIONAL_V1 | Antarctica (-180,-90,180,-60)": 15681,
+  "NISAR_L2_GOFF_V1 | Antarctica (-180,-90,180,-60)": 4,
+  "NISAR_L2_GOFF_PROVISIONAL_V1 | Alaska (-170,54,-130,72)": 1475,
+  "NISAR_L2_GOFF_V1 | Alaska (-170,54,-130,72)": 0
+ }
+}

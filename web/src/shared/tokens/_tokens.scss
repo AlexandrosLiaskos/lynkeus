@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 @use "uswds-core" as uswds;
 
 // The sizes of text, the distances and the colours that every pane, tool pane and dialog shares. The style of a
@@ -54,3 +56,12 @@ $motion: 0.1s;
     transition: none;
   }
 }
+
+// An element that enters or leaves (a menu, a bubble, a pane, a message) moves for longer than a change of state,
+// and it leaves faster than it enters. Only its position and its opacity change, so that the graphics card draws
+// the motion. `motion.ts` of this folder holds the same values for the code.
+$motion-enter: 0.16s;
+$motion-exit: 0.12s;
+$motion-pane: 0.2s;
+$ease-enter: cubic-bezier(0.2, 0, 0, 1);
+$ease-exit: cubic-bezier(0.4, 0, 1, 1);

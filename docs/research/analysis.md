@@ -825,7 +825,9 @@ abstracts were read.
    as a layer of its own, with the unit `1`, and does not apply it to the terms (`_layers` in
    `api/src/lynkeus/harmony.py`). The tools apply no mask, as the cells of the source program apply
    none, and they refuse the layer `mask` as an input (part 3.4). On the pilot area the mask would
-   change no cell and no legend (part 4.4).
+   change no cell and no legend (part 4.4). The masks of the GCOV and GUNW products were measured on
+   four dates and five pairs on 15 Nov 2026, and no mask changes a cell of a result, so the tools take
+   no mask (`docs/research/analysis-masks.md`).
 9. **Alexandros: the name of the layer inside the product.** Done on 15 Nov 2026: the layer
    description has the field `layer` (part 3.1, limit 2), the Data part fills it, and every tool
    reads it (part 3.4). A layer that was received before the field existed has to be received

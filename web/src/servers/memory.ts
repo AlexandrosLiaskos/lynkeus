@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 /**
  * The memory that a job holds while it receives and writes a layer, from the cells of the layer. The rule is the
  * one of `lynkeus.computer` (`job_memory`), with which the project server tells whether the running jobs of a

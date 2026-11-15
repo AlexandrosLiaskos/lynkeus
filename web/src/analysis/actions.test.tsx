@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 import { render, renderHook, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, expect, test } from "vitest";
@@ -35,10 +37,35 @@ test("exactly the buttons of the ten finished tools have an action", () => {
   ]);
   expect(Object.keys(actions)).toEqual([...SHEET_TOOLS]);
   const declared = ANALYSIS_TAB.groups.flatMap(({ tools }) => tools.map(({ id }) => id));
-  expect(declared).toHaveLength(16);
+  expect(declared).toHaveLength(12);
   for (const tool of SHEET_TOOLS) {
     expect(declared).toContain(tool);
   }
+});
+
+test("the tab holds twelve buttons, and none for a tool that no published method gives", () => {
+  expect(
+    Object.fromEntries(ANALYSIS_TAB.groups.map(({ label, tools }) => [label, tools.map((tool) => tool.label)])),
+  ).toEqual({
+    Backscatter: ["One date", "Change", "Series", "Thematic map"],
+    Coherence: ["One pair", "Change", "Series"],
+    "Surface displacement": ["One pair", "Series"],
+    "Soil moisture": ["One date", "Change", "Series"],
+  });
+  expect(ANALYSIS_TAB.groups.flatMap(({ tools }) => tools.map(({ id }) => id))).toEqual([
+    "backscatter-state",
+    "backscatter-change",
+    "backscatter-series",
+    "backscatter-map",
+    "coherence-state",
+    "coherence-change",
+    "coherence-series",
+    "displacement-state",
+    "displacement-series",
+    "soil-moisture-state",
+    "soil-moisture-change",
+    "soil-moisture-series",
+  ]);
 });
 
 test("the ten finished buttons are active, and every other button of the tab is inactive", () => {
@@ -51,9 +78,9 @@ test("the ten finished buttons are active, and every other button of the tab is 
   );
   expect(inactive).toEqual({
     Backscatter: [false, false, false, true],
-    Coherence: [false, false, false, true],
-    "Surface displacement": [false, true, false, true],
-    "Soil moisture": [false, false, true, true],
+    Coherence: [false, false, false],
+    "Surface displacement": [false, false],
+    "Soil moisture": [false, false, true],
   });
 });
 
@@ -61,8 +88,8 @@ test("the button of a finished tool opens the tool pane of that tool, and an ina
   render(<AnalysisTab />);
   const [oneDate, change, series] = buttonsOf("Backscatter");
   const [onePair, coherenceChange, coherenceSeries] = buttonsOf("Coherence");
-  const [displacement, displacementChange, displacementSeries] = buttonsOf("Surface displacement");
-  const [moisture, moistureChange, , moistureMap] = buttonsOf("Soil moisture");
+  const [displacement, displacementSeries] = buttonsOf("Surface displacement");
+  const [moisture, moistureChange, moistureSeries] = buttonsOf("Soil moisture");
   if (
     !oneDate ||
     !change ||
@@ -71,11 +98,10 @@ test("the button of a finished tool opens the tool pane of that tool, and an ina
     !coherenceChange ||
     !coherenceSeries ||
     !displacement ||
-    !displacementChange ||
     !displacementSeries ||
     !moisture ||
     !moistureChange ||
-    !moistureMap
+    !moistureSeries
   ) {
     throw new Error("The tab does not hold the buttons of its four groups.");
   }
@@ -98,8 +124,7 @@ test("the button of a finished tool opens the tool pane of that tool, and an ina
   await userEvent.click(coherenceSeries);
   const all = [...maps, "backscatter-series", "coherence-series"];
   expect(dockStore.get().tools).toEqual(all);
-  await userEvent.click(displacementChange);
-  await userEvent.click(moistureMap);
+  await userEvent.click(moistureSeries);
   expect(dockStore.get().tools).toEqual(all);
   await userEvent.click(displacement);
   expect(dockStore.get().tools).toEqual([...all, "displacement-state"]);
@@ -111,12 +136,7 @@ test("the buttons One pair and Series of Surface displacement say in one sentenc
   const group = ANALYSIS_TAB.groups.find(({ label }) => label === "Surface displacement");
   expect(group?.tools.map(({ id, description }) => [id, description])).toEqual([
     ["displacement-state", DISPLACEMENT_STATE],
-    ["displacement-change", "Maps the change in surface displacement between two pairs of dates."],
     ["displacement-series", DISPLACEMENT_SERIES],
-    [
-      "displacement-map",
-      "Maps classes that a published algorithm of the NISAR science team derives from the surface displacement.",
-    ],
   ]);
   expect(DISPLACEMENT_STATE).toBe(
     "Maps the movement of the ground toward or away from the radar between the two dates of one pair.",

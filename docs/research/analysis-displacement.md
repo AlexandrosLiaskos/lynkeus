@@ -7,7 +7,7 @@
 | Written | 15 Nov 2026. Every source below was read on that day. |
 | Code state | Branch `displacement`, made from the branch `analysis-raster` at commit `14ea838`. The work was first built on the branch `an2-disp`, made from the branch `analysis-level-2` at commit `05930fb`, and was fitted onto the new base on 15 Nov 2026 (part 4.9) |
 | Pilot area | Lower Merrimack River: box −71.20, 42.60, −70.75, 42.95 (west, south, east, north); track 141, frame 67, descending |
-| Names of the tools | `displacement-state` is listed in `lynkeus.analysis.TOOLS`. `displacement-change`, `displacement-series` and `displacement-map` are not built |
+| Names of the tools | `displacement-state` is listed in `lynkeus.analysis.TOOLS`, and `displacement-series` in `lynkeus.analysis.SERIES_TOOLS` (`docs/research/analysis-displacement-series.md`). The buttons of `displacement-change` (part 3.3) and `displacement-map` (`docs/research/analysis-thematic-maps.md`) were removed from the Analysis tab on 15 Nov 2026 |
 
 This note records, for the tool of this part:
 
@@ -307,7 +307,8 @@ component. The published way to combine interferograms first references them to 
 difference would also hold the difference of the atmosphere of four dates. No source that was read
 defines the difference of two unreferenced interferograms as a measure of change. The tool stays out
 of `TOOLS`. The second pair of the pilot area was received and converted (part 4.4), so the inputs
-for a trial exist.
+for a trial exist. On 15 Nov 2026 the button of the tool was removed from the Analysis tab for these
+reasons.
 
 ## 4. What was measured on real files
 

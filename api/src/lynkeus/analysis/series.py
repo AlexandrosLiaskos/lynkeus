@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """The tools of the kind Series: the value of one quantity on many dates, at a point or for the area.
 
 A tool of this kind receives the arrays of its input layers one after another, with their layer descriptions,

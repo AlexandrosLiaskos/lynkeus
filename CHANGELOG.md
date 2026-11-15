@@ -116,9 +116,19 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The sources of Surface displacement, One pair in the dialog Sources of the Help tab.
 - The analysis tools Backscatter, Series and Coherence, Series: the values of many dates against time, at a point or for the area, shown as a chart with a table in the pane Series and listed under Series in the Catalog pane.
 - The analysis tool Surface displacement, Series: the movement of the ground at a point over many dates, relative to a reference point that the visitor gives, from a network of GUNW pairs, with its form in the tool pane, its method sheet and its research note.
+- The workflow that measures the loading of the running site with Lighthouse on a machine of GitHub.
 
 ### Changed
 
+- Lynkeus is licensed under the GNU Affero General Public License, version 3, with additional terms under
+  its section 7, in place of the Apache License 2.0. The terms keep the attribution to Alexandros Liaskos
+  and Team Lynkeus in every copy and every work based on Lynkeus, websites included, require a modified
+  version to say that it is modified, and grant no right to the names of the authors, the name Lynkeus or
+  its logo. Copies of the code that were obtained before this change keep the Apache License 2.0 under
+  which they were published.
+- Each layer that Get layer offers bears the name that NASA's catalogue gives it, for example Frequency A HHHH,
+  Frequency A RTC Gamma to Sigma Factor and Frequency A HH Unwrapped Interferogram Coherence Magnitude. Layers
+  received earlier keep their names.
 - Each tab of the ribbon is declared in its own folder, and the ribbon joins them.
 - The header of the application page shows only the name of the application.
 - The keyboard focus is shown by a line of 2 pixels in the primary colour. The line shows when the
@@ -179,11 +189,18 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - A notice in a pane and the outcome at the foot of a tool pane, such as those of Get layer and Search products,
   have an X that closes them. A closed notice returns when its text changes or its pane opens again, and a closed
   outcome with the next run.
+- The web server compresses the text files more strongly, and a browser keeps the files that the build names
+  after their content for a year without asking for them again. The logos and the photos of the welcome screen
+  are stored at four times the size at which the screen shows them.
 
 ### Removed
 
 - The scale bar of the map and its button in the View tab. The status bar shows the scale.
 - The footer of the application page.
+- The buttons Change and Thematic map of Surface displacement and Thematic map of Coherence and Soil moisture
+  in the Analysis tab, because no published method gives their results: the phase of each GUNW pair is
+  measured from its own arbitrary reference, so two pairs cannot be subtracted, and no published algorithm of
+  the NISAR science team that derives classes from coherence, displacement or soil moisture was found.
 
 ### Fixed
 
@@ -193,3 +210,13 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - Lynkeus Server writes a layer on a computer where PostGIS, QGIS or another program names its own map data in the
   variables PROJ_DATA, PROJ_LIB or GDAL_DATA. It used that data, PROJ refused the database of another version, and
   every job of Get layer ended with an internal error. The program now uses the map data that came with it.
+
+### Security
+
+- The web service refuses an input value that a request gives as a link. A few requests with links to a
+  host that answers very slowly could stop the sign-in, the search and the start of jobs for every visitor.
+- A session whose jobs all failed or were dismissed makes place for a new session when the server holds the
+  largest number of sessions. Requests that only start jobs that fail could fill the server with sessions,
+  after which every new visitor was refused for up to seven days.
+- A report of a server of a visitor names at most 100 jobs. Longer reports could keep the web service busy
+  and make the other requests wait.

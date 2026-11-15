@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 """A stand-in for the project server, for the tests of Lynkeus Server.
 
 It answers the addresses under ``/api/link/`` as ``docs/Own_Servers.md`` rules them, on a port of this

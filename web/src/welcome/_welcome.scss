@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Alexandros Liaskos. Additional terms under section 7 of the licence apply; see the file NOTICE.
 // The welcome screen. It covers the whole window with an illustration of the satellite, and its texts stand in
 // white over the dark lower right part of the image, under the line of the mountains. It is a poster and not a pane of the work, so it has its own
 // typeface and sizes: the name stands in EB Garamond and the small labels in the font of the page, as in the
@@ -56,7 +58,8 @@ $slide: 0.7s;
 }
 
 // Until the visitor touches the screen, it lifts a little now and then and shows the edge of the page under it. The
-// first lift comes 8 seconds after the screen has appeared, and the next ones every 8 seconds.
+// screen carries the class of the lift only while the page stands under it. The first lift comes 8 seconds after
+// the screen has appeared in full and the page stands, and the next ones every 8 seconds.
 .welcome-ready.welcome-hinting {
   animation: welcome-peek 8s cubic-bezier(0.3, 0, 0.2, 1) 8s infinite;
 }

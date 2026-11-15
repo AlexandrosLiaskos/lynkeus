@@ -60,27 +60,27 @@
   "layers": [
    {
     "name": "HHHH",
-    "title": "Backscatter HH",
+    "title": "Frequency A HHHH",
     "spacing": 10.0
    },
    {
     "name": "HVHV",
-    "title": "Backscatter HV",
+    "title": "Frequency A HVHV",
     "spacing": 10.0
    },
    {
     "name": "rtcGammaToSigmaFactor",
-    "title": "Factor from gamma nought to sigma nought",
+    "title": "Frequency A RTC Gamma to Sigma Factor",
     "spacing": 10.0
    },
    {
     "name": "numberOfLooks",
-    "title": "Number of looks",
+    "title": "Frequency A Number of Looks",
     "spacing": 10.0
    },
    {
     "name": "mask",
-    "title": "Mask of valid samples",
+    "title": "Frequency A Mask",
     "spacing": 10.0
    }
   ]
