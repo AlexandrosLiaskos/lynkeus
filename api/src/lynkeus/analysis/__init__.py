@@ -18,7 +18,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 from lynkeus.analysis.backscatter import backscatter_change, backscatter_state
-from lynkeus.analysis.coherence import coherence_state
+from lynkeus.analysis.coherence import coherence_change, coherence_state
 from lynkeus.analysis.soil_moisture import soil_moisture_change, soil_moisture_state
 from lynkeus.layers import AnalysisResult, LayerDescription
 
@@ -28,6 +28,7 @@ TOOLS: dict[str, AnalysisFunction] = {
     "backscatter-state": backscatter_state,
     "backscatter-change": backscatter_change,
     "coherence-state": coherence_state,
+    "coherence-change": coherence_change,
     "soil-moisture-state": soil_moisture_state,
     "soil-moisture-change": soil_moisture_change,
 }

@@ -1,0 +1,973 @@
+{
+ "run": "2026-11-15T10:38:33Z",
+ "commit": "84724b312461e54546fdcf5d86cb93142ca77c8b",
+ "working_tree_changes": [],
+ "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+ "python": "3.13.18",
+ "packages": {
+  "numpy": "2.5.4",
+  "rasterio": "1.5.2"
+ },
+ "gdal_of_rasterio": "3.12.2",
+ "layers": {
+  "coh20-20260717-20260810": {
+   "file": "gunw-wrappedinterferogram-hh-coherencemagnitude-20260717-20260810.tif",
+   "sha256": "792dcdfe4a311d5650ac5a245ac944885a9a454e85c97f15e4956da7aaf4c02b",
+   "bytes": 15030314,
+   "product": "NISAR_L2_PR_GUNW_025_141_D_067_027_4000_SH_20260717T234332_20260717T234407_20260810T234331_20260810T234406_P05023_N_F_J_001.h5",
+   "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+   "dates": [
+    "2026-07-17",
+    "2026-08-10"
+   ],
+   "unit": "1",
+   "crs": "EPSG:32619",
+   "transform": [
+    20.0,
+    0.0,
+    319520.0,
+    0.0,
+    -20.0,
+    4757600.0
+   ],
+   "width": 1886,
+   "height": 1985,
+   "cells": 3743710,
+   "cells_with_value": 3579092,
+   "cells_nan": 164618,
+   "min": 0.009023991413414478,
+   "max": 0.9962274432182312,
+   "mean": 0.5419778502113299,
+   "median": 0.585516631603241,
+   "cells_below_0": 0,
+   "cells_above_1": 0,
+   "cells_equal_0": 0,
+   "cells_equal_1": 0
+  },
+  "coh20-20260810-20260822": {
+   "file": "gunw-wrappedinterferogram-hh-coherencemagnitude-20260810-20260822.tif",
+   "sha256": "2d33f96db6c007145472e17e1d9438c5d6535742372d1741edcd7b3b592ba5a8",
+   "bytes": 14959714,
+   "product": "NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001.h5",
+   "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+   "dates": [
+    "2026-08-10",
+    "2026-08-22"
+   ],
+   "unit": "1",
+   "crs": "EPSG:32619",
+   "transform": [
+    20.0,
+    0.0,
+    319520.0,
+    0.0,
+    -20.0,
+    4757600.0
+   ],
+   "width": 1886,
+   "height": 1985,
+   "cells": 3743710,
+   "cells_with_value": 3579092,
+   "cells_nan": 164618,
+   "min": 0.006841079331934452,
+   "max": 0.9978604316711426,
+   "mean": 0.561396645870121,
+   "median": 0.6134979724884033,
+   "cells_below_0": 0,
+   "cells_above_1": 0,
+   "cells_equal_0": 0,
+   "cells_equal_1": 0
+  },
+  "coh20-20260915-20260927": {
+   "file": "gunw-wrappedinterferogram-hh-coherencemagnitude-20260915-20260927.tif",
+   "sha256": "ca3f576585ac53aa5088ec05b057d30d1da03720b3048b0e6d1ba045dbdf5dbe",
+   "bytes": 15018173,
+   "product": "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+   "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+   "dates": [
+    "2026-09-15",
+    "2026-09-27"
+   ],
+   "unit": "1",
+   "crs": "EPSG:32619",
+   "transform": [
+    20.0,
+    0.0,
+    319520.0,
+    0.0,
+    -20.0,
+    4757600.0
+   ],
+   "width": 1886,
+   "height": 1985,
+   "cells": 3743710,
+   "cells_with_value": 3579092,
+   "cells_nan": 164618,
+   "min": 0.007796482183039188,
+   "max": 0.9949631094932556,
+   "mean": 0.31936795717771277,
+   "median": 0.2910008430480957,
+   "cells_below_0": 0,
+   "cells_above_1": 0,
+   "cells_equal_0": 0,
+   "cells_equal_1": 0
+  },
+  "coh20-20260927-20261009": {
+   "file": "gunw-wrappedinterferogram-hh-coherencemagnitude-20260927-20261009.tif",
+   "sha256": "218e249a090fbb6dbfee23ada1d298071cc587c3b5b00fc6a31fc7235d86858b",
+   "bytes": 15013045,
+   "product": "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+   "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+   "dates": [
+    "2026-09-27",
+    "2026-10-09"
+   ],
+   "unit": "1",
+   "crs": "EPSG:32619",
+   "transform": [
+    20.0,
+    0.0,
+    319520.0,
+    0.0,
+    -20.0,
+    4757600.0
+   ],
+   "width": 1886,
+   "height": 1985,
+   "cells": 3743710,
+   "cells_with_value": 3579092,
+   "cells_nan": 164618,
+   "min": 0.006507661193609238,
+   "max": 0.9939925074577332,
+   "mean": 0.3067074436510622,
+   "median": 0.2772596478462219,
+   "cells_below_0": 0,
+   "cells_above_1": 0,
+   "cells_equal_0": 0,
+   "cells_equal_1": 0
+  },
+  "coh20-20261009-20261021": {
+   "file": "gunw-wrappedinterferogram-hh-coherencemagnitude-20261009-20261021.tif",
+   "sha256": "93b623fe0563dbdc34ccce3e9db22aa6f57dca4763429ae93fac8d9bf5117b69",
+   "bytes": 15194106,
+   "product": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+   "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+   "dates": [
+    "2026-10-09",
+    "2026-10-21"
+   ],
+   "unit": "1",
+   "crs": "EPSG:32619",
+   "transform": [
+    20.0,
+    0.0,
+    319520.0,
+    0.0,
+    -20.0,
+    4757600.0
+   ],
+   "width": 1886,
+   "height": 1985,
+   "cells": 3743710,
+   "cells_with_value": 3579092,
+   "cells_nan": 164618,
+   "min": 0.004557579755783081,
+   "max": 0.9964798092842102,
+   "mean": 0.5062995480591644,
+   "median": 0.5360533595085144,
+   "cells_below_0": 0,
+   "cells_above_1": 0,
+   "cells_equal_0": 0,
+   "cells_equal_1": 0
+  },
+  "coh80-20260927-20261009": {
+   "file": "gunw-unwrappedinterferogram-hh-coherencemagnitude-20260927-20261009.tif",
+   "sha256": "963a02eb5aff5230902a19078dc74d1cb7556ceeafbe66cfc5ef2f2ebe563e52",
+   "bytes": 736415,
+   "product": "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+   "layer": "unwrappedInterferogram/HH/coherenceMagnitude",
+   "dates": [
+    "2026-09-27",
+    "2026-10-09"
+   ],
+   "unit": "1",
+   "crs": "EPSG:32619",
+   "transform": [
+    80.0,
+    0.0,
+    319520.0,
+    0.0,
+    -80.0,
+    4757600.0
+   ],
+   "width": 471,
+   "height": 496,
+   "cells": 233616,
+   "cells_with_value": 223693,
+   "cells_nan": 9923,
+   "min": 0.008147437125444412,
+   "max": 0.9606682062149048,
+   "mean": 0.24578140585351552,
+   "median": 0.2098616361618042,
+   "cells_below_0": 0,
+   "cells_above_1": 0,
+   "cells_equal_0": 0,
+   "cells_equal_1": 0
+  },
+  "coh80-20261009-20261021": {
+   "file": "gunw-unwrappedinterferogram-hh-coherencemagnitude-20261009-20261021.tif",
+   "sha256": "5d1b5e8c5153acdbcdeff9b24885165db39ed73b158781ad4bf0c7a2f048f368",
+   "bytes": 734902,
+   "product": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5",
+   "layer": "unwrappedInterferogram/HH/coherenceMagnitude",
+   "dates": [
+    "2026-10-09",
+    "2026-10-21"
+   ],
+   "unit": "1",
+   "crs": "EPSG:32619",
+   "transform": [
+    80.0,
+    0.0,
+    319520.0,
+    0.0,
+    -80.0,
+    4757600.0
+   ],
+   "width": 471,
+   "height": 496,
+   "cells": 233616,
+   "cells_with_value": 223693,
+   "cells_nan": 9923,
+   "min": 0.008998505771160126,
+   "max": 0.9858345985412598,
+   "mean": 0.48806900537554687,
+   "median": 0.5369837284088135,
+   "cells_below_0": 0,
+   "cells_above_1": 0,
+   "cells_equal_0": 0,
+   "cells_equal_1": 0
+  }
+ },
+ "runs": {
+  "20m-0927-1009-to-1009-1021": {
+   "inputs": [
+    "coh20-20260927-20261009",
+    "coh20-20261009-20261021"
+   ],
+   "dtype": "float32",
+   "quantity": "Change of interferometric coherence (magnitude)",
+   "unit": "1",
+   "range": [
+    -1.0,
+    1.0
+   ],
+   "colours": "RdBu",
+   "ends": [
+    "decrease",
+    "increase"
+   ],
+   "reduction": "mean",
+   "method": "Difference of the coherence magnitude of two pairs of dates, later pair minus earlier pair (Fielding et al., 2005, https://doi.org/10.1029/2004JB003299; Stephenson et al., 2022, https://doi.org/10.1109/TGRS.2021.3084209)",
+   "values": {
+    "cells": 3743710,
+    "cells_with_value": 3579092,
+    "cells_nan": 164618,
+    "min": -0.8652719855308533,
+    "max": 0.8221840858459473,
+    "mean": 0.19959210440901948,
+    "deviation": 0.1895845788643303,
+    "percentiles_1_5_25_50_75_95_99": [
+     -0.35124412894248963,
+     -0.11881231963634489,
+     0.07765136286616325,
+     0.21902300417423248,
+     0.33594276010990143,
+     0.4748461082577705,
+     0.5594634079933165
+    ],
+    "percentile_99_of_absolute_values": 0.5673348349332807,
+    "cells_below_minus_0.5": 11966,
+    "cells_above_0.5": 117853,
+    "cells_equal_0": 0
+   },
+   "sha256_of_the_array_bytes": "355d60aa8bb2124258909f653d7771446d7f3acc4b3cd824064cbc7c09750b49",
+   "cells_with_value_in_first_only": 0,
+   "cells_with_value_in_second_only": 0,
+   "seconds_of_the_function": 0.031,
+   "through_run_tool": {
+    "description": {
+     "id": "result-20m-0927-1009-to-1009-1021",
+     "title": "Change of coherence, 20m-0927-1009-to-1009-1021",
+     "kind": "result",
+     "url": "/files/result-20m-0927-1009-to-1009-1021/coherence-change.tif",
+     "quantity": "Change of interferometric coherence (magnitude)",
+     "unit": "1",
+     "range": [
+      -1.0,
+      1.0
+     ],
+     "colours": "RdBu",
+     "dates": [
+      "2026-09-27",
+      "2026-10-09",
+      "2026-10-21"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+      "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": null,
+     "ends": [
+      "decrease",
+      "increase"
+     ],
+     "program": "Lynkeus 0.1.0",
+     "method": "Difference of the coherence magnitude of two pairs of dates, later pair minus earlier pair (Fielding et al., 2005, https://doi.org/10.1029/2004JB003299; Stephenson et al., 2022, https://doi.org/10.1109/TGRS.2021.3084209)",
+     "record": "/files/result-20m-0927-1009-to-1009-1021/coherence-change.json"
+    },
+    "steps": [
+     [
+      0,
+      "Reading the layers."
+     ],
+     [
+      40,
+      "Computing the result."
+     ],
+     [
+      70,
+      "Writing the result."
+     ],
+     [
+      100,
+      "The result is ready."
+     ]
+    ],
+    "file": "coherence-change.tif",
+    "sha256": "453ce50f0a8d9a39bc57d1b3bea8dfd601490763e28f741e43ca989afc548d15",
+    "bytes": 15990883,
+    "record_file": "coherence-change.json",
+    "grid_equals_the_grid_of_the_first_input": true,
+    "file_read_back_is_bit_identical_to_the_array_of_the_function": true,
+    "reduced_copies": [
+     {
+      "factor": 2,
+      "cells_with_value": 897089,
+      "cells_compared_with_the_difference_of_the_reduced_copies_of_the_inputs": 897089,
+      "largest_absolute_difference": 7.450580596923828e-08,
+      "cells_that_differ_by_more_than_1e-6": 0,
+      "cells_with_value_in_result_only": 0,
+      "cells_with_value_in_inputs_only": 0
+     },
+     {
+      "factor": 4,
+      "cells_with_value": 225672,
+      "cells_compared_with_the_difference_of_the_reduced_copies_of_the_inputs": 225672,
+      "largest_absolute_difference": 8.940696716308594e-08,
+      "cells_that_differ_by_more_than_1e-6": 0,
+      "cells_with_value_in_result_only": 0,
+      "cells_with_value_in_inputs_only": 0
+     }
+    ]
+   },
+   "seconds": 3.4
+  },
+  "20m-0915-0927-to-0927-1009": {
+   "inputs": [
+    "coh20-20260915-20260927",
+    "coh20-20260927-20261009"
+   ],
+   "dtype": "float32",
+   "quantity": "Change of interferometric coherence (magnitude)",
+   "unit": "1",
+   "range": [
+    -1.0,
+    1.0
+   ],
+   "colours": "RdBu",
+   "ends": [
+    "decrease",
+    "increase"
+   ],
+   "reduction": "mean",
+   "method": "Difference of the coherence magnitude of two pairs of dates, later pair minus earlier pair (Fielding et al., 2005, https://doi.org/10.1029/2004JB003299; Stephenson et al., 2022, https://doi.org/10.1109/TGRS.2021.3084209)",
+   "values": {
+    "cells": 3743710,
+    "cells_with_value": 3579092,
+    "cells_nan": 164618,
+    "min": -0.7172942757606506,
+    "max": 0.8288293480873108,
+    "mean": -0.012660513526221766,
+    "deviation": 0.09970307364036954,
+    "percentiles_1_5_25_50_75_95_99": [
+     -0.25339987516403195,
+     -0.17473601698875424,
+     -0.07622575759887695,
+     -0.013003498315811157,
+     0.050341833382844925,
+     0.15042103379964827,
+     0.23328517228364942
+    ],
+    "percentile_99_of_absolute_values": 0.2775146916508672,
+    "cells_below_minus_0.5": 291,
+    "cells_above_0.5": 218,
+    "cells_equal_0": 2
+   },
+   "sha256_of_the_array_bytes": "082ac184fbc6575e971d1ce3522529b258d38fcd7e30bfed364a2a816bc56dca",
+   "cells_with_value_in_first_only": 0,
+   "cells_with_value_in_second_only": 0,
+   "seconds_of_the_function": 0.021,
+   "through_run_tool": {
+    "description": {
+     "id": "result-20m-0915-0927-to-0927-1009",
+     "title": "Change of coherence, 20m-0915-0927-to-0927-1009",
+     "kind": "result",
+     "url": "/files/result-20m-0915-0927-to-0927-1009/coherence-change.tif",
+     "quantity": "Change of interferometric coherence (magnitude)",
+     "unit": "1",
+     "range": [
+      -1.0,
+      1.0
+     ],
+     "colours": "RdBu",
+     "dates": [
+      "2026-09-15",
+      "2026-09-27",
+      "2026-10-09"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+      "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+     ],
+     "layer": null,
+     "ends": [
+      "decrease",
+      "increase"
+     ],
+     "program": "Lynkeus 0.1.0",
+     "method": "Difference of the coherence magnitude of two pairs of dates, later pair minus earlier pair (Fielding et al., 2005, https://doi.org/10.1029/2004JB003299; Stephenson et al., 2022, https://doi.org/10.1109/TGRS.2021.3084209)",
+     "record": "/files/result-20m-0915-0927-to-0927-1009/coherence-change.json"
+    },
+    "steps": [
+     [
+      0,
+      "Reading the layers."
+     ],
+     [
+      40,
+      "Computing the result."
+     ],
+     [
+      70,
+      "Writing the result."
+     ],
+     [
+      100,
+      "The result is ready."
+     ]
+    ],
+    "file": "coherence-change.tif",
+    "sha256": "6827643fe0a71b3a0c9c67c0eacee93220ddccacf0d3d5c2a7230323156b943c",
+    "bytes": 17114399,
+    "record_file": "coherence-change.json",
+    "grid_equals_the_grid_of_the_first_input": true,
+    "file_read_back_is_bit_identical_to_the_array_of_the_function": true,
+    "reduced_copies": [
+     {
+      "factor": 2,
+      "cells_with_value": 897089,
+      "cells_compared_with_the_difference_of_the_reduced_copies_of_the_inputs": 897089,
+      "largest_absolute_difference": 5.960464477539063e-08,
+      "cells_that_differ_by_more_than_1e-6": 0,
+      "cells_with_value_in_result_only": 0,
+      "cells_with_value_in_inputs_only": 0
+     },
+     {
+      "factor": 4,
+      "cells_with_value": 225672,
+      "cells_compared_with_the_difference_of_the_reduced_copies_of_the_inputs": 225672,
+      "largest_absolute_difference": 8.568167686462402e-08,
+      "cells_that_differ_by_more_than_1e-6": 0,
+      "cells_with_value_in_result_only": 0,
+      "cells_with_value_in_inputs_only": 0
+     }
+    ]
+   },
+   "seconds": 2.6
+  },
+  "20m-0915-0927-to-1009-1021": {
+   "inputs": [
+    "coh20-20260915-20260927",
+    "coh20-20261009-20261021"
+   ],
+   "dtype": "float32",
+   "quantity": "Change of interferometric coherence (magnitude)",
+   "unit": "1",
+   "range": [
+    -1.0,
+    1.0
+   ],
+   "colours": "RdBu",
+   "ends": [
+    "decrease",
+    "increase"
+   ],
+   "reduction": "mean",
+   "method": "Difference of the coherence magnitude of two pairs of dates, later pair minus earlier pair (Fielding et al., 2005, https://doi.org/10.1029/2004JB003299; Stephenson et al., 2022, https://doi.org/10.1109/TGRS.2021.3084209)",
+   "values": {
+    "cells": 3743710,
+    "cells_with_value": 3579092,
+    "cells_nan": 164618,
+    "min": -0.8681036233901978,
+    "max": 0.9110451936721802,
+    "mean": 0.1869315908834321,
+    "deviation": 0.19118238763756676,
+    "percentiles_1_5_25_50_75_95_99": [
+     -0.3839336061477661,
+     -0.13106686919927596,
+     0.06566623598337173,
+     0.20432546734809875,
+     0.3232669532299042,
+     0.46621505171060557,
+     0.5538392496109008
+    ],
+    "percentile_99_of_absolute_values": 0.5652478742599483,
+    "cells_below_minus_0.5": 15298,
+    "cells_above_0.5": 103217,
+    "cells_equal_0": 0
+   },
+   "sha256_of_the_array_bytes": "cda1aff05a9fc06a6910cb6aecdc66f9ac648febb4a773d744c125b5af7b43ad",
+   "cells_with_value_in_first_only": 0,
+   "cells_with_value_in_second_only": 0,
+   "seconds_of_the_function": 0.032,
+   "through_run_tool": {
+    "description": {
+     "id": "result-20m-0915-0927-to-1009-1021",
+     "title": "Change of coherence, 20m-0915-0927-to-1009-1021",
+     "kind": "result",
+     "url": "/files/result-20m-0915-0927-to-1009-1021/coherence-change.tif",
+     "quantity": "Change of interferometric coherence (magnitude)",
+     "unit": "1",
+     "range": [
+      -1.0,
+      1.0
+     ],
+     "colours": "RdBu",
+     "dates": [
+      "2026-09-15",
+      "2026-09-27",
+      "2026-10-09",
+      "2026-10-21"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+      "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": null,
+     "ends": [
+      "decrease",
+      "increase"
+     ],
+     "program": "Lynkeus 0.1.0",
+     "method": "Difference of the coherence magnitude of two pairs of dates, later pair minus earlier pair (Fielding et al., 2005, https://doi.org/10.1029/2004JB003299; Stephenson et al., 2022, https://doi.org/10.1109/TGRS.2021.3084209)",
+     "record": "/files/result-20m-0915-0927-to-1009-1021/coherence-change.json"
+    },
+    "steps": [
+     [
+      0,
+      "Reading the layers."
+     ],
+     [
+      40,
+      "Computing the result."
+     ],
+     [
+      70,
+      "Writing the result."
+     ],
+     [
+      100,
+      "The result is ready."
+     ]
+    ],
+    "file": "coherence-change.tif",
+    "sha256": "700cbb3e231e77a1c4bd99d6b5d9a28130f3d49fcd75b29b18a5399aa5b9977d",
+    "bytes": 16072890,
+    "record_file": "coherence-change.json",
+    "grid_equals_the_grid_of_the_first_input": true,
+    "file_read_back_is_bit_identical_to_the_array_of_the_function": true,
+    "reduced_copies": [
+     {
+      "factor": 2,
+      "cells_with_value": 897089,
+      "cells_compared_with_the_difference_of_the_reduced_copies_of_the_inputs": 897089,
+      "largest_absolute_difference": 7.450580596923828e-08,
+      "cells_that_differ_by_more_than_1e-6": 0,
+      "cells_with_value_in_result_only": 0,
+      "cells_with_value_in_inputs_only": 0
+     },
+     {
+      "factor": 4,
+      "cells_with_value": 225672,
+      "cells_compared_with_the_difference_of_the_reduced_copies_of_the_inputs": 225672,
+      "largest_absolute_difference": 8.940696716308594e-08,
+      "cells_that_differ_by_more_than_1e-6": 0,
+      "cells_with_value_in_result_only": 0,
+      "cells_with_value_in_inputs_only": 0
+     }
+    ]
+   },
+   "seconds": 2.1
+  },
+  "20m-0810-0822-to-0915-0927": {
+   "inputs": [
+    "coh20-20260810-20260822",
+    "coh20-20260915-20260927"
+   ],
+   "dtype": "float32",
+   "quantity": "Change of interferometric coherence (magnitude)",
+   "unit": "1",
+   "range": [
+    -1.0,
+    1.0
+   ],
+   "colours": "RdBu",
+   "ends": [
+    "decrease",
+    "increase"
+   ],
+   "reduction": "mean",
+   "method": "Difference of the coherence magnitude of two pairs of dates, later pair minus earlier pair (Fielding et al., 2005, https://doi.org/10.1029/2004JB003299; Stephenson et al., 2022, https://doi.org/10.1109/TGRS.2021.3084209)",
+   "values": {
+    "cells": 3743710,
+    "cells_with_value": 3579092,
+    "cells_nan": 164618,
+    "min": -0.8524406552314758,
+    "max": 0.8717703819274902,
+    "mean": -0.2420286886927653,
+    "deviation": 0.21547029963739767,
+    "percentiles_1_5_25_50_75_95_99": [
+     -0.6323338341712952,
+     -0.5501465797424316,
+     -0.40473470091819763,
+     -0.2685692310333252,
+     -0.09181860834360123,
+     0.11954630985856035,
+     0.3512488728761658
+    ],
+    "percentile_99_of_absolute_values": 0.6350359481573105,
+    "cells_below_minus_0.5": 359994,
+    "cells_above_0.5": 11798,
+    "cells_equal_0": 1
+   },
+   "sha256_of_the_array_bytes": "165bca5d435d3168a6289e705324cd71c1c7684578f4c8b656843ba13b01d0f3",
+   "cells_with_value_in_first_only": 0,
+   "cells_with_value_in_second_only": 0,
+   "seconds_of_the_function": 0.036,
+   "through_run_tool": {
+    "description": {
+     "id": "result-20m-0810-0822-to-0915-0927",
+     "title": "Change of coherence, 20m-0810-0822-to-0915-0927",
+     "kind": "result",
+     "url": "/files/result-20m-0810-0822-to-0915-0927/coherence-change.tif",
+     "quantity": "Change of interferometric coherence (magnitude)",
+     "unit": "1",
+     "range": [
+      -1.0,
+      1.0
+     ],
+     "colours": "RdBu",
+     "dates": [
+      "2026-08-10",
+      "2026-08-22",
+      "2026-09-15",
+      "2026-09-27"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001.h5",
+      "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5"
+     ],
+     "layer": null,
+     "ends": [
+      "decrease",
+      "increase"
+     ],
+     "program": "Lynkeus 0.1.0",
+     "method": "Difference of the coherence magnitude of two pairs of dates, later pair minus earlier pair (Fielding et al., 2005, https://doi.org/10.1029/2004JB003299; Stephenson et al., 2022, https://doi.org/10.1109/TGRS.2021.3084209)",
+     "record": "/files/result-20m-0810-0822-to-0915-0927/coherence-change.json"
+    },
+    "steps": [
+     [
+      0,
+      "Reading the layers."
+     ],
+     [
+      40,
+      "Computing the result."
+     ],
+     [
+      70,
+      "Writing the result."
+     ],
+     [
+      100,
+      "The result is ready."
+     ]
+    ],
+    "file": "coherence-change.tif",
+    "sha256": "6066e4c7a26e862c78119d99b85d0269baffb583100ec0259f43c34955a2e87a",
+    "bytes": 16029828,
+    "record_file": "coherence-change.json",
+    "grid_equals_the_grid_of_the_first_input": true,
+    "file_read_back_is_bit_identical_to_the_array_of_the_function": true,
+    "reduced_copies": [
+     {
+      "factor": 2,
+      "cells_with_value": 897089,
+      "cells_compared_with_the_difference_of_the_reduced_copies_of_the_inputs": 897089,
+      "largest_absolute_difference": 8.940696716308594e-08,
+      "cells_that_differ_by_more_than_1e-6": 0,
+      "cells_with_value_in_result_only": 0,
+      "cells_with_value_in_inputs_only": 0
+     },
+     {
+      "factor": 4,
+      "cells_with_value": 225672,
+      "cells_compared_with_the_difference_of_the_reduced_copies_of_the_inputs": 225672,
+      "largest_absolute_difference": 8.940696716308594e-08,
+      "cells_that_differ_by_more_than_1e-6": 0,
+      "cells_with_value_in_result_only": 0,
+      "cells_with_value_in_inputs_only": 0
+     }
+    ]
+   },
+   "seconds": 2.2
+  },
+  "80m-0927-1009-to-1009-1021": {
+   "inputs": [
+    "coh80-20260927-20261009",
+    "coh80-20261009-20261021"
+   ],
+   "dtype": "float32",
+   "quantity": "Change of interferometric coherence (magnitude)",
+   "unit": "1",
+   "range": [
+    -1.0,
+    1.0
+   ],
+   "colours": "RdBu",
+   "ends": [
+    "decrease",
+    "increase"
+   ],
+   "reduction": "mean",
+   "method": "Difference of the coherence magnitude of two pairs of dates, later pair minus earlier pair (Fielding et al., 2005, https://doi.org/10.1029/2004JB003299; Stephenson et al., 2022, https://doi.org/10.1109/TGRS.2021.3084209)",
+   "values": {
+    "cells": 233616,
+    "cells_with_value": 223693,
+    "cells_nan": 9923,
+    "min": -0.7827510237693787,
+    "max": 0.7389535903930664,
+    "mean": 0.2422875995118477,
+    "deviation": 0.19063149618399805,
+    "percentiles_1_5_25_50_75_95_99": [
+     -0.41779212951660155,
+     -0.06869447827339172,
+     0.13965168595314026,
+     0.28578343987464905,
+     0.3750249743461609,
+     0.4789468824863434,
+     0.5427102041244506
+    ],
+    "percentile_99_of_absolute_values": 0.5547498321533203,
+    "cells_below_minus_0.5": 1189,
+    "cells_above_0.5": 6963,
+    "cells_equal_0": 0
+   },
+   "sha256_of_the_array_bytes": "ed5b820206241b0e1e325475c5c1543dbb7ddfb8cea821bd931ff24b6042756e",
+   "cells_with_value_in_first_only": 0,
+   "cells_with_value_in_second_only": 0,
+   "seconds_of_the_function": 0.0,
+   "through_run_tool": {
+    "description": {
+     "id": "result-80m-0927-1009-to-1009-1021",
+     "title": "Change of coherence, 80m-0927-1009-to-1009-1021",
+     "kind": "result",
+     "url": "/files/result-80m-0927-1009-to-1009-1021/coherence-change.tif",
+     "quantity": "Change of interferometric coherence (magnitude)",
+     "unit": "1",
+     "range": [
+      -1.0,
+      1.0
+     ],
+     "colours": "RdBu",
+     "dates": [
+      "2026-09-27",
+      "2026-10-09",
+      "2026-10-21"
+     ],
+     "inputs": [
+      "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5",
+      "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+     ],
+     "layer": null,
+     "ends": [
+      "decrease",
+      "increase"
+     ],
+     "program": "Lynkeus 0.1.0",
+     "method": "Difference of the coherence magnitude of two pairs of dates, later pair minus earlier pair (Fielding et al., 2005, https://doi.org/10.1029/2004JB003299; Stephenson et al., 2022, https://doi.org/10.1109/TGRS.2021.3084209)",
+     "record": "/files/result-80m-0927-1009-to-1009-1021/coherence-change.json"
+    },
+    "steps": [
+     [
+      0,
+      "Reading the layers."
+     ],
+     [
+      40,
+      "Computing the result."
+     ],
+     [
+      70,
+      "Writing the result."
+     ],
+     [
+      100,
+      "The result is ready."
+     ]
+    ],
+    "file": "coherence-change.tif",
+    "sha256": "2f88ab97b0d50172ad52ed08476f5c062c655ebf1195993fccba6a020a2d3b70",
+    "bytes": 751463,
+    "record_file": "coherence-change.json",
+    "grid_equals_the_grid_of_the_first_input": true,
+    "file_read_back_is_bit_identical_to_the_array_of_the_function": true,
+    "reduced_copies": []
+   },
+   "seconds": 0.1
+  }
+ },
+ "refusals_of_the_function": {
+  "later pair first": {
+   "inputs": [
+    "coh20-20261009-20261021",
+    "coh20-20260927-20261009"
+   ],
+   "refused": true,
+   "sentence": "The pair of the first layer must end on or before the first date of the pair of the second."
+  },
+  "pairs of 24 and 12 days": {
+   "inputs": [
+    "coh20-20260717-20260810",
+    "coh20-20260810-20260822"
+   ],
+   "refused": true,
+   "sentence": "The two pairs do not span the same number of days: the first spans 24 days and the second 12 days."
+  },
+  "pairs of 12 and 24 days, apart": {
+   "inputs": [
+    "coh20-20260810-20260822",
+    "coh20-20260717-20260810"
+   ],
+   "refused": true,
+   "sentence": "The pair of the first layer must end on or before the first date of the pair of the second."
+  },
+  "20 m layer with 80 m layer": {
+   "inputs": [
+    "coh20-20260927-20261009",
+    "coh80-20261009-20261021"
+   ],
+   "refused": true,
+   "sentence": "The input layers do not have the same grid."
+  },
+  "80 m layer with 20 m layer": {
+   "inputs": [
+    "coh80-20260927-20261009",
+    "coh20-20261009-20261021"
+   ],
+   "refused": true,
+   "sentence": "The input layers do not have the same grid."
+  },
+  "one layer given twice": {
+   "inputs": [
+    "coh20-20261009-20261021",
+    "coh20-20261009-20261021"
+   ],
+   "refused": true,
+   "sentence": "The pair of the first layer must end on or before the first date of the pair of the second."
+  },
+  "one layer only": {
+   "inputs": [
+    "coh20-20261009-20261021"
+   ],
+   "refused": true,
+   "sentence": "The number of input layers must be 2, and it is 1."
+  }
+ },
+ "refusals_through_run_tool": {
+  "later pair first": {
+   "inputs": [
+    "coh20-20261009-20261021",
+    "coh20-20260927-20261009"
+   ],
+   "refused": true,
+   "sentence": "The pair of the first layer must end on or before the first date of the pair of the second.",
+   "files_written": 0
+  },
+  "pairs of 24 and 12 days": {
+   "inputs": [
+    "coh20-20260717-20260810",
+    "coh20-20260810-20260822"
+   ],
+   "refused": true,
+   "sentence": "The two pairs do not span the same number of days: the first spans 24 days and the second 12 days.",
+   "files_written": 0
+  },
+  "pairs of 12 and 24 days, apart": {
+   "inputs": [
+    "coh20-20260810-20260822",
+    "coh20-20260717-20260810"
+   ],
+   "refused": true,
+   "sentence": "The pair of the first layer must end on or before the first date of the pair of the second.",
+   "files_written": 0
+  },
+  "20 m layer with 80 m layer": {
+   "inputs": [
+    "coh20-20260927-20261009",
+    "coh80-20261009-20261021"
+   ],
+   "refused": true,
+   "sentence": "The layers of the analysis do not have the same grid.",
+   "files_written": 0
+  },
+  "80 m layer with 20 m layer": {
+   "inputs": [
+    "coh80-20260927-20261009",
+    "coh20-20261009-20261021"
+   ],
+   "refused": true,
+   "sentence": "The layers of the analysis do not have the same grid.",
+   "files_written": 0
+  },
+  "one layer given twice": {
+   "inputs": [
+    "coh20-20261009-20261021",
+    "coh20-20261009-20261021"
+   ],
+   "refused": true,
+   "sentence": "The pair of the first layer must end on or before the first date of the pair of the second.",
+   "files_written": 0
+  },
+  "one layer only": {
+   "inputs": [
+    "coh20-20261009-20261021"
+   ],
+   "refused": true,
+   "sentence": "The number of input layers must be 2, and it is 1.",
+   "files_written": 0
+  }
+ }
+}

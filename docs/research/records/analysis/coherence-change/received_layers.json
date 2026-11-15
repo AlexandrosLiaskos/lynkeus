@@ -1,0 +1,948 @@
+{
+ "note": "What lynkeus.harmony.get_layer returned for each layer of the pilot area: the layer request, the layer description, the two files written and the time taken.",
+ "layers": {
+  "coh20-20260717-20260810": {
+   "key": "coh20-20260717-20260810",
+   "request": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_025_141_D_067_027_4000_SH_20260717T234332_20260717T234407_20260810T234331_20260810T234406_P05023_N_F_J_001",
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "began": "2026-11-15T09:52:12Z",
+   "description": {
+    "id": "coh20-20260717-20260810",
+    "title": "Coherence HH, 20 m, 17 Jul 2026 to 10 Aug 2026",
+    "kind": "layer",
+    "url": "/files/coh20-20260717-20260810/gunw-wrappedinterferogram-hh-coherencemagnitude-20260717-20260810.tif",
+    "quantity": "Interferometric coherence magnitude, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-07-17",
+     "2026-08-10"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_025_141_D_067_027_4000_SH_20260717T234332_20260717T234407_20260810T234331_20260810T234406_P05023_N_F_J_001.h5"
+    ],
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "ends": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/coh20-20260717-20260810/gunw-wrappedinterferogram-hh-coherencemagnitude-20260717-20260810.json"
+   },
+   "files": {
+    "gunw-wrappedinterferogram-hh-coherencemagnitude-20260717-20260810.json": {
+     "bytes": 5003,
+     "sha256": "140f56e34e48756fa5f878046e4c6ba5bf6e4573ef72938cf895561fb4e80643"
+    },
+    "gunw-wrappedinterferogram-hh-coherencemagnitude-20260717-20260810.tif": {
+     "bytes": 15030314,
+     "sha256": "792dcdfe4a311d5650ac5a245ac944885a9a454e85c97f15e4956da7aaf4c02b"
+    }
+   },
+   "status": "received",
+   "seconds": 55.9,
+   "steps": [
+    [
+     "09:52:12Z",
+     0,
+     "Finding the product in NASA's catalogue."
+    ],
+    [
+     "09:52:13Z",
+     5,
+     "Asking NASA Harmony for the layer."
+    ],
+    [
+     "09:52:16Z",
+     5,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:19Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:23Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:26Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:29Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:33Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:36Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:39Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:42Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:46Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:49Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:52Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:56Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:59Z",
+     85,
+     "Receiving the layer from NASA Harmony."
+    ],
+    [
+     "09:53:07Z",
+     90,
+     "Writing the layer."
+    ],
+    [
+     "09:53:08Z",
+     100,
+     "The layer is ready."
+    ]
+   ]
+  },
+  "coh20-20260810-20260822": {
+   "key": "coh20-20260810-20260822",
+   "request": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001",
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "began": "2026-11-15T09:51:58Z",
+   "description": {
+    "id": "coh20-20260810-20260822",
+    "title": "Coherence HH, 20 m, 10 Aug 2026 to 22 Aug 2026",
+    "kind": "layer",
+    "url": "/files/coh20-20260810-20260822/gunw-wrappedinterferogram-hh-coherencemagnitude-20260810-20260822.tif",
+    "quantity": "Interferometric coherence magnitude, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-08-10",
+     "2026-08-22"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_027_141_D_067_028_4000_SH_20260810T234331_20260810T234406_20260822T234330_20260822T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "ends": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/coh20-20260810-20260822/gunw-wrappedinterferogram-hh-coherencemagnitude-20260810-20260822.json"
+   },
+   "files": {
+    "gunw-wrappedinterferogram-hh-coherencemagnitude-20260810-20260822.json": {
+     "bytes": 5003,
+     "sha256": "3016eb4409efa59c7b3fdabf68784ae31d8c9f171351a11e432848c0e0e518e5"
+    },
+    "gunw-wrappedinterferogram-hh-coherencemagnitude-20260810-20260822.tif": {
+     "bytes": 14959714,
+     "sha256": "2d33f96db6c007145472e17e1d9438c5d6535742372d1741edcd7b3b592ba5a8"
+    }
+   },
+   "status": "received",
+   "seconds": 43.3,
+   "steps": [
+    [
+     "09:51:58Z",
+     0,
+     "Finding the product in NASA's catalogue."
+    ],
+    [
+     "09:51:58Z",
+     5,
+     "Asking NASA Harmony for the layer."
+    ],
+    [
+     "09:52:03Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:07Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:10Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:14Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:17Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:21Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:24Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:28Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:31Z",
+     85,
+     "Receiving the layer from NASA Harmony."
+    ],
+    [
+     "09:52:39Z",
+     90,
+     "Writing the layer."
+    ],
+    [
+     "09:52:41Z",
+     100,
+     "The layer is ready."
+    ]
+   ]
+  },
+  "coh20-20260915-20260927": {
+   "key": "coh20-20260915-20260927",
+   "request": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001",
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "began": "2026-11-15T09:51:04Z",
+   "description": {
+    "id": "coh20-20260915-20260927",
+    "title": "Coherence HH, 20 m, 15 Sep 2026 to 27 Sep 2026",
+    "kind": "layer",
+    "url": "/files/coh20-20260915-20260927/gunw-wrappedinterferogram-hh-coherencemagnitude-20260915-20260927.tif",
+    "quantity": "Interferometric coherence magnitude, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-09-15",
+     "2026-09-27"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_030_141_D_067_031_4000_SH_20260915T234330_20260915T234405_20260927T234330_20260927T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "ends": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/coh20-20260915-20260927/gunw-wrappedinterferogram-hh-coherencemagnitude-20260915-20260927.json"
+   },
+   "files": {
+    "gunw-wrappedinterferogram-hh-coherencemagnitude-20260915-20260927.json": {
+     "bytes": 5004,
+     "sha256": "73243e52d38cd0ccb1de5b997e30a98f058543a3c02fbeced7afa9a4c895beb1"
+    },
+    "gunw-wrappedinterferogram-hh-coherencemagnitude-20260915-20260927.tif": {
+     "bytes": 15018173,
+     "sha256": "ca3f576585ac53aa5088ec05b057d30d1da03720b3048b0e6d1ba045dbdf5dbe"
+    }
+   },
+   "status": "received",
+   "seconds": 56.5,
+   "steps": [
+    [
+     "09:51:04Z",
+     0,
+     "Finding the product in NASA's catalogue."
+    ],
+    [
+     "09:51:05Z",
+     5,
+     "Asking NASA Harmony for the layer."
+    ],
+    [
+     "09:51:08Z",
+     5,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:11Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:14Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:18Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:21Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:24Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:27Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:31Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:34Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:37Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:41Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:44Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:48Z",
+     85,
+     "Receiving the layer from NASA Harmony."
+    ],
+    [
+     "09:51:56Z",
+     90,
+     "Writing the layer."
+    ],
+    [
+     "09:52:01Z",
+     100,
+     "The layer is ready."
+    ]
+   ]
+  },
+  "coh20-20260927-20261009": {
+   "key": "coh20-20260927-20261009",
+   "request": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001",
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "began": "2026-11-15T09:51:04Z",
+   "description": {
+    "id": "coh20-20260927-20261009",
+    "title": "Coherence HH, 20 m, 27 Sep 2026 to 9 Oct 2026",
+    "kind": "layer",
+    "url": "/files/coh20-20260927-20261009/gunw-wrappedinterferogram-hh-coherencemagnitude-20260927-20261009.tif",
+    "quantity": "Interferometric coherence magnitude, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-09-27",
+     "2026-10-09"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "ends": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/coh20-20260927-20261009/gunw-wrappedinterferogram-hh-coherencemagnitude-20260927-20261009.json"
+   },
+   "files": {
+    "gunw-wrappedinterferogram-hh-coherencemagnitude-20260927-20261009.json": {
+     "bytes": 5002,
+     "sha256": "bba31b21c12f6018ce4507b7b7f6eeaeda83843aaa467a0a59862b343daa017d"
+    },
+    "gunw-wrappedinterferogram-hh-coherencemagnitude-20260927-20261009.tif": {
+     "bytes": 15013045,
+     "sha256": "218e249a090fbb6dbfee23ada1d298071cc587c3b5b00fc6a31fc7235d86858b"
+    }
+   },
+   "status": "received",
+   "seconds": 57.9,
+   "steps": [
+    [
+     "09:51:04Z",
+     0,
+     "Finding the product in NASA's catalogue."
+    ],
+    [
+     "09:51:05Z",
+     5,
+     "Asking NASA Harmony for the layer."
+    ],
+    [
+     "09:51:08Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:11Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:14Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:18Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:21Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:24Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:28Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:31Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:35Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:38Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:41Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:45Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:48Z",
+     85,
+     "Receiving the layer from NASA Harmony."
+    ],
+    [
+     "09:51:57Z",
+     90,
+     "Writing the layer."
+    ],
+    [
+     "09:52:02Z",
+     100,
+     "The layer is ready."
+    ]
+   ]
+  },
+  "coh20-20261009-20261021": {
+   "key": "coh20-20261009-20261021",
+   "request": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "began": "2026-11-15T09:51:04Z",
+   "description": {
+    "id": "coh20-20261009-20261021",
+    "title": "Coherence HH, 20 m, 9 Oct 2026 to 21 Oct 2026",
+    "kind": "layer",
+    "url": "/files/coh20-20261009-20261021/gunw-wrappedinterferogram-hh-coherencemagnitude-20261009-20261021.tif",
+    "quantity": "Interferometric coherence magnitude, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-10-09",
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "wrappedInterferogram/HH/coherenceMagnitude",
+    "ends": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/coh20-20261009-20261021/gunw-wrappedinterferogram-hh-coherencemagnitude-20261009-20261021.json"
+   },
+   "files": {
+    "gunw-wrappedinterferogram-hh-coherencemagnitude-20261009-20261021.json": {
+     "bytes": 5001,
+     "sha256": "a59925ba6f3171d5b9130ca51e28ecbb565d7b4305abb96356c3102f0c064707"
+    },
+    "gunw-wrappedinterferogram-hh-coherencemagnitude-20261009-20261021.tif": {
+     "bytes": 15194106,
+     "sha256": "93b623fe0563dbdc34ccce3e9db22aa6f57dca4763429ae93fac8d9bf5117b69"
+    }
+   },
+   "status": "received",
+   "seconds": 44.1,
+   "steps": [
+    [
+     "09:51:04Z",
+     0,
+     "Finding the product in NASA's catalogue."
+    ],
+    [
+     "09:51:05Z",
+     5,
+     "Asking NASA Harmony for the layer."
+    ],
+    [
+     "09:51:08Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:11Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:14Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:18Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:21Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:24Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:28Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:31Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:34Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:51:37Z",
+     85,
+     "Receiving the layer from NASA Harmony."
+    ],
+    [
+     "09:51:46Z",
+     90,
+     "Writing the layer."
+    ],
+    [
+     "09:51:48Z",
+     100,
+     "The layer is ready."
+    ]
+   ]
+  },
+  "coh80-20260927-20261009": {
+   "key": "coh80-20260927-20261009",
+   "request": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001",
+    "layer": "unwrappedInterferogram/HH/coherenceMagnitude",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "began": "2026-11-15T09:52:47Z",
+   "description": {
+    "id": "coh80-20260927-20261009",
+    "title": "Coherence HH, 80 m, 27 Sep 2026 to 9 Oct 2026",
+    "kind": "layer",
+    "url": "/files/coh80-20260927-20261009/gunw-unwrappedinterferogram-hh-coherencemagnitude-20260927-20261009.tif",
+    "quantity": "Interferometric coherence magnitude, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-09-27",
+     "2026-10-09"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_031_141_D_067_032_4000_SH_20260927T234330_20260927T234405_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/coherenceMagnitude",
+    "ends": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/coh80-20260927-20261009/gunw-unwrappedinterferogram-hh-coherencemagnitude-20260927-20261009.json"
+   },
+   "files": {
+    "gunw-unwrappedinterferogram-hh-coherencemagnitude-20260927-20261009.json": {
+     "bytes": 5009,
+     "sha256": "2fd38de50e2123c62cc119ddba921e7939c8632bba88935f7f3c07677a186be6"
+    },
+    "gunw-unwrappedinterferogram-hh-coherencemagnitude-20260927-20261009.tif": {
+     "bytes": 736415,
+     "sha256": "963a02eb5aff5230902a19078dc74d1cb7556ceeafbe66cfc5ef2f2ebe563e52"
+    }
+   },
+   "status": "received",
+   "seconds": 58.0,
+   "steps": [
+    [
+     "09:52:47Z",
+     0,
+     "Finding the product in NASA's catalogue."
+    ],
+    [
+     "09:52:47Z",
+     5,
+     "Asking NASA Harmony for the layer."
+    ],
+    [
+     "09:52:50Z",
+     5,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:54Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:57Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:53:01Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:53:04Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:53:07Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:53:11Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:53:14Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:53:18Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:53:21Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:53:24Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:53:28Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:53:31Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:53:34Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:53:38Z",
+     85,
+     "Receiving the layer from NASA Harmony."
+    ],
+    [
+     "09:53:45Z",
+     90,
+     "Writing the layer."
+    ],
+    [
+     "09:53:45Z",
+     100,
+     "The layer is ready."
+    ]
+   ]
+  },
+  "coh80-20261009-20261021": {
+   "key": "coh80-20261009-20261021",
+   "request": {
+    "product": "GUNW",
+    "granule": "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "layer": "unwrappedInterferogram/HH/coherenceMagnitude",
+    "area": {
+     "west": -71.2,
+     "south": 42.6,
+     "east": -70.75,
+     "north": 42.95
+    }
+   },
+   "began": "2026-11-15T09:52:14Z",
+   "description": {
+    "id": "coh80-20261009-20261021",
+    "title": "Coherence HH, 80 m, 9 Oct 2026 to 21 Oct 2026",
+    "kind": "layer",
+    "url": "/files/coh80-20261009-20261021/gunw-unwrappedinterferogram-hh-coherencemagnitude-20261009-20261021.tif",
+    "quantity": "Interferometric coherence magnitude, HH",
+    "unit": "1",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "colours": "grey",
+    "dates": [
+     "2026-10-09",
+     "2026-10-21"
+    ],
+    "inputs": [
+     "NISAR_L2_PR_GUNW_032_141_D_067_033_4000_SH_20261009T234330_20261009T234405_20261021T234330_20261021T234405_P05036_N_F_J_001.h5"
+    ],
+    "layer": "unwrappedInterferogram/HH/coherenceMagnitude",
+    "ends": null,
+    "program": "Lynkeus 0.1.0",
+    "method": null,
+    "record": "/files/coh80-20261009-20261021/gunw-unwrappedinterferogram-hh-coherencemagnitude-20261009-20261021.json"
+   },
+   "files": {
+    "gunw-unwrappedinterferogram-hh-coherencemagnitude-20261009-20261021.json": {
+     "bytes": 5010,
+     "sha256": "e4cfc24db363cf7c720cd2813e168ceba4405c4028fa51f9626e438bc90916eb"
+    },
+    "gunw-unwrappedinterferogram-hh-coherencemagnitude-20261009-20261021.tif": {
+     "bytes": 734902,
+     "sha256": "5d1b5e8c5153acdbcdeff9b24885165db39ed73b158781ad4bf0c7a2f048f368"
+    }
+   },
+   "status": "received",
+   "seconds": 45.1,
+   "steps": [
+    [
+     "09:52:14Z",
+     0,
+     "Finding the product in NASA's catalogue."
+    ],
+    [
+     "09:52:15Z",
+     5,
+     "Asking NASA Harmony for the layer."
+    ],
+    [
+     "09:52:18Z",
+     5,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:21Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:25Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:28Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:31Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:34Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:38Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:41Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:45Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:48Z",
+     12,
+     "NASA Harmony is preparing the layer."
+    ],
+    [
+     "09:52:52Z",
+     85,
+     "Receiving the layer from NASA Harmony."
+    ],
+    [
+     "09:52:59Z",
+     90,
+     "Writing the layer."
+    ],
+    [
+     "09:52:59Z",
+     100,
+     "The layer is ready."
+    ]
+   ]
+  }
+ }
+}
