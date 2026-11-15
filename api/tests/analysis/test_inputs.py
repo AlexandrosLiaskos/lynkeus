@@ -118,6 +118,21 @@ def test_layer_of_another_product_type_is_refused() -> None:
         check_terms([POWER], [layer(GUNW_9_21_OCT, "2026-10-21")], count=1)
 
 
+def test_unit_that_the_tool_names_is_required() -> None:
+    moisture = re.compile("soilMoisture")
+    wet = layer(GCOV_21_OCT, "2026-10-21", layer="soilMoisture", unit="m3 m-3")
+
+    def check(layers: Any) -> Any:
+        return check_inputs(
+            [POWER], layers, count=1, product="GCOV", names=moisture, reads="the soil moisture", dates=1, unit="m3 m-3"
+        )
+
+    assert check([wet]) == (Acquisition("L", 141, "D", 67),)
+    with pytest.raises(LayerError) as refusal:
+        check([layer(GCOV_21_OCT, "2026-10-21", layer="soilMoisture")])
+    assert str(refusal.value) == 'The layer "Layer of 2026-10-21" has the unit 1, and the tool reads the unit m3 m-3.'
+
+
 def test_pair_with_one_date_is_refused() -> None:
     with pytest.raises(LayerError, match="must be 2, and it is 1"):
         check_pair([POWER], [layer(GUNW_9_21_OCT, "2026-10-21", layer=COHERENCE)])

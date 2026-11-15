@@ -36,6 +36,7 @@ def check_inputs(
     names: re.Pattern[str],
     reads: str,
     dates: int,
+    unit: str = "1",
 ) -> tuple[Acquisition, ...]:
     """Check the input layers of a tool.
 
@@ -55,6 +56,8 @@ def check_inputs(
         The layers that ``names`` accepts, in words that end the sentence of a refusal.
     dates : int
         Number of dates of each layer: 1 for an acquisition, 2 for a pair.
+    unit : str
+        Unit that the product declares for the layers that ``names`` accepts. It is ``1`` unless given.
 
     Returns
     -------
@@ -66,7 +69,8 @@ def check_inputs(
     LayerError
         If the number of layers is not ``count``; if the grids differ in size; if a layer was not received from
         one product file of the type ``product``, does not record the name of its layer inside the product,
-        records a name that ``names`` does not match, does not carry the unit ``1`` that the product declares,
+        records a name that ``names`` does not match, does not carry the unit ``unit`` that the product
+        declares,
         or does not have ``dates`` dates.
     ValueError
         If the arrays and the descriptions differ in number, or an array is not as described above. These are
@@ -95,8 +99,10 @@ def check_inputs(
             raise LayerError(
                 f'The layer "{layer.title}" is the layer {layer.layer} of its product, and the tool reads {reads}.'
             )
-        if layer.unit != "1":
-            raise LayerError(f'The layer "{layer.title}" has the unit {layer.unit}, and the tool reads the unit 1.')
+        if layer.unit != unit:
+            raise LayerError(
+                f'The layer "{layer.title}" has the unit {layer.unit}, and the tool reads the unit {unit}.'
+            )
         if len(layer.dates) != dates:
             raise LayerError(
                 f'The number of dates of the layer "{layer.title}" must be {dates}, and it is {len(layer.dates)}.'

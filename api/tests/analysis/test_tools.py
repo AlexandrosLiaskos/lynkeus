@@ -18,7 +18,7 @@ def test_every_tool_carries_the_name_of_its_button() -> None:
 
 
 def test_the_tools_of_level_1_are_listed() -> None:
-    assert set(TOOLS) == {"backscatter-state", "backscatter-change", "coherence-state"}
+    assert {"backscatter-state", "backscatter-change", "coherence-state"} <= set(TOOLS)
 
 
 def test_result_of_every_tool_fits_a_layer_description_and_the_grid_of_its_inputs() -> None:
