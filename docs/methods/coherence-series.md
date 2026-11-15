@@ -12,12 +12,12 @@
 | | |
 |---|---|
 | What it shows | The interferometric coherence of many pairs of dates against time, at a point or as the mean of the area: a value from 0 to 1 that states how alike the radar echoes of two dates are. |
-| Input | The same coherence layer (`coherenceMagnitude`) of 2 to 50 GUNW products of one track, direction and frame, one for each pair. A point is given by its latitude and longitude. |
-| Formula | The mean of the layer of the product over the cells of each pair. At a point it is the one cell that holds the point. |
+| Input | The same coherence layer (`coherenceMagnitude`) of 2 to 50 GUNW products of one track, direction and frame, one for each pair. A point is given by its latitude and longitude, and an area is drawn on the map or is the whole layer. |
+| Formula | The mean of the layer of the product over the cells of each pair inside the area. At a point it is the one cell that holds the point. |
 | Result | A series without unit, from 0 to 1: one value for each pair, with the number of cells behind it. It is shown as a chart and a table, and it has no file. |
 | How to read | Each value is one pair, drawn from its first to its second date. Near 1, the radar echoes of the two dates are alike, and near 0 they differ. Pairs of different spans can stand in one series. |
 | Limits | The values may come from products of two processing releases, provisional and validated, and it is not confirmed that they compare without a correction. The mean coherence of an area is biased toward higher values (Touzi et al., 1999, abstract), and the tool applies no correction. One area and three pairs were compared. |
-| Checked | For the mean of the area, the values differ by less than 0.0000001 from the mean that the code of a notebook of the ASF NISAR Cookbook gives on the same layers, and at five points they are equal (lower Merrimack River, 15 Sep to 21 Oct 2026). |
+| Checked | For the mean of the area, the values differ by less than 0.0000001 from the mean that the code of a notebook of the ASF NISAR Cookbook gives on the same layers, and at five points they are equal (lower Merrimack River, 15 Sep to 21 Oct 2026). For a polygon drawn on the map, the value and the number of cells of every date equal those that the mean of `gdal raster zonal-stats` of GDAL 3.12.2 gives. |
 | References | [Touzi et al. (1999)](https://doi.org/10.1109/36.739146), of which the abstract was read. [NISAR L2 GUNW Product Specification, JPL D-102272 Rev E](https://nisar-docs.asf.alaska.edu/product-specification/). [ASF NISAR Cookbook](https://github.com/ASFOpenSARlab/NISAR_Cookbook). |
 
 ## Reference
@@ -102,8 +102,10 @@ For the layer of each pair, with `C` the values of the cells that hold a value:
 value = mean(C)        cells = number of cells that hold a value
 ```
 
-For a series of the area these are all cells of the layer of that pair that hold a value; at a
-point it is the one cell of the point. An entry without such a cell has no value (`null`) and 0
+For a series of an area these are the cells of the layer of that pair that hold a value and whose
+centre lies inside the area drawn on the map, found as `docs/methods/area-statistics.md` describes
+(section Method, steps 1 and 2), or all cells that hold a value when no area is drawn; at a point it
+is the one cell of the point. An entry without such a cell has no value (`null`) and 0
 cells. The mean is taken in 64-bit numbers. Lynkeus does not compute the coherence: each value `C`
 is the layer of the product, which the mission computes with ISCE3
 (`docs/methods/coherence-state.md`, section Formula). The cell of a point is found as the sheet

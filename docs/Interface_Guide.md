@@ -87,7 +87,7 @@ The test `web/src/shared/tokens/tokens.test.ts` computes these values at every r
 | Word | Meaning | Not used for it |
 |---|---|---|
 | product | A NISAR data product that NASA's catalogue lists. | granule, scene |
-| layer | What the map shows and the Contents pane lists: data received from NASA or computed by a tool, or shapes that a tool draws (the area, the area of the search, the outlines of the products found). | dataset, raster |
+| layer | What the map shows and the Contents pane lists: data received from NASA or computed by a tool, or shapes that a tool draws (the area, the area of the search, the area of the analysis, the outlines of the products found). | dataset, raster |
 | job | A request of the session to receive a layer or to run an analysis tool. | task, request |
 | area | The area of a search or of a tool. | region, area of interest |
 | outline | The ground outline of a product on the map. | footprint |

@@ -3,11 +3,11 @@
 import { useEffect, useMemo, useState } from "react";
 import Feature from "ol/Feature";
 import type Geometry from "ol/geom/Geometry";
-import Draw, { createBox } from "ol/interaction/Draw";
 import VectorLayer from "ol/layer/Vector";
 import { transformExtent } from "ol/proj";
 import VectorSource from "ol/source/Vector";
-import { Circle, Fill, Stroke, Style } from "ol/style";
+import { Stroke, Style } from "ol/style";
+import { drawShape } from "../shared/drawShape";
 import { useMap } from "../shared/map";
 import { report } from "../shared/messages/messages";
 import {
@@ -53,11 +53,6 @@ const AREA_STYLE = new Style({
     width: SEARCH_AREA_SYMBOL.width,
     lineDash: SEARCH_AREA_SYMBOL.dash,
   }),
-});
-// While a shape is drawn, a dot marks the place of the pointer.
-const SKETCH_STYLE = new Style({
-  stroke: new Stroke({ color: "#d83933", width: 2, lineDash: [6, 4] }),
-  image: new Circle({ radius: 4, fill: new Fill({ color: "#d83933" }) }),
 });
 
 /** Return the area that the form holds, when it is one that can be drawn on the map. */
@@ -184,30 +179,18 @@ export function SearchAreaLayer() {
     if (!drawing) {
       return;
     }
-    // A freehand drawing begins at the press and ends at the release, so the rectangle follows one drag.
-    const draw =
-      drawing === "rectangle"
-        ? new Draw({ type: "Circle", geometryFunction: createBox(), freehand: true, style: SKETCH_STYLE })
-        : new Draw({ type: "Polygon", style: SKETCH_STYLE });
-    draw.on("drawend", (event) => {
-      const shape = event.feature.getGeometry();
-      const fault = shape ? takeDrawnShape(shape, drawing, map.getView().getProjection().getCode()) : null;
-      if (fault) {
-        report("warning", fault);
-      }
-      drawingStore.set(null);
-    });
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        drawingStore.set(null);
-      }
-    };
-    map.addInteraction(draw);
-    document.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      map.removeInteraction(draw);
-    };
+    return drawShape(
+      map,
+      drawing,
+      SEARCH_AREA_SYMBOL.line,
+      (shape) => {
+        const fault = takeDrawnShape(shape, drawing, map.getView().getProjection().getCode());
+        if (fault) {
+          report("warning", fault);
+        }
+      },
+      () => drawingStore.set(null),
+    );
   }, [map, drawing]);
 
   return null;

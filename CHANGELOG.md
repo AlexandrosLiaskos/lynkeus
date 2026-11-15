@@ -116,6 +116,10 @@ All notable changes to Lynkeus are recorded in this file. The format follows
 - The sources of Surface displacement, One pair in the dialog Sources of the Help tab.
 - The analysis tools Backscatter, Series and Coherence, Series: the values of many dates against time, at a point or for the area, shown as a chart with a table in the pane Series and listed under Series in the Catalog pane.
 - The workflow that measures the loading of the running site with Lighthouse on a machine of GitHub.
+- Statistics in an area: the last field of the form of every analysis tool that maps takes a rectangle or a
+  polygon drawn on the map, and the Properties of the result give the number of its cells with data inside
+  it, with their mean, standard deviation, lowest value, median and highest value. A Series tool takes the
+  same area for a series of its cells.
 
 ### Changed
 
