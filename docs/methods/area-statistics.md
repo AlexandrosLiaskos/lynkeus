@@ -17,7 +17,7 @@
 | Result | Numbers in the unit of the result, shown in its Properties and stored in its description and its STAC record. The median of an even number of cells is the mean of the two in the middle. |
 | How to read | The numbers describe only the cells inside the area. For a result in decibels the mean is that of the decibel values, and not the decibels of the mean power, which Backscatter, Series gives. |
 | Limits | A cell that a side cuts counts only when its centre lies inside. Each side, a straight line on the map, is followed on the grid of the result in pieces of at most one cell. The statistics belong to the area of the run, so an area drawn later needs a new run. |
-| Checked | With three areas on a backscatter result and a coherence result of the pilot area, `gdal raster zonal-stats` of GDAL 3.12.2 counts the same cells and gives the same lowest value, median and highest value, and the mean and the standard deviation agree to 12 decimal places (lower Merrimack River, Oct 2026). |
+| Checked | With three areas on a backscatter result and a coherence result of the pilot area, `gdal raster zonal-stats` of GDAL 3.12.2 counts the same cells, with the same values, and gives the same lowest and highest value. The median of the values that it lists is the same, and the mean and the standard deviation agree to 12 decimal places (lower Merrimack River, Oct 2026). |
 | References | [GDAL, gdal raster zonal-stats](https://gdal.org/en/stable/programs/gdal_raster_zonal_stats.html). [GDAL, gdal_rasterize](https://gdal.org/en/stable/programs/gdal_rasterize.html), for the rule of the cell centre. |
 
 ## Reference

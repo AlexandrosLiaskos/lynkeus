@@ -253,6 +253,7 @@ def write_layer(
     method: str | None = None,
     ends: tuple[str, str] | None = None,
     frequency: float | None = None,
+    note: str | None = None,
     level: str | None = None,
     links: Sequence[Mapping[str, str]] = (),
     averaged: bool = True,
@@ -312,6 +313,10 @@ def write_layer(
         Centre frequency of the radar band of the layer, in hertz, as the
         product states it. Only a layer received from NASA may have one. It
         stands in the description only, not in the two files.
+    note : str, optional
+        One sentence for the visitor that the tool gives about its result.
+        Only a result may have one. It stands in the description only; the
+        lineage that the caller gives may repeat it for the record.
     level : str, optional
         Processing level of the values, for example ``L2``.
     links : sequence of Mapping, optional
@@ -372,6 +377,7 @@ def write_layer(
         layer=layer,
         ends=ends,
         frequency=frequency,
+        note=note,
         program=PROGRAM,
         method=method,
         record=f"{address}/{name}.json",

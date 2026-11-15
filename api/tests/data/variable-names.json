@@ -49,5 +49,6 @@
   "/science/LSAR/GOFF/grids/frequencyA/pixelOffsets/VV/layer3/correlationSurfacePeak": "Frequency A VV Layer 3 Correlation Surface Peak",
   "/science/LSAR/GOFF/grids/frequencyA/pixelOffsets/VV/layer3/snr": "Frequency A VV Layer 3 SNR",
   "/science/LSAR/SME2/grids/soilMoisture": "Soil Moisture",
-  "/science/LSAR/SME2/grids/soilMoistureUncertainty": "Soil Moisture Uncertainty"
+  "/science/LSAR/SME2/grids/soilMoistureUncertainty": "Soil Moisture Uncertainty",
+  "/science/LSAR/SME2/grids/retrievalQualityFlag": "Retrieval Quality Flag"
 }

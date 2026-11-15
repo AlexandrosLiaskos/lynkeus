@@ -121,6 +121,26 @@ def test_result_carries_the_words_that_the_tool_gives_for_the_ends_of_its_legend
     assert "decrease" not in json.dumps(record)
 
 
+def test_result_carries_the_note_of_its_tool_and_its_record_repeats_it(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    note = "3 of the 9 cells are left out."
+
+    def with_note(arrays: Sequence[NDArray[np.float32]], descriptions: Sequence[LayerDescription]) -> AnalysisResult:
+        return replace(ratio(arrays, descriptions), note=note)
+
+    plain = tmp_path / "plain"
+    plain.mkdir()
+    assert run(plain).note is None
+    monkeypatch.setitem(TOOLS, "backscatter-change", with_note)
+    description = run(tmp_path)
+    assert description.note == note
+    record = json.loads((tmp_path / "backscatter-change.json").read_text(encoding="utf-8"))
+    assert stac_faults(record) == []
+    lineage = record["properties"]["processing:lineage"]
+    assert lineage.endswith(f"{METHOD}. {note} Reduced copies made by averaging the values.")
+
+
 def test_record_of_a_result_names_its_layers_and_its_method(tmp_path: Path) -> None:
     run(tmp_path)
     record = json.loads((tmp_path / "backscatter-change.json").read_text(encoding="utf-8"))

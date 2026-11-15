@@ -8,8 +8,9 @@ import type { Source } from "../shared/sources";
  * references, the source programs and the data of part 6 of `docs/research/analysis-coherence-change.md` and of
  * `docs/research/analysis-soil-moisture.md`, and for Surface displacement, One pair those of part 6 of
  * `docs/research/analysis-displacement.md`. The Series tools add the notebooks and the uses of part 6 of
- * `docs/research/analysis-series.md`, and Surface displacement, Series the articles and the uses of part 6 of
- * `docs/research/analysis-displacement-series.md`. NumPy, Rasterio and harmony-py stand in the list of the Data part,
+ * `docs/research/analysis-series.md`, Surface displacement, Series the articles and the uses of part 6 of
+ * `docs/research/analysis-displacement-series.md`, and the retrieval quality flag those of part 6 of
+ * `docs/research/analysis-soil-moisture.md`. NumPy, Rasterio and harmony-py stand in the list of the Data part,
  * which the page Sources shows beside this one, because a name stands in the lists once.
  */
 export const SOURCES: readonly Source[] = [
@@ -32,7 +33,7 @@ export const SOURCES: readonly Source[] = [
     version: "Rev C, version 1.0.0, 8 November 2024",
     licence: "Copyright 2024 California Institute of Technology. Government sponsorship acknowledged",
     url: "https://nisar-docs.asf.alaska.edu/product-specification/",
-    use: "The layer soilMoisture of an SME2 product, its unit, its grid and its quality flags, for the two soil moisture tools.",
+    use: "The layers soilMoisture and retrievalQualityFlag of an SME2 product, their units, their grid and the meaning of the lowest bit of the flag, for the two soil moisture tools.",
   },
   {
     name: "NISAR L3 Soil Moisture Data Product, Algorithm Theoretical Basis Document (ATBD), JPL D-107679",
@@ -40,7 +41,7 @@ export const SOURCES: readonly Source[] = [
     licence:
       "Cleared for unlimited release (CL#23-2417, page 3 of the document); no licence is stated on its first five pages",
     url: "https://nisar-docs.asf.alaska.edu/atbd/",
-    use: "The retrieval algorithms of the soil moisture, its quality flags and the accuracy goal of the mission.",
+    use: "The retrieval algorithms of the soil moisture, its quality flags, the conditions that set the lowest bit of the retrieval quality flag, and the accuracy goal of the mission.",
   },
   {
     name: "NISAR product specification files nisar_L2_GCOV.xml and nisar_L2_GUNW.xml",
@@ -103,7 +104,7 @@ export const SOURCES: readonly Source[] = [
     version: "3.12.2",
     licence: "MIT style licence (file LICENSE.TXT at the tag v3.12.2)",
     url: "https://github.com/OSGeo/gdal",
-    use: "Source program of the comparison of Coherence, Change and of Soil moisture, Change (program gdal raster calc). The tools do not use it.",
+    use: "Source program of the comparison of Coherence, Change and of Soil moisture, One date and Change, with the rule of the retrieval quality flag (program gdal raster calc). The tools do not use it.",
   },
   {
     name: "Rignot and van Zyl (1993), Change detection techniques for ERS-1 SAR data",
@@ -198,6 +199,13 @@ export const SOURCES: readonly Source[] = [
     licence: "NASA ESDIS Data Use and Citation Guidance; free and open data",
     url: "https://doi.org/10.5067/NIL3SME2-P1",
     use: "The SME2 products of the pilot area on which the two soil moisture tools were measured and compared.",
+  },
+  {
+    name: "NISAR Beta Soil Moisture (Version 1)",
+    version: "Collection NISAR_L3_SME2_BETA_V1",
+    licence: "NASA ESDIS Data Use and Citation Guidance; free and open data",
+    url: "https://doi.org/10.5067/NIL3SME2-B1",
+    use: "The two SME2 products of the pilot area of December 2025, of the release X05010, on which the two soil moisture tools were measured and compared apart from the provisional ones.",
   },
   {
     name: "Environment of the source program in the comparison: numpy, xarray, dask, rioxarray and rasterio",

@@ -1,0 +1,49 @@
+{
+ "queried_utc": "2026-11-15T20:12:57Z",
+ "queries": [
+  {
+   "url": "https://cmr.earthdata.nasa.gov/search/variables.umm_json?provider=ASF&keyword=retrievalQualityFlag&page_size=100",
+   "hits": 1,
+   "items": [
+    {
+     "concept_id": "V4279684368-ASF",
+     "name": "/science/LSAR/SME2/grids/retrievalQualityFlag",
+     "long_name": "Retrieval Quality Flag",
+     "associations": [
+      {
+       "concept-id": "C2850265000-ASF"
+      },
+      {
+       "concept-id": "C2854344945-ASF"
+      },
+      {
+       "concept-id": "C3622248530-ASF"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "url": "https://cmr.earthdata.nasa.gov/search/variables.umm_json?provider=ASF&keyword=soilMoisture&page_size=100",
+   "hits": 1,
+   "items": [
+    {
+     "concept_id": "V4279589680-ASF",
+     "name": "/science/LSAR/SME2/grids/soilMoisture",
+     "long_name": "Soil Moisture",
+     "associations": [
+      {
+       "concept-id": "C2850265000-ASF"
+      },
+      {
+       "concept-id": "C3622248530-ASF"
+      },
+      {
+       "concept-id": "C2854344945-ASF"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -39,6 +39,7 @@ import {
   NO_INPUT,
   NO_OTHER_PAIR,
   NO_PARTNER,
+  NO_QUALITY,
   READS,
   unnamed,
   type Comparison,
@@ -66,8 +67,10 @@ export const RECEIVE: Record<FinishedTool, string> = {
   "coherence-change": "Get the same Coherence layer of two GUNW products of one track and frame.",
   "displacement-state":
     "Get the Unwrapped phase layer and the Connected components layer of one GUNW product, for the same area.",
-  "soil-moisture-state": "Get the Soil moisture layer of an SME2 product.",
-  "soil-moisture-change": "Get the Soil moisture layer of two SME2 products of one track and frame.",
+  "soil-moisture-state":
+    "Get the Soil Moisture layer and the Retrieval Quality Flag layer of an SME2 product, for the same area.",
+  "soil-moisture-change":
+    "Get the Soil Moisture layer and the Retrieval Quality Flag layer of two SME2 products of one track and frame, for the same area.",
 };
 
 /** What the form states when no layer of the session can stand beside the first layer of a tool of two dates. */
@@ -78,6 +81,9 @@ export const GET_OTHER_PAIR = `${NO_OTHER_PAIR} Get the same layer of another pa
 
 /** What the form states when the session holds no layer that can stand beside the first of Surface displacement, One pair. */
 export const GET_COMPONENTS = `${NO_COMPONENTS} Get the Connected components layer of the same product, channel and area.`;
+
+/** What the form states when the session holds no retrieval quality flag of the product of a chosen layer. */
+export const GET_QUALITY = `${NO_QUALITY} Get the Retrieval Quality Flag layer of the same product, for the same area.`;
 
 /** The words of the second field of a tool that compares, by what the tool compares. */
 export const SECOND: Record<Comparison, { title: string; about: string; get: string }> = {
@@ -134,16 +140,18 @@ function openGetLayer(): void {
 
 /**
  * Return what the foot of the pane shows about the job that the form started: its progress while it waits or
- * runs, and afterwards whether the result was computed and where it is, with the place of its statistics in the
- * area of the run when it has them. A refusal of the server, of the request or of the job, is shown in the
- * sentence of the server. `onMap` holds the identifiers of the layers that the map shows, and `withStatistics`
- * those of the results whose description holds statistics in an area.
+ * runs, and afterwards whether the result was computed and where it is, with the note that the tool gives about
+ * the result and the place of its statistics in the area of the run when it has them. A refusal of the server, of
+ * the request or of the job, is shown in the sentence of the server. `onMap` holds the identifiers of the layers
+ * that the map shows, `withStatistics` those of the results whose description holds statistics in an area, and
+ * `layers` the layers of the session.
  */
 export function runOf(
   started: Started | null,
   jobs: readonly Job[],
   onMap: ReadonlySet<string> = new Set(),
   withStatistics: ReadonlySet<string> = new Set(),
+  layers: readonly LayerDescription[] = [],
 ): ToolPaneRun | null {
   if (!started) {
     return null;
@@ -176,9 +184,13 @@ export function runOf(
     typeof job.layer === "string" && withStatistics.has(job.layer)
       ? ` ${shown ? STATISTICS_PLACE.onMap : STATISTICS_PLACE.offMap}`
       : "";
+  const note = layers.find((layer) => layer.id === job.layer)?.note;
   return {
     state: "success",
-    text: `The result is ready. ${place}${statistics}`,
+    text:
+      typeof note === "string"
+        ? `The result is ready. ${note} ${place}${statistics}`
+        : `The result is ready. ${place}${statistics}`,
     action: { label: "Show the Catalog pane", onClick: showCatalog },
     details,
   };
@@ -248,8 +260,10 @@ function showMethod(tool: FinishedTool): void {
  * statistics inside the area, and the outcome at the foot says where they are. While a choice is missing
  * or impossible, the foot of the pane states the first fault, and a field that was left states its own, with the
  * shared `FieldError`. Without a layer that the tool reads, the pane names the layer to get and offers the Get
- * layer form. A visitor who has an own server chooses the server of the job in the field Server, which stands
- * before the box and knows on which server the chosen layers are kept. The run button starts the tool as a job
+ * layer form. A soil moisture tool takes the Retrieval Quality Flag layer of the product of each chosen layer
+ * without a field of its own, and the pane states what to get when it is missing. A visitor who has an own server
+ * chooses the server of the job in the field Server, which stands before the box and knows on which server the
+ * chosen layers are kept. The run button starts the tool as a job
  * of that server, and the foot shows the progress and the outcome.
  */
 export function ToolForm({ tool }: { tool: FinishedTool }) {
@@ -281,8 +295,10 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
   const proposed = defaultTitle(tool, check({ tool, layers, first, second, title: "" }).layers);
   const title = own ?? proposed;
   const { layers: chosen, faults, inputs } = check({ tool, layers, first, second, title });
-  // The server is the last thing that the form asks for, so what it lacks is stated last.
-  const ids = chosen.map((layer) => layer.id);
+  // The server is the last thing that the form asks for, so what it lacks is stated last. It must keep every
+  // layer that the form sends, the flags of a soil moisture tool among them.
+  const ids = inputs ? inputs.inputs : chosen.map((layer) => layer.id);
+  const flagless = faults.first === NO_QUALITY || faults.second === NO_QUALITY;
   const server = useServerChoice(ids);
   const missing = offered.length === 0 ? NO_INPUT : (missingOf(faults) ?? server.missing);
 
@@ -335,6 +351,7 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
         jobs,
         new Set(mapLayers.map((layer) => layer.id)),
         new Set(layers.filter((layer) => layer.statistics).map((layer) => layer.id)),
+        layers,
       )}
       onCancel={started && started.id !== null ? cancel : undefined}
     >
@@ -370,6 +387,11 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
           {one && words && beside.length === 0 ? (
             <Notice kind="info" action={{ label: "Get layer", onClick: openGetLayer }}>
               {words.get}
+            </Notice>
+          ) : null}
+          {flagless ? (
+            <Notice kind="info" action={{ label: "Get layer", onClick: openGetLayer }}>
+              {GET_QUALITY}
             </Notice>
           ) : null}
           {chosen.length === 2 && comparison !== null ? (

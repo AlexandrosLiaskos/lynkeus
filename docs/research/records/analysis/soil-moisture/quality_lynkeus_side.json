@@ -1,0 +1,2753 @@
+{
+ "started": "2026-11-15T19:42:26Z",
+ "environment": {
+  "python": "3.13.18 (main, Nov  5 2026, 07:59:38) [GCC 14.2.0]",
+  "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.41",
+  "lynkeus": "0.1.0",
+  "gdal_in_rasterio": "3.12.2",
+  "packages": {
+   "numpy": "2.5.4",
+   "rasterio": "1.5.2",
+   "pydantic": "2.14.3",
+   "rio-cogeo": "7.0.4"
+  }
+ },
+ "tools_listed": [
+  "backscatter-change",
+  "backscatter-state",
+  "coherence-change",
+  "coherence-state",
+  "displacement-state",
+  "soil-moisture-change",
+  "soil-moisture-state"
+ ],
+ "layers": {
+  "flag-20260623": {
+   "file": "sme2-retrievalqualityflag-20260623.tif",
+   "sha256": "70499a58e5db6ae8c785f35131faaacc93b8abc4e486ab908588e32b8d21857c",
+   "granule": "NISAR_L3_PR_SME2_023_141_D_067_4005_DHDH_A_20260623T234333_20260623T234408_P05023_N_F_J_001",
+   "layer": "retrievalQualityFlag",
+   "title": "Retrieval quality flag, 23 Jun 2026",
+   "unit": "1",
+   "dates": [
+    "2026-06-23"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 8013,
+    "cells_with_a_value": 27411,
+    "lowest": "8.0",
+    "highest": "9.0",
+    "mean_64_bit": "8.985334354821058"
+   },
+   "sha256_of_values": "37faf6772f5d8d99ddecb1216dca9c864ef77595cc8212dd14a3af23b9d6dcae"
+  },
+  "flag-20260705": {
+   "file": "sme2-retrievalqualityflag-20260705.tif",
+   "sha256": "f24b5cbb10c4f54f48d8cacf0f0c097b796ae74b3a2b6af06817ce09e161f30c",
+   "granule": "NISAR_L3_PR_SME2_024_141_D_067_4005_DHDH_A_20260705T234333_20260705T234408_P05023_N_F_J_001",
+   "layer": "retrievalQualityFlag",
+   "title": "Retrieval quality flag, 5 Jul 2026",
+   "unit": "1",
+   "dates": [
+    "2026-07-05"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 8013,
+    "cells_with_a_value": 27411,
+    "lowest": "8.0",
+    "highest": "9.0",
+    "mean_64_bit": "8.985954543796286"
+   },
+   "sha256_of_values": "00d119038f34287022a0835b64a970584e2c2c8d42092776424402867b0060ad"
+  },
+  "flag-20260717": {
+   "file": "sme2-retrievalqualityflag-20260717.tif",
+   "sha256": "31c27281590f18d7ede3406e4f14fde3d4e9fb2158ca7a857494504f8c102174",
+   "granule": "NISAR_L3_PR_SME2_025_141_D_067_4005_DHDH_A_20260717T234332_20260717T234407_P05023_N_F_J_001",
+   "layer": "retrievalQualityFlag",
+   "title": "Retrieval quality flag, 17 Jul 2026",
+   "unit": "1",
+   "dates": [
+    "2026-07-17"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6186,
+    "cells_with_a_value": 29238,
+    "lowest": "4.0",
+    "highest": "13.0",
+    "mean_64_bit": "12.424687051097886"
+   },
+   "sha256_of_values": "79a70a8562e96cc9fdf023c6463f813fd32748327316c058caf9f104bf12bf54"
+  },
+  "flag-20260810": {
+   "file": "sme2-retrievalqualityflag-20260810.tif",
+   "sha256": "22b3df203048a99350b5ecf9c1e44b10dff3e71262372893bf66cfe5a7189422",
+   "granule": "NISAR_L3_PR_SME2_027_141_D_067_4005_DHDH_A_20260810T234331_20260810T234406_P05023_N_F_J_001",
+   "layer": "retrievalQualityFlag",
+   "title": "Retrieval quality flag, 10 Aug 2026",
+   "unit": "1",
+   "dates": [
+    "2026-08-10"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6186,
+    "cells_with_a_value": 29238,
+    "lowest": "4.0",
+    "highest": "15.0",
+    "mean_64_bit": "14.249675080374855"
+   },
+   "sha256_of_values": "34b46534dfb9cb0526e558a48695869a059d26ec3d8cc2470ccbf6eb6c0dde3c"
+  },
+  "flag-20260822": {
+   "file": "sme2-retrievalqualityflag-20260822.tif",
+   "sha256": "9ae1b61d5eb3683b57f8b80b8d206cd8b24253ebc85b790434888599c4bf017d",
+   "granule": "NISAR_L3_PR_SME2_028_141_D_067_4005_DHDH_A_20260822T234330_20260822T234405_P05023_N_F_J_001",
+   "layer": "retrievalQualityFlag",
+   "title": "Retrieval quality flag, 22 Aug 2026",
+   "unit": "1",
+   "dates": [
+    "2026-08-22"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6186,
+    "cells_with_a_value": 29238,
+    "lowest": "4.0",
+    "highest": "15.0",
+    "mean_64_bit": "14.27163280662152"
+   },
+   "sha256_of_values": "1586e2805c3f1897f3eade85d0f28b9e7b65ebc3fcbacc10717234563bd5f5d5"
+  },
+  "flag-20260903": {
+   "file": "sme2-retrievalqualityflag-20260903.tif",
+   "sha256": "7e19ea8b9029074a326834da404ec474ac5cfc18b3bd0d76f41a09d8e61c4b27",
+   "granule": "NISAR_L3_PR_SME2_029_141_D_067_4005_DHDH_A_20260903T234330_20260903T234405_P05023_N_F_J_001",
+   "layer": "retrievalQualityFlag",
+   "title": "Retrieval quality flag, 3 Sep 2026",
+   "unit": "1",
+   "dates": [
+    "2026-09-03"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6186,
+    "cells_with_a_value": 29238,
+    "lowest": "4.0",
+    "highest": "15.0",
+    "mean_64_bit": "14.245160407688624"
+   },
+   "sha256_of_values": "27cc5b3c1c92cc9773f573947d5abb529f2d0cf27ef1338ad1c531b700c92433"
+  },
+  "flag-20260915": {
+   "file": "sme2-retrievalqualityflag-20260915.tif",
+   "sha256": "d08fc466a5144c6ddecc1d968321182b546c5ac4a704e095c61ddf62f919f7f5",
+   "granule": "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001",
+   "layer": "retrievalQualityFlag",
+   "title": "Retrieval quality flag, 15 Sep 2026",
+   "unit": "1",
+   "dates": [
+    "2026-09-15"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6186,
+    "cells_with_a_value": 29238,
+    "lowest": "4.0",
+    "highest": "15.0",
+    "mean_64_bit": "14.246528490320815"
+   },
+   "sha256_of_values": "67de85ed3e769eff053c83c7352c9e6b2cc36db9f5713dfc0da666b826dd0d88"
+  },
+  "flag-20260927": {
+   "file": "sme2-retrievalqualityflag-20260927.tif",
+   "sha256": "79084b753a8a3fe42f0bc7b40c678b436cba27cca8270fda6a01f9eac18adf16",
+   "granule": "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001",
+   "layer": "retrievalQualityFlag",
+   "title": "Retrieval quality flag, 27 Sep 2026",
+   "unit": "1",
+   "dates": [
+    "2026-09-27"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6186,
+    "cells_with_a_value": 29238,
+    "lowest": "4.0",
+    "highest": "15.0",
+    "mean_64_bit": "14.276318489636774"
+   },
+   "sha256_of_values": "675348a7ea36526c36a21f842d25fc6b1db065a1639de13e9a315ade256d5ad3"
+  },
+  "flag-20261009": {
+   "file": "sme2-retrievalqualityflag-20261009.tif",
+   "sha256": "7d06edb5cfbd0946b5476ca787b12493404aac72502c85b8aee7e93cc4533c8b",
+   "granule": "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001",
+   "layer": "retrievalQualityFlag",
+   "title": "Retrieval quality flag, 9 Oct 2026",
+   "unit": "1",
+   "dates": [
+    "2026-10-09"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6186,
+    "cells_with_a_value": 29238,
+    "lowest": "4.0",
+    "highest": "15.0",
+    "mean_64_bit": "14.286476503180792"
+   },
+   "sha256_of_values": "9d1b76e2712dff3ae055d2126a8f043bf7ba9cec63ecd072b3334315033656b5"
+  },
+  "flag-beta-20251213": {
+   "file": "sme2-retrievalqualityflag-20251213.tif",
+   "sha256": "f74bd52f8f5e83e3026cd33775bfb3499317dafb8745d00db5983921e94e61a0",
+   "granule": "NISAR_L3_PR_SME2_007_141_D_067_4005_DHDH_A_20251213T234332_20251213T234407_X05010_N_F_J_001",
+   "layer": "retrievalQualityFlag",
+   "title": "Retrieval quality flag, 13 Dec 2025",
+   "unit": "1",
+   "dates": [
+    "2025-12-13"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 34742,
+    "cells_with_a_value": 682,
+    "lowest": "4.0",
+    "highest": "4.0",
+    "mean_64_bit": "4.0"
+   },
+   "sha256_of_values": "61becc5d25f096fe0aa4691f81a7ef49fce7af2610c730a801145aafc95e85f5"
+  },
+  "flag-beta-20251225": {
+   "file": "sme2-retrievalqualityflag-20251225.tif",
+   "sha256": "4601de8c49282cad5f4aaf3fc04779512a7f8413db38a405fa72a9a1ab7f7adb",
+   "granule": "NISAR_L3_PR_SME2_008_141_D_067_4005_DHDH_A_20251225T234333_20251225T234408_X05010_N_F_J_001",
+   "layer": "retrievalQualityFlag",
+   "title": "Retrieval quality flag, 25 Dec 2025",
+   "unit": "1",
+   "dates": [
+    "2025-12-25"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 35098,
+    "cells_with_a_value": 326,
+    "lowest": "4.0",
+    "highest": "4.0",
+    "mean_64_bit": "4.0"
+   },
+   "sha256_of_values": "44ee8dbb2b66857ac2e5748fbbdcdfe0e64a3dec86f92428afa132fc5dd25ca5"
+  },
+  "sm-20260623": {
+   "file": "sme2-soilmoisture-20260623.tif",
+   "sha256": "ab84bb8c06a797451c6df1bc9db5d7b29882dc8556e954f1babca5f4ac0c06b8",
+   "granule": "NISAR_L3_PR_SME2_023_141_D_067_4005_DHDH_A_20260623T234333_20260623T234408_P05023_N_F_J_001",
+   "layer": "soilMoisture",
+   "title": "Soil moisture, 23 Jun 2026",
+   "unit": "m3 m-3",
+   "dates": [
+    "2026-06-23"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 8013,
+    "cells_with_a_value": 27411,
+    "lowest": "0.15765893459320068",
+    "highest": "0.6000000238418579",
+    "mean_64_bit": "0.3638787594666028"
+   },
+   "sha256_of_values": "fa2110b2063c502da5714d5c1dfbec857fdf870f8ce89bc7f17b96c5b809d6d4"
+  },
+  "sm-20260705": {
+   "file": "sme2-soilmoisture-20260705.tif",
+   "sha256": "ba7e1ab6587a0c9303bb9b602bb183b37f83ad8fc68c8699aa3a9775563fe46f",
+   "granule": "NISAR_L3_PR_SME2_024_141_D_067_4005_DHDH_A_20260705T234333_20260705T234408_P05023_N_F_J_001",
+   "layer": "soilMoisture",
+   "title": "Soil moisture, 5 Jul 2026",
+   "unit": "m3 m-3",
+   "dates": [
+    "2026-07-05"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 8013,
+    "cells_with_a_value": 27411,
+    "lowest": "0.14518651366233826",
+    "highest": "0.6000000238418579",
+    "mean_64_bit": "0.3589982047205722"
+   },
+   "sha256_of_values": "d05e7759ac1b7eb1735a4c2806b8894d165657c719a7d4998a8debef42a439ab"
+  },
+  "sm-20260717": {
+   "file": "sme2-soilmoisture-20260717.tif",
+   "sha256": "2e3993ad27a072c7fb6a50f79104e570a0aff0734f9b1395485161e1aeb872ca",
+   "granule": "NISAR_L3_PR_SME2_025_141_D_067_4005_DHDH_A_20260717T234332_20260717T234407_P05023_N_F_J_001",
+   "layer": "soilMoisture",
+   "title": "Soil moisture, 17 Jul 2026",
+   "unit": "m3 m-3",
+   "dates": [
+    "2026-07-17"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6186,
+    "cells_with_a_value": 29238,
+    "lowest": "0.07199999690055847",
+    "highest": "0.6000000238418579",
+    "mean_64_bit": "0.3449957066540031"
+   },
+   "sha256_of_values": "d9b51ab14184e1d3c7891134dd3ca9e2dd3927210709deacd0bf9bcdcd88214a"
+  },
+  "sm-20260810": {
+   "file": "sme2-soilmoisture-20260810.tif",
+   "sha256": "c6ef592ac3aae0fd8829ab3880524ae207d37d5642a9324689a446e8aa0c8ea4",
+   "granule": "NISAR_L3_PR_SME2_027_141_D_067_4005_DHDH_A_20260810T234331_20260810T234406_P05023_N_F_J_001",
+   "layer": "soilMoisture",
+   "title": "Soil moisture, 10 Aug 2026",
+   "unit": "m3 m-3",
+   "dates": [
+    "2026-08-10"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6186,
+    "cells_with_a_value": 29238,
+    "lowest": "0.09600000083446503",
+    "highest": "0.6000000238418579",
+    "mean_64_bit": "0.2962202476804519"
+   },
+   "sha256_of_values": "57b31f2d1f6c7610a1e6684b6cdf7a0e496132d0ee7ea3d327e952131bd5924d"
+  },
+  "sm-20260822": {
+   "file": "sme2-soilmoisture-20260822.tif",
+   "sha256": "7135c12bda5a741daeb51315bc7cc9310bd95c908bc62ebcd3f90c51de173200",
+   "granule": "NISAR_L3_PR_SME2_028_141_D_067_4005_DHDH_A_20260822T234330_20260822T234405_P05023_N_F_J_001",
+   "layer": "soilMoisture",
+   "title": "Soil moisture, 22 Aug 2026",
+   "unit": "m3 m-3",
+   "dates": [
+    "2026-08-22"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6186,
+    "cells_with_a_value": 29238,
+    "lowest": "0.07000000029802322",
+    "highest": "0.6000000238418579",
+    "mean_64_bit": "0.2586827440346219"
+   },
+   "sha256_of_values": "7cd5bf377be7c550fb9f60551c6416afbe4dcf444f2020245c71d747364bebad"
+  },
+  "sm-20260903": {
+   "file": "sme2-soilmoisture-20260903.tif",
+   "sha256": "ac9cefe3ccee07f4d1521a11e794120ad2721ddc31e0274d5a29a195585374c1",
+   "granule": "NISAR_L3_PR_SME2_029_141_D_067_4005_DHDH_A_20260903T234330_20260903T234405_P05023_N_F_J_001",
+   "layer": "soilMoisture",
+   "title": "Soil moisture, 3 Sep 2026",
+   "unit": "m3 m-3",
+   "dates": [
+    "2026-09-03"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6186,
+    "cells_with_a_value": 29238,
+    "lowest": "0.07599999755620956",
+    "highest": "0.6000000238418579",
+    "mean_64_bit": "0.2987114803043613"
+   },
+   "sha256_of_values": "e529080cd038b08fcaecd1734761b1db73c9a8e840c7a911109d98c0caca919e"
+  },
+  "sm-20260915": {
+   "file": "sme2-soilmoisture-20260915.tif",
+   "sha256": "9d43d3c5684158dc7f03495428ba33dde26e0fa1f3937bf8da08237103daf818",
+   "granule": "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001",
+   "layer": "soilMoisture",
+   "title": "Soil moisture, 15 Sep 2026",
+   "unit": "m3 m-3",
+   "dates": [
+    "2026-09-15"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6186,
+    "cells_with_a_value": 29238,
+    "lowest": "0.08500000089406967",
+    "highest": "0.6000000238418579",
+    "mean_64_bit": "0.2907900572357234"
+   },
+   "sha256_of_values": "abeb6a163c6a6c55e9d548d0a5ea79d02b216cc58be89868476b2e9f0266bd21"
+  },
+  "sm-20260927": {
+   "file": "sme2-soilmoisture-20260927.tif",
+   "sha256": "96704bf572bddc1070f600a0bf1adb3941ed5122a59479c6c419c73f40118cc9",
+   "granule": "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001",
+   "layer": "soilMoisture",
+   "title": "Soil moisture, 27 Sep 2026",
+   "unit": "m3 m-3",
+   "dates": [
+    "2026-09-27"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6186,
+    "cells_with_a_value": 29238,
+    "lowest": "0.08900000154972076",
+    "highest": "0.6000000238418579",
+    "mean_64_bit": "0.2765517229501881"
+   },
+   "sha256_of_values": "1156d3a94ba1b36a118b18c5fb1a0177f580a68fbe38d1729cc65a19b0d99204"
+  },
+  "sm-20261009": {
+   "file": "sme2-soilmoisture-20261009.tif",
+   "sha256": "688a3815a0aef633167b8462a26dc6fd1301ea4250132039e6131cefe953f4b3",
+   "granule": "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001",
+   "layer": "soilMoisture",
+   "title": "Soil moisture, 9 Oct 2026",
+   "unit": "m3 m-3",
+   "dates": [
+    "2026-10-09"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 6186,
+    "cells_with_a_value": 29238,
+    "lowest": "0.07999999821186066",
+    "highest": "0.6000000238418579",
+    "mean_64_bit": "0.23388739770511627"
+   },
+   "sha256_of_values": "ce67113ebf8f46d86564f75e1e7d19bb1bf19370e6d65cc74ab8dec6b6faaa03"
+  },
+  "sm-beta-20251213": {
+   "file": "sme2-soilmoisture-20251213.tif",
+   "sha256": "385fa721e90f2e918ec42560e3abc9c144298b0a35fb38849b0645d2aa00e53f",
+   "granule": "NISAR_L3_PR_SME2_007_141_D_067_4005_DHDH_A_20251213T234332_20251213T234407_X05010_N_F_J_001",
+   "layer": "soilMoisture",
+   "title": "Soil moisture, 13 Dec 2025",
+   "unit": "m3 m-3",
+   "dates": [
+    "2025-12-13"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 34742,
+    "cells_with_a_value": 682,
+    "lowest": "0.12240751087665558",
+    "highest": "0.4186220169067383",
+    "mean_64_bit": "0.2762652840738422"
+   },
+   "sha256_of_values": "ba3d9297505d5904b274d6200b471f36519247da4cd712219c734dd271721050"
+  },
+  "sm-beta-20251225": {
+   "file": "sme2-soilmoisture-20251225.tif",
+   "sha256": "22e4ad3bf8ae25b5c8d71a77ff1bf71d5a898e635c56c314c0b36329479cf8d2",
+   "granule": "NISAR_L3_PR_SME2_008_141_D_067_4005_DHDH_A_20251225T234333_20251225T234408_X05010_N_F_J_001",
+   "layer": "soilMoisture",
+   "title": "Soil moisture, 25 Dec 2025",
+   "unit": "m3 m-3",
+   "dates": [
+    "2025-12-25"
+   ],
+   "grid": {
+    "crs": "EPSG:6933",
+    "transform": [
+     200.17900467012078,
+     0.0,
+     -6869743.1154914815,
+     0.0,
+     -200.17900467012078,
+     4990662.763762219
+    ],
+    "width": 216,
+    "height": 164
+   },
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 35098,
+    "cells_with_a_value": 326,
+    "lowest": "0.14443029463291168",
+    "highest": "0.37125420570373535",
+    "mean_64_bit": "0.2654901544100668"
+   },
+   "sha256_of_values": "af3b85c1b608f1b8fd1742d67a8ededed61afd925c0b6059bde585f00581ad71"
+  }
+ },
+ "flagged_per_date": {
+  "20260623": {
+   "cells_with_a_soil_moisture": 27411,
+   "cells_marked_not_recommended": 27009,
+   "cells_with_a_soil_moisture_and_no_flag": 0,
+   "cells_recommended": 402,
+   "percent_not_recommended": 98.533,
+   "grids_of_the_two_layers_equal": true
+  },
+  "20260705": {
+   "cells_with_a_soil_moisture": 27411,
+   "cells_marked_not_recommended": 27026,
+   "cells_with_a_soil_moisture_and_no_flag": 0,
+   "cells_recommended": 385,
+   "percent_not_recommended": 98.595,
+   "grids_of_the_two_layers_equal": true
+  },
+  "20260717": {
+   "cells_with_a_soil_moisture": 29238,
+   "cells_marked_not_recommended": 28849,
+   "cells_with_a_soil_moisture_and_no_flag": 0,
+   "cells_recommended": 389,
+   "percent_not_recommended": 98.67,
+   "grids_of_the_two_layers_equal": true
+  },
+  "20260810": {
+   "cells_with_a_soil_moisture": 29238,
+   "cells_marked_not_recommended": 28844,
+   "cells_with_a_soil_moisture_and_no_flag": 0,
+   "cells_recommended": 394,
+   "percent_not_recommended": 98.652,
+   "grids_of_the_two_layers_equal": true
+  },
+  "20260822": {
+   "cells_with_a_soil_moisture": 29238,
+   "cells_marked_not_recommended": 28838,
+   "cells_with_a_soil_moisture_and_no_flag": 0,
+   "cells_recommended": 400,
+   "percent_not_recommended": 98.632,
+   "grids_of_the_two_layers_equal": true
+  },
+  "20260903": {
+   "cells_with_a_soil_moisture": 29238,
+   "cells_marked_not_recommended": 28836,
+   "cells_with_a_soil_moisture_and_no_flag": 0,
+   "cells_recommended": 402,
+   "percent_not_recommended": 98.625,
+   "grids_of_the_two_layers_equal": true
+  },
+  "20260915": {
+   "cells_with_a_soil_moisture": 29238,
+   "cells_marked_not_recommended": 28816,
+   "cells_with_a_soil_moisture_and_no_flag": 0,
+   "cells_recommended": 422,
+   "percent_not_recommended": 98.557,
+   "grids_of_the_two_layers_equal": true
+  },
+  "20260927": {
+   "cells_with_a_soil_moisture": 29238,
+   "cells_marked_not_recommended": 28759,
+   "cells_with_a_soil_moisture_and_no_flag": 0,
+   "cells_recommended": 479,
+   "percent_not_recommended": 98.362,
+   "grids_of_the_two_layers_equal": true
+  },
+  "20261009": {
+   "cells_with_a_soil_moisture": 29238,
+   "cells_marked_not_recommended": 28638,
+   "cells_with_a_soil_moisture_and_no_flag": 0,
+   "cells_recommended": 600,
+   "percent_not_recommended": 97.948,
+   "grids_of_the_two_layers_equal": true
+  },
+  "beta-20251213": {
+   "cells_with_a_soil_moisture": 682,
+   "cells_marked_not_recommended": 0,
+   "cells_with_a_soil_moisture_and_no_flag": 0,
+   "cells_recommended": 682,
+   "percent_not_recommended": 0.0,
+   "grids_of_the_two_layers_equal": true
+  },
+  "beta-20251225": {
+   "cells_with_a_soil_moisture": 326,
+   "cells_marked_not_recommended": 0,
+   "cells_with_a_soil_moisture_and_no_flag": 0,
+   "cells_recommended": 326,
+   "percent_not_recommended": 0.0,
+   "grids_of_the_two_layers_equal": true
+  }
+ },
+ "run_tool": {
+  "state-20260623": {
+   "tool": "soil-moisture-state",
+   "inputs": [
+    "sm-20260623",
+    "flag-20260623"
+   ],
+   "steps": [
+    [
+     0,
+     "Reading the layers."
+    ],
+    [
+     40,
+     "Computing the result."
+    ],
+    [
+     70,
+     "Writing the result."
+    ],
+    [
+     100,
+     "The result is ready."
+    ]
+   ],
+   "description": {
+    "id": "state-20260623",
+    "title": "Result of soil-moisture-state",
+    "kind": "result",
+    "url": "/files/state-20260623/soil-moisture-state.tif",
+    "quantity": "Soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     0.02,
+     0.6
+    ],
+    "colours": "YlGnBu",
+    "dates": [
+     "2026-06-23"
+    ],
+    "inputs": [
+     "NISAR_L3_PR_SME2_023_141_D_067_4005_DHDH_A_20260623T234333_20260623T234408_P05023_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": null,
+    "frequency": null,
+    "note": "27,009 of the 27,411 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended.",
+    "program": "Lynkeus 0.1.0",
+    "method": "Layer soilMoisture of the product in the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0); every other cell is left out (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3)",
+    "record": "/files/state-20260623/soil-moisture-state.json"
+   },
+   "file": "soil-moisture-state.tif",
+   "file_bytes": 9165,
+   "sha256_of_the_file": "0148738e55fcffeed8feb1073d44efb8a8bbe51afbe84ea2e1ef09058214975a",
+   "sha256_of_values": "9a6683c3a893b6cb6ebc7cbd2fcf09340fe7deaefea78aff62b29acd9cc38a68",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 35022,
+    "cells_with_a_value": 402,
+    "lowest": "0.16268238425254822",
+    "highest": "0.49072590470314026",
+    "mean_64_bit": "0.30964088599331935"
+   },
+   "reduced_copies": [],
+   "nodata": "nan",
+   "grid_equal_to_that_of_the_inputs": true,
+   "bit_identical_to_the_function": true,
+   "note_of_the_function": "27,009 of the 27,411 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended.",
+   "note_equal": true,
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool soil-moisture-state of Lynkeus 0.1.0 on the layers: Soil moisture, 23 Jun 2026, Retrieval quality flag, 23 Jun 2026. Method: Layer soilMoisture of the product in the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0); every other cell is left out (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3). 27,009 of the 27,411 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended. Reduced copies made by averaging the values."
+  },
+  "state-20260705": {
+   "tool": "soil-moisture-state",
+   "inputs": [
+    "sm-20260705",
+    "flag-20260705"
+   ],
+   "steps": [
+    [
+     0,
+     "Reading the layers."
+    ],
+    [
+     40,
+     "Computing the result."
+    ],
+    [
+     70,
+     "Writing the result."
+    ],
+    [
+     100,
+     "The result is ready."
+    ]
+   ],
+   "description": {
+    "id": "state-20260705",
+    "title": "Result of soil-moisture-state",
+    "kind": "result",
+    "url": "/files/state-20260705/soil-moisture-state.tif",
+    "quantity": "Soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     0.02,
+     0.6
+    ],
+    "colours": "YlGnBu",
+    "dates": [
+     "2026-07-05"
+    ],
+    "inputs": [
+     "NISAR_L3_PR_SME2_024_141_D_067_4005_DHDH_A_20260705T234333_20260705T234408_P05023_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": null,
+    "frequency": null,
+    "note": "27,026 of the 27,411 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended.",
+    "program": "Lynkeus 0.1.0",
+    "method": "Layer soilMoisture of the product in the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0); every other cell is left out (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3)",
+    "record": "/files/state-20260705/soil-moisture-state.json"
+   },
+   "file": "soil-moisture-state.tif",
+   "file_bytes": 9023,
+   "sha256_of_the_file": "c9ebcdb7e9d954195b4997de5ffe4507ca900c03479cc2045dc4c829df60b346",
+   "sha256_of_values": "bb8f2074544f8e328ad2c95afe7f28ee0272863448536ad12d006928e9513fe8",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 35039,
+    "cells_with_a_value": 385,
+    "lowest": "0.14518651366233826",
+    "highest": "0.4765770137310028",
+    "mean_64_bit": "0.29591542056628634"
+   },
+   "reduced_copies": [],
+   "nodata": "nan",
+   "grid_equal_to_that_of_the_inputs": true,
+   "bit_identical_to_the_function": true,
+   "note_of_the_function": "27,026 of the 27,411 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended.",
+   "note_equal": true,
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool soil-moisture-state of Lynkeus 0.1.0 on the layers: Soil moisture, 5 Jul 2026, Retrieval quality flag, 5 Jul 2026. Method: Layer soilMoisture of the product in the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0); every other cell is left out (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3). 27,026 of the 27,411 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended. Reduced copies made by averaging the values."
+  },
+  "state-20260717": {
+   "tool": "soil-moisture-state",
+   "inputs": [
+    "sm-20260717",
+    "flag-20260717"
+   ],
+   "steps": [
+    [
+     0,
+     "Reading the layers."
+    ],
+    [
+     40,
+     "Computing the result."
+    ],
+    [
+     70,
+     "Writing the result."
+    ],
+    [
+     100,
+     "The result is ready."
+    ]
+   ],
+   "description": {
+    "id": "state-20260717",
+    "title": "Result of soil-moisture-state",
+    "kind": "result",
+    "url": "/files/state-20260717/soil-moisture-state.tif",
+    "quantity": "Soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     0.02,
+     0.6
+    ],
+    "colours": "YlGnBu",
+    "dates": [
+     "2026-07-17"
+    ],
+    "inputs": [
+     "NISAR_L3_PR_SME2_025_141_D_067_4005_DHDH_A_20260717T234332_20260717T234407_P05023_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": null,
+    "frequency": null,
+    "note": "28,849 of the 29,238 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended.",
+    "program": "Lynkeus 0.1.0",
+    "method": "Layer soilMoisture of the product in the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0); every other cell is left out (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3)",
+    "record": "/files/state-20260717/soil-moisture-state.json"
+   },
+   "file": "soil-moisture-state.tif",
+   "file_bytes": 9101,
+   "sha256_of_the_file": "ca7fe31d461c8bf5fa872c8c40abafdc1af07415145fb9ab7bad6e4adf84c369",
+   "sha256_of_values": "fe9058f0a4a79be6138ebfccc1bfbe0d5674f66da618b8af31b26d43337b4e91",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 35035,
+    "cells_with_a_value": 389,
+    "lowest": "0.12988372147083282",
+    "highest": "0.5117441415786743",
+    "mean_64_bit": "0.30459804894225456"
+   },
+   "reduced_copies": [],
+   "nodata": "nan",
+   "grid_equal_to_that_of_the_inputs": true,
+   "bit_identical_to_the_function": true,
+   "note_of_the_function": "28,849 of the 29,238 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended.",
+   "note_equal": true,
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool soil-moisture-state of Lynkeus 0.1.0 on the layers: Soil moisture, 17 Jul 2026, Retrieval quality flag, 17 Jul 2026. Method: Layer soilMoisture of the product in the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0); every other cell is left out (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3). 28,849 of the 29,238 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended. Reduced copies made by averaging the values."
+  },
+  "state-20260810": {
+   "tool": "soil-moisture-state",
+   "inputs": [
+    "sm-20260810",
+    "flag-20260810"
+   ],
+   "steps": [
+    [
+     0,
+     "Reading the layers."
+    ],
+    [
+     40,
+     "Computing the result."
+    ],
+    [
+     70,
+     "Writing the result."
+    ],
+    [
+     100,
+     "The result is ready."
+    ]
+   ],
+   "description": {
+    "id": "state-20260810",
+    "title": "Result of soil-moisture-state",
+    "kind": "result",
+    "url": "/files/state-20260810/soil-moisture-state.tif",
+    "quantity": "Soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     0.02,
+     0.6
+    ],
+    "colours": "YlGnBu",
+    "dates": [
+     "2026-08-10"
+    ],
+    "inputs": [
+     "NISAR_L3_PR_SME2_027_141_D_067_4005_DHDH_A_20260810T234331_20260810T234406_P05023_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": null,
+    "frequency": null,
+    "note": "28,844 of the 29,238 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended.",
+    "program": "Lynkeus 0.1.0",
+    "method": "Layer soilMoisture of the product in the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0); every other cell is left out (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3)",
+    "record": "/files/state-20260810/soil-moisture-state.json"
+   },
+   "file": "soil-moisture-state.tif",
+   "file_bytes": 9137,
+   "sha256_of_the_file": "ec46ddf5220552d9bf116ea1769622155814601164c3c781bd6979ece02efa17",
+   "sha256_of_values": "080cad058c3a42ae4fa274153d0102739a99ddcea1338ae9736087d963bc8fc8",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 35030,
+    "cells_with_a_value": 394,
+    "lowest": "0.12057910114526749",
+    "highest": "0.49238553643226624",
+    "mean_64_bit": "0.2133473136514274"
+   },
+   "reduced_copies": [],
+   "nodata": "nan",
+   "grid_equal_to_that_of_the_inputs": true,
+   "bit_identical_to_the_function": true,
+   "note_of_the_function": "28,844 of the 29,238 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended.",
+   "note_equal": true,
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool soil-moisture-state of Lynkeus 0.1.0 on the layers: Soil moisture, 10 Aug 2026, Retrieval quality flag, 10 Aug 2026. Method: Layer soilMoisture of the product in the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0); every other cell is left out (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3). 28,844 of the 29,238 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended. Reduced copies made by averaging the values."
+  },
+  "state-20260822": {
+   "tool": "soil-moisture-state",
+   "inputs": [
+    "sm-20260822",
+    "flag-20260822"
+   ],
+   "steps": [
+    [
+     0,
+     "Reading the layers."
+    ],
+    [
+     40,
+     "Computing the result."
+    ],
+    [
+     70,
+     "Writing the result."
+    ],
+    [
+     100,
+     "The result is ready."
+    ]
+   ],
+   "description": {
+    "id": "state-20260822",
+    "title": "Result of soil-moisture-state",
+    "kind": "result",
+    "url": "/files/state-20260822/soil-moisture-state.tif",
+    "quantity": "Soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     0.02,
+     0.6
+    ],
+    "colours": "YlGnBu",
+    "dates": [
+     "2026-08-22"
+    ],
+    "inputs": [
+     "NISAR_L3_PR_SME2_028_141_D_067_4005_DHDH_A_20260822T234330_20260822T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": null,
+    "frequency": null,
+    "note": "28,838 of the 29,238 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended.",
+    "program": "Lynkeus 0.1.0",
+    "method": "Layer soilMoisture of the product in the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0); every other cell is left out (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3)",
+    "record": "/files/state-20260822/soil-moisture-state.json"
+   },
+   "file": "soil-moisture-state.tif",
+   "file_bytes": 9277,
+   "sha256_of_the_file": "49106fccab1e8cc622c85b1b77944f69bd17b4fdc7a965a8b1902ecf9eec537f",
+   "sha256_of_values": "a2f2a7e30c8420502c44d83586a64d1cdccaa44024c300f4e24f6ecff4138c75",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 35024,
+    "cells_with_a_value": 400,
+    "lowest": "0.10809415578842163",
+    "highest": "0.3983215391635895",
+    "mean_64_bit": "0.21438413817435503"
+   },
+   "reduced_copies": [],
+   "nodata": "nan",
+   "grid_equal_to_that_of_the_inputs": true,
+   "bit_identical_to_the_function": true,
+   "note_of_the_function": "28,838 of the 29,238 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended.",
+   "note_equal": true,
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool soil-moisture-state of Lynkeus 0.1.0 on the layers: Soil moisture, 22 Aug 2026, Retrieval quality flag, 22 Aug 2026. Method: Layer soilMoisture of the product in the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0); every other cell is left out (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3). 28,838 of the 29,238 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended. Reduced copies made by averaging the values."
+  },
+  "state-20260903": {
+   "tool": "soil-moisture-state",
+   "inputs": [
+    "sm-20260903",
+    "flag-20260903"
+   ],
+   "steps": [
+    [
+     0,
+     "Reading the layers."
+    ],
+    [
+     40,
+     "Computing the result."
+    ],
+    [
+     70,
+     "Writing the result."
+    ],
+    [
+     100,
+     "The result is ready."
+    ]
+   ],
+   "description": {
+    "id": "state-20260903",
+    "title": "Result of soil-moisture-state",
+    "kind": "result",
+    "url": "/files/state-20260903/soil-moisture-state.tif",
+    "quantity": "Soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     0.02,
+     0.6
+    ],
+    "colours": "YlGnBu",
+    "dates": [
+     "2026-09-03"
+    ],
+    "inputs": [
+     "NISAR_L3_PR_SME2_029_141_D_067_4005_DHDH_A_20260903T234330_20260903T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": null,
+    "frequency": null,
+    "note": "28,836 of the 29,238 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended.",
+    "program": "Lynkeus 0.1.0",
+    "method": "Layer soilMoisture of the product in the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0); every other cell is left out (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3)",
+    "record": "/files/state-20260903/soil-moisture-state.json"
+   },
+   "file": "soil-moisture-state.tif",
+   "file_bytes": 9195,
+   "sha256_of_the_file": "0a5589fa371bed242906ef6fff5f8ff6d67307295a08364b8efb2166512e1579",
+   "sha256_of_values": "3fd0acecee5c40e71d29ac7bc182b5a2111af4d62c3dc01c58ece69d6295f0f8",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 35022,
+    "cells_with_a_value": 402,
+    "lowest": "0.12217245250940323",
+    "highest": "0.49023866653442383",
+    "mean_64_bit": "0.22533851949062514"
+   },
+   "reduced_copies": [],
+   "nodata": "nan",
+   "grid_equal_to_that_of_the_inputs": true,
+   "bit_identical_to_the_function": true,
+   "note_of_the_function": "28,836 of the 29,238 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended.",
+   "note_equal": true,
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool soil-moisture-state of Lynkeus 0.1.0 on the layers: Soil moisture, 3 Sep 2026, Retrieval quality flag, 3 Sep 2026. Method: Layer soilMoisture of the product in the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0); every other cell is left out (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3). 28,836 of the 29,238 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended. Reduced copies made by averaging the values."
+  },
+  "state-20260915": {
+   "tool": "soil-moisture-state",
+   "inputs": [
+    "sm-20260915",
+    "flag-20260915"
+   ],
+   "steps": [
+    [
+     0,
+     "Reading the layers."
+    ],
+    [
+     40,
+     "Computing the result."
+    ],
+    [
+     70,
+     "Writing the result."
+    ],
+    [
+     100,
+     "The result is ready."
+    ]
+   ],
+   "description": {
+    "id": "state-20260915",
+    "title": "Result of soil-moisture-state",
+    "kind": "result",
+    "url": "/files/state-20260915/soil-moisture-state.tif",
+    "quantity": "Soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     0.02,
+     0.6
+    ],
+    "colours": "YlGnBu",
+    "dates": [
+     "2026-09-15"
+    ],
+    "inputs": [
+     "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": null,
+    "frequency": null,
+    "note": "28,816 of the 29,238 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended.",
+    "program": "Lynkeus 0.1.0",
+    "method": "Layer soilMoisture of the product in the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0); every other cell is left out (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3)",
+    "record": "/files/state-20260915/soil-moisture-state.json"
+   },
+   "file": "soil-moisture-state.tif",
+   "file_bytes": 9423,
+   "sha256_of_the_file": "df16b8ce4f06213bde44e96dc2bc3e6f3a5b462cc4469691d098b875beebbb78",
+   "sha256_of_values": "a7b292b62774deeffc1a4f77527d2495d5ff8cf7d7419cedfee64d690dcfa215",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 35002,
+    "cells_with_a_value": 422,
+    "lowest": "0.1234283596277237",
+    "highest": "0.5019910335540771",
+    "mean_64_bit": "0.22151612525726383"
+   },
+   "reduced_copies": [],
+   "nodata": "nan",
+   "grid_equal_to_that_of_the_inputs": true,
+   "bit_identical_to_the_function": true,
+   "note_of_the_function": "28,816 of the 29,238 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended.",
+   "note_equal": true,
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool soil-moisture-state of Lynkeus 0.1.0 on the layers: Soil moisture, 15 Sep 2026, Retrieval quality flag, 15 Sep 2026. Method: Layer soilMoisture of the product in the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0); every other cell is left out (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3). 28,816 of the 29,238 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended. Reduced copies made by averaging the values."
+  },
+  "state-20260927": {
+   "tool": "soil-moisture-state",
+   "inputs": [
+    "sm-20260927",
+    "flag-20260927"
+   ],
+   "steps": [
+    [
+     0,
+     "Reading the layers."
+    ],
+    [
+     40,
+     "Computing the result."
+    ],
+    [
+     70,
+     "Writing the result."
+    ],
+    [
+     100,
+     "The result is ready."
+    ]
+   ],
+   "description": {
+    "id": "state-20260927",
+    "title": "Result of soil-moisture-state",
+    "kind": "result",
+    "url": "/files/state-20260927/soil-moisture-state.tif",
+    "quantity": "Soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     0.02,
+     0.6
+    ],
+    "colours": "YlGnBu",
+    "dates": [
+     "2026-09-27"
+    ],
+    "inputs": [
+     "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": null,
+    "frequency": null,
+    "note": "28,759 of the 29,238 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended.",
+    "program": "Lynkeus 0.1.0",
+    "method": "Layer soilMoisture of the product in the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0); every other cell is left out (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3)",
+    "record": "/files/state-20260927/soil-moisture-state.json"
+   },
+   "file": "soil-moisture-state.tif",
+   "file_bytes": 9971,
+   "sha256_of_the_file": "651541b37eb24d97e54dcf63204a870249ad48d2605006d5eaff8f7316f7fdde",
+   "sha256_of_values": "443234b0770f06e89683430a72095d63436c2b99f8dc1d7c267104c7d3992e4b",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 34945,
+    "cells_with_a_value": 479,
+    "lowest": "0.15685957670211792",
+    "highest": "0.3696202337741852",
+    "mean_64_bit": "0.25333518813323375"
+   },
+   "reduced_copies": [],
+   "nodata": "nan",
+   "grid_equal_to_that_of_the_inputs": true,
+   "bit_identical_to_the_function": true,
+   "note_of_the_function": "28,759 of the 29,238 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended.",
+   "note_equal": true,
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool soil-moisture-state of Lynkeus 0.1.0 on the layers: Soil moisture, 27 Sep 2026, Retrieval quality flag, 27 Sep 2026. Method: Layer soilMoisture of the product in the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0); every other cell is left out (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3). 28,759 of the 29,238 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended. Reduced copies made by averaging the values."
+  },
+  "state-20261009": {
+   "tool": "soil-moisture-state",
+   "inputs": [
+    "sm-20261009",
+    "flag-20261009"
+   ],
+   "steps": [
+    [
+     0,
+     "Reading the layers."
+    ],
+    [
+     40,
+     "Computing the result."
+    ],
+    [
+     70,
+     "Writing the result."
+    ],
+    [
+     100,
+     "The result is ready."
+    ]
+   ],
+   "description": {
+    "id": "state-20261009",
+    "title": "Result of soil-moisture-state",
+    "kind": "result",
+    "url": "/files/state-20261009/soil-moisture-state.tif",
+    "quantity": "Soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     0.02,
+     0.6
+    ],
+    "colours": "YlGnBu",
+    "dates": [
+     "2026-10-09"
+    ],
+    "inputs": [
+     "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": null,
+    "frequency": null,
+    "note": "28,638 of the 29,238 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended.",
+    "program": "Lynkeus 0.1.0",
+    "method": "Layer soilMoisture of the product in the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0); every other cell is left out (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3)",
+    "record": "/files/state-20261009/soil-moisture-state.json"
+   },
+   "file": "soil-moisture-state.tif",
+   "file_bytes": 11097,
+   "sha256_of_the_file": "f95f90d897aa12ab814a75eb16f391a6f9c7a803a95607f57458fd1620c2b406",
+   "sha256_of_values": "f90c5f65b05725acad947205d0db003bf53033acfdfc0390644aeeb1e9c67e4b",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 34824,
+    "cells_with_a_value": 600,
+    "lowest": "0.1287771612405777",
+    "highest": "0.377190500497818",
+    "mean_64_bit": "0.21451748485366504"
+   },
+   "reduced_copies": [],
+   "nodata": "nan",
+   "grid_equal_to_that_of_the_inputs": true,
+   "bit_identical_to_the_function": true,
+   "note_of_the_function": "28,638 of the 29,238 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended.",
+   "note_equal": true,
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool soil-moisture-state of Lynkeus 0.1.0 on the layers: Soil moisture, 9 Oct 2026, Retrieval quality flag, 9 Oct 2026. Method: Layer soilMoisture of the product in the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0); every other cell is left out (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3). 28,638 of the 29,238 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended. Reduced copies made by averaging the values."
+  },
+  "change-20260623-20260705": {
+   "tool": "soil-moisture-change",
+   "inputs": [
+    "sm-20260623",
+    "flag-20260623",
+    "sm-20260705",
+    "flag-20260705"
+   ],
+   "steps": [
+    [
+     0,
+     "Reading the layers."
+    ],
+    [
+     40,
+     "Computing the result."
+    ],
+    [
+     70,
+     "Writing the result."
+    ],
+    [
+     100,
+     "The result is ready."
+    ]
+   ],
+   "description": {
+    "id": "change-20260623-20260705",
+    "title": "Result of soil-moisture-change",
+    "kind": "result",
+    "url": "/files/change-20260623-20260705/soil-moisture-change.tif",
+    "quantity": "Change of soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     -0.06338982224464408,
+     0.06338982224464408
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-06-23",
+     "2026-07-05"
+    ],
+    "inputs": [
+     "NISAR_L3_PR_SME2_023_141_D_067_4005_DHDH_A_20260623T234333_20260623T234408_P05023_N_F_J_001.h5",
+     "NISAR_L3_PR_SME2_024_141_D_067_4005_DHDH_A_20260705T234333_20260705T234408_P05023_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": [
+     "decrease",
+     "increase"
+    ],
+    "frequency": null,
+    "note": "27,026 of the 27,411 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both.",
+    "program": "Lynkeus 0.1.0",
+    "method": "Difference of the layer soilMoisture of two dates, later minus earlier, in the cells whose retrieval the layer retrievalQualityFlag does not mark as not recommended on either date (bit 0 is 0) (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C)",
+    "record": "/files/change-20260623-20260705/soil-moisture-change.json"
+   },
+   "file": "soil-moisture-change.tif",
+   "file_bytes": 9155,
+   "sha256_of_the_file": "9548d4dc3de6c372829c7141280085d35570d94b8a9e6fc7d77179cfd3bef135",
+   "sha256_of_values": "dd3720882af014d924c41647b336f696e174e90cb082540d592f2249e0095268",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 35039,
+    "cells_with_a_value": 385,
+    "lowest": "-0.07379254698753357",
+    "highest": "0.09947165846824646",
+    "mean_64_bit": "-0.015483205697753213"
+   },
+   "reduced_copies": [],
+   "nodata": "nan",
+   "grid_equal_to_that_of_the_inputs": true,
+   "bit_identical_to_the_function": true,
+   "note_of_the_function": "27,026 of the 27,411 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both.",
+   "note_equal": true,
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool soil-moisture-change of Lynkeus 0.1.0 on the layers: Soil moisture, 23 Jun 2026, Retrieval quality flag, 23 Jun 2026, Soil moisture, 5 Jul 2026, Retrieval quality flag, 5 Jul 2026. Method: Difference of the layer soilMoisture of two dates, later minus earlier, in the cells whose retrieval the layer retrievalQualityFlag does not mark as not recommended on either date (bit 0 is 0) (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C). 27,026 of the 27,411 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both. Reduced copies made by averaging the values."
+  },
+  "change-20260705-20260717": {
+   "tool": "soil-moisture-change",
+   "inputs": [
+    "sm-20260705",
+    "flag-20260705",
+    "sm-20260717",
+    "flag-20260717"
+   ],
+   "steps": [
+    [
+     0,
+     "Reading the layers."
+    ],
+    [
+     40,
+     "Computing the result."
+    ],
+    [
+     70,
+     "Writing the result."
+    ],
+    [
+     100,
+     "The result is ready."
+    ]
+   ],
+   "description": {
+    "id": "change-20260705-20260717",
+    "title": "Result of soil-moisture-change",
+    "kind": "result",
+    "url": "/files/change-20260705-20260717/soil-moisture-change.tif",
+    "quantity": "Change of soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     -0.08046007961034776,
+     0.08046007961034776
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-07-05",
+     "2026-07-17"
+    ],
+    "inputs": [
+     "NISAR_L3_PR_SME2_024_141_D_067_4005_DHDH_A_20260705T234333_20260705T234408_P05023_N_F_J_001.h5",
+     "NISAR_L3_PR_SME2_025_141_D_067_4005_DHDH_A_20260717T234332_20260717T234407_P05023_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": [
+     "decrease",
+     "increase"
+    ],
+    "frequency": null,
+    "note": "27,033 of the 27,411 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both.",
+    "program": "Lynkeus 0.1.0",
+    "method": "Difference of the layer soilMoisture of two dates, later minus earlier, in the cells whose retrieval the layer retrievalQualityFlag does not mark as not recommended on either date (bit 0 is 0) (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C)",
+    "record": "/files/change-20260705-20260717/soil-moisture-change.json"
+   },
+   "file": "soil-moisture-change.tif",
+   "file_bytes": 9101,
+   "sha256_of_the_file": "52666efc85743bebd94e80e9604c75d7ac5356d50ddf5f4b672a1d740f881f20",
+   "sha256_of_values": "7016f064917008d182b8571196a795490a6a1b73b7e9905b4adc847fc4feb9b0",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 35046,
+    "cells_with_a_value": 378,
+    "lowest": "-0.13258308172225952",
+    "highest": "0.09146201610565186",
+    "mean_64_bit": "0.006854185312197953"
+   },
+   "reduced_copies": [],
+   "nodata": "nan",
+   "grid_equal_to_that_of_the_inputs": true,
+   "bit_identical_to_the_function": true,
+   "note_of_the_function": "27,033 of the 27,411 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both.",
+   "note_equal": true,
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool soil-moisture-change of Lynkeus 0.1.0 on the layers: Soil moisture, 5 Jul 2026, Retrieval quality flag, 5 Jul 2026, Soil moisture, 17 Jul 2026, Retrieval quality flag, 17 Jul 2026. Method: Difference of the layer soilMoisture of two dates, later minus earlier, in the cells whose retrieval the layer retrievalQualityFlag does not mark as not recommended on either date (bit 0 is 0) (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C). 27,033 of the 27,411 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both. Reduced copies made by averaging the values."
+  },
+  "change-20260717-20260810": {
+   "tool": "soil-moisture-change",
+   "inputs": [
+    "sm-20260717",
+    "flag-20260717",
+    "sm-20260810",
+    "flag-20260810"
+   ],
+   "steps": [
+    [
+     0,
+     "Reading the layers."
+    ],
+    [
+     40,
+     "Computing the result."
+    ],
+    [
+     70,
+     "Writing the result."
+    ],
+    [
+     100,
+     "The result is ready."
+    ]
+   ],
+   "description": {
+    "id": "change-20260717-20260810",
+    "title": "Result of soil-moisture-change",
+    "kind": "result",
+    "url": "/files/change-20260717-20260810/soil-moisture-change.tif",
+    "quantity": "Change of soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     -0.1617613321542738,
+     0.1617613321542738
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-07-17",
+     "2026-08-10"
+    ],
+    "inputs": [
+     "NISAR_L3_PR_SME2_025_141_D_067_4005_DHDH_A_20260717T234332_20260717T234407_P05023_N_F_J_001.h5",
+     "NISAR_L3_PR_SME2_027_141_D_067_4005_DHDH_A_20260810T234331_20260810T234406_P05023_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": [
+     "decrease",
+     "increase"
+    ],
+    "frequency": null,
+    "note": "28,858 of the 29,238 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both.",
+    "program": "Lynkeus 0.1.0",
+    "method": "Difference of the layer soilMoisture of two dates, later minus earlier, in the cells whose retrieval the layer retrievalQualityFlag does not mark as not recommended on either date (bit 0 is 0) (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C)",
+    "record": "/files/change-20260717-20260810/soil-moisture-change.json"
+   },
+   "file": "soil-moisture-change.tif",
+   "file_bytes": 9231,
+   "sha256_of_the_file": "d6509b435a415a6c890a1718bac9bea9c37cd7a49e6b1d07a5688ffa2cf8bb7c",
+   "sha256_of_values": "b731e4de73c15b04fe5444563d3527fe7e6577b50efb170dcc26fec7444ed7c0",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 35044,
+    "cells_with_a_value": 380,
+    "lowest": "-0.1894443929195404",
+    "highest": "0.08852361142635345",
+    "mean_64_bit": "-0.09217552415242321"
+   },
+   "reduced_copies": [],
+   "nodata": "nan",
+   "grid_equal_to_that_of_the_inputs": true,
+   "bit_identical_to_the_function": true,
+   "note_of_the_function": "28,858 of the 29,238 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both.",
+   "note_equal": true,
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool soil-moisture-change of Lynkeus 0.1.0 on the layers: Soil moisture, 17 Jul 2026, Retrieval quality flag, 17 Jul 2026, Soil moisture, 10 Aug 2026, Retrieval quality flag, 10 Aug 2026. Method: Difference of the layer soilMoisture of two dates, later minus earlier, in the cells whose retrieval the layer retrievalQualityFlag does not mark as not recommended on either date (bit 0 is 0) (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C). 28,858 of the 29,238 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both. Reduced copies made by averaging the values."
+  },
+  "change-20260810-20260822": {
+   "tool": "soil-moisture-change",
+   "inputs": [
+    "sm-20260810",
+    "flag-20260810",
+    "sm-20260822",
+    "flag-20260822"
+   ],
+   "steps": [
+    [
+     0,
+     "Reading the layers."
+    ],
+    [
+     40,
+     "Computing the result."
+    ],
+    [
+     70,
+     "Writing the result."
+    ],
+    [
+     100,
+     "The result is ready."
+    ]
+   ],
+   "description": {
+    "id": "change-20260810-20260822",
+    "title": "Result of soil-moisture-change",
+    "kind": "result",
+    "url": "/files/change-20260810-20260822/soil-moisture-change.tif",
+    "quantity": "Change of soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     -0.07496316060423805,
+     0.07496316060423805
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-08-10",
+     "2026-08-22"
+    ],
+    "inputs": [
+     "NISAR_L3_PR_SME2_027_141_D_067_4005_DHDH_A_20260810T234331_20260810T234406_P05023_N_F_J_001.h5",
+     "NISAR_L3_PR_SME2_028_141_D_067_4005_DHDH_A_20260822T234330_20260822T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": [
+     "decrease",
+     "increase"
+    ],
+    "frequency": null,
+    "note": "28,852 of the 29,238 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both.",
+    "program": "Lynkeus 0.1.0",
+    "method": "Difference of the layer soilMoisture of two dates, later minus earlier, in the cells whose retrieval the layer retrievalQualityFlag does not mark as not recommended on either date (bit 0 is 0) (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C)",
+    "record": "/files/change-20260810-20260822/soil-moisture-change.json"
+   },
+   "file": "soil-moisture-change.tif",
+   "file_bytes": 9459,
+   "sha256_of_the_file": "a0bd39cc13050ae056f30575f7d20f42f25d8b86df691b1598ca059c85502b11",
+   "sha256_of_values": "8e1121b6eeec6f12fa203692c1f411cc9ecd6e707c79e8b0f75fea23e2884b60",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 35038,
+    "cells_with_a_value": 386,
+    "lowest": "-0.15718308091163635",
+    "highest": "0.09243661165237427",
+    "mean_64_bit": "-0.001441917444912263"
+   },
+   "reduced_copies": [],
+   "nodata": "nan",
+   "grid_equal_to_that_of_the_inputs": true,
+   "bit_identical_to_the_function": true,
+   "note_of_the_function": "28,852 of the 29,238 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both.",
+   "note_equal": true,
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool soil-moisture-change of Lynkeus 0.1.0 on the layers: Soil moisture, 10 Aug 2026, Retrieval quality flag, 10 Aug 2026, Soil moisture, 22 Aug 2026, Retrieval quality flag, 22 Aug 2026. Method: Difference of the layer soilMoisture of two dates, later minus earlier, in the cells whose retrieval the layer retrievalQualityFlag does not mark as not recommended on either date (bit 0 is 0) (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C). 28,852 of the 29,238 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both. Reduced copies made by averaging the values."
+  },
+  "change-20260822-20260903": {
+   "tool": "soil-moisture-change",
+   "inputs": [
+    "sm-20260822",
+    "flag-20260822",
+    "sm-20260903",
+    "flag-20260903"
+   ],
+   "steps": [
+    [
+     0,
+     "Reading the layers."
+    ],
+    [
+     40,
+     "Computing the result."
+    ],
+    [
+     70,
+     "Writing the result."
+    ],
+    [
+     100,
+     "The result is ready."
+    ]
+   ],
+   "description": {
+    "id": "change-20260822-20260903",
+    "title": "Result of soil-moisture-change",
+    "kind": "result",
+    "url": "/files/change-20260822-20260903/soil-moisture-change.tif",
+    "quantity": "Change of soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     -0.08674602687358837,
+     0.08674602687358837
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-08-22",
+     "2026-09-03"
+    ],
+    "inputs": [
+     "NISAR_L3_PR_SME2_028_141_D_067_4005_DHDH_A_20260822T234330_20260822T234405_P05023_N_F_J_001.h5",
+     "NISAR_L3_PR_SME2_029_141_D_067_4005_DHDH_A_20260903T234330_20260903T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": [
+     "decrease",
+     "increase"
+    ],
+    "frequency": null,
+    "note": "28,853 of the 29,238 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both.",
+    "program": "Lynkeus 0.1.0",
+    "method": "Difference of the layer soilMoisture of two dates, later minus earlier, in the cells whose retrieval the layer retrievalQualityFlag does not mark as not recommended on either date (bit 0 is 0) (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C)",
+    "record": "/files/change-20260822-20260903/soil-moisture-change.json"
+   },
+   "file": "soil-moisture-change.tif",
+   "file_bytes": 9335,
+   "sha256_of_the_file": "3eec64515cf5036edae0eb93bdd1fffc76ba03d4897949bb7fe34d3f18894f0b",
+   "sha256_of_values": "ec316de90d768044e247b910bc678e9adfc1dea4d79ed03a25704fd480bf1729",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 35039,
+    "cells_with_a_value": 385,
+    "lowest": "-0.1069883406162262",
+    "highest": "0.10515038669109344",
+    "mean_64_bit": "0.013536832394537988"
+   },
+   "reduced_copies": [],
+   "nodata": "nan",
+   "grid_equal_to_that_of_the_inputs": true,
+   "bit_identical_to_the_function": true,
+   "note_of_the_function": "28,853 of the 29,238 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both.",
+   "note_equal": true,
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool soil-moisture-change of Lynkeus 0.1.0 on the layers: Soil moisture, 22 Aug 2026, Retrieval quality flag, 22 Aug 2026, Soil moisture, 3 Sep 2026, Retrieval quality flag, 3 Sep 2026. Method: Difference of the layer soilMoisture of two dates, later minus earlier, in the cells whose retrieval the layer retrievalQualityFlag does not mark as not recommended on either date (bit 0 is 0) (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C). 28,853 of the 29,238 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both. Reduced copies made by averaging the values."
+  },
+  "change-20260903-20260915": {
+   "tool": "soil-moisture-change",
+   "inputs": [
+    "sm-20260903",
+    "flag-20260903",
+    "sm-20260915",
+    "flag-20260915"
+   ],
+   "steps": [
+    [
+     0,
+     "Reading the layers."
+    ],
+    [
+     40,
+     "Computing the result."
+    ],
+    [
+     70,
+     "Writing the result."
+    ],
+    [
+     100,
+     "The result is ready."
+    ]
+   ],
+   "description": {
+    "id": "change-20260903-20260915",
+    "title": "Result of soil-moisture-change",
+    "kind": "result",
+    "url": "/files/change-20260903-20260915/soil-moisture-change.tif",
+    "quantity": "Change of soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     -0.056951336860656794,
+     0.056951336860656794
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-09-03",
+     "2026-09-15"
+    ],
+    "inputs": [
+     "NISAR_L3_PR_SME2_029_141_D_067_4005_DHDH_A_20260903T234330_20260903T234405_P05023_N_F_J_001.h5",
+     "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": [
+     "decrease",
+     "increase"
+    ],
+    "frequency": null,
+    "note": "28,841 of the 29,238 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both.",
+    "program": "Lynkeus 0.1.0",
+    "method": "Difference of the layer soilMoisture of two dates, later minus earlier, in the cells whose retrieval the layer retrievalQualityFlag does not mark as not recommended on either date (bit 0 is 0) (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C)",
+    "record": "/files/change-20260903-20260915/soil-moisture-change.json"
+   },
+   "file": "soil-moisture-change.tif",
+   "file_bytes": 9464,
+   "sha256_of_the_file": "25069de1be029d8e0c0ce5a3cc6483faa004ef2b3585e487c9cc574a9b781f67",
+   "sha256_of_values": "2bcbfaeff2e3bf7291e735fd3dc064e2a0c145df5ddacd7de2515db59bf750ba",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 35027,
+    "cells_with_a_value": 397,
+    "lowest": "-0.09206946194171906",
+    "highest": "0.10823549330234528",
+    "mean_64_bit": "-0.006103814323843276"
+   },
+   "reduced_copies": [],
+   "nodata": "nan",
+   "grid_equal_to_that_of_the_inputs": true,
+   "bit_identical_to_the_function": true,
+   "note_of_the_function": "28,841 of the 29,238 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both.",
+   "note_equal": true,
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool soil-moisture-change of Lynkeus 0.1.0 on the layers: Soil moisture, 3 Sep 2026, Retrieval quality flag, 3 Sep 2026, Soil moisture, 15 Sep 2026, Retrieval quality flag, 15 Sep 2026. Method: Difference of the layer soilMoisture of two dates, later minus earlier, in the cells whose retrieval the layer retrievalQualityFlag does not mark as not recommended on either date (bit 0 is 0) (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C). 28,841 of the 29,238 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both. Reduced copies made by averaging the values."
+  },
+  "change-20260915-20260927": {
+   "tool": "soil-moisture-change",
+   "inputs": [
+    "sm-20260915",
+    "flag-20260915",
+    "sm-20260927",
+    "flag-20260927"
+   ],
+   "steps": [
+    [
+     0,
+     "Reading the layers."
+    ],
+    [
+     40,
+     "Computing the result."
+    ],
+    [
+     70,
+     "Writing the result."
+    ],
+    [
+     100,
+     "The result is ready."
+    ]
+   ],
+   "description": {
+    "id": "change-20260915-20260927",
+    "title": "Result of soil-moisture-change",
+    "kind": "result",
+    "url": "/files/change-20260915-20260927/soil-moisture-change.tif",
+    "quantity": "Change of soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     -0.08359543666243548,
+     0.08359543666243548
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-09-15",
+     "2026-09-27"
+    ],
+    "inputs": [
+     "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001.h5",
+     "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": [
+     "decrease",
+     "increase"
+    ],
+    "frequency": null,
+    "note": "28,820 of the 29,238 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both.",
+    "program": "Lynkeus 0.1.0",
+    "method": "Difference of the layer soilMoisture of two dates, later minus earlier, in the cells whose retrieval the layer retrievalQualityFlag does not mark as not recommended on either date (bit 0 is 0) (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C)",
+    "record": "/files/change-20260915-20260927/soil-moisture-change.json"
+   },
+   "file": "soil-moisture-change.tif",
+   "file_bytes": 9730,
+   "sha256_of_the_file": "508dab76a1c85725c14ce4342012439e05b9e0c042ba8866e01595e2882dcf33",
+   "sha256_of_values": "04ec2ab5f28acd04d2d0b60df9da203a62701f8c525485926f3eabaa906cd233",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 35006,
+    "cells_with_a_value": 418,
+    "lowest": "-0.15607154369354248",
+    "highest": "0.08909833431243896",
+    "mean_64_bit": "0.028499084867929157"
+   },
+   "reduced_copies": [],
+   "nodata": "nan",
+   "grid_equal_to_that_of_the_inputs": true,
+   "bit_identical_to_the_function": true,
+   "note_of_the_function": "28,820 of the 29,238 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both.",
+   "note_equal": true,
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool soil-moisture-change of Lynkeus 0.1.0 on the layers: Soil moisture, 15 Sep 2026, Retrieval quality flag, 15 Sep 2026, Soil moisture, 27 Sep 2026, Retrieval quality flag, 27 Sep 2026. Method: Difference of the layer soilMoisture of two dates, later minus earlier, in the cells whose retrieval the layer retrievalQualityFlag does not mark as not recommended on either date (bit 0 is 0) (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C). 28,820 of the 29,238 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both. Reduced copies made by averaging the values."
+  },
+  "change-20260927-20261009": {
+   "tool": "soil-moisture-change",
+   "inputs": [
+    "sm-20260927",
+    "flag-20260927",
+    "sm-20261009",
+    "flag-20261009"
+   ],
+   "steps": [
+    [
+     0,
+     "Reading the layers."
+    ],
+    [
+     40,
+     "Computing the result."
+    ],
+    [
+     70,
+     "Writing the result."
+    ],
+    [
+     100,
+     "The result is ready."
+    ]
+   ],
+   "description": {
+    "id": "change-20260927-20261009",
+    "title": "Result of soil-moisture-change",
+    "kind": "result",
+    "url": "/files/change-20260927-20261009/soil-moisture-change.tif",
+    "quantity": "Change of soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     -0.10561596095561976,
+     0.10561596095561976
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-09-27",
+     "2026-10-09"
+    ],
+    "inputs": [
+     "NISAR_L3_PR_SME2_031_141_D_067_4005_DHDH_A_20260927T234330_20260927T234405_P05023_N_F_J_001.h5",
+     "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": [
+     "decrease",
+     "increase"
+    ],
+    "frequency": null,
+    "note": "28,759 of the 29,238 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both.",
+    "program": "Lynkeus 0.1.0",
+    "method": "Difference of the layer soilMoisture of two dates, later minus earlier, in the cells whose retrieval the layer retrievalQualityFlag does not mark as not recommended on either date (bit 0 is 0) (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C)",
+    "record": "/files/change-20260927-20261009/soil-moisture-change.json"
+   },
+   "file": "soil-moisture-change.tif",
+   "file_bytes": 10272,
+   "sha256_of_the_file": "6a2f79a3504ec454019379fb884a3221585f2654a842a2743738e00237f65c7f",
+   "sha256_of_values": "d60a871fa139177d4e9519f4214403acd2dbd1eee13f087e95677120f66e35d0",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 34945,
+    "cells_with_a_value": 479,
+    "lowest": "-0.14999999105930328",
+    "highest": "0.10699999332427979",
+    "mean_64_bit": "-0.04234151588850081"
+   },
+   "reduced_copies": [],
+   "nodata": "nan",
+   "grid_equal_to_that_of_the_inputs": true,
+   "bit_identical_to_the_function": true,
+   "note_of_the_function": "28,759 of the 29,238 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both.",
+   "note_equal": true,
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool soil-moisture-change of Lynkeus 0.1.0 on the layers: Soil moisture, 27 Sep 2026, Retrieval quality flag, 27 Sep 2026, Soil moisture, 9 Oct 2026, Retrieval quality flag, 9 Oct 2026. Method: Difference of the layer soilMoisture of two dates, later minus earlier, in the cells whose retrieval the layer retrievalQualityFlag does not mark as not recommended on either date (bit 0 is 0) (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C). 28,759 of the 29,238 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both. Reduced copies made by averaging the values."
+  },
+  "change-20260915-20261009": {
+   "tool": "soil-moisture-change",
+   "inputs": [
+    "sm-20260915",
+    "flag-20260915",
+    "sm-20261009",
+    "flag-20261009"
+   ],
+   "steps": [
+    [
+     0,
+     "Reading the layers."
+    ],
+    [
+     40,
+     "Computing the result."
+    ],
+    [
+     70,
+     "Writing the result."
+    ],
+    [
+     100,
+     "The result is ready."
+    ]
+   ],
+   "description": {
+    "id": "change-20260915-20261009",
+    "title": "Result of soil-moisture-change",
+    "kind": "result",
+    "url": "/files/change-20260915-20261009/soil-moisture-change.tif",
+    "quantity": "Change of soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     -0.09544318735599543,
+     0.09544318735599543
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2026-09-15",
+     "2026-10-09"
+    ],
+    "inputs": [
+     "NISAR_L3_PR_SME2_030_141_D_067_4005_DHDH_A_20260915T234330_20260915T234405_P05023_N_F_J_001.h5",
+     "NISAR_L3_PR_SME2_032_141_D_067_4005_DHDH_A_20261009T234330_20261009T234405_P05023_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": [
+     "decrease",
+     "increase"
+    ],
+    "frequency": null,
+    "note": "28,816 of the 29,238 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both.",
+    "program": "Lynkeus 0.1.0",
+    "method": "Difference of the layer soilMoisture of two dates, later minus earlier, in the cells whose retrieval the layer retrievalQualityFlag does not mark as not recommended on either date (bit 0 is 0) (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C)",
+    "record": "/files/change-20260915-20261009/soil-moisture-change.json"
+   },
+   "file": "soil-moisture-change.tif",
+   "file_bytes": 9833,
+   "sha256_of_the_file": "8d7b7744ef730d9fed4fc60b23ce9a9cc6d4d929600ceffb2200422fa0463880",
+   "sha256_of_values": "3185cb84aa451cce38b16faecc41f777c62fd9a7323b433aecff2f57372cf608",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 35002,
+    "cells_with_a_value": 422,
+    "lowest": "-0.14400000870227814",
+    "highest": "0.07405111193656921",
+    "mean_64_bit": "-0.014048072893472645"
+   },
+   "reduced_copies": [],
+   "nodata": "nan",
+   "grid_equal_to_that_of_the_inputs": true,
+   "bit_identical_to_the_function": true,
+   "note_of_the_function": "28,816 of the 29,238 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both.",
+   "note_equal": true,
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool soil-moisture-change of Lynkeus 0.1.0 on the layers: Soil moisture, 15 Sep 2026, Retrieval quality flag, 15 Sep 2026, Soil moisture, 9 Oct 2026, Retrieval quality flag, 9 Oct 2026. Method: Difference of the layer soilMoisture of two dates, later minus earlier, in the cells whose retrieval the layer retrievalQualityFlag does not mark as not recommended on either date (bit 0 is 0) (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C). 28,816 of the 29,238 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both. Reduced copies made by averaging the values."
+  },
+  "state-beta-20251213": {
+   "tool": "soil-moisture-state",
+   "inputs": [
+    "sm-beta-20251213",
+    "flag-beta-20251213"
+   ],
+   "steps": [
+    [
+     0,
+     "Reading the layers."
+    ],
+    [
+     40,
+     "Computing the result."
+    ],
+    [
+     70,
+     "Writing the result."
+    ],
+    [
+     100,
+     "The result is ready."
+    ]
+   ],
+   "description": {
+    "id": "state-beta-20251213",
+    "title": "Result of soil-moisture-state",
+    "kind": "result",
+    "url": "/files/state-beta-20251213/soil-moisture-state.tif",
+    "quantity": "Soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     0.02,
+     0.6
+    ],
+    "colours": "YlGnBu",
+    "dates": [
+     "2025-12-13"
+    ],
+    "inputs": [
+     "NISAR_L3_PR_SME2_007_141_D_067_4005_DHDH_A_20251213T234332_20251213T234407_X05010_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": null,
+    "frequency": null,
+    "note": "NISAR marks the retrieval of every cell with a soil moisture as recommended, so none is left out.",
+    "program": "Lynkeus 0.1.0",
+    "method": "Layer soilMoisture of the product in the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0); every other cell is left out (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3)",
+    "record": "/files/state-beta-20251213/soil-moisture-state.json"
+   },
+   "file": "soil-moisture-state.tif",
+   "file_bytes": 8570,
+   "sha256_of_the_file": "00966bc8554f77eb5a49ff7c4fb9946ecc058cddd7caa028c9b900de24946476",
+   "sha256_of_values": "ba3d9297505d5904b274d6200b471f36519247da4cd712219c734dd271721050",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 34742,
+    "cells_with_a_value": 682,
+    "lowest": "0.12240751087665558",
+    "highest": "0.4186220169067383",
+    "mean_64_bit": "0.2762652840738422"
+   },
+   "reduced_copies": [],
+   "nodata": "nan",
+   "grid_equal_to_that_of_the_inputs": true,
+   "bit_identical_to_the_function": true,
+   "note_of_the_function": "NISAR marks the retrieval of every cell with a soil moisture as recommended, so none is left out.",
+   "note_equal": true,
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool soil-moisture-state of Lynkeus 0.1.0 on the layers: Soil moisture, 13 Dec 2025, Retrieval quality flag, 13 Dec 2025. Method: Layer soilMoisture of the product in the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0); every other cell is left out (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3). NISAR marks the retrieval of every cell with a soil moisture as recommended, so none is left out. Reduced copies made by averaging the values."
+  },
+  "state-beta-20251225": {
+   "tool": "soil-moisture-state",
+   "inputs": [
+    "sm-beta-20251225",
+    "flag-beta-20251225"
+   ],
+   "steps": [
+    [
+     0,
+     "Reading the layers."
+    ],
+    [
+     40,
+     "Computing the result."
+    ],
+    [
+     70,
+     "Writing the result."
+    ],
+    [
+     100,
+     "The result is ready."
+    ]
+   ],
+   "description": {
+    "id": "state-beta-20251225",
+    "title": "Result of soil-moisture-state",
+    "kind": "result",
+    "url": "/files/state-beta-20251225/soil-moisture-state.tif",
+    "quantity": "Soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     0.02,
+     0.6
+    ],
+    "colours": "YlGnBu",
+    "dates": [
+     "2025-12-25"
+    ],
+    "inputs": [
+     "NISAR_L3_PR_SME2_008_141_D_067_4005_DHDH_A_20251225T234333_20251225T234408_X05010_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": null,
+    "frequency": null,
+    "note": "NISAR marks the retrieval of every cell with a soil moisture as recommended, so none is left out.",
+    "program": "Lynkeus 0.1.0",
+    "method": "Layer soilMoisture of the product in the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0); every other cell is left out (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3)",
+    "record": "/files/state-beta-20251225/soil-moisture-state.json"
+   },
+   "file": "soil-moisture-state.tif",
+   "file_bytes": 5935,
+   "sha256_of_the_file": "4712522960b87030054c34c0bfdc9748647abf39d4c508e0af549fd1edb94d83",
+   "sha256_of_values": "af3b85c1b608f1b8fd1742d67a8ededed61afd925c0b6059bde585f00581ad71",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 35098,
+    "cells_with_a_value": 326,
+    "lowest": "0.14443029463291168",
+    "highest": "0.37125420570373535",
+    "mean_64_bit": "0.2654901544100668"
+   },
+   "reduced_copies": [],
+   "nodata": "nan",
+   "grid_equal_to_that_of_the_inputs": true,
+   "bit_identical_to_the_function": true,
+   "note_of_the_function": "NISAR marks the retrieval of every cell with a soil moisture as recommended, so none is left out.",
+   "note_equal": true,
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool soil-moisture-state of Lynkeus 0.1.0 on the layers: Soil moisture, 25 Dec 2025, Retrieval quality flag, 25 Dec 2025. Method: Layer soilMoisture of the product in the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0); every other cell is left out (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3). NISAR marks the retrieval of every cell with a soil moisture as recommended, so none is left out. Reduced copies made by averaging the values."
+  },
+  "change-beta-20251213-beta-20251225": {
+   "tool": "soil-moisture-change",
+   "inputs": [
+    "sm-beta-20251213",
+    "flag-beta-20251213",
+    "sm-beta-20251225",
+    "flag-beta-20251225"
+   ],
+   "steps": [
+    [
+     0,
+     "Reading the layers."
+    ],
+    [
+     40,
+     "Computing the result."
+    ],
+    [
+     70,
+     "Writing the result."
+    ],
+    [
+     100,
+     "The result is ready."
+    ]
+   ],
+   "description": {
+    "id": "change-beta-20251213-beta-20251225",
+    "title": "Result of soil-moisture-change",
+    "kind": "result",
+    "url": "/files/change-beta-20251213-beta-20251225/soil-moisture-change.tif",
+    "quantity": "Change of soil moisture",
+    "unit": "m3 m-3",
+    "range": [
+     -0.06969356164336205,
+     0.06969356164336205
+    ],
+    "colours": "RdBu",
+    "dates": [
+     "2025-12-13",
+     "2025-12-25"
+    ],
+    "inputs": [
+     "NISAR_L3_PR_SME2_007_141_D_067_4005_DHDH_A_20251213T234332_20251213T234407_X05010_N_F_J_001.h5",
+     "NISAR_L3_PR_SME2_008_141_D_067_4005_DHDH_A_20251225T234333_20251225T234408_X05010_N_F_J_001.h5"
+    ],
+    "layer": null,
+    "ends": [
+     "decrease",
+     "increase"
+    ],
+    "frequency": null,
+    "note": "NISAR marks the retrieval of every cell with a soil moisture on both dates as recommended, so none is left out.",
+    "program": "Lynkeus 0.1.0",
+    "method": "Difference of the layer soilMoisture of two dates, later minus earlier, in the cells whose retrieval the layer retrievalQualityFlag does not mark as not recommended on either date (bit 0 is 0) (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C)",
+    "record": "/files/change-beta-20251213-beta-20251225/soil-moisture-change.json"
+   },
+   "file": "soil-moisture-change.tif",
+   "file_bytes": 6325,
+   "sha256_of_the_file": "42863079c519b6117d4419e3b7981a0b6000a70082ddbb5ca07d540d622e67a0",
+   "sha256_of_values": "0feb737acbd1345111f8ffc9da8063fd6690b09c4211e9e2d974a127840f76f9",
+   "values": {
+    "cells": 35424,
+    "cells_with_nan": 35098,
+    "cells_with_a_value": 326,
+    "lowest": "-0.06538742780685425",
+    "highest": "0.1014135330915451",
+    "mean_64_bit": "0.003400215936219034"
+   },
+   "reduced_copies": [],
+   "nodata": "nan",
+   "grid_equal_to_that_of_the_inputs": true,
+   "bit_identical_to_the_function": true,
+   "note_of_the_function": "NISAR marks the retrieval of every cell with a soil moisture on both dates as recommended, so none is left out.",
+   "note_equal": true,
+   "cog_validate_strict": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+   },
+   "faults_against_the_stac_schemas": [],
+   "lineage": "Result of the analysis tool soil-moisture-change of Lynkeus 0.1.0 on the layers: Soil moisture, 13 Dec 2025, Retrieval quality flag, 13 Dec 2025, Soil moisture, 25 Dec 2025, Retrieval quality flag, 25 Dec 2025. Method: Difference of the layer soilMoisture of two dates, later minus earlier, in the cells whose retrieval the layer retrievalQualityFlag does not mark as not recommended on either date (bit 0 is 0) (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C). NISAR marks the retrieval of every cell with a soil moisture on both dates as recommended, so none is left out. Reduced copies made by averaging the values."
+  }
+ },
+ "frames": {
+  "state-20260915": {
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    "0.02",
+    "0.6"
+   ],
+   "colours": "YlGnBu",
+   "method": "Layer soilMoisture of the product in the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0); every other cell is left out (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3)",
+   "reduction": "mean",
+   "ends": null,
+   "note": "694,132 of the 702,700 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended.",
+   "dtype": "float32",
+   "sha256_of_values": "5486f754b8c397f3a019e7858923947252cb3c5b0e754dda0b12c7faba9acf3e",
+   "values": {
+    "cells": 3572100,
+    "cells_with_nan": 3563532,
+    "cells_with_a_value": 8568,
+    "lowest": "0.05120055377483368",
+    "highest": "0.5657860040664673",
+    "mean_64_bit": "0.23574071358993692"
+   },
+   "same_grid_of_the_two_files": true
+  },
+  "state-20260927": {
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    "0.02",
+    "0.6"
+   ],
+   "colours": "YlGnBu",
+   "method": "Layer soilMoisture of the product in the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0); every other cell is left out (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3)",
+   "reduction": "mean",
+   "ends": null,
+   "note": "695,030 of the 704,158 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended.",
+   "dtype": "float32",
+   "sha256_of_values": "38358cd67af1cd63318d22455a18fb1ab8d638843539d532d9e57b5e4b5df44e",
+   "values": {
+    "cells": 3572100,
+    "cells_with_nan": 3562972,
+    "cells_with_a_value": 9128,
+    "lowest": "0.07599999755620956",
+    "highest": "0.5699756145477295",
+    "mean_64_bit": "0.2527479772438849"
+   },
+   "same_grid_of_the_two_files": true
+  },
+  "state-20261009": {
+   "quantity": "Soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    "0.02",
+    "0.6"
+   ],
+   "colours": "YlGnBu",
+   "method": "Layer soilMoisture of the product in the cells whose retrieval the layer retrievalQualityFlag of the same product does not mark as not recommended (bit 0 is 0); every other cell is left out (NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C; NISAR L3 Soil Moisture Data Product ATBD, JPL D-107679 Release 3.3)",
+   "reduction": "mean",
+   "ends": null,
+   "note": "693,642 of the 704,710 cells with a soil moisture are left out because NISAR marks their retrieval as not recommended.",
+   "dtype": "float32",
+   "sha256_of_values": "16aed759258bf48c350e0a52a4dc21fae507b9d297a80196a026cf63968f87b8",
+   "values": {
+    "cells": 3572100,
+    "cells_with_nan": 3561032,
+    "cells_with_a_value": 11068,
+    "lowest": "0.039000000804662704",
+    "highest": "0.5795029401779175",
+    "mean_64_bit": "0.23317988098467413"
+   },
+   "same_grid_of_the_two_files": true
+  },
+  "change-20260915-20260927": {
+   "quantity": "Change of soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    "-0.12273278713226318",
+    "0.12273278713226318"
+   ],
+   "colours": "RdBu",
+   "method": "Difference of the layer soilMoisture of two dates, later minus earlier, in the cells whose retrieval the layer retrievalQualityFlag does not mark as not recommended on either date (bit 0 is 0) (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C)",
+   "reduction": "mean",
+   "ends": [
+    "decrease",
+    "increase"
+   ],
+   "note": "694,412 of the 702,675 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both.",
+   "dtype": "float32",
+   "sha256_of_values": "5612c21ae25b644456a1843503883cd65faa9c60bb7adf2197e7d9ea61ef386c",
+   "values": {
+    "cells": 3572100,
+    "cells_with_nan": 3563837,
+    "cells_with_a_value": 8263,
+    "lowest": "-0.23977646231651306",
+    "highest": "0.33399999141693115",
+    "mean_64_bit": "0.0165643047991769"
+   }
+  },
+  "change-20260927-20261009": {
+   "quantity": "Change of soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    "-0.10691480636596701",
+    "0.10691480636596701"
+   ],
+   "colours": "RdBu",
+   "method": "Difference of the layer soilMoisture of two dates, later minus earlier, in the cells whose retrieval the layer retrievalQualityFlag does not mark as not recommended on either date (bit 0 is 0) (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C)",
+   "reduction": "mean",
+   "ends": [
+    "decrease",
+    "increase"
+   ],
+   "note": "691,997 of the 700,913 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both.",
+   "dtype": "float32",
+   "sha256_of_values": "e6283a10e76b2fe9e98f3a9f0640691ca4348b2374ed1bed145382d961ddd9e2",
+   "values": {
+    "cells": 3572100,
+    "cells_with_nan": 3563184,
+    "cells_with_a_value": 8916,
+    "lowest": "-0.22587724030017853",
+    "highest": "0.24348297715187073",
+    "mean_64_bit": "-0.02526941923186444"
+   }
+  },
+  "change-20260915-20261009": {
+   "quantity": "Change of soil moisture",
+   "unit": "m3 m-3",
+   "range": [
+    "-0.11800000071525574",
+    "0.11800000071525574"
+   ],
+   "colours": "RdBu",
+   "method": "Difference of the layer soilMoisture of two dates, later minus earlier, in the cells whose retrieval the layer retrievalQualityFlag does not mark as not recommended on either date (bit 0 is 0) (image differencing: Singh, 1989, https://doi.org/10.1080/01431168908903939; NASA SDS Product Specification, L3 SME2, JPL D-107677 Rev C)",
+   "reduction": "mean",
+   "ends": [
+    "decrease",
+    "increase"
+   ],
+   "note": "692,220 of the 700,556 cells with a soil moisture on both dates are left out because NISAR marks their retrieval as not recommended on one date or both.",
+   "dtype": "float32",
+   "sha256_of_values": "f8f617426a1ba2167191769ddade85bac623bd8d464881af2a0a492f986368dc",
+   "values": {
+    "cells": 3572100,
+    "cells_with_nan": 3563764,
+    "cells_with_a_value": 8336,
+    "lowest": "-0.21854393184185028",
+    "highest": "0.22300001978874207",
+    "mean_64_bit": "-0.00876692110974692"
+   }
+  }
+ },
+ "refusals": {
+  "state without the flag": {
+   "tool": "soil-moisture-state",
+   "inputs": [
+    "sm-20261009"
+   ],
+   "refused_with": "The number of input layers must be 2, and it is 1.",
+   "files_written": []
+  },
+  "state with the flag of another date": {
+   "tool": "soil-moisture-state",
+   "inputs": [
+    "sm-20261009",
+    "flag-20260927"
+   ],
+   "refused_with": "The layers \"Soil moisture, 9 Oct 2026\" and \"Retrieval quality flag, 27 Sep 2026\" are not of the same product file.",
+   "files_written": []
+  },
+  "state with the flag first": {
+   "tool": "soil-moisture-state",
+   "inputs": [
+    "flag-20261009",
+    "sm-20261009"
+   ],
+   "refused_with": "The layer \"Retrieval quality flag, 9 Oct 2026\" is the layer retrievalQualityFlag of its product, and the tool reads the layer soilMoisture.",
+   "files_written": []
+  },
+  "change without the flags": {
+   "tool": "soil-moisture-change",
+   "inputs": [
+    "sm-20260927",
+    "sm-20261009"
+   ],
+   "refused_with": "The number of input layers must be 4, and it is 2.",
+   "files_written": []
+  },
+  "change with the later date first": {
+   "tool": "soil-moisture-change",
+   "inputs": [
+    "sm-20261009",
+    "flag-20261009",
+    "sm-20260927",
+    "flag-20260927"
+   ],
+   "refused_with": "The first layer must be of an earlier date than the second.",
+   "files_written": []
+  },
+  "change with the flags of the other dates": {
+   "tool": "soil-moisture-change",
+   "inputs": [
+    "sm-20260927",
+    "flag-20261009",
+    "sm-20261009",
+    "flag-20260927"
+   ],
+   "refused_with": "The layers \"Soil moisture, 27 Sep 2026\" and \"Retrieval quality flag, 9 Oct 2026\" are not of the same product file.",
+   "files_written": []
+  }
+ },
+ "dates": [
+  "20260623",
+  "20260705",
+  "20260717",
+  "20260810",
+  "20260822",
+  "20260903",
+  "20260915",
+  "20260927",
+  "20261009"
+ ],
+ "beta_dates": [
+  "20251213",
+  "20251225"
+ ],
+ "pairs": [
+  "20260623-20260705",
+  "20260705-20260717",
+  "20260717-20260810",
+  "20260810-20260822",
+  "20260822-20260903",
+  "20260903-20260915",
+  "20260915-20260927",
+  "20260927-20261009",
+  "20260915-20261009"
+ ],
+ "frame_dates": [
+  "20260915",
+  "20260927",
+  "20261009"
+ ],
+ "ended": "2026-11-15T19:42:30Z"
+}
