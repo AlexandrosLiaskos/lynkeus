@@ -140,6 +140,66 @@ harmony-py makes a folder with `tempfile` (item 1). The program was packed and r
 8. When the program is ended at once by the system (not by Quit or by a signal), its running jobs go on
    until they finish, and they are recorded as interrupted at the next start. This was not checked.
 
+## The project server
+
+The side of the project server (`lynkeus.servers`, `lynkeus.server_routes`, the tables of the own servers in
+`lynkeus.store`, and the settings in `web/nginx.conf`) was built and checked on 15 November 2026.
+
+### Sources
+
+Each text was read on that day, on the page named.
+
+| Subject | Source | What it states | What it decided |
+|---|---|---|---|
+| Answers before the confirmation | RFC 8628, section 3.5 ([rfc-editor.org](https://www.rfc-editor.org/rfc/rfc8628.txt)) | `authorization_pending`; `slow_down`, after which the interval must grow by 5 seconds; `access_denied`; `expired_token`, when the device code has expired | The four answers of `POST /api/link/pairings/token` |
+| Guessing a user code | RFC 8628, section 5.1 | The server should limit the attempts at a user code; with a code of 8 letters out of 20, 5 attempts within the validity give a guess a chance of 2 to the power -32 | `MAX_CODE_ATTEMPTS` is 5 for one Earthdata user within `PAIRING_TIME` |
+| Letters of a user code | RFC 8628, section 6.1 | The 20 letters `BCDFGHJKLMNPQRSTVWXZ`, the example `WDJB-MJHT`, 20 to the power 8 codes | Confirms the letters that the first part of this note wrote from memory |
+| Ranges of bytes | RFC 9110, sections 14.1.2, 14.2 and 15.5.17 ([rfc-editor.org](https://www.rfc-editor.org/rfc/rfc9110.txt)) | A last byte beyond the end means the rest of the file; a range of the last N bytes that is longer than the file means the whole file, and one of 0 bytes cannot be satisfied; a server may ignore the header `Range`; an answer 416 should state the size as `Content-Range: bytes */size` | The reading of the header in `byte_range`, the whole file for a request of several ranges, and the answer 416 |
+| Rate of requests | nginx, module `ngx_http_limit_req_module` ([nginx.org](https://nginx.org/en/docs/http/ngx_http_limit_req_module.html)) | Requests beyond the rate are delayed until their number passes `burst`, and refused beyond it; with `nodelay` the burst is served at once | The three zones of the own servers |
+| Passing a file on | nginx, module `ngx_http_proxy_module` ([nginx.org](https://nginx.org/en/docs/http/ngx_http_proxy_module.html)) | With `proxy_buffering on` nginx reads the answer as fast as it can and may write it to a temporary file; with `off` it passes it on as it arrives. `proxy_read_timeout` counts between two readings, not for the whole answer. `proxy_intercept_errors` is off by default, so an error answer of the web service reaches the visitor as it is | `proxy_buffering off` for the files; the answers 503 and 504 of the web service are not replaced |
+| Size of a body | nginx, `client_max_body_size` ([nginx.org](https://nginx.org/en/docs/http/ngx_http_core_module.html)) | Default 1 megabyte; a larger body is answered with 413 | 1 megabyte under `/api/link/` |
+| Stop of the web service | Code of uvicorn 0.54.0 as installed (`uvicorn/server.py`) | The server sets its own handlers for the signals SIGINT and SIGTERM. At a stop it waits for the open requests, for the time of `--timeout-graceful-shutdown` when that is given, then cancels them with an error in its log, and only then ends the web service | `lynkeus.routes.stop_signals` ends the requests that wait for an own server before the handler of uvicorn runs |
+
+Not read: the documentation of SQLite and of asyncio. What the code relies on there was tried in the tests
+instead: a statement `CREATE TABLE IF NOT EXISTS` leaves an existing table as it is, a deleted server removes
+its jobs and layers through its foreign keys, and a wait on the event loop holds no thread.
+
+### Checks
+
+Each check ran on the project machine (2 processors, shared with other work) in a container of
+`python:3.13-slim`. The own server was the stand-in of `api/tests/ownserver.py`, which speaks the connection
+over HTTP and writes its layer with `lynkeus.writing` from the sample of NISAR backscatter
+`api/tests/data/layers/gcov-hhhh-20261021.tif` (600 by 560 cells). The test with the program itself and with
+layers from NASA Harmony is the last part of this note.
+
+| Check | Result |
+|---|---|
+| A record file of version 1, made by the web service of commit 1aa6077 with 2 sessions, 3 jobs and 2 layers (`api/tests/data/records/version-1.sqlite3`) | Opened as version 2 with every row unchanged; the four tables of the own servers were added |
+| 100 own servers of 13 users, each with a question for tasks open for 20 seconds, on one web service | 20 requests to five other addresses were answered in 0.004 seconds (median; largest 0.005) while all 100 questions were open, against 0.004 (largest 0.060) before. A new job reached its server 0.02 seconds after it was started; the other 99 questions stayed open and ended after 20.0 to 20.6 seconds with no task |
+| A job through the web server of Lynkeus (`web/nginx.conf` in a container of nginx 1.27, on a network of its own) | The stand-in was paired, received the task `start` with the Earthdata token, and reported a successful job. Its GeoTIFF of 1,177,141 bytes was read whole in 3 parts (0 to 524,288, to 1,048,576, to the end) and by four ranges, each with the bytes of the file on the disk of the stand-in (same SHA-256 for the whole file). The whole file took 0.07 to 0.23 seconds in three runs; visitor, web server and stand-in were on the same machine |
+| 100 ranges of 64 kilobytes at once through that web server | All answered 206 with the right bytes, in 2.5, 3.2 and 10.6 seconds in three runs |
+| A question for tasks with `wait=25` through that web server | Answered after 25.0 seconds with an empty list |
+| Limits of that web server | A body of 1.2 megabytes under `/api/link/` was answered with 413 and the sentence of the limit; a part of 524,288 bytes passed. Of 12 requests for a pairing in a row, 6 were answered with 429. A `POST` to a file was answered with 403. With 60 requests a second and a burst of 240 under `/api/link/`, 884 of 1200 questions in a row were answered with 429 in the form of the other answers of the site |
+| Stop of the web service while an own server held a question open, before the correction | The service ended 24.2 seconds after the signal SIGTERM, when the question had been answered. With `--timeout-graceful-shutdown 5` it ended after 5.2 seconds, the question was answered with 500, and the log held an error |
+| The same after the correction, with the web service as a process of its own and no such option (`test_stopped_service_answers_the_open_question_with_503_and_writes_no_error`) | The question was answered with 503 and the sentence "Lynkeus is being restarted. Ask again in a moment." within the 5 seconds that the test allows, the process ended within 10 seconds, and its log held the lines of an orderly stop and no error |
+| A program that says that it is quit, `POST /api/link/leave` (`test_program_that_is_quit_leaves_its_server_not_connected_at_once`) | The list showed the server as not connected at once; a request for a file that was waiting for the server, later requests for its files, a new job on it, and the renaming and the removal of its layer were answered with 503 within the 10 seconds that the test allows; a job without a chosen server went to the project server; the next message of the server connected it again |
+
+### Not confirmed
+
+1. With 150 requests a second and a burst of 600 under `/api/link/`, which `web/nginx.conf` sets, the checking
+   container could not ask fast enough to be refused: 6000 questions over 32 connections took 43 seconds and
+   all were answered. The refusal was seen at the lower rate only.
+2. More than 100 own servers at once, and many visitors who read layers of own servers at the same time.
+   The web service holds each part of a file in memory until it has passed it on: at most 256 tasks for one
+   server, each with at most 524,288 bytes.
+3. The stop of the web service in its container, by `docker compose`. The check stopped a process started
+   by the tests with the same signal.
+4. `POST /api/link/leave` sent by the program itself. The stand-in sent it.
+5. A server whose program said that it is quit counts as connected again, until 75 seconds after its last
+   message, when the project server is restarted in that time: what the program said is held in memory.
+6. A file that is being passed on when the web service stops, or when its server fails, ends before the
+   length that the answer stated, and the web service writes an error in its log for it.
+
 ## Test of the joined parts on real data
 
 On 15 November 2026, 10:18 to 10:30 UTC, the three parts were joined (merge cb8f7e4) and run as a private
