@@ -1,204 +1,209 @@
-import { useEffect, useId, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   browseAddress,
   findProduct,
-  formatDay,
-  formatMoment,
   formatSize,
-  pairDays,
-  PRODUCT_NAMES,
   type Product,
   type ProductDetail,
   type ProductFile,
 } from "../data/products";
 import { zoomToProducts } from "../data/Footprints";
 import { findStack } from "../data/run";
-import { selectedProductStore } from "../data/state";
+import { GET_LAYER_PANE } from "../data/state";
+import { copyText } from "../shared/clipboard";
+import { openToolPane } from "../shared/dock/dock";
 import { Icon } from "../shared/icon/Icon";
 import { useMap } from "../shared/map";
+import { report } from "../shared/messages/messages";
+import { Notice } from "../shared/notice/Notice";
+import { COPIED_TIME, PropertyList } from "../shared/properties/PropertyList";
+import { Section } from "../shared/section/Section";
+import { IconButton } from "../shared/toolbar/IconButton";
+import { attributeRows, otherIdentifiers, productGroups } from "./productProperties";
 
+/** The kinds of file of a product, in the order shown, with the words that name them. */
 const FILE_KINDS: readonly (readonly [ProductFile["kind"], string])[] = [
-  ["data", "Product file (needs an Earthdata account)"],
+  ["data", "Product file"],
   ["browse", "Browse images"],
   ["quality", "Quality reports"],
   ["metadata", "Metadata"],
 ];
 
-function yesNo(value: boolean | null): string | null {
-  return value === null ? null : value ? "Yes" : "No";
-}
+/** The name of a product, with a button that copies it. The button states for a moment that the name was copied. */
+function ProductName({ name }: { name: string }) {
+  const [copied, setCopied] = useState(false);
+  const timer = useRef<number | undefined>(undefined);
 
-function megahertz(value: number | null): string | null {
-  return value === null ? null : `${String(value)} MHz`;
-}
+  useEffect(() => () => window.clearTimeout(timer.current), []);
 
-/** Return what the result list knows about a product, as rows of a name and a value. Rows without a value are left out. */
-export function productRows(product: Product): [string, string][] {
-  const days = pairDays(product);
-  const [first, second] = product.dates;
-  const rows: [string, string | null][] = [
-    ["Product type", `${product.product} (${PRODUCT_NAMES[product.product]})`],
-    ["Collection", `${product.collection} (${product.maturity.toLowerCase()})`],
-    ...(days === null || first === undefined || second === undefined
-      ? ([
-          ["Start", formatMoment(product.start)],
-          ["End", formatMoment(product.end)],
-        ] as [string, string][])
-      : ([
-          ["First acquisition", formatDay(first)],
-          ["Second acquisition", formatDay(second)],
-          ["Days between", String(days)],
-          ["Start of the first", formatMoment(product.start)],
-          ["End of the second", formatMoment(product.end)],
-        ] as [string, string][])),
-    ["Track", String(product.track)],
-    ["Frame", String(product.frame)],
-    ["Direction of the orbit", product.direction],
-    ["Cycle", product.cycle === null ? null : String(product.cycle)],
-    ["Absolute orbit", product.orbit === null ? null : String(product.orbit)],
-    ["Frequency bands", product.bands.join(", ") || null],
-    ["Channels of band A", product.channels.join(", ") || null],
-    ["Channels of band B", product.side_channels.join(", ") || null],
-    ["Bandwidth of band A", megahertz(product.bandwidth)],
-    ["Bandwidth of band B", megahertz(product.side_bandwidth)],
-    ["Coverage of the frame", product.coverage],
-    ["Observed with the S-band radar", yesNo(product.joint)],
-    ["Version of the product", product.version],
-    ["Size of the product file", product.size === null ? null : formatSize(product.size)],
-    ["Identifier in the catalogue", product.id],
-  ];
-  return rows.filter((row): row is [string, string] => row[1] !== null);
-}
+  const copy = () => {
+    copyText(name).then(
+      () => {
+        window.clearTimeout(timer.current);
+        setCopied(true);
+        timer.current = window.setTimeout(() => setCopied(false), COPIED_TIME);
+      },
+      () => report("error", "The browser did not allow the copy. Select the name and copy it with the keyboard."),
+    );
+  };
 
-/** Return what only the full record of a product states, as rows of a name and a value. */
-export function recordRows(detail: ProductDetail): [string, string][] {
-  const rows: [string, string | null][] = [
-    ["Side to which the radar looked", detail.look],
-    ["Covers", detail.localities.join(", ") || null],
-    ["Made on", detail.produced === null ? null : formatMoment(detail.produced)],
-    ["Made by the program", detail.software],
-    ...detail.identifiers.map(({ name, values }): [string, string] => [name, values.join(", ")]),
-    ["Record last changed", detail.recorded === null ? null : formatMoment(detail.recorded)],
-    ["Made from", detail.inputs.join(", ") || null],
-  ];
-  return rows.filter((row): row is [string, string] => row[1] !== null);
-}
-
-function Rows({ rows }: { rows: readonly (readonly [string, string])[] }) {
   return (
-    <dl className="catalog-rows">
-      {rows.map(([name, value]) => (
-        <div key={name}>
-          <dt>{name}</dt>
-          <dd>{value}</dd>
-        </div>
-      ))}
-    </dl>
+    <div className="catalog-name">
+      <h4 className="catalog-name-text">{name}</h4>
+      <IconButton icon={copied ? "check" : "content_copy"} label="Copy the product name" onClick={copy} />
+      {copied ? (
+        <span className="catalog-copied" role="status">
+          Copied
+        </span>
+      ) : null}
+    </div>
+  );
+}
+
+/** The files of a product under the headings of their kinds. Each file is a link to its address, with its size. */
+function ProductFiles({ product, files }: { product: Product; files: readonly ProductFile[] }) {
+  return (
+    <>
+      {FILE_KINDS.map(([kind, title]) => {
+        const members = files.filter((file) => file.kind === kind);
+        return members.length === 0 ? null : (
+          <div key={kind} className="catalog-files">
+            <h4 className="catalog-files-title">{title}</h4>
+            <ul className="catalog-files-list">
+              {members.map((file) => (
+                <li key={file.url}>
+                  <a href={file.url} target="_blank" rel="noreferrer">
+                    {file.name.replace(product.name, "") || file.name}
+                  </a>
+                  {file.size === null ? null : <span className="catalog-files-size"> {formatSize(file.size)}</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      })}
+    </>
   );
 }
 
 /** The record of a product as the server sent it, or the words of the failure to receive it. */
-type Loaded = { id: string; detail: ProductDetail } | { id: string; fault: string };
+type Loaded = { key: string; detail: ProductDetail } | { key: string; fault: string };
+
+interface ProductDetailsProps {
+  product: Product;
+  /** Called by the link that returns to the list of products. */
+  onBack: () => void;
+}
 
 /**
- * The details of the selected product: its browse image, everything that its record in NASA's catalogue
- * states, and the addresses of its files.
+ * The details of one product, shown in the place of the list of products: the link back to the list, the name
+ * of the product, its browse image, its commands and its properties in groups. The files of the product, the
+ * attributes of its record and the identifiers without a readable name stand in sections that start closed.
+ * The properties that the result list knows show at once, and those of the full record when the server has
+ * sent it.
  */
-export function ProductDetails({ product }: { product: Product }) {
+export function ProductDetails({ product, onBack }: ProductDetailsProps) {
   const map = useMap();
-  const headingId = useId();
+  const back = useRef<HTMLButtonElement>(null);
   const [loaded, setLoaded] = useState<Loaded | null>(null);
+  // The number of the reading of the record: the button of a failed reading asks for the next one.
+  const [reading, setReading] = useState(0);
   const { id } = product;
+  const key = `${id} ${String(reading)}`;
+
+  // The details take the keyboard focus from the list that they replace.
+  useEffect(() => {
+    back.current?.focus();
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();
     findProduct(id, controller.signal)
-      .then((detail) => setLoaded({ id, detail }))
+      .then((detail) => setLoaded({ key, detail }))
       .catch((error: unknown) => {
         if (!controller.signal.aborted) {
-          setLoaded({ id, fault: error instanceof Error ? error.message : "The record could not be read." });
+          setLoaded({ key, fault: error instanceof Error ? error.message : "The record could not be read." });
         }
       });
     return () => controller.abort();
-  }, [id]);
+  }, [id, key]);
 
-  // The record of the product that was selected before is not shown for this one.
-  const current = loaded?.id === id ? loaded : null;
+  // The record of the product that was shown before, or of a reading before, is not shown for this one.
+  const current = loaded?.key === key ? loaded : null;
   const detail = current && "detail" in current ? current.detail : null;
   const fault = current && "fault" in current ? current.fault : null;
   const browse = detail?.files.find((file) => file.kind === "browse" && !file.name.endsWith("thumbnail.png"));
+  const others = detail ? otherIdentifiers(detail) : [];
 
   return (
-    <section className="catalog-section catalog-details" aria-labelledby={headingId}>
-      <div className="catalog-heading">
-        <h3 id={headingId}>Product details</h3>
-        <button
-          type="button"
-          className="pane-close"
-          aria-label="Close the details and end the selection"
-          onClick={() => selectedProductStore.set(null)}
-        >
-          <Icon name="close" />
+    <div className="catalog-details">
+      <button ref={back} type="button" className="usa-button usa-button--unstyled catalog-back" onClick={onBack}>
+        <Icon name="arrow_back" />
+        Back to products
+      </button>
+      <ProductName name={product.name} />
+      {detail?.thumbnail ? (
+        <p className="catalog-browse">
+          <img src={browseAddress(id)} alt="Browse image of the product" width={100} height={100} />
+          {browse ? (
+            <a href={browse.url} target="_blank" rel="noreferrer">
+              Image in full size (opens in a new tab)
+            </a>
+          ) : null}
+        </p>
+      ) : null}
+      <div className="catalog-commands" role="group" aria-label="Commands of the product">
+        <button type="button" className="usa-button" onClick={() => openToolPane(GET_LAYER_PANE)}>
+          Get layer
+        </button>
+        <button type="button" className="usa-button usa-button--unstyled" onClick={() => zoomToProducts(map, id)}>
+          Zoom to
+        </button>
+        <button type="button" className="usa-button usa-button--unstyled" onClick={() => findStack(product)}>
+          All dates of this frame
         </button>
       </div>
-      <div className="catalog-details-body">
-        <p className="catalog-name">{product.name}</p>
-        <div className="catalog-tools">
-          <button type="button" className="usa-button usa-button--unstyled" onClick={() => zoomToProducts(map, id)}>
-            Zoom to
-          </button>
-          <button type="button" className="usa-button usa-button--unstyled" onClick={() => findStack(product)}>
-            All dates of this frame
-          </button>
-        </div>
-        {detail?.thumbnail ? (
-          <p className="catalog-browse">
-            <img src={browseAddress(id)} alt="Browse image of the product" width={100} height={100} />
-            {browse ? (
-              <a href={browse.url} target="_blank" rel="noreferrer">
-                Browse image in full size
-              </a>
-            ) : null}
-          </p>
-        ) : null}
-        <Rows rows={productRows(product)} />
-        {fault ? (
-          <p className="usa-error-message" role="alert">
-            {fault}
-          </p>
-        ) : null}
-        {!current ? <p role="status">Reading the record of the product.</p> : null}
-        {detail ? (
-          <>
-            <Rows rows={recordRows(detail)} />
-            <details className="catalog-more">
-              <summary>Files ({detail.files.length})</summary>
-              {FILE_KINDS.map(([kind, title]) => {
-                const files = detail.files.filter((file) => file.kind === kind);
-                return files.length === 0 ? null : (
-                  <div key={kind}>
-                    <h4>{title}</h4>
-                    <ul className="catalog-files">
-                      {files.map((file) => (
-                        <li key={file.url}>
-                          <a href={file.url} target="_blank" rel="noreferrer">
-                            {file.name.replace(product.name, "") || file.name}
-                          </a>
-                          {file.size === null ? null : ` ${formatSize(file.size)}`}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                );
-              })}
-            </details>
-            <details className="catalog-more">
-              <summary>Attributes of the record ({detail.attributes.length})</summary>
-              <Rows rows={detail.attributes.map(({ name, values }) => [name, values.join(", ")] as const)} />
-            </details>
-          </>
-        ) : null}
-      </div>
-    </section>
+      {fault ? (
+        <Notice kind="error" action={{ label: "Read again", onClick: () => setReading(reading + 1) }}>
+          {fault}
+        </Notice>
+      ) : null}
+      {current ? null : (
+        <p className="catalog-note" role="status">
+          Reading the record of the product.
+        </p>
+      )}
+      <PropertyList groups={productGroups(product, detail)} />
+      {detail ? (
+        <>
+          <Section
+            title="Files"
+            count={detail.files.length}
+            defaultOpen={false}
+            info="The files of the product, with their addresses at the Alaska Satellite Facility. The product file is downloaded with an Earthdata account."
+          >
+            <ProductFiles product={product} files={detail.files} />
+          </Section>
+          <Section
+            title="Record attributes"
+            count={detail.attributes.length}
+            defaultOpen={false}
+            info="The additional attributes of the record, under the names that NASA's catalogue gives them."
+          >
+            <PropertyList groups={[{ rows: attributeRows(detail.attributes) }]} />
+          </Section>
+          {others.length === 0 ? null : (
+            <Section
+              title="Other identifiers"
+              count={others.length}
+              defaultOpen={false}
+              info="Identifiers of the processing, under the names that the record gives them."
+            >
+              <PropertyList groups={[{ rows: attributeRows(others) }]} />
+            </Section>
+          )}
+        </>
+      ) : null}
+    </div>
   );
 }

@@ -5,8 +5,9 @@ import { jobsFaultStore, jobsStore, loadJobs, resetJobs } from "../data/jobs";
 import { loadLayers, resetLayers } from "../data/layers";
 import { job, layer, standIn, type StandIn } from "../data/testSession";
 import { messagesStore } from "../shared/messages/messages";
-import { JobsSection, jobsSentence } from "./JobsSection";
-import { openLayerStore } from "./state";
+import { jobGroups } from "./details";
+import { JobsSection, jobsSentence, noteWords, stateWords } from "./JobsSection";
+import { layersOpenStore, markedLayerStore } from "./state";
 
 let server: StandIn;
 
@@ -44,7 +45,8 @@ const FAILED = job({
 beforeEach(() => {
   resetJobs();
   resetLayers();
-  openLayerStore.set(null);
+  markedLayerStore.set(null);
+  layersOpenStore.set(true);
   messagesStore.set([]);
   server = standIn();
 });
@@ -65,33 +67,50 @@ async function show(jobs = [WAITING, RUNNING, FAILED, FINISHED]) {
   await act(() => loadJobs());
 }
 
-const item = (name: RegExp) => screen.getByRole("button", { name });
-const titles = () =>
-  screen.getAllByRole("button", { expanded: false }).map((button) => button.firstChild?.textContent?.trim());
+/** The names of the jobs of the list, in their order, up to the first comma. */
+const names = () =>
+  [...document.querySelectorAll(".job .item-title")].map((title) => title.textContent.trim().split(",")[0]);
 const messages = () => messagesStore.get().map(({ kind, text }) => [kind, text]);
 
-/** Show the tools of a job and return their group. */
-async function toolsOf(name: RegExp, title: string) {
-  await userEvent.click(item(name));
-  return within(screen.getByRole("group", { name: `Tools of the job ${title}` }));
+/** The commands of a job: the one that the item shows and the button of the menu "More". */
+const commandsOf = (title: string) => within(screen.getByRole("group", { name: `Commands of the job ${title}` }));
+
+/** Open the menu "More" of a job and return the names of its commands. */
+async function moreOf(title: string): Promise<string[]> {
+  await userEvent.click(commandsOf(title).getByRole("button", { name: "More" }));
+  return screen.getAllByRole("menuitem").map((command) => command.textContent);
 }
 
-test("the section is not shown while the session has no job", () => {
+/** Choose a command of a menu that is open. */
+const choose = (command: string) => userEvent.click(within(screen.getByRole("menu")).getByText(command));
+
+test("without a job the section says how it fills", () => {
   render(<JobsSection />);
-  expect(screen.queryByRole("region")).toBeNull();
-  expect(screen.queryByRole("heading")).toBeNull();
+  expect(screen.getByRole("button", { name: "Jobs (0)" })).toBeDefined();
+  expect(screen.getByText("A job starts when a layer is requested or an analysis tool is run.")).toBeDefined();
+  expect(screen.queryByRole("toolbar")).toBeNull();
+  expect(screen.queryByRole("list")).toBeNull();
 });
 
-test("each job shows its name, its state in words, its time and the sentence of the server", async () => {
+test("each job shows its name, its state in words and one line about it", async () => {
   await show();
-  expect(screen.getByRole("region", { name: "Jobs" })).toBeDefined();
-  expect(screen.getByRole("status").textContent).toBe("4 jobs: 1 running, 1 waiting, 1 finished, 1 failed.");
-  expect(screen.getAllByRole("listitem").map((row) => row.querySelector("button")?.textContent)).toEqual([
-    " Coherence HH, 9 and 21 Oct 2026Waiting, 0 %Requested 14 Nov 2026, 16:21:00 UTCThe job waits for its turn.",
-    " Backscatter HH, 21 Oct 2026Running, 40 %Requested 14 Nov 2026, 16:20:00 UTC, after 1 min 5 s of workNASA Harmony is preparing the layer.",
-    " Azimuth offset, 9 and 21 Oct 2026FailedEnded 14 Nov 2026, 16:10:04 UTC, after 3 s of workThe area lies outside the product.",
-    " Soil moisture, 2 Nov 2026FinishedEnded 14 Nov 2026, 16:02:07 UTC, after 2 min 5 s of work",
+  expect(screen.getByRole("button", { name: "Jobs (4)", expanded: true })).toBeDefined();
+  expect(screen.getByRole("status").textContent).toBe("1 running, 1 waiting, 1 finished, 1 failed.");
+  expect([...document.querySelectorAll(".job .item-main")].map((text) => text.textContent.trim())).toEqual([
+    "Coherence HH, 9 and 21 Oct 2026Waiting, 0 %The job waits for its turn.",
+    "Backscatter HH, 21 Oct 2026Running, 40 % after 1 min 5 sNASA Harmony is preparing the layer.",
+    "Azimuth offset, 9 and 21 Oct 2026FailedThe area lies outside the product.",
+    "Soil moisture, 2 Nov 2026FinishedEnded 14 Nov 2026, 16:02:07 UTC, after 2 min 5 s of work",
   ]);
+});
+
+test("the state and the line of a job are written from its status, its times and the sentence of the server", () => {
+  expect(stateWords(WAITING)).toBe("Waiting, 0 %");
+  expect(stateWords(RUNNING)).toBe("Running, 40 % after 1 min 5 s");
+  expect(stateWords(FAILED)).toBe("Failed");
+  expect(noteWords({ ...WAITING, message: "" })).toBe("Requested 14 Nov 2026, 16:21:00 UTC");
+  expect(noteWords({ ...FAILED, message: "" })).toBe("Ended 14 Nov 2026, 16:10:04 UTC, after 3 s of work");
+  expect(noteWords(FINISHED)).toBe("Ended 14 Nov 2026, 16:02:07 UTC, after 2 min 5 s of work");
 });
 
 test("a job that waits or runs shows its progress", async () => {
@@ -106,60 +125,84 @@ test("a job that waits or runs shows its progress", async () => {
   expect(screen.getAllByRole<HTMLProgressElement>("progressbar")[1]?.value).toBe(75);
 });
 
-test("the sentence of the section counts the jobs by their state", () => {
-  expect(jobsSentence([RUNNING])).toBe("1 job: 1 running.");
-  expect(jobsSentence([FINISHED, FINISHED, FAILED])).toBe("3 jobs: 2 finished, 1 failed.");
+test("the line of the section counts the jobs by their state", () => {
+  expect(jobsSentence([RUNNING])).toBe("1 running.");
+  expect(jobsSentence([FINISHED, FINISHED, FAILED])).toBe("2 finished, 1 failed.");
 });
 
-test("a click on a job shows its tools, and a second click hides them", async () => {
+test("a job shows the one command that fits its state, and its other commands in the menu More", async () => {
+  server.layers = [{ layer: layer({ id: "made" }) }];
+  await loadLayers();
   await show();
-  expect(screen.queryByRole("group")).toBeNull();
-  const running = await toolsOf(/^Backscatter HH/, "Backscatter HH, 21 Oct 2026");
-  expect(running.getAllByRole("button").map((button) => button.textContent)).toEqual(["Cancel", "Details"]);
-  const failed = await toolsOf(/^Azimuth offset/, "Azimuth offset, 9 and 21 Oct 2026");
-  expect(failed.getAllByRole("button").map((button) => button.textContent)).toEqual(["Details", "Run again", "Remove"]);
-  expect(screen.getAllByRole("group")).toHaveLength(1);
-  await userEvent.click(item(/^Azimuth offset/));
-  expect(screen.queryByRole("group")).toBeNull();
+  const shown = (title: string) =>
+    commandsOf(title)
+      .getAllByRole("button")
+      .map((button) => button.getAttribute("aria-label") ?? button.textContent);
+  expect(shown("Backscatter HH, 21 Oct 2026")).toEqual(["Cancel", "More"]);
+  expect(shown("Azimuth offset, 9 and 21 Oct 2026")).toEqual(["Run again", "More"]);
+  expect(shown("Soil moisture, 2 Nov 2026")).toEqual(["Show layer", "More"]);
+  expect(await moreOf("Backscatter HH, 21 Oct 2026")).toEqual(["Details"]);
+  await userEvent.keyboard("{Escape}");
+  expect(await moreOf("Azimuth offset, 9 and 21 Oct 2026")).toEqual(["Details", "Remove"]);
+  await userEvent.keyboard("{Escape}");
+  expect(await moreOf("Soil moisture, 2 Nov 2026")).toEqual(["Details", "Run again", "Remove"]);
 });
 
 test("a waiting or running job is cancelled, and the visitor is told", async () => {
   await show();
-  const tools = await toolsOf(/^Backscatter HH/, "Backscatter HH, 21 Oct 2026");
-  await userEvent.click(tools.getByRole("button", { name: "Cancel" }));
+  await userEvent.click(commandsOf("Backscatter HH, 21 Oct 2026").getByRole("button", { name: "Cancel" }));
   await vi.waitFor(() => expect(jobsStore.get().map(({ jobID }) => jobID)).toEqual(["wait", "fail", "done"]));
   expect(server.sent("DELETE").map(({ address }) => address)).toEqual(["/api/jobs/run"]);
   expect(messages()).toEqual([["info", 'The job "Backscatter HH, 21 Oct 2026" was cancelled.']]);
-  expect(screen.queryByRole("button", { name: /^Backscatter HH/ })).toBeNull();
+  expect(names()).not.toContain("Backscatter HH");
 });
 
-test("the details show every field of a job, with its inputs", async () => {
+test("the details show every field of a job in groups, with its inputs", async () => {
   await show();
-  const tools = await toolsOf(/^Soil moisture/, "Soil moisture, 2 Nov 2026");
-  await userEvent.click(tools.getByRole("button", { name: "Details" }));
-  const dialog = within(screen.getByRole("dialog", { name: "Job: Soil moisture, 2 Nov 2026" }));
-  expect(dialog.getAllByRole("row").map((row) => row.textContent)).toEqual([
-    "NameSoil moisture, 2 Nov 2026",
-    "Processget-layer",
-    "StatusFinished",
-    "MessageThe layer is ready.",
-    "Requested14 Nov 2026, 16:00:00 UTC",
-    "Started14 Nov 2026, 16:00:02 UTC",
-    "Ended14 Nov 2026, 16:02:07 UTC",
-    "Time of the work2 min 5 s",
-    "Product typeGCOV",
-    "Product fileNISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
-    "Layer of the productHHHH",
-    "AreaWest -71.2, south 42.6, east -70.75, north 42.95 (degrees)",
-    "Identifier of the layermade",
-    "Identifier of the jobdone",
+  await moreOf("Soil moisture, 2 Nov 2026");
+  await choose("Details");
+  const dialog = screen.getByRole("dialog", { name: "Job: Soil moisture, 2 Nov 2026" });
+  expect([...dialog.querySelectorAll(".property-group-title")].map((title) => title.textContent)).toEqual([
+    "Job",
+    "Inputs",
+    "Identifiers",
   ]);
+  expect(
+    [...dialog.querySelectorAll(".property-row")].map(
+      (row) =>
+        `${row.querySelector(".property-name")?.textContent ?? ""}: ${row.querySelector(".property-value-text")?.textContent ?? ""}`,
+    ),
+  ).toEqual([
+    "Name: Soil moisture, 2 Nov 2026",
+    "Process: get-layer",
+    "Status: Finished",
+    "Message: The layer is ready.",
+    "Requested: 14 Nov 2026, 16:00:00 UTC",
+    "Started: 14 Nov 2026, 16:00:02 UTC",
+    "Ended: 14 Nov 2026, 16:02:07 UTC",
+    "Time of the work: 2 min 5 s",
+    "Product type: GCOV",
+    "Product file: NISAR_L2_PR_GCOV_033_141_D_067_4005_DHDH_A_20261021T234330_20261021T234405_P05036_N_F_J_001",
+    "Layer of the product: HHHH",
+    "Area: West -71.2, south 42.6, east -70.75, north 42.95 (degrees)",
+    "Identifier of the layer: made",
+    "Identifier of the job: done",
+  ]);
+  expect(within(dialog).getByRole("button", { name: "Copy Identifier of the job" })).toBeDefined();
+});
+
+test("a job without inputs and without a layer has no such group", () => {
+  const groups = jobGroups({ ...WAITING, inputs: undefined });
+  expect(groups.map(({ title, rows }) => [title, rows.length])).toEqual([
+    ["Job", 5],
+    ["Identifiers", 1],
+  ]);
+  expect(groups[1]?.rows[0]).toEqual({ name: "Identifier of the job", value: "wait", copy: true });
 });
 
 test("a finished job is run again with the same inputs", async () => {
   await show();
-  const tools = await toolsOf(/^Azimuth offset/, "Azimuth offset, 9 and 21 Oct 2026");
-  await userEvent.click(tools.getByRole("button", { name: "Run again" }));
+  await userEvent.click(commandsOf("Azimuth offset, 9 and 21 Oct 2026").getByRole("button", { name: "Run again" }));
   await vi.waitFor(() => expect(jobsStore.get()).toHaveLength(5));
   expect(server.sent("POST")).toEqual([
     { method: "POST", address: "/api/processes/get-layer/execution", content: { inputs: FAILED.inputs } },
@@ -176,8 +219,7 @@ test("a limit of the server on a new run is reported in its words", async () => 
     429,
     "You have 4 jobs that wait or run, which is the most allowed. Wait for one to finish.",
   );
-  const tools = await toolsOf(/^Azimuth offset/, "Azimuth offset, 9 and 21 Oct 2026");
-  await userEvent.click(tools.getByRole("button", { name: "Run again" }));
+  await userEvent.click(commandsOf("Azimuth offset, 9 and 21 Oct 2026").getByRole("button", { name: "Run again" }));
   await vi.waitFor(() =>
     expect(messages()).toEqual([
       ["error", "You have 4 jobs that wait or run, which is the most allowed. Wait for one to finish."],
@@ -187,70 +229,85 @@ test("a limit of the server on a new run is reported in its words", async () => 
 
 test("a job whose inputs the server does not state cannot be run again", async () => {
   await show([{ ...FAILED, inputs: undefined }]);
-  const tools = await toolsOf(/^Azimuth offset/, "Azimuth offset, 9 and 21 Oct 2026");
-  expect(tools.queryByRole("button", { name: "Run again" })).toBeNull();
+  expect(commandsOf("Azimuth offset, 9 and 21 Oct 2026").queryByRole("button", { name: "Run again" })).toBeNull();
+  expect(await moreOf("Azimuth offset, 9 and 21 Oct 2026")).toEqual(["Details", "Remove"]);
 });
 
-test("the record of a finished job is removed, and the keyboard focus goes to the heading", async () => {
+test("the record of a finished job is removed, and the keyboard focus goes to the title of the section", async () => {
   await show();
-  const tools = await toolsOf(/^Azimuth offset/, "Azimuth offset, 9 and 21 Oct 2026");
-  await userEvent.click(tools.getByRole("button", { name: "Remove" }));
+  await moreOf("Azimuth offset, 9 and 21 Oct 2026");
+  await choose("Remove");
   await vi.waitFor(() => expect(jobsStore.get()).toHaveLength(3));
   expect(server.sent("DELETE").map(({ address }) => address)).toEqual(["/api/jobs/fail"]);
   expect(messages()).toEqual([]);
-  await vi.waitFor(() => expect(document.activeElement).toBe(screen.getByRole("heading", { name: "Jobs" })));
+  await vi.waitFor(() => expect(document.activeElement).toBe(screen.getByRole("button", { name: "Jobs (3)" })));
 });
 
-test("the last job leaves with its section, and the keyboard focus goes to the map", async () => {
+test("after the last job has left, the section says again how it fills", async () => {
   await show([FAILED]);
-  const tools = await toolsOf(/^Azimuth offset/, "Azimuth offset, 9 and 21 Oct 2026");
-  await userEvent.click(tools.getByRole("button", { name: "Remove" }));
-  await vi.waitFor(() => expect(screen.queryByRole("region")).toBeNull());
-  await vi.waitFor(() => expect(document.activeElement).toBe(screen.getByRole("main")));
+  await moreOf("Azimuth offset, 9 and 21 Oct 2026");
+  await choose("Remove");
+  await vi.waitFor(() => expect(screen.getByRole("button", { name: "Jobs (0)" })).toBeDefined());
+  expect(screen.getByText("A job starts when a layer is requested or an analysis tool is run.")).toBeDefined();
+  await vi.waitFor(() => expect(document.activeElement).toBe(screen.getByRole("button", { name: "Jobs (0)" })));
 });
 
-test("the button Remove finished removes the records of all finished jobs", async () => {
+test("the command Remove finished jobs removes the records of all finished jobs", async () => {
   await show();
-  await userEvent.click(screen.getByRole("button", { name: "Remove finished" }));
+  const remove = screen.getByRole("button", { name: "Remove finished jobs" });
+  await userEvent.click(remove);
   await vi.waitFor(() => expect(jobsStore.get().map(({ jobID }) => jobID)).toEqual(["wait", "run"]));
   expect(messages()).toEqual([["info", "The records of 2 jobs were removed."]]);
-  expect(screen.getByRole<HTMLButtonElement>("button", { name: "Remove finished" }).disabled).toBe(true);
+  expect(screen.getByRole("button", { name: "Remove finished jobs" }).getAttribute("aria-disabled")).toBe("true");
 });
 
 test("a successful job leads to its layer in the list of layers", async () => {
   server.layers = [{ layer: layer({ id: "made" }) }];
   await loadLayers();
+  layersOpenStore.set(false);
   await show();
-  const tools = await toolsOf(/^Soil moisture/, "Soil moisture, 2 Nov 2026");
-  await userEvent.click(tools.getByRole("button", { name: "Show layer" }));
-  expect(openLayerStore.get()).toBe("made");
-  const other = await toolsOf(/^Azimuth offset/, "Azimuth offset, 9 and 21 Oct 2026");
-  expect(other.queryByRole("button", { name: "Show layer" })).toBeNull();
+  await userEvent.click(commandsOf("Soil moisture, 2 Nov 2026").getByRole("button", { name: "Show layer" }));
+  expect(markedLayerStore.get()).toBe("made");
+  expect(layersOpenStore.get()).toBe(true);
+  expect(commandsOf("Azimuth offset, 9 and 21 Oct 2026").queryByRole("button", { name: "Show layer" })).toBeNull();
 });
 
-test("the list is sorted and a part of it is shown alone", async () => {
+test("the header of the section sorts the list and shows a part of it alone", async () => {
   await show();
-  const names = () => titles().map((title) => title?.split(",")[0]);
+  const toolbar = within(screen.getByRole("toolbar", { name: "Commands of the list of jobs" }));
+  expect(toolbar.getAllByRole("button").map((button) => button.getAttribute("aria-label"))).toEqual([
+    "Sort by",
+    "Show",
+    "Read again",
+    "Remove finished jobs",
+  ]);
+  const pick = async (menu: string, command: string) => {
+    await userEvent.click(toolbar.getByRole("button", { name: menu }));
+    await choose(command);
+  };
   expect(names()).toEqual(["Coherence HH", "Backscatter HH", "Azimuth offset", "Soil moisture"]);
-  await userEvent.selectOptions(screen.getByLabelText("Sort by"), "Name");
+  await pick("Sort by", "Name");
   expect(names()).toEqual(["Azimuth offset", "Backscatter HH", "Coherence HH", "Soil moisture"]);
-  await userEvent.selectOptions(screen.getByLabelText("Sort by"), "Status");
+  await pick("Sort by", "Status");
   expect(names()).toEqual(["Backscatter HH", "Coherence HH", "Azimuth offset", "Soil moisture"]);
-  await userEvent.selectOptions(screen.getByLabelText("Sort by"), "Start, earliest first");
+  await pick("Sort by", "Start, earliest first");
   expect(names()).toEqual(["Soil moisture", "Azimuth offset", "Backscatter HH", "Coherence HH"]);
-  await userEvent.selectOptions(screen.getByLabelText("Show"), "Waiting and running");
+  await pick("Show", "Waiting and running");
   expect(names()).toEqual(["Backscatter HH", "Coherence HH"]);
-  await userEvent.selectOptions(screen.getByLabelText("Show"), "Failed");
+  await pick("Show", "Failed");
   expect(names()).toEqual(["Azimuth offset"]);
+  await userEvent.click(toolbar.getByRole("button", { name: "Show" }));
+  expect(screen.getByRole("menuitemcheckbox", { name: "Failed" }).getAttribute("aria-checked")).toBe("true");
 });
 
 test("a part of the list without a job says so", async () => {
   await show([RUNNING]);
-  await userEvent.selectOptions(screen.getByLabelText("Show"), "Failed");
+  await userEvent.click(screen.getByRole("button", { name: "Show" }));
+  await choose("Failed");
   expect(screen.getByText("No job of the list is in this state.")).toBeDefined();
 });
 
-test("a reading that failed is stated, with a button that reads again", async () => {
+test("a reading that failed is stated in a notice, with a button that reads again", async () => {
   server.refuse(
     "GET",
     "/api/jobs",
@@ -258,22 +315,30 @@ test("a reading that failed is stated, with a button that reads again", async ()
     "The web service of Lynkeus does not answer at present. Try again in a minute.",
   );
   await show([RUNNING]);
-  expect(screen.getByRole("alert").textContent).toMatch(/^The web service of Lynkeus does not answer at present\./);
+  const alert = screen.getByRole("alert");
+  expect(alert.textContent).toBe("The web service of Lynkeus does not answer at present. Try again in a minute.");
   expect(screen.queryByRole("list")).toBeNull();
   server.accept();
-  await userEvent.click(screen.getByRole("button", { name: "Read again" }));
+  const notice = alert.closest<HTMLElement>(".notice");
+  if (!notice) {
+    throw new Error("the fault is not in a notice");
+  }
+  await userEvent.click(within(notice).getByRole("button", { name: "Read again" }));
   await vi.waitFor(() => expect(jobsFaultStore.get()).toBeNull());
   expect(screen.queryByRole("alert")).toBeNull();
-  expect(item(/^Backscatter HH/)).toBeDefined();
+  expect(names()).toEqual(["Backscatter HH"]);
+});
+
+test("the command Read again of the header reads the jobs from the server", async () => {
+  await show([RUNNING]);
+  server.jobs = [RUNNING, WAITING];
+  await userEvent.click(screen.getByRole("button", { name: "Read again" }));
+  await vi.waitFor(() => expect(names()).toEqual(["Coherence HH", "Backscatter HH"]));
 });
 
 test("a job is cancelled with the keyboard alone", async () => {
   await show([RUNNING]);
-  item(/^Backscatter HH/).focus();
-  await userEvent.keyboard("{Enter}");
-  expect(item(/^Backscatter HH/).getAttribute("aria-expanded")).toBe("true");
-  await userEvent.tab();
-  expect(document.activeElement?.textContent).toBe("Cancel");
+  commandsOf("Backscatter HH, 21 Oct 2026").getByRole("button", { name: "Cancel" }).focus();
   await userEvent.keyboard("{Enter}");
   await vi.waitFor(() => expect(jobsStore.get()).toEqual([]));
 });

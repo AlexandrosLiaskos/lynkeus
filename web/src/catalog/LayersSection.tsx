@@ -2,7 +2,6 @@ import { transformExtent } from "ol/proj";
 import { useEffect, useId, useRef, useState, type SyntheticEvent } from "react";
 import { loadJobs } from "../data/jobs";
 import { zoomTo } from "../data/footprints";
-import { LayerFields } from "../data/LayerFields";
 import {
   groupLayers,
   LAYER_GROUPINGS,
@@ -22,44 +21,67 @@ import {
 import { formatDay, formatSize } from "../data/products";
 import { wordsOf } from "../data/service";
 import { Dialog } from "../shared/dialog/Dialog";
-import { Info } from "../shared/info/Info";
 import { useMap } from "../shared/map";
 import { addToMap, mapLayersStore, removeFromMap } from "../shared/mapLayers";
+import { MenuButton, type MenuButtonItem } from "../shared/menu/MenuButton";
 import { report } from "../shared/messages/messages";
+import { Notice } from "../shared/notice/Notice";
+import { PropertyList } from "../shared/properties/PropertyList";
+import { Section } from "../shared/section/Section";
 import { useStore } from "../shared/store";
-import { keepFocus, openLayerStore } from "./state";
+import { IconButton } from "../shared/toolbar/IconButton";
+import { Toolbar } from "../shared/toolbar/Toolbar";
+import { layerGroups } from "./details";
+import { keepFocus, layersOpenStore, markedLayerStore, SECTIONS, titleOf } from "./state";
 
-/** The explanation of the section. It shows from the button beside the heading. */
+/** The explanation of the section. It shows from the "i" beside its title. */
 export const ABOUT_LAYERS =
   "The layers of this session: those received from NASA and those computed by the analysis tools. The server keeps the files of a layer until the layer is removed or the session ends. A layer is added to the map from here, and the Contents pane then lists it.";
 
 /** The largest length of the name of a layer, in characters, as the server takes it. */
 const MOST_TITLE = 200;
 
-/** State how many layers the session holds, their total size where the server states it, and how many are on the map. */
+/** State the total size of the files of the layers, where the server states it, and how many layers are on the map. */
 export function layersSentence(entries: readonly LayerEntry[], onMap: number): string {
-  const number = entries.length === 1 ? "1 layer" : `${String(entries.length)} layers`;
   const sized = entries.every((entry) => entry.size !== null);
-  const size = sized ? `, ${formatSize(entries.reduce((sum, entry) => sum + (entry.size ?? 0), 0))}` : "";
+  const size = sized
+    ? `The files take ${formatSize(entries.reduce((sum, entry) => sum + (entry.size ?? 0), 0))}. `
+    : "";
   const shown =
-    onMap === 0 ? "None is on the map." : onMap === 1 ? "1 is on the map." : `${String(onMap)} are on the map.`;
-  return `${number}${size}. ${shown}`;
+    onMap === 0
+      ? "No layer is on the map."
+      : onMap === 1
+        ? "1 layer is on the map."
+        : `${String(onMap)} layers are on the map.`;
+  return `${size}${shown}`;
+}
+
+/** Ask the browser to save the file of an address. */
+function download(address: string): void {
+  const link = document.createElement("a");
+  link.href = address;
+  link.download = "";
+  document.body.append(link);
+  link.click();
+  link.remove();
 }
 
 interface LayerItemProps {
   entry: LayerEntry;
-  open: boolean;
+  marked: boolean;
   onMap: boolean;
   onDetails: () => void;
   onRemove: () => void;
 }
 
 /**
- * One layer of the list: its name, its quantity with the unit, the dates of its data and its size. A click on
- * the layer shows its tools under it, which are the commands of an item of the Catalog pane of ArcGIS Pro and of
- * the Browser panel of QGIS.
+ * One layer of the list: its name, its quantity with the unit, and the dates of its data with its size. A click
+ * marks the layer, as the command Show layer of a job does, and a second click ends the mark. The item shows the
+ * one command that fits the state of the layer: Add to the map, or Zoom to for a layer that is on the map. Its
+ * other commands stand in the menu "More"; they are the commands of an item of the Catalog pane of ArcGIS Pro
+ * and of the Browser panel of QGIS. The layer is renamed in a field that takes the place of its text.
  */
-function LayerItem({ entry, open, onMap, onDetails, onRemove }: LayerItemProps) {
+function LayerItem({ entry, marked, onMap, onDetails, onRemove }: LayerItemProps) {
   const map = useMap();
   const id = useId();
   const item = useRef<HTMLLIElement>(null);
@@ -69,12 +91,12 @@ function LayerItem({ entry, open, onMap, onDetails, onRemove }: LayerItemProps) 
   const [fault, setFault] = useState<string | null>(null);
   const { layer, size } = entry;
 
-  // A layer that is opened from the list of jobs is brought into the visible part of the pane.
+  // A layer that is marked from the list of jobs is brought into the visible part of the pane.
   useEffect(() => {
-    if (open) {
+    if (marked) {
       item.current?.scrollIntoView({ block: "nearest" });
     }
-  }, [open]);
+  }, [marked]);
 
   const zoom = () => {
     layerExtent(layer)
@@ -82,115 +104,125 @@ function LayerItem({ entry, open, onMap, onDetails, onRemove }: LayerItemProps) 
       .catch((error: unknown) => report("error", wordsOf(error, "The extent of the layer could not be read.")));
   };
 
+  // The field leaves the item, and the keyboard focus returns to the text of the layer.
+  const endRenaming = () => {
+    setRenaming(false);
+    keepFocus(() => item.current?.querySelector<HTMLElement>(".catalog-pick") ?? null);
+  };
+
   const rename = (event: SyntheticEvent) => {
     event.preventDefault();
+    if (busy) {
+      return;
+    }
     const title = name.trim();
     if (title === "") {
       setFault("Give the new name of the layer.");
       return;
     }
     if (title === layer.title) {
-      setRenaming(false);
+      endRenaming();
       return;
     }
     setBusy(true);
     renameLayer(layer.id, title)
       .then(() => {
-        setRenaming(false);
+        endRenaming();
         report("info", `The layer was renamed to "${title}".`);
       })
       .catch((error: unknown) => setFault(wordsOf(error, "The layer could not be renamed.")))
       .finally(() => setBusy(false));
   };
 
+  const more: MenuButtonItem[] = [
+    onMap
+      ? { label: "Remove from the map", onSelect: () => removeFromMap(layer.id) }
+      : { label: "Zoom to", onSelect: zoom },
+    { label: "Details", onSelect: onDetails },
+    { label: "Download GeoTIFF", onSelect: () => download(layer.url) },
+    {
+      label: "Rename",
+      onSelect: () => {
+        setName(layer.title);
+        setFault(null);
+        setRenaming(true);
+      },
+    },
+    { label: "Remove", onSelect: onRemove, separated: true },
+  ];
+
   return (
-    <li ref={item} className={open ? "layer layer--open" : "layer"}>
-      <button
-        type="button"
-        className="catalog-item"
-        aria-expanded={open}
-        aria-controls={`${id}-tools`}
-        onClick={() => openLayerStore.set(open ? null : layer.id)}
-      >
-        <span className="catalog-item-title">{layer.title}</span>
-        <span>
-          {layer.quantity} ({unitWords(layer.unit)})
-        </span>
-        <span>
-          {[
-            layer.dates.map(formatDay).join(" and "),
-            size === null ? null : formatSize(size),
-            onMap ? "On the map" : null,
-          ]
-            .filter(Boolean)
-            .join(" · ")}
-        </span>
-      </button>
-      <div id={`${id}-tools`} hidden={!open}>
-        {renaming ? (
-          <form className="layer-rename" onSubmit={rename} noValidate>
-            <label className="usa-label" htmlFor={`${id}-name`}>
-              New name of the layer
-            </label>
-            <input
-              className="usa-input"
-              id={`${id}-name`}
-              value={name}
-              maxLength={MOST_TITLE}
-              autoComplete="off"
-              aria-invalid={fault ? true : undefined}
-              aria-describedby={fault ? `${id}-fault` : undefined}
-              onChange={(event) => setName(event.target.value)}
-            />
-            {fault ? (
-              <p className="usa-error-message" id={`${id}-fault`} role="alert">
-                {fault}
-              </p>
-            ) : null}
-            <div className="catalog-tools">
-              <button type="submit" className="usa-button" disabled={busy}>
-                Rename
-              </button>
-              <button type="button" className="usa-button usa-button--unstyled" onClick={() => setRenaming(false)}>
-                Cancel
-              </button>
-            </div>
-          </form>
-        ) : (
-          <div className="catalog-tools layer-tools" role="group" aria-label={`Tools of the layer ${layer.title}`}>
-            <button
-              type="button"
-              className="usa-button usa-button--unstyled"
-              onClick={() => (onMap ? removeFromMap(layer.id) : addToMap(layer))}
-            >
-              {onMap ? "Remove from the map" : "Add to the map"}
-            </button>
-            <button type="button" className="usa-button usa-button--unstyled" onClick={zoom}>
-              Zoom to
-            </button>
-            <button type="button" className="usa-button usa-button--unstyled" onClick={onDetails}>
-              Details
-            </button>
-            <a className="usa-button usa-button--unstyled" href={layer.url} download>
-              Download
-            </a>
-            <button
-              type="button"
-              className="usa-button usa-button--unstyled"
-              onClick={() => {
-                setName(layer.title);
-                setFault(null);
-                setRenaming(true);
-              }}
-            >
+    <li ref={item} className={marked ? "item item--selected layer" : "item layer"}>
+      {renaming ? (
+        <form className="item-main layer-rename" onSubmit={rename} noValidate>
+          <label className="usa-label" htmlFor={`${id}-name`}>
+            New name
+          </label>
+          <input
+            className="usa-input"
+            id={`${id}-name`}
+            value={name}
+            maxLength={MOST_TITLE}
+            autoComplete="off"
+            autoFocus
+            aria-invalid={fault ? true : undefined}
+            aria-describedby={fault ? `${id}-fault` : undefined}
+            onChange={(event) => setName(event.target.value)}
+          />
+          {fault ? (
+            <p className="usa-error-message" id={`${id}-fault`} role="alert">
+              {fault}
+            </p>
+          ) : null}
+          <div className="layer-rename-buttons">
+            <button type="submit" className="usa-button usa-button--outline" aria-disabled={busy ? true : undefined}>
               Rename
             </button>
-            <button type="button" className="usa-button usa-button--unstyled" onClick={onRemove}>
-              Remove
+            <button type="button" className="usa-button usa-button--unstyled" onClick={endRenaming}>
+              Cancel
             </button>
           </div>
-        )}
-      </div>
+        </form>
+      ) : (
+        <>
+          <div className="item-main">
+            <button
+              type="button"
+              className="catalog-pick"
+              aria-pressed={marked}
+              onClick={() => markedLayerStore.set(marked ? null : layer.id)}
+            >
+              <span className="item-title">{layer.title}</span>
+              <span className="item-line">
+                {layer.quantity} ({unitWords(layer.unit)})
+              </span>
+              <span className="item-line">
+                {[
+                  layer.dates.map(formatDay).join(" and "),
+                  size === null ? null : formatSize(size),
+                  onMap ? "On the map" : null,
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </span>
+            </button>
+          </div>
+          <div
+            className="item-actions catalog-actions"
+            role="group"
+            aria-label={`Commands of the layer ${layer.title}`}
+          >
+            <button
+              type="button"
+              className="usa-button usa-button--unstyled"
+              onClick={onMap ? zoom : () => addToMap(layer)}
+            >
+              {onMap ? "Zoom to" : "Add to the map"}
+            </button>
+            <MenuButton icon="more_vert" label="More" items={more} />
+          </div>
+        </>
+      )}
     </li>
   );
 }
@@ -198,33 +230,30 @@ function LayerItem({ entry, open, onMap, onDetails, onRemove }: LayerItemProps) 
 /**
  * The section "Layers" of the Catalog pane: the layers of the session, received from NASA and computed by the
  * analysis tools. A layer is added to the map and taken off it, the map moves to it, its description is shown
- * in full, its GeoTIFF file is downloaded, and the layer is renamed or removed. The section is shown while the
- * session has a layer.
+ * in full, its GeoTIFF file is downloaded, and the layer is renamed or removed. The commands of the list stand
+ * in the header of the section: its order, its groups and a new reading from the server. Without a layer the
+ * section says how it fills.
  */
 export function LayersSection() {
-  const id = useId();
   const entries = useStore(layersStore);
   const fault = useStore(layersFaultStore);
   const mapLayers = useStore(mapLayersStore);
-  const open = useStore(openLayerStore);
+  const marked = useStore(markedLayerStore);
+  const open = useStore(layersOpenStore);
   const [sort, setSort] = useState<LayerSort>("newest");
   const [grouping, setGrouping] = useState<LayerGrouping>("none");
   const [details, setDetails] = useState<string | null>(null);
   const [doomed, setDoomed] = useState<string | null>(null);
   const [asking, setAsking] = useState(false);
   const [removing, setRemoving] = useState(false);
-  const heading = useRef<HTMLHeadingElement>(null);
-
-  if (entries.length === 0 && fault === null) {
-    return null;
-  }
 
   const isOnMap = (entry: LayerEntry) => mapLayers.some((layer) => layer.id === entry.layer.id);
   const described = entries.find((entry) => entry.layer.id === details);
   const toRemove = entries.find((entry) => entry.layer.id === doomed);
+  const read = () => void loadLayers();
 
   const remove = () => {
-    if (!toRemove) {
+    if (!toRemove || removing) {
       return;
     }
     const { id: layer, title } = toRemove.layer;
@@ -232,7 +261,7 @@ export function LayersSection() {
     removeLayer(layer)
       .then(() => {
         report("info", `The layer "${title}" was removed.`);
-        keepFocus(() => heading.current);
+        keepFocus(() => titleOf(SECTIONS.layers));
         // The server removes the record of the job that produced the layer.
         void loadJobs();
       })
@@ -243,77 +272,71 @@ export function LayersSection() {
       });
   };
 
+  const commands =
+    entries.length > 0 ? (
+      <Toolbar label="Commands of the list of layers">
+        <MenuButton
+          icon="sort_arrow"
+          label="Sort by"
+          items={Object.entries(LAYER_SORTS).map(([value, label]) => ({
+            label,
+            checked: value === sort,
+            onSelect: () => setSort(value as LayerSort),
+          }))}
+        />
+        <MenuButton
+          icon="folder"
+          label="Group by"
+          items={Object.entries(LAYER_GROUPINGS).map(([value, label]) => ({
+            label,
+            checked: value === grouping,
+            onSelect: () => setGrouping(value as LayerGrouping),
+          }))}
+        />
+        <IconButton icon="autorenew" label="Read again" onClick={read} />
+      </Toolbar>
+    ) : fault === null ? undefined : (
+      <IconButton icon="autorenew" label="Read again" onClick={read} />
+    );
+
   return (
-    <section
-      className="catalog-section catalog-layers"
-      aria-labelledby={`${id}-heading`}
-      aria-describedby={`${id}-info`}
-    >
-      <div className="catalog-heading">
-        <div className="info-title">
-          <h3 id={`${id}-heading`} ref={heading} tabIndex={-1}>
-            Layers
-          </h3>
-          <Info id={`${id}-info`} about="Layers">
-            {ABOUT_LAYERS}
-          </Info>
-        </div>
-      </div>
-      <p className="catalog-summary" role="status">
-        {entries.length === 0 ? null : layersSentence(entries, entries.filter(isOnMap).length)}
-      </p>
-      {fault === null ? null : (
-        <p className="usa-error-message catalog-fault" role="alert">
-          {fault}{" "}
-          <button type="button" className="usa-button usa-button--unstyled" onClick={() => void loadLayers()}>
-            Read again
-          </button>
-        </p>
-      )}
-      {entries.length === 0 ? null : (
-        <>
-          <div className="catalog-choices">
-            <label htmlFor={`${id}-sort`}>Sort by</label>
-            <select
-              className="usa-select"
-              id={`${id}-sort`}
-              value={sort}
-              onChange={(event) => setSort(event.target.value as LayerSort)}
-            >
-              {Object.entries(LAYER_SORTS).map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
-            <label htmlFor={`${id}-group`}>Group by</label>
-            <select
-              className="usa-select"
-              id={`${id}-group`}
-              value={grouping}
-              onChange={(event) => setGrouping(event.target.value as LayerGrouping)}
-            >
-              {Object.entries(LAYER_GROUPINGS).map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="session-list">
+    <>
+      <Section
+        id={SECTIONS.layers}
+        title="Layers"
+        count={entries.length}
+        info={ABOUT_LAYERS}
+        actions={commands}
+        open={open}
+        onToggle={(next) => layersOpenStore.set(next)}
+      >
+        {fault === null ? null : (
+          <Notice kind="error" action={{ label: "Read again", onClick: read }}>
+            {fault}
+          </Notice>
+        )}
+        {entries.length === 0 ? (
+          fault === null ? (
+            <p className="catalog-note">A layer is listed when the job that gets or computes it has finished.</p>
+          ) : null
+        ) : (
+          <>
+            <p className="catalog-note" role="status">
+              {layersSentence(entries, entries.filter(isOnMap).length)}
+            </p>
             {groupLayers(sortLayers(entries, sort), grouping, formatDay).map(({ title, layers }) => (
               <div key={title} className="catalog-group">
                 {title === "" ? null : (
-                  <h4>
+                  <h4 className="catalog-group-title pane-bleed">
                     {title} <span className="catalog-group-count">({layers.length})</span>
                   </h4>
                 )}
-                <ul className="catalog-list">
+                <ul className="item-list item-list--selectable pane-bleed">
                   {layers.map((entry) => (
                     <LayerItem
                       key={entry.layer.id}
                       entry={entry}
-                      open={entry.layer.id === open}
+                      marked={entry.layer.id === marked}
                       onMap={isOnMap(entry)}
                       onDetails={() => setDetails(entry.layer.id)}
                       onRemove={() => {
@@ -325,12 +348,12 @@ export function LayersSection() {
                 </ul>
               </div>
             ))}
-          </div>
-        </>
-      )}
+          </>
+        )}
+      </Section>
       {described ? (
         <Dialog title={`Layer: ${described.layer.title}`} open onClose={() => setDetails(null)} large>
-          <LayerFields entry={described} />
+          <PropertyList groups={layerGroups(described)} />
         </Dialog>
       ) : null}
       <Dialog
@@ -340,7 +363,12 @@ export function LayersSection() {
         footer={
           <ul className="usa-button-group">
             <li className="usa-button-group__item">
-              <button type="button" className="usa-button usa-button--secondary" disabled={removing} onClick={remove}>
+              <button
+                type="button"
+                className="usa-button usa-button--secondary"
+                aria-disabled={removing ? true : undefined}
+                onClick={remove}
+              >
                 Remove
               </button>
             </li>
@@ -359,6 +387,6 @@ export function LayersSection() {
           </p>
         ) : null}
       </Dialog>
-    </section>
+    </>
   );
 }
