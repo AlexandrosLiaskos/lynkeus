@@ -19,9 +19,41 @@ import { serversStore, type ServerName } from "../shared/servers";
 import { AnalysisDialogs } from "./AnalysisDialogs";
 import { rowOf } from "./methods";
 import { METHODS } from "./methodSheets";
-import { coherence, GCOV_NOV, laterTerm, term } from "./testLayers";
-import { ABOUT, GET_PARTNER, RECEIVE, runOf, ToolForm, unnamedSentence, type Started } from "./ToolForm";
-import { FINISHED_TOOLS, NO_INPUT, NO_PARTNER, type FinishedTool } from "./tools";
+import {
+  coherence,
+  earlierPair,
+  GCOV_NOV,
+  GUNW_PAIR,
+  laterPair,
+  laterSoil,
+  laterTerm,
+  longPair,
+  SME2_OCT,
+  soil,
+  term,
+} from "./testLayers";
+import {
+  ABOUT,
+  GET_OTHER_PAIR,
+  GET_PARTNER,
+  RECEIVE,
+  runOf,
+  SECOND,
+  ToolForm,
+  unnamedSentence,
+  type Started,
+} from "./ToolForm";
+import {
+  FINISHED_TOOLS,
+  modesSentence,
+  NO_INPUT,
+  NO_OTHER_PAIR,
+  NO_PARTNER,
+  OVERLAP,
+  READS,
+  spansSentence,
+  type FinishedTool,
+} from "./tools";
 
 let server: StandIn;
 
@@ -154,8 +186,22 @@ test("the explanations of the titles of the form are short", () => {
   expect(ABOUT).toEqual({
     layer: "A layer that this session received with Get layer.",
     pair: "The same layer of two dates of one track and frame. The earlier date is taken first.",
+    pairs:
+      "The same coherence layer of two pairs of dates of one track and frame, which span the same number of days; the earlier pair is taken first.",
     title: "The name of the result in the Catalog and Contents panes.",
   });
+  // The explanation that Coherence, Change adds is one sentence.
+  expect(ABOUT.pairs).toMatch(/^[A-Z][^.]*\.$/);
+});
+
+test("the second field is named after what the tool compares: the other date, or the other pair of dates", () => {
+  expect(SECOND).toEqual({
+    dates: { title: "Layer of the other date", about: ABOUT.pair, get: GET_PARTNER },
+    pairs: { title: "Layer of the other pair", about: ABOUT.pairs, get: GET_OTHER_PAIR },
+  });
+  expect(GET_OTHER_PAIR).toBe(
+    "No other pair of dates of this layer is in the session. Get the same layer of another pair of dates of the same track and frame.",
+  );
 });
 
 test.each(FINISHED_TOOLS)("the i of the pane of %s states what the tool shows, in the words of its sheet", (tool) => {
@@ -177,7 +223,7 @@ test.each(FINISHED_TOOLS)(
 test.each(FINISHED_TOOLS)(
   "without a layer that %s reads, the pane names the layer to get and offers Get layer",
   async (tool) => {
-    show(tool, tool === "coherence-state" ? [term()] : [coherence()]);
+    show(tool, READS[tool].product === "GUNW" ? [term()] : [coherence()]);
     expect(screen.getByText("No layer to use")).toBeDefined();
     // The empty state names the next step, and the foot says why the run button is inactive: each thing once.
     expect(screen.getAllByText(RECEIVE[tool])).toHaveLength(1);
@@ -197,7 +243,13 @@ test("the layer to get is named as the Get layer form names it", () => {
     "backscatter-state": "Get a Backscatter layer of a GCOV product.",
     "backscatter-change": "Get the same Backscatter layer of two GCOV products of one track and frame.",
     "coherence-state": "Get a Coherence layer of a GUNW product.",
+    "coherence-change": "Get the same Coherence layer of two GUNW products of one track and frame.",
+    "soil-moisture-state": "Get the Soil moisture layer of an SME2 product.",
+    "soil-moisture-change": "Get the Soil moisture layer of two SME2 products of one track and frame.",
   });
+  for (const sentence of Object.values(RECEIVE)) {
+    expect(sentence).toMatch(/^Get [^.]*\.$/);
+  }
 });
 
 test("the field Layer offers the layers that the tool reads, and no other", () => {
@@ -220,6 +272,33 @@ test("Coherence, One pair offers the coherence layers of the session", () => {
     "Select a layer",
     "Coherence HH, 80 m, 9 Oct 2026 to 21 Oct 2026 (track 141, frame 67, descending)",
   ]);
+});
+
+test("Soil moisture, One date offers the soil moisture layers of the session, and no other", () => {
+  show("soil-moisture-state", [
+    term(),
+    coherence(),
+    soil(),
+    laterSoil(),
+    soil({ id: "uncertainty", title: "Soil moisture uncertainty, 27 Sep 2026", layer: "soilMoistureUncertainty" }),
+  ]);
+  expect(options("Layer")).toEqual([
+    "Select a layer",
+    "Soil moisture, 27 Sep 2026 (track 141, frame 67, descending)",
+    "Soil moisture, 9 Oct 2026 (track 141, frame 67, descending)",
+  ]);
+  expect(screen.queryByLabelText("Layer of the other date")).toBeNull();
+});
+
+test("Coherence, Change offers the coherence layers of the session in its first field", () => {
+  show("coherence-change", [term(), soil(), coherence(), earlierPair(), laterPair()]);
+  expect(options("Layer")).toEqual([
+    "Select a layer",
+    "Coherence HH, 80 m, 9 Oct 2026 to 21 Oct 2026 (track 141, frame 67, descending)",
+    "Coherence HH, 20 m, 27 Sep 2026 to 9 Oct 2026 (track 141, frame 67, descending)",
+    "Coherence HH, 20 m, 9 Oct 2026 to 21 Oct 2026 (track 141, frame 67, descending)",
+  ]);
+  expect(screen.getByLabelText<HTMLSelectElement>("Layer of the other pair").disabled).toBe(true);
 });
 
 test("while no layer is chosen, the foot states it and the run button is inactive", async () => {
@@ -273,6 +352,146 @@ test("Coherence, One pair starts as a job of its process", async () => {
       },
     },
   ]);
+});
+
+test("Soil moisture, One date starts as a job of its process", async () => {
+  show("soil-moisture-state", [soil()]);
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "soil-sep");
+  expect(document.querySelector(".tool-pane-body .property-row")).toBeNull();
+  await userEvent.click(runButton());
+  expect(server.sent("POST")).toEqual([
+    {
+      method: "POST",
+      address: "/api/processes/soil-moisture-state/execution",
+      content: { inputs: { inputs: ["soil-sep"], title: "Volumetric soil moisture, 27 Sept 2026" } },
+    },
+  ]);
+});
+
+test.each([
+  ["soil-sep", "soil-oct"],
+  ["soil-oct", "soil-sep"],
+])("Soil moisture, Change sends the layer of the earlier date first (fields %s and %s)", async (first, second) => {
+  show("soil-moisture-change", [
+    laterSoil(),
+    soil(),
+    laterSoil({ id: "track-104", inputs: [SME2_OCT.replace("_141_D_067_", "_104_A_067_")] }),
+    term(),
+  ]);
+  expect(screen.getByLabelText<HTMLSelectElement>("Layer of the other date").disabled).toBe(true);
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), first);
+  // The layer of another track is a layer that the tool reads, and it does not stand beside this one.
+  expect(options("Layer")).toHaveLength(3);
+  expect(options("Layer of the other date")).toHaveLength(2);
+  await userEvent.selectOptions(screen.getByLabelText("Layer of the other date"), second);
+  expect(valueOf(document.body, "Dates")).toBe("27 Sept 2026 to 9 Oct 2026");
+  await userEvent.click(runButton());
+  expect(server.sent("POST")).toEqual([
+    {
+      method: "POST",
+      address: "/api/processes/soil-moisture-change/execution",
+      content: {
+        inputs: { inputs: ["soil-sep", "soil-oct"], title: "Change of soil moisture, 27 Sept 2026 to 9 Oct 2026" },
+      },
+    },
+  ]);
+});
+
+test("two soil moisture layers of the same date are refused at the second field", async () => {
+  show("soil-moisture-change", [soil(), soil({ id: "again", title: "Soil moisture, 27 Sep 2026, second copy" })]);
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "soil-sep");
+  await userEvent.selectOptions(screen.getByLabelText("Layer of the other date"), "again");
+  await userEvent.tab();
+  expect(screen.getByRole("alert").textContent).toBe("Choose a layer of another date.");
+  expect(runButton().getAttribute("aria-disabled")).toBe("true");
+});
+
+test.each([
+  ["pair-sep", "pair-oct"],
+  ["pair-oct", "pair-sep"],
+])("Coherence, Change sends the layer of the earlier pair first (fields %s and %s)", async (first, second) => {
+  show("coherence-change", [laterPair(), earlierPair()]);
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), first);
+  expect(screen.getByText("Choose the layer of the other pair.")).toBeDefined();
+  await userEvent.selectOptions(screen.getByLabelText("Layer of the other pair"), second);
+  expect(valueOf(document.body, "Dates")).toBe("27 Sept 2026 to 9 Oct 2026, then 9 Oct 2026 to 21 Oct 2026");
+  // The interface writes a day with `formatDay`, which shortens September to "Sept".
+  const title = "Change of coherence magnitude HH, 20 m, 27 Sept 2026 to 9 Oct 2026, then 9 Oct 2026 to 21 Oct 2026";
+  expect(screen.getByLabelText<HTMLInputElement>("Result name").value).toBe(title);
+  await userEvent.click(runButton());
+  expect(server.sent("POST")).toEqual([
+    {
+      method: "POST",
+      address: "/api/processes/coherence-change/execution",
+      content: { inputs: { inputs: ["pair-sep", "pair-oct"], title } },
+    },
+  ]);
+});
+
+test("the second field of Coherence, Change offers only the same coherence layer of the same track and frame", async () => {
+  show("coherence-change", [
+    earlierPair(),
+    laterPair(),
+    longPair(),
+    coherence(),
+    laterPair({
+      id: "pair-vv",
+      title: "Coherence VV, 20 m, 9 Oct 2026 to 21 Oct 2026",
+      layer: "wrappedInterferogram/VV/coherenceMagnitude",
+    }),
+    laterPair({ id: "frame-68", inputs: [GUNW_PAIR.replace("_141_D_067_", "_141_D_068_")] }),
+    term(),
+  ]);
+  expect(options("Layer")).toHaveLength(7);
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "pair-sep");
+  expect(options("Layer of the other pair")).toEqual([
+    "Select a layer",
+    "Coherence HH, 20 m, 9 Oct 2026 to 21 Oct 2026 (track 141, frame 67, descending)",
+    "Coherence HH, 20 m, 17 Jul 2026 to 10 Aug 2026 (track 141, frame 67, descending)",
+  ]);
+});
+
+test.each([
+  { pairs: "pairs of unequal spans", other: longPair(), sentence: spansSentence(24, 12) },
+  {
+    pairs: "the same pair twice",
+    other: laterPair({ id: "pair-jul", title: "Coherence HH, 20 m, second copy" }),
+    sentence: OVERLAP,
+  },
+  {
+    pairs: "pairs of two bandwidths",
+    other: earlierPair({ id: "pair-jul", inputs: [GUNW_PAIR.replace("_033_4000_SH_", "_033_2000_SH_")] }),
+    sentence: modesSentence("4000", "2000"),
+  },
+])("Coherence, Change says in one sentence why it does not compare $pairs", async ({ other, sentence }) => {
+  show("coherence-change", [laterPair(), other]);
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "pair-oct");
+  await userEvent.selectOptions(screen.getByLabelText("Layer of the other pair"), "pair-jul");
+  // The foot states the fault at once, and the field states it after it was left.
+  expect(missing()).toBe(sentence);
+  expect(screen.queryByRole("alert")).toBeNull();
+  await userEvent.tab();
+  const fault = screen.getByRole("alert");
+  expect(fault.textContent).toBe(sentence);
+  const field = screen.getByLabelText("Layer of the other pair");
+  expect(field.getAttribute("aria-invalid")).toBe("true");
+  expect(field.getAttribute("aria-describedby")?.split(" ")).toContain(fault.id);
+  // No row Dates and no name are proposed for two layers that the tool does not compare.
+  expect(document.querySelector(".tool-pane-body .property-row")).toBeNull();
+  expect(screen.getByLabelText<HTMLInputElement>("Result name").value).toBe("");
+  expect(runButton().getAttribute("aria-disabled")).toBe("true");
+  await userEvent.click(runButton());
+  expect(server.sent("POST")).toEqual([]);
+});
+
+test("a coherence layer without another pair of dates is stated, with the way to the Get layer form", async () => {
+  show("coherence-change", [laterPair(), coherence()]);
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "pair-oct");
+  expect(screen.getByLabelText<HTMLSelectElement>("Layer of the other pair").disabled).toBe(true);
+  expect(screen.getByText(GET_OTHER_PAIR)).toBeDefined();
+  expect(screen.getAllByText(NO_OTHER_PAIR, { exact: false })).toHaveLength(2);
+  await userEvent.click(screen.getByRole("button", { name: "Get layer" }));
+  expect(dockStore.get().tools).toContain(GET_LAYER_PANE);
 });
 
 test("the second field of Backscatter, Change is inactive until the first layer is chosen", async () => {
@@ -454,6 +673,40 @@ test("a form with a layer shows its fields in their order, and nothing else", as
     "Add to the map when ready",
   ]);
   expect(body?.querySelectorAll(".property-row")).toHaveLength(1);
+});
+
+test.each([
+  ["coherence-change", [earlierPair(), laterPair()], ["pair-sep", "pair-oct"], "Layer of the other pair"],
+  ["soil-moisture-change", [soil(), laterSoil()], ["soil-sep", "soil-oct"], "Layer of the other date"],
+] as const)(
+  "the form of %s shows the fields of a tool that compares, and nothing else",
+  async (tool, layers, ids, other) => {
+    show(tool, layers);
+    await userEvent.selectOptions(screen.getByLabelText("Layer"), ids[0]);
+    await userEvent.selectOptions(screen.getByLabelText(other), ids[1]);
+    const body = document.querySelector(".tool-pane-body");
+    expect(Array.from(body?.querySelectorAll("label") ?? [], (label) => label.textContent)).toEqual([
+      "Layer",
+      other,
+      "Result name",
+      "Add to the map when ready",
+    ]);
+    expect(body?.querySelectorAll(".property-row")).toHaveLength(1);
+    expect(body?.querySelector(".usa-alert")).toBeNull();
+  },
+);
+
+test("the form of Soil moisture, One date shows the fields of a tool of one input, and nothing else", async () => {
+  show("soil-moisture-state", [soil()]);
+  await userEvent.selectOptions(screen.getByLabelText("Layer"), "soil-sep");
+  const body = document.querySelector(".tool-pane-body");
+  expect(Array.from(body?.querySelectorAll("label") ?? [], (label) => label.textContent)).toEqual([
+    "Layer",
+    "Result name",
+    "Add to the map when ready",
+  ]);
+  expect(body?.querySelectorAll(".property-row")).toHaveLength(0);
+  expect(body?.querySelector(".usa-alert")).toBeNull();
 });
 
 test("a visitor without an own server has no field Server in the form of a tool", async () => {

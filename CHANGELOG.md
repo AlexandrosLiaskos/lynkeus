@@ -104,6 +104,9 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   Space Apps Challenge and the universities of the team. The visitor slides it up to enter.
 - The mark of Lynkeus, a drawing of the NISAR satellite, in black in the title bar and in white on the welcome
 - The analysis tools Coherence, Change and Soil moisture, One date and Change, with their method sheets and research notes.
+- The forms of the analysis tools Coherence, Change and Soil moisture, One date and Change, in the tool pane,
+  and the section In brief of their method sheets in the dialog Methods of the Help tab. The form of
+  Coherence, Change says in one sentence why it does not compare two pairs of dates.
   screen.
 
 ### Changed
