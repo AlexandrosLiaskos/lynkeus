@@ -4,6 +4,7 @@ import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, expect, test } from "vitest";
 import { version } from "../../package.json";
+import { statementOf } from "../options/kept";
 import { ABOUT } from "./about";
 import { AboutDialog } from "./AboutDialog";
 import { aboutDialogStore } from "./state";
@@ -120,17 +121,23 @@ test("no explanation stands as text under a heading of the dialog", () => {
   expect(dialog.querySelector(".usa-hint")).toBeNull();
 });
 
-test("the dialog states what is stored about a visitor, in a section that starts closed", async () => {
+test("the dialog states what is kept for a visitor in the statements of docs/Storage.md, in a section that starts closed", async () => {
   const dialog = open();
   const stored = section(dialog, "Stored data");
   const toggle = within(stored).getByRole("button", { name: "Stored data" });
   expect(toggle.getAttribute("aria-expanded")).toBe("false");
   expect(Array.from(stored.querySelectorAll("li"), (item) => item.textContent)).toEqual([
-    ABOUT.applicationStores,
-    `${ABOUT.sessionStarts} ${ABOUT.session} ${ABOUT.sessionEnds}`,
+    `${statementOf("browser")} ${ABOUT.parts}`,
+    statementOf("cookie"),
+    statementOf("token"),
+    `${statementOf("projectServer")} ${statementOf("files")}`,
+    `${statementOf("log")} ${ABOUT.searchRequest}`,
+    statementOf("computer"),
+    statementOf("nasa"),
     ABOUT.teamLogStores,
-    ABOUT.serverStores,
   ]);
+  // The explanation of the section names the pane that shows the same with its sizes and its dates.
+  expect(within(stored).getByText(ABOUT.pane)).toBeDefined();
   expect(stored.querySelector("ul")?.closest("[hidden]")).not.toBeNull();
   await userEvent.click(toggle);
   expect(toggle.getAttribute("aria-expanded")).toBe("true");

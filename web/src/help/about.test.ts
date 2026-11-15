@@ -3,6 +3,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { expect, test } from "vitest";
 import { version } from "../../package.json";
+import { KEPT, KEPT_PLACES, statementOf, type KeptPlace } from "../options/kept";
 import { ABOUT } from "./about";
 
 /**
@@ -114,25 +115,38 @@ test("the page of the application keeps in the browser the parts of the work tha
     "layers of the map",
     "marker of a counted visit",
   ]) {
-    expect(ABOUT.applicationStores).toContain(`the ${part}`);
+    expect(ABOUT.parts).toContain(`the ${part}`);
   }
   expect(readFileSync("index.html", "utf8")).not.toContain("visits.js");
 });
 
-test("the web service describes a session, creates it and removes it as the dialog says", () => {
-  const sessions = readFileSync("../api/src/lynkeus/sessions.py", "utf8");
-  expect(text("api/src/lynkeus/sessions.py")).toContain(ABOUT.session);
-  expect(sessions).toContain(
-    'SESSION_IDLE_TIME = 7 * 24 * 3600.0\n"""The time without use after which a session is removed with its jobs and layers, in seconds."""',
+test("the statements of what is kept are those of the table What is kept of docs/Storage.md", () => {
+  const document = text("docs/Storage.md");
+  expect(ABOUT.kept).toBe(KEPT);
+  for (const place of Object.keys(KEPT) as KeptPlace[]) {
+    expect(document).toContain(`| ${KEPT_PLACES[place]} | ${statementOf(place)} |`);
+  }
+  expect(document).toContain("The pane Storage and the dialog About copy these statements.");
+  // What the dialog says of the pane Storage is principle 7 of the document, said to the visitor.
+  expect(document).toContain(
+    "The visitor sees everything that is kept for him, with its size and its date, in one pane, and removes each part there.",
   );
-  // The three addresses that create a session: the state of the session, the sign-in and the start of a job.
-  const routes = readFileSync("../api/src/lynkeus/routes.py", "utf8");
-  expect(routes.match(/_session_or_new\(request\)/g)).toHaveLength(3);
-  expect(routes).toContain(
-    "Report whether the visitor is signed in to Earthdata, and create the session when there is none.",
+  expect(ABOUT.pane).toBe(
+    "The pane Storage of the Options tab shows everything that is kept for you, with its size and its date, and removes each part.",
   );
-  expect(routes).toContain('"""Sign the visitor in to Earthdata with a user token."""');
-  expect(routes).toContain("service.jobs.submit(_session_or_new(request), process, inputs, form, token)");
+});
+
+test("the request of a search holds what the dialog says, so the log of the web server holds it", () => {
+  const search = readFileSync("src/data/search.ts", "utf8");
+  for (const parameter of [
+    'add("product", search.product);',
+    'add("west", search.area.west);',
+    'add("start", search.start);',
+  ]) {
+    expect(search).toContain(parameter);
+  }
+  expect(search).toContain("return `/api/products?${choices.toString()}`;");
+  expect(ABOUT.searchRequest).toBe("The request of a search holds the product type, the area and the period.");
 });
 
 test("the page of the team log says of itself what the dialog says of it, and its script and its server do so", () => {
