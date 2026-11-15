@@ -9,6 +9,7 @@ import { GET_LAYER_PANE } from "../data/state";
 import { methodsStore } from "../help/state";
 import { dockStore, openToolPane, showPane } from "../shared/dock/dock";
 import { EmptyState } from "../shared/empty/EmptyState";
+import { describedBy, FieldError } from "../shared/field/FieldError";
 import { FieldTitle, infoId } from "../shared/field/FieldTitle";
 import type { LayerDescription } from "../shared/layer";
 import { mapLayersStore } from "../shared/mapLayers";
@@ -29,6 +30,7 @@ import {
   layerOption,
   missingOf,
   MOST_TITLE,
+  NO_INPUT,
   NO_PARTNER,
   partners,
   READS,
@@ -166,12 +168,12 @@ function LayerField({ id, title, about, layers, chosen, fault, inactive = false,
         {about}
       </FieldTitle>
       <select
-        className="usa-select"
+        className={shown ? "usa-select usa-input--error" : "usa-select"}
         id={id}
         value={listed && chosen !== null ? chosen : ""}
         disabled={inactive}
         aria-invalid={shown ? true : undefined}
-        aria-describedby={shown ? `${infoId(id)} ${id}-fault` : infoId(id)}
+        aria-describedby={describedBy(infoId(id), shown && `${id}-error`)}
         onBlur={() => setLeft(true)}
         onChange={(event) => onChoose(event.target.value === "" ? null : event.target.value)}
       >
@@ -182,11 +184,7 @@ function LayerField({ id, title, about, layers, chosen, fault, inactive = false,
           </option>
         ))}
       </select>
-      {shown ? (
-        <p className="usa-error-message" id={`${id}-fault`} role="alert">
-          {shown}
-        </p>
-      ) : null}
+      <FieldError id={`${id}-error`}>{shown}</FieldError>
     </>
   );
 }
@@ -234,8 +232,9 @@ export function MethodSummary({ tool }: { tool: FinishedTool }) {
  * The form of a finished analysis tool, in the tool pane: one form for all tools. The visitor chooses the input
  * layer among the layers of the session that the tool reads, or the two layers of Backscatter, Change, and the
  * name of the result, for which the form proposes one. While a choice is missing or impossible, the foot of the
- * pane states the first fault, and a field that was left states its own. Without a layer that the tool reads,
- * the pane names the layer to receive and offers the Get layer form. The run button starts the tool as a job of
+ * pane states the first fault, and a field that was left states its own, with the shared `FieldError`. Without a
+ * layer that the tool reads, the pane names the layer to receive and offers the Get layer form, and its foot
+ * states why the run button is inactive. The run button starts the tool as a job of
  * the server; the Catalog pane lists the job and its result, and the foot shows the progress and the outcome.
  */
 export function ToolForm({ tool }: { tool: FinishedTool }) {
@@ -263,7 +262,7 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
   const proposed = defaultTitle(tool, check({ tool, layers, first, second, title: "" }).layers);
   const title = own ?? proposed;
   const { layers: chosen, faults, inputs } = check({ tool, layers, first, second, title });
-  const missing = offered.length === 0 ? RECEIVE[tool] : missingOf(faults);
+  const missing = offered.length === 0 ? NO_INPUT : missingOf(faults);
 
   const start = () => {
     if (!inputs) {
@@ -362,21 +361,17 @@ export function ToolForm({ tool }: { tool: FinishedTool }) {
             {ABOUT.title}
           </FieldTitle>
           <input
-            className="usa-input"
+            className={titleFault ? "usa-input usa-input--error" : "usa-input"}
             id={`${id}-title`}
             value={title}
             maxLength={MOST_TITLE}
             autoComplete="off"
             aria-invalid={titleFault ? true : undefined}
-            aria-describedby={titleFault ? `${infoId(`${id}-title`)} ${id}-title-fault` : infoId(`${id}-title`)}
+            aria-describedby={describedBy(infoId(`${id}-title`), titleFault && `${id}-title-error`)}
             onBlur={() => setTitleLeft(true)}
             onChange={(event) => setOwn(event.target.value)}
           />
-          {titleFault ? (
-            <p className="usa-error-message" id={`${id}-title-fault`} role="alert">
-              {titleFault}
-            </p>
-          ) : null}
+          <FieldError id={`${id}-title-error`}>{titleFault}</FieldError>
 
           <div className="usa-checkbox analysis-option">
             <input

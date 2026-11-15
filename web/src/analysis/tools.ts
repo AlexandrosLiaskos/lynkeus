@@ -217,6 +217,9 @@ export function defaultTitle(tool: FinishedTool, inputs: readonly LayerDescripti
     : `Change of backscatter ${channel} in dB, ${days([first, second])}`;
 }
 
+/** Why the tool cannot run while the session holds no layer that it reads. The foot of the form states it. */
+export const NO_INPUT = "The session holds no layer that the tool reads.";
+
 /** The fault of the second field of Backscatter, Change when no layer of the session can stand beside the first. */
 export const NO_PARTNER = "No other layer of the session matches the first layer.";
 

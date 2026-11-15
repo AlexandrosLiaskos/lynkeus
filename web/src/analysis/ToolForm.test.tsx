@@ -18,7 +18,7 @@ import { readingOf, referenceOf, summaryOf } from "./methods";
 import { METHODS } from "./methodSheets";
 import { coherence, GCOV_NOV, laterTerm, term } from "./testLayers";
 import { ABOUT, RECEIVE, runOf, ToolForm, unnamedSentence, type Started } from "./ToolForm";
-import { FINISHED_TOOLS, NO_PARTNER, type FinishedTool } from "./tools";
+import { FINISHED_TOOLS, NO_INPUT, NO_PARTNER, type FinishedTool } from "./tools";
 
 let server: StandIn;
 
@@ -148,7 +148,10 @@ test.each(FINISHED_TOOLS)(
   async (tool) => {
     show(tool, tool === "coherence-state" ? [term()] : [coherence()]);
     expect(screen.getByText("No input layer")).toBeDefined();
-    expect(screen.getAllByText(RECEIVE[tool])).toHaveLength(2);
+    // The empty state names the next step, and the foot says why the run button is inactive: each thing once.
+    expect(screen.getAllByText(RECEIVE[tool])).toHaveLength(1);
+    expect(screen.getByRole("status").textContent).toBe(NO_INPUT);
+    expect(NO_INPUT).toBe("The session holds no layer that the tool reads.");
     expect(screen.queryByLabelText("Name of the result")).toBeNull();
     expect(runButton().getAttribute("aria-disabled")).toBe("true");
     await userEvent.click(runButton());
@@ -305,6 +308,7 @@ test("two layers of the same date are refused at the second field, and the tool 
   expect(fault.textContent).toBe(sentence);
   const field = screen.getByLabelText("Second layer");
   expect(field.getAttribute("aria-invalid")).toBe("true");
+  expect(field.classList.contains("usa-input--error")).toBe(true);
   expect(field.getAttribute("aria-describedby")?.split(" ")).toContain(fault.id);
   expect(screen.getAllByText(sentence)).toHaveLength(2);
   expect(runButton().getAttribute("aria-disabled")).toBe("true");
@@ -336,10 +340,13 @@ test("an empty name of the result is refused at its field after the field is lef
   const fault = screen.getByRole("alert");
   expect(fault.textContent).toBe("Give the name of the result.");
   expect(name.getAttribute("aria-invalid")).toBe("true");
+  expect(name.classList.contains("usa-input--error")).toBe(true);
   expect(name.getAttribute("aria-describedby")?.split(" ")).toContain(fault.id);
   expect(runButton().getAttribute("aria-disabled")).toBe("true");
   await userEvent.type(name, "Decibels");
   expect(screen.queryByRole("alert")).toBeNull();
+  expect(name.getAttribute("aria-invalid")).toBeNull();
+  expect(name.classList.contains("usa-input--error")).toBe(false);
   expect(runButton().getAttribute("aria-disabled")).toBeNull();
 });
 
