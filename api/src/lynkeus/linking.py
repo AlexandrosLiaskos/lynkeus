@@ -52,6 +52,12 @@ READ_TIME = 30
 MAX_USER_SERVERS = 8
 """The most own servers of one Earthdata user."""
 
+FIRST_LAYER_CELLS = 25_000_000
+"""The most cells of a layer of a server whose message does not state them.
+
+It is the number of the project server and of the program of version 0.1.0, which knows no other.
+"""
+
 type ServerId = Annotated[str, Field(pattern=r"^[0-9a-f]{16}$")]
 """The name of an own server: 16 random characters."""
 
@@ -185,11 +191,15 @@ class ServerLimits(Format):
         Most space that the layers may use on the disk, in bytes.
     layer_size : int
         Largest size of the files of one layer, in bytes.
+    layer_cells : int
+        Most cells of one layer that a job of the server receives. A message without the field comes
+        from a program of version 0.1.0 and counts as ``FIRST_LAYER_CELLS``.
     """
 
     running_jobs: int = Field(ge=1, le=64)
     storage: int = Field(ge=0)
     layer_size: int = Field(ge=0)
+    layer_cells: int = Field(default=FIRST_LAYER_CELLS, ge=1_000_000, le=4_000_000_000)
 
 
 class ServerState(Format):

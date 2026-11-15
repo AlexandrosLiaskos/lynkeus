@@ -212,6 +212,30 @@ The storage counts every layer in the data folder. The layers of an earlier pair
 `files` after the owner removed the server, and they count until the user of the computer deletes their
 folders. The numbers of waiting jobs, of unfinished jobs and of layers have no limit on an own server.
 
+### Cells of a layer
+
+The limit `layer_cells` of a server is the largest number of cells of a layer that a job of that server
+receives. The project server keeps its own number (`lynkeus.harmony.MOST_CELLS`, 25 million), which does not
+apply to a job of an own server.
+
+1. A job that receives a layer holds memory in proportion to the cells of the layer: 353 megabytes for 15.0
+   million cells and 508 megabytes for 25 million were measured on the project server
+   (`docs/research/data.md`). `lynkeus.computer` holds the rule that gives the memory of a job from its
+   cells, set from measurements that include layers of more than 25 million cells.
+2. First value of `layer_cells`: the cells of a job that fits in a quarter of the memory of the computer, in
+   whole millions, and 25 million when the memory cannot be read. The first value of the running jobs is
+   then as many jobs of that size as fit in half of the memory, at most one for every processor but one.
+   The first value of the size of a layer is the size of a file of that many cells without compression (4
+   bytes a cell, and a third more for the reduced copies), or the storage when that is smaller.
+3. The project server refuses a change of the limits with 422 and one sentence when `running_jobs` jobs of
+   `layer_cells` cells need more than the memory that the server last reported.
+4. A program of version 0.1.0 does not know this limit and receives at most 25 million cells. Its messages
+   lack the field, which then counts as 25 million (`FIRST_LAYER_CELLS`). The project server sends such a
+   server the task `limits` without the field, and it refuses a change of `layer_cells` for it with 409 and
+   one sentence that asks to install the newer version of Lynkeus Server on that computer.
+5. The interface checks the area of a form against the limit of the server on which the job would run, and
+   its sentence names that server.
+
 ### Ending a job
 
 On Linux and macOS a job is ended as on the project server: its process group receives the signal SIGTERM,
