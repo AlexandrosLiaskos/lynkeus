@@ -89,6 +89,9 @@ _GROUPS: dict[ProductType, str] = {
 }
 """The group of each product type that holds its layers. The name of a layer is its path inside this group."""
 
+_NAMED_A = "Frequency A"
+"""The words with which NASA's catalogue begins the name of each layer of the group ``frequencyA``."""
+
 _RECORD = "https://cmr.earthdata.nasa.gov/search/concepts/{identifier}.umm_json"
 _MONTHS = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 _LEVELS: dict[ProductType, str] = {"GCOV": "L2", "GUNW": "L2", "GOFF": "L2", "SME2": "L3"}
@@ -127,10 +130,12 @@ class LayerChoice(Format):
 class _Layer:
     """What Lynkeus knows about a layer of a product.
 
-    ``spacing`` is the smallest cell size that the product specification gives
-    for the layer, in metres. ``averaged`` is false for classes. ``frequency``
-    is true for the layer that an analysis tool reads as a distance: its
-    description then carries the centre frequency of the radar band.
+    ``title`` is the name that NASA's catalogue gives the variable of the
+    layer: the field ``LongName`` of its variable record. ``spacing`` is the
+    smallest cell size that the product specification gives for the layer, in
+    metres. ``averaged`` is false for classes. ``frequency`` is true for the
+    layer that an analysis tool reads as a distance: its description then
+    carries the centre frequency of the radar band.
     """
 
     name: str
@@ -356,12 +361,20 @@ def _layers(product: ProductType, channels: Sequence[str]) -> tuple[_Layer, ...]
             if channel in ("HH", "HV", "VH", "VV"):
                 quantity = f"Radar backscatter gamma nought, {channel}, linear power"
                 layers.append(
-                    _Layer(channel + channel, f"Backscatter {channel}", quantity, "1", "percentiles", "grey", 10)
+                    _Layer(
+                        channel + channel,
+                        f"{_NAMED_A} {channel}{channel}",
+                        quantity,
+                        "1",
+                        "percentiles",
+                        "grey",
+                        10,
+                    )
                 )
         layers.append(
             _Layer(
                 "rtcGammaToSigmaFactor",
-                "Factor from gamma nought to sigma nought",
+                f"{_NAMED_A} RTC Gamma to Sigma Factor",
                 "Factor that turns radar backscatter gamma nought into sigma nought",
                 "1",
                 "percentiles",
@@ -370,9 +383,11 @@ def _layers(product: ProductType, channels: Sequence[str]) -> tuple[_Layer, ...]
             )
         )
         quantity = "Number of radar looks averaged in a cell"
-        layers.append(_Layer("numberOfLooks", "Number of looks", quantity, "1", "percentiles", "viridis", 10))
+        layers.append(
+            _Layer("numberOfLooks", f"{_NAMED_A} Number of Looks", quantity, "1", "percentiles", "viridis", 10)
+        )
         quantity = "Number of the subswath of the valid samples of a cell, or 0 where a sample is not valid"
-        layers.append(_Layer("mask", "Mask of valid samples", quantity, "1", "extremes", "tab10", 10, averaged=False))
+        layers.append(_Layer("mask", f"{_NAMED_A} Mask", quantity, "1", "extremes", "tab10", 10, averaged=False))
     elif product == "GUNW":
         for channel in channels:
             if channel in ("HH", "VV"):
@@ -382,16 +397,26 @@ def _layers(product: ProductType, channels: Sequence[str]) -> tuple[_Layer, ...]
             if channel in ("HH", "VV"):
                 layers += [layer for number in (1, 2, 3) for layer in _offset_layers(channel, number)]
     else:
-        layers.append(_Layer("soilMoisture", "Soil moisture", "Soil moisture", "m3 m-3", "percentiles", "YlGnBu", 200))
+        layers.append(_Layer("soilMoisture", "Soil Moisture", "Soil moisture", "m3 m-3", "percentiles", "YlGnBu", 200))
         quantity = "Uncertainty of soil moisture"
-        layers.append(_Layer("soilMoistureUncertainty", quantity, quantity, "m3 m-3", "percentiles", "viridis", 200))
+        layers.append(
+            _Layer(
+                "soilMoistureUncertainty",
+                "Soil Moisture Uncertainty",
+                quantity,
+                "m3 m-3",
+                "percentiles",
+                "viridis",
+                200,
+            )
+        )
         # Whole numbers whose lowest bit is set where the mission does not recommend the retrieval (JPL D-107677
         # Rev C, page 37). The tools of the group Soil moisture leave those cells out.
         quantity = "Retrieval quality flag of the soil moisture, whose lowest bit marks a retrieval not recommended"
         layers.append(
             _Layer(
                 "retrievalQualityFlag",
-                "Retrieval quality flag",
+                "Retrieval Quality Flag",
                 quantity,
                 "1",
                 "extremes",
@@ -407,12 +432,13 @@ def _interferogram_layers(channel: str) -> list[_Layer]:
     """Return the layers of one channel of a GUNW product."""
     unwrapped, wrapped = f"unwrappedInterferogram/{channel}/", f"wrappedInterferogram/{channel}/"
     offsets = f"pixelOffsets/{channel}/"
+    named = f"{_NAMED_A} {channel}"
     coherence = f"Interferometric coherence magnitude, {channel}"
     screen = f"Ionosphere phase screen {channel}"
     return [
         _Layer(
             unwrapped + "unwrappedPhase",
-            f"Unwrapped phase {channel}",
+            f"{named} Unwrapped Phase",
             f"Unwrapped interferometric phase, {channel}",
             "rad",
             "symmetric",
@@ -422,7 +448,7 @@ def _interferogram_layers(channel: str) -> list[_Layer]:
         ),
         _Layer(
             unwrapped + "connectedComponents",
-            f"Connected components {channel}",
+            f"{named} Unwrapped Interferogram Connected Components",
             f"Connected component of the phase unwrapping, {channel}",
             "1",
             "extremes",
@@ -430,19 +456,43 @@ def _interferogram_layers(channel: str) -> list[_Layer]:
             80,
             averaged=False,
         ),
-        _Layer(unwrapped + "coherenceMagnitude", f"Coherence {channel}, 80 m", coherence, "1", (0.0, 1.0), "grey", 80),
-        _Layer(unwrapped + "ionospherePhaseScreen", screen, screen, "rad", "percentiles", "viridis", 80),
+        _Layer(
+            unwrapped + "coherenceMagnitude",
+            f"{named} Unwrapped Interferogram Coherence Magnitude",
+            coherence,
+            "1",
+            (0.0, 1.0),
+            "grey",
+            80,
+        ),
+        _Layer(
+            unwrapped + "ionospherePhaseScreen",
+            f"{named} Ionosphere Phase Screen",
+            screen,
+            "rad",
+            "percentiles",
+            "viridis",
+            80,
+        ),
         _Layer(
             unwrapped + "ionospherePhaseScreenUncertainty",
-            f"Uncertainty of the ionosphere phase screen {channel}",
+            f"{named} Ionosphere Phase Screen Uncertainty",
             f"Uncertainty of the ionosphere phase screen {channel}",
             "rad",
             "percentiles",
             "viridis",
             80,
         ),
-        _Layer(wrapped + "coherenceMagnitude", f"Coherence {channel}, 20 m", coherence, "1", (0.0, 1.0), "grey", 20),
-        *_offsets(offsets, channel),
+        _Layer(
+            wrapped + "coherenceMagnitude",
+            f"{named} Wrapped Interferogram Coherence Magnitude",
+            coherence,
+            "1",
+            (0.0, 1.0),
+            "grey",
+            20,
+        ),
+        *_offsets(offsets, channel, named),
     ]
 
 
@@ -453,16 +503,24 @@ def _offset_layers(channel: str, number: int) -> list[_Layer]:
     """
     group = f"pixelOffsets/{channel}/layer{number}/"
     of = f"{channel}, layer {number}"
+    named = f"{_NAMED_A} {channel} Layer {number}"
     ratio = f"Signal-to-noise ratio of the offsets {of}"
-    return [*_offsets(group, of), _Layer(group + "snr", ratio, ratio, "1", "percentiles", "viridis", 80)]
+    return [
+        *_offsets(group, of, named),
+        _Layer(group + "snr", f"{named} SNR", ratio, "1", "percentiles", "viridis", 80),
+    ]
 
 
-def _offsets(group: str, of: str) -> list[_Layer]:
-    """Return the two pixel offsets of a group and the peak of their correlation."""
+def _offsets(group: str, of: str, named: str) -> list[_Layer]:
+    """Return the two pixel offsets of a group and the peak of their correlation.
+
+    ``of`` names the channel, and the offset layer, in the description of a layer. ``named`` is the beginning of
+    the names that NASA's catalogue gives the layers of the group.
+    """
     return [
         _Layer(
             group + "slantRangeOffset",
-            f"Slant range offset {of}",
+            f"{named} Slant Range Offset",
             f"Slant range offset, {of}",
             "m",
             "symmetric",
@@ -471,7 +529,7 @@ def _offsets(group: str, of: str) -> list[_Layer]:
         ),
         _Layer(
             group + "alongTrackOffset",
-            f"Along-track offset {of}",
+            f"{named} Along Track Offset",
             f"Along-track offset, {of}",
             "m",
             "symmetric",
@@ -480,7 +538,7 @@ def _offsets(group: str, of: str) -> list[_Layer]:
         ),
         _Layer(
             group + "correlationSurfacePeak",
-            f"Correlation peak of the offsets {of}",
+            f"{named} Correlation Surface Peak",
             f"Normalized peak of the cross-correlation surface of the offsets, {of}",
             "1",
             (0.0, 1.0),

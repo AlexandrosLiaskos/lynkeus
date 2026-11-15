@@ -343,8 +343,8 @@ test("Soil moisture, Series offers the soil moisture layers and sends the flag o
 
 test("Soil moisture, Series states what to get when the flag of the product of a chosen date is missing", async () => {
   show("soil-moisture-series", [laterSoil(), soil(), soilFlag()]);
-  expect(missing()).toBe("The Retrieval quality flag layer of the product of 9 Oct 2026 is not in the session.");
-  expect(GET_FLAGS).toBe("Get the Retrieval quality flag layer of the product of each date, for the same area.");
+  expect(missing()).toBe("The Retrieval Quality Flag layer of the product of 9 Oct 2026 is not in the session.");
+  expect(GET_FLAGS).toBe("Get the Retrieval Quality Flag layer of the product of each date, for the same area.");
   expect(screen.getByText(GET_FLAGS)).toBeDefined();
   expect(runButton().getAttribute("aria-disabled")).toBe("true");
   await userEvent.click(screen.getByRole("button", { name: "Get layer" }));

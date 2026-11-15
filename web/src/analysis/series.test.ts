@@ -264,11 +264,11 @@ test("Soil moisture, Series states which flags are missing at the field of the l
   const flagOf = (layer: LayerDescription) => qualityOf("soil-moisture-state", layer, session);
   const checked = checkSeries({ ...choices(), group: [soil(), laterSoil()], chosen: ["soil-sep", "soil-oct"], flagOf });
   expect(checked.faults.layers).toBe(
-    "The Retrieval quality flag layer of the product of 9 Oct 2026 is not in the session.",
+    "The Retrieval Quality Flag layer of the product of 9 Oct 2026 is not in the session.",
   );
   expect(checked.inputs).toBeNull();
   expect(flaglessSentence([soil(), laterSoil()])).toBe(
-    "The Retrieval quality flag layers of the products of 2 chosen dates are not in the session.",
+    "The Retrieval Quality Flag layers of the products of 2 chosen dates are not in the session.",
   );
   // Without flags to find, a tool that takes none sends its layers alone.
   expect(checkSeries(choices()).inputs?.inputs).toEqual(["hh-sep", "hh-oct-9", "hh-oct", "hh-nov"]);

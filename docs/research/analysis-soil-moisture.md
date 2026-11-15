@@ -14,8 +14,10 @@ of level 1: the product specification of the input layer (part 2), the published
 source program of the comparison (part 3), what was measured on real files (part 4), how GIS
 programs offer the same functions (part 5), the sources with the date on which each was read (part
 6) and what is not confirmed (part 7). Part 8 records the rule by which the tools leave out the
-cells that the products do not recommend, and part 9 the tool Soil moisture Series. The tool Soil
-moisture Thematic map is not part of this note.
+cells that the products do not recommend, and part 9 the tool Soil moisture Series. The button Soil
+moisture Thematic map was removed from the Analysis tab on 15 Nov 2026, as no published algorithm of
+the NISAR science team that derives classes from soil moisture was found
+(`docs/research/analysis-thematic-maps.md`).
 
 ## 1. Points that this note answers
 
@@ -530,7 +532,7 @@ it was read.
 | NISAR Data User Guide, pages Product Specifications and Data Processing Algorithms | <https://nisar-docs.asf.alaska.edu/product-specification/>, <https://nisar-docs.asf.alaska.edu/atbd/> | The entries of the soil moisture documents |
 | Product files of `NISAR_L3_SME2_PROVISIONAL_V1` (DOI 10.5067/NIL3SME2-P1) | ASF DAAC; the record `products.json` names the five files | The fields and layers of part 2.2 and part 4; the attributes of three layers and the flags of three files (part 8.1) |
 | Layers of nine products of `NISAR_L3_SME2_PROVISIONAL_V1` and two of `NISAR_L3_SME2_BETA_V1` (DOI 10.5067/NIL3SME2-B1) | NASA Harmony; the record `quality_layers.json` names the files | The layers `soilMoisture` and `retrievalQualityFlag` of the box (parts 8 and 9) |
-| NASA Common Metadata Repository | <https://cmr.earthdata.nasa.gov/search/granules.umm_json> | The products of the box and the records of five products; the products of track 141, frame 67 in three collections of SME2 (part 9.2) |
+| NASA Common Metadata Repository | <https://cmr.earthdata.nasa.gov/search/granules.umm_json> | The products of the box and the records of five products; the products of track 141, frame 67 in three collections of SME2 (part 9.2); the variable records of two layers of SME2 (part 8.2) |
 | GIBS Colormap XML Documents (v1.3), `SMAP_Soil_Moisture.xml` | <https://gibs.earthdata.nasa.gov/colormaps/v1.3/SMAP_Soil_Moisture.xml> | The whole file |
 | Singh, A. (1989). Digital change detection techniques using remotely-sensed data. International Journal of Remote Sensing, 10(6), 989-1003 | <https://doi.org/10.1080/01431168908903939> | Section 4.1, pages 990 to 992, as text taken from the PDF file; the formula of the section was not legible in that text |
 | GDAL documentation, gdal raster calc | <https://gdal.org/en/stable/programs/gdal_raster_calc.html> | The synopsis, the description and the options |
@@ -579,7 +581,10 @@ it was read.
 
 Written on 15 Nov 2026 on the branch `an3-soil`, from commit `d0aa71e`. Parts 2 to 7 describe the
 two tools as they were before this part: they mapped every cell. Every number of parts 8 and 9 is
-copied from a record of `docs/research/records/analysis/soil-moisture/`.
+copied from a record of `docs/research/records/analysis/soil-moisture/`. The records were made at
+commit `d0aa71e`, before the branch took in the names that NASA's catalogue gives the layers: their
+sentences name the layers Soil moisture and Retrieval quality flag, which Lynkeus now names Soil
+Moisture and Retrieval Quality Flag.
 
 | Record | SHA-256 | What it holds |
 |---|---|---|
@@ -587,6 +592,7 @@ copied from a record of `docs/research/records/analysis/soil-moisture/`.
 | `quality_layers.json` | `0efb6bdeec7106cdc16afc85912df3b12c6c6779e6481492cc6b9c657322538e` | The 22 layers that `lynkeus.harmony.get_layer` received on 15 Nov 2026 (soil moisture and flag of eleven products): product file, layer description, grid, statistics and the SHA-256 of each file |
 | `quality_products.json` | `1e60f1415c0bed81436c2222ab09cf18d075e55273d31d6781c6059f6fa748c7` | The three product files held locally: the flags of the box and of the whole frame, the bits of `surfaceQualityFlag`, and the received layers compared with the product files |
 | `quality_attributes.json` | `bd872ec6dfca12bbd8c1b7a173f9282a7bcd4fb994d96d4f2778aa076a30a632` | The attributes of the layers `soilMoisture`, `retrievalQualityFlag` and `surfaceQualityFlag` in the three product files |
+| `quality_variables.json` | `cb38d3c15dd0dcb84458be53db852553645d51cb1f733dc45bef92b51980cc61` | The variable records of `retrievalQualityFlag` and `soilMoisture` in NASA's catalogue (provider ASF), with the field `LongName`, read on 15 Nov 2026 |
 | `quality_lynkeus_side.json` | `14991d273c3ab799aa7672d1dea4a29e3763d3020b5bce868908bf73062f7fb6` | The cells left out on each date, the results and notes of the tools through `lynkeus.tools.run_tool`, the whole frames, and the refusals |
 | `quality_result_stats.json` | `d4722a30f5dd6623f69761f25509a986ec82a52417925c56f641298608834044` | The percentiles of each result of the box |
 | `quality_comparison.json` | `d71cd7e87f666c95fd1a2e519366f67891622aca3198b8c7defb63acf73787d0` | The results of Lynkeus against those of `gdal raster calc`, cell by cell |
@@ -641,13 +647,15 @@ mark instead of being left out (part 7, point 2).
 
 ### 8.2 The layer in the form Get layer
 
-The Data part offers the layer `retrievalQualityFlag` of an SME2 product as Retrieval quality flag,
-with the unit `1` (`_layers` in `api/src/lynkeus/harmony.py`). NASA Harmony delivers it clipped to
-the box, on the grid of the soil moisture. Its reduced copies take the most frequent value, because
-its values are classes. In each of the eleven pairs of layers received (nine provisional dates and
-two beta dates) the flag holds a value exactly where the soil moisture holds one, on the same grid
-(record `quality_lynkeus_side.json`). The received layers of 15 Sep, 27 Sep and 9 Oct 2026 equal the
-product files in every cell, the flag and the soil moisture alike (record `quality_products.json`).
+The Data part offers the layer `retrievalQualityFlag` of an SME2 product as Retrieval Quality Flag,
+the field `LongName` of its variable record in NASA's catalogue (`V4279684368-ASF`, record
+`quality_variables.json`), with the unit `1` (`_layers` in `api/src/lynkeus/harmony.py`). NASA
+Harmony delivers it clipped to the box, on the grid of the soil moisture. Its reduced copies take
+the most frequent value, because its values are classes. In each of the eleven pairs of layers
+received (nine provisional dates and two beta dates) the flag holds a value exactly where the soil
+moisture holds one, on the same grid (record `quality_lynkeus_side.json`). The received layers of 15
+Sep, 27 Sep and 9 Oct 2026 equal the product files in every cell, the flag and the soil moisture
+alike (record `quality_products.json`).
 
 ### 8.3 The rule in the tools
 

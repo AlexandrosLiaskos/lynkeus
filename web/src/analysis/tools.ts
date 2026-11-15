@@ -554,7 +554,7 @@ export const NO_COMPONENTS = "The Connected components layer of this product is 
 export const CHOOSE_COMPONENTS = "Choose the Connected components layer.";
 
 /** The fault of a field of a soil moisture tool when the session holds no retrieval quality flag of its product. */
-export const NO_QUALITY = "The Retrieval quality flag layer of this product is not in the session.";
+export const NO_QUALITY = "The Retrieval Quality Flag layer of this product is not in the session.";
 
 /** What the form of a tool holds at one moment. */
 export interface Choices {

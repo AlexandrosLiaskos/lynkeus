@@ -286,9 +286,9 @@ test("the layer to get is named as the Get layer form names it", () => {
     "displacement-state":
       "Get the Unwrapped phase layer and the Connected components layer of one GUNW product, for the same area.",
     "soil-moisture-state":
-      "Get the Soil moisture layer and the Retrieval quality flag layer of an SME2 product, for the same area.",
+      "Get the Soil Moisture layer and the Retrieval Quality Flag layer of an SME2 product, for the same area.",
     "soil-moisture-change":
-      "Get the Soil moisture layer and the Retrieval quality flag layer of two SME2 products of one track and frame, for the same area.",
+      "Get the Soil Moisture layer and the Retrieval Quality Flag layer of two SME2 products of one track and frame, for the same area.",
   });
   for (const sentence of Object.values(RECEIVE)) {
     expect(sentence).toMatch(/^Get [^.]*\.$/);
@@ -417,10 +417,10 @@ test("Soil moisture, One date states in one sentence what to get when the flag o
   show("soil-moisture-state", [soil(), laterSoilFlag()]);
   await userEvent.selectOptions(screen.getByLabelText("Layer"), "soil-sep");
   expect(GET_QUALITY).toBe(
-    "The Retrieval quality flag layer of this product is not in the session. Get the Retrieval quality flag layer of the same product, for the same area.",
+    "The Retrieval Quality Flag layer of this product is not in the session. Get the Retrieval Quality Flag layer of the same product, for the same area.",
   );
   expect(screen.getByText(GET_QUALITY)).toBeDefined();
-  expect(missing()).toBe("The Retrieval quality flag layer of this product is not in the session.");
+  expect(missing()).toBe("The Retrieval Quality Flag layer of this product is not in the session.");
   expect(runButton().getAttribute("aria-disabled")).toBe("true");
   await userEvent.click(screen.getByRole("button", { name: "Get layer" }));
   expect(dockStore.get().tools).toContain(GET_LAYER_PANE);

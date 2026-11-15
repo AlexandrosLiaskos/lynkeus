@@ -15,7 +15,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from lynkeus import __version__, jobs, routes, server, sessions
-from lynkeus.references import UnreadableReferenceError
+from lynkeus.references import REFUSED, UnreadableReferenceError
 from lynkeus.routes import Service, install
 from tests.standin import SIGNED_IN, STAND_IN, KeyServer, key_server, token
 
@@ -461,6 +461,16 @@ def test_inputs_are_taken_in_the_forms_of_the_standard(client: TestClient) -> No
     )
     assert response.status_code == 201
     assert response.json()["title"] == "Stand-in from-a-link"
+
+
+def test_service_as_installed_refuses_an_input_value_given_as_a_link(tmp_path: Path, keys: KeyServer) -> None:
+    app = FastAPI(openapi_url="/api/openapi.json")
+    install(app, [STAND_IN, SIGNED_IN], folder=tmp_path, keys_address=keys.address)
+    with TestClient(app, base_url="https://testserver") as client:
+        body = {"inputs": {"name": {"href": "https://example.org/name.json"}}}
+        response = client.post("/api/processes/stand-in/execution", json=body)
+        _problem(response, 400, REFUSED)
+        assert _service(client).store.count_sessions() == 0
 
 
 @pytest.mark.parametrize(

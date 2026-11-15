@@ -66,9 +66,9 @@ export const RECEIVE: Record<FinishedTool, string> = {
   "displacement-state":
     "Get the Unwrapped phase layer and the Connected components layer of one GUNW product, for the same area.",
   "soil-moisture-state":
-    "Get the Soil moisture layer and the Retrieval quality flag layer of an SME2 product, for the same area.",
+    "Get the Soil Moisture layer and the Retrieval Quality Flag layer of an SME2 product, for the same area.",
   "soil-moisture-change":
-    "Get the Soil moisture layer and the Retrieval quality flag layer of two SME2 products of one track and frame, for the same area.",
+    "Get the Soil Moisture layer and the Retrieval Quality Flag layer of two SME2 products of one track and frame, for the same area.",
 };
 
 /** What the form states when no layer of the session can stand beside the first layer of a tool of two dates. */
@@ -81,7 +81,7 @@ export const GET_OTHER_PAIR = `${NO_OTHER_PAIR} Get the same layer of another pa
 export const GET_COMPONENTS = `${NO_COMPONENTS} Get the Connected components layer of the same product, channel and area.`;
 
 /** What the form states when the session holds no retrieval quality flag of the product of a chosen layer. */
-export const GET_QUALITY = `${NO_QUALITY} Get the Retrieval quality flag layer of the same product, for the same area.`;
+export const GET_QUALITY = `${NO_QUALITY} Get the Retrieval Quality Flag layer of the same product, for the same area.`;
 
 /** The words of the second field of a tool that compares, by what the tool compares. */
 export const SECOND: Record<Comparison, { title: string; about: string; get: string }> = {
@@ -240,7 +240,7 @@ function showMethod(tool: FinishedTool): void {
  * the tool shows, and the link Method at the foot opens the page Methods at the tool. While a choice is missing
  * or impossible, the foot of the pane states the first fault, and a field that was left states its own, with the
  * shared `FieldError`. Without a layer that the tool reads, the pane names the layer to get and offers the Get
- * layer form. A soil moisture tool takes the Retrieval quality flag layer of the product of each chosen layer
+ * layer form. A soil moisture tool takes the Retrieval Quality Flag layer of the product of each chosen layer
  * without a field of its own, and the pane states what to get when it is missing. A visitor who has an own server
  * chooses the server of the job in the field Server, which stands before the box and knows on which server the
  * chosen layers are kept. The run button starts the tool as a job

@@ -54,11 +54,11 @@ export const RECEIVE_SERIES: Record<SeriesTool, string> = {
   "backscatter-series": "Get the same Backscatter layer of two or more GCOV products of one track and frame.",
   "coherence-series": "Get the same Coherence layer of two or more GUNW products of one track and frame.",
   "soil-moisture-series":
-    "Get the Soil moisture layer and the Retrieval quality flag layer of two or more SME2 products of one track and frame, for the same area.",
+    "Get the Soil Moisture layer and the Retrieval Quality Flag layer of two or more SME2 products of one track and frame, for the same area.",
 };
 
 /** What the form states when the session holds no retrieval quality flag of the product of some chosen layers. */
-export const GET_FLAGS = "Get the Retrieval quality flag layer of the product of each date, for the same area.";
+export const GET_FLAGS = "Get the Retrieval Quality Flag layer of the product of each date, for the same area.";
 
 /**
  * State that layers which an own server of the visitor keeps cannot be used, and how they become usable. The
@@ -140,7 +140,7 @@ function openGetLayer(): void {
  * result to the map: a series is computed on the project server, from layers that the project server keeps, and
  * it is a chart and not a layer. The "i" of the pane states what the tool shows, and the link Method at the foot
  * opens the page Methods at the tool. While a choice is missing, the foot of the pane states the first fault,
- * and a field that was left states its own. Soil moisture, Series takes the Retrieval quality flag layer of the
+ * and a field that was left states its own. Soil moisture, Series takes the Retrieval Quality Flag layer of the
  * product of each chosen layer without a field of its own, and the pane states what to get when it is missing. The
  * run button starts the tool as a job, and the foot shows the progress and the outcome, with the link that shows
  * the series.

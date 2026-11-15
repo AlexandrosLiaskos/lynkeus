@@ -642,7 +642,7 @@ test("a soil moisture tool without the flag of the product of a chosen layer sta
   expect(state.faults).toEqual({ ...SOUND, first: NO_QUALITY });
   expect(state.layers).toEqual([soil()]);
   expect(state.inputs).toBeNull();
-  expect(NO_QUALITY).toBe("The Retrieval quality flag layer of this product is not in the session.");
+  expect(NO_QUALITY).toBe("The Retrieval Quality Flag layer of this product is not in the session.");
   const change = { tool: "soil-moisture-change", title: "Name" } as const;
   const later = check({ ...change, layers: [soil(), laterSoil(), soilFlag()], first: "soil-sep", second: "soil-oct" });
   expect(later.faults).toEqual({ ...SOUND, second: NO_QUALITY });

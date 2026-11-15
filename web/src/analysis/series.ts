@@ -189,8 +189,8 @@ export interface SeriesChoices {
 export function flaglessSentence(layers: readonly LayerDescription[]): string {
   const [one] = layers;
   return layers.length === 1 && one
-    ? `The Retrieval quality flag layer of the product of ${daysWords(one.dates)} is not in the session.`
-    : `The Retrieval quality flag layers of the products of ${String(layers.length)} chosen dates are not in the session.`;
+    ? `The Retrieval Quality Flag layer of the product of ${daysWords(one.dates)} is not in the session.`
+    : `The Retrieval Quality Flag layers of the products of ${String(layers.length)} chosen dates are not in the session.`;
 }
 
 /** What is wrong with each field of the form, in one sentence, or null for a field that is in order. */

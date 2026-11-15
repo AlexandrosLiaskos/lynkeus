@@ -53,7 +53,7 @@ The tool has two inputs, in this order: the layer `soilMoisture` of one SME2 pro
 `retrievalQualityFlag` of the same product file. The form of the tool shows the layers of the soil
 moisture and takes the flag of the product by itself; when the session holds none, the form says so
 in one sentence and offers the Get layer form, which receives the flag as the layer Retrieval
-quality flag.
+Quality Flag.
 
 | No. | Spacing | Path in the product | Type | Unit | No data |
 |---|---|---|---|---|---|
@@ -283,4 +283,4 @@ The exact numbers of the comparison are in `docs/research/analysis-soil-moisture
 7. The three articles of reference 3, which were not read, and the licence of the software of the
    mission.
 8. Visitors' own servers: a server that runs an older Lynkeus Server does not know the layer
-   Retrieval quality flag or the two inputs of the tool, and refuses them with its own sentence.
+   Retrieval Quality Flag or the two inputs of the tool, and refuses them with its own sentence.

@@ -152,11 +152,11 @@ export function laterSoil(change: Partial<LayerDescription> = {}): LayerDescript
   });
 }
 
-/** The layer Retrieval quality flag of the product of 27 September 2026, as the server describes it, for the tests. */
+/** The layer Retrieval Quality Flag of the product of 27 September 2026, as the server describes it, for the tests. */
 export function soilFlag(change: Partial<LayerDescription> = {}): LayerDescription {
   return layer({
     id: "flag-sep",
-    title: "Retrieval quality flag, 27 Sep 2026",
+    title: "Retrieval Quality Flag, 27 Sep 2026",
     layer: "retrievalQualityFlag",
     quantity: "Retrieval quality flag of the soil moisture, whose lowest bit marks a retrieval not recommended",
     unit: "1",
@@ -172,7 +172,7 @@ export function soilFlag(change: Partial<LayerDescription> = {}): LayerDescripti
 export function laterSoilFlag(change: Partial<LayerDescription> = {}): LayerDescription {
   return soilFlag({
     id: "flag-oct",
-    title: "Retrieval quality flag, 9 Oct 2026",
+    title: "Retrieval Quality Flag, 9 Oct 2026",
     dates: ["2026-10-09"],
     inputs: [SME2_OCT],
     ...change,
