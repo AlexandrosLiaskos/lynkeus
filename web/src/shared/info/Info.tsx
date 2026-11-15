@@ -50,7 +50,13 @@ export function Info({ id, about, children }: InfoProps) {
   return (
     <span className="info">
       {/* The bubble shows as soon as the pointer is on the button, and a press does not hide it. */}
-      <TooltipTrigger delay={0} closeDelay={LEAVE_DELAY} shouldCloseOnPress={false} isOpen={open} onOpenChange={setOpen}>
+      <TooltipTrigger
+        delay={0}
+        closeDelay={LEAVE_DELAY}
+        shouldCloseOnPress={false}
+        isOpen={open}
+        onOpenChange={setOpen}
+      >
         <Focusable>
           <button
             type="button"
