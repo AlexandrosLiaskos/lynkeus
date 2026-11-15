@@ -1,5 +1,5 @@
 import type { ToolAction, ToolActions } from "../ribbon/types";
-import { closeToolPane, dockStore, frontOf, showPane, sideOf, type DockState } from "../shared/dock/dock";
+import { closeToolPane, dockStore, setAutoHide, showPane, shownOf, sideOf, type DockState } from "../shared/dock/dock";
 import { useMap } from "../shared/map";
 import { panesStore, resetPanes, setPaneOpen, type PaneId } from "../shared/panes";
 import { useStore } from "../shared/store";
@@ -9,26 +9,29 @@ import type { ViewToolId } from "./tab";
 
 /**
  * Return the panes beside the map to their first state, as Reset Panes for Mapping does in ArcGIS Pro: the
- * Contents pane and the Catalog pane are open at their first width, and the pane of every tool is closed.
+ * Contents pane and the Catalog pane are open at their first width, no side hides its panes, and the pane of
+ * every tool is closed.
  */
 export function resetAllPanes(): void {
   dockStore.get().tools.forEach(closeToolPane);
+  setAutoHide("left", false);
+  setAutoHide("right", false);
   resetPanes();
 }
 
 /**
  * What the button of the Contents pane or of the Catalog pane does. Each of the two panes has something to show
  * whenever it is open, so the button is pressed while its pane is on the page, which is what the user sees. A
- * press hides a pane that stands in front of its side, brings a pane that stands behind another one to the front,
- * and opens a pane that is not on the page.
+ * press hides a pane that is visible, shows a pane that stands behind another one or is hidden at the edge of
+ * the window, and opens a pane that is not on the page.
  */
 export function paneAction(id: PaneId, open: boolean, dock: DockState): ToolAction {
   const onPage = open && dock.panes.some((pane) => pane.id === id);
-  const inFront = frontOf(dock, sideOf(id)) === id;
+  const visible = shownOf(dock, sideOf(id)) === id;
   return {
     pressed: onPage,
     run: () => {
-      if (onPage && inFront) {
+      if (onPage && visible) {
         setPaneOpen(id, false);
       } else if (onPage) {
         showPane(id);

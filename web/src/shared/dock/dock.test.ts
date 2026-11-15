@@ -1,6 +1,7 @@
 import { beforeEach, expect, test } from "vitest";
 import {
   closeToolPane,
+  concealPanes,
   dockStore,
   enterDock,
   frontOf,
@@ -8,8 +9,11 @@ import {
   openToolPane,
   panesOf,
   resetDock,
+  setAutoHide,
   showPane,
+  shownOf,
   sideOf,
+  togglePane,
 } from "./dock";
 
 beforeEach(resetDock);
@@ -85,4 +89,43 @@ test("a tool pane is opened once, asks for the keyboard focus each time, and is 
   closeToolPane("search-products");
   closeToolPane("search-products");
   expect(dockStore.get().tools).toEqual([]);
+});
+
+test("a side that hides its panes shows none of them until one is asked for", () => {
+  enterDock({ id: "contents", title: "Contents" });
+  enterDock({ id: "catalog", title: "Catalog" });
+  enterDock({ id: "get-layer", title: "Get layer" });
+  expect(shownOf(dockStore.get(), "right")).toBe("get-layer");
+  setAutoHide("right", true);
+  expect(shownOf(dockStore.get(), "right")).toBeNull();
+  expect(frontOf(dockStore.get(), "right")).toBe("get-layer");
+  expect(shownOf(dockStore.get(), "left")).toBe("contents");
+  showPane("catalog");
+  expect(shownOf(dockStore.get(), "right")).toBe("catalog");
+  concealPanes("right");
+  expect(shownOf(dockStore.get(), "right")).toBeNull();
+});
+
+test("the tab of a hidden pane shows its pane, and hides the pane that shows", () => {
+  enterDock({ id: "catalog", title: "Catalog" });
+  enterDock({ id: "get-layer", title: "Get layer" });
+  setAutoHide("right", true);
+  togglePane("get-layer");
+  expect(shownOf(dockStore.get(), "right")).toBe("get-layer");
+  togglePane("catalog");
+  expect(shownOf(dockStore.get(), "right")).toBe("catalog");
+  togglePane("catalog");
+  expect(shownOf(dockStore.get(), "right")).toBeNull();
+});
+
+test("a tool pane that is opened on a side that hides its panes shows, and a side that is pinned again shows its front pane", () => {
+  enterDock({ id: "catalog", title: "Catalog" });
+  setAutoHide("right", true);
+  openToolPane("search-products");
+  enterDock({ id: "search-products", title: "Search products" });
+  expect(shownOf(dockStore.get(), "right")).toBe("search-products");
+  setAutoHide("right", true);
+  expect(shownOf(dockStore.get(), "right")).toBeNull();
+  setAutoHide("right", false);
+  expect(shownOf(dockStore.get(), "right")).toBe("search-products");
 });

@@ -124,3 +124,135 @@
     display: none;
   }
 }
+
+// A side that hides its panes automatically is a strip at the edge of the window, as wide as a row of the frame
+// is high, also in a narrow window. A pane that shows over the map is as wide as the side was, and leaves a part
+// of the map in view.
+.dock.dock--auto {
+  --dock-flyout: min(var(--dock-width), calc(100vw - 5.5rem));
+
+  position: relative;
+  z-index: auto;
+  inset: auto;
+  width: auto;
+  max-width: none;
+}
+
+.dock--left.dock--auto {
+  border-right: 1px solid uswds.color("base-light");
+}
+
+.dock--right.dock--auto {
+  border-left: 1px solid uswds.color("base-light");
+}
+
+// The strip has the grey of the row of tabs under a stack, so that it reads as tabs too.
+.dock-rail {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: tokens.$row;
+  min-height: 0;
+  overflow: hidden auto;
+  scrollbar-width: none;
+  background: uswds.color("base-lighter");
+}
+
+// The tab of a hidden pane: its icon and, under it, its name written from top to bottom. A bar stands at the
+// edge of the window, and it takes the colour of a chosen element while the pane of the tab shows over the map.
+.dock-rail button {
+  --dock-bar: #{uswds.color("base-light")};
+
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  gap: tokens.$space-2;
+  max-height: 12rem;
+  padding: tokens.$space-3 0;
+  border: 0;
+  border-bottom: 1px solid uswds.color("base-light");
+  background: none;
+  color: tokens.$ink;
+  font: inherit;
+  cursor: pointer;
+}
+
+.dock--left .dock-rail button {
+  padding-left: 0.1875rem;
+  box-shadow: inset 0.1875rem 0 0 var(--dock-bar);
+}
+
+.dock--right .dock-rail button {
+  padding-right: 0.1875rem;
+  box-shadow: inset -0.1875rem 0 0 var(--dock-bar);
+}
+
+.dock-rail button:hover {
+  --dock-bar: #{uswds.color("base")};
+
+  background: uswds.color("base-light");
+}
+
+.dock-rail button[aria-expanded="true"] {
+  --dock-bar: #{tokens.$selected-bar};
+
+  background: tokens.$selected;
+}
+
+.dock-rail .usa-icon {
+  flex: none;
+  width: tokens.$icon;
+  height: tokens.$icon;
+  color: tokens.$muted;
+}
+
+.dock-rail-name {
+  min-height: 0;
+  overflow: hidden;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+}
+
+// While no pane shows, the place of the panes takes no room. The panes keep their state, and the dialogs that
+// are declared inside the side are still drawn over the page.
+.dock--auto > .dock-panes {
+  display: contents;
+}
+
+// The pane that shows stands over the map, beside the strip.
+.dock--out > .dock-panes {
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  width: var(--dock-flyout);
+  background: uswds.color("white");
+  box-shadow: 0 0 0.5rem uswds.color("black-transparent-20");
+}
+
+.dock--left.dock--out > .dock-panes {
+  left: 100%;
+  border-right: 1px solid uswds.color("base-light");
+}
+
+.dock--right.dock--out > .dock-panes {
+  right: 100%;
+  border-left: 1px solid uswds.color("base-light");
+}
+
+// The edge that changes the width lies over the border between the pane that shows and the map.
+.dock--left.dock--out .dock-edge {
+  z-index: 11;
+  right: auto;
+  left: calc(100% + var(--dock-flyout) - 0.1875rem);
+}
+
+.dock--right.dock--out .dock-edge {
+  z-index: 11;
+  right: calc(100% + var(--dock-flyout) - 0.1875rem);
+  left: auto;
+}
