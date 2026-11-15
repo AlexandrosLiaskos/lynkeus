@@ -14,6 +14,9 @@ import { PRESENT } from "./cog";
 /** The number of points on each side of an extent that are moved to the projection of the view. */
 const POINTS_ON_A_SIDE = 16;
 
+/** The space kept around a layer when the map zooms to it, in pixels. */
+const SPACE_AROUND = 24;
+
 /** Return the layer of the map that carries this id, or undefined when the map has none. */
 export function findLayer(map: OlMap, id: string): BaseLayer | undefined {
   return map.getAllLayers().find((layer) => layer.get("id") === id);
@@ -60,6 +63,17 @@ export async function extentOf(map: OlMap, id: string): Promise<Extent | null> {
     return !extent || isEmpty(extent) ? null : transformExtent(extent, projection, view, POINTS_ON_A_SIDE);
   }
   return null;
+}
+
+/**
+ * Move the map to the whole of a layer, of either kind. The map stays as it is when it has no such layer, or when
+ * the layer could not be read or is empty.
+ */
+export async function fitLayer(map: OlMap, id: string): Promise<void> {
+  const extent = await extentOf(map, id);
+  if (extent) {
+    map.getView().fit(extent, { padding: Array<number>(4).fill(SPACE_AROUND), duration: 250 });
+  }
 }
 
 /**

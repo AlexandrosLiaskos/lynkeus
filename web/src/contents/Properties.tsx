@@ -4,6 +4,7 @@ import type { LayerDescription } from "../shared/layer";
 import { mapLayersStore } from "../shared/mapLayers";
 import { Notice } from "../shared/notice/Notice";
 import { PropertyList, type Property, type PropertyGroup } from "../shared/properties/PropertyList";
+import { shapeLayersStore, type ShapeLayer } from "../shared/shapeLayers";
 import { useStore } from "../shared/store";
 import type { Cog } from "./cog";
 import { formatDates } from "./dates";
@@ -184,21 +185,38 @@ function PropertiesOf({ layer }: { layer: LayerDescription }) {
 }
 
 /**
+ * The properties of a shape layer as one group of names and values: its name and, after it, what the part of the
+ * interface that draws the layer states about it. A description that states the name itself gives the only row
+ * of that name.
+ */
+function ShapePropertiesOf({ layer }: { layer: ShapeLayer }) {
+  const named = layer.properties.some(({ name }) => name === "Name");
+  const rows: Property[] = [...(named ? [] : [{ name: "Name", value: layer.title }]), ...layer.properties];
+  return <PropertyList groups={[{ title: "Layer", rows }]} />;
+}
+
+/**
  * The Properties window of a layer: what the layer is, where it comes from, and the projection and the grid of
- * its file, with the addresses of the file and of its record, which can be copied. The command Properties of the
- * menu of a layer opens it.
+ * its file, with the addresses of the file and of its record, which can be copied. For a shape layer it lists
+ * what the description of the layer states. The command Properties of the menu of a layer opens it.
  */
 export function PropertiesWindow() {
   const shown = useStore(propertiesStore);
   const layer = useStore(mapLayersStore).find(({ id }) => id === shown?.id);
+  const shape = useStore(shapeLayersStore).find(({ id }) => id === shown?.id);
+  const title = layer?.title ?? shape?.title;
   return (
     <Dialog
-      title={layer ? `Properties of ${layer.title}` : "Properties"}
-      open={shown !== null && layer !== undefined}
+      title={title === undefined ? "Properties" : `Properties of ${title}`}
+      open={shown !== null && title !== undefined}
       onClose={() => propertiesStore.set(null)}
       large
     >
-      {shown && layer ? <PropertiesOf key={`${shown.id} ${String(shown.time)}`} layer={layer} /> : null}
+      {shown && layer ? (
+        <PropertiesOf key={`${shown.id} ${String(shown.time)}`} layer={layer} />
+      ) : shape ? (
+        <ShapePropertiesOf layer={shape} />
+      ) : null}
     </Dialog>
   );
 }
