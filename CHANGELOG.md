@@ -33,7 +33,7 @@ All notable changes to Lynkeus are recorded in this file. The format follows
   progress of a run and its outcome.
 - The stack of panes on each side of the map, with a tab for each pane.
 - The pin in the title bar of a pane, which hides the panes of its side into tabs at the edge of the window,
-  as Auto-Hide does in ArcGIS Pro. A tab shows its pane over the map until the user works elsewhere.
+  as Auto-Hide does in ArcGIS Pro. A tab shows its pane over the map until the user works in the map or in the ribbon.
 - One size for the form elements inside the panes and the dialogs.
 - The explanation of a title: a small circled "i" beside the title of a field, a group, a section or a
   tool, which shows the explanation in a bubble.

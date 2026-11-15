@@ -22,6 +22,13 @@ type ProductType = Literal["GCOV", "GUNW", "GOFF", "SME2"]
 
 type Text = Annotated[str, Field(min_length=1)]
 
+type Reduction = Literal["mean", "mean-power"]
+"""How the reduced copies (overviews) of a result are made from its values.
+
+``mean`` takes the mean of the values. ``mean-power`` is for values in decibels
+of a power: it takes the mean of the linear power and gives it in decibels.
+"""
+
 
 class Format(BaseModel):
     """A format that accepts no unknown field and cannot be changed after it is made."""
@@ -174,6 +181,10 @@ class AnalysisResult:
         Name of the colour scale.
     method : str
         Reference of the method.
+    reduction : {"mean", "mean-power"}
+        How the reduced copies of the result are made from ``values``: the
+        mean of the values, or, for decibels of a power, the decibels of the
+        mean of the linear power.
     """
 
     values: NDArray[np.float32]
@@ -182,3 +193,4 @@ class AnalysisResult:
     range: tuple[float, float]
     colours: str
     method: str
+    reduction: Reduction = "mean"

@@ -32,14 +32,15 @@ interface DockProps {
  * The pin in the title bar of a pane makes the side hide its panes automatically, as Auto-Hide does in ArcGIS
  * Pro. The side is then a strip at the edge of the window with one tab for each pane, its name written from top
  * to bottom. A click on a tab shows its pane over the map, which keeps its size, and a second click hides it. The
- * pane also hides when the pointer is pressed, or the keyboard focus moves, outside the side.
+ * pane also hides when the pointer is pressed, or the keyboard focus moves, outside the panes of both sides: in
+ * the map or in the ribbon. Work in the panes of the other side does not hide it, so a pane of each side can show
+ * at the same time.
  */
 export function Dock({ side, icons, children }: DockProps) {
   const dock = useStore(dockStore);
   const holder = widthHolder(side);
   const { width } = useStore(panesStore)[holder];
   const drag = useRef<{ x: number; width: number } | null>(null);
-  const root = useRef<HTMLDivElement>(null);
   const panes = panesOf(dock, side);
   const front = frontOf(dock, side);
   const shown = shownOf(dock, side);
@@ -47,14 +48,14 @@ export function Dock({ side, icons, children }: DockProps) {
   const revealed = autoHide && shown !== null;
   const place = `on the ${side} of the map`;
 
-  // A pane that shows over the map hides when the user works elsewhere: in the map, in the ribbon or in the
-  // panes of the other side. A dialog that the pane has opened is declared inside the side and counts as it.
+  // A pane that shows over the map hides when the user works in the map or in the ribbon. It stays while the
+  // user works in the panes of either side, and a dialog that a pane has opened is declared inside a side.
   useEffect(() => {
     if (!revealed) {
       return;
     }
     const onElsewhere = (event: Event) => {
-      if (event.target instanceof Node && !root.current?.contains(event.target)) {
+      if (event.target instanceof Element && event.target.closest(".dock") === null) {
         concealPanes(side);
       }
     };
@@ -118,7 +119,7 @@ export function Dock({ side, icons, children }: DockProps) {
       : `dock dock--${side}${autoHide ? " dock--auto" : ""}${revealed ? " dock--out" : ""}`;
 
   return (
-    <div ref={root} className={className} style={{ "--dock-width": `${String(width)}px` } as CSSProperties}>
+    <div className={className} style={{ "--dock-width": `${String(width)}px` } as CSSProperties}>
       {autoHide && panes.length > 0 ? (
         <div className="dock-rail" role="group" aria-label={`Hidden panes ${place}`}>
           {panes.map(({ id, title }) => (

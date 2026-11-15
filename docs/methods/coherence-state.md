@@ -107,8 +107,13 @@ is `nan`.
 The file of a result holds the values of the layer at full resolution. It also holds reduced copies
 (overviews), at the factors 2 and 4 for the result of the pilot area, which the map draws when it is
 zoomed out. Lynkeus makes each cell of a reduced copy as the mean of the coherence values of the
-cells that it covers, as it does for the layer that it receives. The reduced copies of this result
-were not measured.
+cells that it covers, as it does for the layer that it receives. The record of the result says:
+"Reduced copies made by averaging the values."
+
+Measured on 15 Nov 2026 on the result of the pilot pair, made from the sample file of the input
+layer: the reduced copies of the result are equal bit for bit to the reduced copies of the input
+layer, at the factor 2 (896,168 cells with a value) and at the factor 4 (224,722 cells)
+(`docs/research/analysis.md`, part 4.7).
 
 For the reader: when the map is zoomed out, a cell shows the mean coherence of the cells that it
 covers. It is not a coherence estimated at that coarser resolution: Lynkeus does not hold the

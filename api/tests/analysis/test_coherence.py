@@ -19,6 +19,7 @@ def test_state_is_the_layer_of_the_product_unchanged() -> None:
     assert (result.quantity, result.unit) == ("Interferometric coherence (magnitude)", "1")
     assert (result.range, result.colours) == ((0.0, 1.0), "grey")
     assert "D-102272" in result.method
+    assert result.reduction == "mean"
 
 
 @pytest.mark.parametrize(

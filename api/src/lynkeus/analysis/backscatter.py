@@ -12,7 +12,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 from lynkeus.analysis.inputs import check_inputs
-from lynkeus.layers import AnalysisResult, LayerDescription
+from lynkeus.layers import AnalysisResult, LayerDescription, Reduction
 from lynkeus.writing import LayerError
 
 # The diagonal terms of the covariance matrix that a GCOV product can hold (NASA SDS Product Specification, L2 GCOV,
@@ -52,7 +52,13 @@ def _valid(values: NDArray[np.float32]) -> NDArray[np.float32]:
 
 
 def _result(
-    values: NDArray[np.float32], quantity: str, lowest: float, highest: float, colours: str, method: str
+    values: NDArray[np.float32],
+    quantity: str,
+    lowest: float,
+    highest: float,
+    colours: str,
+    method: str,
+    reduction: Reduction,
 ) -> AnalysisResult:
     """Return a result in decibels, with its legend from ``lowest`` to ``highest``.
 
@@ -63,7 +69,7 @@ def _result(
     """
     if not lowest < highest:
         raise LayerError("The values of the result are too alike to give the legend a range.")
-    return AnalysisResult(values, quantity, "dB", (lowest, highest), colours, method)
+    return AnalysisResult(values, quantity, "dB", (lowest, highest), colours, method, reduction)
 
 
 def backscatter_state(arrays: Sequence[NDArray[np.float32]], layers: Sequence[LayerDescription]) -> AnalysisResult:
@@ -81,7 +87,8 @@ def backscatter_state(arrays: Sequence[NDArray[np.float32]], layers: Sequence[La
     AnalysisResult
         gamma0 in decibels (dB): ``10 * log10`` of the input. A cell holds ``nan`` where the input is ``nan``,
         zero, negative or infinite. The legend runs from the 5th to the 95th percentile of the result, in dB,
-        on the grey scale.
+        on the grey scale. The reduced copies of the result are the decibels of the mean power, so that a
+        reduced copy of the result is the conversion of the reduced copy of the input.
 
     Raises
     ------
@@ -92,7 +99,9 @@ def backscatter_state(arrays: Sequence[NDArray[np.float32]], layers: Sequence[La
     check_inputs(arrays, layers, count=1, product="GCOV", names=_TERMS, reads=_READS, dates=1)
     decibels = _decibels(arrays[0])
     lowest, highest = np.quantile(_valid(decibels), [0.05, 0.95])
-    return _result(decibels, "Radar backscatter gamma0", float(lowest), float(highest), "grey", _STATE_METHOD)
+    return _result(
+        decibels, "Radar backscatter gamma0", float(lowest), float(highest), "grey", _STATE_METHOD, "mean-power"
+    )
 
 
 def backscatter_change(arrays: Sequence[NDArray[np.float32]], layers: Sequence[LayerDescription]) -> AnalysisResult:
@@ -113,7 +122,9 @@ def backscatter_change(arrays: Sequence[NDArray[np.float32]], layers: Sequence[L
         Change of gamma0 in decibels (dB): ``10 * log10(later / earlier)``. A positive value is an increase. A
         cell holds ``nan`` where either input is ``nan``, zero, negative or infinite, or where the ratio is
         beyond the range of 32-bit numbers. The legend runs from -r to +r, where r is the 99th percentile of
-        the absolute values of the result, in dB, on the diverging scale ``RdBu``.
+        the absolute values of the result, in dB, on the diverging scale ``RdBu``. The reduced copies of
+        the result are means of its decibel values: the ratio of the mean powers of two dates cannot be
+        derived from the result alone.
 
     Raises
     ------
@@ -139,4 +150,6 @@ def backscatter_change(arrays: Sequence[NDArray[np.float32]], layers: Sequence[L
     change = _decibels(ratio)
     # A list of percentiles makes numpy interpolate in 64-bit numbers, as the source program does.
     (reach,) = np.quantile(np.abs(_valid(change)), [0.99])
-    return _result(change, "Change of radar backscatter gamma0", -float(reach), float(reach), "RdBu", _CHANGE_METHOD)
+    return _result(
+        change, "Change of radar backscatter gamma0", -float(reach), float(reach), "RdBu", _CHANGE_METHOD, "mean"
+    )
