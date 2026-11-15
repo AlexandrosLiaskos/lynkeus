@@ -6,6 +6,7 @@ import { fromExtent } from "ol/geom/Polygon";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { Fill, RegularShape, Stroke, Style } from "ol/style";
+import type { ShapeSymbol } from "../shared/shapeLayers";
 import { sidesOf } from "./area";
 
 /** The name of the layer that draws the area. */
@@ -22,8 +23,12 @@ export type Handle = (typeof HANDLES)[number];
 // visible on a background map of any colour.
 const INK = "#1b1b1b";
 const WHITE = "#ffffff";
-const CASING = new Style({ stroke: new Stroke({ color: WHITE, width: 4 }) });
-const LINE = new Style({ stroke: new Stroke({ color: INK, width: 2, lineDash: [8, 6] }) });
+// The width of the dashed line, in pixels. The white line under it is twice as wide.
+const LINE_WIDTH = 2;
+// The lengths of a dash and of a gap of the dashed line, in pixels.
+const LINE_DASH: readonly number[] = [8, 6];
+const CASING = new Style({ stroke: new Stroke({ color: WHITE, width: 2 * LINE_WIDTH }) });
+const LINE = new Style({ stroke: new Stroke({ color: INK, width: LINE_WIDTH, lineDash: [...LINE_DASH] }) });
 const TINT = new Style({ fill: new Fill({ color: "rgba(27, 27, 27, 0.1)" }) });
 const HANDLE = new Style({
   image: new RegularShape({
@@ -42,13 +47,30 @@ export const AREA_STYLE = [CASING, LINE];
 /** The style of the rectangle while it is drawn or changed: its outline and a light tint, which can be grabbed. */
 export const AREA_EDIT_STYLE = [TINT, CASING, LINE];
 
+/** The symbol of the area in the legend of its layer: the line of the rectangle at rest, as `AREA_STYLE` draws it. */
+export const AREA_SYMBOL: ShapeSymbol = {
+  label: "Area",
+  line: INK,
+  width: LINE_WIDTH,
+  dash: LINE_DASH,
+  casing: WHITE,
+};
+
+/**
+ * The z-index of the layer while the Rectangle tool is in use: above every layer of the drawing order, so that
+ * the handles of the rectangle can always be seen and grabbed.
+ */
+export const AREA_EDIT_Z_INDEX = 1010;
+
 export type AreaLayer = VectorLayer<VectorSource>;
 
-/** Create the layer that draws the area above the layers of the map. Its property "editing" shows the tint. */
+/**
+ * Create the layer that draws the area. It has no z-index of its own: the part that puts it on the map gives it
+ * its place in the drawing order. Its property "editing" shows the tint.
+ */
 export function createAreaLayer(): AreaLayer {
   const layer: AreaLayer = new VectorLayer({
     source: new VectorSource(),
-    zIndex: 1010,
     properties: { id: AREA_LAYER_ID },
     style: (feature) => {
       if (feature.getId() !== BOX) {
