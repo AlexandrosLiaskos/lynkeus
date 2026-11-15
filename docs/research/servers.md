@@ -139,3 +139,35 @@ harmony-py makes a folder with `tempfile` (item 1). The program was packed and r
    groups. No process of Lynkeus starts another program at present.
 8. When the program is ended at once by the system (not by Quit or by a signal), its running jobs go on
    until they finish, and they are recorded as interrupted at the next start. This was not checked.
+
+## Test of the joined parts on real data
+
+On 15 November 2026, 10:18 to 10:30 UTC, the three parts were joined (merge cb8f7e4) and run as a private
+copy on the project machine, on a Docker network without a public address: the web service of the joined
+code, the web server with `web/nginx.conf` (nginx 1.27), and the program Lynkeus Server twice
+(`python -m lynkeus.ownserver --no-window`, Debian 13 containers, 2 processors each). A script acted as the
+visitor through the web server, signed in with a user token of the Earthdata account of the server. Every
+layer was received from NASA Harmony: backscatter of the GCOV product of 21 October 2026, track 141, frame 67.
+
+| Step | Result |
+|---|---|
+| Pairing | Each program received a code; the visitor read the computer of the code and confirmed it; the program wrote "Connected to Lynkeus as" with the account name, and the list showed the server as connected with 2 processors, 8.3 GB of memory and first limits of 1 running job and 7.35 GB |
+| Job on a chosen own server, box -71.00, 42.75, -70.95, 42.80 | Successful in 95 s. The file of 790,809 bytes read through `/api/servers/{id}/files/...` has the SHA-256 of the file on the disk of the own server, whole and in four ranges (answers 206). The project server kept no file of it |
+| Three jobs at once: two without a chosen server, one on the project server | The two went to the two own servers (106 s and 94 s), the third ran on the project server (160 s) |
+| Pilot area, box -71.20, 42.60, -70.75, 42.95, on an own server | Successful in 119 s; file of 52,046,916 bytes, read back through the project server with the same SHA-256 in 0.93 s on the same machine; the container of the own server held 486 MB of memory at most |
+| Rename of a layer and new limits of a server, from the site | The STAC record on the disk of the own server carried the new title; the program kept the new limits in `settings.json` and applied them |
+| Program stopped | The list showed the server as connected for up to 75 s more; during that time a file request ended with 504 after 30 s, afterwards a file request and a new job were answered at once with 503 and one sentence |
+| Program started again | Connected without a new pairing |
+| Layer removed from the site | Its files were deleted on the own server |
+| Server removed from the site | It left the list with its jobs and layers; the program forgot its key and showed a new code |
+| Project server restarted while a job ran on an own server | The program reported "Not connected" and connected again by itself; the job ended successfully after 92 s and was listed once the visitor had signed in again |
+
+The pilot area took 297 s on the project server on 14 November (`docs/research/data.md`). The 119 s of this
+test are not a measure of the own server: most of the time of a job is the wait for NASA Harmony, which
+differs from one request to the next, and both servers of this test ran on the project machine.
+
+Not confirmed by this test: the program on Windows and on macOS with a real layer, and on the computer of
+a person; the connection over the internet and through the front web server of the machine; the upload
+speed of an own server; anything in a browser. Found and not corrected: a program that is quit does not
+tell the project server, so the site shows it as connected for up to 75 s; the web service answers an open
+question for tasks with status 500 and writes an error in its log when it is stopped.
